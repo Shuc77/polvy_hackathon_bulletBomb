@@ -1,0 +1,38 @@
+/**
+ * 生成皮肤配置
+ */
+@function generate-skin-setup-configs() {
+  $--new-configs: ();
+
+  // 皮肤基础配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-basic-configs);
+
+  // 皮肤组件配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-component-configs);
+
+  // 皮肤公用页面配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-page-common-configs);
+  // 皮肤 PC 页面配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-page-pc-configs);
+  // 皮肤 Mobile 页面配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-page-mobile-configs);
+
+  // 皮肤互动功能公用配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-iar-common-configs);
+  // 皮肤互动功能 PC 配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-iar-pc-configs);
+  // 皮肤互动功能 Mobile 配置
+  $--new-configs: map.deep-merge($--new-configs, $--skin-iar-mobile-configs);
+
+  @return $--new-configs;
+}
+
+// @function merger-skin-configs($--config-1: (), $--config-2: (), $--config-3: ()) {
+//   $--new-configs: ();
+
+//   $--new-configs: map.deep-merge($--new-configs, $--config-1);
+//   $--new-configs: map.deep-merge($--new-configs, $--config-2);
+//   $--new-configs: map.deep-merge($--new-configs, $--config-3);
+
+//   @return $--new-configs;
+// }

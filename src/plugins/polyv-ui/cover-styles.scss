@@ -1,0 +1,6 @@
+.plv-area-picker__tab__item {
+  white-space: nowrap;
+}
+.plv-area-picker__tab__item + .plv-area-picker__tab__item {
+  margin-left: 20px !important;
+}

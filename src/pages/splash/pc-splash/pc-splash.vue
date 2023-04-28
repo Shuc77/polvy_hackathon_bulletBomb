@@ -1,0 +1,310 @@
+<!-- @file PC 端引导页 -->
+<template>
+  <div class="c-pc-splash">
+    <header class="c-pc-splash__header g-outside">
+      <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
+      <div
+        v-if="supportsFilterStyle && channelSplashImg"
+        class="c-pc-splash__header__bg g-img-cover"
+        :style="{
+          backgroundImage: `url(${channelSplashImg})`,
+        }"
+      ></div>
+      <!-- 遮罩层 -->
+      <div class="c-pc-splash__header__mask"></div>
+      <!-- 头部内容层 -->
+      <div class="c-pc-splash__header__inner g-boundary">
+        <div
+          class="c-pc-splash__header__cover g-img-cover"
+          :style="{
+            backgroundImage: `url(${channelSplashImg})`,
+          }"
+        ></div>
+        <div class="c-pc-splash__header__main">
+          <!-- 频道标题 -->
+          <h1 class="c-pc-splash__header__title">{{ channelTitle }}</h1>
+          <!-- 主持人 -->
+          <div class="c-pc-splash__header__author">
+            <pc-icon-people class="c-pc-splash__header__author__icon" />
+            <span
+              ref="publisherReferenceRef"
+              class="c-pc-splash__header__author__publisher g-singleline g-vmid"
+            >
+              {{ channelPublisher }}
+            </span>
+            <transition name="fade">
+              <div
+                v-show="publisherPopperVisible"
+                ref="publisherPopperRef"
+                class="c-pc-splash__header__author__publisher__panel"
+              >
+                {{ channelPublisher }}
+              </div>
+            </transition>
+          </div>
+
+          <div class="c-pc-splash__header__status">
+            <!-- 直播时间 -->
+            <span class="c-pc-splash__header__status__time g-vmid">
+              {{ $lang('watch.liveTime') }}：{{ liveStartTimeText }}
+            </span>
+
+            <!-- 直播状态 -->
+            <pc-status-tag class="c-pc-splash__header__status__tag g-vmid" />
+
+            <!-- 直播预约 -->
+            <pc-live-booking-button
+              v-if="showLiveBookingButton"
+              class="c-pc-splash__header__status__booking"
+            />
+          </div>
+
+          <!-- 直播倒计时 -->
+          <pc-live-count-down
+            v-if="showLiveCountDown"
+            class="c-pc-splash__header__countdown"
+          />
+
+          <!-- 观看条件 -->
+          <pc-auth
+            v-if="!isAuthorized"
+            class="c-pc-splash__header__auth"
+          />
+          <!-- 报名观看 -->
+          <pc-enroll
+            v-else-if="needEnrollByEnter"
+            class="c-pc-splash__header__enroll"
+          />
+        </div>
+      </div>
+    </header>
+
+    <div class="c-pc-splash__main">
+      <div class="c-pc-splash__main__inner g-boundary">
+        <pc-normal-tabs>
+          <template v-for="(menu, index) in channelMenus">
+            <!-- 直播介绍 -->
+            <pc-normal-tab-pane
+              v-if="menu.menuType === ChannelMenuType.Desc"
+              :key="`desc-${index}`"
+              :label="menu.name"
+              :name="ChannelMenuType.Desc"
+              lazy-load
+            >
+              <pc-rich-text-render :html-content="channelDescription" />
+            </pc-normal-tab-pane>
+          </template>
+        </pc-normal-tabs>
+
+        <pc-lang-switch
+          v-if="langSwitchEnabled"
+          class="c-pc-splash__main__inner__lang-switch"
+        />
+      </div>
+    </div>
+
+    <!-- 右下角固定挂件 -->
+    <pc-page-fixed-widgets />
+
+    <!-- 页脚 -->
+    <pc-page-footer />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { supportsFilterStyle } from '@/assets/utils/dom';
+import { ChannelMenuType } from '@polyv/live-watch-sdk';
+
+import { PcIconPeople } from '@/components/component-icons/pc/map';
+import PcRichTextRender from '@/components/common-base/rich-text-render/pc-rich-text-render.vue';
+import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
+import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
+import PcEnroll from '@/components/common-business/enroll/pc-enroll.vue';
+import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
+import PcLiveBookingButton from '@/components/common-business/live-booking/pc-live-booking-button.vue';
+import PcLiveCountDown from '@/components/common-business/live-count-down/pc-live-count-down.vue';
+import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
+import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
+import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
+import PcAuth from '@/components/page-splash-common/auth/pc-auth.vue';
+import { usePopper } from '@/hooks/components/use-popper';
+
+import { useAuthStore } from '@/store/use-auth-store';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useEnrollStore } from '@/store/use-enroll-store';
+import { useLangStore } from '@/store/use-lang-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+
+import { useLiveBookingStore } from '@/store/use-live-booking-store';
+import { usePvTrack } from '@/hooks/business/use-pv-track';
+
+const { isAuthorized } = storeDefinitionToRefs(useAuthStore);
+
+const { needEnrollByEnter } = storeDefinitionToRefs(useEnrollStore);
+
+const {
+  channelTitle,
+  channelPublisher,
+  channelDescription,
+  channelSplashImg,
+  showLiveCountDown,
+  liveStartTimeText,
+} = storeDefinitionToRefs(useChannelInfoStore);
+
+const {
+  referenceRef: publisherReferenceRef,
+  popperRef: publisherPopperRef,
+  popperVisible: publisherPopperVisible,
+} = usePopper({
+  trigger: 'hover',
+  arrow: true,
+});
+
+const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
+
+const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
+
+const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
+
+usePvTrack('saas-web-splash-pc');
+</script>
+
+<style lang="scss">
+.c-pc-splash {
+  position: relative;
+  min-height: 100vh;
+}
+.c-pc-splash__header {
+  position: relative;
+  padding: 80px 0;
+  overflow: hidden;
+  background: #1a1b1f;
+}
+
+.c-pc-splash__header__bg,
+.c-pc-splash__header__mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+.c-pc-splash__header__bg {
+  filter: blur(18px);
+}
+.c-pc-splash__header__mask {
+  background: rgba(20, 21, 24, 0.75);
+}
+
+.c-pc-splash__header__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 405px;
+}
+
+.c-pc-splash__header__main {
+  position: relative;
+  width: 500px;
+  font-size: 16px;
+  color: #e4e4e4;
+}
+
+.c-pc-splash__header__cover {
+  width: 720px;
+  height: 405px;
+  margin-right: 60px;
+  background-color: #ccc;
+}
+
+.c-pc-splash__header__title {
+  margin-top: -4px;
+  font-size: 32px;
+  line-height: 1.5;
+  color: $--color-white;
+  word-break: break-word;
+}
+
+.c-pc-splash__header__author {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.c-pc-splash__header__author__icon {
+  display: flex;
+  margin-right: 6px;
+  font-size: 20px !important;
+  line-height: 20px;
+}
+
+.c-pc-splash__header__author__publisher {
+  line-height: 20px;
+}
+
+.c-pc-splash__header__author__publisher__panel {
+  box-sizing: border-box;
+  max-width: 300px;
+  padding: 10px 16px;
+  margin-bottom: 4px;
+
+  font-size: 12px;
+  line-height: 1;
+
+  background: #edecec;
+  border-radius: 4px;
+  box-shadow: 0 0 12px 0 rgba(#000, 0.1);
+}
+
+.c-pc-splash__header__status {
+  display: flex;
+  align-items: center;
+  margin-top: 32px;
+}
+.c-pc-splash__header__status__time {
+  font-size: 16px;
+  white-space: nowrap;
+}
+.c-pc-splash__header__status__tag {
+  margin-left: 12px;
+}
+.c-pc-splash__header__status__booking {
+  margin-left: 24px;
+}
+
+.c-pc-splash__header__countdown {
+  margin-top: 14px;
+}
+
+.c-pc-splash__header__auth,
+.c-pc-splash__header__enroll {
+  margin-top: 40px;
+}
+
+.c-pc-splash__main__inner {
+  position: relative;
+}
+
+.c-pc-splash__main__inner__lang-switch {
+  position: absolute;
+  top: 20px;
+  right: 0;
+}
+
+@media (max-width: 1280px) {
+  .c-pc-splash__header__title {
+    font-size: 26px;
+  }
+}
+@media (max-width: 1679px) {
+  .c-pc-splash__header__inner {
+    min-height: 360px;
+  }
+  .c-pc-splash__header__cover {
+    width: 640px;
+    height: 360px;
+    margin-right: 40px;
+  }
+}
+</style>

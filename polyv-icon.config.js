@@ -1,0 +1,27 @@
+/**
+ * 文档地址：https://npm-registry.polyv.net/-/web/detail/@polyv/icons-cli
+ */
+
+/** @type {import('@polyv/icons-cli').IconLibraryCliConfig[]} */
+module.exports = [
+  {
+    resourcesDir: './icon-svgs/pc',
+    outDir: './src/components/component-icons/pc',
+    libraryType: 'vue',
+    iconMap: './src/components/component-icons/pc/map.ts',
+    convertColorMode: 'all',
+    mapExportPrefix: 'PcIcon',
+    demoHtml: './icon-svgs/demo/icon-demo-pc.html',
+    libraryName: 'PC 端观看页图标',
+  },
+  {
+    resourcesDir: './icon-svgs/mobile',
+    outDir: './src/components/component-icons/mobile',
+    libraryType: 'vue',
+    iconMap: './src/components/component-icons/mobile/map.ts',
+    convertColorMode: 'all',
+    mapExportPrefix: 'MobileIcon',
+    demoHtml: './icon-svgs/demo/icon-demo-mobile.html',
+    libraryName: '移动端观看页图标',
+  },
+];

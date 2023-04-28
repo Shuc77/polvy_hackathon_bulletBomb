@@ -1,0 +1,54 @@
+// @file 移动端的互动功能接收端样式覆盖
+
+// 加载
+.plv-ia-loading-container {
+  color: #adadc0;
+}
+
+// 卡片推送
+.plv-iar-push-card,
+.plv-iar-push-card__modal {
+  z-index: 400;
+}
+
+// 图文直播
+.plv-ia-tuwen-message-item {
+  .plv-ia-tuwen-message-item-content {
+    .pws-plv-ia-tuwen-message-item-content-name {
+      font-size: 12px;
+      color: #78A7ED;
+    }
+
+    .pws-plv-ia-tuwen-message-item-content-time {
+      margin-top: 4px;
+      color: #595A66;
+    }
+
+    .pws-plv-ia-tuwen-message-item-content-text {
+      color: #adadc0;
+    }
+  }
+}
+
+// 条件抽奖
+.plv-iar-welfare-lottery__modal--normal,
+.plv-iar-welfare-lottery__modal--gift-box,
+.plv-iar-welfare-lottery__on-lottery-modal {
+  z-index: 11;
+}
+
+// 商品推送
+.plv-iar-product-bubble {
+  pointer-events: none;
+}
+.plv-iar-product-bubble__wrap {
+  pointer-events: initial;
+}
+
+// 问答
+.plv-ia-qa-ask-emotion {
+  height: 100%;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  background-size: 32px;
+}

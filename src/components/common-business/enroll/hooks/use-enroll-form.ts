@@ -1,0 +1,347 @@
+/* eslint-disable sonarjs/cognitive-complexity */
+import { translate } from '@/assets/lang';
+import { validatePhoneNumber } from '@/assets/utils/validate';
+import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
+import { useDialogTipsUtils } from '@/components/common-base/dialog/use-dialog-tips';
+import { toast } from '@/hooks/components/use-toast';
+import { getWatchCore } from '@/core/watch-sdk';
+import { ValidatorRules } from '@/plugins/async-validator';
+import { getAreaSelectNames, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
+import { useEnrollStore } from '@/store/use-enroll-store';
+import {
+  EnrollAuthType,
+  EnrollFieldItem,
+  EnrollFieldType,
+  EnrollFormContent,
+  SubmitEnrollError,
+} from '@polyv/live-watch-sdk';
+import { computed, reactive, ref } from 'vue';
+import { useCommonStore } from '@/store/use-common-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+
+interface EnrollBasicFormData {
+  /** 验证的手机号 */
+  phoneNumber: string;
+  /** 手机区号 */
+  areaCode: string;
+  /** 图片验证码 */
+  imageId: string;
+  imageCaptcha: string;
+  /** 短信验证码 */
+  smsCode: string;
+  /** 验证的邮箱地址 */
+  email: string;
+}
+
+type EnrollValFormData = Record<string, string | string[] | boolean>;
+
+export const enrollFormEmits = () => ({
+  /** 关闭弹层 */
+  'close-dialog': emitFunc<void>(),
+  /** 点击取消 */
+  'click-cancel': emitFunc<void>(),
+  /** 点击我已报名 */
+  'click-enrolled': emitFunc<void>(),
+});
+
+/**
+ * 报名观看表单填写 hook
+ */
+export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }) => {
+  const { emit } = options;
+
+  const watchAppStore = useWatchAppStore();
+  const enrollStore = useEnrollStore();
+  const commonStore = useCommonStore();
+
+  /**
+   * 获取字段的表单初始值
+   */
+  function getInitFormData() {
+    const data: EnrollValFormData = {};
+
+    enrollStore.enrollFields.forEach(item => {
+      if (
+        [EnrollFieldType.Checkbox, EnrollFieldType.Upload, EnrollFieldType.Area].includes(item.type)
+      ) {
+        data[item.fieldId] = [];
+      } else if (item.type === EnrollFieldType.Privacy) {
+        data[item.fieldId] = false;
+      } else {
+        data[item.fieldId] = '';
+      }
+    });
+
+    return data;
+  }
+
+  const imageVerifyInputRef = ref<ImageVerifyInputInstance>();
+
+  /** 填写表单对象 */
+  const formData = reactive<EnrollBasicFormData & EnrollValFormData>({
+    ...getInitFormData(),
+    // 手机号
+    phoneNumber: '',
+    // 手机区号
+    areaCode: '+86',
+    // 图片验证码 id
+    imageId: '',
+    // 图片验证码
+    imageCaptcha: '',
+    // 短信验证码
+    smsCode: '',
+    // 验证的邮箱地址
+    email: '',
+  });
+
+  /** 处理手机号码输入框改变 */
+  function onPhoneNumberChange(phoneNumber: string) {
+    formData.phoneNumber = phoneNumber;
+  }
+
+  /** 处理邮箱输入框改变 */
+  function onEmailChange(email: string) {
+    formData.email = email;
+  }
+
+  /** 表单验证规则 */
+  const formRules = computed<ValidatorRules>(() => {
+    const rules: ValidatorRules = {};
+
+    enrollStore.enrollFields.forEach(fieldItem => {
+      const fieldId = fieldItem.fieldId;
+      const isRequired = fieldItem.isRequired;
+
+      switch (fieldItem.type) {
+        case EnrollFieldType.Name:
+        case EnrollFieldType.Text:
+        case EnrollFieldType.Radio:
+          rules[fieldId] = [
+            { type: 'string', message: translate('auth.error.improveInfo'), required: isRequired },
+          ];
+          break;
+        case EnrollFieldType.Email:
+          rules[fieldId] = [
+            { type: 'string', message: translate('auth.error.improveInfo'), required: isRequired },
+            { type: 'email', message: translate('form.error.emailError') },
+          ];
+          break;
+        case EnrollFieldType.Checkbox:
+        case EnrollFieldType.Upload:
+          rules[fieldId] = [
+            { type: 'array', message: translate('auth.error.improveInfo'), required: isRequired },
+          ];
+          break;
+        case EnrollFieldType.Area:
+          rules[fieldId] = [
+            { type: 'array', message: translate('auth.error.improveInfo'), required: isRequired },
+            {
+              validator: (rule, val: string[]) => {
+                if (val.length && !isSelectFinish(val, commonStore.areaData)) {
+                  return [translate('form.error.areaError')];
+                }
+                return [];
+              },
+            },
+          ];
+          break;
+        case EnrollFieldType.Privacy:
+          rules[fieldId] = {
+            validator: (rule, val: boolean) => {
+              if (!val) {
+                return [translate('auth.error.checkProtocol')];
+              }
+              return [];
+            },
+          };
+          break;
+        case EnrollFieldType.Mobile:
+          // 使用手机号验证
+          if (fieldItem.authType === EnrollAuthType.Mobile) {
+            rules[fieldId] = [
+              {
+                type: 'string',
+                message: translate('form.error.phoneNumberRequired'),
+                required: true,
+              },
+              {
+                validator: () => {
+                  const phoneNumber = formData.phoneNumber;
+                  const areaCode = formData.areaCode;
+
+                  if (validatePhoneNumber(phoneNumber, areaCode)) {
+                    return [];
+                  }
+
+                  return [translate('form.error.phoneNumberError')];
+                },
+              },
+            ];
+            if (enrollStore.smsVerifyEnabled) {
+              rules.smsCode = [
+                {
+                  type: 'string',
+                  message: translate('form.error.smsVerifyRequired'),
+                  required: true,
+                },
+              ];
+            }
+          }
+          // 使用邮箱验证
+          if (fieldItem.authType === EnrollAuthType.Email) {
+            rules[fieldId] = [
+              {
+                type: 'string',
+                message: translate('form.error.emailRequired'),
+                required: isRequired,
+              },
+              { type: 'email', message: translate('form.error.emailError') },
+            ];
+          }
+          break;
+      }
+    });
+
+    return rules;
+  });
+
+  /** 格式化特殊的字段名称 */
+  function formatSpecialName(fieldItem: EnrollFieldItem): string {
+    let name = fieldItem.name;
+    if (fieldItem.type === EnrollFieldType.Radio) {
+      name = `[${translate('form.radio')}] ${name}`;
+    }
+    if (fieldItem.type === EnrollFieldType.Checkbox) {
+      name = `[${translate('form.checkbox')}] ${name}`;
+    }
+    return name;
+  }
+
+  /**
+   * 处理表单提交
+   */
+  async function submitForm() {
+    const watchCore = getWatchCore();
+    const content: EnrollFormContent = {};
+    const formDataVal = formData as EnrollValFormData;
+
+    const phoneNumber = formData.phoneNumber;
+    const areaCode = formData.areaCode;
+    const smsCode = formData.smsCode;
+    const email = formData.email;
+
+    enrollStore.enrollFields.forEach(fieldItem => {
+      const fieldId = fieldItem.fieldId;
+
+      switch (fieldItem.type) {
+        case EnrollFieldType.Name:
+        case EnrollFieldType.Text:
+        case EnrollFieldType.Radio:
+        case EnrollFieldType.Mobile:
+        case EnrollFieldType.Email:
+          content[fieldId] = formDataVal[fieldId] as string;
+          break;
+        case EnrollFieldType.Checkbox:
+        case EnrollFieldType.Upload:
+          content[fieldId] = formDataVal[fieldId] as string[];
+          break;
+        case EnrollFieldType.Area: {
+          const areaValue = formDataVal[fieldId] as string[];
+          const areaPickData = getAreaSelectNames(areaValue, commonStore.areaData).join('/');
+          content[fieldId] = areaPickData;
+          break;
+        }
+        case EnrollFieldType.Privacy:
+          content[fieldId] = '√';
+          break;
+      }
+    });
+
+    const result = await watchCore.enroll.submitEnrollForm({
+      phoneNumber,
+      areaCode,
+      smsCode,
+      email,
+      content,
+    });
+
+    if (!result.success) {
+      switch (result.failReason) {
+        case SubmitEnrollError.SmsCodeVerifyError:
+          toast.error(translate('enroll.error.smsCodeError'));
+          break;
+        case SubmitEnrollError.LackRequired:
+        default:
+          toast.error(result.failMessage || '未知错误！');
+          break;
+      }
+      return;
+    }
+
+    // 优先判断是否需要审核和审核是否通过
+    if (result.auditEnabled && !result.hasAudited) {
+      toast.success(translate('enroll.auditing'));
+      emit('close-dialog');
+      return;
+    }
+
+    // 入口报名且报名成功的情况下需要重新安装 watchCore
+    if (enrollStore.needEnrollByEnter && result.hasEnrolled) {
+      await watchAppStore.resetUpWatchCore();
+    }
+
+    emit('close-dialog');
+  }
+
+  function onClickCancel() {
+    emit('click-cancel');
+  }
+
+  function onClickEnrolled() {
+    emit('click-enrolled');
+  }
+
+  return {
+    EnrollFieldType,
+    EnrollAuthType,
+    imageVerifyInputRef,
+    formData,
+    formRules,
+    onPhoneNumberChange,
+    onEmailChange,
+    formatSpecialName,
+    submitForm,
+    onClickCancel,
+    onClickEnrolled,
+  };
+};
+
+export const useEnrollCheckMobile = (options: {
+  /** 获取手机区号 */
+  getAreaCode: () => string;
+}) => {
+  const { showDialogTips } = useDialogTipsUtils();
+
+  /** 失焦检查报名状态 */
+  async function blurToCheckStatus(mobileOrEmail: string) {
+    if (!mobileOrEmail) {
+      return;
+    }
+
+    const watchCore = getWatchCore();
+    const result = await watchCore.enroll.getEnrollStatus({
+      phoneNumber: mobileOrEmail,
+      email: mobileOrEmail,
+      areaCode: options.getAreaCode(),
+    });
+
+    if (result.hasEnrolled) {
+      showDialogTips(translate('enroll.enrolledTips'));
+    }
+  }
+
+  return {
+    blurToCheckStatus,
+  };
+};

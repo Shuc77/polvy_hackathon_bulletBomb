@@ -1,0 +1,115 @@
+@use 'sass:map';
+@import './function.scss';
+@import './portrait.scss';
+
+// 最高层级的 z-index
+$--zIndex-top: 10001;
+// 一般挂件的 z-index
+$--zIndex-pendant: 2000;
+
+$--color-white: #FFFFFF !default; // 白色
+$--color-black: #000000 !default; // 黑色
+$--color-primary: #3082FE !default; // 主题色
+$--color-primary-portrait: #FFA611 !default; // 竖屏主题色
+
+// #458ffe
+$--color-primary-light-1: get-opacity-color($--color-primary, 1);
+// #599bfe
+$--color-primary-light-2: get-opacity-color($--color-primary, 2);
+// #6ea8fe
+$--color-primary-light-3: get-opacity-color($--color-primary, 3);
+// #83b4fe
+$--color-primary-light-4: get-opacity-color($--color-primary, 4);
+// #98c1ff
+$--color-primary-light-5: get-opacity-color($--color-primary, 5);
+// #accdff
+$--color-primary-light-6: get-opacity-color($--color-primary, 6);
+// #c1daff
+$--color-primary-light-7: get-opacity-color($--color-primary, 7);
+// #d6e6ff
+$--color-primary-light-8: get-opacity-color($--color-primary, 8);
+// #eaf3ff
+$--color-primary-light-9: get-opacity-color($--color-primary, 9);
+
+// 背景色
+$--bg-color-disabled: #E9ECEE !default; // 不可用
+$--bg-color-portrait-popup: #262523 !default; // 竖屏下的弹层背景色
+$--bg-color-portrait-disabled: #CDCDCD !default; // 竖屏下的不可用
+
+// 字体色
+$--font-color-primary: #333333 !default; // 默认字体颜色
+$--font-color-disabled: #9E9E9E !default; // 不可用
+$--font-color-info: #999999 !default; // 信息
+$--font-color-error: #ff5722 !default; // 异常
+
+// 边框色
+$--border-color-primary: #EDEDEF !default; // 常规边框色
+$--border-color-error: #ff5722 !default; // 异常状态边框色
+
+// 阴影
+$--shadow-dialog: 0 0 16px 0 rgba(0, 0, 0, 0.08) !default; // 对话框阴影
+$--shadow-popper: 0 6px 12px rgb(0, 0, 0, 0.1) !default; // 弹层阴影
+
+// 表单相关样式变量
+$--form-input-height: 40px !default; // 输入框高度
+$--form-input-height-small: 30px !default; // 输入框高度 - small
+
+$--form-input-padding: 0 16px !default; // 输入框内边距
+$--form-input-padding-small: 0 8px !default; // 输入框内边距 - small
+
+$--form-input-font-size: 14px !default; // 输入框字体大小
+$--form-input-font-size-small: 12px !default; // 输入框字体大小 - small
+
+$--form-input-border-color: #d8d8d8 !default; // 输入框边框颜色
+$--form-input-border-color-error: $--border-color-error !default; // 输入框异常边框色
+
+$--form-input-bg: $--color-white !default; // 输入框背景色
+$--form-input-bg-error: #ffe9e9 !default; // 输入框异常背景色
+
+// 表单相关样式变量(移动端)
+$--mobile-form-input-sizes: (
+  'default': (
+    'height': 48px,
+    'padding': 0 16px,
+    'font-size': 16px,
+    'radius': 24px,
+  ),
+  'medium': (
+    'height': 40px,
+    'padding': 0 16px,
+    'font-size': 14px,
+    'radius': 20px,
+  ),
+  'small': (
+    'height': 36px,
+    'padding': 0 12px,
+    'font-size': 14px,
+    'radius': 18px,
+  ),
+) !default;
+
+$--mobile-form-input-themes: (
+  'default': (
+    'border-color': #f6f6f6,
+    'background': #f6f6f6,
+    'font-color': $--font-color-primary,
+  ),
+  'error': (
+    'border-color': $--border-color-error,
+    'background': #f6f6f6,
+    'font-color': $--font-color-primary,
+  ),
+  'dark': (
+    'border-color': #1a1b1f,
+    'background': #1a1b1f,
+    'font-color': $--color-white,
+  ),
+) !default;
+
+// 播放器控制栏相关样式变量
+// 播放器面板背景
+$--player-control-panel-bg: rgba(0, 0, 0, 0.65) !default;
+
+
+$--finance-primary-text-color: rgb(208, 172, 82);
+$--finance-primary-bg-color: rgb(217, 186, 108);

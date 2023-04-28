@@ -1,0 +1,250 @@
+<!-- @file PC 端基础信息显示 -->
+<template>
+  <div class="c-pc-basic-info">
+    <!-- 频道 logo -->
+    <div
+      class="c-pc-basic-info__channel__cover g-img-cover"
+      :style="{
+        backgroundImage: `url(${resizeOSSImg(channelCoverImg, 80, 80)})`,
+      }"
+    ></div>
+
+    <div class="c-pc-basic-info__main">
+      <div class="c-pc-basic-info__main__top">
+        <h1 class="c-pc-basic-info__main__title g-text-on-bg">
+          <!-- 频道名称 -->
+          <span
+            class="g-singleline"
+            :title="channelTitle"
+          >
+            {{ channelTitle }}
+          </span>
+          <!-- 直播状态标签 -->
+          <pc-status-tag class="c-pc-basic-info__main__status" />
+          <!-- 无延迟标签 -->
+          <label
+            v-if="isLowLatency"
+            class="c-pc-basic-info__main__low-latency g-img-cover"
+          ></label>
+        </h1>
+      </div>
+
+      <div class="c-pc-basic-info__main__bottom">
+        <!-- 主持人 -->
+        <div
+          class="c-pc-basic-info__main__bottom__data c-pc-basic-info__main__bottom__data--publisher"
+        >
+          <pc-icon-people class="c-pc-basic-info__main__bottom__publisher-icon" />
+          <span
+            ref="publisherReferenceRef"
+            class="c-pc-basic-info__main__bottom__publisher g-singleline"
+          >
+            {{ channelPublisher }}
+          </span>
+          <transition name="fade">
+            <div
+              v-show="publisherPopperVisible"
+              ref="publisherPopperRef"
+              class="c-pc-basic-info__main__bottom__publisher__panel"
+            >
+              {{ channelPublisher }}
+            </div>
+          </transition>
+        </div>
+
+        <!-- 页面浏览次数 -->
+        <div
+          v-if="pvShowEnabled"
+          class="c-pc-basic-info__main__bottom__data g-text-nowrap"
+        >
+          {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
+        </div>
+
+        <div style="margin-right: 24px; margin-left: auto"></div>
+
+        <!-- 分享 -->
+        <div
+          v-if="shareBtnEnabled"
+          class="c-pc-basic-info__main__bottom__share-wrap"
+        >
+          <div
+            ref="shareReferenceRef"
+            class="c-pc-basic-info__main__bottom__share"
+          >
+            <pc-icon-share class="c-pc-basic-info__main__bottom__share__icon" />
+            <span>{{ $lang('share.title') }}</span>
+          </div>
+          <transition name="fade">
+            <div
+              v-show="sharePopperVisible"
+              ref="sharePopperRef"
+              class="c-pc-basic-info__main__bottom__share__panel"
+            >
+              <pc-web-share-panel />
+            </div>
+          </transition>
+        </div>
+
+        <!-- 语言切换 -->
+        <div
+          v-if="langSwitchEnabled"
+          class="c-pc-basic-info__main__bottom__lang-switch"
+        >
+          <pc-lang-switch theme="dark" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { resizeOSSImg } from '@/assets/utils/image';
+import { shortNumber } from '@/assets/utils/number';
+
+import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
+import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
+import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
+import { PcIconShare, PcIconPeople } from '@/components/component-icons/pc/map';
+import { usePopper } from '@/hooks/components/use-popper';
+
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { usePlayerStore } from '@/store/use-player-store';
+import { useLangStore } from '@/store/use-lang-store';
+import { useShareStore } from '@/store/use-share-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+
+const {
+  referenceRef: publisherReferenceRef,
+  popperRef: publisherPopperRef,
+  popperVisible: publisherPopperVisible,
+} = usePopper({
+  trigger: 'hover',
+  arrow: true,
+});
+
+const {
+  referenceRef: shareReferenceRef,
+  popperRef: sharePopperRef,
+  popperVisible: sharePopperVisible,
+} = usePopper({
+  trigger: 'hover',
+  arrow: true,
+});
+
+const { channelCoverImg, channelTitle, channelPublisher, pageViewCount, pvShowEnabled } =
+  storeDefinitionToRefs(useChannelInfoStore);
+
+const { isLowLatency } = storeDefinitionToRefs(usePlayerStore);
+
+const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
+
+const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
+</script>
+
+<style lang="scss">
+$--basic-logo-size: 50px;
+
+.c-pc-basic-info {
+  position: relative;
+  padding-left: 66px;
+}
+
+.c-pc-basic-info__channel__cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  flex-shrink: 0;
+  width: $--basic-logo-size;
+  height: $--basic-logo-size;
+}
+
+.c-pc-basic-info__main {
+  flex: 1;
+}
+
+.c-pc-basic-info__main__top {
+  width: 100%;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.c-pc-basic-info__main__title {
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  line-height: 20px;
+  color: $--color-white;
+}
+
+.c-pc-basic-info__main__status {
+  margin-left: 20px;
+}
+
+.c-pc-basic-info__main__low-latency {
+  flex-shrink: 0;
+  width: 68px;
+  height: 20px;
+  margin-left: 13px;
+  background-image: url(../../../assets/images/low-latency/low-latency-bg-pc.svg);
+  background-size: contain;
+}
+
+.c-pc-basic-info__main__bottom {
+  display: flex;
+  align-items: flex-start;
+  font-size: 14px;
+  color: $--color-white;
+}
+.c-pc-basic-info__main__bottom__data {
+  display: flex;
+  align-items: center;
+  line-height: 20px;
+}
+.c-pc-basic-info__main__bottom__data + .c-pc-basic-info__main__bottom__data {
+  margin-left: 16px;
+
+  &::before {
+    height: 14px;
+    margin-right: 16px;
+    content: '';
+    border-left: 1px solid #ebebeb;
+  }
+}
+.c-pc-basic-info__main__bottom__data--publisher {
+  flex-shrink: 1;
+  overflow: hidden;
+}
+.c-pc-basic-info__main__bottom__publisher-icon {
+  display: flex;
+  margin-right: 6px;
+  font-size: 20px !important;
+}
+.c-pc-basic-info__main__bottom__publisher__panel {
+  box-sizing: border-box;
+  max-width: 300px;
+  padding: 10px 16px;
+  margin-bottom: 4px;
+
+  font-size: 12px;
+  line-height: 1;
+
+  background: #edecec;
+  border-radius: 4px;
+  box-shadow: 0 0 12px 0 rgba(#000, 0.1);
+}
+
+.c-pc-basic-info__main__bottom__share-wrap {
+  margin-right: 60px;
+}
+.c-pc-basic-info__main__bottom__share {
+  display: flex;
+  align-items: center;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.c-pc-basic-info__main__bottom__share__icon {
+  display: flex;
+  margin-right: 6px;
+  font-size: 20px !important;
+}
+</style>

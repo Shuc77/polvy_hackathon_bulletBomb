@@ -1,0 +1,177 @@
+import { appEvents, eventBus } from '@/app/app-events';
+import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
+import { useViewerStore } from '@/store/use-viewer-store';
+import { ref, unref, watch } from 'vue';
+import { PlvInputContent } from '@/plugins/polyv-ui/types';
+import { useMsgInputController } from './use-msg-input-controller';
+
+export const msgInputWrapProps = () => ({
+  /** 占位符 */
+  placeholder: PropUtils.string,
+  /** 是否禁用输入框 */
+  disabledInput: PropUtils.bool.def(false),
+  /** 是否禁用表情选择 */
+  disabledEmotionPicker: PropUtils.bool.def(false),
+  /** 是否显示图片表情发送 */
+  imageEmotionEnabled: PropUtils.bool.def(true),
+  /** 是否显示图片发送(仅 PC) */
+  sendImageEnabled: PropUtils.bool.def(true),
+  /** 是否禁用图片发送(仅 PC) */
+  disabledSendImage: PropUtils.bool.def(false),
+  /** 是否使用图片粘贴输入框(仅 PC) */
+  imagePasteInputEnabled: PropUtils.bool.def(false),
+});
+
+export const msgInputWrapEmits = () => ({
+  input: emitFunc<string>(),
+  /** 提交事件 */
+  submit: emitFunc<{ contentList: PlvInputContent[] }>(),
+  /** 点击发送图片 */
+  'click-send-image': emitFunc<void>(),
+  /** 关闭 */
+  'click-image-emotion': emitFunc<void>(),
+});
+
+export interface MsgInputWrapInstance {
+  /** 聚焦输入框 */
+  focusInput(): void;
+  /** 清除输入框 */
+  clearInput(): void;
+  /** 获取输入内容 */
+  getInputContentList(): PlvInputContent[];
+  /** 重置状态 */
+  resetStatus(): void;
+}
+
+/**
+ * @hook 消息输入框包装层
+ */
+export const useMsgInputWrap = (options: {
+  /** 点击表情后是否聚焦输入框，默认：true */
+  clickFaceToFocus?: boolean;
+  props: VueProps<typeof msgInputWrapProps>;
+  emit: VueEmit<typeof msgInputWrapEmits>;
+}) => {
+  const viewerStore = useViewerStore();
+  /** 消息输入框控制器 */
+  const msgInputController = useMsgInputController();
+
+  const { props, emit, clickFaceToFocus = false } = options;
+
+  // 监听是否禁用输入框
+  watch(
+    () => props.disabledInput,
+    () => {
+      if (props.disabledInput) {
+        msgInputController.clearInput();
+      }
+    },
+  );
+
+  /** 是否显示字数统计 */
+  const wordLimitVisible = ref(false);
+
+  /** 监听输入框溢出事件 */
+  function onInputWidgetOverflow(isOverflow: boolean) {
+    wordLimitVisible.value = isOverflow;
+  }
+
+  /** 表情面板节点 */
+  const emotionRef = ref<HTMLDivElement>();
+
+  /** 表情面板显示 */
+  const {
+    visible: emotionVisible,
+    togglePanel: toggleEmotionPanel,
+    hidePanel: hideEmotionPanel,
+  } = usePanelVisible([emotionRef, '[data-emotion-picker-btn']);
+
+  /** 处理点击表情面板开关 */
+  function onClickEmotionPickerBtn() {
+    if (props.disabledEmotionPicker) {
+      return;
+    }
+    if (!viewerStore.hasNickname) {
+      eventBus.$emit(appEvents.chat.OpenSetNick, true);
+      return;
+    }
+    toggleEmotionPanel();
+  }
+
+  /** 处理点击 face 表情 */
+  function onClickFace(title: string) {
+    msgInputController.insertEmotion(title);
+
+    if (clickFaceToFocus) {
+      msgInputController.focusInput();
+    }
+  }
+
+  /** 处理点击图片表情 */
+  function onClickImageEmotion() {
+    emit('click-image-emotion');
+  }
+
+  /** 处理点击图片发送 */
+  function onClickSendImage() {
+    if (props.disabledSendImage) {
+      return;
+    }
+    if (!viewerStore.hasNickname) {
+      eventBus.$emit(appEvents.chat.OpenSetNick, true);
+      return;
+    }
+    emit('click-send-image');
+  }
+
+  /** 发送按钮是否禁用 */
+  const sendBtnDisabled = msgInputController.isEmptyInputContent;
+
+  /**
+   * 输入框触发提交/发送按钮点击处理
+   * @desc 提交后，由外部自行去重置输入框内容，清空组件状态
+   * */
+  function submitInput() {
+    if (unref(sendBtnDisabled)) return;
+
+    emit('submit', {
+      contentList: msgInputController.getInputContentList(),
+    });
+  }
+
+  /** 重置组件状态 */
+  function resetStatus() {
+    hideEmotionPanel();
+  }
+
+  /** 消息包装层组件实例 */
+  const msgInputWrapInstance: MsgInputWrapInstance = {
+    focusInput: msgInputController.focusInput,
+    clearInput: msgInputController.clearInput,
+    getInputContentList: msgInputController.getInputContentList,
+    resetStatus,
+  };
+
+  return {
+    ...msgInputController,
+    msgInputWrapInstance,
+
+    wordLimitVisible,
+    onInputWidgetOverflow,
+
+    emotionRef,
+    emotionVisible,
+    toggleEmotionPanel,
+    hideEmotionPanel,
+    onClickEmotionPickerBtn,
+    onClickFace,
+    onClickImageEmotion,
+
+    onClickSendImage,
+
+    sendBtnDisabled,
+    submitInput,
+  };
+};

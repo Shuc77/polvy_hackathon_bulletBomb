@@ -1,0 +1,236 @@
+<!-- @file PC 端登记观看表单 -->
+<template>
+  <div class="c-pc-auth-info-form">
+    <div
+      v-if="hasMobileField"
+      class="c-pc-auth-info-form__registered-entrance"
+      @click="onClickLogined"
+    >
+      {{ $lang('auth.info.registered.entrance') }}
+    </div>
+
+    <div
+      v-if="infoDesc"
+      class="c-pc-auth-info-form__desc"
+    >
+      {{ infoDesc }}
+    </div>
+
+    <form-wrap
+      class="c-pc-auth-info-form__form"
+      :content-width="286"
+      :form-data="formData"
+      :form-rules="formRules"
+      :submit-action="submitAuth"
+    >
+      <template v-for="(item, index) in authInfoFields">
+        <!-- 姓名 -->
+        <template v-if="item.type === AuthInfoType.Name">
+          <form-item
+            :label="item.name"
+            :key="`name-${index}`"
+            :form-field="`${fieldPrefix}${index + 1}`"
+          >
+            <pc-form-input
+              v-model.trim="formData[`${fieldPrefix}${index + 1}`]"
+              :placeholder="item.placeholder"
+            />
+          </form-item>
+        </template>
+
+        <!-- 文本 -->
+        <template v-if="item.type === AuthInfoType.Text">
+          <form-item
+            :label="item.name"
+            :key="`text-${index}`"
+            :form-field="`${fieldPrefix}${index + 1}`"
+          >
+            <pc-form-input
+              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              :placeholder="item.placeholder"
+            />
+          </form-item>
+        </template>
+
+        <!-- 数值 -->
+        <template v-if="item.type === AuthInfoType.Number">
+          <form-item
+            :label="item.name"
+            :key="`number-${index}`"
+            :form-field="`${fieldPrefix}${index + 1}`"
+          >
+            <pc-form-number-input
+              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              :placeholder="item.placeholder"
+            />
+          </form-item>
+        </template>
+
+        <!-- 下拉选项 -->
+        <template v-if="item.type === AuthInfoType.Option">
+          <form-item
+            :label="item.name"
+            :key="`option-${index}`"
+            :form-field="`${fieldPrefix}${index + 1}`"
+          >
+            <pc-form-select
+              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              :placeholder="item.placeholder"
+              :options="formatSelectOptions(item.options)"
+            />
+          </form-item>
+        </template>
+
+        <!-- 手机号码 -->
+        <template v-if="item.type === AuthInfoType.Mobile">
+          <!-- 手机号码 -->
+          <form-item
+            :label="item.name"
+            :key="`phone-${index}`"
+            :form-field="`${fieldPrefix}${index + 1}`"
+          >
+            <pc-form-phone-input
+              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              :placeholder="item.placeholder"
+              :area-code.sync="formData.areaCode"
+              @input="onPhoneNumberChange"
+            />
+          </form-item>
+          <!-- 图片验证码 -->
+          <form-item
+            v-if="smsVerifyEnabled"
+            :key="`image-code-${index}`"
+            label=" "
+          >
+            <pc-form-image-verify-input
+              ref="imageVerifyInputRef"
+              v-model="formData.imageCaptcha"
+              :image-id.sync="formData.imageId"
+            />
+          </form-item>
+          <!-- 短信验证码 -->
+          <form-item
+            v-if="smsVerifyEnabled"
+            form-field="smsCode"
+            label=" "
+            :key="`sms-code-${index}`"
+          >
+            <pc-form-sms-verify-input
+              v-model="formData.smsCode"
+              :area-code="formData.areaCode"
+              :phone-number="formData[`${fieldPrefix}${index + 1}`]"
+              :image-id="formData.imageId"
+              :image-captcha="formData.imageCaptcha"
+              :sms-scene="SmsScene.AuthInfo"
+              :image-verify-input-ref="imageVerifyInputRef"
+            />
+          </form-item>
+        </template>
+      </template>
+
+      <!-- 隐私协议 -->
+      <form-item
+        v-if="protocolContent"
+        label=" "
+        form-field="checkProtocol"
+      >
+        <pc-form-protocol
+          v-model="formData.checkProtocol"
+          :content="protocolContent"
+        />
+      </form-item>
+
+      <div class="c-pc-auth-info-form__submit">
+        <form-submit-button
+          :size="ButtonSize.Small"
+          :text="$lang('auth.enter')"
+        />
+        <normal-button
+          :size="ButtonSize.Small"
+          :type="ButtonType.Info"
+          :text="$lang('base.cancel')"
+          @click="onClickCancel"
+        />
+      </div>
+    </form-wrap>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { SmsScene } from '@polyv/live-watch-sdk';
+import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormItem from '@/components/common-base/form/form-item.vue';
+import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
+import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
+import PcFormNumberInput from '@/components/common-base/form/form-number-input/pc-form-number-input.vue';
+import PcFormSelect from '@/components/common-base/form/form-select/pc-form-select.vue';
+import PcFormPhoneInput from '@/components/common-base/form/form-phone-input/pc-form-phone-input.vue';
+import PcFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/pc-form-image-verify-input.vue';
+import PcFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/pc-form-sms-verify-input.vue';
+import PcFormProtocol from '@/components/common-base/form/form-protocol/pc-form-protocol.vue';
+import { useAuthInfoForm, authInfoFormEmits } from './hooks/use-auth-info-form';
+
+const emit = defineEmits(authInfoFormEmits());
+
+const {
+  infoDesc,
+  authInfoFields,
+  AuthInfoType,
+  fieldPrefix,
+  formData,
+  formRules,
+  protocolContent,
+  smsVerifyEnabled,
+  authFormInstance,
+  hasMobileField,
+  imageVerifyInputRef,
+
+  onPhoneNumberChange,
+  formatSelectOptions,
+  onClickCancel,
+  submitAuth,
+  onClickLogined,
+} = useAuthInfoForm({
+  emit,
+});
+
+defineExpose(authFormInstance);
+</script>
+
+<style lang="scss">
+.c-pc-auth-info-form {
+  padding: 20px 10px 40px;
+}
+
+.c-pc-auth-info-form__desc {
+  padding-left: 160px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #999;
+}
+
+.c-pc-auth-info-form__registered-entrance {
+  width: 344px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #2196f3;
+  text-align: right;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
+.c-pc-auth-info-form__form {
+  margin-top: 20px;
+}
+
+.c-pc-auth-info-form__submit {
+  display: flex;
+  justify-content: center;
+
+  .c-normal-button {
+    margin: 0 8px;
+  }
+}
+</style>

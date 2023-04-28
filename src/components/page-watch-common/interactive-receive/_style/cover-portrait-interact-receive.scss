@@ -1,0 +1,57 @@
+// @file 竖屏端的互动功能接收端样式覆盖
+
+// 按钮
+.plv-iar-default-btn {
+  background: $--color-primary-portrait !important;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+// 快速问答
+.plv-iar-quick-answer-default__btn {
+  background: $--color-primary-portrait !important;
+}
+
+// 商品库
+.pws-iar-product-list-wrap {
+  padding: 0;
+}
+.pws-iar-product-list-wrap {
+  background: none;
+}
+.plv-iar-product__content {
+  background-color: initial;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+}
+.pws-iar-product-list-number {
+  border-radius: 6px;
+}
+.pws-iar-product-list-cover {
+  border-radius: 10px;
+}
+.pws-iar-product-list-cover-number {
+  border-radius: 0 0 6px 0;
+}
+.pws-iar-product-list-button {
+  min-width: 72px;
+  height: 28px;
+  font-size: 12px;
+  line-height: 28px;
+  background: $--color-primary-portrait;
+}
+.plv-iar-product__buy-button.plv-iar-product__buy-button--disabled {
+  .pws-iar-product-list-button {
+    background: $--bg-color-portrait-disabled;
+  }
+}
+
+// 问答
+.plv-ia-qa-ask-emotion {
+  margin-bottom: 0 !important;
+}

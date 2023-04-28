@@ -1,0 +1,94 @@
+import { ref } from 'vue';
+import { getWatchCore } from '@/core/watch-sdk';
+
+import { getImgSize } from '@/assets/utils/image';
+import { changeProtocol } from '@utils-ts/net';
+import { wait } from '@/assets/utils/utils';
+
+import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
+import { PlvInputContent } from '@/plugins/polyv-ui/types';
+import { toast } from '@/hooks/components/use-toast';
+import { translate } from '@/assets/lang';
+
+export const useAskSend = () => {
+  /** 消息输入框 */
+  const msgInputWrapRef = ref<MsgInputWrapInstance>();
+
+  /** 监听输入框消息发送 */
+  async function onSubmitMessage({ contentList }: { contentList: PlvInputContent[] }) {
+    if (!msgInputWrapRef.value) return;
+
+    msgInputWrapRef.value.clearInput();
+    msgInputWrapRef.value.resetStatus();
+
+    await submitMessageQueue(contentList);
+  }
+
+  /** 提交消息队列 */
+  async function submitMessageQueue(contentList: PlvInputContent[]) {
+    for await (const message of contentList) {
+      if (message.type === 'text') {
+        submitAskMsg(message.content);
+      } else if (message.type === 'img') {
+        await sendAskImage(message.file);
+      }
+      await wait(200);
+    }
+  }
+
+  /** 发送提问的图片消息 */
+  async function sendAskImage(file: File | null) {
+    try {
+      const watchCore = getWatchCore();
+      const { imageId, imageUrl } = await watchCore.utils.directUploadImage(file);
+      const { width, height } = await getImgSize(imageUrl);
+
+      watchCore.ask.sendAskImage({
+        imageId,
+        imageUrl: changeProtocol(imageUrl, 'https'),
+        size: {
+          width,
+          height,
+        },
+      });
+    } catch (error) {
+      toast.error(translate('watchCore.error.uploadImage'));
+    }
+  }
+
+  /** 发送提问的发言消息 - 纯文本 */
+  function submitAskMsg(content: string) {
+    const watchCore = getWatchCore();
+    watchCore.ask.sendAskSpeak({
+      content,
+    });
+  }
+
+  /**
+   * 处理点击发送图片
+   */
+  async function onClickSendImage() {
+    try {
+      const watchCore = getWatchCore();
+      const { imageId, imageUrl } = await watchCore.utils.uploadImage();
+      const { width, height } = await getImgSize(imageUrl);
+
+      watchCore.ask.sendAskImage({
+        imageId,
+        imageUrl: changeProtocol(imageUrl, 'https'),
+        size: {
+          width,
+          height,
+        },
+      });
+    } catch (error) {
+      toast.error(translate('watchCore.error.uploadImage'));
+    }
+  }
+
+  return {
+    msgInputWrapRef,
+    onSubmitMessage,
+    onClickSendImage,
+  };
+};

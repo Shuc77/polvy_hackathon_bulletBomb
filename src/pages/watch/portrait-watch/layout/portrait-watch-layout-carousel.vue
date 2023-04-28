@@ -1,0 +1,70 @@
+<!-- @file 竖屏布局：轮播屏 -->
+<template>
+  <div class="c-portrait-watch-layout-carousel">
+    <plv-carousel
+      ref="carouselRef"
+      class="c-portrait-watch-layout-carousel__main"
+      :slide-index.sync="carouselActiveIndex"
+    >
+      <!-- 副屏 -->
+      <plv-carousel-item>
+        <carousel-page-container>
+          <carousel-sub-screen />
+        </carousel-page-container>
+      </plv-carousel-item>
+
+      <!-- 主屏 -->
+      <plv-carousel-item>
+        <carousel-page-container>
+          <carousel-main-screen />
+        </carousel-page-container>
+      </plv-carousel-item>
+
+      <!-- 空白屏 -->
+      <plv-carousel-item>
+        <carousel-page-container />
+      </plv-carousel-item>
+    </plv-carousel>
+  </div>
+</template>
+
+<script setup lang="ts">
+import CarouselPageContainer from './carousel-page-container.vue';
+import CarouselMainScreen from './carousel-main-screen.vue';
+import CarouselSubScreen from './carousel-sub-screen.vue';
+import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useDocStore } from '@/store/use-doc-store';
+import { nextTick, ref, watch } from 'vue';
+import { PlvCarouselInstance } from '@/plugins/polyv-ui/types';
+
+const { carouselActiveIndex } = storeDefinitionToRefs(usePortraitLayoutStore);
+
+const { documentSwitch } = storeDefinitionToRefs(useDocStore);
+
+const carouselRef = ref<PlvCarouselInstance>();
+
+watch(
+  () => documentSwitch.value,
+  async () => {
+    await nextTick();
+
+    if (carouselRef.value?.handleWindowReszie) {
+      carouselRef.value.handleWindowReszie();
+    }
+  },
+);
+</script>
+
+<style lang="scss">
+.c-portrait-watch-layout-carousel {
+  width: 100%;
+  height: 100%;
+  color: $--color-white;
+  pointer-events: initial;
+}
+.c-portrait-watch-layout-carousel__main {
+  overflow: visible;
+}
+</style>

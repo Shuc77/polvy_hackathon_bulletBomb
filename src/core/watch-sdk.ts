@@ -1,0 +1,72 @@
+import { AppConfig, PolyvWatchCore, createWatchCore } from '@polyv/live-watch-sdk';
+import { isSpecialUserType } from '@/assets/constants/special-user-types';
+import { useChatStore } from '@/store/use-chat-store';
+import { useViewerStore } from '@/store/use-viewer-store';
+
+import { bindWatchCoreEvents } from '@/core/bind-sdk-events/bind-watch-core-events';
+import { bindChannelModuleEvents } from '@/core/bind-sdk-events/bind-channel-events';
+import { bindChatModuleEvents } from '@/core/bind-sdk-events/bind-chat-events';
+import { bindConnectMicModuleEvents } from '@/core/bind-sdk-events/bind-connect-mic-events';
+import { bindEnrollModuleEvents } from '@/core/bind-sdk-events/bind-enroll-events';
+import { bindInteractReceiveEvents } from '@/core/bind-sdk-events/bind-interact-receive-events';
+import { bindInviteEvents } from '@/core/bind-sdk-events/bind-invite-events';
+import { bindPlayerModuleEvents } from '@/core/bind-sdk-events/bind-player-events';
+import { bindUserEvents } from '@/core/bind-sdk-events/bind-user-events';
+import { bindFinanceRiskEvaluationEvents } from '@/core/bind-sdk-events/bind-finance-risk-evaluation-events';
+
+/** 观看页核心模块实例 */
+let watchCore: PolyvWatchCore | undefined;
+
+/** 获取观看页核心模块实例 */
+export function getWatchCore(): PolyvWatchCore {
+  if (!watchCore) {
+    throw new Error('watchCore in not define!');
+  }
+  return watchCore;
+}
+
+/** 初始化观看页应用对象 */
+export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
+  if (watchCore) {
+    return watchCore;
+  }
+  const chatStore = useChatStore();
+  const viewerStore = useViewerStore();
+
+  watchCore = createWatchCore(appConfig);
+
+  // 绑定 SDK 相关事件的监听回调
+  bindWatchCoreEvents();
+  bindChannelModuleEvents();
+  bindChatModuleEvents();
+  bindConnectMicModuleEvents();
+  bindEnrollModuleEvents();
+  bindInteractReceiveEvents();
+  bindInviteEvents();
+  bindPlayerModuleEvents();
+  bindUserEvents();
+  bindFinanceRiskEvaluationEvents();
+
+  // 设置弹幕添加拦截器，如果当前只看主持人，则不添加弹幕
+  watchCore.barrage.setBarrageAddIntercept(data => {
+    const userType = data.user?.userType;
+    const userId = data.user?.userId;
+
+    if (
+      chatStore.onlySpecialMsg &&
+      !isSpecialUserType(userType) &&
+      userId !== viewerStore.viewerId
+    ) {
+      return true;
+    }
+
+    return false;
+  });
+
+  return watchCore;
+}
+
+window.debugWatchSdk = () => {
+  window.watchCore = watchCore;
+  console.info(watchCore);
+};

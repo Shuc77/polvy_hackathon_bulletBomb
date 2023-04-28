@@ -1,0 +1,23 @@
+<!-- @file PC 端常规 Tabs 标签页 -->
+<template>
+  <div class="c-pc-normal-tabs">
+    <pc-normal-tab-header />
+    <slot></slot>
+  </div>
+</template>
+
+<script setup lang="ts">
+import PcNormalTabHeader from './pc-normal-tab-header.vue';
+import { tabsProps, tabsEmits, useTabs } from '../hooks/use-tabs';
+
+const props = defineProps(tabsProps());
+
+const emit = defineEmits(tabsEmits());
+
+const { tabsInstance } = useTabs({
+  props,
+  emit,
+});
+
+defineExpose(tabsInstance);
+</script>

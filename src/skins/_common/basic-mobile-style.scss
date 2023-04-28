@@ -1,0 +1,260 @@
+@import './basic-style.scss';
+@import './basic-iar-style.scss';
+
+/**
+ * 生成皮肤的 basic mobile 端 样式
+ * 规则：pws-mobile-*
+ */
+@mixin generate-skin-basic-mobile-style($--skin-configs) {
+  .pws-skin-#{map.get($--skin-configs, 'skin-type')} {
+    @include generate-skin-basic-style($--skin-configs);
+    @include generate-skin-basic-iar-mobile-style($--skin-configs);
+
+    // 直播状态标签
+    @each $status, $color in map.get($--skin-configs, 'mobile-live-status-tag:color') {
+      .pws-mobile-live-status-tag-#{$status} {
+        color: $color !important;
+        border-color: $color !important;
+      }
+    }
+
+    // --------- 富文本 --------- //
+    .pws-mobile-rich-text-content {
+      color: map.get($--skin-configs, 'mobile-rich-text-content:text-color') !important;
+    }
+
+    // --------- 引导页 --------- //
+    .pws-mobile-splash-page {
+      background-color: map.get($--skin-configs, 'mobile-splash:bg-color') !important;
+    }
+    .pws-mobile-splash-page-live-count-down-wrap {
+      background-color: map.get($--skin-configs, 'mobile-splash-live-count-down-wrap:bg-color') !important;
+    }
+
+    // --------- 页脚 --------- //
+    .pws-mobile-page-footer {
+      color: map.get($--skin-configs, 'mobile-page-footer:text-color') !important;
+    }
+
+    // --------- 直播预约 ---------- //
+    .pws-mobile-live-booking-button {
+      background-color: map.get($--skin-configs, 'mobile-live-booking-button:bg-color') !important;
+    }
+
+    // --------- 倒计时 ---------- //
+    .pws-mobile-count-down-square-item {
+      background-color: map.get($--skin-configs, 'mobile-count-down-square-item:bg-color') !important;
+      .pws-count-down-square-item-count {
+        color: map.get($--skin-configs, 'mobile-count-down-square-item:text-color') !important;
+        border-color: map.get($--skin-configs, 'mobile-count-down-square-item:border-color') !important;
+      }
+      .pws-count-down-square-item-word {
+        color: map.get($--skin-configs, 'mobile-count-down-square-item-word:text-color') !important;
+      }
+      &::before,
+      &::after {
+        background-color: map.get($--skin-configs, 'mobile-count-down-square-item-dot:bg-color') !important;
+      }
+    }
+
+    // --------- 基础信息 ---------- //
+    .pws-mobile-basic-info-channel-title {
+      color: map.get($--skin-configs, 'mobile-basic-info-channel-title:text-color') !important;
+    }
+    .pws-mobile-basic-info-start-time {
+      color: map.get($--skin-configs, 'mobile-basic-info-start-time:text-color') !important;
+    }
+    .pws-mobile-basic-info-page-view {
+      color: map.get($--skin-configs, 'mobile-basic-info-page-view:text-color') !important;
+      border-color: map.get($--skin-configs, 'main-border-color') !important;
+    }
+    .pws-mobile-basic-info-author {
+      border-color: map.get($--skin-configs, 'main-border-color') !important;
+    }
+    .pws-mobile-basic-info-publisher {
+      color: map.get($--skin-configs, 'mobile-basic-info-publisher:text-color') !important;
+    }
+    .pws-mobile-basic-info-like {
+      color: map.get($--skin-configs, 'mobile-basic-info-like:text-color') !important;
+    }
+
+    // --------- 关注 --------- //
+    .pws-mobile-follow-button {
+      color: map.get($--skin-configs, 'mobile-follow-button:text-color') !important;
+      background-color: map.get($--skin-configs, 'mobile-follow-button:bg-color') !important;
+    }
+
+    // --------- 消息输入框 --------- //
+    .pws-mobile-chat-msg-input {
+      background-color: map.get($--skin-configs, 'mobile-msg-input:bg-color') !important;
+    }
+    .pws-mobile-chat-msg-input-textarea {
+      color: map.get($--skin-configs, 'mobile-msg-input:text-color') !important;
+      &::placeholder {
+        color: map.get($--skin-configs, 'mobile-msg-input-placeholder:text-color') !important;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: map.get($--skin-configs, 'mobile-msg-input:scrollbar-color') !important;
+      }
+    }
+    .pws-mobile-msg-input-suffix-icon {
+      color: map.get($--skin-configs, 'mobile-msg-input-suffix-icon:text-color') !important;
+    }
+    .pws-mobile-msg-send-button {
+      color: map.get($--skin-configs, 'mobile-msg-send-button:text-color') !important;
+    }
+
+    // --------- 表情选择 --------- //
+    .pws-mobile-msg-input-wrap-emotion-show {
+      .pws-mobile-msg-input-wrap-main {
+        background-color: map.get($--skin-configs, 'mobile-emotion-panel:bg-color') !important;
+      }
+      .pws-mobile-msg-send-button {
+        color: map.get($--skin-configs, 'mobile-emotion-panel-send-button:bg-color') !important;
+      }
+      .pws-mobile-chat-msg-input {
+        background-color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input:bg-color') !important;
+      }
+      .pws-mobile-chat-msg-input-textarea {
+        color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input:text-color') !important;
+        &::placeholder {
+          color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input-placeholder:text-color') !important;
+        }
+      }
+      .pws-mobile-msg-input-suffix-icon {
+        color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input-suffix-icon:text-color') !important;
+      }
+    }
+    .pws-mobile-emotion-picker {
+      background-color: map.get($--skin-configs, 'mobile-emotion-panel:bg-color') !important;
+    }
+    .pws-mobile-emotion-picker-tabs {
+      background-color: map.get($--skin-configs, 'mobile-emotion-panel-type:bg-color') !important;
+    }
+    .pws-mobile-emotion-picker-tabs-item {
+      color: map.get($--skin-configs, 'mobile-emotion-panel-type:text-color') !important;
+      &.is-active {
+        color: map.get($--skin-configs, 'mobile-emotion-panel-type--active:text-color') !important;
+      }
+    }
+    .pws-mobile-emotion-picker-tabs-active {
+      background-color: map.get($--skin-configs, 'mobile-emotion-panel-type--active:bg-color') !important;
+    }
+    .pws-mobile-emotion-picker-del-button {
+      color: map.get($--skin-configs, 'mobile-emotion-panel-del-button:text-color') !important;
+      background-color: map.get($--skin-configs, 'mobile-emotion-panel-del-button:bg-color') !important;
+    }
+
+    // --------- 菜单 --------- //
+    .pws-mobile-more-button {
+      background-color: map.get($--skin-configs, 'mobile-more-button:bg-color') !important;
+      &::after {
+        background-image: url(map.get($--skin-configs, 'mobile-more-button:icon-image')) !important;
+      }
+    }
+    .pws-mobile-more-panel {
+      background-color: map.get($--skin-configs, 'mobile-more-panel:bg-color') !important;
+    }
+    .pws-more-panel-text {
+      color: map.get($--skin-configs, 'mobile-more-panel:text-color') !important;
+    }
+
+    // --------- 打赏 --------- //
+    .pws-mobile-donate-button {
+      background-color: map.get($--skin-configs, 'mobile-donate-button:bg-color') !important;
+    }
+    .pws-mobile-donate-panel {
+      background-color: map.get($--skin-configs, 'mobile-donate-panel:bg-color') !important;
+    }
+    .pws-mobile-panel-header-title {
+      color: map.get($--skin-configs, 'mobile-donate-panel-header-title:text-color') !important;
+    }
+    .pws-mobile-panel-header-close {
+      color: map.get($--skin-configs, 'mobile-donate-panel-header-close:text-color') !important;
+    }
+    .pws-mobile-donate-good-item.is-active {
+      background-color: map.get($--skin-configs, 'mobile-donate-good--active:bg-color') !important;
+      border-color: map.get($--skin-configs, 'mobile-donate-good--active:border-color') !important;
+    }
+    .pws-mobile-donate-good-name {
+      color: map.get($--skin-configs, 'mobile-donate-good-name:text-color') !important;
+    }
+    .pws-mobile-donate-good-price {
+      color: map.get($--skin-configs, 'mobile-donate-good-price:text-color') !important;
+    }
+    .pws-mobile-donate-carousel-indicator-item {
+      background-color: map.get($--skin-configs, 'mobile-donate-indicator:bg-color') !important;
+      &.is-active {
+        background-color: map.get($--skin-configs, 'mobile-donate-indicator--active:bg-color') !important;
+      }
+    }
+    .pws-mobile-donate-panel-option {
+      color: map.get($--skin-configs, 'mobile-donate-panel-option:text-color') !important;
+      background-color: map.get($--skin-configs, 'mobile-donate-panel-option:bg-color') !important;
+      &.is-active {
+        color: map.get($--skin-configs, 'mobile-donate-panel-option--active:text-color') !important;
+        background-color: map.get($--skin-configs, 'mobile-donate-panel-option--active:bg-color') !important;
+        border-color: map.get($--skin-configs, 'mobile-donate-panel-option--active:border-color') !important;
+      }
+    }
+    .pws-mobile-donate-send-button {
+      color: map.get($--skin-configs, 'mobile-donate-panel-send-button:text-color') !important;
+      background-color: map.get($--skin-configs, 'mobile-donate-panel-send-button:bg-color') !important;
+    }
+    .pws-mobile-donate-point-data {
+      color: map.get($--skin-configs, 'mobile-donate-panel-point:text-color') !important;
+    }
+    .pws-mobile-donate-point-data-count {
+      color: map.get($--skin-configs, 'mobile-donate-panel-point-count:text-color') !important;
+    }
+    .pws-mobile-donate-cash-custom-cash {
+      color: map.get($--skin-configs, 'mobile-donate-panel-custom-cash:text-color') !important;
+    }
+    .pws-mobile-donate-custom-cash-input {
+      .pws-mobile-form-input-main {
+        background-color: map.get($--skin-configs, 'mobile-donate-custom-cash-input:bg-color') !important;
+        border: none;
+      }
+      .pws-mobile-form-input-main-title {
+        color: map.get($--skin-configs, 'mobile-donate-custom-cash-input-title:text-color') !important;
+      }
+      .pws-mobile-form-input-main-input {
+        color: map.get($--skin-configs, 'mobile-donate-custom-cash-input:text-color') !important;
+        &::placeholder {
+          color: inherit;
+          opacity: 0.7;
+        }
+      }
+    }
+    .pws-mobile-donate-custom-cash-random {
+      color: map.get($--skin-configs, 'mobile-donate-custom-cash-random:text-color') !important;
+    }
+
+    // -------- 回放列表 -------- //
+    .pws-mobile-playback-list-playing {
+      background-color: map.get($--skin-configs, 'pc-playback-list-playing:bg-color') !important;
+    }
+    .pws-mobile-playback-list-title,
+    .pws-mobile-playback-list-time {
+      color: map.get($--skin-configs, 'mobile-playback-list:text-color') !important;
+    }
+    .pws-mobile-playback-list-item.is-active {
+      .pws-mobile-playback-list-title,
+      .pws-mobile-playback-list-time {
+        color: map.get($--skin-configs, 'mobile-playback-list--active:text-color') !important;
+      }
+    }
+
+    // -------- 多会场 -------- //
+    .pws-mobile-multi-meeting {
+      color: map.get($--skin-configs, 'mobile-multi-meeting:text-color');
+      background-color: map.get($--skin-configs, 'mobile-multi-meeting:bg-color');
+    }
+    .pws-mobile-multi-meeting-count {
+      color: rgba(map.get($--skin-configs, 'mobile-multi-meeting:text-color'), 0.6);
+    }
+    .pws-mobile-multi-meeting-pack-up {
+      color: rgba(map.get($--skin-configs, 'mobile-multi-meeting:text-color'), 0.6);
+    }
+  }
+}

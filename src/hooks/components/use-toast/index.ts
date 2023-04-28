@@ -1,0 +1,158 @@
+import Vue from 'vue';
+import { CombinedVueInstance, ExtendedVue } from 'vue/types/vue';
+
+import { isMobile } from '@/assets/utils/browser';
+
+import PcToast from './_components/pc-toast.vue';
+import MobileToast from './_components/mobile-toast.vue';
+import { ToastPropsType } from './_hooks/use-toast-comp';
+import { ToastInstance, ToastType } from './_toast_type';
+
+type ToastConstructorCtorType = ExtendedVue<
+  Vue,
+  Record<string, never>,
+  ToastInstance,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>
+>;
+
+type ToastManagerOptions = {
+  /** 提示组件构造器 */
+  ToastConstructor: ToastConstructorCtorType;
+  /** 最大显示数量，默认：5 */
+  maxCount?: number;
+  /** 渲染的父容器 */
+  mountEl?: string;
+};
+
+type ToastInstanceVue = CombinedVueInstance<
+  Vue,
+  Record<string, never>,
+  ToastInstance,
+  Record<string, never>,
+  Record<string, never>,
+  Record<string, never>
+>;
+/** 提示管理器 */
+class ToastManager {
+  /** 用于创建的组件 */
+  private __ToastConstructor: ToastConstructorCtorType;
+  /** 提示队列 */
+  private __toastQueue: ToastPropsType[] = [];
+  /** 当前正在显示的 toast 实例 */
+  private __toasts: ToastInstanceVue[] = [];
+  /** 第一个 toast 的 top */
+  private __startTop = 20;
+  /** 两个 toast 之间的距离 */
+  private __instanceSpacing = 16;
+  /** 最大显示数量 */
+  private __maxCount: number;
+  /** 渲染的父容器 */
+  private _mountEl?: string;
+
+  constructor(options: ToastManagerOptions) {
+    this.__ToastConstructor = options.ToastConstructor;
+    this.__maxCount = options.maxCount ?? 5;
+    this._mountEl = options.mountEl;
+  }
+
+  /** 插入一个提示 */
+  private __push(props: ToastPropsType) {
+    this.__toastQueue.push(props);
+    this.__checkQueue();
+  }
+
+  /** 检查队列 */
+  private __checkQueue() {
+    if (this.__toasts.length >= this.__maxCount || this.__toastQueue.length === 0) {
+      return;
+    }
+
+    const joins = this.__toastQueue.splice(0, this.__maxCount - this.__toasts.length);
+    this.__toastList(joins);
+  }
+
+  /**
+   * 提示列表
+   */
+  private __toastList(list: ToastPropsType[]) {
+    list.forEach(props => {
+      const ToastConstructor = this.__ToastConstructor;
+
+      const instance = new ToastConstructor({
+        propsData: props,
+      });
+      instance.$mount();
+      instance.openToast();
+
+      this.__toasts.push(instance);
+      this.__resetTop();
+
+      instance.$once('close', () => {
+        this.__remove(instance);
+      });
+    });
+  }
+
+  /** 移除提示实例 */
+  private __remove(instance: ToastInstance) {
+    this.__toasts = this.__toasts.filter(_instance => _instance !== instance);
+    this.__resetTop();
+    this.__checkQueue();
+  }
+
+  /** 重置提示实例的 top 定位 */
+  private __resetTop() {
+    let toastTop = this.__startTop;
+    this.__toasts.forEach(instance => {
+      instance.setToastTop(toastTop);
+      const elem = instance.$el as HTMLElement;
+
+      toastTop += elem.offsetHeight + this.__instanceSpacing;
+    });
+  }
+
+  /** 信息类提示 */
+  public info(msg: string) {
+    this.__push({ msg, type: ToastType.Info });
+  }
+
+  /** 成功类提示 */
+  public success(msg: string) {
+    this.__push({ msg, type: ToastType.Success });
+  }
+
+  /** 警告类提示 */
+  public warning(msg: string) {
+    this.__push({ msg, type: ToastType.Warning });
+  }
+
+  /** 异常类提示 */
+  public error(msg: string) {
+    this.__push({ msg, type: ToastType.Error });
+  }
+
+  /** 帮助类提示 */
+  public help(msg: string) {
+    this.__push({ msg, type: ToastType.Help });
+  }
+
+  /** 加载中提示 */
+  public loading(msg: string) {
+    this.__push({ msg, type: ToastType.Loading });
+  }
+}
+
+function getToastConstructor() {
+  if (isMobile) {
+    return MobileToast;
+  }
+
+  return PcToast;
+}
+
+/** 主屏消息提示对象 */
+export const toast = new ToastManager({
+  ToastConstructor: Vue.extend(getToastConstructor() as unknown as ToastConstructorCtorType),
+});

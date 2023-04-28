@@ -1,0 +1,4 @@
+@import '../_common/basic-pc-style.scss';
+@import './config.scss';
+
+@include generate-skin-basic-pc-style($--skin-configs);

@@ -1,0 +1,183 @@
+import { nextTick, onBeforeUnmount, onMounted, Ref, ref, unref, watch } from 'vue';
+import { useTabsInject } from './use-tabs';
+import { useLangStore } from '@/store/use-lang-store';
+import { TabPaneDataItem } from './types';
+import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
+
+export const useTabHeader = (
+  options: {
+    /** 点击后滚动到当前 tab，默认：false */
+    scrollCurrent?: boolean;
+  } = {},
+) => {
+  const { scrollCurrent = false } = options;
+  const langStore = useLangStore();
+
+  const { tabPaneData, currentTabName, currentTabIndex, setCurrentTab, toNextTab, toPrevTab } =
+    useTabsInject();
+
+  const scrollRef = ref<HTMLDivElement>();
+  const itemRef = ref<HTMLDivElement[]>([]);
+
+  /** 处理点击节点 */
+  function onClickHeaderItem(paneData: TabPaneDataItem) {
+    if (paneData.name === unref(currentTabName)) {
+      return;
+    }
+    setCurrentTab(paneData.name);
+    if (scrollCurrent) {
+      scrollToCurrent();
+    }
+  }
+
+  /** 处理点击 next 箭头 */
+  async function onClickNext() {
+    toNextTab();
+    await nextTick();
+    if (scrollCurrent) {
+      scrollToCurrent();
+    }
+  }
+
+  /** 处理点击 prev 箭头 */
+  async function onClickPrev() {
+    toPrevTab();
+    await nextTick();
+    if (scrollCurrent) {
+      scrollToCurrent();
+    }
+  }
+
+  /** 当前节点的下横线 left 定位 */
+  const currentLineLeft = ref<number>();
+  const currentLineRef = ref<HTMLDivElement>();
+
+  /** 滚动到当前 tab */
+  function scrollToCurrent() {
+    const currentItemElem = itemRef.value[currentTabIndex.value];
+    const scrollElem = scrollRef.value;
+    if (currentItemElem && scrollElem) {
+      const scrollLeft = Math.max(
+        0,
+        currentItemElem.offsetLeft - (scrollElem.offsetWidth - currentItemElem.offsetWidth) / 2,
+      );
+      scrollElem.scrollTo({
+        top: 0,
+        left: scrollLeft,
+        behavior: 'smooth',
+      });
+    }
+  }
+
+  /** 计算下横线 left 定位 */
+  async function computeCurrentLineLeft() {
+    await nextTick();
+    const currentLineElem = unref(currentLineRef);
+    const itemElements = unref(itemRef);
+    const currentIndex = unref(currentTabIndex);
+
+    if (!Array.isArray(itemElements) || !currentLineElem || currentIndex === -1) {
+      return;
+    }
+
+    const currentItemElem = itemElements[currentIndex];
+    if (!currentItemElem) {
+      return;
+    }
+
+    const left =
+      currentItemElem.offsetLeft + (currentItemElem.offsetWidth - currentLineElem.offsetWidth) / 2;
+
+    if (left !== unref(currentLineLeft)) {
+      currentLineLeft.value = left;
+    }
+  }
+
+  useWindowResizeListener(() => {
+    setTimeout(() => {
+      computeCurrentLineLeft();
+    }, 5);
+  }, true);
+
+  watch(
+    () => [unref(currentTabIndex), unref(tabPaneData), langStore.currentLang],
+    () => computeCurrentLineLeft(),
+    {
+      immediate: true,
+    },
+  );
+
+  return {
+    scrollRef,
+    itemRef,
+    tabPaneData,
+    currentTabName,
+    scrollToCurrent,
+    onClickHeaderItem,
+    onClickNext,
+    onClickPrev,
+    currentLineLeft,
+    currentLineRef,
+  };
+};
+
+/**
+ * Tab 左右箭头 hook
+ */
+export const useTabHeaderArrow = (options: {
+  scrollRef: Ref<HTMLDivElement | undefined>;
+  tabPaneData: Ref<TabPaneDataItem[]>;
+}) => {
+  const { scrollRef, tabPaneData } = options;
+
+  const leftArrowVisible = ref(false);
+  const rightArrowVisible = ref(false);
+
+  /** 计算箭头显示 */
+  function computedArrowVisible() {
+    const scrollElem = unref(scrollRef);
+
+    if (!scrollElem) return;
+
+    const scrollLeft = Math.ceil(scrollElem.scrollLeft);
+    if (scrollLeft > 0) {
+      leftArrowVisible.value = true;
+    } else {
+      leftArrowVisible.value = false;
+    }
+
+    if (scrollLeft < Math.floor(scrollElem.scrollWidth - scrollElem.clientWidth)) {
+      rightArrowVisible.value = true;
+    } else {
+      rightArrowVisible.value = false;
+    }
+  }
+
+  watch(
+    () => unref(tabPaneData),
+    async () => {
+      await nextTick();
+      computedArrowVisible();
+    },
+  );
+
+  onMounted(() => {
+    computedArrowVisible();
+    if (scrollRef.value) {
+      scrollRef.value.addEventListener('scroll', computedArrowVisible);
+    }
+  });
+
+  onBeforeUnmount(() => {
+    if (scrollRef.value) {
+      scrollRef.value.removeEventListener('scroll', computedArrowVisible);
+    }
+  });
+
+  return {
+    scrollRef,
+    leftArrowVisible,
+    rightArrowVisible,
+    computedArrowVisible,
+  };
+};

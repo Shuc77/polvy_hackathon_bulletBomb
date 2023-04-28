@@ -1,0 +1,248 @@
+@import './mixins.scss';
+
+// 生成皮肤的 basic 样式
+@mixin generate-skin-basic-style($--skin-configs) {
+  // 在多皮肤下去除背景
+  .pws-bg-none {
+    background: none !important;
+  }
+
+  // --------- 按钮：主要 --------- //
+  .pws-normal-button-primary {
+    color: map.get($--skin-configs, 'primary-button:text-color');
+    background: map.get($--skin-configs, 'primary-button:bg-color') !important;
+
+    &:not(.is-mobile, .is-disabled) {
+      &:hover {
+        background: map.get($--skin-configs, 'primary-button--hover:bg-color') !important;
+      }
+      &:active {
+        background: map.get($--skin-configs, 'primary-button--active:bg-color') !important;
+      }
+    }
+    &.is-disabled {
+      color: map.get($--skin-configs, 'primary-button--disabled:text-color') !important;
+      background-color: map.get($--skin-configs, 'primary-button--disabled:bg-color') !important;
+    }
+  }
+
+  // -------- 按钮：侧边栏 -------- //
+  .pws-normal-button-aside-menu {
+    color: map.get($--skin-configs, 'aside-menu-button:text-color') !important;
+    background-color: map.get($--skin-configs, 'aside-menu-button:bg-color') !important;
+    &:not(.is-mobile, .is-disabled) {
+      &:hover {
+        background-color: map.get($--skin-configs, 'aside-menu-button--hover:bg-color') !important;
+      }
+      &:active {
+        background-color: map.get($--skin-configs, 'aside-menu-button--active:bg-color') !important;
+      }
+    }
+  }
+
+  // --------- 常规 tab --------- //
+  .pws-normal-tab-current-line {
+    background-color: map.get($--skin-configs, 'normal-tab-header-line--active:bg-color') !important;
+  }
+
+  // --------- 主要 tab ---------- //
+  .pws-main-tab-header {
+    background-color: map.get($--skin-configs, 'main-tab-header:bg-color') !important;
+  }
+  .pws-main-tab-header-item {
+    color: map.get($--skin-configs, 'main-tab-header:text-color') !important;
+    &:hover {
+      color: map.get($--skin-configs, 'main-tab-header--hover:text-color') !important;
+    }
+    &.is-active {
+      color: map.get($--skin-configs, 'main-tab-header--active:text-color') !important;
+    }
+  }
+  .pws-main-tab-header-active-line {
+    background-color: map.get($--skin-configs, 'main-tab-header-line--active:bg-color') !important;
+  }
+  .pws-main-tab-header-shadow-left {
+    background: linear-gradient(90deg, map.get($--skin-configs, 'main-tab-header-shadow-start:color') 0, map.get($--skin-configs, 'main-tab-header-shadow-end:color') 100%) !important;
+  }
+  .pws-main-tab-header-shadow-right {
+    background: linear-gradient(90deg, map.get($--skin-configs, 'main-tab-header-shadow-end:color') 0, map.get($--skin-configs, 'main-tab-header-shadow-start:color') 100%) !important
+  }
+  .pws-main-tab-header-arrow-right,
+  .pws-main-tab-header-arrow-left {
+    color: map.get($--skin-configs, 'main-tab-header--active:text-color') !important;
+    background-color: map.get($--skin-configs, 'main-tab-header:bg-color') !important;
+  }
+  .pws-main-tab-header-item-reminder::after {
+    background-color: map.get($--skin-configs, 'main-tab-header-reminder:color');
+  }
+  .pws-main-tab-body {
+    background-color: map.get($--skin-configs, 'main-tab-body:bg-color') !important;
+  }
+  .pws-main-tab-body-scrollbar {
+    &::-webkit-scrollbar-thumb {
+      background-color: map.get($--skin-configs, 'main-tab-body:scrollbar-color') !important;
+    }
+  }
+
+  // --------- 聊天消息 ---------- //
+  // 聊天消息用户昵称
+  .pws-chat-msg-user-nickname {
+    color: map.get($--skin-configs, 'chat-msg-user-nickname:text-color') !important;
+  }
+  .pws-msg-user-info-special .pws-chat-msg-user-nickname {
+    color: map.get($--skin-configs, 'chat-msg-user-special-nickname:text-color') !important;
+  }
+
+  // 聊天消息用户头衔
+  .pws-chat-msg-user-actor {
+    color: map.get($--skin-configs, 'chat-msg-user-actor:text-color') !important;
+    background-color: map.get($--skin-configs, 'chat-msg-user-actor:bg-color') !important;
+  }
+
+  // 聊天消息用户设置昵称图标
+  .pws-chat-msg-user-set-nick-icon {
+    color: map.get($--skin-configs, 'chat-msg-user-set-nick-icon:text-color') !important;
+  }
+
+  // 聊天消息时间
+  .pws-chat-msg-time {
+    color: map.get($--skin-configs, 'chat-msg-time:text-color') !important;
+  }
+
+  .pws-chat-msg-list-tips {
+    color: map.get($--skin-configs, 'chat-msg-list-tips:text-color') !important;
+  }
+
+  // 聊天消息气泡
+  .pws-chat-msg-bubble {
+    color: map.get($--skin-configs, 'chat-msg-bubble:text-color') !important;
+    background-color: map.get($--skin-configs, 'chat-msg-bubble:bg-color') !important;
+  }
+  .pws-chat-msg-container-special .pws-chat-msg-bubble {
+    color: map.get($--skin-configs, 'chat-msg-bubble-special:text-color') !important;
+    background-color: map.get($--skin-configs, 'chat-msg-bubble-special:bg-color') !important;
+  }
+
+  // 聊天消息回复内容
+  .pws-chat-msg-quote-content {
+    color: map.get($--skin-configs, 'chat-msg-quote-content:text-color') !important;
+    border-bottom-color: map.get($--skin-configs, 'chat-msg-quote-content:border-color') !important;
+  }
+  .pws-chat-msg-container-special .pws-chat-msg-quote-content {
+    color: map.get($--skin-configs, 'chat-msg-special-quote-content:text-color') !important;
+    border-bottom-color: map.get($--skin-configs, 'chat-msg-special-quote-content:border-color') !important;
+  }
+
+  // 聊天消息发送按钮
+  .pws-chat-msg-quote-button {
+    color: map.get($--skin-configs, 'chat-msg-quote-button:text-color') !important;
+  }
+
+  // 聊天引用回复消息
+  .pws-chat-quote-msg {
+    color: map.get($--skin-configs, 'chat-quote-msg:text-color') !important;
+    background-color: map.get($--skin-configs, 'chat-quote-msg:bg-color') !important;
+  }
+
+  // 聊天消息翻译按钮
+  .pws-chat-msg-translate-button {
+    color: map.get($--skin-configs, 'chat-msg-translate-button:text-color') !important;
+    &:hover {
+      color: map.get($--skin-configs, 'chat-msg-translate-button--hover:text-color') !important;
+    }
+  }
+
+  // 聊天消息翻译完成
+  .pws-chat-msg-translate-finish {
+    color: map.get($--skin-configs, 'chat-msg-translate-finish:text-color') !important;
+  }
+  .pws-chat-msg-container-special .pws-chat-msg-translate-finish {
+    color: map.get($--skin-configs, 'chat-msg-translate-finish-special:text-color') !important;
+  }
+
+  // 文本消息
+  .pws-chat-speak-msg-control {
+    color: rgba(map.get($--skin-configs, 'chat-msg-bubble:text-color'), 0.8) !important;
+  }
+  .pws-chat-speak-msg-control-item::before {
+    border-color: rgba(map.get($--skin-configs, 'chat-msg-bubble:text-color'), 0.3) !important;
+  }
+  .pws-chat-msg-container-special .pws-chat-speak-msg-control {
+    color: rgba(map.get($--skin-configs, 'chat-msg-bubble-special:text-color'), 0.8) !important;
+    .pws-chat-speak-msg-control-item::before {
+      border-color: rgba(map.get($--skin-configs, 'chat-msg-bubble-special:text-color'), 0.3) !important;
+    }
+  }
+
+  // 聊天室更多消息
+  .pws-chat-msg-more-button {
+    color: map.get($--skin-configs, 'chat-msg-more-button:text-color');
+    background-color: map.get($--skin-configs, 'chat-msg-more-button:bg-color');
+    &:hover {
+      color: map.get($--skin-configs, 'chat-msg-more-button--hover:text-color');
+      background-color: map.get($--skin-configs, 'chat-msg-more-button--hover:bg-color');
+    }
+  }
+
+  // 打赏消息
+  .pws-chat-reward-msg {
+    color: map.get($--skin-configs, 'chat-reward-msg:text-color') !important;
+  }
+
+  // 自定义消息
+  .pws-chat-customer-msg {
+    color: map.get($--skin-configs, 'chat-customer-msg:text-color') !important;
+  }
+
+  // 红包领取消息
+  .pws-chat-redpaper-receive-msg {
+    color: map.get($--skin-configs, 'chat-redpaper-receive-msg:text-color') !important;
+    background-color: map.get($--skin-configs, 'chat-redpaper-receive-msg:bg-color') !important;
+  }
+
+  // 系统消息
+  .pws-chat-system-msg {
+    color: map.get($--skin-configs, 'chat-system-msg:text-color') !important;
+  }
+
+  // -------- 章节 -------- //
+  .pws-chapter-item {
+    color: map.get($--skin-configs, 'chapter-item:text-color') !important;
+    border-bottom-color: map.get($--skin-configs, 'chapter-item:border-color') !important;
+    &.is-active {
+      color: map.get($--skin-configs, 'chapter-item--active:text-color') !important;
+    }
+  }
+
+  // -------- 成员列表 ------- //
+  .pws-member-list-item {
+    color: map.get($--skin-configs, 'member-list-item:text-color') !important;
+  }
+  .pws-member-list-item-special {
+    color: map.get($--skin-configs, 'member-list-item-special:text-color') !important;
+  }
+  .pws-member-list-fail {
+    color: map.get($--skin-configs, 'describe-text-color') !important;
+  }
+  .pws-member-list-fail-highlight {
+    color: map.get($--skin-configs, 'main-highlight-text-color') !important;
+  }
+
+  // -------- 点赞 -------- //
+  .pws-like-button {
+    background-image: url(map.get($--skin-configs, 'like-button:bg-image')) !important;
+  }
+  .pws-like-count-number {
+    color: map.get($--skin-configs, 'like-count-number:text-color') !important;
+    background-color: map.get($--skin-configs, 'like-count-number:bg-color') !important;
+  }
+
+  // -------- 页面广告 -------- //
+  .pws-page-advert {
+    color: map.get($--skin-configs, 'page-advert:text-color');
+    background-color: map.get($--skin-configs, 'page-advert:bg-color');
+  }
+  .pws-page-advert-arrow {
+    color: map.get($--skin-configs, 'page-advert-arrow:text-color');
+  }
+}

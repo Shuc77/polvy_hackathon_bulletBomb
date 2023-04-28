@@ -1,0 +1,7 @@
+@import '../_common/functions.scss';
+@import './config-common.scss';
+@import './config-pc.scss';
+@import './config-mobile.scss';
+@import './config-iar.scss';
+
+$--skin-configs: generate-skin-setup-configs();

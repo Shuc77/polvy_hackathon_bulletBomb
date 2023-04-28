@@ -1,0 +1,114 @@
+import { SimilarResponsive } from '@/assets/utils/vue-utils';
+import { Countdown, IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
+import { computed, onUnmounted, ref, unref } from 'vue';
+
+export interface UseSecondCountDownOptions {
+  /** 总秒数，单位秒 */
+  second?: SimilarResponsive<number | undefined>;
+  /** 结束的时间戳 */
+  endTimestamp?: SimilarResponsive<number | undefined>;
+  /** 倒计时剩余时间改变回调 */
+  onCountDownChange?: (surplusData: CountDownSurplusData) => void;
+  /** 倒计时结束回调 */
+  onCountDownFinish?: () => void;
+}
+
+/**
+ * @hook 简单的秒数倒计时
+ */
+export const useSecondCountDown = (options: UseSecondCountDownOptions = {}) => {
+  const second = options.second ?? ref();
+  const endTimestamp = options.endTimestamp ?? ref();
+  const onCountDownChange = options.onCountDownChange;
+  const onCountDownFinish = options.onCountDownFinish;
+
+  /** 默认的倒计时数据 */
+  const defaultSurplusData: CountDownSurplusData = {
+    // 天数
+    days: 0,
+    // 小时数
+    hours: 0,
+    // 分钟数
+    minutes: 0,
+    // 秒数
+    seconds: 0,
+    // 剩余总毫秒数
+    totalMsecs: 0,
+  };
+
+  /** 剩余时间数据 */
+  const surplusTime = ref<CountDownSurplusData>({ ...defaultSurplusData });
+
+  /** 根据入参选项获取需要计算的秒数 */
+  const computedSecond = computed<number>(() => {
+    const secondVal = unref(second);
+    const endTimestampVal = unref(endTimestamp);
+
+    if (typeof secondVal === 'number') {
+      return secondVal;
+    } else if (typeof endTimestampVal === 'number') {
+      const diffTime = (endTimestampVal - Date.now()) / 1000;
+      return diffTime < 0 ? 0 : diffTime;
+    }
+
+    return 0;
+  });
+
+  /** 倒计时对象实例 */
+  let countDownInstance: Countdown | undefined;
+
+  /** 初始化倒计时 */
+  function initCountDown(): void {
+    surplusTime.value = { ...defaultSurplusData };
+    destroyCountDown();
+    countDownInstance = new Countdown(unref(computedSecond), onCountDownCallback);
+    startCountDown();
+  }
+
+  /** 销毁倒计时 */
+  function destroyCountDown(): void {
+    stopCountDown();
+    countDownInstance = undefined;
+  }
+
+  /** 开始倒计时 */
+  function startCountDown(): void {
+    if (countDownInstance) {
+      countDownInstance.start();
+    } else {
+      // 如果倒计时对象不存在则自动创建一个
+      initCountDown();
+    }
+  }
+
+  /** 暂停倒计时 */
+  function stopCountDown(): void {
+    countDownInstance && countDownInstance.stop();
+  }
+
+  /**
+   * 处理倒计时时间改变
+   * @param rest 倒计时剩余时间数据
+   */
+  function onCountDownCallback(rest: CountDownSurplusData) {
+    surplusTime.value = rest;
+    onCountDownChange && onCountDownChange(unref(surplusTime));
+
+    if (rest.totalMsecs === 0) {
+      onCountDownFinish && onCountDownFinish();
+    }
+  }
+
+  onUnmounted(() => {
+    destroyCountDown();
+  });
+
+  return {
+    surplusTime,
+    computedSecond,
+    initCountDown,
+    startCountDown,
+    stopCountDown,
+    destroyCountDown,
+  };
+};

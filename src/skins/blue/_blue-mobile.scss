@@ -1,0 +1,4 @@
+@import '../_common/basic-mobile-style.scss';
+@import './config.scss';
+
+@include generate-skin-basic-mobile-style($--skin-configs);

@@ -1,0 +1,23 @@
+/**
+ * 皮肤背景混入
+ */
+@mixin skin-setup-bg($options) {
+  // 背景类型
+  $--bg-type: map.get($options, 'bg-type');
+  // 背景图片
+  $--bg-image: map.get($options, 'bg-image');
+  // 背景颜色
+  $--bg-color: map.get($options, 'bg-color');
+  // 背景渐变色
+  $--bg-gradient-color: map.get($options, 'bg-gradient-color');
+
+  @if ($--bg-type == 'image') {
+    background-image: url($--bg-image) !important;
+  } @else if ($--bg-type == 'color') {
+    background-color: $--bg-color !important;
+  } @else if ($--bg-type == 'line-gradient') {
+    background: $--bg-gradient-color;
+  } @else {
+    @error '缺少 bg-type';
+  }
+}

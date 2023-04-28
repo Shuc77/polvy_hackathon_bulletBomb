@@ -1,0 +1,156 @@
+<!-- @file 竖屏端消息发送公用输入框 -->
+<template>
+  <div class="c-portrait-msg-input-wrap">
+    <!-- 主体 -->
+    <div class="c-portrait-msg-input-wrap__main">
+      <form
+        class="c-portrait-msg-input-wrap__main__form"
+        @submit.prevent="submitInput"
+      >
+        <input
+          v-model="inputElmValue"
+          type="text"
+          class="c-portrait-msg-input-wrap__main__input"
+          :placeholder="placeholder"
+          ref="inputElemRef"
+          maxlength="200"
+        />
+
+        <!-- 表情 -->
+        <mobile-icon-emotion
+          v-show="!emotionVisible"
+          class="c-portrait-msg-input-wrap__main__emotion"
+          @click="onClickEmotionPickerBtn"
+        />
+
+        <!-- 键盘聚焦 -->
+        <mobile-icon-keyboard
+          v-show="emotionVisible"
+          class="c-portrait-msg-input-wrap__main__emotion"
+          @click="focusInput"
+        />
+      </form>
+
+      <!-- 发送 -->
+      <div
+        class="c-portrait-msg-input-wrap__main__submit"
+        :class="{
+          'c-portrait-msg-input-wrap__main__submit--disabled': sendBtnDisabled,
+        }"
+        @click="submitInput"
+      >
+        {{ $lang('chat.send') }}
+      </div>
+    </div>
+
+    <!-- 表情选择面板 -->
+    <plv-collapse-transition>
+      <div
+        v-show="emotionVisible"
+        ref="emotionRef"
+        class="c-portrait-msg-input-wrap__emotion-panel"
+      >
+        <portrait-emotion-picker
+          :click-face-to-close="false"
+          :image-emotion-enabled="imageEmotionEnabled"
+          @click-face="onClickFace"
+          @click-image="onClickImageEmotion"
+          @close="hideEmotionPanel"
+          @click-delete="deleteWord"
+          @click-send="submitInput"
+        />
+      </div>
+    </plv-collapse-transition>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { MobileIconEmotion, MobileIconKeyboard } from '@/components/component-icons/mobile/map';
+import PortraitEmotionPicker from '@/components/page-watch-common/emotion-picker/portrait-emotion-picker/portrait-emotion-picker.vue';
+import { PlvCollapseTransition } from '@/plugins/polyv-ui/admin-import';
+import { msgInputWrapEmits, msgInputWrapProps, useMsgInputWrap } from '../use-msg-input-wrap';
+
+const props = defineProps(msgInputWrapProps());
+
+const emit = defineEmits(msgInputWrapEmits());
+
+const {
+  inputElemRef,
+  inputElmValue,
+
+  focusInput,
+
+  emotionRef,
+  emotionVisible,
+  hideEmotionPanel,
+  deleteWord,
+  onClickEmotionPickerBtn,
+  onClickFace,
+  onClickImageEmotion,
+
+  sendBtnDisabled,
+  submitInput,
+  msgInputWrapInstance,
+} = useMsgInputWrap({
+  props,
+  emit,
+  clickFaceToFocus: false,
+});
+
+defineExpose(msgInputWrapInstance);
+</script>
+
+<style lang="scss">
+.c-portrait-msg-input-wrap {
+  color: $--color-white;
+  background-color: #262523;
+}
+
+.c-portrait-msg-input-wrap__main {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.c-portrait-msg-input-wrap__main__form {
+  position: relative;
+  flex: 1;
+}
+.c-portrait-msg-input-wrap__main__input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 36px;
+  padding: 0 32px 0 12px;
+  font-size: 14px;
+  color: $--color-white;
+  resize: none;
+  background-color: #373635;
+  border: none;
+  border-radius: 18px;
+  outline: none;
+  caret-color: #ffa611;
+}
+
+.c-portrait-msg-input-wrap__main__submit {
+  min-width: 40px;
+  height: 36px;
+  margin-left: 8px;
+  line-height: 36px;
+  color: #ffa611;
+  text-align: center;
+}
+.c-portrait-msg-input-wrap__main__submit--disabled {
+  color: #c4c4c4;
+}
+
+.c-portrait-msg-input-wrap__main__emotion {
+  position: absolute;
+  top: 50%;
+  right: 7px;
+  display: flex;
+  font-size: 24px !important;
+  color: $--color-white;
+  transform: translateY(-50%);
+}
+</style>

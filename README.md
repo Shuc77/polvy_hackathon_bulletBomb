@@ -1,37 +1,123 @@
 # polyv-web-live-watch-sdk
 
-#### 介绍
-保利威直播观看 SDK
+## 介绍
 
-#### 软件架构
-软件架构说明
+- 为了让客户能够更便捷、友好地定制观看页，保利威推出了**POLYV 直播观看 SDK**，并将该 SDK 拆分成 UI 层和逻辑层
+- 该开源项目对应 **POLYV 直播观看 SDK** 的 UI 层，需要搭配逻辑层 `@polyv/live-watch-sdk` 一起使用
 
+## 项目说明
 
-#### 安装教程
+该开源项目基于 `vue-cli@4.x + vue@2.7 + typescript@4.x + pinia` 实现的单页面应用(SPA)，除 `@polyv/live-watch-sdk` 外，还集成了其他**保利威 npm 库**和部分第三方开源工具库
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+| 保利威 npm 库                                                                  | 备注                                                                                            |
+| :----------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
+| [@polyv/emotion-sdk](https://www.npmjs.com/package/@polyv/emotion-sdk)         | POLYV 表情 SDK                                                                                  |
+| [@polyv/utils](https://www.npmjs.com/package/@polyv/utils)                     | POLYV 工具函数库                                                                                |
+| [@polyv/web-view-bridge](https://www.npmjs.com/package/@polyv/web-view-bridge) | POLYV 前端 WebView 桥接器库                                                                     |
+| [@polyv/eslint-config](https://www.npmjs.com/package/@polyv/eslint-config)     | POLYV 前端工程 ESLint 通用配置                                                                  |
+| @polyv/polyv-ui                                                                | POLYV 前端组件库【暂不对外提供文档】                                                            |
+| [@polyv/icons-vue](https://www.npmjs.com/package/@polyv/icons-vue)             | POLYV 图标库工具 ，搭配 [@polyv/icons-cli](https://www.npmjs.com/package/@polyv/icons-cli) 使用 |
 
-#### 使用说明
+## 项目运行
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+项目运行前请**注意**
 
-#### 参与贡献
+- 确保 `node` 版本 `^14.15.4 || >=16.0.0"`
+- 了解保利威基础业务概念，比如：频道号(channelId)
+- 由于项目初始化会自动设置 `husky` 钩子，请确保项目根目录存在 `.git` 文件夹，或者通过这篇[文档](https://typicode.github.io/husky/#/?id=custom-directory)指定对应的 `.git` 文件夹位置。如果完全不使用 `git`，请删除 `package.json` 中的 `prepare` 脚本命令
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+在项目根目录使用 `npm` 来执行以下命令
 
+```sh
+npm ci #安装依赖
+npm run dev #启动项目
+```
 
-#### 特技
+执行完成后，就可以在浏览器打开 `http://localhost:15020/index.html?channelId={channelId}` 来访问页面
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+## 构建部署
+
+请先阅读以下两篇官方文档
+
+- [vue-cli 构建目标](https://cli.vuejs.org/zh/guide/build-targets.html)
+- [vue-cli 部署](https://cli.vuejs.org/zh/guide/deployment.html)
+
+如果需要自定义**生产环境构建文件的目录(outputDir)**，或者更改**部署应用包时的基本 URL(publicPath)**，请查看 `build/build-config.js` 和 `vue.config.js` 后自行修改
+
+### 基本构建和部署
+
+如果需要用 Web 应用服务器来部署，比如 `Nginx`，那可以执行以下命令
+
+```sh
+npm run build
+```
+
+- 执行完成后，源码会构建输出到 `dist` 文件夹中，将该文件夹上传到服务器后，还需要修改 `Nginx` 的配置来支持页面访问
+- 如果需要本地预览，请先执行[静态构建和部署](#静态构建和部署)
+
+### 静态构建和部署
+
+如果只需要简单上传代码到服务器后就能完成部署，那可以执行以下命令
+
+```sh
+npm run build-static
+```
+
+- 执行完成后，源码会构建输出到 `dist-static` 文件夹中，只要将该文件夹上传到服务器即完成部署
+- 如果需要本地预览，可以启动一个 HTTP 服务器来访问 `dist-static` 文件夹，在本地预览生产环境构建最简单的方式就是使用一个 Node.js 静态文件服务器，例如 [serve](https://github.com/vercel/serve)
+
+## 目录说明
+
+项目根目录说明
+
+| 路径       | 说明                                                                                                                            |
+| :--------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| .husky/    | [husky](https://github.com/typicode/husky) 钩子文件夹                                                                           |
+| build/     | 构建逻辑                                                                                                                        |
+| public/    | 静态资源文件夹，请参考这篇[文档](https://cli.vuejs.org/zh/guide/html-and-static-assets.html#public-%E6%96%87%E4%BB%B6%E5%A4%B9) |
+| icon-svgs/ | svg 图标文件夹                                                                                                                  |
+| types/     | 全局的 typescript 类型                                                                                                          |
+| src/       | 项目源码                                                                                                                        |
+
+`src` 目录说明
+
+| 路径           | 说明                                                                                                                                      |
+| :------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| src/core       | 搭配 `@polyv/live-watch-sdk` 逻辑层                                                                                                       |
+| src/app        | 项目应用入口                                                                                                                              |
+| src/store      | 项目数据存储层                                                                                                                            |
+| src/pages      | 项目业务页面，分为`引导页(splash)`和`观看页(watch)`，页面内再通过 `桌面端(pc)`,`移动端横屏(mobile)`,`移动端竖屏(portrait)` 来区分使用场景 |
+| src/components | [项目相关组件](src/components/README.md)                                                                                                  |
+| src/hooks      | [项目公共 hooks](src/hooks/README.md)                                                                                                     |
+| src/assets     | 项目静态资源 , `src/assets/lang` 存放多语言文本                                                                                           |
+| src/skins      | 项目多皮肤                                                                                                                                |
+| src/plugins    | 项目第三方插件                                                                                                                            |
+
+关键文件指引
+
+- 主入口
+  - `src/main.ts`
+  - `src/app/watch-app.vue`
+- 搭配 SDK 逻辑层
+  - `src/core/watch-sdk.ts`
+  - `src/store/use-watch-app-store.ts` => `resetUpWatchCore`
+- 主业务
+  - 引导页进观看页 `src/app/layout/main-enter/_hooks/use-main-enter.ts`
+  - 观看条件处理
+    - `src/components/page-splash-common/auth/hooks/use-auth-common.ts`
+    - `src/components/page-splash-common/auth/hooks/use-auth-special.ts`
+  - 互动 UI 加载 `src/components/page-watch-common/interactive-receive/load-iar-ui.ts`
+
+## 补充说明
+
+### 构建图标组件
+
+- 图标组件通过 `@polyv/icons-cli` 脚手架生成，执行 `npm run generate-icon` 会构建到 `src/components/component-icons` 中
+- 需要添加图标时，需要开发者根据移动端和桌面端对图标分类，添加 svg 文件到 `icon-svgs` 对应目录下
+- 在 `icon-svgs/demo/` 文件夹中可以查看到项目中的图标示例
+- `vue` 图标组件中统一使用脚手架生成的 `map.ts` 文件引入
+
+### 关于项目校验
+
+- 目前该项目支持在 `git commit` 时进行校验，如校验失败需自动修复，可以执行 `npm run lint-fix` 尝试修复，如不需要该校验流程，请移除 `package.json` 中的 `precommit` 命令
+- 由于项目中使用的 `fork-ts-checker-webpack-plugin` 不支持 `vue2.7` 对 `script setup` 区块的代码校验，建议在生产构建前，执行 `npm run check` 来检查一遍代码

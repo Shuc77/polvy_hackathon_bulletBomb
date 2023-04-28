@@ -1,0 +1,43 @@
+// @file 覆盖播放器的样式
+.c-portrait-player-main__container {
+  // ------ CDN ------ //
+  // 覆盖背景图
+  .plwrap {
+    background: none !important;
+  }
+
+  // 隐藏自带的播放按钮
+  .plv-live-big-play-btn,
+  .plv-live-cover__btn {
+    display: none !important;
+  }
+
+  // .plv-cover-box {
+  //   background-color: rgb(33, 33, 33);
+  // }
+
+  // 隐藏控制栏的渐变背景
+  .plv-player-skin {
+    display: none;
+  }
+
+  .plv-live-panel {
+    background-color: rgba(0, 0, 0, 0) !important;
+  }
+
+  // 隐藏暖场图
+  .plv-live-warmUp {
+    display: none;
+  }
+
+  // ------ 点播 ------ //
+  .plv-player-big-play-btn {
+    display: none !important;
+  }
+
+  // ------ 快直播 ------ //
+  // 覆盖快直播背景图
+  .vcp-player {
+    background: none !important;
+  }
+}

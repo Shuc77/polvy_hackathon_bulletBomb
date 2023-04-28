@@ -1,0 +1,328 @@
+// 生成皮肤的互动功能样式（公用）
+@mixin generate-skin-basic-iar-common-style($--skin-configs) {
+  // -------- 互动功能 -------- //
+  .pws-interactive-entrance-button {
+    color: map.get($--skin-configs, 'interactive-entrance-button:text-color') !important;
+    background-color: map.get($--skin-configs, 'interactive-entrance-button:bg-color') !important;
+    &:hover {
+      background-color: map.get($--skin-configs, 'interactive-entrance-button--hover:bg-color') !important;
+    }
+  }
+  .pws-interactive-entrance-arrow {
+    color: map.get($--skin-configs, 'interactive-entrance-arrow:text-color') !important;
+  }
+
+  // --------- 按钮 --------- //
+  .pws-iar-primary-button {
+    background-color: map.get($--skin-configs, 'primary-button:bg-color') !important;
+    &.is-disabled {
+      opacity: 0.5;
+    }
+  }
+
+  // --------- 挂件 --------- //
+  .pws-iar-pendant-text {
+    color: map.get($--skin-configs, 'iar-pendant:text-color') !important;
+  }
+
+  // --------- 商品库 --------- //
+  .pws-iar-product-list-wrap {
+    background-color: map.get($--skin-configs, 'main-tab-body:bg-color') !important;
+  }
+  .pws-iar-product-list-content {
+    background-color: map.get($--skin-configs, 'iar-product-list-content:bg-color') !important;
+    &::-webkit-scrollbar-thumb {
+      background-color: map.get($--skin-configs, 'main-tab-body:scrollbar-color') !important;
+    }
+  }
+  .pws-iar-product-list-total {
+    color: map.get($--skin-configs, 'main-text-color') !important;
+    background-color: inherit !important;
+  }
+  .pws-iar-product-list-icon {
+    background-image: url(map.get($--skin-configs, 'iar-product-list-shop:icon-image')) !important;
+  }
+  .pws-iar-product-list-icon-recruitment {
+    background-image: url(map.get($--skin-configs, 'iar-product-list-recruitment:icon-image')) !important;
+  }
+  .pws-iar-product-list-total-highlight {
+    color: map.get($--skin-configs, 'main-highlight-text-color') !important;
+  }
+  .pws-iar-product-list-name {
+    color: map.get($--skin-configs, 'iar-product-list-good-name:text-color') !important;
+  }
+  .pws-iar-product-list-desc-label {
+    color: map.get($--skin-configs, 'main-text-color') !important;
+    opacity: 0.8;
+  }
+  .pws-iar-product-list-desc {
+    color: map.get($--skin-configs, 'describe-text-color') !important;
+    opacity: 1;
+  }
+  .pws-iar-product-list-label {
+    color: map.get($--skin-configs, 'iar-product-list-label:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-product-list-label:bg-color') !important;
+  }
+  .pws-iar-product-list-number {
+    background-color: map.get($--skin-configs, 'iar-product-list-name-number:bg-color') !important;
+  }
+  .pws-iar-product-list-empty-text {
+    color: map.get($--skin-configs, 'describe-text-color') !important;
+  }
+  .pws-iar-product-list-empty-img {
+    background-image: url(map.get($--skin-configs, 'iar-product-list-empty:icon-image')) !important;
+  }
+  .pws-iar-product-list-item {
+    border-bottom-color: map.get($--skin-configs, 'iar-product-list-item:border-color') !important;
+  }
+
+  // ---------- 中奖记录 --------- //
+  .pws-iar-lottery-record-button {
+    background-color: map.get($--skin-configs, 'primary-color') !important;
+  }
+  .pws-iar-lottery-record-button-received {
+    color: $--color-white !important;
+    background-color: rgba(map.get($--skin-configs, 'primary-color'), 0.5) !important;
+  }
+
+  // --------- 置顶公告 ---------- //
+  .pws-iar-bulletin-top-banner {
+    background-color: map.get($--skin-configs, 'iar-bulletin-top-banner:bg-color') !important;
+  }
+  .pws-iar-bulletin-top-banner-icon {
+    fill: map.get($--skin-configs, 'iar-bulletin-top-banner:text-color') !important;
+  }
+  .pws-iar-bulletin-top-banner-text,
+  .pws-iar-bulletin-top-banner-close {
+    &,
+    & * {
+      color: map.get($--skin-configs, 'iar-bulletin-top-banner:text-color') !important;
+    }
+  }
+
+  // --------- 快速答题卡 --------- //
+  .pws-iar-quick-answer-option.is-active {
+    color: map.get($--skin-configs, 'primary-color') !important;
+    border-color: map.get($--skin-configs, 'primary-color') !important;
+  }
+
+  // --------- 问答 --------- //
+  .pws-iar-qa-filter {
+    background-color: map.get($--skin-configs, 'iar-qa-filter:bg-color') !important;
+    border-bottom-color: map.get($--skin-configs, 'iar-qa-filter:border-color') !important;
+  }
+  .pws-iar-qa-filter-desc {
+    color: map.get($--skin-configs, 'iar-qa-filter-desc:text-color') !important;
+  }
+  .pws-iar-qa-new-msg-button {
+    color: map.get($--skin-configs, 'iar-qa-new-msg-button:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-qa-new-msg-button:bg-color') !important;
+  }
+  .pws-iar-qa-select {
+    color: map.get($--skin-configs, 'iar-qa-select:text-color') !important;
+  }
+  .pws-iar-qa-select-arrow {
+    border-color: map.get($--skin-configs, 'iar-qa-select:border-color') !important;
+  }
+}
+
+// 生成皮肤的互动功能样式（PC 端）
+@mixin generate-skin-basic-iar-pc-style($--skin-configs) {
+  @include generate-skin-basic-iar-common-style($--skin-configs);
+
+  // --------- 中奖记录 ---------- //
+  .pws-iar-pc-lottery-record {
+    background: none !important;
+  }
+  .pws-interactive-msg__content {
+    color: map.get($--skin-configs, 'iar-pc-lottery-record-msg:text-color') !important;
+  }
+
+  // --------- 图文直播 ---------- //
+  .pws-pc-tuwen-live-menu-item:hover,
+  .pws-pc-tuwen-live-menu-item.is-active {
+    color: map.get($--skin-configs, 'primary-color') !important;
+  }
+  .pws-pc-tuwen-live-menu-item.is-active {
+    background-color: rgba(map.get($--skin-configs, 'primary-color'), 0.15) !important;
+  }
+  .pws-iar-pc-tuwen-live-content-name {
+    color: map.get($--skin-configs, 'primary-color') !important;
+  }
+
+  // ---------- 问答 ---------- //
+  .pws-iar-pc-qa-body {
+    background-color: map.get($--skin-configs, 'iar-qa-body:bg-color') !important;
+  }
+  .pws-iar-pc-qa-body-scroll {
+    &::-webkit-scrollbar-thumb {
+      background-color: map.get($--skin-configs, 'main-tab-body:scrollbar-color') !important;
+    }
+  }
+  .pws-iar-pc-qa-empty-text {
+    color: map.get($--skin-configs, 'describe-text-color') !important;
+  }
+  .pws-iar-pc-qa-select-option-popper {
+    background-color: map.get($--skin-configs, 'iar-pc-qa-select-option:bg-color') !important;
+  }
+  .pws-iar-pc-qa-select-option {
+    color: map.get($--skin-configs, 'iar-pc-qa-select-option:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-pc-qa-select-option:bg-color') !important;
+    border-color: map.get($--skin-configs, 'iar-pc-qa-select-option:border-color') !important;
+    &:hover {
+      background-color: map.get($--skin-configs, 'iar-pc-qa-select-option--hover:bg-color') !important;
+    }
+    &.is-active {
+      color: map.get($--skin-configs, 'iar-pc-qa-select-option--active:text-color') !important;
+    }
+  }
+  .pws-iar-pc-qa-ask {
+    background-color: map.get($--skin-configs, 'pc-msg-bottom-input-wrap:bg-color') !important;
+  }
+  .pws-iar-pc-qa-ask-input {
+    background-color: map.get($--skin-configs, 'pc-msg-input:bg-color') !important;
+  }
+  .pws-iar-pc-qa-ask-input-textarea {
+    color: map.get($--skin-configs, 'pc-msg-input:text-color') !important;
+    &::placeholder {
+      color: map.get($--skin-configs, 'pc-msg-input-placeholder:text-color') !important;
+    }
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: map.get($--skin-configs, 'pc-msg-input:scrollbar-color') !important;
+    }
+  }
+  .pws-iar-pc-qa-ask-emotion-icon {
+    color: map.get($--skin-configs, 'iar-pc-qa-ask-emotion:text-color') !important;
+    filter: map.get($--skin-configs, 'iar-pc-qa-ask-emotion:background-filter')
+  }
+  .pws-iar-pc-qa-ask-emotion-popper {
+    background-color: map.get($--skin-configs, 'pc-emotion-panel:bg-color') !important;
+    box-shadow: none !important;
+    &::-webkit-scrollbar-thumb {
+      background-color: map.get($--skin-configs, 'panel-scrollbar-color') !important;
+    }
+    &::-webkit-scrollbar-track {
+      box-shadow: none;
+    }
+  }
+  .pws-iar-pc-qa-ask-send-button {
+    color: map.get($--skin-configs, 'pc-msg-send-button:text-color') !important;
+    background-color: map.get($--skin-configs, 'pc-msg-send-button:bg-color') !important;
+    &.is-disabled {
+      color: map.get($--skin-configs, 'pc-msg-send-button--disabled:text-color') !important;
+      background-color: map.get($--skin-configs, 'pc-msg-send-button--disabled:bg-color') !important;
+    }
+  }
+  .pws-iar-pc-qa-item {
+    color: map.get($--skin-configs, 'iar-qa-item-content:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-qa-item:bg-color') !important;
+  }
+  .pws-iar-pc-qa-item-more {
+    color: map.get($--skin-configs, 'iar-qa-item-content:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-qa-item:bg-color') !important;
+    .pws-iar-multiline-btn-shadow {
+      background: linear-gradient(270deg, map.get($--skin-configs, 'iar-qa-item:bg-color') 0%, rgba(225, 238, 252, 0) 100%) !important;
+    }
+    .pws-iar-multiline-btn-text {
+      color: map.get($--skin-configs, 'iar-qa-item-more:text-color') !important;
+    }
+    .pws-iar-multiline-btn-arrow {
+      border-color: map.get($--skin-configs, 'iar-qa-item-more:text-color') !important;
+    }
+  }
+  .pws-iar-pc-qa-item-data {
+    color: map.get($--skin-configs, 'iar-qa-item-info:text-color') !important;
+  }
+  .pws-iar-pc-qa-item-answer {
+    border-color: map.get($--skin-configs, 'iar-qa-item:border-color') !important;
+  }
+}
+
+// 生成皮肤的互动功能样式（Mobile 端）
+@mixin generate-skin-basic-iar-mobile-style($--skin-configs) {
+  @include generate-skin-basic-iar-common-style($--skin-configs);
+
+  // --------- 问答 --------- //
+  .pws-iar-mobile-qa-body {
+    background-color: map.get($--skin-configs, 'iar-qa-body:bg-color') !important;
+  }
+  .pws-iar-mobile-qa-no-data {
+    color: map.get($--skin-configs, 'describe-text-color') !important;
+    background-color: map.get($--skin-configs, 'main-tab-body:bg-color') !important;
+    &::before {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-qa-no-data:icon-image')) !important;
+    }
+  }
+  .pws-iar-mobile-qa-ask-entry {
+    background-image: url(map.get($--skin-configs, 'iar-mobile-qa-ask-entry:icon-image')) !important;
+    background-size: 100% 100%;
+  }
+  .pws-iar-mobile-qa-item {
+    color: map.get($--skin-configs, 'iar-qa-item-content:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-qa-item:bg-color') !important;
+  }
+  .pws-iar-mobile-qa-item-question,
+  .pws-iar-mobile-qa-item-answer {
+    background: none !important;
+  }
+  .pws-iar-mobile-qa-item-more {
+    color: map.get($--skin-configs, 'iar-qa-item-content:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-qa-item:bg-color') !important;
+    .pws-iar-multiline-btn-shadow {
+      background: linear-gradient(270deg, map.get($--skin-configs, 'iar-qa-item:bg-color') 0%, rgba(225, 238, 252, 0) 100%) !important;
+    }
+    .pws-iar-multiline-btn-text {
+      color: map.get($--skin-configs, 'iar-qa-item-more:text-color') !important;
+    }
+    .pws-iar-multiline-btn-arrow {
+      border-color: map.get($--skin-configs, 'iar-qa-item-more:text-color') !important;
+    }
+  }
+  .pws-iar-mobile-qa-item-data {
+    color: map.get($--skin-configs, 'iar-qa-item-info:text-color') !important;
+  }
+  .pws-iar-mobile-qa-item-answer-border {
+    border-color: map.get($--skin-configs, 'iar-qa-item:border-color') !important;
+  }
+  .pws-iar-mobile-no-more {
+    color: map.get($--skin-configs, 'iar-qa-no-more:text-color') !important;
+  }
+  .pws-iar-mobile-qa-ask {
+    background-color: map.get($--skin-configs, 'iar-mobile-qa-input-wrap:bg-color') !important;
+  }
+  .pws-iar-mobile-qa-ask-input-textarea {
+    color: map.get($--skin-configs, 'iar-mobile-qa-input:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-mobile-qa-input:bg-color') !important;
+    &::placeholder {
+      color: inherit !important;
+      opacity: 0.5;
+    }
+  }
+  .pws-iar-mobile-qa-ask-emotion-icon {
+    color: map.get($--skin-configs, 'iar-mobile-qa-ask-emotion:text-color') !important;
+    filter: map.get($--skin-configs, 'iar-mobile-qa-ask-emotion:background-filter')
+  }
+  .pws-iar-mobile-qa-ask-send-button {
+    color: map.get($--skin-configs, 'iar-mobile-qa-ask-send-button:text-color') !important;
+  }
+
+  // ---------- 图文直播 --------- //
+  .pws-iar-mobile-tuwen-live-header {
+    color: map.get($--skin-configs, 'iar-mobile-tuwen-live-header:text-color') !important;
+  }
+  .pws-iar-mobile-tuwen-live-content-name {
+    color: map.get($--skin-configs, 'iar-mobile-tuwen-live-content-name:text-color') !important;
+  }
+  .pws-iar-mobile-tuwen-live-content-time {
+    color: map.get($--skin-configs, 'iar-mobile-tuwen-live-content-time:text-color') !important;
+  }
+  .pws-iar-mobile-tuwen-live-content-text {
+    color: map.get($--skin-configs, 'iar-mobile-tuwen-live-content:text-color') !important;
+  }
+  .pws-iar-mobile-tuwen-live-no-more {
+    color: map.get($--skin-configs, 'iar-mobile-tuwen-live-no-more:text-color') !important;
+  }
+}

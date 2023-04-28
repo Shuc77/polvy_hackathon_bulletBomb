@@ -1,0 +1,70 @@
+// @file PC 端的互动功能接收端样式覆盖
+
+// 投票
+.plv-iar-vote__main {
+  @include scrollbar;
+}
+@media (max-width: 1280px) {
+  .plv-iar-vote-item__title {
+    max-width: 204px !important;
+    font-size: 12px !important;
+  }
+  .plv-iar-vote-item__count {
+    font-size: 12px !important;
+    > span {
+      font-size: 18px !important;
+    }
+  }
+}
+
+// 卡片推送
+.plv-iar-push-card,
+.plv-iar-push-card__modal {
+  z-index: 400;
+}
+
+// 问答
+.plv-ia-qa-emotions {
+  z-index: 500;
+}
+
+// 条件抽奖
+.plv-iar-welfare-lottery__modal--normal,
+.plv-iar-welfare-lottery__modal--gift-box,
+.plv-iar-welfare-lottery__on-lottery-modal {
+  z-index: 400;
+}
+
+// 报名抽奖
+.plv-ia-enroll-lottery__pc {
+  width: 100%;
+  overflow: hidden;
+}
+
+// 抽奖
+.plv-on-lottery-default {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 999;
+  transform: translate(-50%, -50%);
+}
+
+// 商品推送
+.plv-iar-product-bubble {
+  pointer-events: none;
+}
+.plv-iar-product-bubble__wrap {
+  pointer-events: initial;
+}
+
+// 公告
+.plv-iar-bulletin__list__item__content {
+  cursor: pointer;
+}
+
+// 问答
+.plv-ia-qa-ask-emotion {
+  color: #adadc0;
+  background-size: 18px;
+}

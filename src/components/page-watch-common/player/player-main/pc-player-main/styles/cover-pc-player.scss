@@ -1,0 +1,24 @@
+// @file 覆盖 PC 端播放器样式
+
+// 隐藏点播播放器的续播提示
+.pv-start-time {
+  display: none !important;
+}
+
+// 隐藏直播播放器的一个小图标
+.plv-icon.plv-icon-volume.plv-cutoff-volume {
+  display: none;
+}
+
+.plv-live-player-password {
+  z-index: 999 !important;
+}
+
+.plv-live-player-media-pre-volume > .plv-icon.plv-icon-volume {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.plv-live-player-media-pause {
+  z-index: 999 !important;
+}

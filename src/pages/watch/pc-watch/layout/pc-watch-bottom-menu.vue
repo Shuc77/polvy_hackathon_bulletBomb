@@ -1,0 +1,114 @@
+<!-- @file PC 端底部菜单栏 -->
+<template>
+  <div class="c-pc-watch-bottom-menu">
+    <pc-normal-tabs>
+      <template v-for="(menu, index) in bottomMenuList">
+        <!-- 直播介绍 -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Desc"
+          :key="`decs-${index}`"
+          :label="menu.name"
+          :name="ChannelMenuType.Desc"
+          lazy-load
+        >
+          <pc-rich-text-render :html-content="channelDescription" />
+        </pc-normal-tab-pane>
+
+        <!-- 回放 -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Previous && liveStatus === LiveStatus.Playback"
+          :key="`playback-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_PLAYBACK"
+          lazy-load
+        >
+          <pc-playback-list />
+        </pc-normal-tab-pane>
+
+        <!-- 自定义图文 -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Text"
+          :key="`text-${index}`"
+          :label="menu.name"
+          :name="menu.menuId"
+          lazy-load
+        >
+          <pc-rich-text-render :html-content="menu.content" />
+        </pc-normal-tab-pane>
+
+        <!-- 图文直播 -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Tuwen"
+          :key="`tuwen-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_TUWEN_LIVE"
+          lazy-load
+        >
+          <pc-tuwen-live />
+        </pc-normal-tab-pane>
+
+        <!-- 推广外链 -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Iframe"
+          :key="`iframe-${index}`"
+          :label="menu.name"
+          :name="menu.menuId"
+          lazy-load
+        >
+          <pc-iframe-render :src="menu.content" />
+        </pc-normal-tab-pane>
+      </template>
+    </pc-normal-tabs>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { TAB_NAME_PLAYBACK, TAB_NAME_TUWEN_LIVE } from '@/assets/constants/tab-name';
+import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
+import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
+import PcRichTextRender from '@/components/common-base/rich-text-render/pc-rich-text-render.vue';
+import PcIframeRender from '@/components/common-base/iframe-render/pc-iframe-render.vue';
+import PcTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/pc-tuwen-live.vue';
+import PcPlaybackList from '@/components/page-watch-common/playback-list/pc-playback-list/pc-playback-list.vue';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { ChannelMenuType, LiveStatus } from '@polyv/live-watch-sdk';
+import { computed, unref } from 'vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+
+const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
+const { liveStatus } = storeDefinitionToRefs(useChannelStore);
+const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
+
+/**
+ * 需要移除的菜单类型
+ */
+const removeMenuTypes = computed<ChannelMenuType[]>(() => {
+  return [
+    ChannelMenuType.Chat,
+    ChannelMenuType.Quiz,
+    ChannelMenuType.QA,
+    ChannelMenuType.Invite,
+    ChannelMenuType.Buy,
+    ChannelMenuType.Members,
+  ];
+});
+
+/** 底部菜单栏列表 */
+const bottomMenuList = computed(() => {
+  return unref(channelMenus).filter(menu => {
+    // 需要移除的菜单栏类型
+    const removeTypes = [...unref(removeMenuTypes)];
+
+    // 针对回放列表，如果当前不在回放中则过滤
+    if (menu.menuType === ChannelMenuType.Previous && unref(liveStatus) !== LiveStatus.Playback) {
+      removeTypes.push(ChannelMenuType.Previous);
+    }
+
+    /** @todo 嘉宾坐席逻辑处理 */
+
+    return !removeTypes.includes(menu.menuType);
+  });
+});
+</script>
