@@ -5,6 +5,7 @@
       v-bind="attrs"
       :placeholder="inputPlaceholder"
       :maxlength="5"
+      :clearabled="false"
       :value="value"
       @input="onInputChange"
     >

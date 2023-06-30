@@ -6,6 +6,7 @@
       :value="value"
       :placeholder="inputPlaceholder"
       :maxlength="5"
+      :clearabled="false"
       @input="onInputChange"
     >
       <img

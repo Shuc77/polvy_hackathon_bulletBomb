@@ -11,6 +11,14 @@
       <pc-connect-mic-user-list v-if="connectMicList.length" />
     </div>
 
+    <!-- 不支持提示 -->
+    <div
+      v-if="!supportConnectMic"
+      class="c-pc-connect-mic__not-support"
+    >
+      {{ $lang('connectMic.error.notSupport1') }}<br />{{ $lang('connectMic.error.notSupport2') }}
+    </div>
+
     <!-- 底部按钮 -->
     <pc-connect-mic-bottom />
 
@@ -30,7 +38,8 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { ConnectMicStatus } from '@polyv/live-watch-sdk';
 import { useConnectMic } from '../hooks/use-connect-mic';
 
-const { connectMicStatus, connectMicList } = storeDefinitionToRefs(useConnectMicStore);
+const { connectMicStatus, connectMicList, supportConnectMic } =
+  storeDefinitionToRefs(useConnectMicStore);
 
 useConnectMic();
 </script>
@@ -49,8 +58,17 @@ useConnectMic();
   overflow: hidden;
 }
 
-.test-item {
-  width: 100%;
-  height: 160px;
+.c-pc-connect-mic__not-support {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  left: 16px;
+  padding: 6px 16px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333;
+  text-align: center;
+  background-color: #fff4c1;
+  border-radius: 2px;
 }
 </style>

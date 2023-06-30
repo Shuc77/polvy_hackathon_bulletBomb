@@ -1,7 +1,17 @@
 import { ref, unref, watch } from 'vue';
 import { useFormWrapInject, useFormWrapPropsInject } from './use-form';
+import debounce from 'lodash-es/debounce';
+import { normalButtonProps } from '../../normal-button/use-normal-button';
+import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 
-export const useFormSubmitButton = () => {
+export const formSubmitButtonProps = () => ({
+  ...normalButtonProps(),
+  /** 防抖提交，默认：false */
+  debounceSubmit: PropUtils.bool.def(false),
+});
+
+export const useFormSubmitButton = (options: { props: VueProps<typeof formSubmitButtonProps> }) => {
+  const props = options.props;
   const formProps = useFormWrapPropsInject();
   const formContext = useFormWrapInject();
 
@@ -51,9 +61,21 @@ export const useFormSubmitButton = () => {
     },
   );
 
+  /** 触发表单提交 */
+  const triggerSubmitForm = () => {
+    formContext && formContext.submitForm();
+  };
+
+  /** 防抖触发表单提交 */
+  const debounceTriggerSubmitForm = debounce(triggerSubmitForm, 500);
+
   /** 处理按钮点击 */
   function onButtonClick() {
-    formContext && formContext.submitForm();
+    if (props.debounceSubmit) {
+      debounceTriggerSubmitForm();
+    } else {
+      triggerSubmitForm();
+    }
   }
 
   return {

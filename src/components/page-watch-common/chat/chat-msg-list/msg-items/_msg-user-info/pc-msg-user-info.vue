@@ -16,16 +16,20 @@
     ></div>
 
     <div class="c-pc-msg-user-info__nick-wrap">
-      <!-- 昵称 -->
-      <span class="c-pc-msg-user-info__nick g-singleline pws-chat-msg-user-nickname">
-        {{ msgUserNick }}{{ isSelfMsg ? `(${$lang('base.me')})` : '' }}
-      </span>
       <!-- 头衔 -->
       <span
         v-if="msgUserActor"
-        class="c-pc-msg-user-info__actor pws-chat-msg-user-actor"
+        class="c-pc-msg-user-info__actor g-singleline pws-chat-msg-user-actor"
+        :title="msgUserActor"
       >
         {{ msgUserActor }}
+      </span>
+      <!-- 昵称 -->
+      <span
+        class="c-pc-msg-user-info__nick g-singleline pws-chat-msg-user-nickname"
+        :title="msgUserNick"
+      >
+        {{ msgUserNick }}{{ isSelfMsg ? `(${$lang('base.me')})` : '' }}
       </span>
       <!-- 设置昵称图标 -->
       <pc-icon-set-nick
@@ -89,6 +93,7 @@ function onClickSetNick() {
 
 .c-pc-msg-user-info__actor {
   flex-shrink: 0;
+  max-width: 48px;
   height: 18px;
   padding: 0 6px;
   font-size: 12px;

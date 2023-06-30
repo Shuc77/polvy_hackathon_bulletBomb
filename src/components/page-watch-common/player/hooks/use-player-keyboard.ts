@@ -32,7 +32,7 @@ export const usePlayerKeyboard = (playerContainer: Ref<HTMLDivElement | undefine
   const isFocusOnEffectEl = ref(false);
 
   watchEffect(() => {
-    const canPlayWarmVideo = playerStore.warmUpType === WarmUpType.Video;
+    const canPlayWarmVideo = playerStore.warmUpSetting.warmUpType === WarmUpType.Video;
     if (playbackStore.isPlaybacking || canPlayWarmVideo) {
       listenKeydownEvent();
     } else {

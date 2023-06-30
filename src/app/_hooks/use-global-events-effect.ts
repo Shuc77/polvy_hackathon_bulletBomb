@@ -2,6 +2,7 @@ import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePageStore } from '@/store/use-page-store';
 import { onMounted } from 'vue';
+import { isMobile } from '@/assets/utils/browser';
 
 /**
  * @hook 监听全局事件的副作用处理
@@ -10,14 +11,16 @@ export function useGlobalEventsEffect() {
   const layoutStore = useLayoutStore();
   const pageStore = usePageStore();
 
-  // 处理屏幕旋转
-  useScreenOrientHook({
-    autoListenCb: screenOrientationMode => {
-      layoutStore.$patch({
-        screenOrientationMode,
-      });
-    },
-  });
+  if (isMobile) {
+    // 处理屏幕旋转
+    useScreenOrientHook({
+      autoListenCb: screenOrientationMode => {
+        layoutStore.$patch({
+          screenOrientationMode,
+        });
+      },
+    });
+  }
 
   onMounted(() => {
     // 处理页面显隐

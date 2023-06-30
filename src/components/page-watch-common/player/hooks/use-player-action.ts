@@ -84,6 +84,13 @@ export const usePlayerAction = () => {
     setVolumeDebounce(volume);
   }
 
+  /** 切换显示/隐藏弹幕设置弹窗 */
+  function toToggleBarrageSettingVisible(toShow: boolean) {
+    playerStore.$patch({
+      barrageSettingVisible: toShow,
+    });
+  }
+
   /**
    * 递增音量
    * @param diff 增加的音量，默认：0.05
@@ -104,8 +111,18 @@ export const usePlayerAction = () => {
 
   /** 切换弹幕显示 */
   function toToggleBarrageShow(): void {
-    playerStore.barrageShow = !playerStore.barrageShow;
+    playerStore.$patch({
+      barrageShow: !playerStore.barrageShow,
+    });
     getWatchCore().player.setBarrageShow(playerStore.barrageShow);
+  }
+
+  /** 切换弹幕速度 */
+  function toChangeBarrageSpeed(speed: number) {
+    playerStore.$patch({
+      barrageSpeed: speed,
+    });
+    getWatchCore().player.setBarrageSpeed(speed);
   }
 
   /** 切换线路 */
@@ -191,9 +208,11 @@ export const usePlayerAction = () => {
     toTogglePlay,
     toRefresh,
     toChangeVolume,
+    toToggleBarrageSettingVisible,
     toIncreaseVolume,
     toReductionVolume,
     toToggleBarrageShow,
+    toChangeBarrageSpeed,
     toChangeLine,
     toChangeQualityLevel,
     toChangeRate,

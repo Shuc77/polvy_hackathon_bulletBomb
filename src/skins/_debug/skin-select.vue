@@ -16,12 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import { usePageStore } from '@/store/use-page-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useThemeStore } from '@/store/use-theme-store';
 import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
 import { usePageSkin } from '../use-page-skin';
 
-const { pageSkin } = storeDefinitionToRefs(usePageStore);
+const { pageSkin } = storeDefinitionToRefs(useThemeStore);
 const { setPageSkin } = usePageSkin();
 
 const selectList = [

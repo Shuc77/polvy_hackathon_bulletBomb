@@ -88,6 +88,7 @@
                   :title="formatSpecialName(item)"
                   :placeholder="item.tips"
                   :options="formatSimpleSelectOptions(item.radioOptions)"
+                  search
                 />
               </form-item>
             </template>
@@ -106,6 +107,7 @@
                   :title="formatSpecialName(item)"
                   :placeholder="item.tips"
                   :options="formatSimpleSelectOptions(item.checkboxOptions)"
+                  search
                 />
               </form-item>
             </template>
@@ -228,6 +230,7 @@
               :size="ButtonSize.Medium"
               block
               :text="$lang('base.enterLive')"
+              debounce-submit
             />
           </div>
         </form-wrap>

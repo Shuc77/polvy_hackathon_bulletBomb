@@ -151,4 +151,15 @@ $--skin-page-mobile-configs: (
   'mobile-multi-meeting:bg-color': #1362B4,
   // 多会场字体色
   'mobile-multi-meeting:text-color': $--color-white,
+
+  // 多会场竖屏背景色
+  'mobile-multi-meeting-portrait:bg-color': rgba($--color-white, 0.6),
+  // 多会场竖屏标题字体色
+  'mobile-multi-meeting-portrait-title:text-color': rgba(#333, 0.7),
+  // 多会场竖屏名称字体色
+  'mobile-multi-meeting-portrait-name:text-color': #333,
+  // 多会场竖屏时间字体色
+  'mobile-multi-meeting-portrait-time:text-color': rgba(#333, 0.6),
+  // 多会场竖屏 PV 字体色
+  'mobile-multi-meeting-portrait-pv:text-color': rgba(#333, 0.6),
 );

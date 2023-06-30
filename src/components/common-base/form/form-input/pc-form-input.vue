@@ -20,7 +20,18 @@
           @keydown.enter="onInputEnter"
         />
       </div>
-      <slot name="suffix">
+      <template v-if="clearabled && value">
+        <div
+          class="c-pc-form-input__main__input__clearabled"
+          @click="clearValue"
+        >
+          <pc-icon-close-round-fill />
+        </div>
+      </template>
+      <slot
+        v-else
+        name="suffix"
+      >
         <span
           v-if="suffixText"
           class="c-pc-form-input__main__input__suffix-text"
@@ -39,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import { PcIconCloseRoundFill } from '@/components/component-icons/pc/map';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
 import { formInputEmits, formInputProps, useFormInput } from './hooks/use-form-input';
 
@@ -55,6 +67,7 @@ const {
   onInputBlur,
   onInputFocus,
   onInputEnter,
+  clearValue,
   formInstance,
   wordLimitText,
 } = useFormInput({
@@ -82,6 +95,13 @@ defineExpose(formInstance);
   background: $--form-input-bg;
   border: 1px solid $--form-input-border-color;
   border-radius: 2px;
+}
+
+.c-pc-form-input__main__input__clearabled {
+  margin-right: 8px;
+  font-size: 12px;
+  color: #757575;
+  cursor: pointer;
 }
 
 .c-pc-form-input__main__inner {

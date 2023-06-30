@@ -2,16 +2,18 @@
 <template>
   <div
     class="c-pc-connect-mic-control"
+    @mousemove="showControl"
     @mouseenter="showControl"
-    @mouseleave="setHideTimer"
+    @mouseleave="hideControl"
   >
     <transition name="fade">
       <div
         v-show="controlVisible"
         class="c-pc-connect-mic-control__content"
       >
+        <!-- 摄像头 -->
         <div
-          v-if="connectMicType === ConnectMicType.Video"
+          v-if="supportSetupVideo"
           class="c-pc-connect-mic-control__button g-img-cover"
           :class="{
             'c-pc-connect-mic-control__button--video-normal': !isVideoMuted,
@@ -19,6 +21,8 @@
           }"
           @click="onClickVideo"
         ></div>
+
+        <!-- 麦克风 -->
         <div
           class="c-pc-connect-mic-control__button g-img-cover"
           :class="{
@@ -35,8 +39,10 @@
 <script setup lang="ts">
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { ConnectMicType } from '@polyv/live-watch-sdk';
-import { ref, onMounted, onUnmounted } from 'vue';
 
 const props = defineProps({
   /** 连麦方式 */
@@ -58,6 +64,8 @@ const emit = defineEmits({
   'disabled-audio': emitFunc<void>(),
 });
 
+const { supportSetupVideo } = storeDefinitionToRefs(useConnectMicStore);
+
 function onClickVideo() {
   if (props.isVideoMuted) {
     emit('enabled-video');
@@ -74,40 +82,11 @@ function onClickAudio() {
   }
 }
 
-const controlVisible = ref(false);
-
-function showControl() {
-  controlVisible.value = true;
-  clearHideTimer();
-}
-
-function hideControl() {
-  controlVisible.value = false;
-}
-
-let closeTimer: number | undefined;
-
-function setHideTimer() {
-  closeTimer = window.setTimeout(() => {
-    hideControl();
-  }, 3000);
-}
-
-function clearHideTimer() {
-  if (closeTimer) {
-    clearInterval(closeTimer);
-    closeTimer = undefined;
-  }
-}
-
-onMounted(() => {
-  showControl();
-  setHideTimer();
-});
-
-onUnmounted(() => {
-  clearHideTimer();
-});
+const {
+  hoverItemVisible: controlVisible,
+  showHoverItem: showControl,
+  hideHoverItem: hideControl,
+} = useHoverVisible();
 </script>
 
 <style lang="scss">

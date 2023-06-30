@@ -1,6 +1,6 @@
 import { ref, reactive, unref } from 'vue';
 import {
-  ChatUserTypes,
+  ChatUserType,
   ChatMessageUser,
   ChatEventsRelations,
   ChatEvents,
@@ -16,7 +16,7 @@ export enum MemberAdditionalGroupTypes {
   OTHER = 'other',
 }
 /** 成员组类型 */
-type MemberGroupType = ChatUserTypes | MemberAdditionalGroupTypes;
+type MemberGroupType = ChatUserType | MemberAdditionalGroupTypes;
 
 /** 成员信息 */
 export interface MemberInfo extends ChatMessageUser {
@@ -40,14 +40,14 @@ export const useMemberListHook = () => {
   /** 成员组类型(按先后顺序) */
   const memberGroupTypes = ref<MemberGroupType[]>([
     MemberAdditionalGroupTypes.SELF,
-    ChatUserTypes.Host,
-    ChatUserTypes.Manager,
-    ChatUserTypes.Teacher,
-    ChatUserTypes.Guest,
-    ChatUserTypes.Assistant,
-    ChatUserTypes.Attendee,
-    ChatUserTypes.Student,
-    ChatUserTypes.Slice,
+    ChatUserType.Host,
+    ChatUserType.Manager,
+    ChatUserType.Teacher,
+    ChatUserType.Guest,
+    ChatUserType.Assistant,
+    ChatUserType.Attendee,
+    ChatUserType.Student,
+    ChatUserType.Slice,
     MemberAdditionalGroupTypes.OTHER,
   ]);
 
@@ -78,7 +78,7 @@ export const useMemberListHook = () => {
       const isFirstFetch = pageNumber.value === 1;
       const pageSize = isFirstFetch ? FIRST_PAGE_SIZE : PAGE_SIZE;
 
-      const data = await watchCore.chat.getUserList({
+      const data = await watchCore.chat.getOnlineUserList({
         pageNumber: unref(pageNumber),
         pageSize,
       });
@@ -188,7 +188,7 @@ export const useMemberListHook = () => {
 
   /** 处理用户登录 */
   function onUserLogin(event: ChatEventsRelations[ChatEvents.ChatUserLogin]) {
-    const user = event.userLoginMsg.user;
+    const user = event.user;
     if (!user) return;
 
     const member = convertUser2Member(user);
@@ -206,7 +206,7 @@ export const useMemberListHook = () => {
 
   /** 处理用户登出 */
   function onUserLogout(event: ChatEventsRelations[ChatEvents.ChatUserLogout]) {
-    const userId = event.userLogoutMsg.userId;
+    const userId = event.userId;
     const member = memberIdMap[userId];
     if (!member) return;
 

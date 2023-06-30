@@ -1,7 +1,7 @@
 <!-- @file PC 端页面广告 -->
 <template>
   <div
-    v-if="advertVisible && pageAdvertList.length"
+    v-if="advertVisible && pageAdvertEnabled && pageAdvertList.length"
     class="c-pc-page-advert pws-page-advert"
   >
     <div class="c-pc-page-advert__content">
@@ -67,7 +67,8 @@ import {
 import { usePageAdvert } from './use-page-advert';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/pc-import';
 
-const { advertVisible, pageAdvertList, closeVisible, onClickClose, openLink } = usePageAdvert();
+const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible, onClickClose, openLink } =
+  usePageAdvert();
 </script>
 
 <style lang="scss">

@@ -84,6 +84,15 @@
     }
   }
 
+  // --------- 聊天室关闭提示 ---------- //
+  .pws-chat-close-tips-icon {
+    background-image: url(map.get($--skin-configs, 'chat-close-tips-icon:bg-image')) !important;
+  }
+  .pws-chat-close-tips-text {
+    color: map.get($--skin-configs, 'chat-close-tips:text-color') !important;
+  }
+
+
   // --------- 聊天消息 ---------- //
   // 聊天消息用户昵称
   .pws-chat-msg-user-nickname {

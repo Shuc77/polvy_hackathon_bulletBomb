@@ -5,6 +5,11 @@
   display: none !important;
 }
 
+.c-pc-player-main__container .plv-icon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
 // 隐藏直播播放器的一个小图标
 .plv-icon.plv-icon-volume.plv-cutoff-volume {
   display: none;

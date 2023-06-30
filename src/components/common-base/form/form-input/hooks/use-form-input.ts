@@ -12,6 +12,7 @@ import {
 } from '@/components/common-base/form/hooks/use-form-common';
 import { computed, ref, unref } from 'vue';
 import { FormInputInstance } from '../types/form-input-types';
+import { isMobile } from '@/assets/utils/browser';
 
 export type InputValueType = string | number;
 
@@ -31,6 +32,13 @@ export const formInputProps = () => ({
   showWordLimit: PropUtils.bool.def(false),
   /** 尾部文字 */
   suffixText: PropUtils.string.def(''),
+  /** 清空，PC 端默认 true，移动端默认 false */
+  clearabled: PropUtils.bool.def(isMobile),
+
+  /** 输入框标题，仅移动端下适用 */
+  inputTitle: PropUtils.string.def(''),
+  /** 输入框标题宽度，仅移动端下适用 */
+  inputTitleWidth: PropUtils.number.def(undefined),
 });
 
 export const formInputEmits = () => ({
@@ -62,6 +70,9 @@ export const useFormInput = (options: {
   /** <input /> 实例 */
   const inputRef = ref<HTMLInputElement>();
 
+  /** 是否正在聚焦 */
+  const isFocus = ref(false);
+
   /** 输入框 className */
   const inputClassNames = computed(() => {
     const classNames = [...unref(commonClassNames)];
@@ -87,6 +98,12 @@ export const useFormInput = (options: {
     return `${length}/${props.maxlength}`;
   });
 
+  /** 清空输入值 */
+  function clearValue() {
+    emit('input', '');
+    focusInput();
+  }
+
   /** 处理输入框输入事件 */
   function onInputChanged(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -100,12 +117,14 @@ export const useFormInput = (options: {
 
   /** 处理输入框失焦事件 */
   function onInputBlur() {
+    isFocus.value = false;
     blurToValidateItem();
     emit('blur', props.value);
   }
 
   /** 处理输入框聚焦事件 */
   function onInputFocus() {
+    isFocus.value = true;
     focusToRemoveError();
     emit('focus', props.value);
   }
@@ -142,10 +161,12 @@ export const useFormInput = (options: {
   return {
     inputRef,
     inputClassNames,
+    isFocus,
     onInputChanged,
     onInputBlur,
     onInputFocus,
     onInputEnter,
+    clearValue,
     formInstance,
     wordLimitText,
   };

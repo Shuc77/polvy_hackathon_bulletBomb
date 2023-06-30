@@ -63,7 +63,6 @@ export class MicroActivityDeviceMotion {
   }
 
   static handleDevicemotionMessage(e: DeviceMotionEvent) {
-    console.log(e);
     const $iframe = MicroActivityDeviceMotion.$iframe;
     $iframe &&
       $iframe.contentWindow &&

@@ -1,18 +1,15 @@
-import { AppConfig, PolyvWatchCore, createWatchCore } from '@polyv/live-watch-sdk';
-import { isSpecialUserType } from '@/assets/constants/special-user-types';
 import { useChatStore } from '@/store/use-chat-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { AppConfig, createWatchCore, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
-import { bindWatchCoreEvents } from '@/core/bind-sdk-events/bind-watch-core-events';
 import { bindChannelModuleEvents } from '@/core/bind-sdk-events/bind-channel-events';
 import { bindChatModuleEvents } from '@/core/bind-sdk-events/bind-chat-events';
 import { bindConnectMicModuleEvents } from '@/core/bind-sdk-events/bind-connect-mic-events';
 import { bindEnrollModuleEvents } from '@/core/bind-sdk-events/bind-enroll-events';
 import { bindInteractReceiveEvents } from '@/core/bind-sdk-events/bind-interact-receive-events';
-import { bindInviteEvents } from '@/core/bind-sdk-events/bind-invite-events';
 import { bindPlayerModuleEvents } from '@/core/bind-sdk-events/bind-player-events';
 import { bindUserEvents } from '@/core/bind-sdk-events/bind-user-events';
-import { bindFinanceRiskEvaluationEvents } from '@/core/bind-sdk-events/bind-finance-risk-evaluation-events';
+import { bindWatchCoreEvents } from '@/core/bind-sdk-events/bind-watch-core-events';
 
 /** 观看页核心模块实例 */
 let watchCore: PolyvWatchCore | undefined;
@@ -42,10 +39,8 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   bindConnectMicModuleEvents();
   bindEnrollModuleEvents();
   bindInteractReceiveEvents();
-  bindInviteEvents();
   bindPlayerModuleEvents();
   bindUserEvents();
-  bindFinanceRiskEvaluationEvents();
 
   // 设置弹幕添加拦截器，如果当前只看主持人，则不添加弹幕
   watchCore.barrage.setBarrageAddIntercept(data => {
@@ -54,7 +49,7 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
 
     if (
       chatStore.onlySpecialMsg &&
-      !isSpecialUserType(userType) &&
+      !watchCore?.user.isSpecialUserType(userType) &&
       userId !== viewerStore.viewerId
     ) {
       return true;

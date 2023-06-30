@@ -2,14 +2,8 @@
 <template>
   <div
     class="c-pc-chat-room-pendant"
-    v-if="!isWatchBackUrl"
+    v-if="!isPlaybackWatchUrl"
   >
-    <!-- 风险测评 -->
-    <risk-evaluation-entrance
-      v-if="riskEvaluationEntranceEnabled"
-      class="c-pc-chat-room-pendant__item"
-    />
-
     <!-- 卡片推送 -->
     <pc-push-card class="c-pc-chat-room-pendant__item" />
 
@@ -25,15 +19,18 @@
     <!-- 条件抽奖 -->
     <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
 
+    <!-- 抢答 -->
+    <pc-rush-answer class="c-pc-chat-room-pendant__item" />
+
     <!-- 点赞 -->
     <pc-chat-like
-      v-if="likeEnabled"
+      v-if="chatSetting.likeEnabled"
       class="c-pc-chat-room-pendant__item"
       :upper-has-icon="hasOtherPendant"
     />
     <!-- 情绪反馈 -->
     <pc-emotional-feedback
-      v-else-if="emotionalFeedbackEnabled"
+      v-else-if="chatSetting.emotionalFeedbackEnabled"
       class="c-pc-chat-room-pendant__item"
     />
   </div>
@@ -45,27 +42,26 @@ import PcPushCard from '@/components/page-watch-common/interactive-receive/push-
 import PcRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
 import PcWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/pc-welfare-lottery.vue';
 import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/pc-topic-pk.vue';
+import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
 import PcChatLike from '../chat-like/pc-chat-like.vue';
-import RiskEvaluationEntrance from '@/components/page-watch-common/interactive-receive/risk-evaluation/common/risk-evaluation-entrance.vue';
 
 import { useChatStore } from '@/store/use-chat-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { computed, unref } from 'vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useFinanceStore } from '@/store/use-finance-store';
 
-const { likeEnabled, emotionalFeedbackEnabled } = storeDefinitionToRefs(useChatStore);
-const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   pushCardPendantVisible,
   redpackPendantVisible,
   enrollLotteryPendantVisible,
   welfareLotteryPendantVisible,
+  rushAnswerPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 点赞上方是否有其他挂件 */
@@ -74,7 +70,8 @@ const hasOtherPendant = computed<boolean>(() => {
     unref(pushCardPendantVisible) ||
     unref(redpackPendantVisible) ||
     unref(enrollLotteryPendantVisible) ||
-    unref(welfareLotteryPendantVisible)
+    unref(welfareLotteryPendantVisible) ||
+    unref(rushAnswerPendantVisible)
   );
 });
 </script>

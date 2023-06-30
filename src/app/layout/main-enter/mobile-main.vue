@@ -1,41 +1,30 @@
 <!-- @file 移动端入口 -->
 <template>
   <div class="c-mobile-main">
-    <!-- Warn: 弹窗需要放在前面，不然内部使用 appendToBody 的时候会阻塞观看页渲染 -->
-    <!-- 风险测评 -->
-    <mobile-risk-evaluation />
-    <risk-evaluation-redirect-dialog />
-    <!-- 风险确认函 -->
-    <mobile-risk-confirm-letter />
-
     <template v-if="shouldShowSplash">
-      <mobile-splash v-if="!mobileSplashIsLarge" />
-      <mobile-splash-full v-else />
+      <mobile-splash v-if="mobileSplashLayout === MobileSplashLayout.Normal" />
+      <mobile-splash-full v-if="mobileSplashLayout === MobileSplashLayout.Large" />
     </template>
 
-    <template v-else-if="liveWatchInited">
-      <portrait-watch v-if="mobileWatchLayout === ChannelWatchLayout.Portrait" />
-      <mobile-watch v-if="mobileWatchLayout === ChannelWatchLayout.Normal" />
+    <template v-else-if="watchPageInited">
+      <portrait-watch v-if="mobileWatchLayout === MobileWatchLayout.Portrait" />
+      <mobile-watch v-if="mobileWatchLayout === MobileWatchLayout.Normal" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import { MobileSplashLayout, MobileWatchLayout } from '@polyv/live-watch-sdk';
 import { defineAsyncComponent } from 'vue';
-import { ChannelWatchLayout } from '@polyv/live-watch-sdk';
 
-import MobileSplash from '@/pages/splash/mobile-splash/mobile-splash.vue';
 import MobileSplashFull from '@/pages/splash/mobile-splash/mobile-splash-full.vue';
-import RiskEvaluationRedirectDialog from '@/components/page-watch-common/interactive-receive/risk-evaluation/common/risk-evaluation-redirect-dialog.vue';
-import MobileRiskEvaluation from '@/components/page-watch-common/interactive-receive/risk-evaluation/mobile-risk-evaluation.vue';
-import MobileRiskConfirmLetter from '@/components/common-business/risk-confirm-letter/mobile-risk-confirm-letter.vue';
+import MobileSplash from '@/pages/splash/mobile-splash/mobile-splash.vue';
 
 import { useMainEnter } from './_hooks/use-main-enter';
 
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useChannelStore } from '@/store/use-channel-store';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const MobileWatchLoader = () => {
   return import(
@@ -51,11 +40,10 @@ const PortraitWatchLoader = () => {
 };
 const PortraitWatch = defineAsyncComponent(PortraitWatchLoader);
 
-const { mobileWatchLayout, isPortraitWatchLayout } = storeDefinitionToRefs(useChannelStore);
+const { shouldShowSplash, watchPageInited } = storeDefinitionToRefs(useWatchAppStore);
 
-const { shouldShowSplash, liveWatchInited } = storeDefinitionToRefs(useWatchAppStore);
-
-const { mobileSplashIsLarge } = storeDefinitionToRefs(useLayoutStore);
+const { mobileSplashLayout, mobileWatchLayout, isPortraitWatchLayout } =
+  storeDefinitionToRefs(useLayoutStore);
 
 useMainEnter({
   watchLoader: () => {

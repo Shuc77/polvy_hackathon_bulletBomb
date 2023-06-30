@@ -1,8 +1,10 @@
 <!-- @file 聊天室关闭提示 -->
 <template>
   <div class="c-chat-close-tips">
-    <span class="c-chat-close-tips__icon g-img-cover"></span>
-    <span class="c-chat-close-tips__text">{{ $lang('chat.closeTips') }}</span>
+    <span class="c-chat-close-tips__icon g-img-cover pws-chat-close-tips-icon"></span>
+    <span class="c-chat-close-tips__text pws-chat-close-tips-text">{{
+      $lang('chat.closeTips')
+    }}</span>
   </div>
 </template>
 
@@ -23,13 +25,11 @@
   width: 88px;
   height: 88px;
   margin-bottom: 8px;
-  background-image: url(./imgs/closed_chat_icon.png);
 }
 
 .c-chat-close-tips__text {
   font-size: 14px;
   line-height: 18px;
-  color: rgba(255, 255, 255, 0.25);
   text-align: center;
 }
 </style>

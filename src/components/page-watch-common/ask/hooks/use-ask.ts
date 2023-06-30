@@ -1,10 +1,10 @@
-import { computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, unref } from 'vue';
 import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChatStore } from '@/store/use-chat-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, unref } from 'vue';
 
 import {
   AskEvents,
@@ -12,9 +12,7 @@ import {
   ChannelMenuType,
   ChatMsgSource,
   ChatMsgSpeakType,
-  YN,
 } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
 import { uuidV4 } from '@utils-ts/string';
 
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
@@ -51,26 +49,28 @@ export const useAsk = (options: UseAskOptions) => {
   });
 
   /** 提问是否可以发送图片 */
-  const questionImageEnabled = computed<boolean>(() => {
-    return ynToBool(channelStore.channelDetail?.channelConfig.questionImageEnabled, YN.N);
-  });
+  const questionImageEnabled = ref(false);
 
   /** 渲染的消息列表 */
   const askMsgRenderList = computed<AskMsgType[]>(() => {
     // 提问的菜单数据
     const askMenuData = channelMenuStore.getMenuData(ChannelMenuType.Quiz);
     const content = askMenuData?.content || translate('ask.placeholderMsg');
+    const list = [...unref(askMsgList)];
 
-    // 插入默认消息
-    const placeholderMsg: ChatMsgSpeakType = {
-      id: placeholderMsgId,
-      time: Date.now(),
-      msgSource: ChatMsgSource.Speak,
-      user: channelStore.teacherInfo,
-      content,
-    };
+    if (channelStore.teacherInfo) {
+      // 插入默认消息
+      const placeholderMsg: ChatMsgSpeakType = {
+        id: placeholderMsgId,
+        time: Date.now(),
+        msgSource: ChatMsgSource.Speak,
+        user: channelStore.teacherInfo,
+        content,
+      };
+      list.unshift(placeholderMsg);
+    }
 
-    return [placeholderMsg, ...unref(askMsgList)];
+    return list;
   });
 
   /** 获取提问消息列表 */
@@ -104,6 +104,9 @@ export const useAsk = (options: UseAskOptions) => {
 
   onMounted(() => {
     getAskMsgList();
+    const watchCore = getWatchCore();
+    const askSetting = watchCore.ask.getAskSetting();
+    questionImageEnabled.value = askSetting.questionImageEnabled;
   });
 
   /** 处理提问相关事件 */

@@ -1,6 +1,6 @@
 import { ynToBool } from '@polyv/utils/dist/es/boolean';
 import { computed } from 'vue';
-import { AuthInfoType } from '@polyv/live-watch-sdk';
+import { AuthInfoType, YN } from '@polyv/live-watch-sdk';
 import { useAuthStore } from '@/store/use-auth-store';
 
 export const useAuthInfoSetting = () => {
@@ -13,7 +13,7 @@ export const useAuthInfoSetting = () => {
     let enabled = false;
     authStore.authInfoFields.forEach(option => {
       if (option.type === AuthInfoType.Mobile) {
-        enabled = ynToBool(option.sms);
+        enabled = ynToBool(option.sms, YN.N);
       }
     });
     return enabled;

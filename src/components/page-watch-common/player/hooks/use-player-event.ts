@@ -1,18 +1,26 @@
 import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from '@/store/use-channel-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
-import { PlaybackMode, PlaybackTarget, PlayerEvents } from '@polyv/live-watch-sdk';
+import { usePlaybackList } from '@/components/page-watch-common/playback-list/use-playback-list';
+import { useLayoutStore } from '@/store/use-layout-store';
+import {
+  PlaybackMode,
+  PlaybackTarget,
+  PlayerEvents,
+  PlayerEventsRelations,
+} from '@polyv/live-watch-sdk';
 import { onBeforeUnmount } from 'vue';
+import { usePlayerAction } from './use-player-action';
 
 /**
  * 播放器相关事件 hook
  */
 export const usePlayerEvent = () => {
   const playerStore = usePlayerStore();
-  const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
+  const layoutStore = useLayoutStore();
+  const { toToggleBarrageSettingVisible } = usePlayerAction();
 
   function onPlayerInited(): void {
     playerStore.$patch({
@@ -32,26 +40,23 @@ export const usePlayerEvent = () => {
 
   /** 处理回放播放结束 */
   async function onPlaybackOver() {
-    const watchCore = getWatchCore();
-    const channelDetail = channelStore.channelDetail;
+    const { onClickPlaybackItem } = usePlaybackList();
 
     const toPlayTarget = async (target: PlaybackTarget) => {
-      playbackStore.$patch({
-        currentPlaybackTarget: target,
-      });
-      await watchCore.player.changePlayback(target.playbackOptions);
-      watchCore.player.play();
+      await onClickPlaybackItem(target);
     };
 
     // 单个回放
     if (
-      channelDetail?.playbackInfo?.type === PlaybackMode.Single &&
-      playbackStore.currentPlaybackTarget
+      playbackStore.playbackMode === PlaybackMode.Single &&
+      playbackStore.currentPlaybackTarget &&
+      !playbackStore.chatReplayEnabled // 单个回放结束后，如果处于聊天重放，就不再重复播放了
     ) {
       await toPlayTarget(playbackStore.currentPlaybackTarget);
       return;
     }
 
+    // 回放列表为空
     if (playbackStore.playbackList.length === 0) {
       return;
     }
@@ -79,6 +84,7 @@ export const usePlayerEvent = () => {
       playbackTarget = nextTarget;
     }
 
+    // 获取新的播放目标来播放
     if (playbackTarget) {
       await toPlayTarget(playbackTarget);
     }
@@ -91,25 +97,43 @@ export const usePlayerEvent = () => {
     playerStore.$patch({ currentVolume });
   }
 
+  /** 调起弹幕设置弹窗 */
+  function onBarrageSettingClick() {
+    toToggleBarrageSettingVisible(true);
+  }
+
+  /** 全屏 */
+  function onToggleFullScreen(data: PlayerEventsRelations[PlayerEvents.ToggleFullScreen]) {
+    layoutStore.$patch({
+      mobileNormalLatencyPlayerIsFullscreen: data.isPlayerFullscreen,
+    });
+  }
+
   /** 绑定播放器事件 */
   function bindPlayerEvents() {
     unbindPlayerEvents();
     const watchCore = getWatchCore();
+
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerInited, onPlayerInited);
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerPlaying, onPlayerPlaying);
     watchCore.player.eventEmitter.on(PlayerEvents.HistoryPlay, onHistoryPlay);
     watchCore.player.eventEmitter.on(PlayerEvents.PlaybackOver, onPlaybackOver);
-    watchCore.player.eventEmitter.on(PlayerEvents.VolumeChanged, onVolumeChanged);
+    watchCore.player.eventEmitter.on(PlayerEvents.VolumeChange, onVolumeChanged);
+    watchCore.player.eventEmitter.on(PlayerEvents.BarrageSettingClick, onBarrageSettingClick);
+    watchCore.player.eventEmitter.on(PlayerEvents.ToggleFullScreen, onToggleFullScreen);
   }
 
   /** 解绑播放器事件 */
   function unbindPlayerEvents() {
     const watchCore = getWatchCore();
+
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerInited, onPlayerInited);
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerPlaying, onPlayerPlaying);
     watchCore.player.eventEmitter.off(PlayerEvents.HistoryPlay, onHistoryPlay);
     watchCore.player.eventEmitter.off(PlayerEvents.PlaybackOver, onPlaybackOver);
-    watchCore.player.eventEmitter.off(PlayerEvents.VolumeChanged, onVolumeChanged);
+    watchCore.player.eventEmitter.off(PlayerEvents.VolumeChange, onVolumeChanged);
+    watchCore.player.eventEmitter.off(PlayerEvents.BarrageSettingClick, onBarrageSettingClick);
+    watchCore.player.eventEmitter.off(PlayerEvents.ToggleFullScreen, onToggleFullScreen);
   }
 
   onBeforeUnmount(() => {

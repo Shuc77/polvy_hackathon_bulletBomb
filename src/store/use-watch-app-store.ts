@@ -5,7 +5,7 @@ import { paramGetter } from '@/hooks/core/use-query-params';
 import { appEvents, eventBus } from '@/app/app-events';
 
 import { getWatchCore } from '@/core/watch-sdk';
-import { PageErrorData } from '@/app/layout/page-error/page-error-type';
+import { PageErrorData, PageErrorType } from '@/app/layout/page-error/page-error-type';
 
 import { useAuthStore } from './use-auth-store';
 import { useEnrollStore } from './use-enroll-store';
@@ -13,13 +13,14 @@ import { usePlaybackStore } from './use-playback-store';
 import { usePlayerStore } from './use-player-store';
 import { useDocStore } from './use-doc-store';
 import { useChatStore } from './use-chat-store';
-import { useFinanceStore } from './use-finance-store';
 import { useConnectMicStore } from './use-connect-mic-store';
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
+import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
+import { translate } from '@/assets/lang';
 
 export interface WatchAppStoreState {
-  /** 当前是否处于回放地址 */
-  isWatchBackUrl: Ref<boolean>;
+  /** 当前是否处于回放观看页地址 */
+  isPlaybackWatchUrl: Ref<boolean>;
   /** 当前是否为微信小程序 webview 环境 */
   isWxMiniProgram: Ref<boolean>;
   /** 是否为会议模式 */
@@ -33,7 +34,7 @@ export interface WatchAppStoreState {
   /** 是否显示引导页 - 引导页渲染标识位 */
   shouldShowSplash: ComputedRef<boolean>;
   /** 直播观看页是否初始化完毕 - 直播观看页渲染标识位 */
-  liveWatchInited: Ref<boolean>;
+  watchPageInited: Ref<boolean>;
 }
 
 export interface WatchAppStoreActions {
@@ -48,6 +49,9 @@ export interface WatchAppStoreActions {
 export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions {}
 
 export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp', () => {
+  const { syncStoreBeforeWatchPageInited } = useSyncStoreForWatchPage();
+  const { checkRedirectSubChannel } = useMultiMeetingRedirect();
+
   const authStore = useAuthStore();
   const enrollStore = useEnrollStore();
 
@@ -57,11 +61,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const chatStore = useChatStore();
   const connectMicStore = useConnectMicStore();
 
-  const channelMenuStore = useChannelMenuStore();
-  const financeStore = useFinanceStore();
-
-  /** 当前是否处于回放地址 */
-  const isWatchBackUrl = ref(false);
+  /** 当前是否处于回放观看页地址 */
+  const isPlaybackWatchUrl = ref(false);
 
   /** 当前是否为微信小程序 webview 环境 */
   const isWxMiniProgram = ref(false);
@@ -80,72 +81,71 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 是否显示引导页 */
   const shouldShowSplash = computed(() => {
-    return (
-      !authStore.isAuthorized ||
-      enrollStore.needEnrollByEnter ||
-      financeStore.shouldShowSplashByRiskEvaluation
-    );
+    return !authStore.isAuthorized || enrollStore.needEnrollByEnter;
   });
 
   /** 直播观看页是否初始化完毕 */
-  const liveWatchInited = ref(false);
+  const watchPageInited = ref(false);
 
   /** 设置页面异常数据 */
   function setPageError(param: PageErrorData) {
+    // 只设置一次
+    if (pageError.value) return;
+
     pageError.value = param;
   }
 
   /** 重置 watchCore */
   async function resetUpWatchCore(): Promise<void> {
-    const watchCore = getWatchCore();
-    await watchCore.setup();
+    try {
+      const watchCore = getWatchCore();
+      await watchCore.setup();
+    } catch (error) {
+      setPageError({
+        type: PageErrorType.UnknownError,
+        title: translate('pageError.channel.unknowError'),
+        desc: translate('pageError.channel.feedBack'),
+      });
+      // 需要抛出主流程阻塞的异常
+      throw new Error('页面初始化失败！');
+    }
   }
 
   /** 设置观看页 */
   async function setupLiveWatch(): Promise<void> {
     const watchCore = getWatchCore();
 
-    // 优先判断是否为回放地址进入
-    isWatchBackUrl.value = watchCore.getIsWatchBackByVid();
+    // 从分会场跳转到主会场并授权成功，则跳回对应的分会场，跳转后阻止观看页渲染
+    const checkResult = checkRedirectSubChannel();
+    if (checkResult) {
+      return;
+    }
+
+    // 优先判断是否为回放观看页地址进入
+    isPlaybackWatchUrl.value = watchCore.isPlaybackWatchByVid();
+
+    // 同步相关 store 的数据
+    syncStoreBeforeWatchPageInited();
 
     // 初始化当前回放对象
     await playbackStore.initCurrentPlaybackTarget();
 
-    // 播放器配置无延迟
-    if (watchCore.player.getLowLatencySupport()) {
-      playerStore.$patch({
-        isLowLatency: true,
-      });
-    }
-
-    // 同步相关 store 的数据
-    channelMenuStore.syncChannelMenus();
-    chatStore.syncChatStore();
-
-    // 根据不同场景设置标识位
-    await __setLiveWatchInit();
+    // 根据不同场景设置 watchPageInited 标识位
+    await __setWatchPageInited();
   }
 
-  /** 根据不同场景设置 liveWatchInited */
-  async function __setLiveWatchInit() {
-    // 开启风险确认函时，需要暂停部分功能初始化和 Socket 链接
-    // 等到观众同意确认后再进行恢复
-    if (financeStore.riskConfirmEnabled) {
-      pauseConnectLiveWatch();
-      liveWatchInited.value = true;
-      return;
-    }
-
-    // 回放地址进入观看页，不需要连麦
-    if (isWatchBackUrl.value) {
+  /** 根据不同场景设置 watchPageInited 标识位 */
+  async function __setWatchPageInited() {
+    // 回放观看页地址进入观看页，不需要连麦
+    if (isPlaybackWatchUrl.value) {
       connectMicStore.$patch({ connectMicEnabled: false });
-      liveWatchInited.value = true;
+      watchPageInited.value = true;
       return;
     }
 
     // 正常进入观看页，建立 socket 连接
     await setupWatchCoreConnect();
-    liveWatchInited.value = true;
+    watchPageInited.value = true;
   }
 
   /**
@@ -174,8 +174,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     docStore.$patch({ docEnabled: true });
     chatStore.$patch({ chatMsgListEnabled: true });
 
-    // 回放地址进观看页不需要 socket 和连麦
-    if (!isWatchBackUrl.value) {
+    // 回放观看页地址进观看页不需要 socket 和连麦
+    if (!isPlaybackWatchUrl.value) {
       connectMicStore.$patch({ connectMicEnabled: true });
       await setupWatchCoreConnect();
     }
@@ -187,14 +187,14 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   }
 
   return {
-    isWatchBackUrl,
+    isPlaybackWatchUrl,
     isWxMiniProgram,
     meetingMode,
     iframeMode,
     pageError,
     watchAppInited,
     shouldShowSplash,
-    liveWatchInited,
+    watchPageInited,
 
     resetUpWatchCore,
     setupLiveWatch,

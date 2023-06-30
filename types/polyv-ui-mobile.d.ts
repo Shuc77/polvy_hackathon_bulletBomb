@@ -19,6 +19,15 @@ declare module '@polyv/polyv-ui/lib-front-mob/carousel-item' {
 }
 
 /**
+ * 竖屏提问UI
+ */
+declare module '@polyv/chat-sdk-ui-ask-question/lib/MobileAskPortrait' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
  * 点赞
  */
 declare module '@polyv/polyv-ui/lib-front-mob/like' {

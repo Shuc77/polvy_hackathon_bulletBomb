@@ -9,7 +9,7 @@
     ></div>
 
     <!-- 播放器 logo -->
-    <pc-player-logo v-if="isLowLatency && logoImage" />
+    <pc-player-logo v-if="isLowLatency && logoSetting.logoImage" />
 
     <!-- 播放器封面图 -->
     <pc-player-cover-img />
@@ -30,25 +30,26 @@ import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/u
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+const { isLowLatency, logoSetting } = storeDefinitionToRefs(usePlayerStore);
 
 const { playerContainer } = usePlayerMain({
-  initPlayerOptions: {
-    showController: false,
-    barrageAutoAdd: false,
-    skinConfig: {
-      bgColor: '#2B3045',
-      streamPause: require('../../imgs/player-stop.png'),
-      streamStop: require('../../imgs/player-no-live.png'),
-      audioMode: require('../../imgs/player-audio-mode.png'),
-    },
+  initPlayerOptions: () => {
+    return {
+      barrageEnabled: false,
+      showController: false,
+      skinConfig: {
+        bgColor: '#2B3045',
+        streamPause: require('../../imgs/player-stop.png'),
+        streamStop: require('../../imgs/player-no-live.png'),
+        audioMode: require('../../imgs/player-audio-mode.png'),
+      },
+    };
   },
 });
 
 usePlayerKeyboard(playerContainer);
 
 const { toTogglePlay } = usePlayerAction();
-
-const { isLowLatency, logoImage } = storeDefinitionToRefs(usePlayerStore);
 </script>
 
 <style lang="scss">

@@ -6,16 +6,9 @@ import { useWeixinStore } from '@/store/use-weixin-store';
 import { loadWorkWxSdk, loadWxSdk } from '@/plugins/external-lib-loaders/load-wx-sdk';
 import { LoggerName } from '@polyv/live-watch-sdk';
 
-const wxLoaders: Record<string, Promise<WechatJsSdk.Wx> | undefined> = {};
-
-// eslint-disable-next-line sonarjs/cognitive-complexity
-export function getWx(channelId: string): Promise<WechatJsSdk.Wx> {
-  let promiseTarget = wxLoaders[channelId];
-  if (promiseTarget) {
-    return promiseTarget;
-  }
-
-  promiseTarget = new Promise<WechatJsSdk.Wx>(resolve => {
+/** 创建微信 JS-SDK 实例 */
+function createWxInstance() {
+  return new Promise<WechatJsSdk.Wx>(resolve => {
     (async () => {
       const watchCore = getWatchCore();
       const [wx, signRes] = await Promise.all([
@@ -96,6 +89,20 @@ export function getWx(channelId: string): Promise<WechatJsSdk.Wx> {
       });
     })();
   });
+}
+
+const wxLoaders: Record<string, Promise<WechatJsSdk.Wx> | undefined> = {};
+
+/**
+ * 通过 channelId 来获取微信实例
+ */
+function getWeixinSdkByChannelId(channelId: string): Promise<WechatJsSdk.Wx> {
+  let promiseTarget = wxLoaders[channelId];
+  if (promiseTarget) {
+    return promiseTarget;
+  }
+
+  promiseTarget = createWxInstance();
 
   wxLoaders[channelId] = promiseTarget;
 
@@ -110,7 +117,7 @@ export const useWeixinSdk = () => {
 
   /** 获取微信 js-sdk */
   const getWeixinSdk = () => {
-    return getWx(channelStore.channelId);
+    return getWeixinSdkByChannelId(channelStore.channelId);
   };
 
   return {

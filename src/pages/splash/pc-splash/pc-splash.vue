@@ -4,10 +4,10 @@
     <header class="c-pc-splash__header g-outside">
       <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
       <div
-        v-if="supportsFilterStyle && channelSplashImg"
+        v-if="supportsFilterStyle && splashImg"
         class="c-pc-splash__header__bg g-img-cover"
         :style="{
-          backgroundImage: `url(${channelSplashImg})`,
+          backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
         }"
       ></div>
       <!-- 遮罩层 -->
@@ -17,7 +17,7 @@
         <div
           class="c-pc-splash__header__cover g-img-cover"
           :style="{
-            backgroundImage: `url(${channelSplashImg})`,
+            backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
           }"
         ></div>
         <div class="c-pc-splash__header__main">
@@ -107,7 +107,7 @@
     <pc-page-fixed-widgets />
 
     <!-- 页脚 -->
-    <pc-page-footer />
+    <pc-page-footer class="c-pc-splash__footer" />
   </div>
 </template>
 
@@ -138,19 +138,17 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { usePvTrack } from '@/hooks/business/use-pv-track';
+import { useThemeStore } from '@/store/use-theme-store';
+import { resizeOSSImg } from '@/assets/utils/image';
 
 const { isAuthorized } = storeDefinitionToRefs(useAuthStore);
 
 const { needEnrollByEnter } = storeDefinitionToRefs(useEnrollStore);
 
-const {
-  channelTitle,
-  channelPublisher,
-  channelDescription,
-  channelSplashImg,
-  showLiveCountDown,
-  liveStartTimeText,
-} = storeDefinitionToRefs(useChannelInfoStore);
+const { channelTitle, channelPublisher, channelDescription, showLiveCountDown, liveStartTimeText } =
+  storeDefinitionToRefs(useChannelInfoStore);
+
+const { splashImg } = storeDefinitionToRefs(useThemeStore);
 
 const {
   referenceRef: publisherReferenceRef,
@@ -290,6 +288,11 @@ usePvTrack('saas-web-splash-pc');
   position: absolute;
   top: 20px;
   right: 0;
+}
+
+.c-pc-splash__footer a {
+  color: #aaaaaa;
+  text-shadow: none;
 }
 
 @media (max-width: 1280px) {

@@ -8,13 +8,20 @@
       class="c-portrait-player-cover-img__warm-up-img g-img-cover"
       :style="{
         ...playerContainerStyle,
-        backgroundImage: `url(${warmUpImg})`,
+        backgroundImage: `url(${warmUpSetting.warmUpImg})`,
       }"
     ></div>
     <!-- 音频直播下占位图-直播封面图 -->
     <player-audio-live-placeholder
       v-show="showAudioLivePlaceholder && !isAudioPlayerMode"
       class="c-portrait-player-cover-img__audio-cover-img"
+      :style="{
+        ...playerContainerStyle,
+      }"
+    />
+    <!-- 音视频切换——音频模式占位图 -->
+    <portrait-audio-panel
+      v-show="isAudioPlayerMode"
       :style="{
         ...playerContainerStyle,
       }"
@@ -29,6 +36,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
+import PortraitAudioPanel from '../common/audio-panel/portrait-audio-panel.vue';
 
 import {
   PlayerSizeData,
@@ -37,7 +45,7 @@ import {
 
 const {
   showWarmUpImg,
-  warmUpImg,
+  warmUpSetting,
 
   showAudioLivePlaceholder,
   isAudioPlayerMode,
@@ -50,10 +58,10 @@ const { playerContainerStyle } = usePortraitPlayerSize(imgSize);
  * 加载暖场图片
  */
 async function loadWarmUpImg() {
-  if (!warmUpImg.value) {
+  if (!warmUpSetting.value.warmUpImg) {
     return;
   }
-  const { width, height } = await getImgSize(warmUpImg.value);
+  const { width, height } = await getImgSize(warmUpSetting.value.warmUpImg);
 
   imgSize.value = {
     width,

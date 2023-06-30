@@ -124,6 +124,13 @@
   .pws-iar-qa-select-arrow {
     border-color: map.get($--skin-configs, 'iar-qa-select:border-color') !important;
   }
+
+  // --------- 投票 --------- //
+  .pws-iar-vote {
+    .plv-iar-vote__no-data {
+      color: map.get($--skin-configs, 'iar-vote-no-data:text-color') !important;
+    }
+  }
 }
 
 // 生成皮肤的互动功能样式（PC 端）

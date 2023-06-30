@@ -3,11 +3,11 @@
  */
 
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { useLikeAnimation } from './use-like-animation';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChatStore } from '@/store/use-chat-store';
+import { ChatEvents, ChatEventsRelations } from '@polyv/live-watch-sdk';
 import { onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
-import { ChatEvents, LikeMsgType } from '@polyv/live-watch-sdk';
+import { useLikeAnimation } from './use-like-animation';
 
 /**
  * 点赞气泡图标列表
@@ -78,16 +78,11 @@ export const useChatLike = () => {
   const { likeRef, joinLikeAnimationCount } = useLikeAnimation();
 
   /** 处理点赞事件 */
-  function onChatLikeEvent(evt: { likeMsg: LikeMsgType }) {
-    const likeMsg = evt.likeMsg;
-    if (likeMsg.isSelf) {
+  function onChatLikeEvent(evt: ChatEventsRelations[ChatEvents.ChatLike]) {
+    if (evt.isSelf) {
       return;
     }
-    const count = likeMsg.count;
-    chatStore.$patch({
-      realtimeLikes: chatStore.realtimeLikes + count,
-    });
-
+    const count = evt.count;
     joinLikeAnimationCount(count);
   }
 

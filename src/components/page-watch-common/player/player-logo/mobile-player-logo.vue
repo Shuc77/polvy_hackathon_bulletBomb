@@ -3,20 +3,20 @@
   <div
     class="c-mobile-player-logo"
     :class="{
-      [`c-mobile-player-logo--${logoPosition}`]: true,
+      [`c-mobile-player-logo--${logoSetting.logoPosition}`]: true,
     }"
     :style="{
-      opacity: logoOpacity,
+      opacity: logoSetting.logoOpacity,
     }"
   >
     <img
       class="c-mobile-player-logo__img"
-      :src="logoImage"
+      :src="logoSetting.logoImage"
     />
 
     <a
-      v-if="logoHref"
-      :href="logoHref"
+      v-if="logoSetting.logoHref"
+      :href="logoSetting.logoHref"
       class="c-mobile-player-logo__href"
       target="_blank"
     ></a>
@@ -27,7 +27,7 @@
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-const { logoImage, logoHref, logoOpacity, logoPosition } = storeDefinitionToRefs(usePlayerStore);
+const { logoSetting } = storeDefinitionToRefs(usePlayerStore);
 </script>
 
 <style lang="scss">

@@ -1,28 +1,26 @@
-import { paramGetter } from '@/hooks/core/use-query-params';
 import { isMobile } from '@/assets/utils/browser';
-import { useChannelStore } from '@/store/use-channel-store';
-import { usePageStore } from '@/store/use-page-store';
-import { ChannelWatchLayout, ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
+import { paramGetter } from '@/hooks/core/use-query-params';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useThemeStore } from '@/store/use-theme-store';
 import { $ } from '@just4/dom';
+import { ChannelWatchPageSkin, MobileWatchLayout } from '@polyv/live-watch-sdk';
 import { watch } from 'vue';
 
 /**
  * 页面皮肤 hook
  */
 export const usePageSkin = () => {
-  const channelStore = useChannelStore();
-  const pageStore = usePageStore();
+  const themeStore = useThemeStore();
+  const layoutStore = useLayoutStore();
 
   /**
    * 初始化观看页多皮肤
    */
   async function initPageSkin(): Promise<void> {
-    const watchLayout = channelStore.channelDetail?.channelInfo.watchLayout;
-
-    let pageSkin = channelStore.channelDetail?.theme.newPageSkin;
+    let pageSkin = themeStore.pageSkin;
 
     // 在非普通直播频道下只加载黑色皮肤
-    if (watchLayout !== ChannelWatchLayout.Normal) {
+    if (layoutStore.mobileWatchLayout !== MobileWatchLayout.Normal) {
       pageSkin = ChannelWatchPageSkin.Black;
     }
 
@@ -39,7 +37,7 @@ export const usePageSkin = () => {
    * @param pageSkin 页面皮肤
    */
   async function setPageSkin(pageSkin: ChannelWatchPageSkin | undefined): Promise<void> {
-    pageStore.$patch({
+    themeStore.$patch({
       pageSkin,
     });
 
@@ -50,7 +48,7 @@ export const usePageSkin = () => {
    * 加载观看页多皮肤
    */
   async function importPageSkin(): Promise<void> {
-    const pageSkin = pageStore.pageSkin;
+    const pageSkin = themeStore.pageSkin;
 
     if (!pageSkin) {
       return;
@@ -125,7 +123,7 @@ export const usePageSkin = () => {
 
   // 设置页面的 class
   watch(
-    () => pageStore.pageSkin,
+    () => themeStore.pageSkin,
     (pageSkin, oldPageSkin) => {
       const skinClassPrefix = 'pws-skin-';
       const $document = $(document.documentElement);

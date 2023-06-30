@@ -52,8 +52,8 @@ export const usePortraitClickPlayer = () => {
   function onClickPlayerRegion(event: MouseEvent) {
     // 判断logo点击
     const logoDom = document.querySelector('.plv-live-logo') ?? undefined;
-    if (logoDom && checkDomClick(event, logoDom)) {
-      openUrl(playerStore.logoHref);
+    if (logoDom && checkDomClick(event, logoDom) && playerStore.logoSetting.logoHref) {
+      openUrl(playerStore.logoSetting.logoHref);
       return;
     }
 
@@ -66,7 +66,7 @@ export const usePortraitClickPlayer = () => {
     // 点击的是暖场图片的区域
     const warmupImgElem = document.querySelector('[data-warmup-img]') ?? undefined;
     if (warmupImgElem && checkDomClick(event, warmupImgElem)) {
-      openUrl(playerStore.warmUpHref);
+      openUrl(playerStore.warmUpSetting.warmUpHref);
       return;
     }
 

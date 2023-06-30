@@ -1,7 +1,7 @@
 <!-- @file PC 端底部菜单栏 -->
 <template>
   <div class="c-pc-watch-bottom-menu">
-    <pc-normal-tabs>
+    <pc-normal-tabs v-model="pcBottomTabCurrentName">
       <template v-for="(menu, index) in bottomMenuList">
         <!-- 直播介绍 -->
         <pc-normal-tab-pane
@@ -57,29 +57,48 @@
         >
           <pc-iframe-render :src="menu.content" />
         </pc-normal-tab-pane>
+
+        <!-- 分会场（竖向） -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.MultiMeeting"
+          :key="`multi-meeting-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_MULTI_MEETING"
+          lazy-load
+        >
+          <pc-multi-meeting-portrait />
+        </pc-normal-tab-pane>
       </template>
     </pc-normal-tabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import { TAB_NAME_PLAYBACK, TAB_NAME_TUWEN_LIVE } from '@/assets/constants/tab-name';
+import {
+  TAB_NAME_PLAYBACK,
+  TAB_NAME_TUWEN_LIVE,
+  TAB_NAME_MULTI_MEETING,
+} from '@/assets/constants/tab-name';
 import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
 import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
 import PcRichTextRender from '@/components/common-base/rich-text-render/pc-rich-text-render.vue';
 import PcIframeRender from '@/components/common-base/iframe-render/pc-iframe-render.vue';
 import PcTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/pc-tuwen-live.vue';
 import PcPlaybackList from '@/components/page-watch-common/playback-list/pc-playback-list/pc-playback-list.vue';
+import PcMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-portrait.vue';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { ChannelMenuType, LiveStatus } from '@polyv/live-watch-sdk';
+import { ChannelMenuItem, ChannelMenuType, LiveStatus } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { randomStr } from '@polyv/utils/dist/es/string';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
-const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
+const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+const { pcBottomTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
 /**
  * 需要移除的菜单类型
@@ -96,8 +115,8 @@ const removeMenuTypes = computed<ChannelMenuType[]>(() => {
 });
 
 /** 底部菜单栏列表 */
-const bottomMenuList = computed(() => {
-  return unref(channelMenus).filter(menu => {
+const bottomMenuList = computed<ChannelMenuItem[]>(() => {
+  const menus = unref(channelMenus).filter(menu => {
     // 需要移除的菜单栏类型
     const removeTypes = [...unref(removeMenuTypes)];
 
@@ -110,5 +129,16 @@ const bottomMenuList = computed(() => {
 
     return !removeTypes.includes(menu.menuType);
   });
+
+  // 显示分会场菜单默认在最后一个
+  if (unref(multiMeetingMenuData).visible) {
+    menus.push({
+      menuId: randomStr(8),
+      menuType: ChannelMenuType.MultiMeeting,
+      name: unref(multiMeetingMenuData).label,
+    });
+  }
+
+  return menus;
 });
 </script>

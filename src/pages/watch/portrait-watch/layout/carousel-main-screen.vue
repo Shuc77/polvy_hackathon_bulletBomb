@@ -59,7 +59,6 @@
 
       <!-- 欢迎语 -->
       <div
-        v-if="welcomeEnabled"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
         <portrait-chat-welcome-tips />
@@ -67,8 +66,19 @@
 
       <!-- 聊天室消息区 -->
       <div
+        v-if="chatSetting.watchChatEnabled"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__item--pointer-event"
+        @click="onClickPlayerRegion"
       >
+        <div
+          class="c-portrait-chat-msg-list__ask__tip"
+          v-if="portraitChatTab === PortraitChatTabType.Ask"
+        >
+          <mobile-icon-ask size="13"></mobile-icon-ask>
+          <span class="c-portrait-chat-msg-list__ask__tip__text">{{
+            $lang('chat.ask.channel')
+          }}</span>
+        </div>
         <portrait-chat-msg-list />
       </div>
 
@@ -85,27 +95,35 @@
         <portrait-player-progress />
       </div>
 
-      <!-- 底部栏 -->
+      <!-- 底部控制栏 -->
       <div
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding"
       >
         <div class="c-portrait-carousel-main-screen__input-wrap">
           <!-- 聊天室输入框占位 -->
-          <portrait-chat-input-placeholder v-if="!isWatchBackUrl" />
+          <portrait-chat-input-placeholder
+            v-if="portraitChatInputVisible"
+            class="c-portrait-carousel-main-screen__input-wrap-item"
+          />
+          <!-- 聊天室关闭提示 -->
+          <portrait-chat-close-tips
+            v-if="!chatSetting.watchChatEnabled"
+            class="c-portrait-carousel-main-screen__input-wrap-item"
+          />
 
           <!-- 回放+章节入口 -->
           <div
-            v-if="playbackListVisible || chapterEnabled"
-            class="c-portrait-carousel-main-screen__playback-entrance g-img-cover"
+            v-if="playbackListVisible || chapterVisible"
+            class="c-portrait-carousel-main-screen__input-wrap-item c-portrait-carousel-main-screen__playback-entrance g-img-cover"
             @click="onClickPlaybackEntrance(true)"
           ></div>
         </div>
 
-        <!-- 底部右侧内容 -->
+        <!-- 底部控制栏右侧内容 -->
         <div class="c-portrait-carousel-main-screen__bottom__right-auto">
           <!-- 商品库入口 -->
           <portrait-product-list-entrance
-            v-if="productEnabled"
+            v-if="interactSetting.productEnabled"
             class="c-portrait-carousel-main-screen__bottom__button"
           />
 
@@ -119,6 +137,15 @@
           <!-- 菜单入口 -->
           <portrait-menu-entrance class="c-portrait-carousel-main-screen__bottom__button" />
         </div>
+      </div>
+
+      <!-- 底部页脚 -->
+      <div
+        class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__page-footer-wrap"
+      >
+        <mobile-page-footer
+          class="c-portrait-carousel-main-screen__bottom__page-footer g-singleline"
+        />
       </div>
     </div>
 
@@ -138,6 +165,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import BoundaryWrap from './boundary-wrap.vue';
 import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
@@ -149,12 +177,15 @@ import PortraitDonateSvgaAnimation from '@/components/page-watch-common/donate/d
 import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
 import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
+import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
 import PortraitChatWelcomeTips from '@/components/page-watch-common/chat/chat-welcome/portrait-chat-welcome-tips.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
 import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
 import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
 import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
+import { MobileIconAsk } from '@/components/component-icons/mobile/map';
+import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
 
 import { useInviteStore } from '@/store/use-invite-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -163,28 +194,38 @@ import { appEvents, useEventBusEmitter } from '@/app/app-events';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDocStore } from '@/store/use-doc-store';
-import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { usePortraitLayoutStore, PortraitChatTabType } from '@/store/use-portrait-layout-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
-const { announcementFunctionVisible, productEnabled } =
+const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
-const { welcomeEnabled } = storeDefinitionToRefs(useChatStore);
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
+
+const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } =
+  storeDefinitionToRefs(usePlaybackStore);
+
+/**
+ * 竖屏聊天输入框是否可见
+ */
+const portraitChatInputVisible = computed(() => {
+  if (isPlaybackWatchUrl.value) return false;
+  if (chatReplayEnabled.value) return false;
+
+  return chatSetting.value.watchChatEnabled;
+});
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { channelInfoSeat } = storeDefinitionToRefs(usePortraitLayoutStore);
-
-const { isPlaybacking, playbackListVisible, chapterEnabled } =
-  storeDefinitionToRefs(usePlaybackStore);
+const { channelInfoSeat, portraitChatTab } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
@@ -193,9 +234,13 @@ const { emitEvent: onClickDonateEntrance } = useEventBusEmitter(appEvents.donate
 const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
   appEvents.portrait.OpenPlaybackChapter,
 );
+
+const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait.ClickPlayerRegion);
 </script>
 
 <style lang="scss">
+$--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
+
 .c-portrait-carousel-main-screen__top-left {
   position: absolute;
   top: 15px;
@@ -242,7 +287,7 @@ const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
 .c-portrait-carousel-main-screen__bottom__item {
   position: relative;
   display: flex;
-  margin-top: 12px;
+  margin-top: $--portrait-carousel-main-screen__bottom-marginTop;
   pointer-events: initial;
 }
 .c-portrait-carousel-main-screen__bottom__item--padding {
@@ -253,7 +298,7 @@ const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
 }
 
 .c-portrait-carousel-main-screen__bottom__progress {
-  margin-top: 12px;
+  margin-top: $--portrait-carousel-main-screen__bottom-marginTop;
   pointer-events: initial;
 }
 
@@ -271,13 +316,27 @@ const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
   display: flex;
   flex: 1;
   align-items: center;
-  overflow: hidden;
+}
+
+.c-portrait-carousel-main-screen__bottom__page-footer-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 0;
+}
+
+.c-portrait-carousel-main-screen__bottom__page-footer {
+  padding-bottom: 0;
+  margin-top: $--portrait-carousel-main-screen__bottom-marginTop;
+}
+
+// prettier-ignore
+.c-portrait-carousel-main-screen__input-wrap-item + .c-portrait-carousel-main-screen__input-wrap-item {
+  margin-left: 16px;
 }
 
 .c-portrait-carousel-main-screen__playback-entrance {
   width: 32px;
   height: 32px;
-  margin-left: 16px;
   background-image: url(./images/icon-playback.png);
 }
 
@@ -307,5 +366,19 @@ const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
   z-index: 1000;
   width: 100%;
   height: 300px;
+}
+.c-portrait-chat-msg-list__ask__tip {
+  position: absolute;
+  top: -35px;
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  background: #333333;
+  border-radius: 14px;
+  opacity: 0.6;
+}
+.c-portrait-chat-msg-list__ask__tip__text {
+  padding-left: 4px;
+  font-size: 14px;
 }
 </style>

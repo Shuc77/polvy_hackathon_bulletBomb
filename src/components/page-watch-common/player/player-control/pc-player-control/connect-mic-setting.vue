@@ -7,7 +7,7 @@
     </p>
 
     <div
-      v-if="masterConnectMicType === ConnectMicType.Video"
+      v-if="videoVisible"
       class="c-pc-player-control__button"
       :class="{
         'c-pc-player-control__button--video-readonly': !masterIsSelf,
@@ -33,7 +33,7 @@
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { ConnectMicType } from '@polyv/live-watch-sdk';
-import { unref } from 'vue';
+import { computed, unref } from 'vue';
 import { useConnectMicControl } from '@/components/page-watch-common/connect-mic/hooks/use-connect-mic';
 
 const {
@@ -43,12 +43,21 @@ const {
   masterIsVideoMuted,
   masterIsAudioMuted,
   masterConnectMicType,
+  supportSetupVideo,
 } = storeDefinitionToRefs(useConnectMicStore);
 
 const { toggleVideo, toggleAudio } = useConnectMicControl();
 
+const videoVisible = computed(() => {
+  if (masterIsSelf.value && !supportSetupVideo.value) {
+    return false;
+  }
+
+  return masterConnectMicType.value === ConnectMicType.Video;
+});
+
 function onClickVideo() {
-  if (unref(masterIsSelf)) {
+  if (unref(masterIsSelf) && unref(supportSetupVideo)) {
     toggleVideo();
   }
 }

@@ -4,8 +4,10 @@ import { appendToURL } from '@just4/querystring';
 
 /** 错误页类型 */
 export enum ErrorVerifyType {
-  /** 超出最大并发数 */
+  /** 超过观看并发人数限制 */
   Restrict = 'restrict',
+  /** 被踢出直播间 */
+  isKicked = 'isKicked',
 }
 
 export interface RedirectErrorParams {

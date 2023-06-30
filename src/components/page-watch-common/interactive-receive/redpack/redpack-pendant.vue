@@ -4,16 +4,19 @@
     class="c-redpack-pendant"
     auto-toggle
     :red-envelope-sdk="redpackSdk"
-    :auto-fetch-detail="autoFetchDetail"
+    :auto-fetch-detail="interactSetting.redpackEnabled"
     @visible-changed="onEntryVisibleChanged"
   />
 </template>
 
 <script setup lang="ts">
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useRedpackPendant } from './hooks/use-redpack-pendant';
 
 const IarRedEnvelopPendant = getIarComponent('RedEnvelopePendant');
 
-const { redpackSdk, autoFetchDetail, onEntryVisibleChanged } = useRedpackPendant();
+const { interactSetting } = useInteractReceiveStore();
+
+const { redpackSdk, onEntryVisibleChanged } = useRedpackPendant();
 </script>

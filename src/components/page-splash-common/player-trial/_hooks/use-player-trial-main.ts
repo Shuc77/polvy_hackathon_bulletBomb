@@ -1,11 +1,10 @@
 /**
  * @file 试看播放器 hook
  */
-import { onBeforeUnmount, onMounted, ref, unref } from 'vue';
 import { ChannelTrialInfo, SetupPlayerOptions } from '@polyv/live-watch-sdk';
+import { onBeforeUnmount, onMounted, ref, unref } from 'vue';
 
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from '@/store/use-channel-store';
 import { usePlayerStore } from '@/store/use-player-store';
 
 import { usePlayerTrialEvent } from './use-player-trial-event';
@@ -15,15 +14,13 @@ export type InitPlayerOptions = Omit<SetupPlayerOptions, 'container'>;
 /** @hook 试看播放器 Hook */
 export const usePlayerTrialMain = (
   hookOptions: {
-    initPlayerOptions?: InitPlayerOptions;
     trialInfo?: ChannelTrialInfo | null;
   } = {},
 ) => {
-  const { initPlayerOptions = {}, trialInfo = null } = hookOptions;
+  const { trialInfo = null } = hookOptions;
 
   const { bindPlayerEvents, unbindPlayerEvents } = usePlayerTrialEvent({ trialInfo });
 
-  const channelStore = useChannelStore();
   const playerStore = usePlayerStore();
 
   /** 播放器渲染容器 */
@@ -43,12 +40,6 @@ export const usePlayerTrialMain = (
 
     const playerOptions: SetupPlayerOptions = {
       container,
-      barrageEnabled: true,
-      marqueeName: trialInfo.viewerInfo.marqueeName || undefined,
-      vrHead: channelStore.channelDetail?.domain.assetsUrlPrefix,
-      x5FullPage: true,
-      sessionId: trialInfo.channelSessionId,
-      ...initPlayerOptions,
     };
     const watchCore = getWatchCore();
     await watchCore.player.setupPlayer(playerOptions);

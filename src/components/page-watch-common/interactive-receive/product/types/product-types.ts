@@ -14,6 +14,8 @@ export interface ProductGoodData {
   productType: string;
   /** 商品提示 */
   productDesc: string;
+  /** 推送Id */
+  logId?: string;
 }
 
 /**

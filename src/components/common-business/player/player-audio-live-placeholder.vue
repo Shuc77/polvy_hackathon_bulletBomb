@@ -8,7 +8,7 @@
       v-if="useSplashImg"
       class="c-player-audio-live-placeholder__splash g-img-cover"
       :style="{
-        backgroundImage: `url(${channelSplashImg})`,
+        backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
       }"
     ></div>
 
@@ -32,17 +32,18 @@ import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { resizeOSSImg } from '@/assets/utils/image';
 
 const props = defineProps({
   /** 是否使用引导页封面图作为占位图 */
   useSplashImg: PropUtils.bool.def(false),
 });
 
-const { channelSplashImg } = storeDefinitionToRefs(useChannelInfoStore);
+const { splashImg } = storeDefinitionToRefs(useThemeStore);
 
 const useSplashImg = computed(() => {
-  if (props.useSplashImg && unref(channelSplashImg)) {
+  if (props.useSplashImg && unref(splashImg)) {
     return true;
   }
   return false;

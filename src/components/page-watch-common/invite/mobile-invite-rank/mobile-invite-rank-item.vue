@@ -46,9 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { DEFAULT_VIEWER_AVATAR } from '@/assets/constants/defaults';
-
-import { InviteRankItem } from '@polyv/live-watch-sdk';
+import { InviteRankItem, DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
 defineProps({

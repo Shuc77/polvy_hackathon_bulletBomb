@@ -1,23 +1,25 @@
 <!-- @file PC 端页脚 -->
 <template>
   <div
-    v-if="footerVisible"
+    v-if="pageFootSetting.footerEnabled"
     class="c-pc-page-footer"
   >
     <a
-      :href="footerLink"
+      :href="pageFootSetting.footerLink"
       target="_blank"
       rel="noopener"
     >
-      - {{ footerText }} -
+      - {{ pageFootSetting.footerText }} -
     </a>
   </div>
 </template>
 
 <script setup lang="ts">
-import { usePageFooter } from './use-page-footer';
+import { getWatchCore } from '@/core/watch-sdk';
+import { reactive } from 'vue';
 
-const { footerVisible, footerLink, footerText } = usePageFooter();
+const watchCore = getWatchCore();
+const pageFootSetting = reactive(watchCore.channel.getPageFooterSetting());
 </script>
 
 <style lang="scss">

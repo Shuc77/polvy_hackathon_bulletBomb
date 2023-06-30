@@ -2,6 +2,8 @@
  * 按钮类型
  */
 export enum ButtonType {
+  /** 自定义按钮，由外部自行设置样式，不跟随多皮肤 */
+  Custom = 'custom',
   /** 主题按钮 */
   Primary = 'primary',
   /** 信息按钮 */

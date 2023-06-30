@@ -5,6 +5,12 @@
       <!-- 商品库推送气泡 -->
       <pc-product-bubble />
 
+      <!-- PC 端观看页侧边菜单栏顶部固定区域 -->
+      <div class="c-pc-watch-aside-menu__topic">
+        <!-- 聊天室连接异常提示 -->
+        <pc-chat-connect-error-tips class="c-pc-watch-aside-menu__topic-item" />
+      </div>
+
       <!-- 连麦 tab -->
       <pc-aside-tab-pane
         v-if="openMicStatus"
@@ -14,87 +20,97 @@
         <pc-connect-mic />
       </pc-aside-tab-pane>
 
-      <!-- 微活动 tab -->
-      <pc-aside-tab-pane
-        v-if="microActivityMenuData.visible"
-        :label="microActivityMenuData.label"
-        :name="TAB_NAME_MICRO_ACTIVITY"
-      >
-        <pc-micro-activity :is-active="pcAsideTabCurrentName === TAB_NAME_MICRO_ACTIVITY" />
-      </pc-aside-tab-pane>
+      <template v-for="(menu, index) in channelMenus">
+        <!-- 微活动 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.MicroActivity"
+          :key="`micro-activity-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_MICRO_ACTIVITY"
+        >
+          <pc-micro-activity :is-active="pcAsideTabCurrentName === TAB_NAME_MICRO_ACTIVITY" />
+        </pc-aside-tab-pane>
 
-      <!-- 聊天室 tab -->
-      <pc-aside-tab-pane
-        v-if="chatMenuData.visible"
-        :label="chatMenuData.label"
-        :sub-label="chatMenuAdditionData.subLabel"
-        :show-reminder="chatMenuAdditionData.showReminder"
-        :name="TAB_NAME_CHAT"
-      >
-        <template v-if="watchChatEnabled">
-          <pc-chat-room />
-        </template>
-        <template v-else>
-          <pc-chat-close-tips />
-        </template>
-      </pc-aside-tab-pane>
+        <!-- 聊天室 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Chat"
+          :key="`chat-${index}`"
+          :label="menu.name"
+          :sub-label="chatMenuAdditionData.subLabel"
+          :show-reminder="chatMenuAdditionData.showReminder"
+          :name="TAB_NAME_CHAT"
+        >
+          <template v-if="chatSetting.watchChatEnabled">
+            <pc-chat-room />
+          </template>
+          <template v-else>
+            <pc-chat-close-tips />
+          </template>
+        </pc-aside-tab-pane>
 
-      <!-- 投票活动 tab -->
-      <pc-aside-tab-pane
-        v-if="voteActiveMenuData.visible"
-        :label="voteActiveMenuData.label"
-        :name="TAB_NAME_VOTE"
-        lazy-load
-      >
-        <pc-vote-panel />
-      </pc-aside-tab-pane>
+        <!-- 投票活动 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Vote"
+          :key="`vote-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_VOTE"
+          lazy-load
+        >
+          <pc-vote-panel />
+        </pc-aside-tab-pane>
 
-      <!-- 成员列表 tab -->
-      <pc-aside-tab-pane
-        v-if="membersMenuData.visible"
-        :label="membersMenuData.label"
-        :name="TAB_NAME_MEMBERS"
-        lazy-load
-      >
-        <pc-member-list />
-      </pc-aside-tab-pane>
+        <!-- 成员列表 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Members"
+          :key="`member-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_MEMBERS"
+          lazy-load
+        >
+          <pc-member-list />
+        </pc-aside-tab-pane>
+
+        <!-- 提问 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Quiz"
+          :key="`quiz-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_ASK"
+          :show-reminder="askMenuAdditionData.showReminder"
+        >
+          <pc-ask />
+        </pc-aside-tab-pane>
+
+        <!-- 问答 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.QA"
+          :key="`qa-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_QA"
+          :show-reminder="qaReminderVisible"
+        >
+          <pc-question-answer />
+        </pc-aside-tab-pane>
+
+        <!-- 商品库 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Buy"
+          :key="`buy-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_PRODUCT"
+          switch-to-refresh
+        >
+          <pc-product-list />
+        </pc-aside-tab-pane>
+      </template>
 
       <!-- 章节 tab -->
       <pc-aside-tab-pane
-        v-if="chapterEnabled"
+        v-if="chapterVisible"
         :label="$lang('menu.tabName.chapter')"
         :name="TAB_NAME_CHAPTER"
       >
         <pc-chapter />
-      </pc-aside-tab-pane>
-
-      <!-- 提问 tab -->
-      <pc-aside-tab-pane
-        v-if="askMenuData.visible"
-        :label="askMenuData.label"
-        :name="TAB_NAME_ASK"
-      >
-        <pc-ask />
-      </pc-aside-tab-pane>
-
-      <!-- 问答 tab -->
-      <pc-aside-tab-pane
-        v-if="qaMenuData.visible"
-        :label="qaMenuData.label"
-        :name="TAB_NAME_QA"
-        :show-reminder="qaReminderVisible"
-      >
-        <pc-question-answer />
-      </pc-aside-tab-pane>
-
-      <!-- 商品库 tab -->
-      <pc-aside-tab-pane
-        v-if="productMenuData.visible"
-        :label="productMenuData.label"
-        :name="TAB_NAME_PRODUCT"
-        switch-to-refresh
-      >
-        <pc-product-list />
       </pc-aside-tab-pane>
     </pc-aside-tabs>
   </div>
@@ -103,6 +119,7 @@
 <script setup lang="ts">
 import PcAsideTabPane from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-tab-pane.vue';
 import PcAsideTabs from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-tabs.vue';
+import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
 import PcChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/chat-close-tips.vue';
 import PcChatRoom from '@/components/page-watch-common/chat/chat-room/pc-chat-room.vue';
 import PcMicroActivity from '@/components/page-watch-common/micro-activity/pc-micro-activity/pc-micro-activity.vue';
@@ -134,32 +151,36 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
+import { ChannelMenuType } from '@polyv/live-watch-sdk';
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
 const { openMicStatus } = storeDefinitionToRefs(useConnectMicStore);
 
-const { watchChatEnabled } = storeDefinitionToRefs(useChatStore);
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const {
-  chatMenuData,
-  productMenuData,
-  voteActiveMenuData,
-  membersMenuData,
-  askMenuData,
-  qaMenuData,
-  microActivityMenuData,
-} = storeDefinitionToRefs(useChannelMenuStore);
+const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { qaReminderVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { chapterEnabled } = storeDefinitionToRefs(usePlaybackStore);
+const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
-const { chatMenuAdditionData } = useWatchTabHook({ mode: 'pc' });
+const { chatMenuAdditionData, askMenuAdditionData } = useWatchTabHook({ mode: 'pc' });
 </script>
 
 <style lang="scss">
 .c-pc-watch-aside-menu {
   height: 100%;
+}
+
+.c-pc-watch-aside-menu__topic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 100%;
+}
+.c-pc-watch-aside-menu__topic-item {
+  margin: 8px 8px 0;
 }
 </style>

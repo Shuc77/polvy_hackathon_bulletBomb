@@ -86,7 +86,7 @@ $--light-font-active-color: #3082fe !default;
 
 .c-pc-lang-switch {
   position: relative;
-  z-index: 100;
+  z-index: 21; // 不被底部面板遮挡
   font-size: 14px;
   color: $--light-font-color;
 }

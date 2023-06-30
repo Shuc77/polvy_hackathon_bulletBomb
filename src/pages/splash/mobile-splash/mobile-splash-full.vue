@@ -3,7 +3,7 @@
   <div
     class="c-mobile-splash-full"
     :style="{
-      backgroundImage: `url(${fullBgUrl})`,
+      backgroundImage: `url(${mobileSplashLargeImg})`,
     }"
   >
     <header
@@ -34,15 +34,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, unref } from 'vue';
+import { defineAsyncComponent } from 'vue';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
 import MobileSplashBtn from './components/mobile-splash-btn.vue';
 
-import { useChannelStore } from '@/store/use-channel-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { DEFAULT_SPLASH_FULL_IMG } from '@/assets/constants/defaults';
 import { usePvTrack } from '@/hooks/business/use-pv-track';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const MobilePlayerTrial = defineAsyncComponent(
   () =>
@@ -52,11 +51,7 @@ const MobilePlayerTrial = defineAsyncComponent(
     ),
 );
 
-const { channelDetail } = storeDefinitionToRefs(useChannelStore);
-
-const fullBgUrl = computed<string>(() => {
-  return unref(channelDetail)?.channelConfig.splashLargeImg || DEFAULT_SPLASH_FULL_IMG;
-});
+const { mobileSplashLargeImg } = storeDefinitionToRefs(useThemeStore);
 
 const { trialEnabled, trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } =
   usePlayerTrialHook();

@@ -15,8 +15,11 @@ export const useLiveBookingWx = () => {
     const result = await watchCore.liveBooking.submitWxLiveBooking();
 
     if (result.success) {
-      liveBookingStore.wxBookingCount += 1;
-      liveBookingStore.isWxLiveBooking = true;
+      const wxBookingCount = liveBookingStore.wxBookingCount + 1;
+      liveBookingStore.$patch({
+        wxBookingCount: wxBookingCount < 0 ? 0 : wxBookingCount,
+        isWxLiveBooking: true,
+      });
 
       // 未关注，弹出二维码弹层
       if (!liveBookingStore.isWxSubscribed) {
@@ -33,8 +36,11 @@ export const useLiveBookingWx = () => {
     const result = await watchCore.liveBooking.cancelWxLiveBooking();
 
     if (result.success) {
-      liveBookingStore.wxBookingCount -= 1;
-      liveBookingStore.isWxLiveBooking = false;
+      const wxBookingCount = liveBookingStore.wxBookingCount - 1;
+      liveBookingStore.$patch({
+        wxBookingCount: wxBookingCount < 0 ? 0 : wxBookingCount,
+        isWxLiveBooking: false,
+      });
     } else {
       toastBookingFail(result.failReason);
     }

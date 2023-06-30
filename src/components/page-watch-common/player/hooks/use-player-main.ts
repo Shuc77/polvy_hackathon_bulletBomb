@@ -89,18 +89,22 @@ export const usePlayerMain = ({
       return;
     }
 
-    const watchCore = getWatchCore();
-    const pushInfo = await watchCore.channel.getPushInfo();
-    if (pushInfo.resolutionWidth && pushInfo.resolutionHeight) {
-      playerStore.$patch({
-        resolutionWidth: pushInfo.resolutionWidth,
-        resolutionHeight: pushInfo.resolutionHeight,
-      });
-    }
+    try {
+      const watchCore = getWatchCore();
+      const pushInfo = await watchCore.channel.getPushInfo();
+      if (pushInfo.resolutionWidth && pushInfo.resolutionHeight) {
+        playerStore.$patch({
+          resolutionWidth: pushInfo.resolutionWidth,
+          resolutionHeight: pushInfo.resolutionHeight,
+        });
+      }
 
-    channelStore.$patch({
-      currentStreamType: pushInfo.streamType,
-    });
+      channelStore.$patch({
+        currentStreamType: pushInfo.streamType,
+      });
+    } catch (error) {
+      console.error('getPushStreamInfo', error);
+    }
   }
 
   /** 初始化播放器 */
@@ -171,7 +175,7 @@ export const usePlayerMain = ({
     () => channelStore.liveStatus,
     () => {
       const watchCore = getWatchCore();
-      const supportLowLatency = watchCore.player.getLowLatencySupport();
+      const supportLowLatency = watchCore.player.supportLowLatency().support;
       playerStore.$patch({
         supportLowLatency,
       });
@@ -190,6 +194,13 @@ export const usePlayerMain = ({
   });
 
   onMounted(() => {
+    const watchCore = getWatchCore();
+    const supportLowLatency = watchCore.player.supportLowLatency().support;
+    playerStore.$patch({
+      supportLowLatency,
+      isLowLatency: supportLowLatency,
+    });
+
     initPlayer();
   });
 

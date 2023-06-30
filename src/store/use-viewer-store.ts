@@ -1,8 +1,7 @@
 /**
  * @file 观众信息 store
  */
-import { AuthType } from '@polyv/live-watch-sdk';
-import { DEFAULT_VIEWER_AVATAR } from '@/assets/constants/defaults';
+import { AuthType, DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -96,13 +95,12 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
   function syncViewerInfo(): void {
     const watchCore = getWatchCore();
 
-    const userInfo = watchCore.user.getCurrentUserInfo();
-    viewerId.value = watchCore.user.getCurrentUserId(false);
-    nickname.value = watchCore.user.getCurrentUserNick(false) ?? '';
-    avatar.value = watchCore.user.getCurrentUserAvatar();
-    openId.value = watchCore.user.getCurrentUserOpenId(false);
-    unionId.value = userInfo.unionId;
-    authType.value = userInfo.authType ?? AuthType.None;
+    viewerId.value = watchCore.user.getUserId();
+    nickname.value = watchCore.user.getUserNick() || '';
+    avatar.value = watchCore.user.getUserAvatar() || DEFAULT_VIEWER_AVATAR;
+    openId.value = watchCore.user.getUserOpenId();
+    unionId.value = watchCore.user.getUserUnionId();
+    authType.value = watchCore.user.getUserAuthType();
   }
 
   return {

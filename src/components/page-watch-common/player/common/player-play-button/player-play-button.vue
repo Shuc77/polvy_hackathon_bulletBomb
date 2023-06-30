@@ -3,9 +3,6 @@
   <div
     v-if="bigPlayButtonVisible"
     class="c-player-play-button"
-    :class="{
-      'c-player-play-button--light': showWarmUpImg || isTextMode,
-    }"
   >
     <div
       v-if="isTextMode"
@@ -25,15 +22,11 @@
 import { computed } from 'vue';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 
-import { usePlayerStore } from '@/store/use-player-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerPlayButtonProps, PlayButtonMode } from './use-player-play-button';
 
 const props = defineProps(usePlayerPlayButtonProps());
 
 const { bigPlayButtonVisible } = usePlayerControl();
-
-const { showWarmUpImg } = storeDefinitionToRefs(usePlayerStore);
 
 const isTextMode = computed(() => {
   return props.mode === PlayButtonMode.Text;
@@ -50,11 +43,7 @@ const isTextMode = computed(() => {
   height: 100%;
   pointer-events: none;
   cursor: pointer;
-  background: rgba(#000, 0.8);
-}
-
-.c-player-play-button--light {
-  background: none;
+  background: rgba(#000, 0);
 }
 
 .c-player-play-button__mode--default {

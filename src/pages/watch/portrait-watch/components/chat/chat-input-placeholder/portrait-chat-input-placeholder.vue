@@ -13,11 +13,13 @@
       <span class="c-portrait-chat-input-placeholder__text g-singleline">
         {{ chatInputPlaceholder }}
       </span>
+      <portrait-question-icon :font-size="18" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
+import PortraitQuestionIcon from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/common/portrait-question-icon.vue';
 import { MobileIconMessage } from '@/components/component-icons/mobile/map';
 import { appEvents, eventBus } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
@@ -30,11 +32,11 @@ const { chatInputPlaceholder, chatInputDisabled } = storeDefinitionToRefs(useCha
 
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
 
-const { isPlaybacking, playbackListVisible, chapterEnabled } =
+const { isPlaybacking, playbackListVisible, chapterVisible } =
   storeDefinitionToRefs(usePlaybackStore);
 
 const playbackChapterEntranceVisible = computed<boolean>(() => {
-  return isPlaybacking.value && (unref(playbackListVisible) || unref(chapterEnabled));
+  return isPlaybacking.value && (unref(playbackListVisible) || unref(chapterVisible));
 });
 
 function onClickPlaceholder() {
@@ -84,5 +86,9 @@ function onClickPlaceholder() {
   height: 32px;
   background-image: url(./images/icon-send-msg.png);
   background-size: 100%;
+}
+.c-portrait-chat-input-question__icon {
+  display: flex;
+  font-size: 18px;
 }
 </style>

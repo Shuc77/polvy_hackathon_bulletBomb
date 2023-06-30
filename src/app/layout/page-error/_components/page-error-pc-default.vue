@@ -22,6 +22,13 @@
     >
       {{ pageError.desc }}
     </p>
+    <button
+      v-if="pageError.reloadBtnVisible"
+      class="c-page-error-pc-default__reloadBtn"
+      @click="reloadPage"
+    >
+      {{ $lang('base.reload') }}
+    </button>
   </div>
 </template>
 
@@ -34,6 +41,8 @@ const {
   isAuthError,
   isNotExistError,
   isNotFoundError,
+
+  reloadPage,
 } = usePageErrorHook();
 </script>
 
@@ -74,5 +83,18 @@ const {
   font-size: 18px;
   line-height: 1.4;
   color: #8b8b8b;
+}
+
+.c-page-error-pc-default__reloadBtn {
+  width: 184px;
+  height: 46px;
+  margin-top: 18px;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #02d2fd;
+  border: 0;
+  border-radius: 28px;
+  outline: none;
 }
 </style>

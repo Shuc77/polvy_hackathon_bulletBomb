@@ -40,7 +40,7 @@ const {
   convertAmount,
   getReceiveRecordList,
 } = useReceiveRecordHook({
-  fetchMethod: watchCore.withdraw.getWithdrawRecord,
+  fetchMethod: params => watchCore.withdraw.getWithdrawRecord(params),
   errMsg: '获取历史领取数据失败',
 });
 

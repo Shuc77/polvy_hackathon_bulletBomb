@@ -10,7 +10,7 @@ import { onMounted, ref, unref } from 'vue';
 
 /** 礼物打赏（积分）hook */
 export const useDonateGoodPoint = () => {
-  const { donatePointEnabled } = storeDefinitionToRefs(useDonateStore);
+  const { showDonatePointGood } = storeDefinitionToRefs(useDonateStore);
 
   /** 当前用户剩余的积分总数 */
   const surplusPoint = ref(0);
@@ -41,7 +41,7 @@ export const useDonateGoodPoint = () => {
   }
 
   onMounted(() => {
-    if (unref(donatePointEnabled)) {
+    if (unref(showDonatePointGood)) {
       getSurplusPoint();
     }
   });

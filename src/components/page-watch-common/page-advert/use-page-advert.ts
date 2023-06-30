@@ -1,28 +1,20 @@
-import { computed, onMounted, ref, unref } from 'vue';
-import { PageAdvertItem, YN } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from '@/store/use-channel-store';
-import { ynToBool } from '@utils-ts/boolean';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
+import { PageAdvertItem } from '@polyv/live-watch-sdk';
+import { onMounted, ref } from 'vue';
 
 export const usePageAdvert = () => {
-  const channelStore = useChannelStore();
-
   /** 页面广告开关 */
-  const pageAdvertEnabled = computed<boolean>(() =>
-    ynToBool(channelStore.channelDetail?.channelAdvert?.pageAdvertEnabled, YN.N),
-  );
-
-  /** 广告是否显示 */
-  const { visible: advertVisible, close: closeAdvert } = useSimpleVisible(true);
+  const pageAdvertEnabled = ref(false);
 
   /** 页面广告列表 */
   const pageAdvertList = ref<PageAdvertItem[]>([]);
 
   /** 关闭按钮是否显示 */
-  const closeVisible = computed(() => {
-    return ynToBool(channelStore.channelDetail?.channelAdvert?.closeAdvertEnabled, YN.N);
-  });
+  const closeVisible = ref(false);
+
+  /** 广告是否显示 */
+  const { visible: advertVisible, close: closeAdvert } = useSimpleVisible(true);
 
   /** 处理点击关闭 */
   function onClickClose() {
@@ -36,14 +28,17 @@ export const usePageAdvert = () => {
   }
 
   onMounted(() => {
-    if (unref(pageAdvertEnabled)) {
-      const watchCore = getWatchCore();
-      pageAdvertList.value = watchCore.channel.getPageAdvertList();
-    }
+    const watchCore = getWatchCore();
+    const advertSetting = watchCore.channel.getPageAdvertSetting();
+
+    pageAdvertEnabled.value = advertSetting.pageAdvertEnabled;
+    closeVisible.value = advertSetting.closeAdvertEnabled;
+    pageAdvertList.value = advertSetting.pageAdvertList;
   });
 
   return {
     advertVisible,
+    pageAdvertEnabled,
     pageAdvertList,
     closeVisible,
     onClickClose,

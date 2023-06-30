@@ -1,4 +1,5 @@
 import { translate } from '@/assets/lang';
+import { wait } from '@/assets/utils/utils';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import {
@@ -75,6 +76,11 @@ export const useAuthCommon = () => {
   /** 失败信息 */
   const failMessage = ref<string>();
 
+  /** 获取默认的失败信息 */
+  function getDefaultFailMessage() {
+    return translate('auth.error.unknown');
+  }
+
   /**
    * 处理观看条件验证成功
    * @param successResult 成功结果
@@ -93,10 +99,7 @@ export const useAuthCommon = () => {
   async function handleAuthVerifyFail(failResult: AuthVerifyResultFail): Promise<void> {
     failMessage.value = undefined;
 
-    switch (failResult.errorReason) {
-      case AuthVerifyError.Unknown:
-        failMessage.value = translate('auth.error.unknown');
-        break;
+    switch (failResult.failReason) {
       case AuthVerifyError.PhoneNotExist:
         failMessage.value = translate('auth.error.phoneNotExistent');
         break;
@@ -113,13 +116,19 @@ export const useAuthCommon = () => {
         if (failResult.getRedirectUrl) {
           const redirectUrl = failResult.getRedirectUrl();
           window.location.href = redirectUrl;
+          await wait(1000); // 延迟 1s 是为了页面跳转时不出现其他 toast，后续优化
         }
+        break;
+      case AuthVerifyError.Unknown:
+      default:
+        failMessage.value = failResult.failMessage || getDefaultFailMessage();
         break;
     }
   }
 
   return {
     failMessage,
+    getDefaultFailMessage,
     handleAuthVerifySuccess,
     handleAuthVerifyFail,
   };

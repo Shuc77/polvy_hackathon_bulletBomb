@@ -7,15 +7,19 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useSendMsg } from '@/components/page-watch-common/chat/chat-msg-list/hooks/send-msg-hook';
 
 import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
-import { PlvInputContent } from '@/plugins/polyv-ui/types';
+import { PlvInputContent, PlvInputContentText } from '@/plugins/polyv-ui/types';
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { usePortraitLayoutStore, PortraitChatTabType } from '@/store/use-portrait-layout-store';
 
 /**
  * @hook 聊天输入控制器
  */
 export const useChatInputController = () => {
   const chatStore = useChatStore();
+  const portraitLayoutStore = usePortraitLayoutStore();
+  const watchCore = getWatchCore();
+
   const {
     // eslint-disable-next-line prettier/prettier
     sendSpeakMsg: sendChatSpeakMsg,
@@ -39,6 +43,13 @@ export const useChatInputController = () => {
     msgInputWrapRef.value.clearInput();
     msgInputWrapRef.value.resetStatus();
 
+    // 竖屏提问
+    if (portraitLayoutStore.portraitChatTab === PortraitChatTabType.Ask) {
+      const data = contentList[0] as PlvInputContentText;
+      watchCore.ask.sendQuestion(data.content);
+      return;
+    }
+
     await submitMessageQueue(contentList);
   }
 
@@ -59,10 +70,11 @@ export const useChatInputController = () => {
     try {
       const watchCore = getWatchCore();
 
-      const { imageId, imageUrl } = await watchCore.utils.directUploadImage(file);
+      const { imageId, imageUrl, size } = await watchCore.utils.directUploadImage(file);
       sendChatImageMsg({
         imageId,
         imageUrl,
+        size,
       });
     } catch (error) {
       toast.error(translate('watchCore.error.uploadImage'));
@@ -86,17 +98,19 @@ export const useChatInputController = () => {
 
   /** 点击发送图片 */
   async function onClickSendImage() {
-    try {
-      const watchCore = getWatchCore();
-
-      const { imageId, imageUrl } = await watchCore.utils.uploadImage();
-      sendChatImageMsg({
-        imageId,
-        imageUrl,
-      });
-    } catch (error) {
-      toast.error(translate('watchCore.error.uploadImage'));
-    }
+    const watchCore = getWatchCore();
+    watchCore.utils.uploadMultiImage({
+      success: ({ imageId, imageUrl, size }) => {
+        sendChatImageMsg({
+          imageId,
+          imageUrl,
+          size,
+        });
+      },
+      fail: () => {
+        toast.error(translate('watchCore.error.uploadImage'));
+      },
+    });
   }
 
   useEventBusListener(appEvents.chat.ToSendImage, onClickSendImage);

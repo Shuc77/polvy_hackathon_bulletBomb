@@ -120,6 +120,8 @@ export const useConnectMicControl = () => {
  * @description 各端仅限注册一次
  */
 export const useConnectMic = () => {
+  const connectMicStore = useConnectMicStore();
+
   const { openDeviceSetting } = useConnectMicDevice();
   useEventBusListener(appEvents.connectMic.TriggerOpenDeviceSetting, openDeviceSetting);
 
@@ -136,11 +138,17 @@ export const useConnectMic = () => {
   function onInviteConnectMic() {
     watchCore.connectMic.openInviting();
   }
+
+  function onHandUpMic() {
+    toast.info(translate('connectMic.teacherHangUp'));
+  }
   onMounted(() => {
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.TeacherHangUp, onHandUpMic);
   });
   onBeforeUnmount(() => {
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.TeacherHangUp, onHandUpMic);
   });
 
   // 连麦人数达到限制
@@ -152,5 +160,20 @@ export const useConnectMic = () => {
   });
   onBeforeUnmount(() => {
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
+  });
+
+  // 主讲设置
+  function onSpeaker() {
+    if (connectMicStore.currentIsSpeaker) {
+      toast.info(translate('connectMic.speaker.receive'));
+    } else {
+      toast.info(translate('connectMic.speaker.remove'));
+    }
+  }
+  onMounted(() => {
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
+  });
+  onBeforeUnmount(() => {
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
   });
 };

@@ -75,7 +75,7 @@ import { formatDuration } from '@/assets/utils/date-time';
 
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { usePlaybackList } from '../hooks/use-playback-list';
+import { usePlaybackList } from '../use-playback-list';
 
 const playbackStore = usePlaybackStore();
 const {

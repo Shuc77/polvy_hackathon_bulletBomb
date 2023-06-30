@@ -24,8 +24,7 @@ const { msgUserNick, msgUserActor, msgUserType } = useMsgUserInfo();
 
 <style lang="scss">
 .c-portrait-msg-user-info {
-  display: inline-flex;
-  align-items: center;
+  display: inline;
   // transform: translateY(-2px);
 }
 .c-portrait-msg-user-info--actor {
@@ -33,6 +32,5 @@ const { msgUserNick, msgUserActor, msgUserType } = useMsgUserInfo();
 }
 .c-portrait-msg-user-info__nick {
   color: #ffd16b;
-  white-space: nowrap;
 }
 </style>

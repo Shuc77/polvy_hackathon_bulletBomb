@@ -66,6 +66,7 @@
           :size="ButtonSize.Medium"
           block
           :text="$lang('base.enterLive')"
+          debounce-submit
         />
       </div>
     </form-wrap>

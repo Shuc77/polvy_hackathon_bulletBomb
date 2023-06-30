@@ -1,17 +1,17 @@
 /**
  * @file 聊天室消息渲染 hook
  */
-import Vue, { ComponentOptions } from 'vue';
-import { ChatMsgItemPropsType } from '../msg-items/use-chat-msg-item';
-import { ChatMsgType } from '@polyv/live-watch-sdk';
-import { RenderPosition } from '@just4/virtual-list/types';
-import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { translate } from '@/assets/lang';
-import { ChatMsgListHookOptions } from './types';
 import { isUndefined } from '@/assets/utils/types';
 import { pinia } from '@/plugins/pinia';
-import { useChannelStore } from '@/store/use-channel-store';
+import { useChatMsgStore } from '@/store/use-chat-msg-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { RenderPosition } from '@just4/virtual-list/types';
+import { ChatMsgType } from '@polyv/live-watch-sdk';
+import Vue, { ComponentOptions } from 'vue';
+import { ChatMsgItemPropsType } from '../msg-items/use-chat-msg-item';
+import { ChatMsgListHookOptions } from './types';
 
 export type ChatMsgItemComponentOptions = ComponentOptions<Vue>;
 
@@ -21,7 +21,7 @@ export const useMsgRender = (
 ) => {
   const watchAppStore = useWatchAppStore();
   const chatMsgStore = useChatMsgStore();
-  const channelStore = useChannelStore();
+  const layoutStore = useLayoutStore();
 
   /**
    * 渲染消息列表
@@ -83,7 +83,7 @@ export const useMsgRender = (
 
     // 渲染没有更多
     if (
-      !channelStore.isPortraitWatchLayout &&
+      !layoutStore.isPortraitWatchLayout &&
       position === RenderPosition.Head &&
       chatMsgStore.historyEnd &&
       virtualList.items.length >= chatMsgStore.batchCount
@@ -108,7 +108,7 @@ export const useMsgRender = (
    * 渲染空数据提示。
    */
   function renderEmpty() {
-    if (!channelStore.isPortraitWatchLayout && watchAppStore.isWatchBackUrl) {
+    if (!layoutStore.isPortraitWatchLayout && watchAppStore.isPlaybackWatchUrl) {
       const instance = new Vue({
         render(h) {
           return h(
@@ -137,7 +137,8 @@ export const useMsgRender = (
   /**
    * 渲染数据加载失败
    */
-  function renderError() {
+  function renderError(...args: unknown[]) {
+    console.error('renderError', args);
     const instance = new Vue({
       render(h) {
         return h(

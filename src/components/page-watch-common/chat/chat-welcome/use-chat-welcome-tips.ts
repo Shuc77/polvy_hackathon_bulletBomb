@@ -4,32 +4,55 @@
 import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChatStore } from '@/store/use-chat-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLangStore } from '@/store/use-lang-store';
-import { ChatEvents, ChatMessageUser, UserLoginMsgType } from '@polyv/live-watch-sdk';
-import { computed, onBeforeUnmount, onMounted, ref, unref } from 'vue';
+import {
+  ChatEvents,
+  ChatEventsRelations,
+  ChatMessageUser,
+  InteractReceiveEvents,
+  InteractReceiveEventsRelations,
+} from '@polyv/live-watch-sdk';
+import { computed, onBeforeUnmount, onMounted, ref, unref, watchEffect } from 'vue';
+
+/** 欢迎语类型，user-用户登录，position-点击职位 */
+export type WelcomeTextType = 'user' | 'position';
+
+export interface WelcomeController {
+  /** 设置欢迎语文本 */
+  setWelcomeText(text: string, type: WelcomeTextType, time: number): void;
+  /** 设置显示事件，单位：ms */
+  setVisibleTime(time: number): void;
+}
 
 /** 最大显示数量 */
 const maxCount = 10;
 /** 文案上最大显示数量 */
 const maxShowCount = 3;
 
-/** 欢迎语提示 hook */
-export const useChatWelcomeTips = () => {
+export const useWelcomeUserLoginTips = (controller: WelcomeController, enabled = true) => {
   const chatStore = useChatStore();
   const langStore = useLangStore();
+  const visibleTime = 3000;
 
   /** 当前正在显示的观众 */
   const showingUsers = ref<ChatMessageUser[]>([]);
   /** 等待显示的观众 */
   const waitingUsers = ref<ChatMessageUser[]>([]);
 
-  /** 显示的欢迎文案 */
-  const welcomeText = ref('');
+  /** 清空显示中的观众 */
+  function clearShowingUsers() {
+    showingUsers.value = [];
+  }
 
-  function setWelcomeText() {
-    let text = '';
-
+  /** 刷新用户登录欢迎文本 */
+  function refreshUserWelcomeText() {
     const len = unref(showingUsers).length;
+    if (len === 0) {
+      return;
+    }
+
+    let text = '';
     const nicks: string[] = [];
 
     unref(showingUsers)
@@ -43,54 +66,32 @@ export const useChatWelcomeTips = () => {
     text = nicks.join('、');
 
     if (len > maxShowCount) {
-      text = `${text} ${translate('welcome.wait')}${len}${translate('welcome.peopleJoin')}`;
+      // eslint-disable-next-line prettier/prettier
+      text = `${translate('welcome.text')} ${text} ${translate('welcome.wait')}${len}${translate('welcome.peopleJoin')}`;
     } else {
-      text = `${text} ${translate('welcome.join')}`;
+      text = `${translate('welcome.text')} ${text} ${translate('welcome.join')}`;
     }
 
-    welcomeText.value = text;
-  }
-
-  /** 欢迎语是否显示 */
-  const welcomeVisible = computed(() => showingUsers.value.length !== 0);
-
-  /** 隐藏定时器 */
-  let hideTimer: number | undefined;
-
-  /** 设置隐藏定时器 */
-  function setHideTimer() {
-    hideTimer = window.setTimeout(() => {
-      showingUsers.value = [];
-      clearHideTimer();
-      resetShowUser();
-    }, 3000);
-  }
-  /** 清空隐藏定时器 */
-  function clearHideTimer() {
-    clearTimeout(hideTimer);
-    hideTimer = undefined;
+    controller.setWelcomeText(text, 'user', visibleTime);
   }
 
   /** 重置显示的用户 */
-  function resetShowUser() {
-    clearHideTimer();
-
+  function setUserWelcomeText() {
     const surplusCount = maxCount - showingUsers.value.length;
-    const joinUsers = waitingUsers.value.splice(0, surplusCount);
-
-    if (joinUsers.length) {
-      showingUsers.value.push(...joinUsers);
-      setWelcomeText();
+    if (surplusCount <= 0) {
+      return;
     }
 
-    if (showingUsers.value.length) {
-      setHideTimer();
+    const joinUsers = waitingUsers.value.splice(0, surplusCount);
+    if (joinUsers.length) {
+      showingUsers.value.push(...joinUsers);
+      refreshUserWelcomeText();
     }
   }
 
   /** 处理聊天室登录事件 */
-  function onUserLoginEvent(event: { userLoginMsg: UserLoginMsgType }) {
-    const user = event.userLoginMsg.user;
+  function onUserLoginEvent(event: ChatEventsRelations[ChatEvents.ChatUserLogin]) {
+    const user = event.user;
     if (!user) return;
 
     // 正在两个列表中的用户不再插入
@@ -98,35 +99,146 @@ export const useChatWelcomeTips = () => {
     const waitIndex = waitingUsers.value.findIndex(_user => _user.userId === user.userId);
     if (showIndex !== -1 || waitIndex !== -1) return;
 
-    // 显示中的数量小于 10，直接显示否则进入等待队列
-    if (showingUsers.value.length < maxCount) {
-      showingUsers.value.push(user);
-    } else {
-      waitingUsers.value.push(user);
-    }
+    waitingUsers.value.push(user);
 
-    resetShowUser();
-    setWelcomeText();
+    setUserWelcomeText();
   }
 
   onMounted(() => {
-    if (chatStore.welcomeEnabled) {
-      const watchCore = getWatchCore();
+    const watchCore = getWatchCore();
+    if (enabled && chatStore.chatSetting.welcomeEnabled) {
       watchCore.chat.eventEmitter.on(ChatEvents.ChatUserLogin, onUserLoginEvent);
     }
   });
 
   onBeforeUnmount(() => {
-    if (chatStore.welcomeEnabled) {
-      const watchCore = getWatchCore();
+    const watchCore = getWatchCore();
+    if (enabled && chatStore.chatSetting.welcomeEnabled) {
       watchCore.chat.eventEmitter.off(ChatEvents.ChatUserLogin, onUserLoginEvent);
     }
+  });
+
+  function onWelcomeHidden() {
+    clearShowingUsers();
+    setUserWelcomeText();
+  }
+
+  return {
+    onWelcomeHidden,
+  };
+};
+
+export const usePositionClickTips = (controller: WelcomeController, enabled = true) => {
+  const interactReceiveStore = useInteractReceiveStore();
+  const visibleTime = 900;
+
+  function onProductClickEvent(
+    data: InteractReceiveEventsRelations[InteractReceiveEvents.ProductClick],
+  ) {
+    const text = `${data.nickname}${translate('welcome.deliver')}${data.name}`;
+    controller.setWelcomeText(text, 'position', visibleTime);
+  }
+
+  onMounted(() => {
+    const watchCore = getWatchCore();
+    if (enabled && interactReceiveStore.interactSetting.productLinkJumpTipEnabled) {
+      watchCore.interactReceive.eventEmitter.on(
+        InteractReceiveEvents.ProductClick,
+        onProductClickEvent,
+      );
+    }
+  });
+
+  onBeforeUnmount(() => {
+    const watchCore = getWatchCore();
+    if (enabled && interactReceiveStore.interactSetting.productLinkJumpTipEnabled) {
+      watchCore.interactReceive.eventEmitter.off(
+        InteractReceiveEvents.ProductClick,
+        onProductClickEvent,
+      );
+    }
+  });
+
+  function onWelcomeHidden() {}
+
+  return {
+    onWelcomeHidden,
+  };
+};
+
+/** 欢迎语提示 hook */
+export const useChatWelcomeTips = () => {
+  const welcomeController: WelcomeController = {
+    setWelcomeText,
+    setVisibleTime,
+  };
+
+  const { onWelcomeHidden: onWelcomeUserLoginHidden } = useWelcomeUserLoginTips(welcomeController);
+  const { onWelcomeHidden: onProductClickHidden } = usePositionClickTips(welcomeController);
+
+  /** 显示的欢迎文案 */
+  const welcomeText = ref('');
+
+  /** 欢迎语类型 */
+  const welcomeTextType = ref<WelcomeTextType>();
+
+  /** 设置欢迎语文本 */
+  function setWelcomeText(text: string, type: WelcomeTextType, time: number) {
+    setVisibleTime(time);
+    welcomeText.value = text;
+    welcomeTextType.value = type;
+  }
+
+  /** 清空欢迎语文本 */
+  function clearWelcomeText() {
+    welcomeText.value = '';
+    welcomeTextType.value = undefined;
+  }
+
+  /** 欢迎语是否显示 */
+  const welcomeVisible = computed<boolean>(() => !!welcomeText.value);
+
+  /** 隐藏定时器 */
+  let hideTimer: number | undefined;
+
+  let visibleTime = 3000;
+
+  function setVisibleTime(time: number) {
+    visibleTime = time;
+  }
+
+  /** 设置隐藏定时器 */
+  function setHideTimer() {
+    clearHideTimer();
+    hideTimer = window.setTimeout(() => {
+      clearWelcomeText();
+      clearHideTimer();
+
+      onWelcomeUserLoginHidden();
+      onProductClickHidden();
+    }, visibleTime);
+  }
+  /** 清空隐藏定时器 */
+  function clearHideTimer() {
+    clearTimeout(hideTimer);
+    hideTimer = undefined;
+  }
+
+  watchEffect(() => {
+    if (welcomeText.value) {
+      setHideTimer();
+    } else {
+      clearHideTimer();
+    }
+  });
+
+  onBeforeUnmount(() => {
     clearHideTimer();
   });
 
   return {
-    showingUsers,
     welcomeText,
+    welcomeTextType,
     welcomeVisible,
   };
 };

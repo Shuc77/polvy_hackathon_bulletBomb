@@ -7,7 +7,7 @@
       block
       :type="ButtonType.AsideMenu"
       :size="ButtonSize.Small"
-      :text="$lang('connectMic.cancelApply')"
+      :text="cancelText"
       :icon="PcIconHangUp"
       icon-class="c-pc-connect-mic-button__hang-up-icon"
       @click="onClickCancelApplyConnectMic"
@@ -47,15 +47,23 @@
 </template>
 
 <script setup lang="ts">
+import { appEvents, eventBus } from '@/app/app-events';
+import { translate } from '@/assets/lang';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
-import { appEvents, eventBus } from '@/app/app-events';
+import { PcIconApplyVideoCall, PcIconHangUp } from '@/components/component-icons/pc/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { ConnectMicStatus, ConnectMicType } from '@polyv/live-watch-sdk';
-import { PcIconApplyVideoCall, PcIconHangUp } from '@/components/component-icons/pc/map';
+import { computed, unref } from 'vue';
 
-const { connectMicStatus, connectMicType } = storeDefinitionToRefs(useConnectMicStore);
+const {
+  connectMicStatus,
+  connectMicType,
+  currentMicIndex,
+  maxMicIndex,
+  showJoinQueueNumberEnabled,
+} = storeDefinitionToRefs(useConnectMicStore);
 
 /** 点击申请连麦 */
 function onClickApplyConnectMic() {
@@ -72,6 +80,19 @@ function onClickEndConnectMic() {
   // 唤起二次确认弹层
   eventBus.$emit(appEvents.connectMic.TriggerEndConnectConfirm);
 }
+
+/** 取消申请按钮文案 */
+const cancelText = computed(() => {
+  const realIndex = currentMicIndex.value + 1;
+
+  if (!showJoinQueueNumberEnabled.value || realIndex === 0) {
+    return translate('connectMic.cancelApply');
+  }
+
+  const maxCount = unref(maxMicIndex);
+  const suffixText = realIndex > maxCount ? `${maxCount}+` : realIndex;
+  return `${translate('connectMic.applying3')} ${suffixText}`;
+});
 </script>
 
 <style lang="scss">

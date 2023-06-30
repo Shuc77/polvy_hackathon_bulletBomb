@@ -1,4 +1,4 @@
-<!-- @file PC 端聊天室异常提示组件 -->
+<!-- @file PC 端聊天区域异常提示组件 -->
 <template>
   <div
     v-if="showTips"

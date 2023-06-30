@@ -2,35 +2,32 @@ import Vue, { onBeforeMount } from 'vue';
 
 import { getWatchCore, initWatchSdk } from '@/core/watch-sdk';
 
-import { useErrorCatch } from '@/hooks/core/use-error-catch';
-import { paramGetter } from '@/hooks/core/use-query-params';
-import { usePageSkin } from '@/skins/use-page-skin';
 import { useAuthSpecial } from '@/components/page-splash-common/auth/hooks/use-auth-special';
-import { useWeixinSetup } from './_hooks/use-weixin-setup';
+import { useErrorCatch } from '@/hooks/core/use-error-catch';
+import { paramGetter, removeQueryParam } from '@/hooks/core/use-query-params';
+import { usePageSkin } from '@/skins/use-page-skin';
 import { useGlobalEventsEffect } from './_hooks/use-global-events-effect';
 import { useBrowserIcon, useBrowserTitle, useGlobalStyle } from './_hooks/use-global-style';
-import { loadInteractiveReceiveUI } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useIarSetup } from './_hooks/use-iar-setup';
+import { useWeixinSetup } from './_hooks/use-weixin-setup';
 
+import { useSyncStoreForWatchApp } from '@/hooks/core/use-sync-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useChannelStore } from '@/store/use-channel-store';
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { useLiveBookingStore } from '@/store/use-live-booking-store';
-import { useViewerStore } from '@/store/use-viewer-store';
 
 import { translate } from '@/assets/lang';
 import { isMobile, isMockPc } from '@/assets/utils/browser';
-import { ynToBool } from '@utils-ts/boolean';
 
 import { PageErrorType } from '@/app/layout/page-error/page-error-type';
-import { YN } from '@polyv/live-watch-sdk';
-import { useLangStore } from '@/store/use-lang-store';
-import { LangType } from '@/assets/lang/lang-enum';
+import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
+import { getDefaultLang, convert2WatchSdkLang } from '@/store/use-lang-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 /** 错误日志记录 */
 const useErrorLogRecord = () => {
-  const watchCore = getWatchCore();
+  // const watchCore = getWatchCore();
   const { windowErrorHandler, promiseErrorHandler, vueErrorHandler } = useErrorCatch(data => {
-    watchCore.logger.error('watch-app', 'error-log-record', JSON.stringify(data));
+    // watchCore.logger.error('watch-app', 'error-log-record', JSON.stringify(data));
+    console.log(data);
   });
 
   windowErrorHandler();
@@ -48,35 +45,36 @@ const useErrorLogRecord = () => {
 const useInterceptWatchAppInit = (): boolean => {
   const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
-
-  const channelDetail = watchCore.channel.getChannelDetail();
+  const { checkRedirectMainChannelAuth, checkRedirectSubChannel } = useMultiMeetingRedirect();
 
   // 当前处于分会场，是否需要跳转到主会场进行观看条件授权
-  if (ynToBool(channelDetail.action?.mainChannelRedirect, YN.N)) {
-    const mainChannelId = channelDetail.multiMeetingSetting?.mainChannelId;
-    if (!mainChannelId) {
-      console.error('缺少主会场频道号');
-      return true;
-    }
-    const watchUrl = watchCore.channel.generateWatchUrl(mainChannelId.toString());
-    location.replace(watchUrl);
+  const checkMainChannelResult = checkRedirectMainChannelAuth();
+  if (checkMainChannelResult) {
     return true;
   }
 
+  // 当前处于主会场，是否需要跳回分会场
+  const checkSubChannelResult = checkRedirectSubChannel();
+  if (checkSubChannelResult) {
+    return true;
+  }
+
+  const watchSetting = watchCore.channel.getWatchSetting();
   // 观看页被关闭
-  if (ynToBool(channelDetail.channelInfo.isClosePreview, YN.N)) {
+  if (!watchSetting.watchEnabled) {
     watchAppStore.setPageError({
       type: PageErrorType.ChannelClosed,
-      title: translate('pageError.channelClosed'),
+      title: translate('pageError.channel.closed'),
+      desc: translate('pageError.channel.feedBack'),
     });
     return true;
   }
 
   // 移动端观看页被关闭
-  if ((isMobile || isMockPc) && !ynToBool(channelDetail.channelInfo.mobileEnabled, YN.Y)) {
+  if ((isMobile || isMockPc) && !watchSetting.mobileWatchEnabled) {
     watchAppStore.setPageError({
       type: PageErrorType.MobileChannelClosed,
-      title: translate('pageError.mobileChannelClosed'),
+      title: translate('pageError.platform.onlyPc'),
     });
     return true;
   }
@@ -94,12 +92,11 @@ export function useWatchApp() {
   const { setupGlobalStyle, removeSkeleton } = useGlobalStyle();
   const { initPageSkin } = usePageSkin();
 
-  const watchAppStore = useWatchAppStore();
+  const { syncStoreBeforeWatchAppInited } = useSyncStoreForWatchApp();
+  const { loadIarSDK } = useIarSetup();
+
   const channelStore = useChannelStore();
-  const channelInfoStore = useChannelInfoStore();
-  const viewerStore = useViewerStore();
-  const liveBookingStore = useLiveBookingStore();
-  const langStore = useLangStore();
+  const watchAppStore = useWatchAppStore();
 
   function onLayoutMounted() {
     removeSkeleton();
@@ -113,15 +110,6 @@ export function useWatchApp() {
     } else if (paramGetter.channelId()) {
       channelId = paramGetter.channelId();
     }
-
-    if (!channelId) {
-      watchAppStore.setPageError({
-        type: PageErrorType.ChannelIdError,
-        title: translate('pageError.channelClosed'),
-      });
-      return;
-    }
-
     return channelId;
   }
 
@@ -131,46 +119,54 @@ export function useWatchApp() {
   async function setupWatchApp(): Promise<void> {
     const channelId = getChannelIdByUrl();
     if (!channelId) {
+      watchAppStore.setPageError({
+        type: PageErrorType.ChannelIdError,
+        title: translate('pageError.channel.notExist'),
+        desc: translate('pageError.channel.feedBack'),
+      });
       return;
     }
 
+    // 保存频道号到 store
+    channelStore.$patch({ channelId });
+
     // 初始化观看页 SDK
     initWatchSdk({
-      env: WATCH_SDK_ENV,
       channelId,
-      vid: paramGetter.vid(),
-      testModeToken: paramGetter.testModeToken(),
+      env: WATCH_SDK_ENV,
+      language: convert2WatchSdkLang(getDefaultLang()),
       promoteId: paramGetter.promoteId(),
-      invitePosterId: paramGetter.invitePosterId(),
-      wxInviteId: paramGetter.wxInviteId(),
-      invitee: paramGetter.invitee(),
+      testModeToken: paramGetter.testModeToken(),
+      zone: paramGetter.zone(),
+      vid: paramGetter.vid(),
+      playbackOrigin: paramGetter.playbackType(),
       userInfo: {
         userId: paramGetter.viewerid(),
         nick: paramGetter.nickname() || paramGetter.name(),
         pic: paramGetter.avatar(),
       },
-      zone: paramGetter.zone(),
-      language: langStore.currentLang === LangType.Chinese ? 'zh_CN' : 'en',
+      inviteInfo: {
+        invitePosterId: paramGetter.invitePosterId(),
+        wxInviteId: paramGetter.wxInviteId(),
+        invitee: paramGetter.invitee(),
+      },
+      autoAuthParams: {
+        code: paramGetter.password(),
+      },
+      statisticsParams: {
+        param4: paramGetter.param4(),
+        param5: paramGetter.param5(),
+      },
     });
 
-    try {
-      await Promise.all([
-        // 安装观看页核心
-        watchAppStore.resetUpWatchCore(),
-        // 记载互动功能 UI 组件
-        loadInteractiveReceiveUI(),
-      ]);
-    } catch (error) {
-      console.error(error);
-      watchAppStore.setPageError({
-        type: PageErrorType.UnknownError,
-        title: '数据请求异常，页面初始化失败！',
-      });
-      return;
-    }
+    // 安装观看页 SDK 核心
+    await watchAppStore.resetUpWatchCore();
 
-    // 错误日志记录
-    useErrorLogRecord();
+    // 加载互动功能 SDK
+    await loadIarSDK();
+
+    // 同步相关 store 数据
+    syncStoreBeforeWatchAppInited();
 
     /** 需要拦截观看页应用初始化 */
     const needInterceptWatchAppInit = useInterceptWatchAppInit();
@@ -178,16 +174,7 @@ export function useWatchApp() {
       return;
     }
 
-    // 同步相关 store 的数据
-    channelStore.syncChannelStore();
-    channelInfoStore.syncChannelInfo();
-    viewerStore.syncViewerInfo();
-    liveBookingStore.initLiveBookingData();
-
-    // 初始化多皮肤
-    initPageSkin();
-
-    // 处理特殊授权
+    // 处理特殊授权，授权出现异常只会弹 toast，不中断页面渲染
     const { handleSpecialAuth } = useAuthSpecial();
     await handleSpecialAuth();
 
@@ -196,6 +183,15 @@ export function useWatchApp() {
     if (weixinResult) {
       return;
     }
+
+    // 移除地址上不需要用的参数
+    removeQueryParam(['name', 'password']);
+
+    // 初始化多皮肤
+    initPageSkin();
+
+    // 错误日志记录
+    useErrorLogRecord();
 
     watchAppStore.$patch({
       watchAppInited: true,

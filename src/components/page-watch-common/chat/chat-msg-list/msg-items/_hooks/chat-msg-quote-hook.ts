@@ -1,13 +1,11 @@
-import { useChannelStore } from '@/store/use-channel-store';
-import { useChatStore } from '@/store/use-chat-store';
-import { YN, ChatMsgQuoteOriginType } from '@polyv/live-watch-sdk';
-import { computed, unref } from 'vue';
-import { ynToBool } from '@utils-ts/boolean';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { appEvents, eventBus } from '@/app/app-events';
 import { TAB_NAME_ASK } from '@/assets/constants/tab-name';
+import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { ChatMsgQuoteOriginType } from '@polyv/live-watch-sdk';
+import { computed, unref } from 'vue';
 
 /**
  * 聊天消息回复 hook
@@ -16,13 +14,12 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType>) => {
   const chatStore = useChatStore();
   const watchAppStore = useWatchAppStore();
-  const channelStore = useChannelStore();
   const viewerStore = useViewerStore();
   const layoutStore = useLayoutStore();
 
   /** 能否进行引用回复 */
   const canQuoteReply = computed<boolean>(() => {
-    if (watchAppStore.isWatchBackUrl) return false;
+    if (watchAppStore.isPlaybackWatchUrl) return false;
 
     // 当前处于提问不需要回复
     if (
@@ -33,10 +30,7 @@ export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType
     }
 
     // 引用回复开关
-    const quoteReplyEnabled = ynToBool(
-      channelStore.channelDetail?.channelConfig.quoteReplyEnabled,
-      YN.N,
-    );
+    const quoteReplyEnabled = !!chatStore.chatSetting.quoteReplyEnabled;
 
     // 聊天室是否被关闭
     const chatRoomIsClosed = chatStore.chatRoomIsClosed;

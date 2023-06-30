@@ -77,13 +77,11 @@
 import { formatDate } from '@utils-ts/date';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { PcIconMedia, PcIconPlayRound } from '@/components/component-icons/pc/map';
-import PlvRow from '@polyv/polyv-ui/lib-admin/row';
-import PlvCol from '@polyv/polyv-ui/lib-admin/col';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { formatDuration } from '@/assets/utils/date-time';
-import { usePlaybackList } from '../hooks/use-playback-list';
-import { PlvPagination } from '@/plugins/polyv-ui/admin-import';
+import { usePlaybackList } from '../use-playback-list';
+import { PlvPagination, PlvRow, PlvCol } from '@/plugins/polyv-ui/admin-import';
 
 const playbackStore = usePlaybackStore();
 

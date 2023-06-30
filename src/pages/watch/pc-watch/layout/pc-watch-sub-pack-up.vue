@@ -52,14 +52,14 @@ const nickname = computed(() => {
   if (connectMicStore.masterNickname) {
     return connectMicStore.masterNickname;
   }
-  return unref(teacherInfo).nick;
+  return unref(teacherInfo)?.nick;
 });
 
 const actor = computed(() => {
   if (connectMicStore.masterActor) {
     return connectMicStore.masterActor;
   }
-  return unref(teacherInfo).actor;
+  return unref(teacherInfo)?.actor;
 });
 </script>
 

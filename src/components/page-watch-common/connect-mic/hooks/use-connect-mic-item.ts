@@ -1,12 +1,14 @@
 import { translate } from '@/assets/lang';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { ConnectMicItem } from '@polyv/live-watch-sdk';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref } from 'vue';
+import { ConnectMicItem, ConnectMicFitType } from '@polyv/live-watch-sdk';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
+import { isMobile } from '@/assets/utils/browser';
 
-export const connectMicItemProps = () => ({
+export const connectMicItemProps = (fitType = ConnectMicFitType.Contain) => ({
   micItem: PropUtils.object<ConnectMicItem>().isRequired,
   /** 连麦信息是否显示 */
   micInfoVisible: PropUtils.bool.def(true),
+  fitType: PropUtils.enum<ConnectMicFitType>().def(fitType),
 });
 
 /** 连麦节点 hook */
@@ -15,6 +17,8 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
   const { micInfoVisible } = useProps(props);
 
   const wrapRef = ref<HTMLDivElement>();
+
+  const isPause = computed(() => props.micItem.isPlayFail);
 
   /** 连麦用户昵称 */
   const micNickname = computed<string>(() => {
@@ -43,16 +47,27 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
   /** 是否本地推流 */
   const isLocal = computed(() => props.micItem.isLocal);
 
-  /** 是否主讲 */
+  /** 是否第一画面 */
   const isMaster = computed(() => props.micItem.isMaster);
 
   /** 当前用户的连麦方式 */
   const currentConnectMicType = computed(() => props.micItem.currentConnectMicType);
 
+  watch(
+    () => isPause.value,
+    (val: boolean) => {
+      if (val) {
+        document.body.addEventListener(isMobile ? 'touchend' : 'click', resume);
+      } else {
+        document.body.removeEventListener(isMobile ? 'touchend' : 'click', resume);
+      }
+    },
+  );
+
   /**
    * 初始化连麦节点
    */
-  async function initMicItem() {
+  async function initMicItem(fit: ConnectMicFitType) {
     await nextTick();
     const micItem = props.micItem;
     const wrapElement = unref(wrapRef);
@@ -63,20 +78,16 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
 
     // 本地流则调用推送方法
     if (micItem.isLocal) {
-      micItem.publishSteam({
+      micItem.publishStream({
         element: wrapElement,
         control: false,
-        playConfig: {
-          fit: 'contain',
-        },
+        fit,
       });
     } else {
       micItem.subscribeStream({
         element: wrapElement,
         control: false,
-        playConfig: {
-          fit: 'contain',
-        },
+        fit,
       });
     }
   }
@@ -89,16 +100,23 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
     micItem.removeStream();
   }
 
+  function resume() {
+    const micItem = props.micItem;
+    micItem.resumeStream();
+  }
+
   onMounted(() => {
-    initMicItem();
+    initMicItem(props.fitType);
   });
 
   onBeforeUnmount(() => {
     destroyMicItem();
+    document.body.removeEventListener(isMobile ? 'touchend' : 'click', resume);
   });
 
   return {
     wrapRef,
+    isPause,
     micInfoVisible,
     micNickname,
     isAudioMuted,
@@ -108,5 +126,6 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
     isLocal,
     isMaster,
     currentConnectMicType,
+    resume,
   };
 };

@@ -16,16 +16,16 @@
     ></div>
 
     <div class="c-mobile-msg-user-info__nick-wrap">
-      <!-- 昵称 -->
-      <span class="c-mobile-msg-user-info__nick g-singleline pws-chat-msg-user-nickname">
-        {{ msgUserNick }}{{ isSelfMsg ? `(${$lang('base.me')})` : '' }}
-      </span>
       <!-- 头衔 -->
       <span
         v-if="msgUserActor"
-        class="c-mobile-msg-user-info__actor pws-chat-msg-user-actor"
+        class="c-mobile-msg-user-info__actor g-singleline pws-chat-msg-user-actor"
       >
         {{ msgUserActor }}
+      </span>
+      <!-- 昵称 -->
+      <span class="c-mobile-msg-user-info__nick g-singleline pws-chat-msg-user-nickname">
+        {{ msgUserNick }}{{ isSelfMsg ? `(${$lang('base.me')})` : '' }}
       </span>
     </div>
   </div>
@@ -75,6 +75,7 @@ const { msgUserNick, msgUserAvatar, msgUserActor, isSelfMsg, isSpecialUser } = u
 
 .c-mobile-msg-user-info__actor {
   flex-shrink: 0;
+  max-width: 48px;
   height: 18px;
   padding: 0 6px;
   font-size: 12px;

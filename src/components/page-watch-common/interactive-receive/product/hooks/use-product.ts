@@ -1,31 +1,31 @@
-import { computed, unref } from 'vue';
 import { getWatchCore } from '@/core/watch-sdk';
+import { computed, unref } from 'vue';
 
 import { useChannelStore } from '@/store/use-channel-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
-import { ynToBool } from '@utils-ts/boolean';
 
-import { YN, LiveStatus, RtasTrackEventId, RtasTrackEventType } from '@polyv/live-watch-sdk';
-import { ProductGoodData } from '../types/product-types';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
+import { LiveStatus, RtasTrackEventId, RtasTrackEventType } from '@polyv/live-watch-sdk';
+import { ProductGoodData } from '../types/product-types';
 
 /**
  * @hook 互动-商品库
  * */
 export const useProduct = () => {
-  const channelStore = useChannelStore();
+  const interactReceiveStore = useInteractReceiveStore();
 
   const watchCore = getWatchCore();
   /** 商品库 SDK 实例 */
   const productSdk = watchCore.interactReceive.getProduct();
 
   /** 招聘岗位开关 */
-  const recruitmentEnabled = computed(() =>
-    ynToBool(channelStore.channelDetail?.channelConfig.recruitmentEnabled, YN.N),
-  );
+  const recruitmentEnabled = computed(() => {
+    return interactReceiveStore.interactSetting.recruitmentEnabled;
+  });
 
   /** 招聘标签文本 */
   const jobDescLabel = computed(() => {
@@ -75,12 +75,7 @@ export const useProductLinkParams = () => {
 /** 商品库数据上报 hook */
 export const useProductTrack = () => {
   const channelStore = useChannelStore();
-
-  /** 商品库数据上报超管开关 */
-  const productTrackEnabled = ynToBool(
-    channelStore.channelDetail?.channelConfig?.productTrackEnabled,
-    YN.N,
-  );
+  const interactReceiveStore = useInteractReceiveStore();
 
   /**
    * 上报商品信息
@@ -93,13 +88,16 @@ export const useProductTrack = () => {
     eventType: RtasTrackEventType,
     eventId: RtasTrackEventId,
   ) => {
-    if (channelStore.liveStatus !== LiveStatus.Live || !productTrackEnabled) {
+    if (
+      channelStore.liveStatus !== LiveStatus.Live ||
+      !interactReceiveStore.interactSetting.productTrackEnabled
+    ) {
       return;
     }
     const watchCore = getWatchCore();
 
     const { name, productId, realPrice, price, productType } = good;
-    const data = {
+    const data: UniversalParams<string> = {
       name, // 商品名字
       productId, // 商品Id
       price: `${price ?? 0}`, // 价格
@@ -107,6 +105,9 @@ export const useProductTrack = () => {
       productType, // 商品分类
       linkType: isMobile ? 'mobile' : 'pc',
     };
+    if (good.logId) {
+      data.pushId = good.logId;
+    }
 
     watchCore.rtas.trackBehaviorEvent({
       eventType,
@@ -149,7 +150,10 @@ export const useProductTrack = () => {
 
   /** 上报打开商品列表数据 */
   const trackOpenProductList = () => {
-    if (channelStore.liveStatus !== LiveStatus.Live || !productTrackEnabled) {
+    if (
+      channelStore.liveStatus !== LiveStatus.Live ||
+      !interactReceiveStore.interactSetting.productTrackEnabled
+    ) {
       return;
     }
 

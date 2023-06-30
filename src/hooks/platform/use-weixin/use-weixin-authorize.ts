@@ -3,9 +3,6 @@
  */
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from '@/store/use-channel-store';
-import { YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
 import { computed } from 'vue';
 
 export interface WxAuthorizeOptions {
@@ -27,7 +24,7 @@ export interface WxAuthorizeParams {
  * @hook 微信授权
  */
 export function useWeixinAuthorize() {
-  const channelStore = useChannelStore();
+  const watchCore = getWatchCore();
 
   /** 能否进行微信授权 */
   const canWeixinAuthorize = computed<boolean>(() => {
@@ -41,9 +38,9 @@ export function useWeixinAuthorize() {
       return false;
     }
 
-    // 是否忽略微信授权
-    const ignoreWx = ynToBool(channelStore.channelDetail?.channelConfig.ignoreWx, YN.N);
-    if (ignoreWx) {
+    // 是否可以微信授权
+    const weixinAuthEnabled = watchCore.weixin.getWeixinAuthEnabled();
+    if (!weixinAuthEnabled) {
       return false;
     }
 
@@ -72,7 +69,7 @@ export function useWeixinAuthorize() {
  * 企业微信授权 hook
  */
 export function useWorkWeixinAuthorize() {
-  const channelStore = useChannelStore();
+  const watchCore = getWatchCore();
 
   /** 能否进行企业微信授权 */
   const canWorkWeixinAuthorize = computed<boolean>(() => {
@@ -81,18 +78,9 @@ export function useWorkWeixinAuthorize() {
       return false;
     }
 
-    // 没有绑定企微
-    if (!ynToBool(channelStore.channelDetail?.channelConfig.wxWorkStatusSwitch, YN.N)) {
-      return false;
-    }
-
-    // 没开启企业微信授权开关
-    if (!ynToBool(channelStore.channelDetail?.channelConfig.wxWorkAuthSwitch, YN.N)) {
-      return false;
-    }
-
-    // 没开启员工邀请
-    if (!ynToBool(channelStore.channelDetail?.channelConfig.wxWorkInviteEnabled, YN.N)) {
+    // 是否可以企微授权
+    const workWeixinAuthEnabled = watchCore.weixin.getWorkWeixinAuthEnabled();
+    if (!workWeixinAuthEnabled) {
       return false;
     }
 

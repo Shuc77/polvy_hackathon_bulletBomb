@@ -41,7 +41,7 @@
           <!-- 右侧主体 -->
           <div class="c-pc-watch-layout__main__right__content">
             <!-- 页面广告 -->
-            <pc-page-advert v-if="!isWatchBackUrl" />
+            <pc-page-advert v-if="!isPlaybackWatchUrl" />
 
             <!-- 侧边菜单栏 -->
             <div class="c-pc-watch-layout__main__right__content__inner">
@@ -58,6 +58,9 @@
           :class="{
             'c-pc-watch-layout__main__fullscreen-wrap--fullscreened': isFullscreen,
           }"
+          @mousemove="showPlayerControl"
+          @mouseenter="showPlayerControl"
+          @mouseleave="hidePlayerControl"
         >
           <div class="c-pc-watch-layout__main__fullscreen-wrap__height"></div>
 
@@ -111,8 +114,13 @@
           </div>
 
           <!-- 播放器控制栏层 -->
-          <div class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-control">
-            <pc-player-control />
+          <div
+            ref="PlayerControlWrapperRef"
+            class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-control"
+          >
+            <transition name="fade">
+              <pc-player-control v-show="playerControlVisible" />
+            </transition>
           </div>
 
           <!-- 直播倒计时 + 直播预约层 -->
@@ -125,12 +133,14 @@
 
     <!-- 下半部分 -->
     <div
-      v-if="!isWatchBackUrl && !iframeMode"
+      v-if="!isPlaybackWatchUrl && !iframeMode"
       class="c-pc-watch-layout__menu-panel-wrap"
     >
       <div class="c-pc-watch-layout__menu-panel-content g-boundary">
-        <!-- 多会场 -->
-        <pc-multi-meeting />
+        <!-- 多会场（横向布局） -->
+        <pc-multi-meeting-horizontal
+          v-if="multiMeetingEnabled && multiMeetingListLayout === MultiMeetingListLayout.Horizontal"
+        />
 
         <!-- 底部菜单栏 -->
         <pc-watch-bottom-menu />
@@ -143,40 +153,67 @@
 </template>
 
 <script setup lang="ts">
-import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
-import PcPlayerControl from '@/components/page-watch-common/player/player-control/pc-player-control/player-control.vue';
+import { ref } from 'vue';
 import PcBasicInfo from '@/components/common-business/basic-info/pc-basic-info.vue';
-import PcMultiMeeting from '@/components/page-watch-common/multi-meeting/pc-multi-meeting.vue';
-import PcPageAdvert from '@/components/page-watch-common/page-advert/pc-page-advert.vue';
-import PcDoc from '@/components/page-watch-common/doc/pc-doc.vue';
+import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
+import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
 import PcConnectMicUserItem from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-user-item.vue';
+import PcDoc from '@/components/page-watch-common/doc/pc-doc.vue';
+import PcDonatePayQrcode from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-pay-qrcode.vue';
+import PcMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-horizontal.vue';
+import PcPageAdvert from '@/components/page-watch-common/page-advert/pc-page-advert.vue';
+import PcPlayerControl from '@/components/page-watch-common/player/player-control/pc-player-control/player-control.vue';
 import PcPlayerMain from '@/components/page-watch-common/player/player-main/pc-player-main/pc-player-main.vue';
 import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
 import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
 import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
-import PcDonatePayQrcode from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-pay-qrcode.vue';
-import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
 
 import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
 
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { useDocStore } from '@/store/use-doc-store';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useDocStore } from '@/store/use-doc-store';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
+import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 
-import { MainScreenContent } from '@polyv/live-watch-sdk';
+const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
-const { iframeMode, isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
-
-const { pcWatchBackgroundImage } = storeDefinitionToRefs(useChannelInfoStore);
+const { pcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
 const { mainScreen, subScreenPackUp, isFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
 const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+
+const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
+
+const PlayerControlWrapperRef = ref<HTMLDivElement>();
+
+const {
+  hoverItemVisible: playerControlVisible,
+  showHoverItem: showPlayerControlItem,
+  forceShowHoverItem: forceShowPlayerControlItem,
+  hideHoverItem: hidePlayerControl,
+} = useHoverVisible();
+
+function showPlayerControl(e: MouseEvent) {
+  // 聚焦在播放器控制栏上时，不需要自动隐藏
+  if (
+    PlayerControlWrapperRef.value &&
+    e.target &&
+    PlayerControlWrapperRef.value.contains(e.target as HTMLElement)
+  ) {
+    forceShowPlayerControlItem();
+    return;
+  }
+
+  showPlayerControlItem();
+}
 </script>
 
 <style lang="scss">

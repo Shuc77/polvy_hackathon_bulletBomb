@@ -8,8 +8,7 @@ import {
   EnrollFillTime,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { useChannelStore } from './use-channel-store';
+import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 
 export interface EnrollStoreState {
   /** 报名观看开关 */
@@ -43,9 +42,9 @@ export interface EnrollStoreState {
   /** 入口文本 */
   entranceText: ComputedRef<string>;
   /** 报名观看标题 */
-  enrollTitle: ComputedRef<string>;
+  enrollTitle: Ref<string>;
   /** banner 头图片 */
-  enrollBanner: ComputedRef<string | undefined>;
+  enrollBanner: Ref<string | undefined>;
   /** 是否使用报名观看姓名作为昵称 */
   enrollNickEnabled: Ref<boolean>;
 }
@@ -61,8 +60,6 @@ export interface EnrollStore extends EnrollStoreState, EnrollStoreAction {}
  * 报名观看 store
  */
 export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () => {
-  const channelStore = useChannelStore();
-
   /** 报名观看开关 */
   const enrollEnabled = ref(false);
 
@@ -137,22 +134,20 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
       !unref(hasEnrolled),
   );
 
+  /** 入口原始文本 */
+  const entranceOriginText = ref('');
+
   /** 入口文本 */
   const entranceText = computed<string>(() => {
-    const text =
-      channelStore.channelDetail?.enrollSetting?.entranceText ?? translate('enroll.text');
+    const text = unref(entranceOriginText) ?? translate('enroll.text');
     return text === '报名观看' ? translate('enroll.text') : text;
   });
 
   /** 报名观看标题 */
-  const enrollTitle = computed<string>(() => {
-    return channelStore.channelDetail?.enrollSetting?.title ?? '';
-  });
+  const enrollTitle = ref('');
 
   /** banner 头部图 */
-  const enrollBanner = computed<string | undefined>(() => {
-    return channelStore.channelDetail?.enrollSetting?.banner ?? undefined;
-  });
+  const enrollBanner = ref('');
 
   /** 是否使用报名观看姓名作为昵称 */
   const enrollNickEnabled = ref(false);
@@ -167,6 +162,9 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     hasEnrolled.value = enrollInfo.hasEnrolled;
     hasAudited.value = enrollInfo.hasAudited;
     fillTime.value = enrollInfo.fillTime;
+    entranceOriginText.value = enrollInfo.entranceText;
+    enrollTitle.value = enrollInfo.enrollTitle;
+    enrollBanner.value = enrollInfo.enrollBanner;
     enrollFields.value = enrollInfo.enrollFields;
     enrollAuthType.value = enrollInfo.enrollAuthType;
     smsVerifyEnabled.value = enrollInfo.smsVerifyEnabled;

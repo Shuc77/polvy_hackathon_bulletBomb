@@ -9,6 +9,10 @@ export interface SimpleVisibleOptions {
   autoClose?: boolean;
   /** 自动关闭时间，单位：毫秒，默认：5 * 1000 */
   autoCloseTime?: number;
+  /** 显示时回调 */
+  showCallback?: () => void;
+  /** 隐藏时回调 */
+  hideCallback?: () => void;
 }
 
 /**
@@ -26,6 +30,11 @@ export const useSimpleVisible = (defaultVisible = false, options: SimpleVisibleO
    */
   function setVisible(_visible = true) {
     visible.value = !!_visible;
+    if (_visible) {
+      options.showCallback && options.showCallback();
+    } else {
+      options.hideCallback && options.hideCallback();
+    }
   }
 
   /** 显示 */

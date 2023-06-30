@@ -1,5 +1,7 @@
 import { getWatchCore } from '@/core/watch-sdk';
-import { AuthSettingItemCustom } from '@polyv/live-watch-sdk';
+import { toast } from '@/hooks/components/use-toast';
+import { paramGetter, queryParams } from '@/hooks/core/use-query-params';
+import { AuthSettingItemCustom, CustomAuthSignParams } from '@polyv/live-watch-sdk';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
 
@@ -7,7 +9,43 @@ import { useAuthCommon } from '../hooks/use-auth-common';
  * 自定义授权操作 hook
  */
 export const useAuthCustomAction = () => {
-  const { handleAuthVerifySuccess, handleAuthVerifyFail } = useAuthCommon();
+  const { failMessage, getDefaultFailMessage, handleAuthVerifySuccess, handleAuthVerifyFail } =
+    useAuthCommon();
+
+  /**
+   * 获取自定义授权需要签名参数
+   */
+  function getCustomAuthSignParams(): CustomAuthSignParams {
+    return {
+      userid: paramGetter.userid() || '',
+      ts: paramGetter.ts() || '',
+      sign: paramGetter.sign() || '',
+    };
+  }
+
+  /** 允许验证自定义授权 */
+  async function allowToVerifyCustomAuth(): Promise<boolean> {
+    const watchCore = getWatchCore();
+    return watchCore.auth.allowToVerifyCustomAuth(getCustomAuthSignParams());
+  }
+
+  /** 验证自定义授权 */
+  async function verifyCustomAuth() {
+    const watchCore = getWatchCore();
+    const result = await watchCore.auth.verifyCustomAuth(getCustomAuthSignParams(), queryParams);
+    if (result.success) {
+      await handleAuthVerifySuccess(result);
+    } else {
+      await handleAuthVerifyFail(result);
+      toast.warning(failMessage.value || getDefaultFailMessage());
+    }
+  }
+
+  /** 允许自动重定向到自定义授权地址 */
+  function allowAutoRedirectCustomAuthUrl(): Promise<boolean> {
+    const watchCore = getWatchCore();
+    return watchCore.auth.allowAutoRedirectCustomAuthUrl();
+  }
 
   /** 跳转到自定义授权地址 */
   async function redirectCustomAuthUrl() {
@@ -15,27 +53,12 @@ export const useAuthCustomAction = () => {
     await watchCore.auth.redirectCustomAuthUrl();
   }
 
-  /** 允许验证自定义授权 */
-  async function allowToVerifyCustomAuth(): Promise<boolean> {
-    const watchCore = getWatchCore();
-    return watchCore.auth.allowToVerifyCustomAuth();
-  }
-
-  /** 验证自定义授权 */
-  async function verifyAuthCustom() {
-    const watchCore = getWatchCore();
-    const result = await watchCore.auth.verifyCustomAuth();
-    if (result.success) {
-      await handleAuthVerifySuccess(result);
-    } else {
-      await handleAuthVerifyFail(result);
-    }
-  }
-
   return {
-    redirectCustomAuthUrl,
+    getCustomAuthSignParams,
     allowToVerifyCustomAuth,
-    verifyAuthCustom,
+    verifyCustomAuth,
+    allowAutoRedirectCustomAuthUrl,
+    redirectCustomAuthUrl,
   };
 };
 

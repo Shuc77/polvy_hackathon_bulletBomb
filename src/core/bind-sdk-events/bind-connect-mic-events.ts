@@ -6,8 +6,16 @@ export function bindConnectMicModuleEvents(): void {
   const watchCore = getWatchCore();
   const connectMicStore = useConnectMicStore();
 
-  watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicStoreInfoChanged, () => {
+  watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicInfoChange, () => {
     connectMicStore.syncConnectMicInfo();
+  });
+
+  watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ScreenShareInfoChange, () => {
+    connectMicStore.syncScreenShareInfo();
+  });
+
+  watchCore.connectMic.eventEmitter.on(ConnectMicEvents.NetworkInfoChange, () => {
+    connectMicStore.syncNewtowkInfo();
   });
 
   watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicListChange, () => {

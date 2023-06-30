@@ -65,6 +65,7 @@
           class="c-pc-enroll-login__submit__button"
           :size="ButtonSize.Small"
           :text="$lang('base.enterLive')"
+          debounce-submit
         />
         <normal-button
           class="c-pc-enroll-login__submit__button"

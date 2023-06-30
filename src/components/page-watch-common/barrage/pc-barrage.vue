@@ -23,6 +23,9 @@ const { containerRef } = useBarrage();
   width: 100%;
   height: 100%;
   overflow: hidden;
+  // stylelint-disable-next-line
+  text-shadow: rgba(#000, 0.8) 0 0 2px, rgba(#000, 0.8) 0 1px 0, rgba(#000, 0.8) 0 0 2px,
+    rgba(#000, 0.8) 0 0 1px;
 }
 .c-pc-barrage__content {
   position: relative;

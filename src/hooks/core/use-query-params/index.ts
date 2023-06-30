@@ -3,7 +3,7 @@
  */
 
 import { ChannelWatchPageSkin, PlaybackOrigin, ZoneType } from '@polyv/live-watch-sdk';
-import { parse } from '@just4/querystring';
+import { parse, appendToURL } from '@just4/querystring';
 
 /** 获取默认参数值 */
 const getDefaultQueryParams = (): UniversalParams<string | undefined> => ({});
@@ -52,7 +52,7 @@ export const paramGetter = {
   lang: buildGetters('lang'),
   /** 回放 vid */
   vid: buildGetters('vid'),
-  /** 回放类型 */
+  /** 回放来源 */
   playbackType: buildGetters<PlaybackOrigin>('playbackType'),
   /** 渠道 id */
   promoteId: buildGetters('promoteId'),
@@ -66,12 +66,12 @@ export const paramGetter = {
   testModeToken: buildGetters('testModeToken'),
   /** 观众 id */
   viewerid: buildGetters('viewerid'),
+  /** 观看条件-验证码 */
+  password: buildGetters('password'),
   /** 观众昵称 */
   name: buildGetters('name'),
   /** 观众昵称 */
   nickname: buildGetters('nickname'),
-  /** 跑马灯名称 */
-  marqueeName: buildGetters('marqueeName'),
   /** 观众头像 */
   avatar: buildGetters('avatar'),
   /** 网络类型 */
@@ -106,11 +106,33 @@ export const paramGetter = {
   skin: buildGetters<ChannelWatchPageSkin>('skin'),
 };
 
-window.paramGetter = paramGetter;
+/**
+ * 移除当前观看页地址上对应的参数
+ * */
+export function removeQueryParam(keys: Array<keyof typeof paramGetter>) {
+  for (const key of keys) {
+    if (!queryParams[key]) {
+      continue;
+    }
+    delete queryParams[key];
+  }
+
+  const newUrl = appendToURL(location.pathname, {
+    ...queryParams,
+  });
+  if (window.history.replaceState) {
+    window.history.replaceState(null, document.title, newUrl);
+  } else {
+    location.href = newUrl;
+  }
+}
+
+// window.paramGetter = paramGetter;
 
 export const useQueryParam = () => {
   return {
     paramGetter,
     getQueryParam,
+    removeQueryParam,
   };
 };

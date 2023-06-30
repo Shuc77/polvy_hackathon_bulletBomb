@@ -7,7 +7,6 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { useChannelStore } from '@/store/use-channel-store';
 
 import {
   TAB_NAME_CHAT,
@@ -17,8 +16,6 @@ import {
 } from '@/assets/constants/tab-name';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { isWeixin } from '@/assets/utils/browser';
-import { YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
 import { useLayoutStore } from './use-layout-store';
 
 export interface InviteStoreState {
@@ -31,7 +28,7 @@ export interface InviteStoreState {
   /** 当前用户邀请者 unionId */
   inviteUserUnionId: Ref<string | undefined>;
   /** 邀请海报开关 */
-  invitePosterEnabled: ComputedRef<boolean>;
+  invitePosterEnabled: Ref<boolean>;
   /** 邀请榜开关 */
   inviteRankEnabled: ComputedRef<boolean>;
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
@@ -50,7 +47,6 @@ export interface InviteStoreAction {
 export interface InviteStore extends InviteStoreState, InviteStoreAction {}
 
 export const useInviteStore = defineStore<'invite', InviteStore>('invite', () => {
-  const channelStore = useChannelStore();
   const channelMenuStore = useChannelMenuStore();
   const layoutStore = useLayoutStore();
 
@@ -67,9 +63,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   const inviteUserUnionId = ref<string>();
 
   /** 邀请海报开关 */
-  const invitePosterEnabled = computed<boolean>(() => {
-    return isWeixin && ynToBool(channelStore.channelDetail?.channelConfig.showInviteAccess, YN.N);
-  });
+  const invitePosterEnabled = ref(false);
 
   /** 邀请榜开关 */
   const inviteRankEnabled = computed<boolean>(() => {
@@ -120,6 +114,8 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   /** 同步邀请信息 */
   function syncInviteInfo() {
     const watchCore = getWatchCore();
+
+    invitePosterEnabled.value = isWeixin && watchCore.invite.getInvitePosterEnabled();
 
     const inviteUserInfo = watchCore.invite.getInviteUserInfo(false);
     inviteUserOpenId.value = inviteUserInfo?.inviteOpenId;

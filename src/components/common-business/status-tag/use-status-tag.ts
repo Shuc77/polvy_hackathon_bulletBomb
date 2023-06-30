@@ -62,7 +62,7 @@ export const useMiniStatusTagStyle = (options: { props: VueProps<typeof statusTa
   const tagColors: Record<LiveStatus, string> = {
     [LiveStatus.Live]: 'linear-gradient(150deg, #F06E6E 0%, #E63A3A 100%)',
     [LiveStatus.Playback]: 'linear-gradient(152deg, #5ba3ff, #3082fe)',
-    [LiveStatus.Waiting]: 'linear-gradient(152deg, #abafc0, #73778c)',
+    [LiveStatus.Waiting]: 'linear-gradient(152deg, #5ba3ff, #3082fe)',
     [LiveStatus.End]: 'linear-gradient(152deg, #abafc0, #73778c)',
     [LiveStatus.Stop]: 'linear-gradient(152deg, #abafc0, #73778c)',
     [LiveStatus.UnStart]: 'linear-gradient(152deg, #abafc0, #73778c)',

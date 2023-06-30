@@ -47,11 +47,26 @@
 
           <!-- 右侧按钮 -->
           <div class="c-mobile-player-control__inner__right">
-            <!-- 设置按钮 -->
-            <div
-              class="c-mobile-player-control__button c-mobile-player-control__button--setting"
-              @click="openSetting"
-            ></div>
+            <template v-if="barrageSetting.barrageEnabled">
+              <!-- 弹幕设置 -->
+              <mobile-icon-barrage-setting
+                v-if="isHorizontalScreenOrientation || mobilePlayerIsPageFullscreen"
+                class="c-mobile-player-control__button"
+                color="#fff"
+                @click="toToggleBarrageSettingVisible(!barrageSettingVisible)"
+              />
+              <!-- 弹幕开关 -->
+              <mobile-origin-icon-barrage-on
+                v-if="barrageShow"
+                class="c-mobile-player-control__button"
+                @click="toToggleBarrageShow"
+              />
+              <mobile-origin-icon-barrage-off
+                v-else
+                class="c-mobile-player-control__button"
+                @click="toToggleBarrageShow"
+              />
+            </template>
 
             <!-- 全屏按钮 -->
             <div
@@ -66,34 +81,39 @@
         </div>
       </div>
     </transition>
-
-    <!-- 设置面板 -->
-    <mobile-player-control-setting
-      v-show="settingVisible"
-      @close-setting="closeSetting"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from 'vue';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { appEvents, useEventBusListener } from '@/app/app-events';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { onBeforeUnmount, onMounted } from 'vue';
 
-import MobilePlayerControlSetting from './mobile-player-control-setting.vue';
-import { PlayStatus } from '@polyv/live-watch-sdk';
+import {
+  MobileOriginIconBarrageOff,
+  MobileOriginIconBarrageOn,
+} from '@/components/component-icons/mobile-origin/map';
+import { MobileIconBarrageSetting } from '@/components/component-icons/mobile/map';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import { PlayStatus } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { usePlayerControl } from '../../hooks/use-player-control';
-import { useLayoutStore } from '@/store/use-layout-store';
-import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 
 const playerStore = usePlayerStore();
-const { playStatus, playerControlVisible } = storeDefinitionToRefs(usePlayerStore);
+const { playStatus, playerControlVisible, barrageSetting, barrageShow, barrageSettingVisible } =
+  storeDefinitionToRefs(usePlayerStore);
 
-const { mobilePlayerIsPageFullscreen } = storeDefinitionToRefs(useLayoutStore);
+const { isHorizontalScreenOrientation, mobilePlayerIsPageFullscreen } =
+  storeDefinitionToRefs(useLayoutStore);
 
-const { toTogglePlay, toRefresh, toToggleMobilePageFullscreen } = usePlayerAction();
+const {
+  toTogglePlay,
+  toRefresh,
+  toToggleMobilePageFullscreen,
+  toToggleBarrageShow,
+  toToggleBarrageSettingVisible,
+} = usePlayerAction();
 
 const {
   rtcPlayerPauseTipVisible,
@@ -101,9 +121,6 @@ const {
   playButtonVisible,
   refreshButtonVisible,
 } = usePlayerControl();
-
-/** 设置面板显示 */
-const { visible: settingVisible, close: _closeSetting, show: _openSetting } = useSimpleVisible();
 
 /** 显示控制栏 */
 function openControl() {
@@ -127,18 +144,6 @@ function toggleControl() {
   } else {
     openControl();
   }
-}
-
-/** 显示设置面板 */
-function openSetting() {
-  clearHideTimer();
-  _openSetting();
-}
-
-/** 隐藏设置面板 */
-function closeSetting() {
-  _closeSetting();
-  startHideTimer();
 }
 
 let hideTimer: number | undefined;
@@ -241,11 +246,18 @@ onBeforeUnmount(() => {
   align-items: center;
   padding-right: 8px;
   margin-left: auto;
+
+  .polyv-icon {
+    display: inline-block;
+    height: 32px;
+  }
 }
 
 .c-mobile-player-control__button {
+  display: flex;
   width: 32px;
   height: 32px;
+  font-size: 32px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }

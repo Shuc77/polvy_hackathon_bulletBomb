@@ -5,7 +5,7 @@ import { isWeixin } from '@/assets/utils/browser';
 import { toast } from '@/hooks/components/use-toast';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWeixinStore } from '@/store/use-weixin-store';
-import { AuthSettingItemPay, AuthType } from '@polyv/live-watch-sdk';
+import { AuthPayFailReason, AuthSettingItemPay, AuthType } from '@polyv/live-watch-sdk';
 import { computed, onBeforeUnmount, ref, unref, watch } from 'vue';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
@@ -99,9 +99,18 @@ export const useAuthPayPc = () => {
    */
   async function refreshPayData() {
     const watchCore = getWatchCore();
-    const payData = await watchCore.auth.getAuthPayData();
+    const payInfo = await watchCore.auth.getAuthPayData();
 
-    payQrcodeUrl.value = payData.qrcodeUrl;
+    if (!payInfo.success) {
+      if (payInfo.failReason === AuthPayFailReason.NotAllow) {
+        toast.error(translate('auth.pay.notAllow'));
+      } else {
+        toast.error(payInfo.failMessage || '未知错误');
+      }
+      return;
+    }
+
+    payQrcodeUrl.value = payInfo.qrcodeUrl;
 
     watchCore.auth.startCheckPayStatusPolling({
       successCallback: () => onPaySuccess(),
@@ -218,6 +227,14 @@ export const useAuthPayMobile = () => {
     try {
       const watchCore = getWatchCore();
       const payInfo = await watchCore.auth.getAuthPayData();
+      if (!payInfo.success) {
+        if (payInfo.failReason === AuthPayFailReason.NotAllow) {
+          throw new Error(translate('auth.pay.notAllow'));
+        } else {
+          throw new Error(payInfo.failMessage || '未知错误');
+        }
+      }
+
       isLoading.value = false;
 
       if (payInfo.wxPaySignData) {
@@ -230,6 +247,10 @@ export const useAuthPayMobile = () => {
       }
     } catch (e) {
       isLoading.value = false;
+
+      const message = (e as Error).message;
+      isLoading.value = false;
+      toast.error(message);
     }
   }
 

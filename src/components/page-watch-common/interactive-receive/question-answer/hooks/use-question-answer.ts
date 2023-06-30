@@ -33,7 +33,9 @@ export const useQuestionAnswer = () => {
   function onTabSwitch(name: string) {
     // 切换到问答 tab，取消红点
     if (name === TAB_NAME_QA) {
-      interactReceiveStore.qaReminderVisible = false;
+      interactReceiveStore.$patch({
+        qaReminderVisible: false,
+      });
     }
   }
 

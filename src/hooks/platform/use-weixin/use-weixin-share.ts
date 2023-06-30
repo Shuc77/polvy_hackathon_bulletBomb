@@ -1,12 +1,12 @@
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { fitProtocol } from '@/assets/utils/url';
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useShareStore } from '@/store/use-share-store';
+import { useThemeStore } from '@/store/use-theme-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { appendToURL } from '@just4/querystring';
-import { YN, LoggerName } from '@polyv/live-watch-sdk';
+import { LoggerName, YN } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@utils-ts/boolean';
 import { computed, unref } from 'vue';
 import { useWeixinSdk } from './use-weixin-sdk';
@@ -25,7 +25,7 @@ interface WxShareUrlParams {
 export const useWeixinShare = () => {
   const { getWeixinSdk } = useWeixinSdk();
 
-  const channelInfoStore = useChannelInfoStore();
+  const themeStore = useThemeStore();
   const shareStore = useShareStore();
   const weixinStore = useWeixinStore();
   const inviteStore = useInviteStore();
@@ -79,7 +79,7 @@ export const useWeixinShare = () => {
       title: shareInfo.shareTitle,
       desc: shareInfo.shareDesc || '',
       link: unref(wxShareUrl),
-      imgUrl: fitProtocol(channelInfoStore.channelCoverImg),
+      imgUrl: fitProtocol(themeStore.channelCoverImg),
     };
 
     console.info('weixin share info', shareOptions);

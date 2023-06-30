@@ -6,22 +6,20 @@ import {
 import { translate } from '@/assets/lang';
 import { toast } from '@/hooks/components/use-toast';
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from '@/store/use-channel-store';
-import { AuthSettingItemEnterpriseWeChat, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { AuthSettingItemEnterpriseWeChat } from '@polyv/live-watch-sdk';
 import { onBeforeMount, onBeforeUnmount, onMounted, ref, unref } from 'vue';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { getWwLoginStyle } from './utils';
 
 export const useAuthWorkWeixinPc = () => {
-  const channelStore = useChannelStore();
+  const watchCore = getWatchCore();
   useAuthButtonInject<AuthSettingItemEnterpriseWeChat>(onClickAuthButton);
 
   const dialogVisible = ref(false);
 
   async function onClickAuthButton() {
     // 企微已过期
-    if (ynToBool(channelStore.channelDetail?.channelConfig.enterpriseWechatExpire, YN.N)) {
+    if (watchCore.weixin.isWorkWeixinExpired()) {
       toast.error(translate('auth.error.workWeixinExpire'));
       return;
     }
@@ -77,13 +75,13 @@ export const useAuthWorkWeixinPc = () => {
 };
 
 export const useAuthWorkWeixinMobile = () => {
-  const channelStore = useChannelStore();
+  const watchCore = getWatchCore();
   useAuthButtonInject<AuthSettingItemEnterpriseWeChat>(onClickAuthButton);
   const { canWorkWeixinAuthorize, redirectWorkWeixinAuthorize } = useWorkWeixinAuthorize();
 
   async function onClickAuthButton() {
     // 企微已过期
-    if (ynToBool(channelStore.channelDetail?.channelConfig.enterpriseWechatExpire, YN.N)) {
+    if (watchCore.weixin.isWorkWeixinExpired()) {
       toast.error(translate('auth.error.workWeixinExpire'));
       return;
     }
@@ -94,8 +92,8 @@ export const useAuthWorkWeixinMobile = () => {
       return;
     }
 
-    // 如果存在 cpOpenId，则表示非企业成员
-    if (channelStore.channelDetail?.wxInfo?.cpOpenId) {
+    // 判断是否为企业成员
+    if (!watchCore.weixin.isEnterpriseStaff()) {
       toast.error(translate('auth.error.workWeixinNotStaff'));
       return;
     }

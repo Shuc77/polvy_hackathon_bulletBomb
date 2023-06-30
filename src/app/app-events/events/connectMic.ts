@@ -31,4 +31,24 @@ export const connectMicEvents = {
    * 触发下麦二次确认
    */
   TriggerEndConnectConfirm: 'TriggerEndConnectConfirm',
+
+  /**
+   * 打开连麦屏幕共享设置
+   */
+  OpenScreenShareSetting: 'OpenScreenShareSetting',
+
+  /**
+   * 打开连麦屏幕共享提示
+   */
+  OpenScreenShareTips: 'OpenScreenShareTips',
+
+  /**
+   * 触发屏幕共享开始
+   */
+  TriggerStartScreenShare: 'TriggerStartScreenShare',
+
+  /**
+   * 触发屏幕共享结束
+   */
+  TriggerStopScreenShare: 'TriggerStopScreenShare',
 };

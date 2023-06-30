@@ -24,29 +24,33 @@ export const useRequestHistorySession = (): RequestHistoryCommonResult => {
     const watchCore = getWatchCore();
 
     try {
-      let { curPage, totalPage, data } = await watchCore.chat.getChatHistoryBySessionId({
-        sessionId: playbackStore.currentPlaybackTarget?.playbackOptions.sessionId || '',
-        pageNumber: pageNumber,
+      let {
+        pageNumber: curPage,
+        totalPages,
+        contents,
+      } = await watchCore.chat.getChatHistoryBySessionId({
+        sessionId: playbackStore.getPlaybackSessionId(),
+        pageNumber,
         pageSize: chatMsgStore.batchCount,
       });
 
       curPageNumber.value = curPage;
       chatMsgStore.historyEnd =
-        totalPage === 0 || curPage === totalPage || data.length < chatMsgStore.batchCount;
+        totalPages === 0 || curPage === totalPages || contents.length < chatMsgStore.batchCount;
 
       // 存储数据的下标
-      data.forEach((chatMsg, index) => {
+      contents.forEach((chatMsg, index) => {
         const realIndex = start + index;
         chatMsgStore.setRealIndexById(chatMsg.id, realIndex);
       });
 
       // 反转列表
-      data = data.reverse();
+      contents = contents.reverse();
 
       return {
-        data,
+        data: contents,
         realStartIndex: start,
-        realEndIndex: start + data.length - 1,
+        realEndIndex: start + contents.length - 1,
       };
     } catch (error) {
       console.error('error', error);
@@ -75,7 +79,7 @@ export const useRequestHistorySession = (): RequestHistoryCommonResult => {
     }
 
     return {
-      data: data,
+      data,
       reachedFootBoundary: true,
       reachedHeadBoundary: false,
     };
@@ -88,7 +92,6 @@ export const useRequestHistorySession = (): RequestHistoryCommonResult => {
     if (!isString(ref)) {
       throw new Error('loadNextData fail, ref is not string');
     }
-    console.log('loadNextData', ref);
 
     const historyLength = chatMsgStore.getHistoryData().length;
     if (historyLength === 0) {
@@ -119,7 +122,6 @@ export const useRequestHistorySession = (): RequestHistoryCommonResult => {
     if (!isString(ref)) {
       throw new Error('loadPreviousData fail, ref is not string');
     }
-    console.log('loadPreviousData', ref);
 
     const batchCount = chatMsgStore.batchCount;
     const id = ref;

@@ -2,18 +2,10 @@
  * @file 打赏 store
  */
 import { translate } from '@/assets/lang';
-import {
-  DonateSetting,
-  YN,
-  DonateType,
-  DonateGoodData,
-  PayDonateData,
-} from '@polyv/live-watch-sdk';
+import { YN, DonateType, DonateGoodData, PayDonateData } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from '@/store/use-channel-store';
-import { useWeixinStore } from '@/store/use-weixin-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { ynToBool } from '@utils-ts/boolean';
 import { changeProtocol } from '@utils-ts/net';
 import { getWatchCore } from '@/core/watch-sdk';
@@ -36,38 +28,26 @@ type DonatePageItem =
     };
 
 export interface DonateStoreState {
-  /** 打赏设置 */
-  donateSetting: ComputedRef<DonateSetting | undefined>;
-  /** 现金打赏开关 */
-  donateCashEnabled: ComputedRef<boolean>;
-  /** 现金打赏最低的打赏金额 */
-  donateCashMin: ComputedRef<number>;
-  /** 现金打赏快捷选项 */
-  donateCashQuickOptions: ComputedRef<number[]>;
-  /** 现金打赏道具开关 */
-  donateGoodEnabled: ComputedRef<boolean>;
-  /** 积分打赏道具开关 */
-  donatePointEnabled: ComputedRef<boolean>;
   /** 是否显示现金打赏 */
-  showDonateCash: ComputedRef<boolean>;
+  showDonateCash: Ref<boolean>;
   /** 是否显示现金道具打赏 */
-  showDonateGood: ComputedRef<boolean>;
+  showDonateCashGood: Ref<boolean>;
   /** 是否显示积分道具打赏 */
-  showDonatePoint: ComputedRef<boolean>;
+  showDonatePointGood: Ref<boolean>;
   /** 是否显示道具打赏 */
   showDonateGifts: ComputedRef<boolean>;
   /** 是否显示打赏功能 */
   showDonateFunction: ComputedRef<boolean>;
+  /** 现金打赏最低的打赏金额 */
+  donateCashMin: Ref<number>;
+  /** 现金打赏快捷选项 */
+  donateCashQuickOptions: Ref<number[]>;
   /** 积分打赏礼物单位 */
-  donatePointUnit: ComputedRef<string | undefined>;
-  /** 所有打赏道具列表 */
-  donateItemAll: ComputedRef<DonateGoodInfo[]>;
+  donatePointUnit: Ref<string | undefined>;
   /** 可以显示的打赏道具列表 */
   donateItemList: ComputedRef<DonateGoodInfo[]>;
   /** 将道具、现金打赏进行分页 */
   donateContentPages: ComputedRef<DonatePageItem[][]>;
-  /** 付费礼物列表 */
-  payDonateGoods: ComputedRef<DonateGoodInfo[]>;
   /** PC 端下当前待支付的打赏数据 */
   waitPayDonateData: Ref<PayDonateData | undefined>;
   /** 是否显示其他人的打赏特效 */
@@ -83,14 +63,15 @@ export interface DonateStoreAction {
   getGoodPriceText: (goodPrice: string) => string;
   /** 根据道具图片获取打赏道具信息 */
   findDonateGoodByImg: (targetGoodImg: string) => DonateGoodInfo | undefined;
+  /** 同步打赏 Store */
+  syncDonateStore: () => void;
 }
 
 export interface DonateStore extends DonateStoreState, DonateStoreAction {}
 
 export const useDonateStore = defineStore<'donate', DonateStore>('donate', () => {
   const watchAppStore = useWatchAppStore();
-  const { channelDetail, isSeminarChannel } = storeDefinitionToRefs(useChannelStore);
-  const { weixinAccountFunctionEnabled, weixinPayEnabled } = storeDefinitionToRefs(useWeixinStore);
+  const channelStore = useChannelStore();
 
   /** 道具礼物中英文 */
   const goodNamesConfig = computed<UniversalParams<string>>(() => {
@@ -116,110 +97,53 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     };
   });
 
-  /** 打赏设置 */
-  const donateSetting = computed(() => unref(channelDetail)?.donateSetting ?? undefined);
-
-  /** 现金打赏开关 */
-  const donateCashEnabled = computed(() =>
-    ynToBool(unref(donateSetting)?.donateCashEnabled || YN.N),
-  );
-
-  /** 现金打赏最低的打赏金额 */
-  const donateCashMin = computed(() => unref(donateSetting)?.cashMin || 0);
-
-  /** 现金打赏快捷选项 */
-  const donateCashQuickOptions = computed(() => unref(donateSetting)?.cashes || []);
-
-  /** 现金打赏道具开关 */
-  const donateGoodEnabled = computed(() => {
-    return ynToBool(unref(donateSetting)?.donateGoodEnabled || YN.N);
-  });
-
-  /** 积分打赏道具开关 */
-  const donatePointEnabled = computed(() => {
-    return ynToBool(unref(donateSetting)?.donatePointEnabled || YN.N);
-  });
-
   /** 是否显示现金打赏 */
-  const showDonateCash = computed(() => {
-    return (
-      unref(donateCashEnabled) && unref(weixinAccountFunctionEnabled) && unref(weixinPayEnabled)
-    );
-  });
+  const showDonateCash = ref(false);
 
   /** 是否显示现金道具打赏 */
-  const showDonateGood = computed(() => {
-    return (
-      unref(donateGoodEnabled) && unref(weixinAccountFunctionEnabled) && unref(weixinPayEnabled)
-    );
-  });
+  const showDonateCashGood = ref(false);
 
   /** 是否显示积分道具打赏 */
-  const showDonatePoint = computed(() => {
-    return unref(donatePointEnabled);
-  });
+  const showDonatePointGood = ref(false);
 
   /** 是否显示道具打赏 */
   const showDonateGifts = computed(() => {
-    return unref(showDonateGood) || unref(showDonatePoint);
+    return unref(showDonateCashGood) || unref(showDonatePointGood);
   });
 
   /** 是否显示打赏功能 */
   const showDonateFunction = computed(() => {
-    if (watchAppStore.isWatchBackUrl) return false;
+    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (channelStore.isSeminarChannel) return false;
 
-    return (unref(showDonateCash) || unref(showDonateGifts)) && !unref(isSeminarChannel);
+    return unref(showDonateCash) || unref(showDonateGifts);
   });
+
+  /** 现金打赏最低的打赏金额 */
+  const donateCashMin = ref(0);
+
+  /** 现金打赏快捷选项 */
+  const donateCashQuickOptions = ref<number[]>([]);
 
   /** 积分打赏礼物单位 */
-  const donatePointUnit = computed(() => unref(donateSetting)?.pointUnit);
+  const donatePointUnit = ref('');
 
   /** 所有打赏道具列表 */
-  const donateItemAll = computed<DonateGoodInfo[]>(() => {
-    const watchCore = getWatchCore();
-    let goods: DonateGoodData[] = [];
-    const goodData = watchCore.donate.getDonateGoods();
+  const donateItemAll = ref<DonateGoodInfo[]>([]);
 
-    if (unref(donatePointEnabled)) {
-      goods = goodData.pointGoods;
-    } else {
-      goods = goodData.goods;
-    }
-
-    return goods.map<DonateGoodInfo>(good => {
-      return {
-        ...good,
-        goodTranslateName: translateGoodName(good.goodName),
-        goodPriceText: getGoodPriceText(good.goodPrice),
-        donateType: DonateType.Good,
-      };
-    });
-  });
-
-  /** 可以显示的打赏道具列表 */
+  /**
+   * 可以显示的打赏道具列表
+   * @desc PC 端打赏列表
+   * */
   const donateItemList = computed<DonateGoodInfo[]>(() => {
     const goods = unref(donateItemAll);
-
-    return goods.filter(good => {
-      // 道具的开关
-      if (ynToBool(good.goodEnabled || YN.N) === false) {
-        return false;
-      }
-
-      // 现金道具 + 付费道具 + 没开启超管后台支付开关和微信公众号功能
-      if (
-        unref(donateGoodEnabled) &&
-        good.goodPrice !== 0 &&
-        (!unref(weixinPayEnabled) || !unref(weixinAccountFunctionEnabled))
-      ) {
-        return false;
-      }
-
-      return true;
-    });
+    return goods.filter(good => ynToBool(good.goodEnabled, YN.N));
   });
 
-  /** 将道具、现金打赏进行分页 */
+  /**
+   * 将道具、现金打赏进行分页
+   * @desc 移动端打赏列表
+   * */
   const donateContentPages = computed<DonatePageItem[][]>(() => {
     // 所有打赏种类，道具+现金
     const donateList: DonatePageItem[] = [];
@@ -243,12 +167,6 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     }
 
     return pages;
-  });
-
-  /** 付费礼物列表 */
-  const payDonateGoods = computed<DonateGoodInfo[]>(() => {
-    const goods = unref(donateItemAll);
-    return goods.filter(good => good.goodPrice > 0);
   });
 
   /** PC 端下当前待支付的打赏数据 */
@@ -283,7 +201,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   function getGoodPriceText(goodPrice: string | number): string {
     if (!goodPrice) return translate('donate.free');
 
-    if (unref(donateGoodEnabled)) {
+    if (unref(showDonateCashGood)) {
       return `￥${goodPrice}`;
     }
 
@@ -312,23 +230,51 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     return goodInfo;
   }
 
+  /**
+   * 同步打赏 Store 数据
+   */
+  function syncDonateStore() {
+    const watchCore = getWatchCore();
+
+    showDonateCash.value = watchCore.donate.isShowDonateCash();
+    showDonateCashGood.value = watchCore.donate.isShowDonateCashGood();
+    showDonatePointGood.value = watchCore.donate.isShowDonatePointGood();
+
+    const donateConfig = watchCore.donate.getDonateConfig();
+
+    donateCashMin.value = donateConfig.donateCashMin;
+    donateCashQuickOptions.value = donateConfig.donateCashQuickOptions;
+    donatePointUnit.value = donateConfig.donatePointUnit;
+
+    __initDonateItemAll();
+  }
+
+  /** 初始化所有打赏道具列表 */
+  function __initDonateItemAll() {
+    const watchCore = getWatchCore();
+    const { goods } = watchCore.donate.getDonateGoods();
+
+    donateItemAll.value = goods.map<DonateGoodInfo>(good => {
+      return {
+        ...good,
+        goodTranslateName: translateGoodName(good.goodName),
+        goodPriceText: getGoodPriceText(good.goodPrice),
+        donateType: DonateType.Good,
+      };
+    });
+  }
+
   return {
-    donateSetting,
-    donateCashEnabled,
     donateCashMin,
     donateCashQuickOptions,
-    donateGoodEnabled,
-    donatePointEnabled,
     showDonateCash,
-    showDonateGood,
-    showDonatePoint,
+    showDonateCashGood,
+    showDonatePointGood,
     showDonateGifts,
     showDonateFunction,
     donatePointUnit,
-    donateItemAll,
     donateItemList,
     donateContentPages,
-    payDonateGoods,
 
     waitPayDonateData,
     donateAnimationVisible,
@@ -337,5 +283,6 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     translateGoodName,
     getGoodPriceText,
     findDonateGoodByImg,
+    syncDonateStore,
   };
 });

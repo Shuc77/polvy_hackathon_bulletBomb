@@ -39,6 +39,7 @@ export interface PolyvIRSceneEntrance {
   PcTuwen: PolyvIRSceneComponentOption;
   PcVote: PolyvIRSceneComponentOption;
   PcWelfareLottery: PolyvIRSceneComponentOption;
+  PcRushAnswer: PolyvIRSceneComponentOption;
 
   // 移动端下才有的
   MobileBulletin: PolyvIRSceneComponentOption;
@@ -62,6 +63,7 @@ export interface PolyvIRSceneEntrance {
   MobileTuwen: PolyvIRSceneComponentOption;
   MobileVote: PolyvIRSceneComponentOption;
   MobileWelfareLottery: PolyvIRSceneComponentOption;
+  MobileRushAnswer: PolyvIRSceneComponentOption;
 }
 
 /**

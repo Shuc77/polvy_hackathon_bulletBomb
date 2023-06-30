@@ -2,22 +2,24 @@ import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
 import { PageErrorType } from '@/app/layout/page-error/page-error-type';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { AuthSettingItemExternal, ExternalAuthQueryParams } from '@polyv/live-watch-sdk';
+import { AuthSettingItemExternal, ExternalAuthSignParams } from '@polyv/live-watch-sdk';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { paramGetter, queryParams, removeQueryParam } from '@/hooks/core/use-query-params';
+import { toast } from '@/hooks/components/use-toast';
 
 /**
  * 外部授权操作 hook
  */
 export const useAuthExternalAction = () => {
   const watchAppStore = useWatchAppStore();
-  const { handleAuthVerifySuccess, handleAuthVerifyFail } = useAuthCommon();
+  const { failMessage, getDefaultFailMessage, handleAuthVerifySuccess, handleAuthVerifyFail } =
+    useAuthCommon();
 
   /**
    * 获取外部授权需要校验的参数
    */
-  function getExternalAuthQueryParams(): ExternalAuthQueryParams {
+  function getExternalAuthSignParams(): ExternalAuthSignParams {
     return {
       userid: paramGetter.userid() || '',
       ts: paramGetter.ts() || '',
@@ -30,15 +32,41 @@ export const useAuthExternalAction = () => {
    */
   async function allowToVerifyExternalAuth(): Promise<boolean> {
     const watchCore = getWatchCore();
-    return watchCore.auth.allowToVerifyExternalAuth(getExternalAuthQueryParams());
+    return watchCore.auth.allowToVerifyExternalAuth(getExternalAuthSignParams());
+  }
+
+  /**
+   * 验证外部授权
+   */
+  async function verifyAuthExternal() {
+    const watchCore = getWatchCore();
+    const result = await watchCore.auth.verifyExternalAuth(
+      getExternalAuthSignParams(),
+      queryParams,
+    );
+    if (result.success) {
+      await handleAuthVerifySuccess(result);
+      removeQueryParam(['userid', 'avatar', 'ts', 'sign', 'nickname']);
+    } else {
+      await handleAuthVerifyFail(result);
+      toast.warning(failMessage.value || getDefaultFailMessage());
+    }
+  }
+
+  /**
+   * 需要自动重定向到外部授权失败地址
+   */
+  function allowAutoRedirectExternalAuthFailUrl() {
+    const watchCore = getWatchCore();
+    return watchCore.auth.allowAutoRedirectExternalAuthFailUrl();
   }
 
   /**
    * 重定向到外部授权地址
    */
-  async function redirectExternalFailUrl() {
+  async function redirectExternalAuthFailUrl() {
     const watchCore = getWatchCore();
-    const result = await watchCore.auth.redirectExternalFailUrl();
+    const result = await watchCore.auth.redirectExternalAuthFailUrl();
 
     // 跳转不成功，没有配置错误地址，显示本地的错误页
     if (!result) {
@@ -49,33 +77,22 @@ export const useAuthExternalAction = () => {
     }
   }
 
-  /**
-   * 验证外部授权
-   */
-  async function verifyAuthExternal() {
-    const watchCore = getWatchCore();
-    const result = await watchCore.auth.verifyExternalAuth(getExternalAuthQueryParams());
-    if (result.success) {
-      await handleAuthVerifySuccess(result);
-    } else {
-      await handleAuthVerifyFail(result);
-    }
-  }
-
   return {
+    getExternalAuthSignParams,
     allowToVerifyExternalAuth,
-    redirectExternalFailUrl,
     verifyAuthExternal,
+    allowAutoRedirectExternalAuthFailUrl,
+    redirectExternalAuthFailUrl,
   };
 };
 
 export const useAuthExternal = () => {
   useAuthButtonInject<AuthSettingItemExternal>(onClickAuthButton);
 
-  const { redirectExternalFailUrl } = useAuthExternalAction();
+  const { redirectExternalAuthFailUrl } = useAuthExternalAction();
 
   /** 处理点击授权入口按钮 */
   function onClickAuthButton() {
-    redirectExternalFailUrl();
+    redirectExternalAuthFailUrl();
   }
 };

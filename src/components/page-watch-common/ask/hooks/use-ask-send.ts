@@ -1,7 +1,6 @@
 import { ref } from 'vue';
 import { getWatchCore } from '@/core/watch-sdk';
 
-import { getImgSize } from '@/assets/utils/image';
 import { changeProtocol } from '@utils-ts/net';
 import { wait } from '@/assets/utils/utils';
 
@@ -40,16 +39,12 @@ export const useAskSend = () => {
   async function sendAskImage(file: File | null) {
     try {
       const watchCore = getWatchCore();
-      const { imageId, imageUrl } = await watchCore.utils.directUploadImage(file);
-      const { width, height } = await getImgSize(imageUrl);
+      const { imageId, imageUrl, size } = await watchCore.utils.directUploadImage(file);
 
       watchCore.ask.sendAskImage({
         imageId,
         imageUrl: changeProtocol(imageUrl, 'https'),
-        size: {
-          width,
-          height,
-        },
+        size,
       });
     } catch (error) {
       toast.error(translate('watchCore.error.uploadImage'));
@@ -68,22 +63,19 @@ export const useAskSend = () => {
    * 处理点击发送图片
    */
   async function onClickSendImage() {
-    try {
-      const watchCore = getWatchCore();
-      const { imageId, imageUrl } = await watchCore.utils.uploadImage();
-      const { width, height } = await getImgSize(imageUrl);
-
-      watchCore.ask.sendAskImage({
-        imageId,
-        imageUrl: changeProtocol(imageUrl, 'https'),
-        size: {
-          width,
-          height,
-        },
-      });
-    } catch (error) {
-      toast.error(translate('watchCore.error.uploadImage'));
-    }
+    const watchCore = getWatchCore();
+    watchCore.utils.uploadMultiImage({
+      success: ({ imageId, imageUrl, size }) => {
+        watchCore.ask.sendAskImage({
+          imageId,
+          imageUrl: changeProtocol(imageUrl, 'https'),
+          size,
+        });
+      },
+      fail: () => {
+        toast.error(translate('watchCore.error.uploadImage'));
+      },
+    });
   }
 
   return {

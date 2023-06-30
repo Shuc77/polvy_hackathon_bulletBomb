@@ -1,14 +1,13 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { translate } from '@/assets/lang';
 import { copyText } from '@/assets/utils/copy';
+import { getWatchCore } from '@/core/watch-sdk';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { toast } from '@/hooks/components/use-toast';
-import { parseEmotions } from '@polyv/emotion-sdk';
 import { ChatMsgSpeakType } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
 import { useChatMsgUser } from '../chat-msg-list/msg-items/_hooks/chat-msg-user-hook';
 import { FullMsgData } from './type';
-import { nl2br } from '@utils-ts/string';
 
 export const useChatFullMessage = () => {
   const { visible, setVisible } = useSimpleVisible();
@@ -22,10 +21,12 @@ export const useChatFullMessage = () => {
   });
 
   useEventBusListener(appEvents.chat.ShowFullMessage, (data: FullMsgData) => {
-    // 将换行符转成 <br />
-    const content = nl2br(data.fullContent);
+    const watchCore = getWatchCore();
     // 表情标签转换
-    fullContent.value = parseEmotions(content);
+    fullContent.value = watchCore.chat.parseSpeakContent(data.fullContent, {
+      parseEmotion: true,
+      parseLineBreak: true,
+    });
 
     chatMsg.value = data.chatMsg;
     setVisible(true);

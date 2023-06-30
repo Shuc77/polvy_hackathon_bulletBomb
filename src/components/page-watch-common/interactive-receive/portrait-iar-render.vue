@@ -12,7 +12,7 @@
     <!-- 签到 -->
     <portrait-check-in-popup />
     <!-- 反馈 -->
-    <portrait-feed-back-popup v-if="watchFeedbackEnabled" />
+    <portrait-feed-back-popup v-if="interactSetting.watchFeedbackEnabled" />
     <!-- 抽奖动画 -->
     <portrait-lottery-animation />
     <!-- 抽奖结果弹层 -->
@@ -57,13 +57,13 @@ import PortraitQuestionAnswer from './question-answer/portrait-question-answer.v
 import PortraitProductJobDetailPopup from './product/portrait-product-job-detail-popup.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useScoreStore } from '@/store/use-score-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useRedpackStore } from '@/store/use-redpack-store';
 
-const { announcementFunctionVisible, watchFeedbackEnabled } =
+const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { scoreRedpackEnabled } = storeDefinitionToRefs(useScoreStore);
+const { scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
 
 const { qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 </script>

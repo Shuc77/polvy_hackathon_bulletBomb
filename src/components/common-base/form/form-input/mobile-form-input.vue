@@ -34,6 +34,12 @@
           @focus="onInputFocus"
         />
       </div>
+      <template v-if="clearabled && value && isFocus">
+        <mobile-icon-close-round-fill
+          class="c-mobile-form-input__main__input__clearabled"
+          @touchstart.native="clearValue"
+        />
+      </template>
       <slot name="suffix">
         <span
           v-if="suffixText"
@@ -53,18 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { MobileIconCloseRoundFill } from '@/components/component-icons/mobile/map';
+import { useProps } from '@/assets/utils/vue-utils/props-utils';
 import { formInputEmits, formInputProps, useFormInput } from './hooks/use-form-input';
 
 const emit = defineEmits(formInputEmits());
 
-const props = defineProps({
-  ...formInputProps(),
-  /** 输入框标题，仅移动端下适用 */
-  inputTitle: PropUtils.string.def(''),
-  /** 输入框标题宽度 */
-  inputTitleWidth: PropUtils.number.def(undefined),
-});
+const props = defineProps(formInputProps());
 
 const { value, type, placeholder, maxlength, inputTitle } = useProps(props);
 
@@ -76,6 +77,8 @@ const {
   onInputFocus,
   formInstance,
   wordLimitText,
+  clearValue,
+  isFocus,
 } = useFormInput({
   props,
   emit,
@@ -135,6 +138,12 @@ defineExpose(formInstance);
   background: none;
   border: none;
   outline: none;
+}
+.c-mobile-form-input__main__input__clearabled {
+  display: flex;
+  margin-right: 16px;
+  font-size: 20px;
+  color: #999999;
 }
 .c-mobile-form-input__main__input__suffix-text {
   padding-right: 16px;

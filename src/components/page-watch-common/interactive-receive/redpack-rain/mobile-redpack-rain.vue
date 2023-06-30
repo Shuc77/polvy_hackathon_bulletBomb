@@ -5,7 +5,7 @@
     ref="redpackRainRef"
     :redpack-rain="redpackRainSdk"
     :custom-img-config="customImgConfig"
-    :with-draw-enabled="withdrawEnabled"
+    :with-draw-enabled="withdrawVisible"
     :redirect-url="watchUrl"
     :unit="scoreUnit"
     @copy-success="toastCopySuccess"
@@ -18,19 +18,21 @@
 
 <script setup lang="ts">
 import { toastCopySuccess } from '@/assets/utils/copy';
-import { useWithdraw } from '@/components/page-watch-common/withdraw/use-withdraw';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useRedpackRain } from './hooks/use-redpack-rain';
 
 import { useChannelStore } from '@/store/use-channel-store';
-import { useScoreStore } from '@/store/use-score-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useRedpackStore } from '@/store/use-redpack-store';
 
 const IarMobileRedpackRain = getIarComponent('MobileRedpackRain');
 
 const { watchUrl } = storeDefinitionToRefs(useChannelStore);
 
-const { scoreUnit } = storeDefinitionToRefs(useScoreStore);
+const { scoreUnit } = storeDefinitionToRefs(useRedpackStore);
+
+const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const {
   redpackRainSdk,
@@ -41,6 +43,4 @@ const {
   onClickWithdraw,
   onClickScoreRecord,
 } = useRedpackRain();
-
-const { withdrawEnabled } = useWithdraw();
 </script>

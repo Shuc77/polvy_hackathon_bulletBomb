@@ -5,7 +5,7 @@
     class="c-pc-welfare-lottery"
     :welfare-lottery-sdk="welfareLotterySdk"
     :watch-url="watchUrl"
-    :is-auto-popper="conditionLotterySPAutoPopEnabled"
+    :is-auto-popper="interactSetting.conditionLotteryAutoPopperEnabled"
     @comment-success="onCommentSuccess"
     @entry-visible-changed="onEntryVisibleChanged"
   />
@@ -23,12 +23,8 @@ const IarPcWelfareLottery = getIarComponent('PcWelfareLottery');
 
 const { watchUrl } = storeDefinitionToRefs(useChannelStore);
 
-const { welfareLotteryPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { welfareLotteryPendantVisible, interactSetting } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
-const {
-  welfareLotterySdk,
-  conditionLotterySPAutoPopEnabled,
-  onCommentSuccess,
-  onEntryVisibleChanged,
-} = useWelfareLottery();
+const { welfareLotterySdk, onCommentSuccess, onEntryVisibleChanged } = useWelfareLottery();
 </script>

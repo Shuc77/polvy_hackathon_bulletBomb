@@ -12,17 +12,17 @@
       :is-sip-user="isSipUser"
     />
 
-    <!-- 音频直播下主讲位置的占位图 -->
+    <!-- 音频直播下第一画面位置的占位图 -->
     <player-audio-live-placeholder
-      v-if="isMaster && isOnlyAudioLive"
-      :use-splash-img="isOnlyAudioLive"
+      v-if="isMaster && isCustomLiveAudioMode"
+      :use-splash-img="isCustomLiveAudioMode"
     />
 
     <!-- 右上角网络状态 -->
     <connect-mic-network
       v-if="micInfoVisible && isLocal"
       class="c-pc-connect-mic-user-item__network"
-      :network-status="uplinkNetworkStatus"
+      :network-status="networkInfo.uplinkNetworkStatus"
     />
 
     <!-- 底部信息 -->
@@ -44,6 +44,16 @@
       @enabled-audio="enabledAudio"
       @disabled-audio="disabledAudio"
     />
+
+    <!-- 当前正在屏幕共享时的遮罩层 -->
+    <screen-share-mask
+      v-if="
+        isLocal &&
+        isMaster &&
+        screenShareInfo.isScreenSharing &&
+        mainScreen === MainScreenContent.Player
+      "
+    />
   </div>
 </template>
 
@@ -53,6 +63,8 @@ import ConnectMicNetwork from '../common/connect-mic-network.vue';
 import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import ConnectMicUserItemControl from './pc-connect-mic-user-item-control.vue';
+import ScreenShareMask from './pc-connect-mic-user-item-screenshare-mask.vue';
+import { MainScreenContent } from '@polyv/live-watch-sdk';
 
 import { useConnectMicControl } from '../hooks/use-connect-mic';
 import { connectMicItemProps, useConnectMicItem } from '../hooks/use-connect-mic-item';
@@ -60,6 +72,7 @@ import { connectMicItemProps, useConnectMicItem } from '../hooks/use-connect-mic
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 const props = defineProps(connectMicItemProps());
 
@@ -80,9 +93,11 @@ const {
 
 const { enabledVideo, disabledVideo, enabledAudio, disabledAudio } = useConnectMicControl();
 
-const { uplinkNetworkStatus } = storeDefinitionToRefs(useConnectMicStore);
+const { screenShareInfo, networkInfo } = storeDefinitionToRefs(useConnectMicStore);
 
-const { isOnlyAudioLive } = storeDefinitionToRefs(useChannelStore);
+const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
+
+const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
 </script>
 
 <style lang="scss">

@@ -25,6 +25,30 @@
         v-show="popperVisible"
         class="c-pc-form-select__options"
       >
+        <!-- 搜索 -->
+        <div
+          v-if="searchEnabled"
+          class="c-pc-form-select__options__search"
+        >
+          <pc-form-input
+            v-model="searchKeyword"
+            :placeholder="$lang('base.searchKeyword')"
+            :size="FormSize.Small"
+            clearabled
+          >
+            <template #suffix>
+              <pc-icon-search class="c-pc-form-select__options__search__icon" />
+            </template>
+          </pc-form-input>
+        </div>
+
+        <div
+          v-if="optionList.length === 0"
+          class="c-pc-form-select__options__empty"
+        >
+          {{ $lang('base.emptyOptions') }}
+        </div>
+
         <div
           v-for="(option, index) in optionList"
           class="c-pc-form-select__options__item"
@@ -43,9 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import { PcIconArrowDown } from '@/components/component-icons/pc/map';
+import { PcIconArrowDown, PcIconSearch } from '@/components/component-icons/pc/map';
+import PcFormInput from '../form-input/pc-form-input.vue';
 import PcFormCheckbox from '../form-checkbox/pc-form-checkbox.vue';
 import { formSelectProps, formSelectEmits, useFormSelect } from './use-form-select';
+import { FormSize } from '../types/enums';
 import { usePopper } from '@/hooks/components/use-popper';
 import { watch, unref } from 'vue';
 
@@ -63,6 +89,8 @@ const {
   inputValue,
   inputPlaceholder,
   optionList,
+  searchEnabled,
+  searchKeyword,
   onClickOption,
   isSelectedOption,
   formItemIsError,
@@ -83,6 +111,7 @@ watch(
       blurToValidateItem();
     } else {
       focusToRemoveError();
+      searchKeyword.value = '';
     }
   },
 );
@@ -136,6 +165,22 @@ watch(
 .c-pc-form-select__body--error {
   background: #ffe9e9;
   border-color: #ff5722;
+}
+
+.c-pc-form-select__options__search {
+  padding: 8px;
+}
+.c-pc-form-select__options__search__icon {
+  margin-right: 8px;
+  font-size: 12px;
+  color: #757575;
+}
+
+.c-pc-form-select__options__empty {
+  font-size: 14px;
+  line-height: 40px;
+  color: #757575;
+  text-align: center;
 }
 
 .c-pc-form-select__options {

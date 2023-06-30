@@ -23,7 +23,11 @@
         class="c-mobile-connect-mic-pendant__tips"
         @click="openApplyTips"
       >
-        {{ $lang('connectMic.applyConnect') }}
+        {{
+          connectMicType === ConnectMicType.Video
+            ? $lang('connectMic.applyConnect.videoApply')
+            : $lang('connectMic.applyConnect.audioApply')
+        }}
       </div>
 
       <!-- 取消申请 -->
@@ -38,7 +42,7 @@
         class="c-mobile-connect-mic-pendant__tips"
         @click="cancelApplyConnectMic"
       >
-        {{ $lang('connectMic.applying2') }}...
+        {{ cancelText }}
       </div>
 
       <!-- 展开挂件 -->
@@ -63,7 +67,7 @@
         class="c-mobile-connect-mic-pendant__tips"
         @click="endConnectMic"
       >
-        {{ $lang('connectMic.applying2') }}...
+        {{ cancelText }}
       </div>
 
       <!-- 摄像头开关 -->
@@ -119,8 +123,10 @@
             {{ $lang('connectMic.openVideoTips') }}
           </template>
           <template v-else>{{ $lang('connectMic.openAudioTips') }}</template>
-          <br />
-          {{ $lang('connectMic.agreement') }}
+          <template v-if="connectMicType === ConnectMicType.Video">
+            <br />
+            {{ $lang('connectMic.agreement') }}
+          </template>
           <br />
           {{ $lang('connectMic.joinConnect') }}
         </p>
@@ -136,21 +142,24 @@
 </template>
 
 <script setup lang="ts">
+import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { MobileIconVideoCall, MobileIconVoiceCall } from '@/components/component-icons/mobile/map';
-import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 
-import { ConnectMicStatus, ConnectMicType } from '@polyv/live-watch-sdk';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
-import { nextTick, onMounted, ref, unref, watch } from 'vue';
+import { ConnectMicStatus, ConnectMicType } from '@polyv/live-watch-sdk';
+import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
 
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
-import { useConnectMic, useConnectMicApply, useConnectMicControl } from '../hooks/use-connect-mic';
+import { translate } from '@/assets/lang';
 import { useAsideDrag } from '@/hooks/behaviors/use-aside-drag';
+import { toast } from '@/hooks/components/use-toast';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useConnectMic, useConnectMicApply, useConnectMicControl } from '../hooks/use-connect-mic';
+import { useLangStore } from '@/store/use-lang-store';
 
 /** 外层节点 */
 const wrapRef = ref<HTMLDivElement>();
@@ -160,20 +169,39 @@ const contentRef = ref<HTMLDivElement>();
 useAppendTo(wrapRef);
 
 const {
+  supportConnectMic,
   connectMicStatus,
   connectMicType,
   localIsVideoMuted,
   localIsAudioMuted,
   localConnectMicType,
+  currentMicIndex,
+  maxMicIndex,
+  showJoinQueueNumberEnabled,
 } = storeDefinitionToRefs(useConnectMicStore);
 
 const { mobileLayoutBottomTop, mobileMenuHeaderHeight } = storeDefinitionToRefs(useLayoutStore);
+
+const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 const { applyConnectMic, cancelApplyConnectMic } = useConnectMicApply();
 
 const { endConnectMic, toggleVideo, toggleAudio } = useConnectMicControl();
 
 useConnectMic();
+
+/** 取消申请按钮文案 */
+const cancelText = computed(() => {
+  const realIndex = currentMicIndex.value + 1;
+
+  if (!showJoinQueueNumberEnabled.value || realIndex === 0) {
+    return translate('connectMic.applying2') + '...';
+  }
+
+  const maxCount = unref(maxMicIndex);
+  const suffixText = realIndex > maxCount ? `${maxCount}+` : realIndex;
+  return `${translate('connectMic.applying3')} ${suffixText}`;
+});
 
 /** 申请连麦提示弹层显示 */
 const applyTipsVisible = ref(false);
@@ -185,6 +213,11 @@ function openApplyTips() {
 
 /** 处理点击申请确认 */
 function onClickApplyConfirm() {
+  if (!supportConnectMic.value) {
+    toast.error(translate('connectMic.error.notSupport1'));
+    return;
+  }
+
   applyConnectMic();
   applyTipsVisible.value = false;
   openPendant();
@@ -228,7 +261,7 @@ async function computePendantWidth() {
 }
 
 watch(
-  () => [unref(pendantOpened), unref(connectMicStatus)],
+  () => [unref(pendantOpened), unref(connectMicStatus), unref(currentLang), unref(cancelText)],
   () => computePendantWidth(),
 );
 

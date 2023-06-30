@@ -8,6 +8,7 @@
       :get-link-params="getLinkParams"
       :desc-label="jobDescLabel"
       :recruitment-enabled="recruitmentEnabled"
+      :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @browse-product="trackProductListItemView"
       @click-buy="trackProductListItemClick"
       @click-good-desc="openGoodDetail"
@@ -33,6 +34,7 @@
             :good="goodDetail"
             :get-link-params="getLinkParams"
             :recruitment-enabled="recruitmentEnabled"
+            :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
           >
             <template #default="{ buttonText, disabled }">
               <normal-button
@@ -57,9 +59,14 @@ import { useProductDetail } from './hooks/use-product-detail';
 import { useProductList } from './hooks/use-product-list';
 import { onJobDetailEvent } from './hooks/use-product-job-detail';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { YN } from '@polyv/live-watch-sdk';
 
 const IarPcProductList = getIarComponent('PcProduct');
 const IarProductBtn = getIarComponent('ProductButton');
+
+const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { productSdk, recruitmentEnabled, jobDescLabel } = useProduct();
 

@@ -5,12 +5,14 @@ import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { defineStore } from 'pinia';
 import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
-import { ChannelMenuItem, ChannelMenuType } from '@polyv/live-watch-sdk';
+import { ChannelMenuItem, ChannelMenuType, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLangStore } from './use-lang-store';
 import { useWatchAppStore } from './use-watch-app-store';
+import { useMultiMeetingStore } from './use-multi-meeting-store';
+import { useChannelStore } from './use-channel-store';
 
 export interface MenuDataType {
   /** 是否创建该菜单节点 */
@@ -43,6 +45,8 @@ export interface ChannelMenuStoreState {
   inviteRankMenuData: ComputedRef<MenuDataType>;
   /** 微活动菜单信息 */
   microActivityMenuData: ComputedRef<MenuDataType>;
+  /** 分会场菜单信息 */
+  multiMeetingMenuData: ComputedRef<MenuDataType>;
 }
 
 export interface ChannelMenuStoreAction {
@@ -66,7 +70,9 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
   () => {
     const watchAppStore = useWatchAppStore();
     const langStore = useLangStore();
+    const channelStore = useChannelStore();
     const interactReceiveStore = useInteractReceiveStore();
+    const multiMeetingStore = useMultiMeetingStore();
 
     /** 中文频道菜单 */
     const cnChannelMenus = ref<ChannelMenuItem[]>([]);
@@ -81,8 +87,13 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         menus = unref(enChannelMenus);
       }
 
-      if (watchAppStore.isWatchBackUrl) {
+      if (watchAppStore.isPlaybackWatchUrl) {
         menus = menus.filter(menu => menu.menuType === ChannelMenuType.Chat);
+      }
+
+      // 研讨会下不显示提问
+      if (channelStore.isSeminarChannel) {
+        menus = menus.filter(menu => menu.menuType === ChannelMenuType.Quiz);
       }
 
       return menus.map(menu => {
@@ -98,9 +109,6 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       const watchCore = getWatchCore();
       cnChannelMenus.value = cloneDeep(watchCore.menu.getChannelMenus('zh_CN'));
       enChannelMenus.value = cloneDeep(watchCore.menu.getChannelMenus('en'));
-
-      const productMenu = getMenuData(ChannelMenuType.Buy);
-      interactReceiveStore.productEnabled = !!productMenu;
     }
 
     /**
@@ -172,6 +180,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         [ChannelMenuType.Members]: [translate('menu.tabName.members'), '成员'],
         [ChannelMenuType.Vote]: [translate('menu.tabName.vote'), '投票'],
         [ChannelMenuType.MicroActivity]: [translate('menu.tabName.microActivity'), '微活动'],
+        [ChannelMenuType.MultiMeeting]: [translate('menu.tabName.multiMeeting'), '分会场'],
       };
 
       const [translateText, ...cnTexts] = translateOptions[menuType];
@@ -197,7 +206,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       const menuData = getMenuData(ChannelMenuType.Buy);
 
       return {
-        visible: !!menuData && interactReceiveStore.productEnabled,
+        visible: !!menuData && interactReceiveStore.interactSetting.productEnabled,
         label: menuData?.name ?? translate('menu.tabName.buy'),
       };
     });
@@ -234,8 +243,10 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
 
     /** 投票活动菜单信息 */
     const voteActiveMenuData = computed<MenuDataType>(() => {
+      const visible =
+        interactReceiveStore.interactSetting.voteActiveEnabled && !watchAppStore.isPlaybackWatchUrl;
       return {
-        visible: interactReceiveStore.voteActiveEnabled,
+        visible,
         label: translate('menu.tabName.vote'),
       };
     });
@@ -260,6 +271,19 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       };
     });
 
+    /** 分会场菜单信息 */
+    const multiMeetingMenuData = computed<MenuDataType>(() => {
+      return {
+        visible:
+          multiMeetingStore.multiMeetingEnabled &&
+          multiMeetingStore.multiMeetingListLayout === MultiMeetingListLayout.Portrait,
+        label: filterMenuTabLabel(
+          ChannelMenuType.MultiMeeting,
+          translate('menu.tabName.multiMeeting'),
+        ),
+      };
+    });
+
     return {
       cnChannelMenus,
       enChannelMenus,
@@ -272,6 +296,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       voteActiveMenuData,
       inviteRankMenuData,
       microActivityMenuData,
+      multiMeetingMenuData,
 
       addChannelMenu,
       removeChannelMenu,

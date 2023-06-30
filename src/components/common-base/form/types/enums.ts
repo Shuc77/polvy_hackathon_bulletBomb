@@ -4,7 +4,7 @@ export enum FormSize {
   Default = 'default',
   /** 中 - 40px */
   Medium = 'medium',
-  /** 小 - 40px */
+  /** 小 - 32px */
   Small = 'small',
 }
 

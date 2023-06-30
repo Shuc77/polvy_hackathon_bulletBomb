@@ -2,19 +2,13 @@
 <template>
   <custom-teleport :to="renderParent">
     <div
-      v-if="!isWatchBackUrl"
+      v-if="!isPlaybackWatchUrl"
       class="c-mobile-chat-room-pendant"
       :class="{
         'c-mobile-chat-room-pendant--page-fullscreen': mobilePlayerIsPageFullscreen,
         'c-mobile-chat-room-pendant--screen__horizontal': isHorizontalScreenOrientation,
       }"
     >
-      <!-- 风险测评 -->
-      <risk-evaluation-entrance
-        v-if="riskEvaluationEntranceEnabled"
-        class="c-mobile-chat-room-pendant__item"
-      />
-
       <!-- 卡片推送 -->
       <mobile-push-card
         v-show="!isPageFullscreenOrHorizontalScreen"
@@ -38,21 +32,27 @@
       />
 
       <!-- 话题 PK -->
-      <mobile-topic-pk class="c-mobile-chat-room-pendant__item" />
+      <mobile-topic-pk
+        v-show="!isPageFullscreenOrHorizontalScreen"
+        class="c-mobile-chat-room-pendant__item"
+      />
 
       <!-- 条件抽奖 -->
       <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
 
+      <!-- 抢答 -->
+      <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
+
       <!-- 点赞 -->
       <mobile-chat-like
-        v-if="likeEnabled"
+        v-if="chatSetting.likeEnabled"
         v-show="!isPageFullscreenOrHorizontalScreen"
         class="c-mobile-chat-room-pendant__item"
         :upper-has-icon="hasOtherPendant"
       />
       <!-- 情绪反馈 -->
       <mobile-emotional-feedback
-        v-else-if="emotionalFeedbackEnabled"
+        v-else-if="chatSetting.emotionalFeedbackEnabled"
         v-show="!isPageFullscreenOrHorizontalScreen"
         class="c-mobile-chat-room-pendant__item"
       />
@@ -67,10 +67,10 @@ import MobilePushCard from '@/components/page-watch-common/interactive-receive/p
 import MobileRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
 import MobileWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/mobile-welfare-lottery.vue';
 import MobileTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/mobile-topic-pk.vue';
+import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-answer.vue';
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
 import MobileChatLike from '../chat-like/mobile-chat-like.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
-import RiskEvaluationEntrance from '@/components/page-watch-common/interactive-receive/risk-evaluation/common/risk-evaluation-entrance.vue';
 
 import { useChatStore } from '@/store/use-chat-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -79,18 +79,17 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { computed, unref } from 'vue';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { useFinanceStore } from '@/store/use-finance-store';
 
-const { likeEnabled, emotionalFeedbackEnabled } = storeDefinitionToRefs(useChatStore);
-const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   pushCardPendantVisible,
   redpackPendantVisible,
   enrollLotteryPendantVisible,
   welfareLotteryPendantVisible,
+  rushAnswerPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
@@ -113,6 +112,7 @@ const hasOtherPendant = computed<boolean>(() => {
     unref(redpackPendantVisible) ||
     unref(enrollLotteryPendantVisible) ||
     unref(welfareLotteryPendantVisible) ||
+    unref(rushAnswerPendantVisible) ||
     unref(mobileChatInvitePendantVisible)
   );
 });

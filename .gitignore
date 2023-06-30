@@ -31,3 +31,7 @@ logs
 
 dist
 dist-static
+false
+
+#polyv
+polyv-check.js

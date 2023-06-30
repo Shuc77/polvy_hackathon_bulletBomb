@@ -8,7 +8,7 @@
     <!-- 签到 -->
     <mobile-check-in-popup />
     <!-- 反馈 -->
-    <mobile-feed-back-popup v-if="watchFeedbackEnabled" />
+    <mobile-feed-back-popup v-if="interactSetting.watchFeedbackEnabled" />
     <!-- 抽奖动画 -->
     <mobile-lottery-animation />
     <!-- 抽奖结果弹层 -->
@@ -35,7 +35,6 @@ import { watch } from 'vue';
 import { $ } from '@just4/dom';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useScoreStore } from '@/store/use-score-store';
 
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
 import MobileAnswerCardPopup from './answer-card/mobile-answer-card-popup.vue';
@@ -51,11 +50,12 @@ import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
 import MobileProductJobDetailPopup from './product/mobile-product-job-detail-popup.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useRedpackStore } from '@/store/use-redpack-store';
 
-const { isIarFullScreen, announcementFunctionVisible, watchFeedbackEnabled } =
+const { isIarFullScreen, announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { scoreRedpackEnabled } = storeDefinitionToRefs(useScoreStore);
+const { scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
 
 watch(
   () => isIarFullScreen.value,

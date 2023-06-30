@@ -16,8 +16,10 @@
           {{ $lang('connectMic.openVideoTips') }}
         </template>
         <template v-else>{{ $lang('connectMic.openAudioTips') }}</template>
-        <br />
-        {{ $lang('connectMic.agreement') }}
+        <template v-if="connectMicType === ConnectMicType.Video">
+          <br />
+          {{ $lang('connectMic.agreement') }}
+        </template>
         <br />
         {{ $lang('connectMic.joinConnect') }}
       </p>

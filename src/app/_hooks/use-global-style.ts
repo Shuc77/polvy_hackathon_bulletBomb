@@ -1,12 +1,11 @@
 /**
  * @file 全局样式及页面元素处理
  */
+import { isIOS, isMobile } from '@/assets/utils/browser';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { useChannelStore } from '@/store/use-channel-store';
+import { useThemeStore } from '@/store/use-theme-store';
 import { $ } from '@just4/dom';
 import { watchEffect } from 'vue';
-import { DEFAULT_BROWSER_ICON } from '@/assets/constants/defaults';
-import { isIOS, isMobile } from '@/assets/utils/browser';
 
 /**
  * @hook 全局样式 hook
@@ -67,7 +66,7 @@ export const useBrowserTitle = () => {
  * 浏览器标签页图标 hook
  */
 export const useBrowserIcon = () => {
-  const channelStore = useChannelStore();
+  const themeStore = useThemeStore();
 
   /**
    * 设置图标元素
@@ -85,17 +84,7 @@ export const useBrowserIcon = () => {
   }
 
   function setBrowserIcon(): void {
-    const channelDetail = channelStore.channelDetail;
-    if (!channelDetail) {
-      return;
-    }
-
-    let icon = DEFAULT_BROWSER_ICON;
-    if (channelDetail.channelInfo.customIcon) {
-      icon = channelDetail.channelInfo.customIcon;
-    }
-
-    setFavIconElem(icon);
+    setFavIconElem(themeStore.browserFavIcon);
   }
 
   watchEffect(setBrowserIcon);

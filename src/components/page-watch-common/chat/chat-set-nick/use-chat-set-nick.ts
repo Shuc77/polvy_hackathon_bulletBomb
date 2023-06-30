@@ -43,7 +43,7 @@ export const useChatSetNick = () => {
   /** 提交表单 */
   function submitSetNick() {
     const watchCore = getWatchCore();
-    watchCore.user.setCurrentUserNick(formData.nickname);
+    watchCore.user.updateUserNick(formData.nickname);
     listenSetNickEvent();
   }
 

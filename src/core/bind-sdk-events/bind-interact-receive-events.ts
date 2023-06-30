@@ -7,9 +7,9 @@ export function bindInteractReceiveEvents() {
   const interactReceiveStore = useInteractReceiveStore();
 
   /**
-   * 投票 id 列表
+   * 商品库开关
    */
-  watchCore.interactReceive.eventEmitter.on(InteractReceiveEvents.VotedListChange, data => {
-    interactReceiveStore.votedList = data.votedList;
+  watchCore.interactReceive.eventEmitter.on(InteractReceiveEvents.ProductEnabledChange, () => {
+    interactReceiveStore.syncInteractStore();
   });
 }

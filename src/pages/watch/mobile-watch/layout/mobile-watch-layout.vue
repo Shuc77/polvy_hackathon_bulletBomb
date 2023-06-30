@@ -12,11 +12,11 @@
 
     <!-- 播放器 -->
     <div
-      v-show="
-        mainScreen === MainScreenContent.Player || mobileMenuCurrentName === TAB_NAME_DOC_OR_VIDEO
-      "
       class="c-mobile-watch-layout__player"
       :class="{
+        'c-mobile-watch-layout__player--hide': !(
+          mainScreen === MainScreenContent.Player || mobileMenuCurrentName === TAB_NAME_DOC_OR_VIDEO
+        ),
         'c-mobile-watch-layout__player--sub-screen': mainScreen !== MainScreenContent.Player,
       }"
       :style="getScreenStyles(MainScreenContent.Player)"
@@ -66,10 +66,16 @@
     </div>
 
     <!-- 页面广告 -->
-    <mobile-page-advert v-if="!isWatchBackUrl" />
+    <mobile-page-advert v-if="!isPlaybackWatchUrl" />
 
-    <!-- 多会场 -->
-    <mobile-multi-meeting v-if="!isWatchBackUrl" />
+    <!-- 多会场（横向布局） -->
+    <mobile-multi-meeting-horizontal
+      v-if="
+        !isPlaybackWatchUrl &&
+        multiMeetingEnabled &&
+        multiMeetingListLayout === MultiMeetingListLayout.Horizontal
+      "
+    />
 
     <!-- 底部区域 -->
     <div
@@ -97,7 +103,7 @@ import MobileQuickAnswerCard from '@/components/page-watch-common/interactive-re
 import MobilePlayerMain from '@/components/page-watch-common/player/player-main/mobile-player-main/mobile-player-main.vue';
 import MobileCountDownLayer from '@/components/page-watch-common/count-down-layer/mobile-count-down-layer.vue';
 import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
-import MobileMultiMeeting from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting.vue';
+import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
 import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -108,10 +114,14 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 
-import { MainScreenContent } from '@polyv/live-watch-sdk';
+import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
+import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { multiMeetingEnabled, multiMeetingListLayout } = storeDefinitionToRefs(useMultiMeetingStore);
 
 const {
   isHorizontalScreenOrientation,
@@ -187,6 +197,8 @@ watch(
     computedLayoutSize();
   },
 );
+
+useEventBusListener(appEvents.global.MobileLayoutComputedSize, computedLayoutSize);
 
 useWindowResizeListener(() => {
   computedLayoutSize();
@@ -273,6 +285,7 @@ onMounted(() => {
   }
 }
 
+.c-mobile-watch-layout__player--hide,
 .c-mobile-watch-layout__doc--hide {
   z-index: -1 !important;
   pointer-events: none;
@@ -294,7 +307,7 @@ onMounted(() => {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 400;
+  z-index: 9;
   width: 100%;
   pointer-events: none;
 }

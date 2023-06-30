@@ -5,7 +5,10 @@ declare module 'alloyfinger' {
 }
 
 interface AlloyFingerOption {
-  pressMove: (evt: TouchEvent & WheelEvent) => void;
+  pressMove?: (evt: TouchEvent & WheelEvent) => void;
+  touchStart?: (evt: TouchEvent) => void;
+  touchEnd?: (evt: TouchEvent) => void;
+  touchMove?: (evt: TouchEvent) => void;
 }
 
 declare interface AlloyFingerTransformHTMLElement extends HTMLElement {

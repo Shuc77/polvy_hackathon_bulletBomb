@@ -8,6 +8,7 @@
     >
       <div
         class="c-pc-form-protocol__content"
+        ref="protocolContentRef"
         v-html="contentHtml"
       ></div>
     </pc-form-checkbox>
@@ -25,9 +26,18 @@ const emit = defineEmits(formProtocolEmits());
 
 const attrs = useAttrs();
 
-const { checkboxChecked, contentHtml, onCheckboxChange } = useFormProtocol({
+const {
+  checkboxChecked,
+  onCheckboxChange,
+
+  protocolContentRef,
+  contentHtml,
+} = useFormProtocol({
   props,
   emit,
+  onProtocolClick: el => {
+    window.open(el.href, '_blank');
+  },
 });
 </script>
 

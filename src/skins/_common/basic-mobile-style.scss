@@ -256,5 +256,25 @@
     .pws-mobile-multi-meeting-pack-up {
       color: rgba(map.get($--skin-configs, 'mobile-multi-meeting:text-color'), 0.6);
     }
+
+    // -------- 多会场竖屏 -------- //
+    .pws-mobile-multi-meeting-portrait-container {
+      background-color: map.get($--skin-configs, 'mobile-multi-meeting-portrait:bg-color');
+    }
+    .pws-mobile-multi-meeting-portrait-title {
+      color: map.get($--skin-configs, 'mobile-multi-meeting-portrait-title:text-color');
+    }
+    .pws-mobile-multi-meeting-portrait-name {
+      color: map.get($--skin-configs, 'mobile-multi-meeting-portrait-name:text-color');
+    }
+    .pws-mobile-multi-meeting-portrait-time {
+      color: map.get($--skin-configs, 'mobile-multi-meeting-portrait-time:text-color');
+    }
+    .pws-mobile-multi-meeting-portrait-pv {
+      color: map.get($--skin-configs, 'mobile-multi-meeting-portrait-pv:text-color');
+    }
+    .pws-mobile-meeting-portrait-no-more {
+      color: rgba(map.get($--skin-configs, 'mobile-multi-meeting-portrait-title:text-color'), 0.5);
+    }
   }
 }

@@ -42,7 +42,9 @@ const interactReceiveStore = useInteractReceiveStore();
 function onNewsEvent() {
   if (unref(pcAsideTabCurrentName) === TAB_NAME_QA) return;
 
-  interactReceiveStore.qaReminderVisible = true;
+  interactReceiveStore.$patch({
+    qaReminderVisible: true,
+  });
 }
 </script>
 

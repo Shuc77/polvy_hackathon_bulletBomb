@@ -3,16 +3,9 @@ import { LangType } from '@/assets/lang/lang-enum';
 import { getWatchCore } from '@/core/watch-sdk';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { local } from '@just4/storage';
-import { YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { LanguageType } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { useChannelStore } from './use-channel-store';
-
-/** 判断目标是否为一个多语言 */
-const isAllowLang = (target: unknown): target is LangType => {
-  return Object.values(LangType).includes(target as LangType);
-};
 
 /** local 记录中的 key */
 const LOCAL_STORAGE_KEY = 'language';
@@ -26,13 +19,13 @@ export interface LangSwitchItem {
 
 export interface LangStoreState {
   /** 英语设置开关 */
-  englishSettingEnabled: ComputedRef<boolean>;
+  englishSettingEnabled: Ref<boolean>;
   /** 多语言开关 */
-  langSwitchEnabled: ComputedRef<boolean>;
+  langSwitchEnabled: Ref<boolean>;
   /** 是否开启七国多语言 */
-  isShowSevenLanguage: ComputedRef<boolean>;
+  isShowSevenLanguage: Ref<boolean>;
   /** 是否显示日文语言切换（仅将英文的 text 换成日文文案） */
-  japLangEnabled: ComputedRef<boolean>;
+  japLangEnabled: Ref<boolean>;
   /** 所有多语言选择列表 */
   allLangSwitchList: ComputedRef<LangSwitchItem[]>;
   /** 多语言选择列表 */
@@ -46,6 +39,8 @@ export interface LangStoreState {
 }
 
 export interface LangStoreAction {
+  /** 同步多语言 store */
+  syncLangStore: () => void;
   /** 切换当前多语言 */
   switchLang: (lang: LangType) => void;
   /** 根据当前语言转换游客名称 */
@@ -56,7 +51,17 @@ export interface LangStoreAction {
 export interface LangStore extends LangStoreState, LangStoreAction {}
 
 /** 获取当前页面加载后的默认多语言 */
-function getDefaultLang(): LangType {
+export function getDefaultLang(): LangType {
+  return getCacheLang() || LangType.Chinese;
+}
+
+/** 获取浏览器缓存中的多语言 */
+export function getCacheLang(): LangType | undefined {
+  /** 判断目标是否为一个多语言 */
+  const isAllowLang = (target: unknown): target is LangType => {
+    return Object.values(LangType).includes(target as LangType);
+  };
+
   // 地址上的 lang 参数
   const queryLang = paramGetter.lang();
   if (isAllowLang(queryLang)) {
@@ -69,7 +74,12 @@ function getDefaultLang(): LangType {
     return localLang;
   }
 
-  // 系统浏览器的多语言
+  return undefined;
+}
+
+/** 获取浏览器当前的语言配置 */
+export function getBrowserLang(): LangType {
+  // 系统浏览器的多语言;
   const browserLang = (navigator.language || navigator.browserLanguage).toLowerCase();
   if (browserLang) {
     // 中文以外的语言均判定为英文（逐一枚举工作量较大）
@@ -79,32 +89,39 @@ function getDefaultLang(): LangType {
       return LangType.English;
     }
   }
+  return LangType.Chinese;
+}
 
+/**
+ * 转换当前语言为成 SDK 需要的语言
+ * @warn 目前 SDK 仅支持中英文
+ */
+export function convert2WatchSdkLang(lang?: LangType): LanguageType {
+  return lang === LangType.Chinese ? 'zh_CN' : 'en';
+}
+
+/**
+ * 转换 SDK 的语言为当前语言
+ * @warn 目前 SDK 仅支持中英文
+ */
+export function convert2CurrentLang(lang: LanguageType): LangType {
+  if (lang === 'zh_CN') return LangType.Chinese;
+  if (lang === 'en') return LangType.English;
   return LangType.Chinese;
 }
 
 export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
-  const channelStore = useChannelStore();
-
   /** 英语设置开关 */
-  const englishSettingEnabled = computed(() =>
-    ynToBool(channelStore.channelDetail?.channelConfig?.englishSettingEnabled, YN.N),
-  );
+  const englishSettingEnabled = ref(false);
 
   /** 多语言开关 */
-  const langSwitchEnabled = computed<boolean>(() =>
-    ynToBool(channelStore.channelDetail?.channelConfig.multilingualEnabled, YN.N),
-  );
+  const langSwitchEnabled = ref(false);
 
   /** 是否开启七国多语言 */
-  const isShowSevenLanguage = computed<boolean>(() =>
-    ynToBool(channelStore.channelDetail?.customChannelSetting.isShowSevenLanguage, YN.N),
-  );
+  const isShowSevenLanguage = ref(false);
 
   /** 是否显示日文语言切换（仅将英文的 text 换成日文文案） */
-  const japLangEnabled = computed<boolean>(() =>
-    ynToBool(channelStore.channelDetail?.channelConfig.japLangEnabled, YN.N),
-  );
+  const japLangEnabled = ref(false);
 
   /** 所有多语言选择列表 */
   const allLangSwitchList = computed<LangSwitchItem[]>(() => {
@@ -152,6 +169,28 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
   /** 当前是否为中文语言 */
   const isChineseLang = computed<boolean>(() => unref(currentLang) === LangType.Chinese);
 
+  /** 同步多语言 store */
+  function syncLangStore() {
+    const watchCore = getWatchCore();
+    const langSetting = watchCore.channel.getLangSetting();
+
+    englishSettingEnabled.value = langSetting.englishSettingEnabled;
+    langSwitchEnabled.value = langSetting.langSwitchEnabled;
+    isShowSevenLanguage.value = langSetting.isShowSevenLanguage;
+    japLangEnabled.value = langSetting.japLangEnabled;
+
+    const cacheLang = getCacheLang();
+    // 缓存中不存在多语言时，需要响应后台配置
+    if (!cacheLang) {
+      currentLang.value = langSetting.isFollowBrowserLang
+        ? getBrowserLang()
+        : convert2CurrentLang(langSetting.defaultLangType);
+      watchCore.updateAppConfig({
+        language: convert2WatchSdkLang(currentLang.value),
+      });
+    }
+  }
+
   /**
    * 设置当前多语言
    * @param lang 多语言
@@ -176,7 +215,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
 
     const watchCore = getWatchCore();
     watchCore.updateAppConfig({
-      language: lang === LangType.Chinese ? 'zh_CN' : 'en',
+      language: convert2WatchSdkLang(lang),
     });
 
     eventBus.$emit(appEvents.player.ResetUpPlayer);
@@ -204,6 +243,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     currentLangText,
     isChineseLang,
 
+    syncLangStore,
     switchLang,
     translateNick,
   };

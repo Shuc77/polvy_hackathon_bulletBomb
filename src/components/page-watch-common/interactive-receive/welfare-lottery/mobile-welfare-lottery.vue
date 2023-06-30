@@ -6,7 +6,7 @@
     :welfare-lottery-sdk="welfareLotterySdk"
     :watch-url="watchUrl"
     :invite-url="generatePosterUrl"
-    :is-auto-popper="conditionLotterySPAutoPopEnabled"
+    :is-auto-popper="interactSetting.conditionLotteryAutoPopperEnabled"
     :is-full-screen="isIarFullScreen"
     @comment-success="onCommentSuccess"
     @entry-visible-changed="onEntryVisibleChanged"
@@ -28,13 +28,8 @@ const { watchUrl } = storeDefinitionToRefs(useChannelStore);
 
 const { generatePosterUrl } = storeDefinitionToRefs(useInviteStore);
 
-const { isIarFullScreen, welfareLotteryPendantVisible } =
+const { isIarFullScreen, welfareLotteryPendantVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const {
-  welfareLotterySdk,
-  conditionLotterySPAutoPopEnabled,
-  onCommentSuccess,
-  onEntryVisibleChanged,
-} = useWelfareLottery();
+const { welfareLotterySdk, onCommentSuccess, onEntryVisibleChanged } = useWelfareLottery();
 </script>
