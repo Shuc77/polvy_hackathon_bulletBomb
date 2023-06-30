@@ -6,23 +6,40 @@ import { useDocStore } from './use-doc-store';
 import { usePageStore } from './use-page-store';
 import { usePlaybackStore } from './use-playback-store';
 
+export enum PortraitChatTabType {
+  /** 聊天室 */
+  'Chat' = 'Chat',
+  /** 提问区 */
+  'Ask' = 'Ask',
+}
 export interface PortraitLayoutStoreState {
   /** 竖屏轮播屏当前索引 */
   carouselActiveIndex: Ref<number>;
-  /** 竖屏页面背景地址 */
-  portraitPageBgUrl: ComputedRef<string | undefined>;
   /** 竖屏文档容器内容渲染高度 */
   portraitDocContentHeight: ComputedRef<number>;
   /** 竖屏文档容器渲染高度 */
   portraitDocWrapHeight: ComputedRef<number>;
   /** 频道信息位置 */
   channelInfoSeat: ComputedRef<0 | 1>;
+  /** 竖屏下聊天室当前激活的tab栏 */
+  portraitChatTab: Ref<PortraitChatTabType>;
+  /** 竖屏下提问是否有新消息 */
+  portraitAskHasNews: Ref<boolean>;
 }
+
+export interface PortraitLayoutStoreAction {
+  /** 更换竖屏下聊天室当前tab栏 */
+  updatePortraitChatTabType(type: PortraitChatTabType): void;
+  /** 更新竖屏下提问是否有新消息 */
+  updatePortraitHasAskNews(hasNews: boolean): void;
+}
+
+export interface PortraitStore extends PortraitLayoutStoreState, PortraitLayoutStoreAction {}
 
 /**
  * 竖屏布局 store
  */
-export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitLayoutStoreState>(
+export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStore>(
   'portraitLayout',
   () => {
     const channelStore = useChannelStore();
@@ -33,20 +50,8 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitLayo
     /** 竖屏轮播屏当前索引 */
     const carouselActiveIndex = ref(1);
 
-    /** 竖屏页面背景地址 */
-    const portraitPageBgUrl = computed<string | undefined>(() => {
-      const channelDetail = channelStore.channelDetail;
-      const portraitChatBgImg = channelDetail?.channelInfo.portraitChatBgImg;
-      const portraitChatBgImgOpacity = channelDetail?.channelInfo.portraitChatBgImgOpacity;
-
-      if (!portraitChatBgImg) {
-        return;
-      }
-
-      return portraitChatBgImgOpacity
-        ? `${portraitChatBgImg}?x-oss-process=image/blur,r_${portraitChatBgImgOpacity},s_${portraitChatBgImgOpacity}`
-        : portraitChatBgImg;
-    });
+    /** 竖屏聊天信息当前激活的tab栏目 */
+    const portraitChatTab = ref(PortraitChatTabType.Chat);
 
     /** 竖屏文档容器内容渲染高度 */
     const portraitDocContentHeight = computed<number>(() => {
@@ -92,12 +97,28 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitLayo
       return 1;
     });
 
+    /** 竖屏下提问是否有新消息 */
+    const portraitAskHasNews = ref(false);
+
+    /** 更换竖屏下聊天室当前tab栏 */
+    const updatePortraitChatTabType = (type: PortraitChatTabType) => {
+      portraitChatTab.value = type;
+    };
+
+    /** 更新是否接受到新的提问信息 */
+    const updatePortraitHasAskNews = (hasNews: boolean) => {
+      portraitAskHasNews.value = hasNews && portraitChatTab.value === PortraitChatTabType.Chat;
+    };
+
     return {
+      portraitChatTab,
+      portraitAskHasNews,
       carouselActiveIndex,
-      portraitPageBgUrl,
       portraitDocContentHeight,
       portraitDocWrapHeight,
       channelInfoSeat,
+      updatePortraitChatTabType,
+      updatePortraitHasAskNews,
     };
   },
 );

@@ -12,9 +12,7 @@ export const useSendMsg = () => {
    */
   function sendSpeakMsg(options: SendSpeakMsgOptions) {
     const watchCore = getWatchCore();
-    watchCore.chat.sendSpeakMsg(options, msgResult => {
-      eventBus.$emit(appEvents.chat.MsgResultUpdate, msgResult);
-    });
+    watchCore.chat.sendSpeakMsg(options);
     eventBus.$emit(appEvents.chat.ScrollToNew);
   }
 
@@ -23,9 +21,7 @@ export const useSendMsg = () => {
    */
   async function sendEmotionImageMsg(options: SendEmotionImageMsgOptions) {
     const watchCore = getWatchCore();
-    watchCore.chat.sendEmotionImageMsg(options, msgResult => {
-      eventBus.$emit(appEvents.chat.MsgResultUpdate, msgResult);
-    });
+    watchCore.chat.sendEmotionImageMsg(options);
     eventBus.$emit(appEvents.chat.ScrollToNew);
   }
 
@@ -43,9 +39,7 @@ export const useSendMsg = () => {
    */
   function sendImageMsg(options: SendImageMsgOptions) {
     const watchCore = getWatchCore();
-    watchCore.chat.sendImageMsg(options, msgResult => {
-      eventBus.$emit(appEvents.chat.MsgResultUpdate, msgResult);
-    });
+    watchCore.chat.sendImageMsg(options);
     eventBus.$emit(appEvents.chat.ScrollToNew);
   }
 

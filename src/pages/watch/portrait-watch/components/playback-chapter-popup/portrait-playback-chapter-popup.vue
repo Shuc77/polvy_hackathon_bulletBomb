@@ -8,7 +8,7 @@
     :title="popupTitle"
   >
     <template
-      v-if="playbackMode === PlaybackMode.List && chapterEnabled"
+      v-if="playbackMode === PlaybackMode.List && chapterVisible"
       #title
     >
       <portrait-normal-tabs
@@ -23,7 +23,7 @@
     <portrait-playback-list v-if="listVal === 'playback'" />
     <!-- 章节列表 -->
     <portrait-chapter
-      v-if="chapterEnabled"
+      v-if="chapterVisible"
       v-show="listVal === 'chapter'"
     />
   </mobile-popup>
@@ -48,7 +48,7 @@ const listVal = ref('playback');
 
 const { visible, setVisible } = useSimpleVisible();
 
-const { chapterEnabled, playbackMode } = storeDefinitionToRefs(usePlaybackStore);
+const { chapterVisible, playbackMode } = storeDefinitionToRefs(usePlaybackStore);
 
 const tabList = computed<SimpleTabItem[]>(() => {
   return [
@@ -67,7 +67,7 @@ const popupTitle = computed<string>(() => {
 useEventBusListener(appEvents.portrait.OpenPlaybackChapter, (_visible = true) => {
   if (playbackMode.value === PlaybackMode.List) {
     listVal.value = 'playback';
-  } else if (chapterEnabled) {
+  } else if (chapterVisible) {
     listVal.value = 'chapter';
   }
 

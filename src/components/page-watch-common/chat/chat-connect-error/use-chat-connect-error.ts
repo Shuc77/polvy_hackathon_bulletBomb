@@ -1,6 +1,6 @@
 import { translate } from '@/assets/lang';
 import { useChatStore } from '@/store/use-chat-store';
-import { ref, watchEffect } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 
 /**
  * 聊天室连接失败 hook
@@ -11,18 +11,25 @@ export const useChatConnectError = () => {
   /** 连接失败提示是否显示 */
   const connectErrorVisible = ref(false);
 
-  watchEffect(() => {
-    if (chatStore.connectError) {
-      connectErrorVisible.value = true;
-    } else {
-      connectErrorVisible.value = false;
-    }
+  watch(
+    () => chatStore.connectError,
+    () => {
+      connectErrorVisible.value = chatStore.connectError;
+    },
+  );
+
+  onMounted(() => {
+    connectErrorVisible.value = chatStore.connectError;
   });
 
   /** 提示文案 */
-  const errorTipsText = translate('chat.connectError');
-  const confirmText = translate('base.confirm');
-  const cancelText = translate('base.ignore');
+  const errorDialogContentText = computed(() => {
+    return translate('chat.connectError.tips1');
+  });
+
+  const errorTipsText = computed(() => {
+    return translate('chat.connectError.tips2');
+  });
 
   /** 处理确认点击 */
   function onConfirm(): void {
@@ -37,9 +44,8 @@ export const useChatConnectError = () => {
 
   return {
     connectErrorVisible,
+    errorDialogContentText,
     errorTipsText,
-    confirmText,
-    cancelText,
     onConfirm,
     onCancel,
   };

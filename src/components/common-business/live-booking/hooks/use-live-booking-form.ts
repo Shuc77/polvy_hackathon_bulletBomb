@@ -77,7 +77,9 @@ export const useLiveBookingForm = () => {
       local.set(LOCAL_AREA_CODE_KEY, bookingFormData.areaCode);
 
       toast.success(translate('liveBooking.bookingSuccess'));
-      liveBookingStore.isSmsLiveBooking = true;
+      liveBookingStore.$patch({
+        isSmsLiveBooking: true,
+      });
 
       bookingFormVisible.value = false;
     } else {
@@ -98,7 +100,9 @@ export const useLiveBookingForm = () => {
       local.remove(LOCAL_AREA_CODE_KEY);
 
       toast.success(translate('liveBooking.cancelSuccess'));
-      liveBookingStore.isSmsLiveBooking = false;
+      liveBookingStore.$patch({
+        isSmsLiveBooking: false,
+      });
     } else {
       toastBookingFail(result.failReason);
     }

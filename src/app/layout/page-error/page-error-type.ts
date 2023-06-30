@@ -10,8 +10,6 @@ export enum PageErrorType {
   ExternalAuthFail = 'ExternalAuthFail',
   /** 独立授权失败 */
   DirectAuthFail = 'DirectAuthFail',
-  /** 未被授权 */
-  NotAuthorized = 'NotAuthorized',
   /** 企业微信异常 */
   WorkWechatCode = 'WorkWechatCode', // WORK_WECHAT_CODE
   /** 未知错误 */
@@ -28,4 +26,6 @@ export interface PageErrorData {
   title: string;
   /** 描述 */
   desc?: string;
+  /** 是否展示重新加载的按钮 */
+  reloadBtnVisible?: true;
 }

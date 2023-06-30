@@ -6,7 +6,7 @@
       :placeholder="chatInputPlaceholder"
       :disabled-input="chatInputDisabled"
       :disabled-emotion-picker="chatInputDisabled"
-      :send-image-enabled="viewerSendImgEnabled"
+      :send-image-enabled="chatSetting.viewerSendImgEnabled"
       :disabled-send-image="chatInputDisabled"
       :image-paste-input-enabled="imagePasteInputEnabled"
       @submit="onSubmitMessage"
@@ -119,13 +119,13 @@ useEventBusListener(appEvents.chat.FocusToChatInput, () => {
   focusMsgInput();
 });
 
-const { chatInputPlaceholder, chatInputDisabled, viewerSendImgEnabled } =
+const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
   storeDefinitionToRefs(useChatStore);
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {
   if (isLowerIE) return false;
-  return viewerSendImgEnabled.value;
+  return chatSetting.value.viewerSendImgEnabled;
 });
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);

@@ -2,21 +2,21 @@
  * @file 互动功能接收端 store
  */
 
-import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { defineStore } from 'pinia';
+import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 
 import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
 
+import { LangKey } from '@/assets/lang/types';
 import {
   AnnouncementTipsStatus,
   getStorageTipsStatus,
 } from '@/components/page-watch-common/interactive-receive/announcement/hooks/use-announcement-tips';
 import { LotteryRecordData } from '@/components/page-watch-common/interactive-receive/lottery/types/lottery-types';
-import { LangKey } from '@/assets/lang/types';
-import { YN } from '@polyv/live-watch-sdk';
+import { InteractSetting } from '@polyv/live-watch-sdk';
 
-import { ynToBool } from '@utils-ts/boolean';
+import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 
 /**
@@ -38,12 +38,12 @@ export interface InteractiveEntranceData {
 }
 
 export interface InteractReceiveStoreState {
+  /** 互动设置信息 */
+  interactSetting: Ref<InteractSetting>;
   /** 互动功能是否全屏处理 */
   isIarFullScreen: ComputedRef<boolean>;
   /** 互动功能二次入口列表 */
   interactiveEntrance: Ref<InteractiveEntranceData[]>;
-  /** 投诉反馈开关 */
-  watchFeedbackEnabled: ComputedRef<boolean>;
   /** 公告提示是否显示 */
   announcementTipsVisible: Ref<boolean>;
   /** 公告功能是否显示 */
@@ -56,23 +56,21 @@ export interface InteractReceiveStoreState {
   pushCardPendantVisible: Ref<boolean>;
   /** 条件抽奖入口是否显示 */
   welfareLotteryPendantVisible: Ref<boolean>;
+  /** 抢答入口是否显示 */
+  rushAnswerPendantVisible: Ref<boolean>;
   /** 报名抽奖挂件是否显示 */
   enrollLotteryPendantVisible: Ref<boolean>;
   /** 红包挂件是否显示 */
   redpackPendantVisible: Ref<boolean>;
   /** 红包雨是否正在显示 */
   isGoOnRedpackRain: Ref<boolean>;
-  /** 商品库开关 */
-  productEnabled: Ref<boolean>;
-  /** 投票活动开关 */
-  voteActiveEnabled: ComputedRef<boolean>;
-  /** 已投票的 id 列表 */
-  votedList: Ref<string[]>;
   /** 是否显示问答的红点提示 */
   qaReminderVisible: Ref<boolean>;
 }
 
 export interface InteractReceiveStoreAction {
+  /** 同步互动 store */
+  syncInteractStore(): void;
   /** 设置互动二次入口，如果已存在则不生效 */
   setInteractiveEntrance(entranceData: InteractiveEntranceData): void;
   /** 根据类型移除互动二次入口 */
@@ -89,6 +87,27 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const watchAppStore = useWatchAppStore();
     const channelStore = useChannelStore();
     const layoutStore = useLayoutStore();
+
+    /** 互动设置信息 */
+    const interactSetting = ref<InteractSetting>({
+      enrollLotteryEnabled: false,
+      recruitmentEnabled: false,
+      productEnabled: false,
+      productTrackEnabled: false,
+      productLinkJumpTipEnabled: false,
+      redpackEnabled: false,
+      conditionLotteryAutoPopperEnabled: false,
+      watchFeedbackEnabled: false,
+      voteActiveEnabled: false,
+      redpackImage: '',
+      redpackRainBottomImage: '',
+      redpackRainImages: [],
+    });
+
+    function syncInteractStore() {
+      const watchCore = getWatchCore();
+      interactSetting.value = watchCore.interactReceive.getInteractSetting();
+    }
 
     /** 互动功能是否全屏处理 */
     const isIarFullScreen = computed(() => {
@@ -115,21 +134,18 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       }
     }
 
-    /** 投诉反馈开关 */
-    const watchFeedbackEnabled = computed(() => {
-      return ynToBool(channelStore.channelDetail?.channelConfig.watchFeedbackEnabled, YN.N);
-    });
-
     /** 公告提示是否显示 */
     const announcementTipsVisible = ref(
-      getStorageTipsStatus() === AnnouncementTipsStatus.showing && !watchAppStore.isWatchBackUrl,
+      getStorageTipsStatus() === AnnouncementTipsStatus.showing &&
+        !watchAppStore.isPlaybackWatchUrl,
     );
 
     /** 公告功能是否显示 */
     const announcementFunctionVisible = computed(() => {
-      if (watchAppStore.isWatchBackUrl) return false;
+      if (watchAppStore.isPlaybackWatchUrl) return false;
+      if (channelStore.isSeminarChannel) return false;
 
-      return !channelStore.isSeminarChannel;
+      return true;
     });
 
     /** 当前中奖记录列表 */
@@ -146,6 +162,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 条件抽奖入口是否显示 */
     const welfareLotteryPendantVisible = ref(false);
 
+    /** 抢答入口是否显示 */
+    const rushAnswerPendantVisible = ref(false);
+
     /** 报名抽奖挂件是否显示 */
     const enrollLotteryPendantVisible = ref(false);
 
@@ -155,40 +174,28 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 红包雨是否正在显示 */
     const isGoOnRedpackRain = ref(false);
 
-    /** 商品库开关 */
-    const productEnabled = ref(false);
-
-    /** 投票活动开关 */
-    const voteActiveEnabled = computed<boolean>(() => {
-      if (watchAppStore.isWatchBackUrl) return false;
-
-      return ynToBool(channelStore.channelDetail?.channelConfig.voteActiveEnabled, YN.N);
-    });
-
-    /** 已投票的 id 列表 */
-    const votedList = ref<string[]>([]);
-
     /** 是否显示问答的红点提示 */
     const qaReminderVisible = ref(false);
 
     return {
+      interactSetting,
+      syncInteractStore,
+
       isIarFullScreen,
       interactiveEntrance,
       setInteractiveEntrance,
       removeInteractiveEntrance,
-      watchFeedbackEnabled,
+
       announcementTipsVisible,
       announcementFunctionVisible,
       lotteryWinRecords,
       hasNotReceivedLottery,
       pushCardPendantVisible,
       welfareLotteryPendantVisible,
+      rushAnswerPendantVisible,
       enrollLotteryPendantVisible,
       redpackPendantVisible,
       isGoOnRedpackRain,
-      productEnabled,
-      voteActiveEnabled,
-      votedList,
       qaReminderVisible,
     };
   },

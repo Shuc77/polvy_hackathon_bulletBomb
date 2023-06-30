@@ -39,6 +39,13 @@
       >
         {{ pageError.desc }}
       </p>
+      <button
+        v-if="pageError.reloadBtnVisible"
+        class="c-page-error-mobile-default__reloadBtn"
+        @click="reloadPage"
+      >
+        {{ $lang('base.reload') }}
+      </button>
     </div>
   </div>
 </template>
@@ -54,6 +61,8 @@ const {
   isAuthError,
   isNotExistError,
   isNotFoundError,
+
+  reloadPage,
 } = usePageErrorHook();
 
 const watchLink = computed(() => {
@@ -149,5 +158,18 @@ const watchLink = computed(() => {
 }
 .c-page-error-mobile-default__disallow__content-link {
   color: #2196f3;
+}
+
+.c-page-error-mobile-default__reloadBtn {
+  width: 184px;
+  height: 46px;
+  margin-top: 18px;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #02d2fd;
+  border: 0;
+  border-radius: 28px;
+  outline: none;
 }
 </style>

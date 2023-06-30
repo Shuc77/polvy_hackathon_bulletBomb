@@ -1,23 +1,25 @@
 <!-- @file 移动端页脚 -->
 <template>
   <div
-    v-if="footerVisible"
+    v-if="pageFootSetting.footerEnabled"
     class="c-mobile-page-footer pws-mobile-page-footer"
   >
     <a
-      :href="footerLink"
+      :href="pageFootSetting.footerLink"
       target="_blank"
       rel="noopener"
     >
-      - {{ footerText }} -
+      - {{ pageFootSetting.footerText }} -
     </a>
   </div>
 </template>
 
 <script setup lang="ts">
-import { usePageFooter } from './use-page-footer';
+import { getWatchCore } from '@/core/watch-sdk';
+import { reactive } from 'vue';
 
-const { footerVisible, footerLink, footerText } = usePageFooter();
+const watchCore = getWatchCore();
+const pageFootSetting = reactive(watchCore.channel.getPageFooterSetting());
 </script>
 
 <style lang="scss">
@@ -26,7 +28,7 @@ const { footerVisible, footerLink, footerText } = usePageFooter();
   font-size: 12px;
   line-height: 1;
   text-align: center;
-  @include iphone-x-pb(24px);
+  @include iphone-x-pb(24px, false);
   a {
     color: inherit;
     text-decoration: none;

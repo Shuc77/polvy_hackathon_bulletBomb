@@ -58,6 +58,9 @@ $--skin-iar-common-configs: (
   'iar-qa-new-msg-button:text-color': #830b0b,
   // 问答没有更多文案字体色
   'iar-qa-no-more:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
+
+  // 投票无数据的字体色
+  'iar-vote-no-data:text-color': map.get($--skin-basic-configs, 'main-text-color'),
 );
 
 // 皮肤互动功能 PC 配置

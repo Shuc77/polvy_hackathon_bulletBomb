@@ -4,7 +4,10 @@
     class="c-portrait-msg-container"
     @click="emit('click-container')"
   >
-    <div class="c-portrait-msg-container__bubble">
+    <div
+      class="c-portrait-msg-container__bubble"
+      :class="{ 'c-portrait-msg-container__bubble__margin': askMenuData.visible }"
+    >
       <slot name="msg-header"></slot>
 
       <div
@@ -46,6 +49,7 @@ import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 import { msgTipsControlProps, useMsgTipsControl } from './use-msg-tips-control';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const props = defineProps({
   ...msgTipsControlProps(),
@@ -61,6 +65,7 @@ const emit = defineEmits({
 });
 
 const { referenceRef, tipsVisible, onClickControl, onClickTips } = useMsgTipsControl({ props });
+const { askMenuData } = useChannelMenuStore();
 </script>
 
 <style lang="scss">
@@ -105,5 +110,8 @@ const { referenceRef, tipsVisible, onClickControl, onClickTips } = useMsgTipsCon
     border-width: 5px;
     transform: translateX(-50%);
   }
+}
+.c-portrait-msg-container__bubble__margin {
+  margin-right: 20px;
 }
 </style>

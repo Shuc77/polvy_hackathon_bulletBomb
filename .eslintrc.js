@@ -16,16 +16,16 @@ module.exports = {
     PROJECT_VERSION: 'readonly',
   },
   rules: {
-    'no-console': 'off',
     'prettier/prettier': 'warn',
-    'vue/v-on-event-hyphenation': [
-      'warn',
-      'always',
-      {
-        ignore: ['statusChange'],
-      },
-    ],
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'vue/component-name-in-template-casing': [
+      'error',
+      'kebab-case',
+      {
+        registeredComponentsOnly: true,
+        ignores: [],
+      },
+    ],
   },
 };

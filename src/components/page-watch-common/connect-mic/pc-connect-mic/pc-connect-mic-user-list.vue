@@ -1,6 +1,6 @@
 <!-- @file PC 端连麦用户列表 -->
 <template>
-  <div class="c-pc-connect-mic-user-list g-clearfix">
+  <div class="c-pc-connect-mic-user-list g-clearfix pws-main-tab-body-scrollbar">
     <div
       v-for="micItem in filterConnectMicList"
       :key="micItem.streamId"
@@ -31,6 +31,7 @@ const { filterConnectMicList } = storeDefinitionToRefs(useConnectMicStore);
   width: 100%;
   height: 100%;
   overflow-y: auto;
+  @include scrollbar;
 }
 
 .c-pc-connect-mic-user-list__content {

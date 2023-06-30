@@ -40,6 +40,30 @@
         >
           {{ title }}
         </div>
+
+        <div
+          v-if="searchEnabled"
+          class="c-mobile-form-select__options__search"
+        >
+          <mobile-form-input
+            v-model="searchKeyword"
+            :placeholder="$lang('base.searchKeyword')"
+            :size="FormSize.Medium"
+            clearabled
+          >
+            <template #prefix>
+              <mobile-icon-search class="c-mobile-form-select__options__search__icon" />
+            </template>
+          </mobile-form-input>
+        </div>
+
+        <div
+          v-if="optionList.length === 0"
+          class="c-mobile-form-select__options__empty"
+        >
+          {{ $lang('base.emptyOptions') }}
+        </div>
+
         <div
           v-for="(item, index) in optionList"
           :key="index"
@@ -57,29 +81,42 @@
 </template>
 
 <script setup lang="ts">
-import { MobileIconArrowDown } from '@/components/component-icons/mobile/map';
+import { MobileIconArrowDown, MobileIconSearch } from '@/components/component-icons/mobile/map';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
+import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import { FormSize } from '../types/enums';
 import {
   formSelectProps,
   formSelectEmits,
   useFormSelect,
   useFormSelectMobile,
 } from './use-form-select';
+import { watch } from 'vue';
 
 const props = defineProps(formSelectProps());
 
 const emit = defineEmits(formSelectEmits());
 
-const { title, inputValue, inputPlaceholder, optionList } = useFormSelect({
-  props,
-  emit,
-});
+const { title, inputValue, inputPlaceholder, optionList, searchEnabled, searchKeyword } =
+  useFormSelect({
+    props,
+    emit,
+  });
 
 const { optionVisible, openOption, closeOption, onClickOption, onClickConfirm, isSelectedOption } =
   useFormSelectMobile({
     props,
     emit,
   });
+
+watch(
+  () => optionVisible.value,
+  () => {
+    if (optionVisible.value) {
+      searchKeyword.value = '';
+    }
+  },
+);
 </script>
 
 <style lang="scss">
@@ -134,8 +171,26 @@ const { optionVisible, openOption, closeOption, onClickOption, onClickConfirm, i
   color: #3082fe;
 }
 
+.c-mobile-form-select__options__search {
+  margin-bottom: 20px;
+}
+
 .c-mobile-form-select__options {
   padding: 20px 24px;
+}
+
+.c-mobile-form-select__options__search__icon {
+  margin-right: -4px;
+  margin-left: 16px;
+  font-size: 16px;
+  color: #757575;
+}
+
+.c-mobile-form-select__options__empty {
+  font-size: 14px;
+  line-height: 40px;
+  color: #757575;
+  text-align: center;
 }
 
 .c-mobile-form-select__options__title {

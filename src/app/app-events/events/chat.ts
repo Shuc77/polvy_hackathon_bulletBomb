@@ -20,11 +20,6 @@ export const chatEvents = {
    */
   OpenSetNick: 'OpenSetNick',
   /**
-   * 聊天消息更新
-   * @param {object} msgResult 消息结果
-   */
-  MsgResultUpdate: 'MsgResultUpdate',
-  /**
    * 将聊天室输入框聚焦
    */
   FocusToChatInput: 'FocusToChatInput',

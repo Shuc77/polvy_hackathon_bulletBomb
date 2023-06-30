@@ -1,4 +1,4 @@
-export type SelectValueType = string | number;
+export type SelectValueType = string | number | boolean;
 
 export interface SelectOptionItem {
   /** 显示的文案 */

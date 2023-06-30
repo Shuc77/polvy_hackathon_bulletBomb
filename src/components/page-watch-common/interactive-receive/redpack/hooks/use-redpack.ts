@@ -1,11 +1,10 @@
 /**
  * @file 红包相关 hook
  */
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
-
-import { useChannelStore } from '@/store/use-channel-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 
 /**
  * @hook 互动-红包状态
@@ -28,7 +27,7 @@ export const useRedpackStatus = () => {
  * @hook 互动-红包
  */
 export const useRedpack = () => {
-  const channelStore = useChannelStore();
+  const interactReceiveStore = useInteractReceiveStore();
 
   const watchCore = getWatchCore();
   /** 红包 SDK 实例 */
@@ -37,7 +36,7 @@ export const useRedpack = () => {
   /** 自定义红包皮肤 */
   const customImgConfig = computed(() => {
     return {
-      redpackCoverImg: channelStore.channelDetail?.interactionSetting.redpackSkin?.redpackImage,
+      redpackCoverImg: interactReceiveStore.interactSetting.redpackImage,
     };
   });
 

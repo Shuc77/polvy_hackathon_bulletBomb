@@ -1,21 +1,16 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import { PolyvWatchCoreEvents } from '@polyv/live-watch-sdk';
 
-import { useChannelStore } from '@/store/use-channel-store';
-import { useFinanceStore } from '@/store/use-finance-store';
+import { useSyncStoreForWatchCore } from '@/hooks/core/use-sync-store';
 
 export function bindWatchCoreEvents(): void {
   const watchCore = getWatchCore();
 
-  const channelStore = useChannelStore();
-  const financeStore = useFinanceStore();
+  const { syncStoreAfterWatchCoreSetuped } = useSyncStoreForWatchCore();
 
   // 观看核心已安装
   watchCore.eventEmitter.on(PolyvWatchCoreEvents.WatchCoreSetuped, () => {
-    channelStore.syncChannelDetail();
-
-    financeStore.initRiskConfirm();
-    financeStore.initRiskEvaluation();
+    syncStoreAfterWatchCoreSetuped();
   });
 
   // 观看核心已连接聊天室

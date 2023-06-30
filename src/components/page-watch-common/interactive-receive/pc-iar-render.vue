@@ -10,7 +10,7 @@
     <!-- 签到 -->
     <pc-check-in-dialog />
     <!-- 反馈 -->
-    <pc-feed-back-dialog v-if="watchFeedbackEnabled" />
+    <pc-feed-back-dialog v-if="interactSetting.watchFeedbackEnabled" />
     <!-- 抽奖动画 -->
     <pc-lottery-animation />
     <!-- 抽奖结果弹层 -->
@@ -44,7 +44,7 @@ import PcProductJobDetailDialog from './product/pc-product-job-detail-dialog.vue
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
-const { announcementFunctionVisible, watchFeedbackEnabled } =
+const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 

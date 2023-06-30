@@ -14,9 +14,10 @@ const { formatDate } = require('@polyv/utils/dist/cjs/date');
 /** 当前是否为开发模式 */
 const devMode = (exports.devMode = process.env.NODE_ENV !== 'production');
 
+
+
+/** 发布路径 */
 let publicPath = process.env.VUE_APP_BUILD_MODE === 'STATIC' ? './' : '/';
-
-
 
 exports.publicPath = publicPath;
 

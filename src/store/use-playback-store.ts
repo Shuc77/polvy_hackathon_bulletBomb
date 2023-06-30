@@ -4,24 +4,16 @@
 
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import {
-  LiveStatus,
-  PlaybackMode,
-  PlaybackOrigin,
-  PlaybackTarget,
-  YN,
-} from '@polyv/live-watch-sdk';
+import { LiveStatus, PlaybackMode, PlaybackTarget } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from './use-channel-store';
-import { ynToBool } from '@utils-ts/boolean';
 import { useWatchAppStore } from './use-watch-app-store';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { useChannelStore } from './use-channel-store';
 
 export interface PlaybackStoreState {
   /** 当前是否正在播放回放 */
   isPlaybacking: Ref<boolean>;
   /** 回放方式 */
-  playbackMode: ComputedRef<PlaybackMode | undefined>;
+  playbackMode: Ref<PlaybackMode | undefined>;
   /** 当前已加载的回放页数，默认：0 */
   pageNumber: Ref<number>;
   /** 每页数量 */
@@ -39,12 +31,16 @@ export interface PlaybackStoreState {
   /** 当前播放的回放对象 */
   currentPlaybackTarget: Ref<PlaybackTarget | undefined>;
   /** 章节是否显示 */
-  chapterEnabled: ComputedRef<boolean>;
+  chapterVisible: ComputedRef<boolean>;
   /** 回放列表是否显示 */
   playbackListVisible: ComputedRef<boolean>;
+  /** 是否能够聊天重放 */
+  chatReplayEnabled: ComputedRef<boolean>;
 }
 
 export interface PlaybackStoreActions {
+  /** 同步 Store 数据 */
+  syncPlaybackStore: () => void;
   /** 初始化当前回放对象 */
   initCurrentPlaybackTarget(): Promise<void>;
   /** 初始化回放列表 */
@@ -53,6 +49,8 @@ export interface PlaybackStoreActions {
   loadNextPlaybackList(): Promise<void>;
   /** 监听分页器切换事件 */
   onPageChange(nextPageNumber: number): Promise<void>;
+  /** 获取回放的场次Id */
+  getPlaybackSessionId(): string;
 }
 
 export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions {}
@@ -61,15 +59,11 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
 
+  /** 当前是否正在播放回放 */
   const isPlaybacking = ref(false);
 
   /** 回放方式 */
-  const playbackMode = computed<PlaybackMode | undefined>(() => {
-    if (watchAppStore.isWatchBackUrl) return PlaybackMode.Single;
-
-    const channelDetail = channelStore.channelDetail;
-    return channelDetail?.playbackInfo?.type;
-  });
+  const playbackMode = ref<PlaybackMode>();
 
   /** 当前已加载的回放页数，默认：0 */
   const pageNumber = ref(0);
@@ -104,26 +98,48 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   /** 当前播放的回放对象 */
   const currentPlaybackTarget = ref<PlaybackTarget>();
 
+  /** 是否可以聊天重放 */
+  const chatReplayEnabled = computed(() => {
+    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (!currentPlaybackTarget.value) return false;
+    if (channelStore.liveStatus === LiveStatus.Live) return false;
+
+    return currentPlaybackTarget.value.chatReplayEnabled;
+  });
+
+  const chapterEnabled = ref(false);
+
   /** 章节是否显示 */
-  const chapterEnabled = computed<boolean>(() => {
-    const channelDetail = channelStore.channelDetail;
-    const sectionEnabled = channelDetail?.playbackInfo?.sectionEnabled;
-    return isPlaybacking.value && ynToBool(sectionEnabled, YN.N);
+  const chapterVisible = computed<boolean>(() => {
+    return isPlaybacking.value && chapterEnabled.value && channelStore.isPptChannel;
   });
 
   /** 回放列表是否显示 */
   const playbackListVisible = computed<boolean>(() => {
-    if (watchAppStore.isWatchBackUrl) return false;
+    if (watchAppStore.isPlaybackWatchUrl) return false;
 
     return unref(isPlaybacking) && playbackMode.value === PlaybackMode.List;
   });
+
+  /**
+   * 同步 Store 数据
+   */
+  function syncPlaybackStore() {
+    const watchCore = getWatchCore();
+
+    playbackMode.value = watchCore.playback.getCurrentPlaybackMode();
+    chapterEnabled.value = watchCore.playback.getChapterEnabled();
+  }
 
   /**
    * 初始化当前回放对象
    * @warn 副作用：如果为列表回放，会初始化一次回放列表数据
    * */
   async function initCurrentPlaybackTarget() {
-    if (channelStore.liveStatus !== LiveStatus.Playback) {
+    const watchCore = getWatchCore();
+    const liveStatus = watchCore.channel.getLiveStatus();
+
+    if (liveStatus !== LiveStatus.Playback) {
       currentPlaybackTarget.value = undefined;
       return;
     }
@@ -134,18 +150,23 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
       if (playbackList.value.length) {
         currentPlaybackTarget.value = playbackList.value[0];
       }
+      setChatReplayPlaybackVideoTarget();
       return;
     }
 
-    // 单个回放时使用 detail 中的回放数据
+    // 单个回放时使用的回放数据
     if (playbackMode.value === PlaybackMode.Single) {
       const watchCore = getWatchCore();
-      const playbackTarget = watchCore.playback.getTargetPlaybackOption({
-        playbackOrigin: watchAppStore.isWatchBackUrl
-          ? paramGetter.playbackType() || PlaybackOrigin.Playback // 回放地址的回放来源只有“回放列表”和“点播列表”
-          : undefined,
-      });
+      const playbackTarget = watchCore.playback.getSinglePlaybackTarget();
       currentPlaybackTarget.value = playbackTarget;
+      setChatReplayPlaybackVideoTarget();
+    }
+  }
+
+  function setChatReplayPlaybackVideoTarget() {
+    const watchCore = getWatchCore();
+    if (chatReplayEnabled.value) {
+      watchCore.chat.setChatMsgReplayPlaybackTarget(currentPlaybackTarget.value);
     }
   }
 
@@ -198,23 +219,34 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     }
   }
 
+  function getPlaybackSessionId(): string {
+    return currentPlaybackTarget.value?.playbackOptions.sessionId || '';
+  }
+
   return {
     isPlaybacking,
     playbackMode,
+
     pageNumber,
     pageSize,
     totalPages,
     isLoading,
     isNoMore,
+
     playbackList,
-    playbackListVisible,
     currentPagePlaybackList,
     currentPlaybackTarget,
-    chapterEnabled,
 
+    chapterVisible,
+    playbackListVisible,
+    chatReplayEnabled,
+
+    syncPlaybackStore,
     initCurrentPlaybackTarget,
     initPlaybackList,
     loadNextPlaybackList,
     onPageChange,
+
+    getPlaybackSessionId,
   };
 });

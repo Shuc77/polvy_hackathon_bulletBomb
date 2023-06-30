@@ -3,7 +3,6 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { DocEvents, LiveStatus, SetupDocOptions } from '@polyv/live-watch-sdk';
 import { useLayoutStore } from '@/store/use-layout-store';
-// import { useMarquee } from '@/components/common-business/marquee/use-marquee';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -20,10 +19,6 @@ export const useDoc = (
 
   /** 创建文档的外层节点 */
   const wrapRef = ref<HTMLDivElement>();
-
-  // useMarquee({
-  //   containerRef: wrapRef,
-  // });
 
   /** 初始化文档 */
   function initDoc() {

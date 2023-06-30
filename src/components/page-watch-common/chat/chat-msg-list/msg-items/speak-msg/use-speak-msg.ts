@@ -1,54 +1,24 @@
-import { ChatMsgSpeakType, YN } from '@polyv/live-watch-sdk';
-import { computed, ref, unref } from 'vue';
-import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
-import { parseEmotions, removeEmotions } from '@polyv/emotion-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
-import { copyText } from '@/assets/utils/copy';
-import { toast } from '@/hooks/components/use-toast';
-import { translate } from '@/assets/lang';
 import { appEvents, eventBus } from '@/app/app-events';
-import { FullMsgData } from '../../../chat-full-message/type';
-import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
-import { isString, parseLinkContent } from '@/assets/utils/string';
-import { useChannelStore } from '@/store/use-channel-store';
-import { ynToBool } from '@utils-ts/boolean';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { TAB_NAME_ASK } from '@/assets/constants/tab-name';
+import { translate } from '@/assets/lang';
+import { copyText } from '@/assets/utils/copy';
+import { isString } from '@/assets/utils/string';
+import { getWatchCore } from '@/core/watch-sdk';
+import { toast } from '@/hooks/components/use-toast';
+import { useChatStore } from '@/store/use-chat-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-
-/**
- * 转换发言消息的内容
- * @param options
- */
-export function parseSpeakContent(options: {
-  /** 消息内容 */
-  content: string;
-  /** 是否转换链接，默认：true */
-  parseLink?: boolean;
-  /** 是否转换表情，默认：true */
-  parseEmotion?: boolean;
-}) {
-  const { content, parseLink = true, parseEmotion } = options;
-  let newContent = content;
-
-  // 转换链接
-  if (parseLink) {
-    newContent = parseLinkContent(newContent);
-  }
-
-  // 转换表情
-  if (parseEmotion) {
-    newContent = parseEmotions(newContent);
-  }
-
-  return newContent;
-}
+import { ChatMsgSpeakType } from '@polyv/live-watch-sdk';
+import { computed, ref, unref } from 'vue';
+import { FullMsgData } from '../../../chat-full-message/type';
+import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
+import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
 
 /** 转换引用的 speak 内容 */
 export function parseQuoteSpeakContent(content: string) {
-  return parseSpeakContent({
-    content,
-    parseLink: false,
+  const watchCore = getWatchCore();
+
+  return watchCore.chat.parseSpeakContent(content, {
     parseEmotion: true,
   });
 }
@@ -58,6 +28,8 @@ export function parseQuoteSpeakContent(content: string) {
  * @param chatMsgRef speak 聊天消息响应式
  */
 export const useSpeakMsgContent = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) => {
+  const watchCore = getWatchCore();
+
   const { isSpecialUser } = useChatMsgUserBasic(chatMsgRef);
 
   /** 原始的发言内容 */
@@ -69,8 +41,7 @@ export const useSpeakMsgContent = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) 
   const speakHtmlContent = computed<string>(() => {
     const content = unref(chatMsgRef).content;
 
-    return parseSpeakContent({
-      content,
+    return watchCore.chat.parseSpeakContent(content, {
       parseLink: unref(isSpecialUser),
       parseEmotion: true,
     });
@@ -97,7 +68,8 @@ export const useSpeakMsgContent = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) 
  * @param chatMsgRef
  */
 export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) => {
-  const channelStore = useChannelStore();
+  const watchCore = getWatchCore();
+  const chatStore = useChatStore();
   const layoutStore = useLayoutStore();
   const { isSelfMsg } = useChatMsgUserBasic(chatMsgRef);
 
@@ -106,7 +78,9 @@ export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>
     let content = unref(chatMsgRef).content;
 
     // 移除 emotion 表情
-    content = removeEmotions(content);
+    content = watchCore.chat.parseSpeakContent(content, {
+      removeEmotion: true,
+    });
 
     return content;
   });
@@ -114,7 +88,7 @@ export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>
   /** 能否进行翻译 */
   const canTranslate = computed<boolean>(() => {
     // 翻译开关
-    if (!ynToBool(channelStore.channelDetail?.channelConfig.chatTranslateEnabled, YN.N)) {
+    if (!chatStore.chatSetting.chatTranslateEnabled) {
       return false;
     }
 
@@ -190,7 +164,7 @@ export const useSpeakMsg = () => {
    * 获取完整的消息内容
    */
   async function getFullSpeakContent() {
-    if (!unref(chatMsg).isOverLength || watchAppStore.isWatchBackUrl) {
+    if (!unref(chatMsg).isOverLength || watchAppStore.isPlaybackWatchUrl) {
       return unref(chatMsg).content;
     }
     const id = unref(chatMsg).id;

@@ -67,7 +67,7 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { formatDuration } from '@/assets/utils/date-time';
 
-import { usePlaybackList } from '../hooks/use-playback-list';
+import { usePlaybackList } from '../use-playback-list';
 import { PlaybackTarget } from '@polyv/live-watch-sdk';
 
 const playbackStore = usePlaybackStore();

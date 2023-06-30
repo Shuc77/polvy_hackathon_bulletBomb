@@ -6,7 +6,6 @@ import { donateEvents } from './donate';
 import { interactionEvents } from './interaction';
 import { inviteEvents } from './invite';
 import { microActivityEvents } from './microActivity';
-import { financeEvents } from './finance';
 import { connectMicEvents } from './connectMic';
 import { portraitEvents } from './portrait';
 import { withdrawEvents } from './withdraw';
@@ -22,7 +21,6 @@ const modules = {
   withdraw: withdrawEvents,
   portrait: portraitEvents,
   microActivity: microActivityEvents,
-  finance: financeEvents,
   connectMic: connectMicEvents,
 };
 

@@ -11,7 +11,7 @@
           v-else
           class="c-mobile-splash__header__content__cover g-img-cover"
           :style="{
-            backgroundImage: `url(${channelSplashImg})`,
+            backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
           }"
         >
           <div
@@ -61,6 +61,8 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
 import { usePvTrack } from '@/hooks/business/use-pv-track';
+import { useThemeStore } from '@/store/use-theme-store';
+import { resizeOSSImg } from '@/assets/utils/image';
 
 const MobilePlayerTrial = defineAsyncComponent(
   () =>
@@ -70,7 +72,7 @@ const MobilePlayerTrial = defineAsyncComponent(
     ),
 );
 
-const { channelSplashImg } = storeDefinitionToRefs(useChannelInfoStore);
+const { splashImg } = storeDefinitionToRefs(useThemeStore);
 const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
 const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
 

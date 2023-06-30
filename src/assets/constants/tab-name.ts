@@ -67,3 +67,8 @@ export const TAB_NAME_MICRO_ACTIVITY = 'microActivity';
  * 图文直播 tab 名
  */
 export const TAB_NAME_TUWEN_LIVE = 'tuwenLive';
+
+/**
+ * 分会场 tab 名
+ */
+export const TAB_NAME_MULTI_MEETING = 'multiMeeting';

@@ -1,0 +1,65 @@
+import { defineStore } from 'pinia';
+import { computed, ComputedRef, ref, Ref } from 'vue';
+import { isWeixin } from '@/assets/utils/browser';
+import { SendRedpackConfig } from '@polyv/live-watch-sdk';
+import { getWatchCore } from '@/core/watch-sdk';
+
+export interface RedpackStoreState {
+  /** 观众发红包的配置 */
+  sendRedpackConfig: Ref<SendRedpackConfig>;
+  /** 是否展示"发送红包"功能 */
+  sendRedpackVisible: ComputedRef<boolean>;
+  /** 是否使用“积分红包” */
+  scoreRedpackEnabled: Ref<boolean>;
+  /** 积分单位 */
+  scoreUnit: Ref<string>;
+}
+
+export interface RedpackStoreAction {
+  /** 同步红包 Store */
+  syncRedpackStore: () => void;
+}
+
+export interface RedpackStore extends RedpackStoreState, RedpackStoreAction {}
+
+export const useRedpackStore = defineStore<'redpack', RedpackStore>('redpack', () => {
+  /** 观众发红包的限制 */
+  const sendRedpackConfig = ref<SendRedpackConfig>({
+    sendRedpackEnabled: false,
+    sendRedpackMaxAmount: 0,
+    sendRedpackMaxCount: 0,
+    sendRedpackMinAverage: 0,
+  });
+
+  /** 是否展示"发送红包"功能 */
+  const sendRedpackVisible = computed<boolean>(() => {
+    return isWeixin && sendRedpackConfig.value.sendRedpackEnabled;
+  });
+
+  /** 是否使用“积分红包” */
+  const scoreRedpackEnabled = ref(false);
+
+  /** 积分单位 */
+  const scoreUnit = ref('');
+
+  /** 同步发送红包 Store */
+  function syncRedpackStore() {
+    const watchCore = getWatchCore();
+
+    sendRedpackConfig.value = watchCore.redpack.getSendRedpackConfig();
+
+    const scoreRedpackConfig = watchCore.redpack.getScoreRedpackConfig();
+    scoreRedpackEnabled.value = scoreRedpackConfig.scoreRedpackEnabled;
+    scoreUnit.value = scoreRedpackConfig.scoreUnit;
+  }
+
+  return {
+    sendRedpackConfig,
+    sendRedpackVisible,
+
+    scoreRedpackEnabled,
+    scoreUnit,
+
+    syncRedpackStore,
+  };
+});

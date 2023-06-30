@@ -41,7 +41,7 @@ const {
   convertAmount,
   getReceiveRecordList,
 } = useReceiveRecordHook({
-  fetchMethod: watchCore.redpack.getRedpackReceiveRecord,
+  fetchMethod: params => watchCore.redpack.getRedpackReceiveRecord(params),
   fetchMethodParams: {
     redPackType: RedpackPayType.Cash,
   },

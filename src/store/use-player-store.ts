@@ -3,11 +3,13 @@
  */
 import { getWatchCore } from '@/core/watch-sdk';
 import {
+  BarrageSetting,
+  LiveStatus,
+  PlayerLogoSetting,
+  PlayerWarmUpSetting,
   PlayStatus,
   QualityLevelItem,
-  LiveStatus,
   WarmUpType,
-  PlayerLogoPosition,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -25,24 +27,24 @@ export interface PlayerStoreState {
   isPlayStarted: Ref<boolean>;
   /** 当前播放状态 */
   playStatus: Ref<PlayStatus>;
-  /** 暖场类型 */
-  warmUpType: Ref<string | undefined>;
-  /** 暖场图片/播放器封面图 */
-  warmUpImg: Ref<string | undefined>;
-  /** 暖场图片跳转地址 */
-  warmUpHref: Ref<string | undefined>;
+  /** 播放器暖场设置 */
+  warmUpSetting: Ref<PlayerWarmUpSetting>;
   /** 是否显示播放器暖场图片 */
   showWarmUpImg: ComputedRef<boolean>;
   /** 是否显示播放器在“音频直播”场景下的占位区域 */
   showAudioLivePlaceholder: ComputedRef<boolean>;
-  /** 播放器 logo 图片地址 */
-  logoImage: ComputedRef<string | undefined>;
-  /** 播放器 logo 跳转地址 */
-  logoHref: ComputedRef<string | undefined>;
-  /** 播放器 logo 透明度 */
-  logoOpacity: ComputedRef<number>;
-  /** 播放器 logo 位置 */
-  logoPosition: ComputedRef<PlayerLogoPosition>;
+  /** 播放器 logo 设置 */
+  logoSetting: Ref<PlayerLogoSetting>;
+  /** 弹幕设置 */
+  barrageSetting: Ref<BarrageSetting>;
+  /** 弹幕显示状态 */
+  barrageShow: Ref<boolean>;
+  /** 是否支持弹幕速度切换 */
+  supportBarrageSpeed: Ref<boolean>;
+  /** 弹幕速度 340 | 270 | 200 | 130 | 60 */
+  barrageSpeed: Ref<number>;
+  /** 弹幕设置是否显示 */
+  barrageSettingVisible: Ref<boolean>;
   /** 观看延迟时间，单位：毫秒 */
   delayTime: Ref<number>;
   /** 是否支持无延迟观看 */
@@ -55,10 +57,6 @@ export interface PlayerStoreState {
   supportAutoPlay: Ref<boolean>;
   /** 当前音量 */
   currentVolume: Ref<number>;
-  /** 后台中的弹幕开关 */
-  barrageBackstageEnabled: Ref<boolean>;
-  /** 弹幕显示状态 */
-  barrageShow: Ref<boolean>;
   /** 总线路数 */
   lineCount: Ref<number>;
   /** 当前线路索引 */
@@ -90,6 +88,10 @@ export interface PlayerStoreState {
 }
 
 export interface PlayerStoreAction {
+  /** 配置播放器 Store 数据 */
+  syncPlayerStore: () => void;
+  /** 同步暖场设置 */
+  syncWarmUpSetting: () => void;
   /** 同步播放器信息 */
   syncPlayerInfo: () => void;
 }
@@ -118,50 +120,71 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否无延迟观看 */
   const isLowLatency = ref(false);
 
-  /** 暖场类型 */
-  const warmUpType = ref<WarmUpType>();
-
-  /** 暖场图片/播放器封面图 */
-  const warmUpImg = ref<string>();
-
-  /** 暖场图片跳转地址 */
-  const warmUpHref = ref<string>();
+  /** 播放器暖场设置 */
+  const warmUpSetting = ref<PlayerWarmUpSetting>({
+    warmUpType: undefined,
+    warmUpImg: undefined,
+    warmUpVideo: undefined,
+    warmUpHref: undefined,
+  });
 
   /** 是否显示播放器暖场图片 */
   const showWarmUpImg = computed<boolean>(() => {
-    if (playbackStore.isPlaybacking || channelStore.liveStatus !== LiveStatus.Live) {
+    if (playbackStore.isPlaybacking) {
       return false;
     }
 
     const isNotPlaying = playStatus.value !== PlayStatus.Playing;
-    return unref(playerInited) && !!unref(warmUpImg) && (!unref(isPlayStarted) || isNotPlaying);
+    return (
+      // 播放器已初始化
+      unref(playerInited) &&
+      // 有暖场图
+      !!warmUpSetting.value.warmUpImg &&
+      // 还没开始播放 || 不处于播放中状态
+      (!unref(isPlayStarted) || isNotPlaying)
+    );
   });
 
   /** 是否显示播放器在“音频直播”场景下的占位区域 */
   const showAudioLivePlaceholder = computed<boolean>(() => {
     const isPlaying = playStatus.value === PlayStatus.Playing;
-    return unref(playerInited) && isPlaying && unref(channelStore.isOnlyAudioLive);
+
+    return (
+      // 播放器已初始化
+      unref(playerInited) &&
+      // 处于播放中状态
+      isPlaying &&
+      // 只有音频直播的情况
+      unref(channelStore.isCustomLiveAudioMode)
+    );
   });
 
-  /** 播放器 logo 图片地址 */
-  const logoImage = computed<string | undefined>(() => {
-    return channelStore.channelDetail?.playerSetting?.logoImage ?? undefined;
+  /** 播放器 logo 设置 */
+  const logoSetting = ref<PlayerLogoSetting>({
+    logoImage: undefined,
+    logoHref: undefined,
+    logoOpacity: 1,
+    logoPosition: 'tl',
   });
 
-  /** 播放器 logo 跳转地址 */
-  const logoHref = computed<string | undefined>(() => {
-    return channelStore.channelDetail?.playerSetting?.logoHref ?? undefined;
+  /** 弹幕设置 */
+  const barrageSetting = ref<BarrageSetting>({
+    barrageEnabled: false,
+    barrageDefaultShow: false,
+    barrageSpeed: 200,
   });
 
-  /** 播放器 logo 透明度 */
-  const logoOpacity = computed<number>(() => {
-    return channelStore.channelDetail?.playerSetting?.logoOpacity ?? 1;
-  });
+  /** 弹幕显示状态 */
+  const barrageShow = ref(false);
 
-  /** 播放器 logo 位置 */
-  const logoPosition = computed<PlayerLogoPosition>(() => {
-    return channelStore.channelDetail?.playerSetting?.logoPosition ?? 'tl';
-  });
+  /** 是否支持弹幕速度切换 */
+  const supportBarrageSpeed = ref(false);
+
+  /** 弹幕速度 */
+  const barrageSpeed = ref(200);
+
+  /** 弹幕设置是否显示 */
+  const barrageSettingVisible = ref(false);
 
   /** 是否处于一个可播放的模式 */
   const isPlayMode = computed<boolean>(() => {
@@ -178,7 +201,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     }
 
     // 没有直播中，但有暖场视频
-    if (warmUpType.value === WarmUpType.Video) {
+    if (warmUpSetting.value.warmUpType === WarmUpType.Video) {
       return true;
     }
 
@@ -196,12 +219,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   /** 当前音量 */
   const currentVolume = ref(0.5);
-
-  /** 后台中的弹幕开关 */
-  const barrageBackstageEnabled = ref(false);
-
-  /** 弹幕显示状态 */
-  const barrageShow = ref(true);
 
   /** 总线路数 */
   const lineCount = ref(0);
@@ -256,7 +273,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     }
 
     // 非直播中但存在暖场视频
-    if (warmUpType.value === WarmUpType.Video) {
+    if (warmUpSetting.value.warmUpType === WarmUpType.Video) {
       return false;
     }
 
@@ -274,28 +291,58 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 播放器控制栏是否显示 */
   const playerControlVisible = ref(false);
 
+  /** 同步播放器 Store 数据 */
+  function syncPlayerStore() {
+    const watchCore = getWatchCore();
+
+    // 播放器配置无延迟
+    if (watchCore.player.supportLowLatency().support) {
+      isLowLatency.value = true;
+    }
+
+    const _logoSetting = watchCore.player.getPlayerLogoSetting();
+    logoSetting.value = _logoSetting;
+
+    const _barrageSetting = watchCore.barrage.getBarrageSetting();
+    barrageSetting.value = _barrageSetting;
+    barrageShow.value = _barrageSetting.barrageDefaultShow;
+
+    syncWarmUpSetting();
+  }
+
+  /** 同步暖场设置 */
+  function syncWarmUpSetting() {
+    const watchCore = getWatchCore();
+    const _warmUpSetting = watchCore.player.getPlayerWarmUpSetting();
+    warmUpSetting.value = _warmUpSetting;
+  }
+
   /** 同步播放器信息 */
   function syncPlayerInfo(): void {
     const watchCore = getWatchCore();
+
     const playerInfo = watchCore.player.getPlayerInfo();
 
-    warmUpType.value = playerInfo.warmUpType;
-    warmUpImg.value = playerInfo.warmUpImg;
-    warmUpHref.value = playerInfo.warmUpHref;
-    delayTime.value = playerInfo.delayTime;
+    supportLowLatency.value = playerInfo.supportLowLatency;
     supportRefresh.value = playerInfo.supportRefresh;
     supportAutoPlay.value = playerInfo.supportAutoPlay;
-    barrageBackstageEnabled.value = playerInfo.barrageBackstageEnabled;
-    playStatus.value = playerInfo.playStatus;
+
     lineCount.value = playerInfo.lineCount;
     currentLine.value = playerInfo.currentLine;
+
     qualityLevels.value = playerInfo.qualityLevels;
     currentQualityLevel.value = playerInfo.currentQualityLevel;
+
     rateList.value = playerInfo.rateList;
     currentRate.value = playerInfo.currentRate;
     currentTime.value = playerInfo.currentTime;
     durationTime.value = playerInfo.durationTime;
-    supportLowLatency.value = playerInfo.supportLowLatency;
+
+    supportBarrageSpeed.value = playerInfo.supportBarrageSpeed;
+    barrageSpeed.value = playerInfo.currentBarrageSpeed;
+
+    delayTime.value = playerInfo.delayTime;
+    playStatus.value = playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
   }
 
@@ -306,36 +353,44 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     playerInited,
     isPlayStarted,
     playStatus,
-    warmUpType,
-    warmUpImg,
-    warmUpHref,
+    warmUpSetting,
     showWarmUpImg,
     showAudioLivePlaceholder,
-    logoImage,
-    logoHref,
-    logoOpacity,
-    logoPosition,
+    logoSetting,
+
+    barrageSetting,
+    barrageShow,
+    supportBarrageSpeed,
+    barrageSpeed,
+    barrageSettingVisible,
+
     delayTime,
     supportLowLatency,
     isLowLatency,
     supportRefresh,
     supportAutoPlay,
     currentVolume,
-    barrageBackstageEnabled,
-    barrageShow,
+
     lineCount,
     currentLine,
+
     qualityLevels,
     currentQualityLevel,
+
     rateList,
     currentRate,
+
     currentTime,
     durationTime,
+
     resolutionWidth,
     resolutionHeight,
     isPortraitResolutionRate,
     noneLiveVisible,
     playerControlVisible,
+
+    syncPlayerStore,
+    syncWarmUpSetting,
     syncPlayerInfo,
   };
 });

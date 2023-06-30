@@ -6,27 +6,62 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { VirtualList } from '@just4/virtual-list';
 import { ItemsRemoveEvent, VirtualListEvent } from '@just4/virtual-list/events';
-import { ChatMsgType } from '@polyv/live-watch-sdk';
+import { ChatEvents, ChatMsgType, LiveStatus } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { useChatMsgHandle } from './hooks/chat-msg-handle-hook';
 import { useHideChatMsgHook } from './hooks/hide-chat-msg-hook';
 import { useChatMsgQueue } from './hooks/msg-queue-hook';
 import { ChatMsgItemComponentOptions, useMsgRender } from './hooks/msg-render-hook';
+
 import { useRequestHistory } from './hooks/request-history-hook';
 import { useRequestHistorySession } from './hooks/request-history-session-hook';
-import { ChatMsgListHookOptions } from './hooks/types';
+import { useRequestHistoryReplayHook } from './hooks/request-history-replay-hook';
+
+import { ChatMsgListHookOptions, VirtualListInstance } from './hooks/types';
 import { RenderPosition } from '@just4/virtual-list/types';
 import { isMobile } from '@/assets/utils/browser';
+import { usePlaybackStore } from '@/store/use-playback-store';
+import { getWatchCore } from '@/core/watch-sdk';
+import { loadLocalForage } from '@/plugins/external-lib-loaders/load-localforage';
+import { useChannelStore } from '@/store/use-channel-store';
+
+/** 监听聊天 Tab 切换 */
+const useChatTabSwitchWatch = (options: { cb: () => void }) => {
+  const layoutStore = useLayoutStore();
+
+  // 切到聊天室 Tab 时自动滚到最底部
+  // 首次打开聊天室时 oldVal 为空，此时不触发，因为会跟虚拟列表初始化冲突，会导致首屏消息重复
+  if (isMobile) {
+    watch(
+      () => layoutStore.mobileMenuCurrentName,
+      (newVal, oldVal) => {
+        if (oldVal && layoutStore.mobileMenuCurrentName === TAB_NAME_CHAT) {
+          options.cb();
+        }
+      },
+    );
+  } else {
+    watch(
+      () => layoutStore.pcAsideTabCurrentName,
+      (newVal, oldVal) => {
+        if (oldVal && layoutStore.pcAsideTabCurrentName === TAB_NAME_CHAT) {
+          options.cb();
+        }
+      },
+    );
+  }
+};
 
 /**
  * 聊天室消息列表 hook
  */
-// eslint-disable-next-line sonarjs/cognitive-complexity
 export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemComponentOptions }) => {
+  const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
   const chatStore = useChatStore();
+  const channelStore = useChannelStore();
   const chatMsgStore = useChatMsgStore();
-  const layoutStore = useLayoutStore();
+  const playbackStore = usePlaybackStore();
 
   const { ChatMsgItemComponent } = options;
 
@@ -41,12 +76,19 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     hookOptions,
   );
 
-  const requestHistoryHookFunc = watchAppStore.isWatchBackUrl
-    ? useRequestHistorySession
-    : useRequestHistory;
+  // 获取聊天历史数据对应的 Hook
+  function requestHistoryHook(hookOptions: ChatMsgListHookOptions) {
+    if (watchAppStore.isPlaybackWatchUrl) {
+      return useRequestHistorySession();
+    }
 
-  // 聊天消息加载
-  const { loadInitialData, loadNextData, loadPreviousData } = requestHistoryHookFunc(hookOptions);
+    if (playbackStore.chatReplayEnabled) {
+      return useRequestHistoryReplayHook(hookOptions);
+    }
+
+    return useRequestHistory(hookOptions);
+  }
+
   // 聊天消息队列
   useChatMsgQueue(hookOptions);
   // 聊天消息处理
@@ -65,12 +107,13 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
   }
 
   /** ---------- 虚拟列表 start ---------- */
-  let virtualList: VirtualList<ChatMsgType> | undefined;
+
+  let virtualList: VirtualListInstance | undefined;
 
   /**
    * 获取虚拟列表实例
    */
-  function getVirtualList(): VirtualList<ChatMsgType> {
+  function getVirtualList(): VirtualListInstance {
     if (!virtualList) {
       throw new Error('getVirtualList error');
     }
@@ -80,13 +123,27 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
   /**
    * 初始化虚拟列表
    */
-  function initVirtualList() {
+  async function initVirtualList() {
     destroyVirtualList();
 
     const containerElem = getContainerElem();
     if (!containerElem) return;
 
     if (!chatStore.chatMsgListEnabled) return;
+
+    if (playbackStore.chatReplayEnabled) {
+      const localForage = await loadLocalForage();
+      watchCore.chat.addChatMsgReplayCachePlugin({
+        getItem: localForage.getItem,
+        setItem: localForage.setItem,
+        removeItem: localForage.removeItem,
+        iterate: localForage.iterate,
+      });
+      await watchCore.chat.initChatMsgReplay();
+    }
+
+    // 聊天消息加载
+    const { loadInitialData, loadNextData, loadPreviousData } = requestHistoryHook(hookOptions);
 
     virtualList = new VirtualList<ChatMsgType>({
       container: containerElem,
@@ -142,6 +199,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
       return;
     }
 
+    const { loadInitialData } = requestHistoryHook(hookOptions);
     const result = await loadInitialData();
     if (!result.data) {
       return;
@@ -152,19 +210,31 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     virtualList.scrollToFoot();
 
     /** clear 之后会变为边界状态，这里要手动重置头部边界，不然不会加载旧消息 */
-    virtualList.resetBoundaryState(RenderPosition.Head);
+    if (result.data.length > 0) {
+      virtualList.resetBoundaryState(RenderPosition.Head);
+    }
+  }
+
+  /** 重新加载聊天回放数据 */
+  async function reloadChatReplayData() {
+    if (!virtualList) {
+      return;
+    }
+
+    chatMsgStore.hideMoreMsg();
+    initChatMsgRender();
   }
 
   /** 滚动到最新位置 */
   async function scrollToNew() {
-    console.log('scrollToNew');
     if (!virtualList) {
       return;
     }
     chatMsgStore.hideMoreMsg();
 
-    const lastItem = virtualList.items.last();
-    if (lastItem && chatMsgStore.getRealIndexById(lastItem.id) === 0) {
+    // 数据是否到达边界
+    const footIsReached = virtualList.reachedBoundary(RenderPosition.Foot);
+    if (footIsReached) {
       virtualList.scrollToFoot();
     } else {
       /**
@@ -182,12 +252,15 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
   onMounted(() => {
     initVirtualList();
     eventBus.$on(appEvents.chat.ScrollToNew, scrollToNew);
+    watchCore.chat.eventEmitter.on(ChatEvents.ChatMsgReplayReload, reloadChatReplayData);
   });
 
   onBeforeUnmount(() => {
     destroyVirtualList();
-    eventBus.$on(appEvents.chat.ScrollToNew, scrollToNew);
+    eventBus.$off(appEvents.chat.ScrollToNew, scrollToNew);
+    watchCore.chat.eventEmitter.off(ChatEvents.ChatMsgReplayReload, reloadChatReplayData);
   });
+
   /** ---------- 虚拟列表 end ---------- */
 
   watch(
@@ -197,27 +270,20 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     },
   );
 
-  // 切到聊天室 Tab 时自动滚到最底部
-  // 首次打开聊天室时 oldVal 为空，此时不触发，因为会跟虚拟列表初始化冲突，会导致首屏消息重复
-  if (isMobile) {
-    watch(
-      () => layoutStore.mobileMenuCurrentName,
-      (newVal, oldVal) => {
-        if (oldVal && layoutStore.mobileMenuCurrentName === TAB_NAME_CHAT) {
-          scrollToNew();
-        }
-      },
-    );
-  } else {
-    watch(
-      () => layoutStore.pcAsideTabCurrentName,
-      (newVal, oldVal) => {
-        if (oldVal && layoutStore.pcAsideTabCurrentName === TAB_NAME_CHAT) {
-          scrollToNew();
-        }
-      },
-    );
-  }
+  watch(
+    () => channelStore.liveStatus,
+    () => {
+      if (channelStore.liveStatus === LiveStatus.Live) {
+        initVirtualList();
+      }
+    },
+  );
+
+  useChatTabSwitchWatch({
+    cb: () => {
+      scrollToNew();
+    },
+  });
 
   return {
     containerRef,

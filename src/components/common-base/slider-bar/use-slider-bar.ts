@@ -237,7 +237,7 @@ export const useSliderBar = (options: {
       return;
     }
     if (props.direction === 'horizontal' && pointLength < 0) {
-      return;
+      pointLength = 0;
     }
 
     pointLength = Math.abs(pointLength);

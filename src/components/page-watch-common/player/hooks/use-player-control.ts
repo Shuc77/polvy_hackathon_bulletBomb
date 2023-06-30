@@ -2,15 +2,15 @@
  * @file 播放器控制栏 hook
  */
 import { translate } from '@/assets/lang';
+import { isMobile } from '@/assets/utils/browser';
 import { numberAccuracy } from '@/assets/utils/number';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
-import { LiveStatus, PlayStatus, QualityLevelType, YN } from '@polyv/live-watch-sdk';
+import { LiveStatus, PlayStatus, QualityLevelType } from '@polyv/live-watch-sdk';
 import { formatSeconds } from '@utils-ts/date';
-import { ynToBool } from '@utils-ts/boolean';
 import { computed, unref } from 'vue';
 
 /** 播放器设置节点 */
@@ -91,15 +91,7 @@ export const usePlayerControl = () => {
 
   /** 是否显示刷新按钮 */
   const refreshButtonVisible = computed<boolean>(() => {
-    if (connectMicStore.isConnectMicing) {
-      return false;
-    }
-
-    return (
-      channelStore.liveStatus === LiveStatus.Live &&
-      playerStore.playerInited &&
-      playerStore.supportRefresh
-    );
+    return playerStore.supportRefresh;
   });
 
   /** 音量设置是否显示 */
@@ -129,11 +121,7 @@ export const usePlayerControl = () => {
 
   /** 线路设置是否显示 */
   const lineSettingVisible = computed<boolean>(() => {
-    return (
-      playerStore.lineCount > 0 &&
-      channelStore.liveStatus === LiveStatus.Live &&
-      !channelStore.testModeStatus
-    );
+    return playerStore.lineCount > 1;
   });
 
   /** 线路设置列表 */
@@ -256,15 +244,32 @@ export const usePlayerControl = () => {
 
   /** 音视频模式切换是否显示 */
   const playerModeSwitcherVisible = computed<boolean>(() => {
-    const isNotOnlyAudio =
-      !channelStore.isOnlyAudioLive &&
-      ynToBool(channelStore.channelDetail?.channelConfig.isOnlyAudio, 'N') &&
-      ynToBool(channelStore.channelDetail?.channelConfig.mobileAudioEnabled, YN.N);
-
     const isSupportPlayScene =
       channelStore.liveStatus === LiveStatus.Live || playbackStore.isPlaybacking;
 
-    return isNotOnlyAudio && isSupportPlayScene && !playerStore.isLowLatency;
+    return (
+      // 音视频切换配置支持
+      channelStore.audioModeSwitchEnabled &&
+      // 播放场景支持
+      isSupportPlayScene &&
+      // 不支持无延迟播放器
+      !playerStore.isLowLatency
+    );
+  });
+
+  /**
+   * 弹幕速度切换按钮是否显示
+   */
+  const barrageSpeedButtonVisible = computed(() => {
+    if (!playerStore.barrageSetting.barrageEnabled) {
+      return false;
+    }
+
+    // 由于 PC 端的弹幕由页面创建，不使用播放器自带，因此 PC 固定显示
+    if (!isMobile) {
+      return true;
+    }
+    return playerStore.supportBarrageSpeed;
   });
 
   return {
@@ -298,6 +303,7 @@ export const usePlayerControl = () => {
     durationTimeText,
 
     playerModeSwitcherVisible,
+    barrageSpeedButtonVisible,
   };
 };
 

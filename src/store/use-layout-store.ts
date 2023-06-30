@@ -2,29 +2,48 @@
  * @file 布局 store
  */
 
+import { isMobile } from '@/assets/utils/browser';
+import { getWatchCore } from '@/core/watch-sdk';
+import { ScreenOrientationMode } from '@/hooks/core/use-screen-orient';
+import {
+  MainScreenContent,
+  MainScreenLayoutMode,
+  MobileSplashLayout,
+  MobileWatchLayout,
+} from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { useChannelStore } from './use-channel-store';
-import { ChannelSplashLayout, MainScreenContent } from '@polyv/live-watch-sdk';
-import { ScreenOrientationMode } from '@/hooks/core/use-screen-orient';
 
 export interface LayoutStoreState {
+  // ---------- 公用 ---------- //
+  /** 三分屏主屏模式 */
+  mainScreenLayoutMode: Ref<MainScreenLayoutMode>;
+  /** 主屏的内容 */
+  mainScreen: Ref<MainScreenContent>;
+
+  // ---------- PC 端 ---------- //
+  /** 副屏是否被收起 */
+  subScreenPackUp: Ref<boolean>;
+  /** 当前是否正在系统全屏 */
+  isFullscreen: Ref<boolean>;
+  /** PC 端侧边菜单栏的激活 name */
+  pcAsideTabCurrentName: Ref<string>;
+  /** PC 端底部菜单栏的激活 name */
+  pcBottomTabCurrentName: Ref<string>;
+
+  // ---------- 移动端 ---------- //
+  /** 观看页移动端布局 */
+  mobileWatchLayout: Ref<MobileWatchLayout>;
+  /** 是否为竖屏观看页布局 */
+  isPortraitWatchLayout: ComputedRef<boolean>;
   /** 屏幕旋转模式 */
   screenOrientationMode: Ref<ScreenOrientationMode>;
   /** 当前屏幕旋转角度是否为纵向 */
   isVerticalScreenOrientation: ComputedRef<boolean>;
   /** 当前屏幕旋转角度是否为横向 */
   isHorizontalScreenOrientation: ComputedRef<boolean>;
-  /** 移动端下的引导页是否使用大图布局 */
-  mobileSplashIsLarge: ComputedRef<boolean>;
-  /** 主屏的内容 */
-  mainScreen: Ref<MainScreenContent>;
-  /** 副屏是否被收起 */
-  subScreenPackUp: Ref<boolean>;
-  /** 当前是否正在系统全屏 */
-  isFullscreen: Ref<boolean>;
-  /** PC 端下侧边菜单栏的激活 name */
-  pcAsideTabCurrentName: Ref<string>;
+  /** 移动端引导页布局 */
+  mobileSplashLayout: Ref<MobileSplashLayout>;
   /** 移动端下底部菜单栏的激活 name */
   mobileMenuCurrentName: Ref<string>;
   /** 移动端下菜单栏 header 高度 */
@@ -37,10 +56,10 @@ export interface LayoutStoreState {
   mobileLayoutBottomTop: Ref<number>;
   /** 移动端下播放器是否正在页面全屏 */
   mobilePlayerIsPageFullscreen: Ref<boolean>;
+  /** 移动端下的常规延迟直播播放器是否处于全屏状态 */
+  mobileNormalLatencyPlayerIsFullscreen: Ref<boolean>;
   /** 文档是否处于页面全屏 */
   mobileDocIsPageFullscreen: Ref<boolean>;
-  /** 移动端聊天室背景地址 */
-  mobileChatRoomBgUrl: ComputedRef<string | undefined>;
   /** 当前是页面全屏或者横屏 */
   isPageFullscreenOrHorizontalScreen: ComputedRef<boolean>;
 }
@@ -48,12 +67,50 @@ export interface LayoutStoreState {
 export interface LayoutStoreActions {
   /** 切换文档视频区域 */
   toggleMainScreen(): void;
+  /** 同步布局 store */
+  syncLayoutStore(): void;
 }
 
 export interface LayoutStore extends LayoutStoreState, LayoutStoreActions {}
 
 export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () => {
-  const channelStore = useChannelStore();
+  // ---------- 公用 ---------- //
+  /** 三分屏主屏模式 */
+  const mainScreenLayoutMode = ref(MainScreenLayoutMode.Ppt);
+
+  /** 主屏的内容 */
+  const mainScreen = ref(MainScreenContent.Player);
+
+  /** 切换文档视频区域 */
+  function toggleMainScreen(): void {
+    if (mainScreen.value === MainScreenContent.Doc) {
+      mainScreen.value = MainScreenContent.Player;
+    } else {
+      mainScreen.value = MainScreenContent.Doc;
+    }
+  }
+
+  // ---------- PC 端 ---------- //
+  /** 副屏是否被收起 */
+  const subScreenPackUp = ref(false);
+
+  /** 当前是否正在系统全屏 */
+  const isFullscreen = ref(false);
+
+  /** PC 端侧边菜单栏的激活 name */
+  const pcAsideTabCurrentName = ref('');
+
+  /** PC 端底部菜单栏的激活 name */
+  const pcBottomTabCurrentName = ref('');
+
+  // ---------- 移动端 ---------- //
+  /** 观看页移动端布局 */
+  const mobileWatchLayout = ref(MobileWatchLayout.Normal);
+
+  /** 是否为竖屏观看页布局 */
+  const isPortraitWatchLayout = computed<boolean>(() => {
+    return unref(mobileWatchLayout) === MobileWatchLayout.Portrait && isMobile;
+  });
 
   /** 屏幕旋转模式 */
   const screenOrientationMode = ref(ScreenOrientationMode.Vertical);
@@ -68,31 +125,8 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     return screenOrientationMode.value === ScreenOrientationMode.Horizontal;
   });
 
-  /** 移动端下的引导页是否使用大图布局 */
-  const mobileSplashIsLarge = computed<boolean>(() => {
-    return channelStore.channelDetail?.channelConfig.splashLayout === ChannelSplashLayout.Large;
-  });
-
-  /** 主屏的内容 */
-  const mainScreen = ref(MainScreenContent.Player);
-
-  /** 切换文档视频区域 */
-  function toggleMainScreen(): void {
-    if (mainScreen.value === MainScreenContent.Doc) {
-      mainScreen.value = MainScreenContent.Player;
-    } else {
-      mainScreen.value = MainScreenContent.Doc;
-    }
-  }
-
-  /** 副屏是否被收起 */
-  const subScreenPackUp = ref(false);
-
-  /** 当前是否正在系统全屏 */
-  const isFullscreen = ref(false);
-
-  /** PC 端下侧边菜单栏的激活 name */
-  const pcAsideTabCurrentName = ref('');
+  /** 移动端引导页布局 */
+  const mobileSplashLayout = ref(MobileSplashLayout.Normal);
 
   /** 移动端下底部菜单栏的激活 name */
   const mobileMenuCurrentName = ref('');
@@ -109,52 +143,54 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
   /** 移动端下是否正在页面全屏 */
   const mobilePlayerIsPageFullscreen = ref(false);
 
+  /** 移动端下的常规延迟直播播放器是否处于全屏状态 */
+  const mobileNormalLatencyPlayerIsFullscreen = ref(false);
+
   /** 文档是否处于页面全屏 */
   const mobileDocIsPageFullscreen = ref(false);
 
   /** 移动端布局底部区域到顶部的距离 */
   const mobileLayoutBottomTop = ref(0);
 
-  /** 移动端聊天室背景地址 */
-  const mobileChatRoomBgUrl = computed<string | undefined>(() => {
-    const channelDetail = channelStore.channelDetail;
-    const chatBackgroundImage = channelDetail?.channelInfo.chatBackgroundImage;
-    const chatBackgroundImageOpacity = channelDetail?.channelInfo.chatBackgroundImageOpacity;
-
-    if (!chatBackgroundImage) {
-      return;
-    }
-
-    return chatBackgroundImageOpacity
-      ? `${chatBackgroundImage}?x-oss-process=image/blur,r_${chatBackgroundImageOpacity},s_${chatBackgroundImageOpacity}`
-      : chatBackgroundImage;
-  });
-
   /** 当前是页面全屏或者横屏 */
   const isPageFullscreenOrHorizontalScreen = computed(() => {
     return unref(mobilePlayerIsPageFullscreen) || unref(isHorizontalScreenOrientation);
   });
 
+  function syncLayoutStore() {
+    const watchCore = getWatchCore();
+    const layoutSetting = watchCore.channel.getLayoutSetting();
+    mainScreenLayoutMode.value = layoutSetting.mainScreenLayoutMode;
+    mobileSplashLayout.value = layoutSetting.mobileSplashLayout;
+    mobileWatchLayout.value = layoutSetting.mobileWatchLayout;
+  }
+
   return {
+    mainScreenLayoutMode,
+    mainScreen,
+    toggleMainScreen,
+
+    isFullscreen,
+    pcAsideTabCurrentName,
+    pcBottomTabCurrentName,
+
+    mobileWatchLayout,
+    isPortraitWatchLayout,
     screenOrientationMode,
     isVerticalScreenOrientation,
     isHorizontalScreenOrientation,
-
-    mobileSplashIsLarge,
-    mainScreen,
-    toggleMainScreen,
+    mobileSplashLayout,
     subScreenPackUp,
-    isFullscreen,
-    pcAsideTabCurrentName,
     mobileMenuCurrentName,
     mobileMenuHeaderHeight,
     mobileLayoutTopHeight,
     mobileLayoutBottomHeight,
     mobileLayoutBottomTop,
     mobilePlayerIsPageFullscreen,
+    mobileNormalLatencyPlayerIsFullscreen,
     mobileDocIsPageFullscreen,
-    mobileChatRoomBgUrl,
-
     isPageFullscreenOrHorizontalScreen,
+
+    syncLayoutStore,
   };
 });

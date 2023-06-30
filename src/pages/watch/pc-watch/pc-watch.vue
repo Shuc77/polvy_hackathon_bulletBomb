@@ -7,7 +7,7 @@
     <!-- ========= 弹出层类型组件 Start ========= -->
 
     <!-- 互动功能渲染入口 -->
-    <pc-iar-render v-if="!isWatchBackUrl" />
+    <pc-iar-render v-if="!isPlaybackWatchUrl" />
 
     <!-- 聊天室连接失败提示 -->
     <pc-chat-connect-error-dialog />
@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
-import PcChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/pc-chat-connect-error-dialog.vue';
+import PcChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/pc-chat-connect-error-dialog.vue';
 import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-chat-set-nick.vue';
 import PcIarRender from '@/components/page-watch-common/interactive-receive/pc-iar-render.vue';
 import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-live-start-tips.vue';
@@ -44,7 +44,7 @@ import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { usePvTrack } from '@/hooks/business/use-pv-track';
 
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 

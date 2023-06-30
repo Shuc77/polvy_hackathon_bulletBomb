@@ -29,10 +29,10 @@
           <form-item
             :label="item.name"
             :key="`name-${index}`"
-            :form-field="`${fieldPrefix}${index + 1}`"
+            :form-field="generateFormField(index)"
           >
             <pc-form-input
-              v-model.trim="formData[`${fieldPrefix}${index + 1}`]"
+              v-model.trim="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
           </form-item>
@@ -43,10 +43,10 @@
           <form-item
             :label="item.name"
             :key="`text-${index}`"
-            :form-field="`${fieldPrefix}${index + 1}`"
+            :form-field="generateFormField(index)"
           >
             <pc-form-input
-              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
           </form-item>
@@ -57,10 +57,10 @@
           <form-item
             :label="item.name"
             :key="`number-${index}`"
-            :form-field="`${fieldPrefix}${index + 1}`"
+            :form-field="generateFormField(index)"
           >
             <pc-form-number-input
-              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
           </form-item>
@@ -71,12 +71,13 @@
           <form-item
             :label="item.name"
             :key="`option-${index}`"
-            :form-field="`${fieldPrefix}${index + 1}`"
+            :form-field="generateFormField(index)"
           >
             <pc-form-select
-              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
               :options="formatSelectOptions(item.options)"
+              search
             />
           </form-item>
         </template>
@@ -87,10 +88,10 @@
           <form-item
             :label="item.name"
             :key="`phone-${index}`"
-            :form-field="`${fieldPrefix}${index + 1}`"
+            :form-field="generateFormField(index)"
           >
             <pc-form-phone-input
-              v-model="formData[`${fieldPrefix}${index + 1}`]"
+              v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
               :area-code.sync="formData.areaCode"
               @input="onPhoneNumberChange"
@@ -118,7 +119,7 @@
             <pc-form-sms-verify-input
               v-model="formData.smsCode"
               :area-code="formData.areaCode"
-              :phone-number="formData[`${fieldPrefix}${index + 1}`]"
+              :phone-number="formData[generateFormField(index)]"
               :image-id="formData.imageId"
               :image-captcha="formData.imageCaptcha"
               :sms-scene="SmsScene.AuthInfo"
@@ -178,7 +179,6 @@ const {
   infoDesc,
   authInfoFields,
   AuthInfoType,
-  fieldPrefix,
   formData,
   formRules,
   protocolContent,
@@ -192,6 +192,7 @@ const {
   onClickCancel,
   submitAuth,
   onClickLogined,
+  generateFormField,
 } = useAuthInfoForm({
   emit,
 });

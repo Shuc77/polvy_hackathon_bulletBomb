@@ -61,8 +61,17 @@ const { renderHtmlContent } = useRichTextRender({ props });
     max-width: 100%;
   }
 
+  ol,
+  ul {
+    padding-left: 40px;
+  }
+
   ol {
     list-style-type: decimal;
+  }
+
+  ul {
+    list-style-type: disc;
   }
 
   h1,

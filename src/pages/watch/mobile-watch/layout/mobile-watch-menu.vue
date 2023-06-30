@@ -6,8 +6,17 @@
         <mobile-follow-btn v-if="followEnabled" />
       </template>
 
+      <!-- 关注弹层 -->
+      <mobile-follow-layer v-if="followEnabled" />
+
       <!-- 商品库推送气泡 -->
       <mobile-product-bubble />
+
+      <!-- 移动端底部菜单栏顶部固定区域 -->
+      <div class="c-mobile-watch-mobile-menu__topic">
+        <!-- 聊天室连接异常提示 -->
+        <mobile-chat-connect-error-tips class="c-mobile-watch-mobile-menu__topic-item" />
+      </div>
 
       <!-- 文档位置切换按钮 -->
       <mobile-doc-side-switch />
@@ -21,7 +30,8 @@
         />
       </template>
 
-      <template v-for="(menu, index) in filterChannelMenus">
+      <!-- 根据后台配置渲染菜单 -->
+      <template v-for="(menu, index) in channelMenus">
         <!-- 直播介绍 -->
         <mobile-menu-tab-pane
           v-if="menu.menuType === ChannelMenuType.Desc"
@@ -42,7 +52,12 @@
           :sub-label="chatMenuAdditionData.subLabel"
           :show-reminder="chatMenuAdditionData.showReminder"
         >
-          <mobile-chat-room />
+          <template v-if="chatSetting.watchChatEnabled">
+            <mobile-chat-room />
+          </template>
+          <template v-else>
+            <mobile-chat-close-tips />
+          </template>
         </mobile-menu-tab-pane>
 
         <!-- 提问 -->
@@ -51,6 +66,7 @@
           :key="`quiz-${index}`"
           :label="menu.name"
           :name="TAB_NAME_ASK"
+          :show-reminder="askMenuAdditionData.showReminder"
           lazy-load
         >
           <mobile-ask />
@@ -179,8 +195,8 @@
         </mobile-menu-tab-pane>
       </template>
 
-      <!-- 章节 -->
-      <template v-if="chapterEnabled">
+      <!-- 回放章节 -->
+      <template v-if="chapterVisible">
         <mobile-menu-tab-pane
           :label="$lang('menu.tabName.chapter')"
           :name="TAB_NAME_CHAPTER"
@@ -189,73 +205,88 @@
           <mobile-chapter />
         </mobile-menu-tab-pane>
       </template>
-    </mobile-menu-tabs>
 
-    <!-- 关注弹层 -->
-    <mobile-follow-layer v-if="followEnabled" />
+      <!-- 分会场（竖向） -->
+      <template v-if="multiMeetingMenuData.visible">
+        <mobile-menu-tab-pane
+          :label="multiMeetingMenuData.label"
+          :name="TAB_NAME_MULTI_MEETING"
+          lazy-load
+        >
+          <mobile-multi-meeting-portrait />
+        </mobile-menu-tab-pane>
+      </template>
+    </mobile-menu-tabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import MobileFollowBtn from '@/components/page-watch-common/follow/follow-btn/mobile-follow-btn.vue';
-import MobileFollowLayer from '@/components/page-watch-common/follow/follow-layer/mobile-follow-layer.vue';
 import MobileIframeRender from '@/components/common-base/iframe-render/mobile-iframe-render.vue';
 import MobileMenuTabPane from '@/components/common-base/tabs/mobile-menu-tabs/mobile-menu-tab-pane.vue';
 import MobileMenuTabs from '@/components/common-base/tabs/mobile-menu-tabs/mobile-menu-tabs.vue';
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
+import MobileAsk from '@/components/page-watch-common/ask/mobile-ask/mobile-ask.vue';
+import MobileChapter from '@/components/page-watch-common/chapter/mobile-chapter.vue';
+import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import MobileChatRoom from '@/components/page-watch-common/chat/chat-room/mobile-chat-room.vue';
+import MobileChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/chat-close-tips.vue';
+import MobileCustomTuwenTextMenu from '@/components/page-watch-common/custom-tuwen-text-menu/mobile-custom-tuwen-text-menu.vue';
+import MobileDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/mobile-doc-side-switch.vue';
+import MobileFollowBtn from '@/components/page-watch-common/follow/follow-btn/mobile-follow-btn.vue';
+import MobileFollowLayer from '@/components/page-watch-common/follow/follow-layer/mobile-follow-layer.vue';
+import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
 import MobileProductList from '@/components/page-watch-common/interactive-receive/product/mobile-product-list.vue';
+import MobileQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/mobile-question-answer.vue';
 import MobileTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/mobile-tuwen-live.vue';
 import MobileVotePanel from '@/components/page-watch-common/interactive-receive/vote/mobile-vote-panel.vue';
 import MobileInviteRank from '@/components/page-watch-common/invite/mobile-invite-rank/mobile-invite-rank.vue';
 import MobileMemberList from '@/components/page-watch-common/member-list/member-list.vue';
-import MobileQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/mobile-question-answer.vue';
-import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
-import MobilePlaybackList from '@/components/page-watch-common/playback-list/mobile-playback-list/mobile-playback-list.vue';
-import MobileChapter from '@/components/page-watch-common/chapter/mobile-chapter.vue';
-import MobileAsk from '@/components/page-watch-common/ask/mobile-ask/mobile-ask.vue';
 import MobileMicroActivity from '@/components/page-watch-common/micro-activity/mobile-micro-activity/mobile-micro-activity.vue';
-import MobileCustomTuwenTextMenu from '@/components/page-watch-common/custom-tuwen-text-menu/mobile-custom-tuwen-text-menu.vue';
-import MobileDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/mobile-doc-side-switch.vue';
+import MobilePlaybackList from '@/components/page-watch-common/playback-list/mobile-playback-list/mobile-playback-list.vue';
+import MobileMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-portrait.vue';
 
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useDocStore } from '@/store/use-doc-store';
+import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
+import { usePlaybackStore } from '@/store/use-playback-store';
 import { ChannelMenuType, LiveStatus, MainScreenContent } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
-import { usePlaybackStore } from '@/store/use-playback-store';
 
 import {
-  TAB_NAME_DOC_OR_VIDEO,
-  TAB_NAME_CHAT,
-  TAB_NAME_QA,
   TAB_NAME_ASK,
-  TAB_NAME_PLAYBACK,
   TAB_NAME_CHAPTER,
-  TAB_NAME_PRODUCT,
-  TAB_NAME_MEMBERS,
-  TAB_NAME_VOTE,
-  TAB_NAME_MICRO_ACTIVITY,
-  TAB_NAME_TUWEN_LIVE,
-  TAB_NAME_SEAT,
+  TAB_NAME_CHAT,
+  TAB_NAME_DOC_OR_VIDEO,
   TAB_NAME_INVITE_RANK,
+  TAB_NAME_MEMBERS,
+  TAB_NAME_MICRO_ACTIVITY,
+  TAB_NAME_MULTI_MEETING,
+  TAB_NAME_PLAYBACK,
+  TAB_NAME_PRODUCT,
+  TAB_NAME_QA,
+  TAB_NAME_SEAT,
+  TAB_NAME_TUWEN_LIVE,
+  TAB_NAME_VOTE,
 } from '@/assets/constants/tab-name';
-import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { translate } from '@/assets/lang';
+import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 
 const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
+const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { isSeminarChannel, liveStatus } = storeDefinitionToRefs(useChannelStore);
+const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 
-const { chapterEnabled } = storeDefinitionToRefs(usePlaybackStore);
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
+
+const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {
@@ -265,20 +296,8 @@ const docOrCameraMenuName = computed(() => {
   return translate('doc.name');
 });
 
-/** 二次过滤后的菜单列表 */
-const filterChannelMenus = computed(() => {
-  return unref(channelMenus).filter(menu => {
-    // 研讨会下不显示提问
-    if (unref(isSeminarChannel) && menu.menuType === ChannelMenuType.Quiz) {
-      return false;
-    }
-
-    return true;
-  });
-});
-
 const { followEnabled } = useFollowSetting();
-const { chatMenuAdditionData } = useWatchTabHook({ mode: 'mobile' });
+const { chatMenuAdditionData, askMenuAdditionData } = useWatchTabHook({ mode: 'mobile' });
 </script>
 
 <style lang="scss">
@@ -288,5 +307,17 @@ const { chatMenuAdditionData } = useWatchTabHook({ mode: 'mobile' });
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.c-mobile-watch-mobile-menu__topic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 100%;
+}
+
+.c-mobile-watch-mobile-menu__topic-item {
+  margin: 16px 8px 0;
 }
 </style>

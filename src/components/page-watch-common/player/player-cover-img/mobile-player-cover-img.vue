@@ -6,7 +6,7 @@
       v-show="showWarmUpImg"
       class="c-mobile-player-cover-img__warm-up-img g-img-cover"
       :style="{
-        backgroundImage: `url(${warmUpImg})`,
+        backgroundImage: `url(${warmUpSetting.warmUpImg})`,
       }"
     ></div>
     <!-- 音频直播下占位图-直播封面图 -->
@@ -26,7 +26,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 const {
   showWarmUpImg,
-  warmUpImg,
+  warmUpSetting,
 
   showAudioLivePlaceholder,
 } = storeDefinitionToRefs(usePlayerStore);

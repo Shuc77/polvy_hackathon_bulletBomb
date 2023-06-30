@@ -21,6 +21,7 @@
             :input-title="$lang('withdraw.apply.amount')"
             :input-title-width="100"
             :placeholder="amountInputPlaceHolder"
+            :clearabled="false"
           >
             <span
               slot="suffix"

@@ -1,7 +1,7 @@
-import { PlvEmotionalFeedbackInstance } from '@/plugins/polyv-ui/types';
-import { onBeforeUnmount, onMounted, ref, unref } from 'vue';
-import { ChatEvents, EmotionalFeedbackMsgType, EmotionalFeedbackType } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
+import { PlvEmotionalFeedbackInstance } from '@/plugins/polyv-ui/types';
+import { ChatEvents, ChatEventsRelations, EmotionalFeedbackType } from '@polyv/live-watch-sdk';
+import { onBeforeUnmount, onMounted, ref, unref } from 'vue';
 
 export const useEmotionalFeedback = () => {
   /** 明白了实例 */
@@ -111,12 +111,11 @@ export const useEmotionalFeedback = () => {
   let animationNoCount = 0;
 
   /** 处理情绪事件 */
-  function onEmotionFeedbackMsg(evt: { feedbackMsg: EmotionalFeedbackMsgType }) {
-    const feedbackMsg = evt.feedbackMsg;
-    if (feedbackMsg.type === EmotionalFeedbackType.Yes) {
-      animationYesCount += feedbackMsg.count;
+  function onEmotionFeedbackMsg(evt: ChatEventsRelations[ChatEvents.ChatEmotionalFeedback]) {
+    if (evt.type === EmotionalFeedbackType.Yes) {
+      animationYesCount += evt.count;
     } else {
-      animationNoCount += feedbackMsg.count;
+      animationNoCount += evt.count;
     }
     checkAnimationTimer();
   }

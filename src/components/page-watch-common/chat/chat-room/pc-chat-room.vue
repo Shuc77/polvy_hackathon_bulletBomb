@@ -10,13 +10,19 @@
       />
 
       <!-- 欢迎语 -->
-      <pc-chat-welcome-tips v-if="welcomeEnabled" />
+      <pc-chat-welcome-tips />
 
       <!-- 发起转播频道被踢出提示 -->
       <pc-chat-error-tips
         v-if="chatExited"
         class="c-pc-chat-room__topic__error"
         :content="$lang('chat.transformTip')"
+      />
+
+      <!-- 聊天重放消息提示 -->
+      <pc-chat-msg-replay-tips
+        v-if="chatReplayEnabled"
+        class="c-pc-chat-room__topic__replay"
       />
     </div>
 
@@ -42,7 +48,7 @@
     <pc-chat-msg-quote />
 
     <!-- 底部输入框 -->
-    <pc-chat-input-controller v-if="!isWatchBackUrl" />
+    <pc-chat-input-controller v-if="!isPlaybackWatchUrl" />
 
     <!-- 报名观看（参与互动时机） -->
     <pc-enroll v-if="needEnrollByChat" />
@@ -61,18 +67,22 @@ import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
 import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
 import PcChatWelcomeTips from '../chat-welcome/chat-welcome-tips.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
+import PcChatMsgReplayTips from '../chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatExited, welcomeEnabled } = storeDefinitionToRefs(useChatStore);
+const { chatExited } = storeDefinitionToRefs(useChatStore);
+
+const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
@@ -97,7 +107,8 @@ const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceive
   margin-bottom: 8px;
 }
 
-.c-pc-chat-room__topic__error {
+.c-pc-chat-room__topic__error,
+.c-pc-chat-room__topic__replay {
   margin: 8px 8px 0;
 }
 

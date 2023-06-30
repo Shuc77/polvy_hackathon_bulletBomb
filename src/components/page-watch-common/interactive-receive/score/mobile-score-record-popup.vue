@@ -22,16 +22,16 @@ import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { useScoreStore } from '@/store/use-score-store';
 
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useScoreRecord } from './hooks/use-score-record';
+import { useRedpackStore } from '@/store/use-redpack-store';
 
 const IarMobileScoreRecord = getIarComponent('MobilePointRERecord');
 
 const { mobilePlayerIsPageFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
-const { scoreUnit } = storeDefinitionToRefs(useScoreStore);
+const { scoreUnit } = storeDefinitionToRefs(useRedpackStore);
 
 const {
   redpackSdk,

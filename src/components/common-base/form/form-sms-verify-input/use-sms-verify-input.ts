@@ -201,6 +201,8 @@ export const useSmsVerifyInput = (options: {
     if (failReason === SendSmsVerifyCodeFail.ImageCaptchaError) {
       toast.error(translate('form.error.imageCaptchaError'));
       refreshImageVerify();
+    } else {
+      toast.error(result.failMessage || '未知错误！');
     }
   }
 

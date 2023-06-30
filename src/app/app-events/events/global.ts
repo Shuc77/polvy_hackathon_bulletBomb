@@ -22,4 +22,8 @@ export const globalEvents = {
    * @param {boolean} visible 是否显示
    */
   OpenFollowLayer: 'OpenFollowLayer',
+  /**
+   * 移动端 layout 计算尺寸
+   */
+  MobileLayoutComputedSize: 'MobileLayoutComputedSize',
 };

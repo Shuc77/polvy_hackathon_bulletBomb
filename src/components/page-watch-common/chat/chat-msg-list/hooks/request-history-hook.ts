@@ -5,18 +5,18 @@
 import { isString } from '@/assets/utils/string';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
-import { useChatStore } from '@/store/use-chat-store';
 import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
+import { useFilterSpecialMsgHook } from './filter-special-msg-hook';
 import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
 
 export const useRequestHistory = (
   hookOptions: ChatMsgListHookOptions,
 ): RequestHistoryCommonResult => {
-  const chatStore = useChatStore();
   const chatMsgStore = useChatMsgStore();
   const { contractHistoryData } = useContractHistory(hookOptions);
+  const { filterSpecialMsgList } = useFilterSpecialMsgHook();
 
   /**
    * 请求聊天室历史消息
@@ -29,7 +29,6 @@ export const useRequestHistory = (
     let data = await watchCore.chat.getChatHistory({
       start: reqStart,
       end: reqEnd,
-      getSpecialMessage: chatStore.onlySpecialMsg ? 1 : 0,
     });
 
     chatMsgStore.historyEnd = data.length < chatMsgStore.batchCount;
@@ -65,9 +64,9 @@ export const useRequestHistory = (
     }
 
     return {
-      data: data,
+      data: filterSpecialMsgList(data),
       reachedFootBoundary: true,
-      reachedHeadBoundary: false,
+      reachedHeadBoundary: data.length < chatMsgStore.batchCount,
     };
   }
 
@@ -78,8 +77,6 @@ export const useRequestHistory = (
     if (!isString(ref)) {
       throw new Error('loadNextData fail, ref is not string');
     }
-    console.log('loadNextData', ref);
-
     const historyLength = chatMsgStore.getHistoryData().length;
     if (historyLength === 0) {
       return [];
@@ -131,7 +128,7 @@ export const useRequestHistory = (
       contractHistoryData();
     }, 50);
 
-    return data;
+    return filterSpecialMsgList(data);
   }
 
   /**
@@ -141,7 +138,6 @@ export const useRequestHistory = (
     if (!isString(ref)) {
       throw new Error('loadPreviousData fail, ref is not string');
     }
-    console.log('loadPreviousData', ref);
 
     const batchCount = chatMsgStore.batchCount;
     const id = ref;
@@ -168,7 +164,7 @@ export const useRequestHistory = (
       contractHistoryData();
     }, 50);
 
-    return data;
+    return filterSpecialMsgList(data);
   }
 
   return {

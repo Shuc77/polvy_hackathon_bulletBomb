@@ -1,10 +1,10 @@
-import { ChatUserTypes } from '@polyv/live-watch-sdk';
+import { ChatUserType } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 
 export const msgUserActorProps = () => ({
   actor: PropUtils.string.def(''),
-  userType: PropUtils.enum<ChatUserTypes>().def(ChatUserTypes.Viewer),
+  userType: PropUtils.enum<ChatUserType>().def(ChatUserType.Viewer),
 });
 
 export const useMsgUserActor = (options: { props: VueProps<typeof msgUserActorProps> }) => {
@@ -12,11 +12,11 @@ export const useMsgUserActor = (options: { props: VueProps<typeof msgUserActorPr
 
   /** 头衔的颜色关系 */
   const actorColors = {
-    [ChatUserTypes.Manager]: '#33BBC5',
-    [ChatUserTypes.Assistant]: '#598FE5',
-    [ChatUserTypes.Teacher]: '#F09343',
-    [ChatUserTypes.Guest]: '#EB6165',
-    [ChatUserTypes.Dummy]: '#F09343',
+    [ChatUserType.Manager]: '#33BBC5',
+    [ChatUserType.Assistant]: '#598FE5',
+    [ChatUserType.Teacher]: '#F09343',
+    [ChatUserType.Guest]: '#EB6165',
+    [ChatUserType.Dummy]: '#F09343',
   };
 
   const msgUserType = computed(() => props.userType);

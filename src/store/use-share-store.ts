@@ -1,23 +1,20 @@
 /**
  * @file 分享 store
  */
+import { ref, computed, Ref, ComputedRef, unref } from 'vue';
 import {
   DEFAULT_SHARE_QQ_ICON,
   DEFAULT_SHARE_QZONE_ICON,
   DEFAULT_SHARE_WEIBO_ICON,
 } from '@/assets/constants/defaults';
-import { paramGetter } from '@/hooks/core/use-query-params';
 import { translate } from '@/assets/lang';
 import { copyText, toastCopySuccess } from '@/assets/utils/copy';
 import { getWatchCore } from '@/core/watch-sdk';
 import { appendToURL } from '@just4/querystring';
-import { YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
 import { changeProtocol } from '@utils-ts/net';
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, unref } from 'vue';
 import { useChannelInfoStore } from './use-channel-info-store';
-import { useChannelStore } from './use-channel-store';
+import { useThemeStore } from './use-theme-store';
 
 /** Web 分享平台枚举 */
 enum WebShareType {
@@ -65,11 +62,9 @@ const WebShareRedirectUrl: Record<WebShareType, string> = {
 
 export interface ShareStoreState {
   /** 分享按钮开关 */
-  shareBtnEnabled: ComputedRef<boolean>;
-  /** PC web 自定义分享地址 */
-  webShareCustomUrl: ComputedRef<string | undefined>;
+  shareBtnEnabled: Ref<boolean>;
   /** PC web 分享的观看地址 */
-  shareWatchUrl: ComputedRef<string>;
+  shareWatchUrl: Ref<string>;
   /** PC web 分享的观看地址二维码地址 */
   shareQrCodeUrl: ComputedRef<string>;
   /** QQ 分享跳转地址 */
@@ -87,6 +82,8 @@ export interface ShareStoreState {
 }
 
 export interface ShareStoreAction {
+  /** 同步 Store 数据 */
+  syncShareStore: () => void;
   /** 生成 web 分享地址 */
   composeShareUrl: <T extends WebShareType>(
     webShareType: T,
@@ -100,39 +97,14 @@ export interface ShareStoreAction {
 export interface ShareStore extends ShareStoreState, ShareStoreAction {}
 
 export const useShareStore = defineStore<'share', ShareStore>('share', () => {
-  const channelStore = useChannelStore();
-
   const channelInfoStore = useChannelInfoStore();
+  const themeStore = useThemeStore();
 
   /** 分享按钮开关 */
-  const shareBtnEnabled = computed(() =>
-    ynToBool(channelStore.channelDetail?.channelConfig?.shareBtnEnabled, YN.N),
-  );
-
-  /** PC web 自定义分享地址 */
-  const webShareCustomUrl = computed<string | undefined>(
-    () => channelStore.channelDetail?.channelInfo.webShareCustomUrl ?? undefined,
-  );
+  const shareBtnEnabled = ref(false);
 
   /** PC web 分享的观看地址 */
-  const shareWatchUrl = computed<string>(() => {
-    // 分享时需带上的参数(如果当前访问url存在这些参数的话)
-    const query = {
-      promoteId: channelStore.promoteId,
-      vid: paramGetter.vid(),
-      playbackType: paramGetter.playbackType(),
-    };
-
-    // 优先使用 web 自定义分享地址
-    const customUrl = unref(webShareCustomUrl);
-    if (customUrl) {
-      return decodeURIComponent(customUrl);
-    }
-
-    return appendToURL(channelStore.watchUrl, query, {
-      ignoreEmpty: true,
-    });
-  });
+  const shareWatchUrl = ref('');
 
   /** PC web 分享的观看地址二维码地址 */
   const shareQrCodeUrl = computed<string>(() => {
@@ -147,7 +119,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
       title: channelInfoStore.channelTitle,
       source: channelInfoStore.channelTitle,
       desc: '', // qq 分享中描述过长会分享失败
-      pics: changeProtocol(channelInfoStore.channelCoverImg, 'http'), // qq 分享的图片需要协议头
+      pics: changeProtocol(themeStore.channelCoverImg, 'http'), // qq 分享的图片需要协议头
     });
   });
 
@@ -165,7 +137,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     return composeShareUrl(WebShareType.Weibo, {
       url: unref(shareWatchUrl),
       title: channelInfoStore.channelTitle,
-      pic: channelInfoStore.channelCoverImg,
+      pic: themeStore.channelCoverImg,
     });
   });
 
@@ -227,10 +199,16 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     toastCopySuccess();
   }
 
+  function syncShareStore() {
+    const watchCore = getWatchCore();
+
+    shareBtnEnabled.value = watchCore.share.getShareEnabled();
+    shareWatchUrl.value = watchCore.share.getShareWatchUrl();
+  }
+
   return {
     shareBtnEnabled,
     shareWatchUrl,
-    webShareCustomUrl,
     shareQrCodeUrl,
     qqShareUrl,
     qzoneShareUrl,
@@ -239,6 +217,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     twitterShareUrl,
     webShareList,
 
+    syncShareStore,
     composeShareUrl,
     copyShareWatchUrl,
   };

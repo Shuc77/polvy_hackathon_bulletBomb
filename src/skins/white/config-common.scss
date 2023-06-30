@@ -139,6 +139,11 @@ $--skin-component-configs: (
 
 // 皮肤公用页面配置
 $--skin-page-common-configs: (
+  // 聊天室关闭提示图标背景
+  'chat-close-tips-icon:bg-image': '../_common/imgs/pws-icon-chat-close-dark.png',
+  // 聊天消息关闭提示字体
+  'chat-close-tips:text-color': rgba(102, 102, 102, 0.6),
+
   // 聊天消息昵称字体色
   'chat-msg-user-nickname:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   // 聊天消息特殊身份昵称字体色

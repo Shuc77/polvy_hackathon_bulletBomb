@@ -19,7 +19,7 @@ export const useDonateGood = (donateOptions: DonateOptions = {}) => {
   // 打赏成功回调
   const donateSuccess = donateOptions.donateSuccess;
 
-  const { donatePointEnabled, donateGoodEnabled } = storeDefinitionToRefs(useDonateStore);
+  const { showDonatePointGood, showDonateCashGood } = storeDefinitionToRefs(useDonateStore);
 
   /** 打赏数量 */
   const donateCount = ref(1);
@@ -47,9 +47,9 @@ export const useDonateGood = (donateOptions: DonateOptions = {}) => {
       return;
     }
 
-    if (unref(donatePointEnabled)) {
+    if (unref(showDonatePointGood)) {
       await donatePointGood(good, count);
-    } else if (unref(donateGoodEnabled)) {
+    } else if (unref(showDonateCashGood)) {
       await payDonate({
         donateType: DonateType.Good,
         goodId: good.goodId,

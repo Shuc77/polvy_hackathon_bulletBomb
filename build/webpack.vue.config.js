@@ -74,6 +74,7 @@ let webpackVueConfig = {
             loader: 'url-loader',
             options: {
               limit: false,
+              name: 'assets/svga/[name][hash:8].[ext]',
             },
           },
         ],

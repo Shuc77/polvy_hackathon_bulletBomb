@@ -1,29 +1,20 @@
 /**
  * @file 频道 store
  */
-import { DEFAULT_VERIFY_QUERY_FREQUENCY } from '@/assets/constants/defaults';
-import { isMobile } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
 import {
-  ChannelDetail,
+  ChannelAudioMode,
   ChannelScene,
-  ChannelWatchLayout,
-  ChatMessageUser,
-  ChatUserTypes,
   LiveStatus,
-  YN,
   StreamType,
-  MarqueeData,
+  TeacherInfoType,
 } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 
 export interface ChannelStoreState {
-  /** 频道详情数据 */
-  channelDetail: Ref<ChannelDetail | undefined>;
   /** 频道号 */
-  channelId: ComputedRef<string>;
+  channelId: Ref<string>;
   /** 频道是否处于测试模式 */
   testModeStatus: Ref<boolean>;
   /** 频道直播状态 */
@@ -33,7 +24,7 @@ export interface ChannelStoreState {
   /** 当前最新的直播场次号 */
   currentSessionId: Ref<string>;
   /** 观看页地址 */
-  watchUrl: ComputedRef<string>;
+  watchUrl: Ref<string>;
   /** 是否为普通直播频道 */
   isAloneChannel: ComputedRef<boolean>;
   /** 是否为三分屏频道 */
@@ -42,26 +33,20 @@ export interface ChannelStoreState {
   isSeminarChannel: ComputedRef<boolean>;
   /** 渠道 id */
   promoteId: Ref<string | undefined>;
-  /** 当前频道是否为音频直播 */
-  isOnlyAudioLive: ComputedRef<boolean>;
+  /** 音频模式 */
+  audioMode: Ref<ChannelAudioMode>;
+  /** 是否可以“切换音视频模式” */
+  audioModeSwitchEnabled: Ref<boolean>;
+  /** 当前频道是否为特殊的音频直播 */
+  isCustomLiveAudioMode: ComputedRef<boolean>;
   /** 讲师信息 */
-  teacherInfo: ComputedRef<ChatMessageUser>;
-  /** 观看页移动端布局 */
-  mobileWatchLayout: ComputedRef<ChannelWatchLayout>;
-  /** 是否为竖屏观看页布局 */
-  isPortraitWatchLayout: ComputedRef<boolean>;
+  teacherInfo: Ref<TeacherInfoType | undefined>;
   /** 当前直播推流类型 */
   currentStreamType: Ref<StreamType | undefined>;
-  /** 跑马灯数据 */
-  marqueeData: Ref<MarqueeData | undefined>;
-  /** 唯一登录校验轮训频率，单位：秒 */
-  channelVerifyQueryFrequency: Ref<number>;
 }
 
 export interface ChannelStoreActions {
-  /** 同步频道详情 */
-  syncChannelDetail: () => void;
-  /** 同步频道 store */
+  /** 同步频道 Store 数据 */
   syncChannelStore: () => void;
 }
 
@@ -69,10 +54,8 @@ export interface ChannelStoreActions {
 export interface ChannelStore extends ChannelStoreState, ChannelStoreActions {}
 
 export const useChannelStore = defineStore<'channel', ChannelStore>('channel', () => {
-  const channelDetail = ref<ChannelDetail>();
-
   /** 频道号 */
-  const channelId = computed(() => `${unref(channelDetail)?.channelInfo.channelId || ''}`);
+  const channelId = ref('');
 
   /** 频道是否处于测试模式 */
   const testModeStatus = ref(false);
@@ -93,81 +76,57 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   const currentSessionId = ref('');
 
   /** 观看页地址 */
-  const watchUrl = computed(() => unref(channelDetail)?.channelInfo?.watchCodeUrl || '');
+  const watchUrl = ref('');
+
+  /** 频道场景 */
+  const channelScene = ref<ChannelScene>();
 
   /** 是否为普通直播频道 */
-  const isAloneChannel = computed(
-    () => unref(channelDetail)?.channelInfo?.scene === ChannelScene.Alone,
-  );
+  const isAloneChannel = computed(() => unref(channelScene) === ChannelScene.Alone);
 
   /** 是否为三分屏频道 */
-  const isPptChannel = computed(
-    () => unref(channelDetail)?.channelInfo?.scene === ChannelScene.Ppt,
-  );
+  const isPptChannel = computed(() => unref(channelScene) === ChannelScene.Ppt);
 
   /** 是否为研讨会频道 */
-  const isSeminarChannel = computed(
-    () => unref(channelDetail)?.channelInfo?.scene === ChannelScene.Seminar,
-  );
-
-  /** 观看页移动端布局 */
-  const mobileWatchLayout = computed<ChannelWatchLayout>(() => {
-    return channelDetail.value?.channelInfo.watchLayout || ChannelWatchLayout.Normal;
-    // return ChannelWatchLayout.Normal;
-  });
-
-  /** 是否为竖屏观看页布局 */
-  const isPortraitWatchLayout = computed<boolean>(() => {
-    return unref(mobileWatchLayout) === ChannelWatchLayout.Portrait && isMobile;
-  });
+  const isSeminarChannel = computed(() => unref(channelScene) === ChannelScene.Seminar);
 
   /** 渠道 id */
   const promoteId = ref<string>();
 
-  /** 当前频道是否为音频直播 */
-  const isOnlyAudioLive = computed<boolean>(() => {
-    return ynToBool(unref(channelDetail)?.channelConfig.audioOnlyEnabled, YN.N);
-  });
+  /** 音频模式 */
+  const audioMode = ref(ChannelAudioMode.NormalAudio);
+
+  /** 是否可以“切换音视频模式” */
+  const audioModeSwitchEnabled = ref(false);
+
+  /** 当前频道是否为特殊的音频直播 */
+  const isCustomLiveAudioMode = computed(
+    () => audioMode.value === ChannelAudioMode.CustomLiveAudio,
+  );
 
   /** 当前直播推流类型 */
   const currentStreamType = ref<StreamType>();
 
   /** 讲师信息 */
-  const teacherInfo = computed<ChatMessageUser>(() => {
-    const detailVal = unref(channelDetail);
-    return {
-      userId: unref(channelId),
-      nick: detailVal?.channelTeacher?.nickName || '',
-      pic: detailVal?.channelTeacher?.avatar || '',
-      userType: ChatUserTypes.Teacher,
-      actor: detailVal?.channelTeacher?.actor,
-    };
-  });
+  const teacherInfo = ref<TeacherInfoType>();
 
-  /** 跑马灯数据 */
-  const marqueeData = ref<MarqueeData>();
-
-  const channelVerifyQueryFrequency = ref(DEFAULT_VERIFY_QUERY_FREQUENCY);
-
-  /** 同步频道详情 */
-  function syncChannelDetail() {
-    const watchCore = getWatchCore();
-    channelDetail.value = watchCore.channel.getChannelDetail();
-  }
-
+  /** 同步频道 Store 数据 */
   function syncChannelStore(): void {
     const watchCore = getWatchCore();
+
+    channelScene.value = watchCore.channel.getChannelScene();
     testModeStatus.value = watchCore.channel.getTestModeStatus();
     liveStatus.value = watchCore.channel.getLiveStatus();
     currentSessionId.value = watchCore.channel.getCurrentSessionId();
     promoteId.value = watchCore.channel.getPromoteId();
+    watchUrl.value = watchCore.channel.getChannelWatchUrl();
+    teacherInfo.value = watchCore.channel.getTeacherInfo();
+
+    audioMode.value = watchCore.channel.getAudioMode();
+    audioModeSwitchEnabled.value = watchCore.channel.getAudioModeSwitchEnabled();
   }
 
   return {
-    channelDetail,
-    syncChannelDetail,
-    syncChannelStore,
-
     channelId,
     testModeStatus,
     liveStatus,
@@ -177,13 +136,13 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isAloneChannel,
     isPptChannel,
     isSeminarChannel,
-    mobileWatchLayout,
-    isPortraitWatchLayout,
     promoteId,
-    isOnlyAudioLive,
+    audioMode,
+    audioModeSwitchEnabled,
+    isCustomLiveAudioMode,
     teacherInfo,
     currentStreamType,
-    marqueeData,
-    channelVerifyQueryFrequency,
+
+    syncChannelStore,
   };
 });

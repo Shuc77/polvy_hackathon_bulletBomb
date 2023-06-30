@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { ref, Ref } from 'vue';
-import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
 
 export interface PageStoreState {
   /** 页面显示状态 */
@@ -9,8 +8,6 @@ export interface PageStoreState {
   pageClientWidth: Ref<number>;
   /** 页面高度 */
   pageClientHeight: Ref<number>;
-  /** 页面皮肤 */
-  pageSkin: Ref<ChannelWatchPageSkin | undefined>;
 }
 
 export interface PageStoreAction {
@@ -33,9 +30,6 @@ export const usePageStore = defineStore<'page', PageStore>('page', () => {
   /** 页面高度 */
   const pageClientHeight = ref(document.documentElement.clientHeight);
 
-  /** 页面皮肤 */
-  const pageSkin = ref<ChannelWatchPageSkin>();
-
   /** 重新获取页面尺寸 */
   function resetUpPageSize() {
     pageClientWidth.value = document.documentElement.clientWidth;
@@ -46,7 +40,6 @@ export const usePageStore = defineStore<'page', PageStore>('page', () => {
     visibilityState,
     pageClientWidth,
     pageClientHeight,
-    pageSkin,
 
     resetUpPageSize,
   };

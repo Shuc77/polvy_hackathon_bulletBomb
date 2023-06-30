@@ -78,3 +78,21 @@ declare module '@polyv/polyv-ui/lib-admin/pagination' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+/**
+ * 滑块
+ */
+declare module '@polyv/polyv-ui/lib-admin/slider' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
+ * 文字描述
+ */
+declare module '@polyv/polyv-ui/lib-admin/tips' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

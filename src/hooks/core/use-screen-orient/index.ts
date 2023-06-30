@@ -15,7 +15,7 @@ export enum ScreenOrientationMode {
  * @hook 屏幕旋转
  */
 export const useScreenOrientHook = (params: {
-  /** 自动监听事件 */
+  /** 自动监听事件，默认：true */
   autoListen?: boolean;
   /** 自动监听回调 */
   autoListenCb?: (screenOrientationMode: ScreenOrientationMode) => void;
@@ -58,14 +58,19 @@ export const useScreenOrientHook = (params: {
     }, 200);
   }
 
+  /** 监听屏幕旋转事件 */
+  function listenOrientationEvent() {
+    window.addEventListener(
+      'onorientationchange' in window ? 'orientationchange' : 'resize',
+      onOrientationChange,
+      false,
+    );
+  }
+
   onMounted(() => {
     if (autoListen) {
       // 处理屏幕旋转
-      window.addEventListener(
-        'onorientationchange' in window ? 'orientationchange' : 'resize',
-        onOrientationChange,
-        false,
-      );
+      listenOrientationEvent();
       onOrientationChange();
     }
   });
@@ -74,6 +79,7 @@ export const useScreenOrientHook = (params: {
     screenOrientationMode,
     isVerticalScreenOrientation,
     isHorizontalScreenOrientation,
+    listenOrientationEvent,
     updateScreenOrientationModeManually,
   };
 };

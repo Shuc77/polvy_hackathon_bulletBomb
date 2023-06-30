@@ -1,7 +1,7 @@
 <!-- @file 移动端页面广告 -->
 <template>
   <div
-    v-if="advertVisible && pageAdvertList.length"
+    v-if="advertVisible && pageAdvertEnabled && pageAdvertList.length"
     class="c-mobile-page-advert pws-page-advert"
   >
     <div class="c-mobile-page-advert__content">
@@ -67,7 +67,8 @@ import {
 import { usePageAdvert } from './use-page-advert';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 
-const { advertVisible, pageAdvertList, closeVisible, onClickClose, openLink } = usePageAdvert();
+const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible, onClickClose, openLink } =
+  usePageAdvert();
 </script>
 
 <style lang="scss">

@@ -7,10 +7,10 @@
     <div class="c-mobile-live-booking-subscribe-popup">
       <img
         class="c-mobile-live-booking-subscribe-popup__img"
-        :src="viewQrCodeImg || weixinMpImgUrl || defaultPLVWxImg"
+        :src="viewQrCodeImg || wxMpImageUrl || defaultPLVWxImg"
       />
       <p
-        v-if="!bookingTips"
+        v-if="!wxBookingTips"
         class="c-mobile-live-booking-subscribe-popup__desc"
       >
         {{ $lang('liveBooking.subscribe1') }}<br />
@@ -21,7 +21,7 @@
         v-else
         class="c-mobile-live-booking-subscribe-popup__desc"
       >
-        {{ bookingTips }}
+        {{ wxBookingTips }}
       </p>
       <normal-button
         :text="$lang('base.ok')"
@@ -60,7 +60,7 @@ function closePopup() {
 // 默认公众号二维码图片
 const defaultPLVWxImg = require('./imgs/apollo-live-qrcode.jpg');
 
-const { weixinMpImgUrl, bookingTips } = storeDefinitionToRefs(useLiveBookingStore);
+const { wxMpImageUrl, wxBookingTips } = storeDefinitionToRefs(useLiveBookingStore);
 
 const instance: SubscribeInstance = {
   openPopup,

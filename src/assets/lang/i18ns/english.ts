@@ -15,7 +15,7 @@ export const englishLang: LangConfig = {
   'auth.button.workWx': 'Wecom entrance',
   'auth.button.playback': 'Enter',
   'auth.code.placeholder': 'Please enter verification information',
-  'auth.info.registered.entrance': 'I have registered, go directly to',
+  'auth.info.registered.entrance': 'I have registered, go directly to >',
   'auth.info.registered.title': 'I have registered',
   'auth.phone.placeholder': 'Please enter verification information',
   'auth.pay.tips': 'Need to pay for watching',
@@ -27,6 +27,8 @@ export const englishLang: LangConfig = {
   'auth.pay.audience': 'Paid viewers ? please',
   'auth.pay.clickHere': 'click here',
   'auth.pay.wechat': 'Wechat Pay',
+  'auth.pay.notAllow':
+    'Pause paying to enter the channel, please contact the administrator to open other viewing conditions',
   'auth.workWeixin.title': 'Work wechat login',
   'auth.workWeixin.qrcodeLoading': 'Qrcode loading',
   'auth.error.checkProtocol': 'Please tick the privacy statement',
@@ -60,12 +62,13 @@ export const englishLang: LangConfig = {
   'base.confirm': 'Confirm',
   'base.cancel': 'Cancel',
   'base.ignore': 'Ignore',
+  'base.refresh': 'Refresh',
+  'base.reload': 'Reload',
   'base.warmTips': 'Warm Tips',
   'base.enterLive': 'Enter',
   'base.tips': 'Tips',
   'base.me': 'me',
   'base.more': 'More',
-  'base.notAuthorized': 'You are not allowed to access this page',
   'base.changeLang': 'Language switch',
   'base.message': 'Message',
   'base.packUp': 'Pack up',
@@ -76,6 +79,14 @@ export const englishLang: LangConfig = {
   'base.camera': 'Camera',
   'base.popup.supportDragUp': 'Support drag up',
   'base.popup.understood': 'I see',
+  'base.enabled.on': 'Turn on',
+  'base.enabled.off': 'Turn off',
+  'base.notVisibleDialog': 'No more pop-ups',
+  'base.pip.show': 'Show Camera',
+  'base.pip.close': 'Close Camera',
+  'base.searchKeyword': 'Search keyword',
+  'base.emptyOptions': 'Empty options',
+  'base.noMore': 'No more updates',
 
   'channel.descEmpty': 'No live broadcast introduction~',
 
@@ -86,9 +97,12 @@ export const englishLang: LangConfig = {
   'connectMic.joinConnect': 'Click the button to join the call',
   'connectMic.applying': 'Requesting a call',
   'connectMic.applying2': 'applying',
+  'connectMic.applying3': 'In queue',
   'connectMic.applyConnect': 'Apply for a call',
   'connectMic.applyConnect.video': 'Apply video call',
+  'connectMic.applyConnect.videoApply': 'Apply video call',
   'connectMic.applyConnect.audio': 'Apply audio call',
+  'connectMic.applyConnect.audioApply': 'Apply audio call',
   'connectMic.cancelApply': 'Cancel Apply',
   'connectMic.endConnect': 'End call',
   'connectMic.keepConnect': 'Keep calling',
@@ -99,13 +113,41 @@ export const englishLang: LangConfig = {
   'connectMic.teacherHangUp': 'The call has ended. You can request again',
   'connectMic.agreement':
     'It is necessary to shoot and collect portrait information during video connection',
+  'connectMic.screenshare.settingTitle': 'Screen sharing settings',
+  'connectMic.screenshare.start': 'Screen Sharing',
+  'connectMic.screenshare.stop': 'Stop Sharing',
+  'connectMic.screenshare.mode': 'Screen sharing mode',
+  'connectMic.screenshare.mode.detail':
+    'Static screen-based (suitable for sharing text and documents)',
+  'connectMic.screenshare.mode.motion': 'Motion-based (suitable for sharing multimedia videos)',
+  'connectMic.screenshare.audioMixEnabled': 'Sound Mixing Switch',
+  'connectMic.screenshare.tips1': "Can't switch on/off during screen sharing",
+  'connectMic.screenshare.tips2':
+    'When screen sharing, if "Share Audio" is checked, others can hear system sounds (e.g. shared multimedia sounds).',
+  'connectMic.screenshare.tips3':
+    'Windows system: Sharing "Entire Screen" supports sharing system sound; Mac system: Sharing "Chrome tab" supports sharing system sound.',
+  'connectMic.screenshare.tips4': 'Only Chrome74 and above support the "Share Audio" function.',
+  'connectMic.screenshare.maskTips1': 'Desktop sharing is on',
+  'connectMic.screenshare.maskTips2': 'Please open what you need to share',
+  'connectMic.speaker.receive': 'The anchor has granted your permission to lecture',
+  'connectMic.speaker.remove': 'The anchor has withdrawn your permission to lecture',
+  'connectMic.download': 'Download Chrome',
   'connectMic.error.getDeviceFail':
     'Unable to get device access or no device, please check and try again!',
   'connectMic.error.overLimit':
     'Failed to register. The number of people currently registered has reached the maximum',
+  'connectMic.error.notSupportScreenShare': 'Screen sharing is not supported in this browser',
+  'connectMic.error.startScreenShareFail': 'Failed to open screen sharing',
+  'connectMic.error.cancelScreenShare': 'You have canceled screen sharing',
+  'connectMic.error.systemPermissionDenied':
+    'Screen sharing failed. Please enable browser screen sharing permission in the background',
+  'connectMic.error.pipNotSupport': 'This browser does not support picture-in-picture',
+  'connectMic.error.notSupport1': 'The current browser does not support the video call',
+  'connectMic.error.notSupport2': 'Please use Chrome (58 or above)',
 
   'chat.empty': 'Nothing in chat room ~',
-  'chat.connectError': 'Chatroom disconnect, you cannot chat with others, refresh now?',
+  'chat.connectError.tips1': 'Chatroom disconnect, you cannot chat with others, refresh now?',
+  'chat.connectError.tips2': 'Chatroom connection failure',
   'chat.norMore': 'No more updates',
   'chat.loadError': 'Message failed to load',
   'chat.closeTips':
@@ -128,7 +170,9 @@ export const englishLang: LangConfig = {
   'chat.input.placeholder': 'Join the chat',
   'chat.input.placeholder2': 'Join the chat',
   'chat.input.placeholder3': 'Click to set nickname to participate in interaction',
+  'chat.input.placeholder4': 'Initiate a question',
   'chat.input.maxImageTips': 'Insert no more than ${maxCount} pictures at most',
+  'chat.ask.channel': 'Question Channel',
   'chat.closeRoom': 'Chat room is closed',
   'chat.roomClosed': 'Chat room temporarily closed',
   'chat.roomReopened': 'Chat room reopened',
@@ -136,6 +180,8 @@ export const englishLang: LangConfig = {
   'chat.illegalImage': 'Image illegal',
   'chat.moreMsg': 'Click to see more',
   'chat.moreMsg2': 'See new message',
+  'chat.msg.replay.tips.wait': 'The playback message is in preparation, refresh to view',
+  'chat.msg.replay.tips.ing': 'Chat replay is on, showing historical messages',
 
   'copy.link': 'Copy Link',
   'copy.success': 'Copy success',
@@ -192,7 +238,7 @@ export const englishLang: LangConfig = {
   'enroll.text': 'Sign up',
   'enroll.enrolledTips':
     'You have already signed up, the content currently filled in will overwirte the previous',
-  'enroll.entrance': 'I have signed up, go directly to',
+  'enroll.entrance': 'I have signed up, go directly to >',
   'enroll.auditing': 'Under review',
   'enroll.loginTitle': 'Login',
   'enroll.error.emailUnenroll':
@@ -286,12 +332,16 @@ export const englishLang: LangConfig = {
   'layout.fullscreen': 'Full screen',
   'layout.fullscreenCancel': 'Full screen off',
 
-  'pageError.feedBack':
-    'You can check your channel number first, then feed it back to the administrator, and you can deal with it later.',
-  'pageError.channelNotExist': 'Channel number does not exist',
-  'pageError.channelClosed': 'Channel is closed',
-  'pageError.mobileChannelClosed':
+  'pageError.channel.unknowError': 'Unexpceted channel detail',
+  'pageError.channel.closed': 'Channel is closed',
+  'pageError.channel.notExist': 'Channel number does not exist',
+  'pageError.channel.feedBack':
+    'Please check the channel ID. If you cannot solve the problem, please take a screenshot and contact the administrator.',
+  'pageError.platform.onlyPc':
     'This live broadcast only supports PC viewing, please use PC to browse the following address',
+  'pageError.network.general.title': 'Network error',
+  'pageError.network.general.desc': 'Please check your network.',
+  'pageError.network.timeout.title': 'Network error(timeout)',
 
   'player.play.button.text': 'Click to enter',
   'player.play': 'Play',
@@ -309,6 +359,8 @@ export const englishLang: LangConfig = {
   'player.barrage.close': 'Danmaku off',
   'player.openBarrage': 'Barrage on',
   'player.closeBarrage': 'Barrage off',
+  'player.marquee.checkError':
+    'Video player error，You can report this problem code(LIVE-#012) to administrator',
   'player.lineSwitch': 'Line',
   'player.lineSetting': 'Switch Line',
   'player.line': 'line',
@@ -397,6 +449,7 @@ export const englishLang: LangConfig = {
   'welcome.wait': 'and',
   'welcome.peopleJoin': 'people entered',
   'welcome.join': 'join',
+  'welcome.deliver': 'deliver',
 
   'weixin.scanToPay': 'Scan with Wechat and Pay',
   'weixin.pay.success': 'Payment success',
@@ -445,8 +498,13 @@ export const englishLang: LangConfig = {
   'menu.tabName.vote': 'Vote',
   'menu.tabName.microActivity': 'MicroActivity',
   'menu.tabName.chapter': 'Chapter',
+  'menu.tabName.multiMeeting': 'MultiMeeting',
 
   'multiMeeting.other': 'Breakout rooms',
+  'multiMeeting.text': 'Live Broadcast Room',
+  'multiMeeting.mainChannel': 'Main Meeting',
+  'multiMeeting.playing': 'Playing',
+  'multiMeeting.noLive': 'Live Not Started',
 
   'member.self': 'me',
   'member.failTips': 'Network error, members load failed,',
@@ -471,4 +529,11 @@ export const englishLang: LangConfig = {
   'invite.poster.not.on.the.list': 'Not listed',
   'invite.poster.go.invite': 'Invite',
   'invite.poster.no.data': 'No invitation at the moment. Jump at the chance to on the list.',
+
+  'barrage.speed': 'Barrage Speed',
+  'barrage.speed.verySlow': 'very slow',
+  'barrage.speed.slow': 'slow',
+  'barrage.speed.normal': 'normal',
+  'barrage.speed.fast': 'fast',
+  'barrage.speed.veryFast': 'very fast',
 };

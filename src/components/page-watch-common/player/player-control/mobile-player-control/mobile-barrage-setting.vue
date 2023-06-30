@@ -1,0 +1,168 @@
+<!-- @file 移动端播放器弹幕设置面板 -->
+<template>
+  <div
+    class="c-mobile-player-barrage-setting"
+    :class="{
+      'c-mobile-player-barrage-setting--fullscreen':
+        mobileNormalLatencyPlayerIsFullscreen && isVerticalScreenOrientation,
+    }"
+    @click.self="emitClose"
+  >
+    <div
+      class="c-mobile-player-barrage-setting__wrap"
+      @click.self="emitClose"
+    >
+      <div class="c-mobile-player-barrage-setting__content">
+        <div class="c-mobile-player-barrage-setting__label">{{ $lang('barrage.speed') }}</div>
+        <div class="c-mobile-player-barrage-setting__item">
+          <plv-slider
+            show-stops
+            :css-rotate-angle="isVerticalScreenOrientation && isPlayerFullscreen ? 90 : 0"
+            :min="1"
+            :max="5"
+            :step="1"
+            :progress-bar-visible="false"
+            :hot-area-height="44"
+            :value="formattedBarrageSpeedToSliderValue"
+            @input="handleBarrageSpeedChange"
+          />
+          <span class="c-mobile-player-barrage-setting__desc">{{
+            formattedBarrageSpeedToText
+          }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, watch } from 'vue';
+import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
+import { useBarrageSetting } from '../../hooks/use-barrage-setting';
+import { usePlayerAction } from '../../hooks/use-player-action';
+
+const { toToggleBarrageSettingVisible } = usePlayerAction();
+
+const {
+  formattedBarrageSpeedToSliderValue,
+  formattedBarrageSpeedToText,
+  handleBarrageSpeedChange,
+} = useBarrageSetting();
+
+const emit = defineEmits({
+  'close-setting': emitFunc<void>(),
+});
+
+const {
+  mobilePlayerIsPageFullscreen: isMobLowLatencyPlayerFullscreen,
+  isVerticalScreenOrientation,
+  mobileNormalLatencyPlayerIsFullscreen,
+} = storeDefinitionToRefs(useLayoutStore);
+
+const isPlayerFullscreen = computed(() => {
+  return isMobLowLatencyPlayerFullscreen.value || mobileNormalLatencyPlayerIsFullscreen.value;
+});
+
+watch(isVerticalScreenOrientation, newVal => {
+  if (newVal && !isPlayerFullscreen.value) {
+    toToggleBarrageSettingVisible(false);
+  }
+});
+
+function emitClose() {
+  emit('close-setting');
+}
+</script>
+
+<style lang="scss">
+.c-mobile-player-barrage-setting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2003;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  pointer-events: initial;
+}
+.c-mobile-player-barrage-setting--fullscreen {
+  position: fixed;
+  top: calc((100vh - 100vw) / 2);
+  left: calc((100vw - 100vh) / 2);
+  z-index: 2003;
+  width: 100vh;
+  height: 100vw;
+  overflow: inherit;
+  transform: rotate3d(0, 0, 1, 90deg);
+  transform-origin: center center;
+}
+.c-mobile-player-barrage-setting__wrap {
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 393px;
+  height: 100%;
+  color: #fff;
+  background: rgba(#000, 0.8);
+  filter: blur(0);
+}
+.c-mobile-player-barrage-setting__content {
+  width: 100%;
+  padding-left: 32px;
+  font-size: 14px;
+  .plv-slider {
+    flex-grow: 1;
+    padding: 5px 7px;
+  }
+  .plv-slider__runway {
+    background: #666;
+  }
+  .plv-slider .plv-slider__runway .plv-slider__runway__dot {
+    z-index: 10;
+    opacity: 0.5;
+  }
+  .plv-slider__button .plv-slider__button__inner {
+    background-color: #2196f3;
+    border-color: #2196f3;
+  }
+  .plv-slider__runway::before,
+  .plv-slider__runway::after {
+    position: absolute;
+    z-index: 1;
+    width: 4px;
+    height: 4px;
+    pointer-events: none;
+    content: '';
+    background: #fff;
+    border-radius: 50%;
+    opacity: 0.5;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+  .plv-slider__runway::before {
+    left: 2px;
+  }
+  .plv-slider__runway::after {
+    right: -2px;
+  }
+}
+.c-mobile-player-barrage-setting__label {
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.c-mobile-player-barrage-setting__item {
+  display: inline-flex;
+  width: 100%;
+}
+.c-mobile-player-barrage-setting__desc {
+  box-sizing: border-box;
+  width: 109px;
+  padding-left: 8px;
+}
+</style>

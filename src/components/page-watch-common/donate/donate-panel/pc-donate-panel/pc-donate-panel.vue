@@ -76,7 +76,7 @@
             {{ $lang('donate.confirm') }}
           </button>
           <div
-            v-if="donatePointEnabled"
+            v-if="showDonatePointGood"
             class="c-pc-donate-panel__good__select-count__surplus"
           >
             {{ $lang('donate.point.myPoint') }}
@@ -104,7 +104,7 @@ const emit = defineEmits({
   'donate-finish': emitFunc<void>(),
 });
 
-const { showDonateGifts, donateItemList, donatePointEnabled, showDonateCash } =
+const { showDonateGifts, donateItemList, showDonatePointGood, showDonateCash } =
   storeDefinitionToRefs(useDonateStore);
 
 /** 用于定位参考的元素 */
@@ -134,7 +134,7 @@ function onClickItem(event: Event, good: DonateGoodInfo) {
   setSelectedGood(good);
 
   // 仅在积分打赏下才选择数量
-  if (unref(donatePointEnabled)) {
+  if (unref(showDonatePointGood)) {
     showPopper();
   } else {
     donateGood();

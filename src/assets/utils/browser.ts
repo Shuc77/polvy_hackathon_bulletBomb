@@ -69,3 +69,6 @@ function judgeIsMockPC(): boolean {
 
 /** 是否模拟 UA 为 PC */
 export const isMockPc = judgeIsMockPC();
+
+/** 是否为钉钉内置浏览器 */
+export const isDingTalk = /DingTalk/i.test(ua);

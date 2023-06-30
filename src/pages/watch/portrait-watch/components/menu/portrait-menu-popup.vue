@@ -49,7 +49,7 @@
 
       <!-- 提现 -->
       <menu-item
-        v-if="withdrawEnabled && isWeixin"
+        v-if="withdrawVisible"
         icon="withdraw"
         :text="$lang('withdraw.name')"
         @click="onClickWithdraw"
@@ -57,7 +57,7 @@
 
       <!-- 只看主持人 -->
       <menu-item
-        v-if="!filterManagerMsgEnabled"
+        v-if="onlySpecialMsgWidgetVisible"
         :icon="onlySpecialMsg ? 'look-all' : 'only-special'"
         :text="onlySpecialMsg ? $lang('chat.lookAll') : $lang('chat.onlyHost2')"
         @click="onClickOnlySpecialMsg"
@@ -91,7 +91,7 @@
 
       <!-- 投诉反馈 -->
       <menu-item
-        v-if="watchFeedbackEnabled"
+        v-if="interactSetting.watchFeedbackEnabled"
         icon="feedback"
         :text="$lang('interact.feedBack.title')"
         @click="onClickFeedback"
@@ -107,7 +107,7 @@
 
       <!-- 发送图片 -->
       <!-- <menu-item
-        v-if="viewerSendImgEnabled"
+        v-if="chatSetting.viewerSendImgEnabled"
         icon="send-image"
         :text="$lang('chat.sendImage')"
         @click="onClickSendImage"
@@ -115,7 +115,7 @@
 
       <!-- 发红包 -->
       <!-- <menu-item
-        v-if="!sendRedpackHidden"
+        v-if="sendRedpackVisible"
         icon="send-redpack"
         :text="$lang('redpack.name')"
         @click="onClickSendRedpack"
@@ -135,26 +135,24 @@
 <script setup lang="ts">
 /* eslint-disable no-unused-vars */
 
-import { PopupTheme } from '@/components/common-base/popup/types';
 import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
-import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import MenuItem from './portrait-menu-item.vue';
-import { useDonateStore } from '@/store/use-donate-store';
-import { storeToRefs } from 'pinia';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useScoreStore } from '@/store/use-score-store';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useChatStore } from '@/store/use-chat-store';
-import { useWithdraw } from '@/components/page-watch-common/withdraw/use-withdraw';
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { useLangStore } from '@/store/use-lang-store';
-import { useViewerStore } from '@/store/use-viewer-store';
-import { useSendRedpackStore } from '@/store/use-send-redpack-store';
-import { ref } from 'vue';
+import { PopupTheme } from '@/components/common-base/popup/types';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
-import { isWeixin } from '@/assets/utils/browser';
+import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useChatStore } from '@/store/use-chat-store';
+import { useDonateStore } from '@/store/use-donate-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLangStore } from '@/store/use-lang-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import { useRedpackStore } from '@/store/use-redpack-store';
+import { useViewerStore } from '@/store/use-viewer-store';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
+import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
+import MenuItem from './portrait-menu-item.vue';
 
 const { visible: menuVisible, setVisible: setMenuVisible } = useSimpleVisible();
 
@@ -188,15 +186,13 @@ const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
 const { toggleDonateAnimationVisible } = donateStore;
 
 const chatStore = useChatStore();
-const { onlySpecialMsg, filterManagerMsgEnabled, viewerSendImgEnabled } = storeToRefs(chatStore);
+const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 const { toggleOnlySpecialMsg } = chatStore;
 
 const playerStore = usePlayerStore();
 const { isAudioPlayerMode } = storeToRefs(playerStore);
 
-const { scoreRedpackEnabled } = storeDefinitionToRefs(useScoreStore);
-
-const { watchFeedbackEnabled } = storeDefinitionToRefs(useInteractReceiveStore);
+const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -204,9 +200,9 @@ const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
-const { sendRedpackHidden } = storeDefinitionToRefs(useSendRedpackStore);
+const { scoreRedpackEnabled, sendRedpackVisible } = storeDefinitionToRefs(useRedpackStore);
 
-const { withdrawEnabled } = useWithdraw();
+const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 /** 点击线路切换 */
 function onClickLineSetting() {

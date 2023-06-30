@@ -19,7 +19,7 @@ $--skin-page-pc-configs: (
   // 倒计时方块数字字体色
   'pc-count-down-square-item:text-color': $--color-white,
   // 倒计时方块文案字体色
-  'pc-count-down-square-item-word:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  'pc-count-down-square-item-word:text-color': #adadc0,
   // 倒计时方块边框色
   'pc-count-down-square-item:border-color': $--color-black,
 

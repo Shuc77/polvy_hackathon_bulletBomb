@@ -1,5 +1,5 @@
-import { isSpecialUserType } from '@/assets/constants/special-user-types';
 import { isUndefined } from '@/assets/utils/types';
+import { getWatchCore } from '@/core/watch-sdk';
 import { ChatMessageUser, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { ref, Ref, unref } from 'vue';
@@ -43,7 +43,7 @@ export interface ChatMsgStoreAction {
   setRealEndIndex(index: number): void;
 
   /** 获取消息列表 */
-  getHistoryData(): ChatMsgType[];
+  getHistoryData<T extends ChatMsgType = ChatMsgType>(): T[];
   /** 设置消息列表 */
   resetHistoryData(list: ChatMsgType[]): void;
   /** 设置历史列表的消息对象 */
@@ -200,8 +200,8 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
   let historyData: ChatMsgType[] = [];
 
   /** 获取消息列表 */
-  function getHistoryData(): ChatMsgType[] {
-    return historyData;
+  function getHistoryData<T extends ChatMsgType = ChatMsgType>(): T[] {
+    return historyData as T[];
   }
 
   /** 设置消息列表 */
@@ -331,7 +331,8 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
     const user = getChatMsgUser(chatMsg);
     const userType = user?.userType;
     if (!userType) return false;
-    return isSpecialUserType(userType);
+    const watchCore = getWatchCore();
+    return watchCore.user.isSpecialUserType(userType);
   }
 
   /**
@@ -363,17 +364,18 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
     let isServiceMsg = true;
 
     const msgSource = chatMsg.msgSource;
-    // 特殊角色消息
-    const isSpecial = isSpecialUserMsg(chatMsg);
-
     // 系统消息、红包领取消息
     const otherSource = [ChatMsgSource.System, ChatMsgSource.RedpaperReceive];
     if (otherSource.includes(msgSource)) {
       isServiceMsg = false;
     }
 
+    // 特殊角色消息
+    const isSpecial = isSpecialUserMsg(chatMsg);
+    // 自己发言
+    const isSelf = isSelfMsg(chatMsg);
     // 只看我和主持人
-    if (chatStore.onlySpecialMsg && !isSpecial) {
+    if (chatStore.onlySpecialMsg && !(isSpecial || isSelf)) {
       isServiceMsg = false;
     }
 

@@ -87,6 +87,7 @@
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :options="formatSimpleSelectOptions(item.radioOptions)"
+                  search
                 />
               </form-item>
             </template>
@@ -104,6 +105,7 @@
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :options="formatSimpleSelectOptions(item.checkboxOptions)"
+                  search
                 />
               </form-item>
             </template>
@@ -225,6 +227,7 @@
               class="c-pc-enroll-form__body__submit__button"
               :size="ButtonSize.Small"
               :text="$lang('base.enterLive')"
+              debounce-submit
             />
             <normal-button
               class="c-pc-enroll-form__body__submit__button"

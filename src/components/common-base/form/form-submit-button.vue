@@ -13,10 +13,11 @@
 
 <script setup lang="ts">
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { useFormSubmitButton } from './hooks/use-form-submit-button';
-import { normalButtonProps } from '../normal-button/use-normal-button';
+import { formSubmitButtonProps, useFormSubmitButton } from './hooks/use-form-submit-button';
 
-defineProps(normalButtonProps());
+const props = defineProps(formSubmitButtonProps());
 
-const { buttonIsDisabled, onButtonClick } = useFormSubmitButton();
+const { buttonIsDisabled, onButtonClick } = useFormSubmitButton({
+  props,
+});
 </script>

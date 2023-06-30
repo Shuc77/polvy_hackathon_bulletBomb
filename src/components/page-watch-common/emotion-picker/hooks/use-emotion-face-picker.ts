@@ -1,6 +1,6 @@
-import { onMounted, ref, unref } from 'vue';
-import { genDOMList } from '@polyv/emotion-sdk';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { getWatchCore } from '@/core/watch-sdk';
+import { onMounted, ref, unref } from 'vue';
 
 export const emotionFacePickerEmits = () => ({
   /** 点击表情 */
@@ -18,11 +18,9 @@ export const useEmotionFacePicker = (options: { emit: VueEmit<typeof emotionFace
 
   /** 处理点击容器 */
   function onClickContainer(event: Event) {
-    const target = event.target as HTMLElement;
-    if (target.tagName !== 'I') {
-      return;
-    }
-    const title = target.getAttribute('data-title');
+    const watchCore = getWatchCore();
+
+    const title = watchCore.chat.getEmotionFaceClickTarget(event);
     if (!title) {
       return;
     }
@@ -32,9 +30,10 @@ export const useEmotionFacePicker = (options: { emit: VueEmit<typeof emotionFace
 
   /** 加载表情节点 */
   onMounted(() => {
+    const watchCore = getWatchCore();
     const containerElem = unref(containerRef);
     if (containerElem) {
-      containerElem.appendChild(genDOMList());
+      containerElem.appendChild(watchCore.chat.getEmotionFaceDomList());
     }
   });
 

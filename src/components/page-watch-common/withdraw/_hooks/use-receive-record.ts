@@ -2,7 +2,6 @@ import { DefineComponent, ref, shallowRef } from 'vue';
 import { formatDate } from '@utils-ts/date';
 import { PageContent } from '@polyv/live-watch-sdk';
 import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
 
 export const useReceiveRecordHook = <T>(hookOption: {
@@ -70,7 +69,7 @@ export const useReceiveRecordHook = <T>(hookOption: {
 
     loadingVisible.value = true;
     try {
-      const pageResult = await fetchMethod.bind(getWatchCore())({
+      const pageResult = await fetchMethod({
         pageNumber: pageNumber + 1,
         ...fetchMethodParams,
       });

@@ -26,7 +26,6 @@ export const usePageErrorHook = () => {
       PageErrorType.ExternalAuthFail,
       PageErrorType.DirectAuthFail,
       PageErrorType.ExternalAuthFail,
-      PageErrorType.NotAuthorized,
     ];
     return authErrorTypes.includes(unref(pageError).type);
   });
@@ -47,6 +46,10 @@ export const usePageErrorHook = () => {
     );
   });
 
+  function reloadPage() {
+    window.location.reload();
+  }
+
   return {
     pageError,
 
@@ -55,5 +58,7 @@ export const usePageErrorHook = () => {
     isAuthError,
     isNotExistError,
     isNotFoundError,
+
+    reloadPage,
   };
 };

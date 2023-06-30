@@ -411,6 +411,10 @@ function checkPosition() {
     left.value = maxLeft;
   }
 }
+
+defineExpose({
+  resetPosition,
+});
 </script>
 
 <style lang="scss">
@@ -421,7 +425,7 @@ function checkPosition() {
   bottom: 0;
   left: 0;
   z-index: inherit;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .c-pc-dialog__content {
@@ -437,7 +441,7 @@ function checkPosition() {
   pointer-events: initial;
   background-color: $--color-white;
   border: 1px solid $--border-color-primary;
-  border-radius: 4px;
+  border-radius: 2px;
   box-shadow: $--shadow-dialog;
 }
 

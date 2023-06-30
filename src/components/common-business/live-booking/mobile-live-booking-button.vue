@@ -24,7 +24,7 @@
         <span>{{ buttonText }}</span>
       </div>
       <div
-        v-if="useWxBooking && buttonPosition !== 'corner'"
+        v-if="isShowBookingCount"
         class="c-mobile-live-booking-button__button__bottom"
       >
         {{ wxBookingCount }} {{ $lang('base.people') }}
@@ -64,7 +64,8 @@ const { buttonPosition } = useProps(props);
 
 const { subscribeRef, wxSubmitLiveBooking, wxCancelLiveBooking } = useLiveBookingWx();
 
-const { isLiveBooking, wxBookingCount, useWxBooking } = storeDefinitionToRefs(useLiveBookingStore);
+const { isLiveBooking, wxBookingCount, useWxBooking, wxBookingCountVisible } =
+  storeDefinitionToRefs(useLiveBookingStore);
 
 /** 按钮尺寸 */
 const buttonSize = computed(() => {
@@ -95,6 +96,13 @@ const buttonText = computed(() => {
   }
 
   return text;
+});
+
+/** 是否展示预约人数 */
+const isShowBookingCount = computed(() => {
+  if (unref(buttonPosition) === 'corner') return false;
+
+  return unref(useWxBooking) && unref(wxBookingCountVisible);
 });
 
 /** 预约表单组件实例 */

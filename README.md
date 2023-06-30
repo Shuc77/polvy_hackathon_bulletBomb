@@ -4,6 +4,7 @@
 
 - 为了让客户能够更便捷、友好地定制观看页，保利威推出了**POLYV 直播观看 SDK**，并将该 SDK 拆分成 UI 层和逻辑层
 - 该开源项目对应 **POLYV 直播观看 SDK** 的 UI 层，需要搭配逻辑层 `@polyv/live-watch-sdk` 一起使用
+- **注意:** 使用前请先阅读仓库中的 `LICENSE` 文件
 
 ## 项目说明
 
@@ -11,12 +12,13 @@
 
 | 保利威 npm 库                                                                  | 备注                                                                                            |
 | :----------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
-| [@polyv/emotion-sdk](https://www.npmjs.com/package/@polyv/emotion-sdk)         | POLYV 表情 SDK                                                                                  |
 | [@polyv/utils](https://www.npmjs.com/package/@polyv/utils)                     | POLYV 工具函数库                                                                                |
 | [@polyv/web-view-bridge](https://www.npmjs.com/package/@polyv/web-view-bridge) | POLYV 前端 WebView 桥接器库                                                                     |
 | [@polyv/eslint-config](https://www.npmjs.com/package/@polyv/eslint-config)     | POLYV 前端工程 ESLint 通用配置                                                                  |
 | @polyv/polyv-ui                                                                | POLYV 前端组件库【暂不对外提供文档】                                                            |
 | [@polyv/icons-vue](https://www.npmjs.com/package/@polyv/icons-vue)             | POLYV 图标库工具 ，搭配 [@polyv/icons-cli](https://www.npmjs.com/package/@polyv/icons-cli) 使用 |
+
+> 注意，如果需要 `@polyv/live-watch-sdk` 支持其他保利威 SDK 的类型推导，请参考 `node_modules/@polyv/live-watch-sdk/package.json` 中的 `peerDependencies`，自行安装对应的 `package` 到项目的 `devDependencies` 中
 
 ## 项目运行
 

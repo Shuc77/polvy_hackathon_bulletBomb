@@ -6,13 +6,13 @@
     :red-envelope-data="redpackData"
     :custom-img-config="customImgConfig"
     :open-id="openId"
-    :with-draw-enabled="withdrawEnabled"
+    :with-draw-enabled="withdrawVisible"
     :redirect-url="watchUrl"
     :unit="scoreUnit"
     :is-full-screen="isIarFullScreen"
     @copy-success="toastCopySuccess"
     @close="onCloseRedpack"
-    @statusChange="onStatusChange"
+    @status-change="onStatusChange"
     @click-withdraw="onClickWithdraw"
     @click-point-record="onClickScoreRecord"
     @received="onPasswordReceived"
@@ -21,15 +21,15 @@
 
 <script setup lang="ts">
 import { toastCopySuccess } from '@/assets/utils/copy';
-import { useWithdraw } from '@/components/page-watch-common/withdraw/use-withdraw';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useRedpack } from './hooks/use-redpack';
 
 import { useChannelStore } from '@/store/use-channel-store';
-import { useScoreStore } from '@/store/use-score-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useRedpackStore } from '@/store/use-redpack-store';
 
 const IarMobileRedEnvelope = getIarComponent('MobileRedEnvelope');
 
@@ -37,9 +37,11 @@ const { watchUrl } = storeDefinitionToRefs(useChannelStore);
 
 const { openId } = storeDefinitionToRefs(useViewerStore);
 
-const { scoreUnit } = storeDefinitionToRefs(useScoreStore);
+const { scoreUnit } = storeDefinitionToRefs(useRedpackStore);
 
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const {
   redpackSdk,
@@ -51,6 +53,4 @@ const {
   onClickScoreRecord,
   onPasswordReceived,
 } = useRedpack();
-
-const { withdrawEnabled } = useWithdraw();
 </script>

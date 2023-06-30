@@ -1,10 +1,12 @@
 import { computed, ref, unref, reactive } from 'vue';
 import { translate } from '@/assets/lang';
 import { toast } from '@/hooks/components/use-toast';
-import { useWithdraw } from '@/components/page-watch-common/withdraw/use-withdraw';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { getWatchCore } from '@/core/watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { WeixinPayType } from '@polyv/live-watch-sdk';
+import { useWeixinStore } from '@/store/use-weixin-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 /** 历史提现统计错误响应 */
 export function handleStatisticsErr(e: Error) {
@@ -20,7 +22,8 @@ export function handleStatisticsErr(e: Error) {
 
 export const useWithdrawApplyHook = () => {
   const watchCore = getWatchCore();
-  const { weixinPayType, freePayAmount } = useWithdraw();
+  const { weixinPayType } = storeDefinitionToRefs(useWeixinStore);
+  const { withdrawMaxAmount } = storeDefinitionToRefs(useWithdrawStore);
 
   /** 提现表单数据 */
   const formData = reactive<{
@@ -35,7 +38,8 @@ export const useWithdrawApplyHook = () => {
   /** 商家提现是否大于自定义限额 */
   const isMerchantAmount = computed(() => {
     return (
-      unref(weixinPayType) === WeixinPayType.Merchant && unref(totalAmount) > unref(freePayAmount)
+      unref(weixinPayType) === WeixinPayType.Merchant &&
+      unref(totalAmount) > unref(withdrawMaxAmount)
     );
   });
 
@@ -58,9 +62,9 @@ export const useWithdrawApplyHook = () => {
 
             // 最大值判断
             if (unref(isMerchantAmount)) {
-              if (Number(formData.amount) > unref(freePayAmount)) {
+              if (Number(formData.amount) > unref(withdrawMaxAmount)) {
                 errorMsg = translate('withdraw.apply.amount.most.merchant', {
-                  amount: String(unref(freePayAmount)),
+                  amount: String(unref(withdrawMaxAmount)),
                 });
               }
             } else {
@@ -92,7 +96,7 @@ export const useWithdrawApplyHook = () => {
   const amountInputPlaceHolder = computed(() => {
     if (unref(weixinPayType) === WeixinPayType.Merchant) {
       return translate('withdraw.apply.amount.most.merchant', {
-        amount: String(freePayAmount.value),
+        amount: String(withdrawMaxAmount.value),
       });
     } else {
       return translate('withdraw.apply.amount.most', {
@@ -108,7 +112,7 @@ export const useWithdrawApplyHook = () => {
 
   /** 设置最大提现额 */
   function setMaxAmount() {
-    formData.amount = unref(isMerchantAmount) ? unref(freePayAmount) : unref(totalAmount);
+    formData.amount = unref(isMerchantAmount) ? unref(withdrawMaxAmount) : unref(totalAmount);
   }
 
   /** 获取总金额数 */

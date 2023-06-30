@@ -64,6 +64,7 @@
             :get-weixin-sdk="getWeixinSdk"
             :get-link-params="getLinkParams"
             :recruitment-enabled="recruitmentEnabled"
+            :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
             :is-plv-webview="isPlvWebview"
             :get-plv-webview-bridge="getPlvWebviewBridge"
             :plv-webview-data-size="plvWebviewDataSize"
@@ -95,18 +96,22 @@ import { appEvents, eventBus } from '@/app/app-events';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import { onJobDetailEvent } from './hooks/use-product-job-detail';
 import { MobileIconProduct } from '@/components/component-icons/mobile/map';
+import { YN } from '@polyv/live-watch-sdk';
 
 import { useProduct, useProductLinkParams, useProductTrack } from './hooks/use-product';
 import { useProductList } from './hooks/use-product-list';
 import { useProductDetail } from './hooks/use-product-detail';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 
 const IarMobileProductList = getIarComponent('MobileProduct');
 const IarProductBtn = getIarComponent('ProductButton');
 
 const { getWeixinSdk } = useWeixinSdk();
+
+const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();

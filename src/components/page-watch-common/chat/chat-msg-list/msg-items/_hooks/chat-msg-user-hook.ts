@@ -1,11 +1,15 @@
 /**
  * @file 聊天消息用户相关 hook
  */
-import { DEFAULT_VIEWER_AVATAR } from '@/assets/constants/defaults';
 import { resetImageProtocol } from '@/assets/utils/image';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { ChatMessageUser, ChatMsgType, ChatUserTypes } from '@polyv/live-watch-sdk';
+import {
+  ChatMessageUser,
+  ChatMsgType,
+  ChatUserType,
+  DEFAULT_VIEWER_AVATAR,
+} from '@polyv/live-watch-sdk';
 import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
 
 /**
@@ -19,7 +23,7 @@ export interface ChatMsgUserContext {
   /** 消息的用户头像 */
   msgUserAvatar: ComputedRef<string>;
   /** 消息的用户类型 */
-  msgUserType: ComputedRef<ChatUserTypes | undefined>;
+  msgUserType: ComputedRef<ChatUserType | undefined>;
   /** 消息的用户头衔 */
   msgUserActor: ComputedRef<string | undefined>;
   /** 是否为自己发言 */
@@ -65,7 +69,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
   /**
    * 消息的用户类型
    */
-  const msgUserType = computed<ChatUserTypes | undefined>(() => {
+  const msgUserType = computed<ChatUserType | undefined>(() => {
     const user = unref(msgUser);
     return user?.userType;
   });

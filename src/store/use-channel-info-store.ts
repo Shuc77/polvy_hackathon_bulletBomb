@@ -2,9 +2,8 @@
  * @file 频道信息 store
  */
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
-import { DEFAULT_CHANNEL_LOGO, DEFAULT_SPLASH_IMG } from '@/assets/constants/defaults';
-import { LangType } from '@/assets/lang/lang-enum';
 import { translate } from '@/assets/lang';
+import { LangType } from '@/assets/lang/lang-enum';
 import {
   isAndroid,
   isBaiduApp,
@@ -14,16 +13,20 @@ import {
   isWeixin,
   isWorkWeixin,
 } from '@/assets/utils/browser';
-import { resizeOSSImg } from '@/assets/utils/image';
 import { htmlStr2Text } from '@/assets/utils/string';
 import { getWatchCore } from '@/core/watch-sdk';
-import { ChannelBasicInfo, LiveStatus, PageViewShowLocation, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import {
+  ChannelBasicInfo,
+  ChannelCountdownSetting,
+  LiveStatus,
+  PageViewShowLocation,
+} from '@polyv/live-watch-sdk';
 import { formatDate } from '@utils-ts/date';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { useLangStore } from './use-lang-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface ChannelInfoStoreState {
   /** 频道信息（中文） */
@@ -40,20 +43,14 @@ export interface ChannelInfoStoreState {
   channelDescription: ComputedRef<string>;
   /** 频道描述是否为空 */
   channelDescriptionIsEmpty: ComputedRef<boolean>;
-  /** 频道图标 */
-  channelCoverImg: ComputedRef<string>;
-  /** 频道引导页封面图 */
-  channelSplashImg: ComputedRef<string>;
-  /** PC 端观看页背景图 */
-  pcWatchBackgroundImage: ComputedRef<string | undefined>;
+
   /** 观看浏览次数显示开关 */
-  pvShowEnabled: ComputedRef<boolean>;
+  pvShowEnabled: Ref<boolean>;
   /** 页面浏览次数 */
   pageViewCount: Ref<number>;
-  /** 页面浏览次数显示位置 */
+  /** 移动端页面浏览次数显示位置 */
   pageViewCountLocation: ComputedRef<PageViewShowLocation>;
-  /** 当前频道的点赞数 */
-  likeCount: Ref<number>;
+
   /** 直播开始时间 */
   liveStartTime: ComputedRef<number | undefined>;
   /** 是否直播开始时间倒计时结束 */
@@ -77,6 +74,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
   () => {
     const langStore = useLangStore();
     const channelStore = useChannelStore();
+    const watchAppStore = useWatchAppStore();
 
     /** 频道信息（中文） */
     const cnChannelBasicInfo = ref<ChannelBasicInfo>({
@@ -141,52 +139,27 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       return false;
     });
 
-    /** 频道图标 */
-    const channelCoverImg = computed(
-      () => channelStore.channelDetail?.channelInfo?.coverImg ?? DEFAULT_CHANNEL_LOGO,
-    );
-
-    /** 频道引导页封面图 */
-    const channelSplashImg = computed<string>(() => {
-      let splashImg = channelStore.channelDetail?.channelInfo?.splashImg;
-
-      // 由于引导页图片默认是竖状图，这里针对该默认图替换成横屏的
-      if (
-        !splashImg ||
-        splashImg.replace(/^([a-z]+:)?\/\//, '') ===
-          'livestatic.videocc.net/assets/wimages/default_guide.png'
-      ) {
-        splashImg = DEFAULT_SPLASH_IMG;
-      }
-
-      return resizeOSSImg(splashImg, 1280, 720);
-    });
-
-    /** PC 端观看页背景图 */
-    const pcWatchBackgroundImage = computed<string | undefined>(() => {
-      return channelStore.channelDetail?.theme.customPCWatchBackgroundImage ?? undefined;
-    });
-
     /** 观看浏览次数显示开关 */
-    const pvShowEnabled = computed<boolean>(() =>
-      ynToBool(channelStore.channelDetail?.channelConfig.pvShowEnabled || YN.N),
-    );
+    const pvShowEnabled = ref(false);
 
     /** 页面浏览次数 */
     const pageViewCount = ref(0);
 
+    /** 移动端页面浏览位置 */
+    const mobilePvShowLocation = ref(PageViewShowLocation.Desc);
+
     /** 页面浏览次数显示位置，默认显示在频道介绍中 */
     const pageViewCountLocation = computed<PageViewShowLocation>(() => {
-      const mobilePvShowLocation = channelStore.channelDetail?.channelConfig.mobilePvShowLocation;
+      const mobilePvShowLocationVal = unref(mobilePvShowLocation);
 
       // 显示在频道介绍中
-      if (mobilePvShowLocation === PageViewShowLocation.Desc) {
+      if (mobilePvShowLocationVal === PageViewShowLocation.Desc) {
         return PageViewShowLocation.Desc;
       }
 
       // 显示在播放器
       if (
-        mobilePvShowLocation === PageViewShowLocation.Player &&
+        mobilePvShowLocationVal === PageViewShowLocation.Player &&
         channelStore.liveStatus === LiveStatus.Live &&
         ((isAndroid && (isWeixin || isWorkWeixin)) ||
           (isIOS && !isQQBrowser && !isUCBrowser && !isBaiduApp))
@@ -197,12 +170,16 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       return PageViewShowLocation.Desc;
     });
 
-    /** 当前频道的点赞数 */
-    const likeCount = ref<number>(0);
+    /** 倒计时设置信息 */
+    const countdownSetting = ref<ChannelCountdownSetting>({
+      liveStartTime: undefined,
+      countdownEnabled: false,
+      playbackShowCountdownEnabled: false,
+    });
 
     /** 直播开始时间 */
     const liveStartTime = computed<number | undefined>(() => {
-      return channelStore.channelDetail?.channelInfo.startTime ?? undefined;
+      return unref(countdownSetting).liveStartTime;
     });
 
     /** 是否直播开始时间倒计时结束 */
@@ -222,7 +199,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
     const showLiveCountDown = computed(() => {
       const liveStartTimeVal = unref(liveStartTime);
       // 后台开关
-      if (!ynToBool(channelStore.channelDetail?.channelConfig.countEnabled, YN.N)) {
+      if (!unref(countdownSetting).countdownEnabled) {
         return false;
       }
 
@@ -233,6 +210,15 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
 
       // 直播中和已结束直播
       if ([LiveStatus.Live, LiveStatus.End].includes(channelStore.liveStatus)) {
+        return false;
+      }
+
+      // 在观看页中，处于直播回放状态，需要再判断开关
+      if (
+        watchAppStore.watchPageInited &&
+        channelStore.liveStatus === LiveStatus.Playback &&
+        !unref(countdownSetting).playbackShowCountdownEnabled
+      ) {
         return false;
       }
 
@@ -247,7 +233,6 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
     /** 刷新频道信息 */
     function syncChannelInfo(): void {
       const watchCore = getWatchCore();
-      const channelDetail = watchCore.channel.getChannelDetail();
       const channelBasicInfo = watchCore.channel.getChannelBasicInfo('zh_CN');
 
       cnChannelBasicInfo.value = {
@@ -264,9 +249,11 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       };
 
       pageViewCount.value = watchCore.channel.getPageViewCount();
-      if (channelDetail.watchData.likes > likeCount.value) {
-        likeCount.value = channelDetail.watchData.likes;
-      }
+      const pvSetting = watchCore.channel.getPageViewSetting();
+      pvShowEnabled.value = pvSetting.pvShowEnabled;
+      mobilePvShowLocation.value = pvSetting.mobilePvShowLocation;
+
+      countdownSetting.value = watchCore.channel.getCountdownSetting();
     }
 
     return {
@@ -278,15 +265,10 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       channelPublisher,
       channelDescription,
       channelDescriptionIsEmpty,
-      channelCoverImg,
-      channelSplashImg,
-      pcWatchBackgroundImage,
 
       pvShowEnabled,
       pageViewCount,
       pageViewCountLocation,
-
-      likeCount,
 
       liveStartTime,
       isLiveStartCountDownEnd,

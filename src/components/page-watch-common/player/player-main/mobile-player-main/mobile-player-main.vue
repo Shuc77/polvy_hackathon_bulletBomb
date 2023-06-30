@@ -5,6 +5,7 @@
     :class="{
       'c-mobile-player-main--page-fullscreen': mobilePlayerIsPageFullscreen,
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
+      'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
     }"
     @click="onClickContainer"
   >
@@ -15,7 +16,7 @@
     ></div>
 
     <!-- 播放器 logo -->
-    <mobile-player-logo v-if="isLowLatency && logoImage" />
+    <mobile-player-logo v-if="isLowLatency && logoSetting.logoImage" />
 
     <!-- 观看次数 -->
     <div
@@ -25,7 +26,7 @@
       {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
     </div>
 
-    <!-- 播放器暖封面图  -->
+    <!-- 播放器暖场/封面图  -->
     <mobile-player-cover-img v-if="isLowLatency" />
 
     <!-- “立即观看”播放按钮 -->
@@ -43,6 +44,12 @@
 
     <!-- 延迟模式切换 -->
     <mobile-low-latency-switch v-show="latencyModeSettingVisible && playerControlVisible" />
+
+    <!-- 播放器弹幕设置面板 -->
+    <mobile-barrage-setting
+      v-show="barrageSettingVisible"
+      @close-setting="handleToggleBarrageSettingVisible"
+    />
   </div>
 </template>
 
@@ -64,15 +71,18 @@ import MobilePlayerCoverImg from '../../player-cover-img/mobile-player-cover-img
 import MobilePlayerControl from '../../player-control/mobile-player-control/mobile-player-control.vue';
 import MobileLowLatencySwitch from '../../player-control/mobile-player-control/mobile-low-latency-switch.vue';
 import MobilePlayerLogo from '@/components/page-watch-common/player/player-logo/mobile-player-logo.vue';
+import MobileBarrageSetting from '../../player-control/mobile-player-control/mobile-barrage-setting.vue';
 
 import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
+import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 
 const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
   storeDefinitionToRefs(useLayoutStore);
 
-const { isLowLatency, playerControlVisible, logoImage } = storeDefinitionToRefs(usePlayerStore);
+const { isLowLatency, playerControlVisible, logoSetting, barrageSettingVisible } =
+  storeDefinitionToRefs(usePlayerStore);
 
 const { pageViewCountLocation, pageViewCount } = storeDefinitionToRefs(useChannelInfoStore);
 
@@ -99,11 +109,15 @@ function onClickContainer() {
   }
   eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
 }
+
+function handleToggleBarrageSettingVisible() {
+  usePlayerStore().$patch({
+    barrageSettingVisible: false,
+  });
+}
 </script>
 
 <style lang="scss">
-// @import './styles/cover-mobile-player.scss';
-
 .c-mobile-player-main {
   position: relative;
   width: 100%;
@@ -162,5 +176,11 @@ function onClickContainer() {
   margin-left: 0 !important;
   transform: rotate(0deg) !important;
   transform-origin: center center;
+}
+
+.c-mobile-player-main--hide-loading {
+  .vcp-loading {
+    display: none !important;
+  }
 }
 </style>

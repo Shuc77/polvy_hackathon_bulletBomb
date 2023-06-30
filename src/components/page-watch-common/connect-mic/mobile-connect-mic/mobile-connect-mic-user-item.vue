@@ -12,17 +12,17 @@
       :is-sip-user="isSipUser"
     />
 
-    <!-- 音频直播下主讲位置的占位图 -->
+    <!-- 音频直播下第一画面位置的占位图 -->
     <player-audio-live-placeholder
-      v-if="isMaster && isOnlyAudioLive"
-      :use-splash-img="isOnlyAudioLive"
+      v-if="isMaster && isCustomLiveAudioMode"
+      :use-splash-img="isCustomLiveAudioMode"
     />
 
     <!-- 右上角网络状态 -->
     <connect-mic-network
       v-if="isLocal"
       class="c-mobile-connect-mic-user-item__network"
-      :network-status="uplinkNetworkStatus"
+      :network-status="networkInfo.uplinkNetworkStatus"
     />
 
     <!-- 底部信息 -->
@@ -62,9 +62,9 @@ const {
   props,
 });
 
-const { uplinkNetworkStatus } = storeDefinitionToRefs(useConnectMicStore);
+const { networkInfo } = storeDefinitionToRefs(useConnectMicStore);
 
-const { isOnlyAudioLive } = storeDefinitionToRefs(useChannelStore);
+const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
 </script>
 
 <style lang="scss">

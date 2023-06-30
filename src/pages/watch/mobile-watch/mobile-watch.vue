@@ -7,10 +7,10 @@
     <!-- ========= 弹出层类型组件 Start ========= -->
 
     <!-- 互动功能 -->
-    <mobile-iar-render v-if="!isWatchBackUrl" />
+    <mobile-iar-render v-if="!isPlaybackWatchUrl" />
 
     <!-- 连麦挂件 -->
-    <mobile-connect-mic-pendant v-if="openMicStatus && isLowLatency" />
+    <mobile-connect-mic-pendant v-if="connectMicPendantVisible" />
 
     <!-- 常驻挂件 -->
     <mobile-watch-pendant />
@@ -28,13 +28,13 @@
     <mobile-lang-switch v-if="langSwitchEnabled" />
 
     <!-- 发送红包弹层 -->
-    <mobile-send-redpack v-if="!sendRedpackHidden" />
+    <mobile-send-redpack v-if="sendRedpackVisible" />
 
     <!-- 提现申请弹层 -->
-    <mobile-withdraw-apply v-if="withdrawEnabled" />
+    <mobile-withdraw-apply v-if="withdrawVisible" />
 
     <!-- 提现详情弹层 -->
-    <mobile-withdraw-detail v-if="withdrawEnabled" />
+    <mobile-withdraw-detail v-if="withdrawVisible" />
 
     <!-- 聊天消息全文弹层 -->
     <mobile-chat-full-message />
@@ -44,28 +44,27 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
 import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
+import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
+import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
 import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
-import MobileWatchPendant from './layout/mobile-watch-pendant.vue';
+import { defineAsyncComponent } from 'vue';
 import MobileWatchLayout from './layout/mobile-watch-layout.vue';
-import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
-import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/mobile-chat-connect-error-dialog.vue';
+import MobileWatchPendant from './layout/mobile-watch-pendant.vue';
 
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
+import { usePvTrack } from '@/hooks/business/use-pv-track';
+import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
+import { useLangStore } from '@/store/use-lang-store';
+import { useRedpackStore } from '@/store/use-redpack-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
-import { useSendRedpackStore } from '@/store/use-send-redpack-store';
-import { useWithdraw } from '@/components/page-watch-common/withdraw/use-withdraw';
-import { useLangStore } from '@/store/use-lang-store';
-import { usePlayerStore } from '@/store/use-player-store';
-import { usePvTrack } from '@/hooks/business/use-pv-track';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () => import('@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'),
@@ -83,19 +82,17 @@ const MobileWithdrawDetail = defineAsyncComponent(
     ),
 );
 
-const { isLowLatency } = storeDefinitionToRefs(usePlayerStore);
+const { connectMicPendantVisible } = storeDefinitionToRefs(useConnectMicStore);
 
-const { openMicStatus } = storeDefinitionToRefs(useConnectMicStore);
-
-const { isWatchBackUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
-const { sendRedpackHidden } = storeDefinitionToRefs(useSendRedpackStore);
+const { sendRedpackVisible } = storeDefinitionToRefs(useRedpackStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
-const { withdrawEnabled } = useWithdraw();
+const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 useWatchPage();
 

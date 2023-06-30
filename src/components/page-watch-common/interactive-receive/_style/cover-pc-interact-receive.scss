@@ -1,5 +1,10 @@
 // @file PC 端的互动功能接收端样式覆盖
 
+// 互动内置弹窗
+.plv-iar-modal {
+  z-index: 999;
+}
+
 // 投票
 .plv-iar-vote__main {
   @include scrollbar;
@@ -68,3 +73,4 @@
   color: #adadc0;
   background-size: 18px;
 }
+

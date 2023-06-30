@@ -1,10 +1,7 @@
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
-
-import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-
+import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import { useRedpackStatus } from '../../redpack/hooks/use-redpack';
 import { RedpackStatusData } from '../types/redpack-rain-types';
 
@@ -13,7 +10,6 @@ import { RedpackStatusData } from '../types/redpack-rain-types';
  * */
 export const useRedpackRain = () => {
   const interactReceiveStore = useInteractReceiveStore();
-  const channelStore = useChannelStore();
 
   const watchCore = getWatchCore();
   /** 红包雨 SDK 实例 */
@@ -21,10 +17,10 @@ export const useRedpackRain = () => {
 
   /** 自定义红包雨皮肤 */
   const customImgConfig = computed(() => {
-    const redpackRainSkin = channelStore.channelDetail?.interactionSetting.redpackRainSkin;
+    const interactSetting = interactReceiveStore.interactSetting;
     return {
-      rainThemeBottomBgImg: redpackRainSkin?.backgroundImage,
-      rainThemeBollImgArray: redpackRainSkin?.images,
+      rainThemeBottomBgImg: interactSetting.redpackRainBottomImage,
+      rainThemeBollImgArray: interactSetting.redpackRainImages,
     };
   });
 

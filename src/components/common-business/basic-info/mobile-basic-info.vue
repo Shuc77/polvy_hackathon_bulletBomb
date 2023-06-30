@@ -37,7 +37,7 @@
             {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
           </span>
           <span
-            v-if="isLowLatency"
+            v-if="isLowLatency || isConnectMicing"
             class="c-mobile-basic-info__channel__inner__no-delay g-img-cover"
           ></span>
         </div>
@@ -66,7 +66,7 @@
         class="c-mobile-basic-info__author__like-count g-text-nowrap pws-mobile-basic-info-like"
       >
         <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
-        <span>{{ likeCount }}</span>
+        <span>{{ realtimeLikes }}</span>
       </div>
     </div>
 
@@ -100,6 +100,10 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, unref } from 'vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
+import { useChatStore } from '@/store/use-chat-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 
 const props = defineProps({
   /** 是否显示页面浏览次数，默认：true */
@@ -117,21 +121,30 @@ const { showPageView, showLikeCount, showDesc } = useProps(props);
 const { liveStatusByDebug } = storeDefinitionToRefs(useChannelStore);
 
 const {
-  channelCoverImg,
   channelTitle,
   channelPublisher,
   pvShowEnabled,
   pageViewCount,
-  likeCount,
+  pageViewCountLocation,
   channelDescription,
   liveStartTimeText,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
+const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
+
+const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
+
 const { isLowLatency } = storeDefinitionToRefs(usePlayerStore);
+
+const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 /** 页面浏览次数显示状态 */
 const pageViewVisible = computed(() => {
-  return unref(pvShowEnabled) && unref(showPageView);
+  return (
+    unref(pvShowEnabled) &&
+    unref(showPageView) &&
+    pageViewCountLocation.value === PageViewShowLocation.Desc
+  );
 });
 
 /** 主持人是否显示完整 */

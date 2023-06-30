@@ -2,9 +2,10 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { RenderPosition } from '@just4/virtual-list/types';
-import { ChatEvents, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
+import { ChatEvents, ChatMsgType } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useContractHistory, useContractQueue } from './contract-history-hook';
+import { useFilterSpecialMsgHook } from './filter-special-msg-hook';
 import { ChatMsgListHookOptions } from './types';
 
 export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
@@ -13,6 +14,7 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
 
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { contractMsgQueue } = useContractQueue();
+  const { isNotSpecialMsg } = useFilterSpecialMsgHook();
 
   let joinTimer: number | undefined;
 
@@ -85,7 +87,7 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
       // 是否在底部(50为误差值)
       const isBottom = container.scrollTop + container.clientHeight + 50 >= container.scrollHeight;
 
-      if (chatMsgStore.getRealStartIndex() === 0) {
+      if (chatMsgStore.getRealStartIndex() <= 0) {
         const renderData = chatMsgStore.concatQueueToHistoryData(true);
         if (renderData.length) {
           if (isBottom && renderData.length) {
@@ -120,15 +122,9 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
 
   function onChatMsg(evt: { chatMsg: ChatMsgType }) {
     const chatMsg = evt.chatMsg;
-    const msgSource = chatMsg.msgSource;
 
     // 对于仅看主持人，非特殊身份，非自己发言的全部过滤掉
-    if (
-      chatStore.onlySpecialMsg &&
-      [ChatMsgSource.Speak, ChatMsgSource.Image, ChatMsgSource.Emotion].includes(msgSource) &&
-      !chatMsgStore.isSpecialUserMsg(chatMsg) &&
-      !chatMsgStore.isSelfMsg(chatMsg)
-    ) {
+    if (chatStore.onlySpecialMsg && isNotSpecialMsg(chatMsg)) {
       return;
     }
 

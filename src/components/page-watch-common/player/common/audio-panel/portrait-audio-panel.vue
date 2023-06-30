@@ -75,6 +75,7 @@ onBeforeUnmount(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 100%;
 }
 .c-portrait-audio-panel__image {
   width: 48px;

@@ -3,21 +3,18 @@
  */
 
 import { getWatchCore } from '@/core/watch-sdk';
-import { useChannelStore } from '@/store/use-channel-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { RedirectWatchDomainPayOptions, WatchDomainPayType, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
-import { computed, unref } from 'vue';
+import { RedirectWatchDomainPayOptions, WatchDomainPayType } from '@polyv/live-watch-sdk';
+import { computed } from 'vue';
 
 /**
  * @hook 泛域名处理
  * */
 export const usePolyvWatchDomain = () => {
-  const { channelDetail } = storeDefinitionToRefs(useChannelStore);
+  const watchCore = getWatchCore();
 
   /** 泛域名开关 */
   const polyvWatchDomainEnabled = computed<boolean>(() => {
-    return ynToBool(unref(channelDetail)?.channelConfig.polyvWatchDomainEnabled, YN.N);
+    return watchCore.channel.getPolyvWatchDomainEnabled();
   });
 
   /**

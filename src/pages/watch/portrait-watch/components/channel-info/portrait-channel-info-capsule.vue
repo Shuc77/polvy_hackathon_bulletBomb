@@ -42,17 +42,20 @@ import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { computed, unref } from 'vue';
+import { useThemeStore } from '@/store/use-theme-store';
 
-const { chatOnlineNumberEnable, onlineUserCount } = storeDefinitionToRefs(useChatStore);
+const { onlineUserCount, chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { channelCoverImg, channelPublisher, pvShowEnabled, pageViewCount } =
+const { channelPublisher, pvShowEnabled, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);
+
+const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 
 const { followEnabled } = useFollowSetting();
 
 /** 页面显示的数量 */
 const channelVisibleCount = computed<number | undefined>(() => {
-  if (unref(chatOnlineNumberEnable)) {
+  if (unref(chatSetting).chatOnlineNumberEnable) {
     return unref(onlineUserCount);
   }
 

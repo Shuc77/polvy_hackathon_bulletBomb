@@ -38,7 +38,7 @@ export const useEventBusListener = (event: string, callback: (...arg: any[]) => 
  * @param event appEvents 中的事件
  */
 export const useEventBusEmitter = (event: string) => {
-  function emitEvent(params: any) {
+  function emitEvent(params?: any) {
     eventBus.$emit(event, params);
   }
 

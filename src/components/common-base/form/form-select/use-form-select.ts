@@ -8,16 +8,23 @@ import { formCommonProps, useFormCommonValidate } from '../hooks/use-form-common
 
 export const formSelectProps = () => ({
   ...formCommonProps(),
-  // 绑定值
-  value: PropUtils.oneOfType<SelectValueType | SelectValueType[]>([String, Number, Array]).def(''),
-  // 输入框标题
+  /** 绑定值 */
+  value: PropUtils.oneOfType<SelectValueType | SelectValueType[]>([
+    String,
+    Number,
+    Array,
+    Boolean,
+  ]).def(''),
+  /** 输入框标题 */
   title: PropUtils.string,
-  // 占位符
+  /** 占位符 */
   placeholder: PropUtils.string,
-  // 选项列表
+  /** 选项列表 */
   options: PropUtils.array<SelectOptionItem>(),
-  // 是否多选
+  /** 是否多选 */
   multiple: PropUtils.bool.def(false),
+  /** 搜索 */
+  search: PropUtils.bool.def(false),
 });
 
 export const formSelectEmits = () => ({
@@ -59,8 +66,27 @@ export const useFormSelect = (options: {
   /** 输入框占位符 */
   const inputPlaceholder = computed(() => props.placeholder);
 
+  /** 是否显示搜索功能 */
+  const searchEnabled = computed<boolean>(() => {
+    if (!props.search) {
+      return false;
+    }
+
+    return props.options.length > 5;
+  });
+
+  /** 搜索关键词 */
+  const searchKeyword = ref('');
+
   /** 选项列表 */
   const optionList = computed<SelectOptionItem[]>(() => {
+    if (searchEnabled.value && searchKeyword.value) {
+      return props.options.filter(item => {
+        const label = item.label;
+        return label.indexOf(searchKeyword.value) !== -1;
+      });
+    }
+
     return props.options;
   });
 
@@ -103,6 +129,8 @@ export const useFormSelect = (options: {
     title,
     inputValue,
     inputPlaceholder,
+    searchEnabled,
+    searchKeyword,
     optionList,
     onClickOption,
     isSelectedOption,

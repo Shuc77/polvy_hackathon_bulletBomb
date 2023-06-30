@@ -4,6 +4,14 @@
     v-if="supportConnectMic"
     class="c-pc-connect-mic-bottom"
   >
+    <!-- 屏幕共享按钮 -->
+    <div
+      v-if="currentIsSpeaker"
+      class="c-pc-connect-mic-bottom__item"
+    >
+      <pc-connect-mic-sceenshare-button />
+    </div>
+
     <!-- 设备检测按钮 -->
     <div class="c-pc-connect-mic-bottom__item">
       <normal-button
@@ -28,12 +36,13 @@ import { appEvents, eventBus } from '@/app/app-events';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import PcConnectMicButton from './pc-connect-mic-button.vue';
+import PcConnectMicSceenshareButton from './pc-connect-mic-sceenshare-button.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PcIconDeviceSetting } from '@/components/component-icons/pc/map';
 
-const { supportConnectMic } = storeDefinitionToRefs(useConnectMicStore);
+const { supportConnectMic, currentIsSpeaker } = storeDefinitionToRefs(useConnectMicStore);
 
 function onClickDeviceSetting() {
   eventBus.$emit(appEvents.connectMic.TriggerOpenDeviceSetting);
@@ -47,8 +56,25 @@ function onClickDeviceSetting() {
 }
 
 .c-pc-connect-mic-bottom__item {
+  box-sizing: border-box;
   flex: 1;
-  margin-right: 4px;
-  margin-left: 4px;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
+@media screen and (max-width: 1800px) {
+  .c-pc-connect-mic-bottom {
+    flex-wrap: wrap;
+  }
+  .c-pc-connect-mic-bottom__item {
+    flex: unset;
+  }
+  .c-pc-connect-mic-bottom__item:nth-child(-n + 2) {
+    width: 50%;
+  }
+  .c-pc-connect-mic-bottom__item:nth-child(3) {
+    width: 100%;
+    padding-top: 8px;
+  }
 }
 </style>

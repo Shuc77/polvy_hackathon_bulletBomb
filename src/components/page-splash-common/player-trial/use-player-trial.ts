@@ -1,5 +1,11 @@
 import { computed, onMounted, ref } from 'vue';
-import { AuthType, LiveStatus, YN, ChannelTrialInfo } from '@polyv/live-watch-sdk';
+import {
+  AuthType,
+  LiveStatus,
+  YN,
+  ChannelTrialInfo,
+  ChannelTrialError,
+} from '@polyv/live-watch-sdk';
 import { isWeixin } from '@/assets/utils/browser';
 
 import { useAuthStore } from '@/store/use-auth-store';
@@ -58,6 +64,11 @@ export const usePlayerTrialHook = () => {
     const result = await watchCore.trial.getTrialInfo();
     if (result.success) {
       trialInfo.value = result;
+      return;
+    }
+
+    if (result.failReason === ChannelTrialError.Redirect && result.failMessage) {
+      location.href = result.failMessage;
     } else {
       toast.error(result.failMessage || '未知错误');
     }

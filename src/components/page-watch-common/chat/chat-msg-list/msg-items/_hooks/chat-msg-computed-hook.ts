@@ -1,6 +1,5 @@
-import { VirtualList } from '@just4/virtual-list';
-import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { ComputedRef, inject, InjectionKey, provide } from 'vue';
+import { VirtualListInstance } from '../../hooks/types';
 
 export interface ChatMsgComputedContext {
   /** 滚动容器 */
@@ -10,7 +9,7 @@ export interface ChatMsgComputedContext {
   /** 是否为连续相同的消息来源 */
   isContinuitySourceMsg: ComputedRef<boolean>;
   /** 获取虚拟列表 */
-  getVirtualList(): VirtualList<ChatMsgType> | undefined;
+  getVirtualList(): VirtualListInstance | undefined;
 }
 
 const MSG_COMPUTED_INJECT_KEY: InjectionKey<ChatMsgComputedContext> = Symbol('MsgComputed');

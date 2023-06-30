@@ -3,16 +3,15 @@
  */
 import { getWatchCore } from '@/core/watch-sdk';
 import { usePlayerStore } from '@/store/use-player-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { BarrageTarget } from '@polyv/live-watch-sdk';
-import { isRef, onBeforeUnmount, ref, Ref, unref, watchEffect } from 'vue';
+import { isRef, onBeforeUnmount, ref, Ref, unref, watch } from 'vue';
 
 export const useBarrage = (
   options: {
     containerRef?: HTMLDivElement | Ref<HTMLDivElement | undefined>;
   } = {},
 ) => {
-  const { barrageBackstageEnabled, barrageShow } = storeDefinitionToRefs(usePlayerStore);
+  const playerStore = usePlayerStore();
   const containerRef = isRef(options.containerRef)
     ? options.containerRef
     : ref(options.containerRef);
@@ -30,6 +29,7 @@ export const useBarrage = (
     const watchCore = getWatchCore();
     barrageTarget = watchCore.barrage.setupBarrage({
       container,
+      speed: playerStore.barrageSpeed,
     });
   }
 
@@ -41,14 +41,35 @@ export const useBarrage = (
     }
   }
 
-  watchEffect(() => {
-    if (!unref(barrageBackstageEnabled) || !unref(barrageShow)) {
-      destroyBarrage();
-      return;
-    }
+  /** 修改弹幕速度 */
+  function changeBarrageSpeed(speed: number) {
+    barrageTarget?.changeSpeed(speed);
+  }
 
-    setupBarrage();
-  });
+  watch(
+    () => playerStore.barrageSpeed,
+    () => {
+      changeBarrageSpeed(playerStore.barrageSpeed);
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  watch(
+    () => [playerStore.barrageSetting.barrageEnabled, playerStore.barrageShow, containerRef.value],
+    () => {
+      if (!playerStore.barrageSetting.barrageEnabled || !playerStore.barrageShow) {
+        destroyBarrage();
+        return;
+      }
+
+      setupBarrage();
+    },
+    {
+      immediate: true,
+    },
+  );
 
   onBeforeUnmount(() => {
     destroyBarrage();
@@ -58,5 +79,6 @@ export const useBarrage = (
     containerRef,
     setupBarrage,
     destroyBarrage,
+    changeBarrageSpeed,
   };
 };

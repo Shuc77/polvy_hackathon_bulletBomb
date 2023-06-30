@@ -1,16 +1,12 @@
 <!-- @file PC、移动、竖屏端欢迎语提示 -->
 <template>
-  <transition
-    v-if="welcomeEnabled"
-    :name="useTransition ? 'c-welcome-in' : ''"
-  >
+  <transition :name="useTransition ? 'c-welcome-in' : ''">
     <div
       v-show="welcomeVisible"
       class="c-chat-welcome-tips"
     >
       <p class="c-chat-welcome-tips__inner">
         <span class="c-chat-welcome-tips__star c-chat-welcome-tips__star--left"></span>
-        <span class="c-chat-welcome-tips__prefix">{{ $lang('welcome.text') }}</span>
         <span class="c-chat-welcome-tips__msg g-singleline">{{ welcomeText }}</span>
         <span class="c-chat-welcome-tips__star c-chat-welcome-tips__star--right"></span>
       </p>
@@ -20,8 +16,6 @@
 
 <script setup lang="ts">
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
-import { useChatStore } from '@/store/use-chat-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatWelcomeTips } from './use-chat-welcome-tips';
 
 const props = defineProps({
@@ -30,8 +24,6 @@ const props = defineProps({
 });
 
 const { useTransition } = useProps(props);
-
-const { welcomeEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { welcomeText, welcomeVisible } = useChatWelcomeTips();
 </script>
@@ -56,19 +48,11 @@ $--welcome-tips-height: 32px;
   border-radius: 2px;
   box-shadow: none;
 }
-.c-chat-welcome-tips__prefix,
-.c-chat-welcome-tips__suffix {
-  white-space: nowrap;
-}
-.c-chat-welcome-tips__prefix {
-  margin-right: 8px;
-}
-.c-chat-welcome-tips__suffix {
-  margin-left: 8px;
-}
+
 .c-chat-welcome-tips__msg {
   max-width: calc(100vw - 40px);
   max-width: calc(100vmin - 40px) \9\0;
+  white-space: nowrap;
 }
 .c-chat-welcome-tips__star {
   display: inline-block;

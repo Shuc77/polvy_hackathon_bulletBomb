@@ -4,7 +4,6 @@ import { usePageViewPolling } from './_hooks/use-polling';
 import { useConnectMicSetup } from './_hooks/use-connect-mic-setup';
 import { useMainScreen } from './_hooks/use-main-screen';
 import { useOnlineHook } from './_hooks/use-online';
-import { useSingleSessionVerify } from './_hooks/use-single-session-verify';
 
 export const useWatchPage = () => {
   // 使用 pv 轮训
@@ -21,7 +20,4 @@ export const useWatchPage = () => {
 
   // 设置在线数据
   useOnlineHook();
-
-  // 唯一性登录验证
-  useSingleSessionVerify();
 };

@@ -17,3 +17,15 @@ export { PlvPopperManager };
 
 import '@polyv/polyv-ui/lib-admin/theme/pagination.css';
 export { default as PlvPagination } from '@polyv/polyv-ui/lib-admin/pagination';
+
+import '@polyv/polyv-ui/lib-admin/theme/slider.css';
+export { default as PlvSlider } from '@polyv/polyv-ui/lib-admin/slider';
+
+import '@polyv/polyv-ui/lib-admin/theme/row.css';
+export { default as PlvRow } from '@polyv/polyv-ui/lib-admin/row';
+
+import '@polyv/polyv-ui/lib-admin/theme/col.css';
+export { default as PlvCol } from '@polyv/polyv-ui/lib-admin/col';
+
+import '@polyv/polyv-ui/lib-admin/theme/tips.css';
+export { default as PlvTips } from '@polyv/polyv-ui/lib-admin/tips';

@@ -20,12 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import { DEFAULT_VIEWER_AVATAR } from '@/assets/constants/defaults';
-import { specialUserTypes } from '@/assets/constants/special-user-types';
+import { DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
 import { translate } from '@/assets/lang';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { getWatchCore } from '@/core/watch-sdk';
 import { useLangStore } from '@/store/use-lang-store';
-import { computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import { MemberAdditionalGroupTypes, MemberInfo } from './use-member-list';
 
 const { translateNick } = useLangStore();
@@ -46,8 +46,11 @@ function getDisplayMemberName(member: MemberInfo) {
   return displayMemberName;
 }
 
-const isSpecialUser = computed<boolean>(() => {
-  return specialUserTypes.includes(props.member.userType);
+const isSpecialUser = ref(false);
+
+onMounted(() => {
+  const watchCore = getWatchCore();
+  isSpecialUser.value = watchCore.user.isSpecialUserType(props.member.userType);
 });
 </script>
 

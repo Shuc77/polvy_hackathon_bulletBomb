@@ -4,6 +4,7 @@
     class="c-portrait-player-main"
     :class="{
       'c-portrait-player-main--none-live': noneLiveVisible,
+      'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
     }"
   >
     <div
@@ -28,6 +29,7 @@
     </div>
 
     <!-- 播放按钮 -->
+    <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
     <div
       v-if="normalPlayButtonVisible"
       class="c-portrait-player-main__play-button g-img-cover"
@@ -53,15 +55,18 @@ import { computed, unref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { useChannelStore } from '@/store/use-channel-store';
 import { LiveStatus, StreamType } from '@polyv/live-watch-sdk';
+import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 
 const channelStore = useChannelStore();
 
 const { playerContainer } = usePlayerMain({
-  initPlayerOptions: {
-    showController: false,
-    barrageEnabled: false,
-    banHeaderAdvertisement: true,
-    banPassword: true,
+  initPlayerOptions: () => {
+    return {
+      showController: false,
+      barrageEnabled: false,
+      banHeaderAdvertisement: true,
+      banPassword: true,
+    };
   },
 });
 
@@ -185,5 +190,11 @@ const allPlayerContainerStyle = computed<CSSProperties>(() => {
   height: 80px;
   background-image: url(../../common/player-play-button/imgs/play-btn-2.png);
   transform: translate(-50%, -50%);
+}
+
+.c-portrait-player-main--hide-loading {
+  .vcp-loading {
+    display: none !important;
+  }
 }
 </style>

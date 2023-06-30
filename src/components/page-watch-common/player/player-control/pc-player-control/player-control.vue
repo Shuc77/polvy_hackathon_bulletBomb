@@ -101,18 +101,24 @@
           <!-- 连麦信息 -->
           <connect-mic-setting v-if="isConnectMicing && mainScreen === MainScreenContent.Player" />
 
-          <!-- 弹幕开关 -->
-          <div
-            v-if="barrageBackstageEnabled"
-            class="c-pc-player-control__capsule c-pc-player-control__barrage-switch"
-            :class="{
-              'c-pc-player-control__barrage-switch--closed': !barrageShow,
-            }"
-            :data-tips="barrageShow ? $lang('player.closeBarrage') : $lang('player.openBarrage')"
-            @click="toToggleBarrageShow"
-          >
-            <div class="c-pc-player-control__capsule__content">{{ $lang('player.barrage') }}</div>
-          </div>
+          <!-- 弹幕相关设置 -->
+          <template v-if="barrageSetting.barrageEnabled">
+            <!-- 弹幕开关 -->
+            <pc-origin-icon-barrage-on
+              v-if="barrageShow"
+              class="c-pc-player-control__button"
+              :data-tips="$lang('player.closeBarrage')"
+              @click="toToggleBarrageShow"
+            />
+            <pc-origin-icon-barrage-off
+              v-else
+              class="c-pc-player-control__button"
+              :data-tips="$lang('player.openBarrage')"
+              @click="toToggleBarrageShow"
+            />
+            <!-- 弹幕设置 -->
+            <pc-barrage-setting v-show="barrageSpeedButtonVisible" />
+          </template>
 
           <!-- 倍速设置 -->
           <rate-setting v-if="rateSettingVisible" />
@@ -150,34 +156,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
-import { formatSeconds } from '@utils-ts/date';
 import SliderBar from '@/components/common-base/slider-bar/slider-bar.vue';
 import { PcIconClose } from '@/components/component-icons/pc/map';
+import { formatSeconds } from '@utils-ts/date';
+import { ref } from 'vue';
+import ConnectMicSetting from './connect-mic-setting.vue';
+import PcBarrageSetting from './pc-barrage-setting.vue';
+import PlayerSetting from './player-setting.vue';
 import RateSetting from './rate-setting.vue';
 import VolumeSetting from './volume-setting.vue';
-import PlayerSetting from './player-setting.vue';
-import ConnectMicSetting from './connect-mic-setting.vue';
 
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
-import { PlayStatus, MainScreenContent } from '@polyv/live-watch-sdk';
+import { MainScreenContent, PlayStatus } from '@polyv/live-watch-sdk';
 
-import { usePlayerStore } from '@/store/use-player-store';
-import { useLayoutStore } from '@/store/use-layout-store';
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { usePlayerStore } from '@/store/use-player-store';
 
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import {
+  PcOriginIconBarrageOff,
+  PcOriginIconBarrageOn,
+} from '@/components/component-icons/pc-origin/map';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
-import { appEvents, useEventBusListener } from '@/app/app-events';
 
 const playerControlUI = ref<HTMLDivElement>();
 collectPlayerKeyboardEffectElements(playerControlUI);
 
-const { playStatus, barrageBackstageEnabled, barrageShow, currentTime, durationTime } =
+const { playStatus, barrageSetting, barrageShow, currentTime, durationTime } =
   storeDefinitionToRefs(usePlayerStore);
 
 const layoutStore = useLayoutStore();
@@ -201,6 +212,7 @@ const {
   switchScreenButtonVisible,
   currentTimeText,
   durationTimeText,
+  barrageSpeedButtonVisible,
 } = usePlayerControl();
 
 const { visible: manualTipsVisible, close: closeManualTips } = useSimpleVisible(true);
@@ -345,17 +357,20 @@ $--player-control-button-icon-size: 24px !default;
 
 .c-pc-player-control__button {
   position: relative;
+  display: flex;
   flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
   width: $--player-control-button-size;
   height: $--player-control-button-size;
+  font-size: $--player-control-button-icon-size;
   cursor: pointer;
   background-repeat: no-repeat;
   background-position: center;
   background-size: $--player-control-button-icon-size $--player-control-button-icon-size;
 }
 
-.c-pc-player-control__button[data-tips],
-.c-pc-player-control__barrage-switch[data-tips] {
+.c-pc-player-control__button[data-tips] {
   position: relative;
   &::after {
     position: absolute;
@@ -419,6 +434,7 @@ $--player-control-button-icon-size: 24px !default;
   align-items: center;
   height: $--player-control-button-size;
   margin-right: 12px;
+  margin-left: 12px;
 }
 .c-pc-player-control__capsule__content {
   box-sizing: border-box;
@@ -482,23 +498,6 @@ $--player-control-button-icon-size: 24px !default;
   .c-pc-player-control__select-panel {
     pointer-events: initial;
     opacity: 1;
-  }
-}
-
-.c-pc-player-control__barrage-switch {
-  .c-pc-player-control__capsule__content {
-    &::before {
-      width: 10px;
-      height: 10px;
-      margin-right: 4px;
-      content: '';
-      background-image: url(./imgs/pc-player-ui-barrage-open.png);
-      background-size: 100% 100%;
-    }
-  }
-
-  &.c-pc-player-control__barrage-switch--closed .c-pc-player-control__capsule__content::before {
-    background-image: url(./imgs/pc-player-ui-barrage-close.png);
   }
 }
 

@@ -10,21 +10,21 @@ const interactAppEntrance = isMobile ? 'entranceMobile' : 'entrancePc';
 /** 根据观看页 SDK 环境获取互动 UI 层对应环境的配置 */
 function getIarUIConfigByWatchSdkEnv() {
   const watchCore = getWatchCore();
-  const env = watchCore.getSdkLoaderEnv();
+  const env = WATCH_SDK_ENV;
   const domainInfo = watchCore.domain.getDomainInfo();
 
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20230413',
+      version: 'rc-20230615',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20230413',
+      version: 'rc-20230615',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'beta-20230413',
+      version: 'beta-20230615',
     },
   };
 
@@ -44,7 +44,7 @@ let iarUILoader: Promise<PolyvIRSceneType> | undefined;
 /**
  * 加载互动功能 UI
  */
-export function loadInteractiveReceiveUI(): Promise<PolyvIRSceneType> {
+export function loadIarUI(): Promise<PolyvIRSceneType> {
   if (window.PolyvIRScene) {
     return Promise.resolve(window.PolyvIRScene);
   }

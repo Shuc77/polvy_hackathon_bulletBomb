@@ -3,8 +3,7 @@ import { translate } from '@/assets/lang';
 import { toast } from '@/hooks/components/use-toast';
 import { getWatchCore } from '@/core/watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
-import { useSendRedpackStore } from '@/store/use-send-redpack-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useRedpackStore } from '@/store/use-redpack-store';
 import { computed, reactive, unref } from 'vue';
 import { SubmitSendRedpackParams, WatchDomainPayType } from '@polyv/live-watch-sdk';
 import { usePolyvWatchDomain } from '@/hooks/platform/use-polyv-watch-domain';
@@ -27,8 +26,9 @@ export const useSendRedpackHook = (
   const { polyvWatchDomainEnabled, skipWatchDomainPay } = usePolyvWatchDomain();
   const { chooseWXPay } = useWeixinPay();
   const watchCore = getWatchCore();
-  const { redPackViewerMaxAmount, redPackViewerMaxCount, redPackViewerMinAverage } =
-    storeDefinitionToRefs(useSendRedpackStore);
+  const redpackStore = useRedpackStore();
+  const { sendRedpackMaxAmount, sendRedpackMaxCount, sendRedpackMinAverage } =
+    redpackStore.sendRedpackConfig;
 
   /** "发送红包"表单数据 */
   const formData = reactive<SendRedpackFormData>({
@@ -56,17 +56,17 @@ export const useSendRedpackHook = (
             }
 
             // 最大值判断
-            if (val > unref(redPackViewerMaxAmount)) {
+            if (val > unref(sendRedpackMaxAmount)) {
               errorMsg = translate('redpack.single.amount.limit', {
-                amount: `${unref(redPackViewerMaxAmount)}`,
+                amount: `${unref(sendRedpackMaxAmount)}`,
               });
             }
 
             // 均分判断
             const average = getCurrentAverage();
-            if (formData.amount && formData.count && average < unref(redPackViewerMinAverage)) {
+            if (formData.amount && formData.count && average < unref(sendRedpackMinAverage)) {
               errorMsg = translate('redpack.equal.amount.limit', {
-                average: `${unref(redPackViewerMinAverage)}`,
+                average: `${unref(sendRedpackMinAverage)}`,
               });
             }
 
@@ -88,17 +88,17 @@ export const useSendRedpackHook = (
             }
 
             // 最大值判断
-            if (val > unref(redPackViewerMaxCount)) {
+            if (val > unref(sendRedpackMaxCount)) {
               errorMsg = translate('redpack.single.num.limit', {
-                count: `${unref(redPackViewerMaxCount)}`,
+                count: `${unref(sendRedpackMaxCount)}`,
               });
             }
 
             // 均分判断
             const average = getCurrentAverage();
-            if (formData.amount && formData.count && average < unref(redPackViewerMinAverage)) {
+            if (formData.amount && formData.count && average < unref(sendRedpackMinAverage)) {
               errorMsg = translate('redpack.equal.amount.limit', {
-                average: `${unref(redPackViewerMinAverage)}`,
+                average: `${unref(sendRedpackMinAverage)}`,
               });
             }
 

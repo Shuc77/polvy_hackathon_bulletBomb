@@ -16,6 +16,7 @@
             v-model="formData.amount"
             :input-title="$lang('redpack.send.sum')"
             :input-title-width="68"
+            :clearabled="false"
             :placeholder="$lang('redpack.send.sum.placeholder')"
             :suffix-text="$lang('redpack.send.sum.unit')"
           />
@@ -26,6 +27,7 @@
             v-model="formData.count"
             :input-title="$lang('redpack.send.num')"
             :input-title-width="68"
+            :clearabled="false"
             :placeholder="$lang('redpack.send.num.placeholder')"
             :suffix-text="$lang('redpack.send.num.unit')"
           />
@@ -36,6 +38,7 @@
             v-model="formData.greeting"
             :placeholder="$lang('redpack.blessing.placeholder')"
             :maxlength="20"
+            :clearabled="false"
             show-word-limit
           />
         </form-item>

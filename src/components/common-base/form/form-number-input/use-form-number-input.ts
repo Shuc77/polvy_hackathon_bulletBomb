@@ -48,10 +48,12 @@ export const useFormNumberInput = (options: {
     if (val === '') {
       return val;
     }
-    if (val > props.max) {
+
+    const _val = Number(val);
+    if (_val > props.max) {
       return props.max;
     }
-    if (val < props.min) {
+    if (_val < props.min) {
       return props.min;
     }
     return val;

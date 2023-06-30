@@ -1,5 +1,6 @@
 import { redirectToErrorVerify } from '@/hooks/core/use-error-verify';
 import { useChatStore } from '@/store/use-chat-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatEvents } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '../watch-sdk';
 
@@ -8,14 +9,30 @@ import { getWatchCore } from '../watch-sdk';
  */
 export function bindChatModuleEvents(): void {
   const watchCore = getWatchCore();
+  const watchAppStore = useWatchAppStore();
   const chatStore = useChatStore();
 
   // 聊天室连接失败
   watchCore.chat.eventEmitter.on(ChatEvents.ChatConnectFail, () => {
-    chatStore.connectError = true;
+    chatStore.$patch({
+      connectError: true,
+    });
+
+    if (!watchAppStore.watchPageInited) {
+      watchAppStore.$patch({
+        watchPageInited: true,
+      });
+    }
   });
 
-  watchCore.chat.eventEmitter.on(ChatEvents.ChatStoreInfoChange, () => {
+  // 聊天室重连成功
+  watchCore.chat.eventEmitter.on(ChatEvents.ChatReconnectSuccess, async () => {
+    chatStore.$patch({
+      connectError: false,
+    });
+  });
+
+  watchCore.chat.eventEmitter.on(ChatEvents.ChatInfoChange, () => {
     chatStore.syncChatStore();
   });
 
@@ -25,9 +42,18 @@ export function bindChatModuleEvents(): void {
   });
 
   // 点赞数修改
-  watchCore.chat.eventEmitter.on(ChatEvents.ChatLikeCountChange, data => {
+  watchCore.chat.eventEmitter.on(ChatEvents.ChatLikeCountChange, () => {
+    const realtimeLikes = watchCore.chat.getRealtimeLikes();
     chatStore.$patch({
-      realtimeLikes: data.realtimeLikes,
+      realtimeLikes,
+    });
+  });
+
+  // 在线人数修改
+  watchCore.chat.eventEmitter.on(ChatEvents.OnlineUserCountChange, () => {
+    const onlineUserCount = watchCore.chat.getOnlineUserCount();
+    chatStore.$patch({
+      onlineUserCount,
     });
   });
 }

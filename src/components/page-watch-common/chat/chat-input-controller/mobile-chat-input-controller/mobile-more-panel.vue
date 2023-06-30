@@ -3,7 +3,7 @@
   <ul class="c-mobile-more-panel pws-mobile-more-panel">
     <!-- 只看主持人 -->
     <more-item
-      v-if="!filterManagerMsgEnabled"
+      v-if="onlySpecialMsgWidgetVisible"
       :icon="onlySpecialMsg ? 'look-all' : 'only-special'"
       :text="onlySpecialMsg ? $lang('chat.lookAll') : $lang('chat.onlyHost')"
       @click="onClickOnlySpecialMsg"
@@ -11,7 +11,7 @@
 
     <!-- 发送图片 -->
     <more-item
-      v-if="viewerSendImgEnabled"
+      v-if="chatSetting.viewerSendImgEnabled"
       icon="send-image"
       :text="$lang('chat.sendImage')"
       @click="onClickSendImage"
@@ -19,7 +19,7 @@
 
     <!-- 发红包 -->
     <more-item
-      v-if="!sendRedpackHidden"
+      v-if="sendRedpackVisible"
       icon="send-redpack"
       :text="$lang('redpack.name')"
       @click="onClickSendRedpack"
@@ -27,7 +27,7 @@
 
     <!-- 提现 -->
     <more-item
-      v-if="withdrawEnabled && isWeixin"
+      v-if="withdrawVisible"
       icon="withdraw"
       :text="$lang('withdraw.name')"
       @click="onClickWithdraw"
@@ -84,7 +84,7 @@
 
     <!-- 投诉反馈 -->
     <more-item
-      v-if="watchFeedbackEnabled"
+      v-if="interactSetting.watchFeedbackEnabled"
       icon="feedback"
       :text="$lang('interact.feedBack.title')"
       @click="onClickFeedback"
@@ -103,21 +103,15 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useLangStore } from '@/store/use-lang-store';
-import { useSendRedpackStore } from '@/store/use-send-redpack-store';
-import { useWithdraw } from '@/components/page-watch-common/withdraw/use-withdraw';
-import { useScoreStore } from '@/store/use-score-store';
-import { isWeixin } from '@/assets/utils/browser';
+import { useRedpackStore } from '@/store/use-redpack-store';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
 });
 
-const {
-  announcementFunctionVisible,
-  watchFeedbackEnabled,
-  lotteryWinRecords,
-  hasNotReceivedLottery,
-} = storeDefinitionToRefs(useInteractReceiveStore);
+const { announcementFunctionVisible, interactSetting, lotteryWinRecords, hasNotReceivedLottery } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
@@ -126,16 +120,14 @@ const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
 const { toggleDonateAnimationVisible } = donateStore;
 
 const chatStore = useChatStore();
-const { onlySpecialMsg, filterManagerMsgEnabled, viewerSendImgEnabled } = storeToRefs(chatStore);
+const { onlySpecialMsg, chatSetting, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 const { toggleOnlySpecialMsg } = chatStore;
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
-const { sendRedpackHidden } = storeDefinitionToRefs(useSendRedpackStore);
+const { sendRedpackVisible, scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
 
-const { withdrawEnabled } = useWithdraw();
-
-const { scoreRedpackEnabled } = storeDefinitionToRefs(useScoreStore);
+const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 /** 关闭更多 */
 function closeMore() {

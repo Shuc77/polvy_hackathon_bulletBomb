@@ -23,7 +23,7 @@
           <pc-status-tag class="c-pc-basic-info__main__status" />
           <!-- 无延迟标签 -->
           <label
-            v-if="isLowLatency"
+            v-if="isLowLatency || isConnectMicing"
             class="c-pc-basic-info__main__low-latency g-img-cover"
           ></label>
         </h1>
@@ -61,6 +61,16 @@
         </div>
 
         <div style="margin-right: 24px; margin-left: auto"></div>
+
+        <!-- 举报反馈 -->
+        <div
+          v-if="interactSetting.watchFeedbackEnabled"
+          class="c-pc-basic-info__main__bottom__feed-back"
+          @click="onClickFeedback"
+        >
+          <pc-icon-feedback class="c-pc-basic-info__main__bottom__feed-back__icon" />
+          {{ $lang('interact.feedBack.title') }}
+        </div>
 
         <!-- 分享 -->
         <div
@@ -104,7 +114,7 @@ import { shortNumber } from '@/assets/utils/number';
 import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
 import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
-import { PcIconShare, PcIconPeople } from '@/components/component-icons/pc/map';
+import { PcIconShare, PcIconPeople, PcIconFeedback } from '@/components/component-icons/pc/map';
 import { usePopper } from '@/hooks/components/use-popper';
 
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -112,6 +122,10 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { useShareStore } from '@/store/use-share-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { eventBus, appEvents } from '@/app/app-events';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
 const {
   referenceRef: publisherReferenceRef,
@@ -131,14 +145,24 @@ const {
   arrow: true,
 });
 
-const { channelCoverImg, channelTitle, channelPublisher, pageViewCount, pvShowEnabled } =
+const { channelTitle, channelPublisher, pageViewCount, pvShowEnabled } =
   storeDefinitionToRefs(useChannelInfoStore);
 
+const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
+
 const { isLowLatency } = storeDefinitionToRefs(usePlayerStore);
+
+const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
 const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
+
+const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+
+function onClickFeedback() {
+  eventBus.$emit(appEvents.interaction.OpenFeedBack, true);
+}
 </script>
 
 <style lang="scss">
@@ -233,18 +257,38 @@ $--basic-logo-size: 50px;
   box-shadow: 0 0 12px 0 rgba(#000, 0.1);
 }
 
+.c-pc-basic-info__main__bottom__feed-back {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin-right: 28px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.c-pc-basic-info__main__bottom__feed-back__icon {
+  display: flex;
+  margin-right: 6px;
+  font-size: 18px;
+}
+
 .c-pc-basic-info__main__bottom__share-wrap {
-  margin-right: 60px;
+  margin-right: 44px;
 }
 .c-pc-basic-info__main__bottom__share {
   display: flex;
   align-items: center;
+  height: 20px;
   line-height: 20px;
   white-space: nowrap;
 }
+
 .c-pc-basic-info__main__bottom__share__icon {
   display: flex;
   margin-right: 6px;
   font-size: 20px !important;
+}
+
+.c-pc-basic-info__main__bottom__lang-switch {
+  height: 20px;
 }
 </style>

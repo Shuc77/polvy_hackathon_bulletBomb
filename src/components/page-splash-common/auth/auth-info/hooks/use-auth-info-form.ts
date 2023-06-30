@@ -77,12 +77,20 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
   /** 表单字段前缀 */
   const fieldPrefix = 'propValue' as const;
 
+  /**
+   * 通过索引生成表单字段
+   * @param index 索引，从 0 开始
+   */
+  function generateFormField(index: number): AuthInfoPropValKey {
+    return `${fieldPrefix}${index + 1}`;
+  }
+
   function generateFromData(): AuthInfoPropValType & BasicFormData {
     function getInitFormData() {
       const data: AuthInfoPropValType = {};
 
       unref(authInfoFields).forEach((option, index) => {
-        data[`${fieldPrefix}${index + 1}`] = '';
+        data[generateFormField(index)] = '';
       });
 
       return data;
@@ -131,7 +139,7 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
 
     unref(authInfoFields).forEach((option, index) => {
       const type = option.type;
-      const field = `${fieldPrefix}${index + 1}` as AuthInfoPropValKey;
+      const field = generateFormField(index);
 
       switch (type) {
         case AuthInfoType.Name:
@@ -201,7 +209,21 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
 
   async function submitAuth() {
     const watchCore = getWatchCore();
-    const result = await watchCore.auth.verifyInfoAuth(formData);
+
+    const formValues: string[] = [];
+    unref(authInfoFields).forEach((option, index) => {
+      const field = generateFormField(index);
+      if (typeof formData[field] !== 'undefined') {
+        formValues.push(formData[field]);
+      }
+    });
+
+    const result = await watchCore.auth.verifyInfoAuth({
+      phoneNumber: formData.phoneNumber,
+      areaCode: formData.areaCode,
+      smsCode: formData.smsCode,
+      formValues,
+    });
 
     if (result.success) {
       handleAuthVerifySuccess(result);
@@ -246,5 +268,6 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
     onClickCancel,
     submitAuth,
     onClickLogined,
+    generateFormField,
   };
 };

@@ -3,10 +3,10 @@
   <div class="c-pc-player-cover-img">
     <!-- 暖场图/播放器封面图 -->
     <div
-      v-show="showWarmUpImg && liveStatus === LiveStatus.Live"
+      v-show="showWarmUpImg"
       class="c-pc-player-cover-img__warm-up-img g-img-cover"
       :style="{
-        backgroundImage: `url(${warmUpImg})`,
+        backgroundImage: `url(${warmUpSetting.warmUpImg})`,
       }"
     ></div>
     <!-- 音频直播下占位图-直播封面图 -->
@@ -19,22 +19,17 @@
 </template>
 
 <script setup lang="ts">
-import { LiveStatus } from '@polyv/live-watch-sdk';
-
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useChannelStore } from '@/store/use-channel-store';
 
 const {
   showWarmUpImg,
-  warmUpImg,
+  warmUpSetting,
 
   showAudioLivePlaceholder,
 } = storeDefinitionToRefs(usePlayerStore);
-
-const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 </script>
 
 <style lang="scss">

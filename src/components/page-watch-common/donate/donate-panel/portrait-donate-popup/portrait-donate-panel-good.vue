@@ -2,7 +2,7 @@
 <template>
   <div class="c-portrait-donate-panel-good">
     <div
-      v-if="donatePointEnabled"
+      v-if="showDonatePointGood"
       class="c-portrait-donate-panel-good__point"
     >
       <span>{{ $lang('donate.point.myPoint') }}</span>
@@ -83,7 +83,7 @@
 
     <!-- 数量选择 -->
     <div
-      v-if="donatePointEnabled"
+      v-if="showDonatePointGood"
       class="c-portrait-donate-panel-good__count-choice"
     >
       <div
@@ -126,7 +126,7 @@ const emit = defineEmits({
   'donate-success': emitFunc<void>(),
 });
 
-const { donatePointEnabled, donateGoodEnabled, donateContentPages } =
+const { showDonatePointGood, showDonateCashGood, donateContentPages } =
   storeDefinitionToRefs(useDonateStore);
 
 const { surplusPoint, selectedGood, setSelectedGood, quickCounts, donateCount, donateGood } =
@@ -139,7 +139,7 @@ function onClickItem(good: DonateGoodInfo) {
   setSelectedGood(good);
 
   // 现金礼物打赏下直接打赏
-  if (unref(donateGoodEnabled)) {
+  if (unref(showDonateCashGood)) {
     donateGood();
   }
 }
