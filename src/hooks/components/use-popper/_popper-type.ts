@@ -35,6 +35,10 @@ export interface UsePopperOptions {
   outSideClickDelayHide?: boolean | Ref<boolean>;
   /** 弹层宽度跟随触发节点，默认：false */
   followReferenceWidth?: boolean | Ref<boolean>;
+  /** 是否插入到 body 中，默认：true */
+  appendToBody?: boolean;
+  /** 渲染到某个元素中(Dom节点选择器) */
+  mountEl?: string;
 }
 
 export interface PopperVisibleResult {

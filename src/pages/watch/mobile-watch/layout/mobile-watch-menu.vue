@@ -137,7 +137,11 @@
           :name="menu.menuId"
           lazy-load
         >
-          <mobile-iframe-render :src="menu.content" />
+          <mobile-promote-external-link
+            :src="menu.content"
+            :open-type="menu.iframeOpenType"
+            :is-active="mobileMenuCurrentName === menu.menuId"
+          />
         </mobile-menu-tab-pane>
 
         <!-- 投票 -->
@@ -221,7 +225,6 @@
 </template>
 
 <script setup lang="ts">
-import MobileIframeRender from '@/components/common-base/iframe-render/mobile-iframe-render.vue';
 import MobileMenuTabPane from '@/components/common-base/tabs/mobile-menu-tabs/mobile-menu-tab-pane.vue';
 import MobileMenuTabs from '@/components/common-base/tabs/mobile-menu-tabs/mobile-menu-tabs.vue';
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
@@ -238,6 +241,7 @@ import MobileProductBubble from '@/components/page-watch-common/interactive-rece
 import MobileProductList from '@/components/page-watch-common/interactive-receive/product/mobile-product-list.vue';
 import MobileQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/mobile-question-answer.vue';
 import MobileTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/mobile-tuwen-live.vue';
+import MobilePromoteExternalLink from '@/components/page-watch-common/promote-external-link/mobile-promote-external-link.vue';
 import MobileVotePanel from '@/components/page-watch-common/interactive-receive/vote/mobile-vote-panel.vue';
 import MobileInviteRank from '@/components/page-watch-common/invite/mobile-invite-rank/mobile-invite-rank.vue';
 import MobileMemberList from '@/components/page-watch-common/member-list/member-list.vue';

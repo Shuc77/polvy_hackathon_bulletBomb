@@ -140,6 +140,7 @@ export function useWatchApp() {
       zone: paramGetter.zone(),
       vid: paramGetter.vid(),
       playbackOrigin: paramGetter.playbackType(),
+      ipPlay: paramGetter.ipPlay() === '1',
       userInfo: {
         userId: paramGetter.viewerid(),
         nick: paramGetter.nickname() || paramGetter.name(),

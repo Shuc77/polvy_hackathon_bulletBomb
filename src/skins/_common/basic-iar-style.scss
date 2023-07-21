@@ -14,7 +14,9 @@
 
   // --------- 按钮 --------- //
   .pws-iar-primary-button {
+    color: map.get($--skin-configs, 'primary-button:text-color') !important;
     background-color: map.get($--skin-configs, 'primary-button:bg-color') !important;
+    border: none !important;
     &.is-disabled {
       opacity: 0.5;
     }

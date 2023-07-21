@@ -1,6 +1,7 @@
-import { watch } from 'vue';
+import { watch, onBeforeMount } from 'vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useWeixinConfig } from '@/app/_hooks/use-weixin-setup';
 
 export const useMainEnter = (
   options: {
@@ -26,4 +27,8 @@ export const useMainEnter = (
       immediate: true,
     },
   );
+
+  onBeforeMount(() => {
+    useWeixinConfig();
+  });
 };

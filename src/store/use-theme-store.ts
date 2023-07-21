@@ -106,10 +106,10 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     const themeSetting = watchCore.channel.getThemeSetting();
 
     pageSkin.value = themeSetting.pageSkin;
-    browserFavIcon.value = themeSetting.browserFavIcon ?? DEFAULT_BROWSER_ICON;
+    browserFavIcon.value = themeSetting.browserFavIcon || DEFAULT_BROWSER_ICON;
     channelCoverImg.value = themeSetting.channelCoverImg;
-    splashImg.value = themeSetting.splashImg ?? DEFAULT_SPLASH_IMG;
-    mobileSplashLargeImg.value = themeSetting.mobileSplashLargeImg ?? DEFAULT_SPLASH_FULL_IMG;
+    splashImg.value = themeSetting.splashImg || DEFAULT_SPLASH_IMG;
+    mobileSplashLargeImg.value = themeSetting.mobileSplashLargeImg || DEFAULT_SPLASH_FULL_IMG;
     pcWatchBackgroundImage.value = themeSetting.pcWatchBackgroundImage;
     mobileChatBackgroundImage.value = themeSetting.mobileChatBackgroundImage;
     mobileChatBackgroundImageAmbiguity.value = themeSetting.mobileChatBackgroundImageAmbiguity;

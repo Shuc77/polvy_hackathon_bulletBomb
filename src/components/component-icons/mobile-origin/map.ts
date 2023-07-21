@@ -5,3 +5,4 @@
 
 export { default as MobileOriginIconBarrageOff } from './icons/barrage-off';
 export { default as MobileOriginIconBarrageOn } from './icons/barrage-on';
+export { default as MobileOriginIconReturnLive } from './icons/return-live';

@@ -44,6 +44,7 @@ export const useRedpaperMsg = () => {
       [RedpackType.ScoreOfficialNormal]: translate('redpack.type.normal'),
       [RedpackType.ScorePassword]: translate('redpack.type.password'),
       [RedpackType.ScoreRain]: translate('redpack.type.rain'),
+      [RedpackType.Question]: translate('redpack.type.question'),
       [RedpackType.AlipayPasswordOfficialNormal]: translate('redpack.type.alipayPassword'),
     };
 

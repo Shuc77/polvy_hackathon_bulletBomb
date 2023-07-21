@@ -70,6 +70,7 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { CSSProperties } from 'vue/types/jsx';
 import { emitFunc, updateModelEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
+import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types';
 
 /**
  * 废除参数：custom、modalStyle、closeOnClickModal
@@ -412,8 +413,9 @@ function checkPosition() {
   }
 }
 
-defineExpose({
+defineExpose<DialogInstance>({
   resetPosition,
+  setMountEl,
 });
 </script>
 

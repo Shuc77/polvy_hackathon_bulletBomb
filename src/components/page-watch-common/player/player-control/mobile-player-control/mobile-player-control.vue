@@ -21,7 +21,7 @@
       <div
         v-show="playerControlVisible"
         class="c-mobile-player-control__main"
-        @click.stop="startHideTimer"
+        @click.stop="startHidePlayerControlTimer"
       >
         <div class="c-mobile-player-control__inner">
           <!-- 左侧按钮 -->
@@ -43,6 +43,19 @@
               class="c-mobile-player-control__button c-mobile-player-control__button--refresh"
               @click="toRefresh"
             ></div>
+
+            <!-- 直播时移时间进度 -->
+            <div
+              v-if="supportLiveTimeShift"
+              class="c-mobile-player-control__time"
+            >
+              {{ currentTimeText }}
+            </div>
+          </div>
+
+          <div class="c-mobile-player-control__inner__progress-bar">
+            <!-- 直播时移进度条 -->
+            <mobile-player-progress-bar v-if="supportLiveTimeShift" />
           </div>
 
           <!-- 右侧按钮 -->
@@ -85,24 +98,30 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, useEventBusListener } from '@/app/app-events';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { onBeforeUnmount, onMounted } from 'vue';
 
 import {
   MobileOriginIconBarrageOff,
   MobileOriginIconBarrageOn,
 } from '@/components/component-icons/mobile-origin/map';
 import { MobileIconBarrageSetting } from '@/components/component-icons/mobile/map';
+import MobilePlayerProgressBar from '@/components/page-watch-common/player/player-progress-bar/mobile-player-progress-bar.vue';
+
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { PlayStatus } from '@polyv/live-watch-sdk';
-import { usePlayerAction } from '../../hooks/use-player-action';
-import { usePlayerControl } from '../../hooks/use-player-control';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { usePlayerControlVisible } from './_hooks/_user-player-control-visible';
 
-const playerStore = usePlayerStore();
-const { playStatus, playerControlVisible, barrageSetting, barrageShow, barrageSettingVisible } =
-  storeDefinitionToRefs(usePlayerStore);
+const {
+  playStatus,
+  playerControlVisible,
+  barrageSetting,
+  barrageShow,
+  barrageSettingVisible,
+  supportLiveTimeShift,
+} = storeDefinitionToRefs(usePlayerStore);
 
 const { isHorizontalScreenOrientation, mobilePlayerIsPageFullscreen } =
   storeDefinitionToRefs(useLayoutStore);
@@ -117,64 +136,13 @@ const {
 
 const {
   rtcPlayerPauseTipVisible,
+  currentTimeText,
 
   playButtonVisible,
   refreshButtonVisible,
 } = usePlayerControl();
 
-/** 显示控制栏 */
-function openControl() {
-  playerStore.$patch({
-    playerControlVisible: true,
-  });
-  startHideTimer();
-}
-
-/** 隐藏控制栏 */
-function closeControl() {
-  playerStore.$patch({
-    playerControlVisible: false,
-  });
-}
-
-/** 切换控制栏 */
-function toggleControl() {
-  if (playerStore.playerControlVisible) {
-    closeControl();
-  } else {
-    openControl();
-  }
-}
-
-let hideTimer: number | undefined;
-
-/** 启动隐藏定时器 */
-function startHideTimer() {
-  clearHideTimer();
-  hideTimer = window.setTimeout(() => {
-    closeControl();
-  }, 3 * 1000);
-}
-
-/** 清除隐藏定时器 */
-function clearHideTimer() {
-  if (hideTimer) {
-    clearTimeout(hideTimer);
-    hideTimer = undefined;
-  }
-}
-
-useEventBusListener(appEvents.player.ClickMobilePlayerContainer, () => {
-  toggleControl();
-});
-
-onMounted(() => {
-  openControl();
-});
-
-onBeforeUnmount(() => {
-  clearHideTimer();
-});
+const { startHidePlayerControlTimer } = usePlayerControlVisible();
 </script>
 
 <style lang="scss">
@@ -260,6 +228,17 @@ onBeforeUnmount(() => {
   font-size: 32px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+}
+
+.c-mobile-player-control__time {
+  margin-left: 12px;
+  font-size: 14px;
+  color: $--color-white;
+}
+
+.c-mobile-player-control__inner__progress-bar {
+  flex: 1;
+  margin: 0 8px;
 }
 
 .c-mobile-player-control__button--play {

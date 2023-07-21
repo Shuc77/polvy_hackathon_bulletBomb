@@ -45,25 +45,10 @@
     <div class="c-pc-player-control__main">
       <div class="c-pc-player-control__content">
         <!-- 进度条 -->
-        <div
-          v-if="playbackProgressVisible"
+        <pc-player-progress-bar
+          v-if="playerProgressVisible"
           class="c-pc-player-control__progress"
-        >
-          <slider-bar
-            wrap-slider-track-color="rgba(255, 255, 255, 0.3)"
-            :slider-track-size="4"
-            slider-track-radius-hide
-            hover-to-zoom
-            :max="durationTime"
-            :value="currentTime"
-            tooltips
-            @drag-change="toSeekVideo"
-          >
-            <template #tooltips="{ content }">
-              {{ formatSeconds(content, { segments: 3 }) }}
-            </template>
-          </slider-bar>
-        </div>
+        />
 
         <!-- 左侧按钮 -->
         <div class="c-pc-player-control__content__left">
@@ -87,6 +72,14 @@
             @click="toRefresh"
           ></div>
 
+          <!-- 直播时移时间进度 -->
+          <div
+            v-if="supportLiveTimeShift"
+            class="c-pc-player-control__time"
+          >
+            {{ currentTimeText }}
+          </div>
+
           <!-- 回放时间进度 -->
           <div
             v-if="playbackTimeVisible"
@@ -94,6 +87,29 @@
           >
             {{ currentTimeText }} / {{ durationTimeText }}
           </div>
+
+          <!-- 直播时移 -->
+          <div
+            v-if="timeShiftReturnLiveButtonVisible"
+            class="c-pc-player-control__time-shift-container"
+          >
+            <!-- 返回直播 -->
+            <normal-button
+              class="c-pc-player-control__time-shift-container__returnLive"
+              :type="ButtonType.Custom"
+              :size="ButtonSize.XMini"
+              :text="$lang('player.timeShift.return.live')"
+              :icon="PcOriginIconReturnLive"
+              icon-class="c-pc-player-control__time-shift-container__returnLive__icon"
+              @click="toReturnLive"
+            />
+          </div>
+
+          <!-- 精彩看点 -->
+          <pc-player-time-axis-mark-container
+            class="c-pc-player-control__time-axis-mark-container"
+            v-if="supportTimeAxisMark"
+          />
         </div>
 
         <!-- 右侧按钮 -->
@@ -157,7 +173,6 @@
 
 <script setup lang="ts">
 import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
-import SliderBar from '@/components/common-base/slider-bar/slider-bar.vue';
 import { PcIconClose } from '@/components/component-icons/pc/map';
 import { formatSeconds } from '@utils-ts/date';
 import { ref } from 'vue';
@@ -166,6 +181,14 @@ import PcBarrageSetting from './pc-barrage-setting.vue';
 import PlayerSetting from './player-setting.vue';
 import RateSetting from './rate-setting.vue';
 import VolumeSetting from './volume-setting.vue';
+import PcPlayerProgressBar from '@/components/page-watch-common/player/player-progress-bar/pc-player-progress-bar.vue';
+import PcPlayerTimeAxisMarkContainer from '@/components/page-watch-common/player/player-time-axis-mark/pc-player-time-axis-mark-container.vue';
+import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
+import {
+  PcOriginIconReturnLive,
+  PcOriginIconBarrageOff,
+  PcOriginIconBarrageOn,
+} from '@/components/component-icons/pc-origin/map';
 
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
@@ -177,10 +200,6 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import {
-  PcOriginIconBarrageOff,
-  PcOriginIconBarrageOn,
-} from '@/components/component-icons/pc-origin/map';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
@@ -188,7 +207,7 @@ import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-com
 const playerControlUI = ref<HTMLDivElement>();
 collectPlayerKeyboardEffectElements(playerControlUI);
 
-const { playStatus, barrageSetting, barrageShow, currentTime, durationTime } =
+const { playStatus, barrageSetting, barrageShow, supportTimeAxisMark, supportLiveTimeShift } =
   storeDefinitionToRefs(usePlayerStore);
 
 const layoutStore = useLayoutStore();
@@ -197,11 +216,11 @@ const { toggleMainScreen } = layoutStore;
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
-const { toTogglePlay, toRefresh, toToggleBarrageShow, toSeekVideo, toRestart } = usePlayerAction();
+const { toTogglePlay, toRefresh, toToggleBarrageShow, toRestart, toReturnLive } = usePlayerAction();
 
 const {
   playbackTimeVisible,
-  playbackProgressVisible,
+  playerProgressVisible,
   playButtonTips,
   playButtonVisible,
   refreshButtonVisible,
@@ -213,6 +232,7 @@ const {
   currentTimeText,
   durationTimeText,
   barrageSpeedButtonVisible,
+  timeShiftReturnLiveButtonVisible,
 } = usePlayerControl();
 
 const { visible: manualTipsVisible, close: closeManualTips } = useSimpleVisible(true);
@@ -337,7 +357,6 @@ $--player-control-button-icon-size: 24px !default;
   position: absolute;
   top: -16px;
   left: 0;
-  width: 100%;
 }
 
 .c-pc-player-control__content__left {
@@ -426,6 +445,30 @@ $--player-control-button-icon-size: 24px !default;
   font-size: 14px;
   line-height: $--player-control-button-size;
   color: $--color-white;
+}
+
+.c-pc-player-control__time-shift-container {
+  display: inline-flex;
+  align-items: center;
+  height: $--player-control-button-size;
+  margin-left: 12px;
+}
+
+.c-pc-player-control__time-shift-container__returnLive {
+  padding: 0 10px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.c-pc-player-control__time-shift-container__returnLive__icon {
+  margin-top: -2px;
+  font-size: 14px;
+}
+
+.c-pc-player-control__time-axis-mark-container {
+  height: $--player-control-button-size;
+  margin-left: 12px;
 }
 
 .c-pc-player-control__capsule {

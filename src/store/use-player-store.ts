@@ -14,6 +14,7 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
+import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
 
 export interface PlayerStoreState {
@@ -85,6 +86,10 @@ export interface PlayerStoreState {
   playerControlVisible: Ref<boolean>;
   /** 是否为音频播放器模式。注意，目前只有竖屏在使用 */
   isAudioPlayerMode: Ref<boolean>;
+  /** 是否支持时间轴标记 */
+  supportTimeAxisMark: Ref<boolean>;
+  /** 是否支持直播时移 */
+  supportLiveTimeShift: Ref<boolean>;
 }
 
 export interface PlayerStoreAction {
@@ -101,6 +106,7 @@ export interface PlayerStore extends PlayerStoreState, PlayerStoreAction {}
 export const usePlayerStore = defineStore<'player', PlayerStore>('player', () => {
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
+  const layoutStore = useLayoutStore();
 
   /** 配置是否使用播放器 */
   const playerEnabled = ref(true);
@@ -291,6 +297,12 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 播放器控制栏是否显示 */
   const playerControlVisible = ref(false);
 
+  /** 是否支持时间轴标记 */
+  const supportTimeAxisMark = ref(false);
+
+  /** 是否支持直播时移 */
+  const supportLiveTimeShift = ref(false);
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = getWatchCore();
@@ -344,6 +356,19 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     delayTime.value = playerInfo.delayTime;
     playStatus.value = playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
+
+    /**
+     * 暂不支持三分屏场景和研讨会场景
+     * 暂不支持移动端竖屏
+     */
+    if (
+      !channelStore.isPptChannel &&
+      !channelStore.isSeminarChannel &&
+      !layoutStore.isPortraitWatchLayout
+    ) {
+      supportTimeAxisMark.value = playerInfo.supportTimeAxisMark;
+      supportLiveTimeShift.value = playerInfo.supportLiveTimeShift;
+    }
   }
 
   return {
@@ -388,6 +413,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     isPortraitResolutionRate,
     noneLiveVisible,
     playerControlVisible,
+
+    supportTimeAxisMark,
+    supportLiveTimeShift,
 
     syncPlayerStore,
     syncWarmUpSetting,

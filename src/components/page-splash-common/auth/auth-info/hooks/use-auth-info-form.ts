@@ -1,5 +1,5 @@
 import { translate } from '@/assets/lang';
-import { validateCnAndEn, validatePhoneNumber } from '@/assets/utils/validate';
+import { validateUserName, validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
 import { SelectOptionItem } from '@/components/common-base/form/form-select/types/form-select-types';
@@ -149,7 +149,7 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
               validator: () => {
                 const name = formData[field];
 
-                if (validateCnAndEn(name)) {
+                if (validateUserName(name)) {
                   return [];
                 }
 

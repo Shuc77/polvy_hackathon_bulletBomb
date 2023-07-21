@@ -91,6 +91,8 @@ export const usePlayerControl = () => {
 
   /** 是否显示刷新按钮 */
   const refreshButtonVisible = computed<boolean>(() => {
+    if (playerStore.supportLiveTimeShift) return false;
+
     return playerStore.supportRefresh;
   });
 
@@ -121,6 +123,8 @@ export const usePlayerControl = () => {
 
   /** 线路设置是否显示 */
   const lineSettingVisible = computed<boolean>(() => {
+    if (playerStore.supportLiveTimeShift) return false;
+
     return playerStore.lineCount > 1;
   });
 
@@ -141,6 +145,8 @@ export const usePlayerControl = () => {
 
   /** 清晰度设置是否显示 */
   const qualitySettingVisible = computed<boolean>(() => {
+    if (playerStore.supportLiveTimeShift) return false;
+
     return (
       playerStore.qualityLevels.length > 1 &&
       [LiveStatus.Live, LiveStatus.Playback].includes(channelStore.liveStatus) &&
@@ -222,9 +228,12 @@ export const usePlayerControl = () => {
     return docStore.canRenderDoc;
   });
 
-  /** 回放进度条是否显示 */
-  const playbackProgressVisible = computed<boolean>(() => {
-    return playbackStore.isPlaybacking && playerStore.durationTime !== 0;
+  /** 播放器进度条是否显示 */
+  const playerProgressVisible = computed<boolean>(() => {
+    /** 回放进度条是否显示 */
+    const playbackProgressVisible = playbackStore.isPlaybacking && playerStore.durationTime !== 0;
+
+    return playbackProgressVisible || playerStore.supportLiveTimeShift;
   });
 
   /** 回放时间是否显示 */
@@ -232,7 +241,7 @@ export const usePlayerControl = () => {
     return playbackStore.isPlaybacking;
   });
 
-  /** 回放时间文案 */
+  /** 当前播放时间文案 */
   const currentTimeText = computed(() => {
     return formatSeconds(playerStore.currentTime, { segments: 3 });
   });
@@ -272,6 +281,17 @@ export const usePlayerControl = () => {
     return playerStore.supportBarrageSpeed;
   });
 
+  /**
+   * 直播时移"返回直播"按钮是否显示
+   */
+  const timeShiftReturnLiveButtonVisible = computed(() => {
+    return (
+      playerStore.supportLiveTimeShift &&
+      channelStore.liveStatus === LiveStatus.Live &&
+      playerStore.currentTime !== playerStore.durationTime
+    );
+  });
+
   return {
     playButtonTips,
     playButtonVisible,
@@ -297,13 +317,15 @@ export const usePlayerControl = () => {
 
     playerSettingVisible,
     switchScreenButtonVisible,
-    playbackProgressVisible,
+    playerProgressVisible,
     playbackTimeVisible,
     currentTimeText,
     durationTimeText,
 
     playerModeSwitcherVisible,
     barrageSpeedButtonVisible,
+
+    timeShiftReturnLiveButtonVisible,
   };
 };
 

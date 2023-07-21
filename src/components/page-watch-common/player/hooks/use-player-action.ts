@@ -143,18 +143,17 @@ export const usePlayerAction = () => {
     toTryPlay();
   }
 
+  /** 返回直播 */
+  function toReturnLive() {
+    toSeekVideo(-1);
+  }
+
   /** 设置播放进度 */
   function toSeekVideo(time: number): void {
-    if (time < 0) {
-      time = 0;
-    }
     if (time > playerStore.durationTime) {
       time = playerStore.durationTime;
     }
     getWatchCore().player.seekVideo(time);
-    playerStore.$patch({
-      currentTime: time,
-    });
   }
 
   /**
@@ -199,7 +198,12 @@ export const usePlayerAction = () => {
     playerStore.$patch({
       isLowLatency,
     });
-    eventBus.$emit(appEvents.player.ResetUpPlayer);
+    layoutStore.$patch({
+      mobilePlayerIsPageFullscreen: false,
+    });
+    setTimeout(() => {
+      eventBus.$emit(appEvents.player.ResetUpPlayer);
+    }, 0);
   }
 
   return {
@@ -216,6 +220,7 @@ export const usePlayerAction = () => {
     toChangeLine,
     toChangeQualityLevel,
     toChangeRate,
+    toReturnLive,
     toSeekVideo,
     toForwardVideo,
     toBackOffVideo,
