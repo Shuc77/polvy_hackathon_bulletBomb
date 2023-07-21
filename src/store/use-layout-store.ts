@@ -154,7 +154,11 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
 
   /** 当前是页面全屏或者横屏 */
   const isPageFullscreenOrHorizontalScreen = computed(() => {
-    return unref(mobilePlayerIsPageFullscreen) || unref(isHorizontalScreenOrientation);
+    return (
+      unref(mobileNormalLatencyPlayerIsFullscreen) ||
+      unref(mobilePlayerIsPageFullscreen) ||
+      unref(isHorizontalScreenOrientation)
+    );
   });
 
   function syncLayoutStore() {

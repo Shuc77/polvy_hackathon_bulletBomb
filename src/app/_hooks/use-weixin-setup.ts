@@ -38,8 +38,14 @@ export const useWeixinSetup = async () => {
     await redirectWorkWeixinAuthorize();
     return true;
   }
+};
 
-  // 处理微信 js-sdk
+/**
+ * @hook 处理微信相关配置
+ * */
+export const useWeixinConfig = async () => {
+  const weixinStore = useWeixinStore();
+
   const { getWeixinSdk } = useWeixinSdk();
   const { configureWeixinShare } = useWeixinShare();
   if (weixinStore.weixinAuthorized || weixinStore.workWeixinAuthorized) {

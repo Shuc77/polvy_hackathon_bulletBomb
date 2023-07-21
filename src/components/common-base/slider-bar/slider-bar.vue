@@ -7,6 +7,8 @@
       'c-slide-bar--vertical': props.direction === 'vertical',
       'c-slide-bar--zoom': hoverToZoom,
     }"
+    @mouseover="setSliderBarHover(true)"
+    @mouseout="setSliderBarHover(false)"
     @mousedown.stop
     @mouseup.stop
     @touchstart.stop
@@ -25,6 +27,7 @@
       @touchcancel="onMouseUp"
       @touchend="onMouseUp"
     >
+      <!-- 插槽-tooltip -->
       <div
         v-if="tooltips"
         class="c-slide-bar__tips"
@@ -40,19 +43,28 @@
           >
         </div>
       </div>
+      <!-- 轨道外层 -->
       <div
         class="c-slide-bar__wrap-track"
         :style="wrapTrackStyle"
       >
+        <!-- 轨道内层 -->
         <div
           class="c-slide-bar__inner-track"
           :style="innerTrackStyle"
         ></div>
       </div>
+      <!-- 轨道点 -->
       <div
         class="c-slide-bar__dot"
         :style="sliderDotStyle"
       ></div>
+      <!-- 插槽-标记点 -->
+      <slot
+        name="markPoint"
+        :slider-bar-hover="sliderBarHover"
+        :slider-bar-container="containerRef"
+      ></slot>
     </div>
   </div>
 </template>
@@ -72,6 +84,8 @@ const {
   innerTrackStyle,
   sliderDotStyle,
   containerRef,
+  sliderBarHover,
+  setSliderBarHover,
   onMouseDown,
   onMouseUp,
   onTrackMouseMove,
@@ -166,16 +180,35 @@ const {
 }
 
 .c-slide-bar--zoom {
-  .c-slide-bar__container--dragging,
-  .c-slide-bar__container:hover {
-    .c-slide-bar__wrap-track {
-      zoom: 2.5;
+  &.c-slide-bar--vertical {
+    .c-slide-bar__container--dragging,
+    .c-slide-bar__container:hover {
+      .c-slide-bar__wrap-track {
+        transform: translate(-50%, -50%) scaleX(2.5);
+        transform-origin: 50%;
+      }
+      .c-slide-bar__dot {
+        transform: translate(-50%, -50%) scale(1.4);
+        transform-origin: 50%;
+      }
     }
-    .c-slide-bar__dot {
-      zoom: 1.4;
+  }
+
+  &.c-slide-bar--horizontal {
+    .c-slide-bar__container--dragging,
+    .c-slide-bar__container:hover {
+      .c-slide-bar__wrap-track {
+        transform: translate(-50%, -50%) scaleY(2.5);
+        transform-origin: 50%;
+      }
+      .c-slide-bar__dot {
+        transform: translate(-50%, -50%) scale(1.4);
+        transform-origin: 50%;
+      }
     }
   }
 }
+
 .c-slide-bar__container--dragging,
 .c-slide-bar__container:hover {
   .c-slide-bar__tips {

@@ -1,11 +1,13 @@
 <!-- @file PC 端公告弹层 -->
 <template>
   <pc-dialog
+    ref="dialogRef"
     class="c-pc-announcement-dialog"
     draggable
     :visible.sync="announcementVisible"
     :title="announcementTitle"
     :mask="false"
+    :mount-el="dialogMountEl"
     :position-computed-elem="PC_MAIN_PLAYER_SELECTOR"
     @closed="onCloseDialog"
   >
@@ -20,12 +22,20 @@
 </template>
 
 <script setup lang="ts">
-import { PC_MAIN_PLAYER_SELECTOR } from '@/assets/constants/selector';
+import { computed, ref, watch, nextTick } from 'vue';
+import {
+  PC_MAIN_PLAYER_SELECTOR,
+  PC_PLAYER_FULL_SCREEN_SELECTOR,
+} from '@/assets/constants/selector';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useAnnouncement } from './hooks/use-announcement';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types';
 
 const IarPcBulletin = getIarComponent('PcBulletin');
+// 弹层实例
+const dialogRef = ref<DialogInstance>();
 
 const {
   announcementRef,
@@ -37,4 +47,20 @@ const {
   onShowDetailFromSocket,
   onCloseDialog,
 } = useAnnouncement();
+const layoutStore = useLayoutStore();
+/** 弹层渲染节点 */
+const dialogMountEl = computed(() => {
+  return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : '';
+});
+
+watch(
+  () => layoutStore.isFullscreen,
+  () => {
+    nextTick(() => {
+      if (dialogRef.value) {
+        dialogRef.value.setMountEl();
+      }
+    });
+  },
+);
 </script>

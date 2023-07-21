@@ -4,10 +4,13 @@ import {
   useInteractReceiveStore,
 } from '@/store/use-interact-receive-store';
 
+// import { useCheckIn } from './use-check-in';
+
 /**
  * @hook 互动-签到入口
  */
 export const useCheckInEntrance = () => {
+  // const { isOldEntrance } = useCheckIn();
   const interactReceiveStore = useInteractReceiveStore();
 
   /** 问卷入口数据 */
@@ -26,7 +29,9 @@ export const useCheckInEntrance = () => {
 
   /** 移除签到二次入口 */
   const removeCheckInEntrance = () => {
+    // if (isOldEntrance.value) {
     interactReceiveStore.removeInteractiveEntrance(checkInEntranceData.type);
+    // }
   };
 
   return {

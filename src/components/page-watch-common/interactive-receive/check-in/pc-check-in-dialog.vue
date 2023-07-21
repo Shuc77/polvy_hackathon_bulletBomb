@@ -7,9 +7,11 @@
     :visible.sync="checkInVisible"
   >
     <iar-pc-check-in
+      ref="checkInRef"
       :check-in-sdk="checkInSdk"
       enable-sound-effects
       :mount-node="dialogMountEl"
+      @show-entrance="showEntrance"
       @to-show="setCheckInVisible(true)"
       @to-hide="setCheckInVisible(false)"
     />
@@ -28,7 +30,8 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 
 const IarPcCheckIn = getIarComponent('PcCheckIn');
 
-const { checkInSdk, checkInVisible, setCheckInVisible, checkInTitle } = useCheckIn();
+const { checkInSdk, checkInVisible, setCheckInVisible, checkInTitle, showEntrance, checkInRef } =
+  useCheckIn();
 
 const layoutStore = useLayoutStore();
 

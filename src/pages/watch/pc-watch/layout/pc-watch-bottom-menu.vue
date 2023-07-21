@@ -55,7 +55,11 @@
           :name="menu.menuId"
           lazy-load
         >
-          <pc-iframe-render :src="menu.content" />
+          <pc-promote-external-link
+            :src="menu.content"
+            :open-type="menu.iframeOpenType"
+            :is-active="pcBottomTabCurrentName === menu.menuId"
+          />
         </pc-normal-tab-pane>
 
         <!-- 分会场（竖向） -->
@@ -82,10 +86,11 @@ import {
 import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
 import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
 import PcRichTextRender from '@/components/common-base/rich-text-render/pc-rich-text-render.vue';
-import PcIframeRender from '@/components/common-base/iframe-render/pc-iframe-render.vue';
 import PcTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/pc-tuwen-live.vue';
+import PcPromoteExternalLink from '@/components/page-watch-common/promote-external-link/pc-promote-external-link.vue';
 import PcPlaybackList from '@/components/page-watch-common/playback-list/pc-playback-list/pc-playback-list.vue';
 import PcMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-portrait.vue';
+
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { ChannelMenuItem, ChannelMenuType, LiveStatus } from '@polyv/live-watch-sdk';

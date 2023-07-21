@@ -10,6 +10,7 @@
 
       <span v-if="isRedpaperRain">{{ $lang('redpack.rain.get') }}</span>
       <span v-else-if="isRedpaperPassword">{{ $lang('redpack.password.get') }}</span>
+      <span v-else-if="isRedpaperQuestion">{{ $lang('redpack.question.get') }}</span>
       <span v-else>{{ $lang('redpack.normal.get') }}</span>
 
       <span class="c-portrait-redpaper-receive-msg__highlight">
@@ -28,7 +29,8 @@
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useRedpaperReceiveMsg } from './use-redpaper-receive-msg';
 
-const { receiveNick, isRedpaperRain, isRedpaperPassword, isOver } = useRedpaperReceiveMsg();
+const { receiveNick, isRedpaperRain, isRedpaperPassword, isOver, isRedpaperQuestion } =
+  useRedpaperReceiveMsg();
 </script>
 
 <style lang="scss">

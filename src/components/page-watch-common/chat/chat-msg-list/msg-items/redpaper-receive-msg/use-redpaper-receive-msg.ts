@@ -15,6 +15,11 @@ export const useRedpaperReceiveMsg = () => {
     return unref(chatMsg).type.includes('rain');
   });
 
+  /** 是否答题红包 */
+  const isRedpaperQuestion = computed<boolean>(() => {
+    return unref(chatMsg).type.includes('question');
+  });
+
   /** 是否口令红包 */
   const isRedpaperPassword = computed<boolean>(() => {
     return unref(chatMsg).type.includes('password');
@@ -30,5 +35,6 @@ export const useRedpaperReceiveMsg = () => {
     isRedpaperRain,
     isRedpaperPassword,
     isOver,
+    isRedpaperQuestion,
   };
 };

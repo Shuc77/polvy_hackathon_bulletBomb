@@ -104,6 +104,8 @@ export const paramGetter = {
   realName: buildGetters('realName'),
   /** 多皮肤 */
   skin: buildGetters<ChannelWatchPageSkin>('skin'),
+  /** 是否使用 ip 地址进行 CDN 拉流 */
+  ipPlay: buildGetters<'1'>('ipPlay'),
 };
 
 /**

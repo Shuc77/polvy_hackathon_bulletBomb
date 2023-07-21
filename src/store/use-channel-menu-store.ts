@@ -183,6 +183,11 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         [ChannelMenuType.MultiMeeting]: [translate('menu.tabName.multiMeeting'), '分会场'],
       };
 
+      if (!translateOptions[menuType]) {
+        console.warn(`${menuType} 不存在多语言映射表中，需要进行补充`);
+        return label;
+      }
+
       const [translateText, ...cnTexts] = translateOptions[menuType];
       if (!label || (!langStore.isChineseLang && cnTexts.includes(label))) {
         label = translateText;

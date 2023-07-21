@@ -9,8 +9,10 @@
     :force-horizontal-screen="mobilePlayerIsPageFullscreen"
   >
     <iar-mobile-check-in
+      ref="checkInRef"
       :check-in-sdk="checkInSdk"
       enable-sound-effects
+      @show-entrance="showEntrance"
       @to-show="setCheckInVisible(true)"
       @to-hide="setCheckInVisible(false)"
     />
@@ -30,5 +32,6 @@ const IarMobileCheckIn = getIarComponent('MobileCheckIn');
 
 const { mobilePlayerIsPageFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
-const { checkInSdk, checkInVisible, checkInTitle, setCheckInVisible } = useCheckIn();
+const { checkInSdk, checkInVisible, checkInTitle, setCheckInVisible, showEntrance, checkInRef } =
+  useCheckIn();
 </script>

@@ -35,6 +35,11 @@ export const sliderBarProps = () => ({
   max: PropUtils.number.def(100),
   /** 显示提示 */
   tooltips: PropUtils.bool.def(false),
+  /**
+   * css 旋转角度，默认为 0
+   * @warn 暂时只支持 props.direction='horizontal' 的情况
+   * */
+  cssRotateAngle: PropUtils.oneOf([0, 90]).def(0),
 });
 
 export const sliderBarEmits = () => ({
@@ -54,6 +59,13 @@ export const useSliderBar = (options: {
   /** 当前是否正在拖拽中 */
   const isDragging = ref(false);
   const { hoverToZoom, tooltips } = useProps(props);
+
+  /**
+   * 滑块方向为横向，且 CSS 旋转角度为 90 度
+   */
+  const isRotateHorizontal = computed(() => {
+    return props.direction === 'horizontal' && props.cssRotateAngle === 90;
+  });
 
   watch(
     () => props.value,
@@ -179,10 +191,16 @@ export const useSliderBar = (options: {
     }
   }
 
+  const sliderBarHover = ref(false);
+
+  function setSliderBarHover(isHover: boolean) {
+    sliderBarHover.value = isHover;
+  }
+
   function onMouseDown(event: MouseEvent | TouchEvent): void {
     const eventPosition = getEventPosition(event);
     let clientNumber = eventPosition.clientX;
-    if (props.direction === 'vertical') {
+    if (props.direction === 'vertical' || isRotateHorizontal.value) {
       clientNumber = eventPosition.clientY;
     }
     computedValue(clientNumber);
@@ -193,9 +211,10 @@ export const useSliderBar = (options: {
   function onMouseMove(event: MouseEvent | TouchEvent): void {
     const eventPosition = getEventPosition(event);
     let clientNumber = eventPosition.clientX;
-    if (props.direction === 'vertical') {
+    if (props.direction === 'vertical' || isRotateHorizontal.value) {
       clientNumber = eventPosition.clientY;
     }
+
     computedValue(clientNumber);
 
     onTrackMouseMove(event);
@@ -230,25 +249,31 @@ export const useSliderBar = (options: {
       return;
     }
     const bound = containerElem.getBoundingClientRect();
-    const totalLength = props.direction === 'vertical' ? bound.height : bound.width;
-    const startPoint = props.direction === 'vertical' ? bound.bottom : bound.left;
+    const totalLength =
+      props.direction === 'vertical' || isRotateHorizontal.value ? bound.height : bound.width;
+    const startPoint =
+      props.direction === 'vertical' || isRotateHorizontal.value ? bound.bottom : bound.left;
+
     let pointLength = clientNumber - startPoint;
     if (props.direction === 'vertical' && pointLength > 0) {
       return;
     }
-    if (props.direction === 'horizontal' && pointLength < 0) {
+    if (props.direction === 'horizontal' && pointLength < 0 && !isRotateHorizontal.value) {
       pointLength = 0;
     }
-
     pointLength = Math.abs(pointLength);
 
     let percent = pointLength / totalLength;
+    if (isRotateHorizontal.value) {
+      percent = 1 - percent; // 横向 90 度旋转时，需要获取相反的百分比才是真正需要计算的值
+    }
     if (percent > 1) {
       percent = 1;
     } else if (percent < 0) {
       percent = 0;
     }
     const newValue = numberToFixed(props.min + (props.max - props.min) * percent);
+
     if (setValue && newValue !== unref(currentValue)) {
       currentValue.value = newValue;
       emit('drag-change', newValue);
@@ -271,6 +296,8 @@ export const useSliderBar = (options: {
     innerTrackStyle,
     sliderDotStyle,
     containerRef,
+    sliderBarHover,
+    setSliderBarHover,
     onMouseDown,
     onMouseUp,
     trackHoverX,

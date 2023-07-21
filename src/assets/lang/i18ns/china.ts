@@ -362,6 +362,9 @@ export const chinaLang = {
   'player.mode.audio': '音频模式',
   'player.mode.video': '视频模式',
   'player.audio.ing': '音频播放中',
+  'player.timeShift.return.live': '返回直播',
+  'player.timeAxisMark.base.text': '精彩看点',
+  'player.timeAxisMark.empty.text': '暂无',
 
   'playback.list': '回放列表',
   'playback.playing': '播放中',
@@ -378,8 +381,10 @@ export const chinaLang = {
   'redpack.normal.get': '从普通红包中获得',
   'redpack.password.get': '从口令红包中获得',
   'redpack.rain.get': '从红包雨中获得',
+  'redpack.question.get': '从答题红包中获得',
   'redpack.rain.finish': '，红包雨已被领完',
   'redpack.type.normal': '普通红包',
+  'redpack.type.question': '答题红包',
   'redpack.type.password': '口令红包',
   'redpack.type.rain': '红包雨',
   'redpack.type.alipayPassword': '支付宝口令红包',
@@ -516,4 +521,7 @@ export const chinaLang = {
   'barrage.speed.normal': '标准',
   'barrage.speed.fast': '较快',
   'barrage.speed.veryFast': '快速',
+
+  'promote.external.link.tips':
+    '点击菜单后在新页面显示此链接内容；若无法新建页面则在当前页显示，替换原观看页',
 };

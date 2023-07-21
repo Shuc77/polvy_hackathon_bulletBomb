@@ -380,6 +380,9 @@ export const englishLang: LangConfig = {
   'player.mode.audio': 'Audio',
   'player.mode.video': 'Video',
   'player.audio.ing': 'Audio playing',
+  'player.timeShift.return.live': 'Return to live',
+  'player.timeAxisMark.base.text': 'Highlights',
+  'player.timeAxisMark.empty.text': 'Nothing',
 
   'playback.list': 'Playback',
   'playback.playing': 'Playing',
@@ -396,9 +399,11 @@ export const englishLang: LangConfig = {
   'redpack.finish': '. The red envelope has been taken out',
   'redpack.normal.get': 'got the red envelope from the normal red envelope',
   'redpack.password.get': 'got the red envelope from the password red envelope',
+  'redpack.question.get': 'got the red envelope from the question red envelope',
   'redpack.rain.get': 'got the red envelope from the red envelope rain',
   'redpack.rain.finish': ' The red envelope rain has been taken out',
   'redpack.type.normal': 'normal redpack',
+  'redpack.type.question': 'question redpack',
   'redpack.type.password': 'password redpack',
   'redpack.type.rain': 'redpack rain',
   'redpack.type.alipayPassword': 'Alipay password red envelope',
@@ -536,4 +541,6 @@ export const englishLang: LangConfig = {
   'barrage.speed.normal': 'normal',
   'barrage.speed.fast': 'fast',
   'barrage.speed.veryFast': 'very fast',
+
+  'promote.external.link.tips': `After clicking the menu, the content of this link will be displayed on a new page; if a new page cannot be created, it will be displayed on the current page to replace the original viewing page`,
 };

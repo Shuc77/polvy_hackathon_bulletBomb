@@ -17,6 +17,7 @@ import { OnPopperEventParams, PopperOffset, PopperOptions, UsePopperOptions } fr
 /**
  * @hook 弹出层 hook
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const usePopper = (options: UsePopperOptions = {}) => {
   /** 触发节点 ref */
   const referenceRef = options.referenceRef ?? ref();
@@ -44,6 +45,9 @@ export const usePopper = (options: UsePopperOptions = {}) => {
   const outSideClickDelayHide = options.outSideClickDelayHide ?? ref(false);
   /** 弹层宽度跟随触发节点 */
   const followReferenceWidth = options.followReferenceWidth ?? ref(false);
+
+  const appendToBody = options.appendToBody ?? true;
+  const mountEl = options.mountEl ?? '';
 
   const { popperVisible, showPopper, hidePopper, togglePopper, delayShowPopper, delayHidePopper } =
     usePopperVisible(options);
@@ -91,6 +95,8 @@ export const usePopper = (options: UsePopperOptions = {}) => {
     outSideClickDelayHide,
     followReferenceWidth,
     popperVisible,
+    appendToBody,
+    mountEl,
     showPopper,
     hidePopper,
     togglePopper,
@@ -100,7 +106,10 @@ export const usePopper = (options: UsePopperOptions = {}) => {
     onPopperEvent,
   };
 
-  useAppendTo(popperRef);
+  const popperAppendDom = appendToBody
+    ? document.body
+    : (document.querySelector(mountEl) as HTMLElement);
+  useAppendTo(popperRef, popperAppendDom);
   usePopperArrow(popperOptions);
   usePopperInteractive(popperOptions);
   useAutoTopmostToShow(popperVisible, popperRef);

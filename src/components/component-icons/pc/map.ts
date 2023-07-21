@@ -25,6 +25,7 @@ export { default as PcIconEmotion } from './icons/emotion';
 export { default as PcIconFeedback } from './icons/feedback';
 export { default as PcIconForbid } from './icons/forbid';
 export { default as PcIconHangUp } from './icons/hang-up';
+export { default as PcIconHighlight } from './icons/highlight';
 export { default as PcIconLang } from './icons/lang';
 export { default as PcIconMedia } from './icons/media';
 export { default as PcIconPageView } from './icons/page-view';

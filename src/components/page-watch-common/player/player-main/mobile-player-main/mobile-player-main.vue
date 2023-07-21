@@ -1,4 +1,4 @@
-<!-- @file PC 端播放器 -->
+<!-- @file 移动端横屏播放器 -->
 <template>
   <div
     class="c-mobile-player-main"
@@ -45,11 +45,22 @@
     <!-- 延迟模式切换 -->
     <mobile-low-latency-switch v-show="latencyModeSettingVisible && playerControlVisible" />
 
+    <!-- 直播时移和精彩看点入口 -->
+    <transition name="slide">
+      <mobile-player-time-axis-entrance
+        v-if="isLowLatency"
+        v-show="playerControlVisible"
+      />
+    </transition>
+
     <!-- 播放器弹幕设置面板 -->
     <mobile-barrage-setting
       v-show="barrageSettingVisible"
       @close-setting="handleToggleBarrageSettingVisible"
     />
+
+    <!-- 精彩看点弹窗 -->
+    <mobile-player-time-axis-mark-popup v-if="supportTimeAxisMark" />
   </div>
 </template>
 
@@ -72,6 +83,8 @@ import MobilePlayerControl from '../../player-control/mobile-player-control/mobi
 import MobileLowLatencySwitch from '../../player-control/mobile-player-control/mobile-low-latency-switch.vue';
 import MobilePlayerLogo from '@/components/page-watch-common/player/player-logo/mobile-player-logo.vue';
 import MobileBarrageSetting from '../../player-control/mobile-player-control/mobile-barrage-setting.vue';
+import MobilePlayerTimeAxisEntrance from '../../player-time-axis-mark/mobile-player-time-axis-entrance.vue';
+import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-player-time-axis-mark-popup.vue';
 
 import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
@@ -81,8 +94,13 @@ import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
   storeDefinitionToRefs(useLayoutStore);
 
-const { isLowLatency, playerControlVisible, logoSetting, barrageSettingVisible } =
-  storeDefinitionToRefs(usePlayerStore);
+const {
+  isLowLatency,
+  playerControlVisible,
+  logoSetting,
+  barrageSettingVisible,
+  supportTimeAxisMark,
+} = storeDefinitionToRefs(usePlayerStore);
 
 const { pageViewCountLocation, pageViewCount } = storeDefinitionToRefs(useChannelInfoStore);
 
