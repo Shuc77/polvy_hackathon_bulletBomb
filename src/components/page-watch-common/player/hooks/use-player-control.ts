@@ -125,7 +125,7 @@ export const usePlayerControl = () => {
   const lineSettingVisible = computed<boolean>(() => {
     if (playerStore.supportLiveTimeShift) return false;
 
-    return playerStore.lineCount > 1;
+    return playerStore.lineCount > 1 && channelStore.liveStatus === LiveStatus.Live;
   });
 
   /** 线路设置列表 */
@@ -149,8 +149,7 @@ export const usePlayerControl = () => {
 
     return (
       playerStore.qualityLevels.length > 1 &&
-      [LiveStatus.Live, LiveStatus.Playback].includes(channelStore.liveStatus) &&
-      !channelStore.testModeStatus
+      [LiveStatus.Live, LiveStatus.Playback].includes(channelStore.liveStatus)
     );
   });
 

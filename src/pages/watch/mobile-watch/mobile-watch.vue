@@ -10,7 +10,10 @@
     <mobile-iar-render v-if="!isPlaybackWatchUrl" />
 
     <!-- 连麦挂件 -->
-    <mobile-connect-mic-pendant v-if="connectMicPendantVisible" />
+    <mobile-connect-mic-pendant
+      v-if="connectMicPendantRenderEnabled"
+      v-show="connectMicPendantVisible"
+    />
 
     <!-- 常驻挂件 -->
     <mobile-watch-pendant />
@@ -82,7 +85,8 @@ const MobileWithdrawDetail = defineAsyncComponent(
     ),
 );
 
-const { connectMicPendantVisible } = storeDefinitionToRefs(useConnectMicStore);
+const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
+  storeDefinitionToRefs(useConnectMicStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 

@@ -6,6 +6,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { ref, unref, watch } from 'vue';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { useMsgInputController } from './use-msg-input-controller';
+import { translate } from '@/assets/lang';
 
 export const msgInputWrapProps = () => ({
   /** 占位符 */
@@ -28,6 +29,8 @@ export const msgInputWrapEmits = () => ({
   input: emitFunc<string>(),
   /** 提交事件 */
   submit: emitFunc<{ contentList: PlvInputContent[] }>(),
+  /** 发送系统消息 */
+  'system-msg': emitFunc<{ content: string }>(),
   /** 点击发送图片 */
   'click-send-image': emitFunc<void>(),
   /** 关闭 */
@@ -129,12 +132,24 @@ export const useMsgInputWrap = (options: {
   /** 发送按钮是否禁用 */
   const sendBtnDisabled = msgInputController.isEmptyInputContent;
 
+  /** 上一次发言的时间戳 */
+  let lastSendTime: number | undefined;
+
   /**
    * 输入框触发提交/发送按钮点击处理
    * @desc 提交后，由外部自行去重置输入框内容，清空组件状态
    * */
   function submitInput() {
     if (unref(sendBtnDisabled)) return;
+
+    const now = Date.now();
+    if (lastSendTime && now - lastSendTime < 1000) {
+      emit('system-msg', {
+        content: translate('chat.msg.fast'),
+      });
+      return;
+    }
+    lastSendTime = now;
 
     emit('submit', {
       contentList: msgInputController.getInputContentList(),

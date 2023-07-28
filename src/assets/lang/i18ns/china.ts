@@ -170,6 +170,7 @@ export const chinaLang = {
   'chat.moreMsg2': '查看新消息',
   'chat.msg.replay.tips.wait': '回放消息正在准备中，可稍等刷新查看',
   'chat.msg.replay.tips.ing': '聊天重放已开启，将会显示历史消息',
+  'chat.msg.fast': '您的发言过快，请稍后再试',
 
   'copy.link': '复制链接',
   'copy.success': '复制成功',

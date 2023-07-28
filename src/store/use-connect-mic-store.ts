@@ -11,6 +11,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useLayoutStore } from './use-layout-store';
 import { usePlayerStore } from './use-player-store';
 
 export interface ConnectMicStoreState {
@@ -32,6 +33,8 @@ export interface ConnectMicStoreState {
   maxMicIndex: Ref<number>;
   /** 当前用户是否正在连麦中 */
   isConnectMicing: ComputedRef<boolean>;
+  /** 连麦挂件是否需要渲染 */
+  connectMicPendantRenderEnabled: ComputedRef<boolean>;
   /** 连麦挂件是否显示 */
   connectMicPendantVisible: ComputedRef<boolean>;
   /** 连麦列表 */
@@ -88,6 +91,7 @@ export interface ConnectMicStore extends ConnectMicStoreState, ConnectMicStoreAc
  */
 export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('connectMic', () => {
   const playerStore = usePlayerStore();
+  const layoutStore = useLayoutStore();
 
   /** 配置是否使用连麦 */
   const connectMicEnabled = ref(true);
@@ -119,13 +123,23 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     return [ConnectMicStatus.Publishing, ConnectMicStatus.Connected].includes(status);
   });
 
-  /** 连麦挂件是否显示 */
-  const connectMicPendantVisible = computed(() => {
+  /** 连麦挂件是否需要渲染 */
+  const connectMicPendantRenderEnabled = computed(() => {
     if (isConnectMicing.value) {
       return true;
     }
 
     return openMicStatus.value && playerStore.isLowLatency;
+  });
+
+  /** 连麦挂件是否显示 */
+  const connectMicPendantVisible = computed(() => {
+    return (
+      !layoutStore.mobileDocIsPageFullscreen &&
+      !layoutStore.mobileNormalLatencyPlayerIsFullscreen &&
+      !layoutStore.mobilePlayerIsPageFullscreen &&
+      !layoutStore.isPageFullscreenOrHorizontalScreen
+    );
   });
 
   /** 连麦列表 */
@@ -278,6 +292,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     currentMicIndex,
     maxMicIndex,
     isConnectMicing,
+    connectMicPendantRenderEnabled,
     connectMicPendantVisible,
     connectMicList,
     filterConnectMicList,

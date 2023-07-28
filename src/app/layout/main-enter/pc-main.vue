@@ -1,6 +1,6 @@
 <!-- @file PC 端入口 -->
 <template>
-  <div class="c-pc-main">
+  <div class="c-pc-main g-pc-main-layout">
     <pc-splash v-if="shouldShowSplash" />
     <pc-watch v-else-if="watchPageInited" />
   </div>

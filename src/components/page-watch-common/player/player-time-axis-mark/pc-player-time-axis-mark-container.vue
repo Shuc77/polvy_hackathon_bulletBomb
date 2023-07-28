@@ -4,7 +4,6 @@
   <div class="c-pc-player-time-axis-mark-container">
     <!-- 按钮 -->
     <normal-button
-      ref="timeAxisMarkPopperTriggerRef"
       class="c-pc-player-time-axis-mark-container__button"
       :type="ButtonType.Custom"
       :size="ButtonSize.XMini"
@@ -13,48 +12,40 @@
       icon-class="c-pc-player-time-axis-mark-container__button__icon"
     />
     <!-- 悬浮面板 -->
-    <transition name="fade">
+    <div class="c-pc-player-time-axis-mark-container__panel">
       <div
-        ref="timeAxisMarkPopperRef"
-        v-show="timeAxisMarkPopperVisible"
-        class="c-pc-player-time-axis-mark-container__panel"
+        v-for="markPoint in timeAxisMarkList"
+        :key="markPoint.id"
+        class="c-pc-player-time-axis-mark-container__panel-item"
+        @click="toSeekByTimeAxisMark(markPoint)"
       >
-        <div
-          v-for="markPoint in timeAxisMarkList"
-          :key="markPoint.id"
-          class="c-pc-player-time-axis-mark-container__panel-item"
-          @click="toSeekByTimeAxisMark(markPoint)"
-        >
-          <img
-            class="c-pc-player-time-axis-mark-container__panel-item__img"
-            :src="markPoint.markMessage.previewUrl"
-          />
-          <div class="c-pc-player-time-axis-mark-container__panel-item__desc">
-            <div
-              class="c-pc-player-time-axis-mark-container__panel-item__desc__title g-singleline"
-              :title="markPoint.markMessage.title"
-            >
-              {{ markPoint.markMessage.title }}
-            </div>
-            <span class="c-pc-player-time-axis-mark-container__panel-item__desc__time">{{
-              formatSeconds(markPoint.markTime, { segments: 3 })
-            }}</span>
+        <img
+          class="c-pc-player-time-axis-mark-container__panel-item__img"
+          :src="markPoint.markMessage.previewUrl"
+        />
+        <div class="c-pc-player-time-axis-mark-container__panel-item__desc">
+          <div
+            class="c-pc-player-time-axis-mark-container__panel-item__desc__title g-singleline"
+            :title="markPoint.markMessage.title"
+          >
+            {{ markPoint.markMessage.title }}
           </div>
+          <span class="c-pc-player-time-axis-mark-container__panel-item__desc__time">{{
+            formatSeconds(markPoint.markTime, { segments: 3 })
+          }}</span>
         </div>
-        <p
-          v-if="timeAxisMarkList.length === 0"
-          class="c-pc-player-time-axis-mark-container__panel-empty"
-        >
-          {{ $lang('player.timeAxisMark.empty.text') }}
-        </p>
       </div>
-    </transition>
+      <p
+        v-if="timeAxisMarkList.length === 0"
+        class="c-pc-player-time-axis-mark-container__panel-empty"
+      >
+        {{ $lang('player.timeAxisMark.empty.text') }}
+      </p>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
-import { usePopper } from '@/hooks/components/use-popper';
 import { formatSeconds } from '@utils-ts/date';
 
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
@@ -63,24 +54,21 @@ import { PcIconHighlight } from '@/components/component-icons/pc/map';
 import { useTimeAxisMarkHook } from './use-time-axis-mark';
 
 const { timeAxisMarkList, toSeekByTimeAxisMark } = useTimeAxisMarkHook();
-
-const {
-  referenceRef: timeAxisMarkPopperTriggerRef,
-  popperRef: timeAxisMarkPopperRef,
-  popperVisible: timeAxisMarkPopperVisible,
-} = usePopper({
-  trigger: 'hover',
-  placement: 'top-start',
-  popperOffset: [0, 10],
-  appendToBody: false,
-  mountEl: PC_PLAYER_FULL_SCREEN_SELECTOR,
-});
 </script>
 
 <style lang="scss">
 .c-pc-player-time-axis-mark-container {
+  position: relative;
   display: inline-flex;
   align-items: center;
+}
+
+.c-pc-player-time-axis-mark-container:hover {
+  color: #3082fe;
+  .c-pc-player-time-axis-mark-container__panel {
+    pointer-events: initial;
+    opacity: 1;
+  }
 }
 
 .c-pc-player-time-axis-mark-container__button {
@@ -95,21 +83,28 @@ const {
 }
 
 .c-pc-player-time-axis-mark-container__panel {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  box-sizing: border-box;
   width: 280px;
   max-height: 336px;
   padding: 16px;
   overflow: auto;
-  pointer-events: all;
+  color: $--color-white;
+  pointer-events: none;
   cursor: pointer;
   user-select: none;
   background-color: rgba(0, 0, 0, 0.85);
+  // background: $--player-control-panel-bg;
+  opacity: 0;
+  transition: 0.3s;
   @include scrollbar(rgba(170, 173, 199, 0.2));
 }
 
 .c-pc-player-time-axis-mark-container__panel-item {
   display: flex;
   margin-bottom: 18px;
-  color: #fff;
   &:last-child {
     margin-bottom: 0;
   }
@@ -119,7 +114,6 @@ const {
   width: 84px;
   height: 48px;
   margin-right: 8px;
-  background: #000;
   border-radius: 2px;
 }
 
@@ -140,6 +134,6 @@ const {
 }
 
 .c-pc-player-time-axis-mark-container__panel-empty {
-  color: #fff;
+  color: $--color-white;
 }
 </style>

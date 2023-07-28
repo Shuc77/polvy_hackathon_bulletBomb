@@ -120,7 +120,12 @@ function setMarkPointListHover(isHover: boolean) {
   emits('mark-point-hover', isHover);
 }
 
-const { mergeTimeAxisMarkList, getFirstMarkPointDetail } = useTimeAxisMarkHook({
+const {
+  mergeTimeAxisMarkList,
+
+  getFirstMarkPointDetail,
+  toSeekByTimeAxisMark,
+} = useTimeAxisMarkHook({
   getContainerWidth: () => props.containerEl.clientWidth || 0,
 });
 
@@ -149,6 +154,7 @@ function updateActiveMarkPointDetail(markPointDetail: TimeAxisMarkInfo) {
 
 function emitMarkPoint(markPointDetail: TimeAxisMarkInfo) {
   updateActiveMarkPointDetail(markPointDetail);
+  toSeekByTimeAxisMark(markPointDetail);
   emits('mark-point-update', markPointDetail);
 }
 

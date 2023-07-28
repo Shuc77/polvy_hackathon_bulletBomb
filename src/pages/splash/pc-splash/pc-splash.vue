@@ -2,16 +2,20 @@
 <template>
   <div class="c-pc-splash">
     <header class="c-pc-splash__header g-outside">
-      <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
-      <div
-        v-if="supportsFilterStyle && splashImg"
-        class="c-pc-splash__header__bg g-img-cover"
-        :style="{
-          backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
-        }"
-      ></div>
-      <!-- 遮罩层 -->
-      <div class="c-pc-splash__header__mask"></div>
+      <custom-teleport to="body">
+        <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
+        <div class="c-pc-splash__header__bg__teleport__wrapper">
+          <div
+            v-if="supportsFilterStyle && splashImg"
+            class="c-pc-splash__header__bg g-img-cover"
+            :style="{
+              backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
+            }"
+          ></div>
+          <!-- 遮罩层 -->
+          <div class="c-pc-splash__header__mask"></div>
+        </div>
+      </custom-teleport>
       <!-- 头部内容层 -->
       <div class="c-pc-splash__header__inner g-boundary">
         <div
@@ -115,6 +119,7 @@
 import { supportsFilterStyle } from '@/assets/utils/dom';
 import { ChannelMenuType } from '@polyv/live-watch-sdk';
 
+import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import { PcIconPeople } from '@/components/component-icons/pc/map';
 import PcRichTextRender from '@/components/common-base/rich-text-render/pc-rich-text-render.vue';
 import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
@@ -169,13 +174,26 @@ usePvTrack('saas-web-splash-pc');
 </script>
 
 <style lang="scss">
+$--splash-header-padding-height: 80px;
+$--splash-header-content-height: 406px;
+
 .c-pc-splash {
   position: relative;
   min-height: 100vh;
 }
 .c-pc-splash__header {
   position: relative;
-  padding: 80px 0;
+  padding: $--splash-header-padding-height 0;
+}
+
+// teleport 背景层
+.c-pc-splash__header__bg__teleport__wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: ($--splash-header-padding-height * 2) + $--splash-header-content-height;
   overflow: hidden;
   background: #1a1b1f;
 }
@@ -199,7 +217,7 @@ usePvTrack('saas-web-splash-pc');
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 405px;
+  height: $--splash-header-content-height;
 }
 
 .c-pc-splash__header__main {
@@ -211,7 +229,7 @@ usePvTrack('saas-web-splash-pc');
 
 .c-pc-splash__header__cover {
   width: 720px;
-  height: 405px;
+  height: $--splash-header-content-height;
   margin-right: 60px;
   background-color: #ccc;
 }

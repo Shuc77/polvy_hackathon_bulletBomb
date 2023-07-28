@@ -416,6 +416,7 @@ function checkPosition() {
 defineExpose<DialogInstance>({
   resetPosition,
   setMountEl,
+  handleDocumentEventToReset,
 });
 </script>
 

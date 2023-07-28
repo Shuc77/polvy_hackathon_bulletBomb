@@ -15,12 +15,8 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 export interface ChannelStoreState {
   /** 频道号 */
   channelId: Ref<string>;
-  /** 频道是否处于测试模式 */
-  testModeStatus: Ref<boolean>;
   /** 频道直播状态 */
   liveStatus: Ref<LiveStatus>;
-  /** 频道直播状态（根据测试模式返回） */
-  liveStatusByDebug: ComputedRef<LiveStatus>;
   /** 当前最新的直播场次号 */
   currentSessionId: Ref<string>;
   /** 观看页地址 */
@@ -57,20 +53,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 频道号 */
   const channelId = ref('');
 
-  /** 频道是否处于测试模式 */
-  const testModeStatus = ref(false);
-
   /** 频道直播状态 */
   const liveStatus = ref<LiveStatus>(LiveStatus.End);
-
-  /** 频道直播状态（根据测试模式返回） */
-  const liveStatusByDebug = computed<LiveStatus>(() => {
-    // 测试模式为避免暴露直播信息，固定设成暂无直播，testModeStatus 类似于 pageWatch.isDebug，用于判断测试模式。
-    if (unref(testModeStatus)) {
-      return LiveStatus.End;
-    }
-    return unref(liveStatus);
-  });
 
   /** 当前直播场次号 */
   const currentSessionId = ref('');
@@ -115,7 +99,6 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     const watchCore = getWatchCore();
 
     channelScene.value = watchCore.channel.getChannelScene();
-    testModeStatus.value = watchCore.channel.getTestModeStatus();
     liveStatus.value = watchCore.channel.getLiveStatus();
     currentSessionId.value = watchCore.channel.getCurrentSessionId();
     promoteId.value = watchCore.channel.getPromoteId();
@@ -128,9 +111,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
   return {
     channelId,
-    testModeStatus,
     liveStatus,
-    liveStatusByDebug,
     currentSessionId,
     watchUrl,
     isAloneChannel,

@@ -50,7 +50,7 @@ const isSpecialUser = ref(false);
 
 onMounted(() => {
   const watchCore = getWatchCore();
-  isSpecialUser.value = watchCore.user.isSpecialUserType(props.member.userType);
+  isSpecialUser.value = watchCore.user.isSpecialUserType(props.member.userType, props.member.actor);
 });
 </script>
 

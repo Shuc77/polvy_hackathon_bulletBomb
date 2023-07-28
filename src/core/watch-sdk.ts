@@ -46,10 +46,11 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   watchCore.barrage.setBarrageAddIntercept(data => {
     const userType = data.user?.userType;
     const userId = data.user?.userId;
+    const actor = data.user?.actor;
 
     if (
       chatStore.onlySpecialMsg &&
-      !watchCore?.user.isSpecialUserType(userType) &&
+      !watchCore?.user.isSpecialUserType(userType, actor) &&
       userId !== viewerStore.viewerId
     ) {
       return true;

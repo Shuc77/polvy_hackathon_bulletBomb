@@ -44,8 +44,8 @@ export interface PlayerStoreState {
   supportBarrageSpeed: Ref<boolean>;
   /** 弹幕速度 340 | 270 | 200 | 130 | 60 */
   barrageSpeed: Ref<number>;
-  /** 弹幕设置是否显示 */
-  barrageSettingVisible: Ref<boolean>;
+  /** 弹幕移动端设置是否显示 */
+  barrageMobileSettingVisible: Ref<boolean>;
   /** 观看延迟时间，单位：毫秒 */
   delayTime: Ref<number>;
   /** 是否支持无延迟观看 */
@@ -190,7 +190,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const barrageSpeed = ref(200);
 
   /** 弹幕设置是否显示 */
-  const barrageSettingVisible = ref(false);
+  const barrageMobileSettingVisible = ref(false);
 
   /** 是否处于一个可播放的模式 */
   const isPlayMode = computed<boolean>(() => {
@@ -387,7 +387,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageShow,
     supportBarrageSpeed,
     barrageSpeed,
-    barrageSettingVisible,
+    barrageMobileSettingVisible,
 
     delayTime,
     supportLowLatency,

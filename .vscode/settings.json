@@ -13,6 +13,7 @@
   "less.validate": false,
   "scss.validate": false,
   "stylelint.enable": true,
+  "stylelint.config": null,
   "stylelint.validate": [
     "css",
     "sass",
@@ -25,7 +26,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",

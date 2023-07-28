@@ -13,6 +13,7 @@
       :placeholder="chatInputPlaceholder"
       :disabled-input="chatInputDisabled"
       :disabled-emotion-picker="chatInputDisabled"
+      @system-msg="onSendSystemMsg"
       @submit="onSubmit"
       @click-image-emotion="closeInput"
     />
@@ -34,7 +35,8 @@ import { PlvInputContent } from '@/plugins/polyv-ui/types';
 
 const inputWrapRef = ref<HTMLDivElement>();
 
-const { onSubmitMessage, msgInputWrapRef, focusMsgInput } = useChatInputController();
+const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } =
+  useChatInputController();
 
 useAppendTo(inputWrapRef);
 

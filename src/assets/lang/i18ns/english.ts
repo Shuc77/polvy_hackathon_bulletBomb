@@ -182,6 +182,7 @@ export const englishLang: LangConfig = {
   'chat.moreMsg2': 'See new message',
   'chat.msg.replay.tips.wait': 'The playback message is in preparation, refresh to view',
   'chat.msg.replay.tips.ing': 'Chat replay is on, showing historical messages',
+  'chat.msg.fast': 'Sending too frequent try again later',
 
   'copy.link': 'Copy Link',
   'copy.success': 'Copy success',

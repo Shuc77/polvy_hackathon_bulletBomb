@@ -21,7 +21,6 @@
           :force-hover="sliderBarHover"
           :container-el="sliderBarContainer"
           @mark-point-hover="updateSlideBarTooltipVisible"
-          @mark-point-update="toSeekByTimeAxisMark"
         />
       </template>
     </slider-bar>
@@ -39,7 +38,6 @@ import { usePlayerStore } from '@/store/use-player-store';
 
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { ref } from 'vue';
-import { useTimeAxisMarkHook } from '../player-time-axis-mark/use-time-axis-mark';
 const { currentTime, durationTime } = storeDefinitionToRefs(usePlayerStore);
 
 const slideBarTooltipVisible = ref(true);
@@ -49,7 +47,6 @@ function updateSlideBarTooltipVisible(isMarkPointHover: boolean) {
 }
 
 const { toSeekVideo } = usePlayerAction();
-const { toSeekByTimeAxisMark } = useTimeAxisMarkHook();
 </script>
 
 <style lang="scss">

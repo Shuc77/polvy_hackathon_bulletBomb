@@ -8,6 +8,7 @@
       :disabled-emotion-picker="chatInputDisabled"
       :disabled-send-image="chatInputDisabled"
       render-suffix-slot
+      @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
     >
       <template #main-prefix>
@@ -66,7 +67,8 @@ import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEventBusListener, appEvents } from '@/app/app-events';
 
-const { onSubmitMessage, msgInputWrapRef, focusMsgInput } = useChatInputController();
+const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } =
+  useChatInputController();
 
 useEventBusListener(appEvents.chat.FocusToChatInput, () => {
   focusMsgInput();

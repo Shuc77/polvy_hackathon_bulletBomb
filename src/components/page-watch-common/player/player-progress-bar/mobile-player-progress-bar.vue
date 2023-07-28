@@ -14,7 +14,6 @@
         <mobile-player-time-axis-mark-point
           :top-dot-visible="isPageFullscreenOrHorizontalScreen"
           :container-el="sliderBarContainer"
-          @mark-point-update="toSeekByTimeAxisMark"
         />
       </template>
     </slider-bar>
@@ -29,7 +28,6 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerStore } from '@/store/use-player-store';
 
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
-import { useTimeAxisMarkHook } from '../player-time-axis-mark/use-time-axis-mark';
 import { useLayoutStore } from '@/store/use-layout-store';
 
 const { isPageFullscreenOrHorizontalScreen, isHorizontalScreenOrientation } =
@@ -37,7 +35,6 @@ const { isPageFullscreenOrHorizontalScreen, isHorizontalScreenOrientation } =
 const { currentTime, durationTime } = storeDefinitionToRefs(usePlayerStore);
 
 const { toSeekVideo } = usePlayerAction();
-const { toSeekByTimeAxisMark } = useTimeAxisMarkHook();
 </script>
 
 <style lang="scss">

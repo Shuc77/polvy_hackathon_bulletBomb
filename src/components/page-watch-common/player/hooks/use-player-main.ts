@@ -116,8 +116,6 @@ export const usePlayerMain = ({
 
     if (!playerStore.playerEnabled) return;
 
-    const watchCore = getWatchCore();
-
     playerStore.$patch({
       playerInited: false,
       isPlayStarted: false,
@@ -130,6 +128,7 @@ export const usePlayerMain = ({
       container,
       lowLatency: playerStore.isLowLatency,
       language: langStore.currentLang === LangType.Chinese ? 0 : 1,
+      autoChangePlayback: true,
     };
 
     // 其他参数
@@ -153,11 +152,12 @@ export const usePlayerMain = ({
       await getPushStreamInfo();
     }
 
+    const watchCore = getWatchCore();
     await watchCore.player.setupPlayer(playerOptions);
 
     bindPlayerEvents();
 
-    if (playerOptions.playbackOptions) {
+    if (playerOptions.playbackOptions || watchCore.player.getAutoChangePlaybackEnabled()) {
       playbackStore.$patch({
         isPlaybacking: true,
       });

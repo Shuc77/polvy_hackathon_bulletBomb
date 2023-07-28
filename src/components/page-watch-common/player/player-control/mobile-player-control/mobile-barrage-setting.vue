@@ -6,11 +6,11 @@
       'c-mobile-player-barrage-setting--fullscreen':
         mobileNormalLatencyPlayerIsFullscreen && isVerticalScreenOrientation,
     }"
-    @click.self="emitClose"
+    @click.self="closeBarrageSetting"
   >
     <div
       class="c-mobile-player-barrage-setting__wrap"
-      @click.self="emitClose"
+      @click.self="closeBarrageSetting"
     >
       <div class="c-mobile-player-barrage-setting__content">
         <div class="c-mobile-player-barrage-setting__label">{{ $lang('barrage.speed') }}</div>
@@ -37,24 +37,19 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { useBarrageSetting } from '../../hooks/use-barrage-setting';
 import { usePlayerAction } from '../../hooks/use-player-action';
 
-const { toToggleBarrageSettingVisible } = usePlayerAction();
+const { toToggleBarrageMobileSettingVisible } = usePlayerAction();
 
 const {
   formattedBarrageSpeedToSliderValue,
   formattedBarrageSpeedToText,
   handleBarrageSpeedChange,
 } = useBarrageSetting();
-
-const emit = defineEmits({
-  'close-setting': emitFunc<void>(),
-});
 
 const {
   mobilePlayerIsPageFullscreen: isMobLowLatencyPlayerFullscreen,
@@ -68,12 +63,12 @@ const isPlayerFullscreen = computed(() => {
 
 watch(isVerticalScreenOrientation, newVal => {
   if (newVal && !isPlayerFullscreen.value) {
-    toToggleBarrageSettingVisible(false);
+    toToggleBarrageMobileSettingVisible(false);
   }
 });
 
-function emitClose() {
-  emit('close-setting');
+function closeBarrageSetting() {
+  toToggleBarrageMobileSettingVisible(false);
 }
 </script>
 
