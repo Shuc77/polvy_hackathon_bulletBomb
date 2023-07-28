@@ -330,9 +330,10 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
   function isSpecialUserMsg(chatMsg: ChatMsgType): boolean {
     const user = getChatMsgUser(chatMsg);
     const userType = user?.userType;
+    const actor = user?.actor;
     if (!userType) return false;
     const watchCore = getWatchCore();
-    return watchCore.user.isSpecialUserType(userType);
+    return watchCore.user.isSpecialUserType(userType, actor);
   }
 
   /**

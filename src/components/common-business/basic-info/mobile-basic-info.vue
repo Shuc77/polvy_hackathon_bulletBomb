@@ -19,7 +19,7 @@
             {{ channelTitle }}
           </div>
           <div class="c-mobile-basic-info__channel__inner__status">
-            <mobile-status-tag :live-status="liveStatusByDebug" />
+            <mobile-status-tag :live-status="liveStatus" />
           </div>
         </div>
         <!-- 直播时间 + 浏览次数 + 无延迟标记 -->
@@ -118,7 +118,7 @@ const props = defineProps({
 
 const { showPageView, showLikeCount, showDesc } = useProps(props);
 
-const { liveStatusByDebug } = storeDefinitionToRefs(useChannelStore);
+const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 
 const {
   channelTitle,

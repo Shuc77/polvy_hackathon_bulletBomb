@@ -14,7 +14,7 @@
     <!-- 播放器封面图 -->
     <pc-player-cover-img />
 
-    <!-- 视频区播放按钮 -->
+    <!-- 视频区播放按钮，仅用来展示 -->
     <player-play-button />
   </div>
 </template>

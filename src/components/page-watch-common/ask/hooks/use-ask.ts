@@ -120,12 +120,14 @@ export const useAsk = (options: UseAskOptions) => {
     const watchCore = getWatchCore();
     watchCore.ask.eventEmitter.on(AskEvents.StudentQuestion, onAskEvent);
     watchCore.ask.eventEmitter.on(AskEvents.TeacherAnswer, onAskEvent);
+    watchCore.ask.eventEmitter.on(AskEvents.SystemMessage, onAskEvent);
   }
 
   function unbindAskEvent() {
     const watchCore = getWatchCore();
     watchCore.ask.eventEmitter.off(AskEvents.StudentQuestion, onAskEvent);
     watchCore.ask.eventEmitter.off(AskEvents.TeacherAnswer, onAskEvent);
+    watchCore.ask.eventEmitter.off(AskEvents.SystemMessage, onAskEvent);
   }
 
   onMounted(() => {

@@ -1,11 +1,12 @@
 <!-- @file PC 端弹幕设置面板 -->
 <template>
   <div class="c-pc-barrage-setting">
+    <!-- 按钮 -->
     <pc-icon-barrage-setting
       class="c-pc-player-control__button c-pc-player-control__button--barrage"
       color="#fff"
     />
-
+    <!-- 悬浮面板 -->
     <div class="c-pc-barrage-setting__panel">
       <div class="c-pc-barrage-setting__label">
         {{ $lang('barrage.speed') }}

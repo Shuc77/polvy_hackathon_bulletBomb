@@ -59,6 +59,11 @@ export const useAskSend = () => {
     });
   }
 
+  function onSendSystemMsg({ content }: { content: string }) {
+    const watchCore = getWatchCore();
+    watchCore.ask.sendSystemMsg(content);
+  }
+
   /**
    * 处理点击发送图片
    */
@@ -82,5 +87,6 @@ export const useAskSend = () => {
     msgInputWrapRef,
     onSubmitMessage,
     onClickSendImage,
+    onSendSystemMsg,
   };
 };

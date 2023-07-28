@@ -18,6 +18,7 @@
         :placeholder="askInputPlaceholder"
         @submit="onSubmitMessage"
         @click-send-image="onClickSendImage"
+        @system-msg="onSendSystemMsg"
       />
     </div>
   </div>
@@ -33,9 +34,11 @@ import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
-const { askInputPlaceholder, askMsgRenderList, getAskMsgList } = useAsk({ askMsgListRef });
+const { askInputPlaceholder, askMsgRenderList, getAskMsgList } = useAsk({
+  askMsgListRef,
+});
 
-const { msgInputWrapRef, onSubmitMessage, onClickSendImage } = useAskSend();
+const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = useAskSend();
 </script>
 
 <style lang="scss">

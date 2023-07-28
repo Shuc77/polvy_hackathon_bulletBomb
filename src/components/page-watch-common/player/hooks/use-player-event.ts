@@ -20,7 +20,7 @@ export const usePlayerEvent = () => {
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
-  const { toToggleBarrageSettingVisible } = usePlayerAction();
+  const { toToggleBarrageMobileSettingVisible } = usePlayerAction();
 
   function onPlayerInited(): void {
     playerStore.$patch({
@@ -99,7 +99,7 @@ export const usePlayerEvent = () => {
 
   /** 调起弹幕设置弹窗 */
   function onBarrageSettingClick() {
-    toToggleBarrageSettingVisible(true);
+    toToggleBarrageMobileSettingVisible(true);
   }
 
   /** 全屏 */

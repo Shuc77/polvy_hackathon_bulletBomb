@@ -4,27 +4,18 @@
   <div class="c-pc-playback-list">
     <plv-row
       class="c-pc-playback-list__main"
-      :gutter="[
-        {
-          sm: 30,
-          md: 30,
-          lg: 60,
-          xl: 60,
-          xxl: 60,
-        },
-        {
-          sm: 30,
-          md: 30,
-          lg: 40,
-          xl: 40,
-          xxl: 40,
-        },
-      ]"
+      :gutter="20"
     >
       <plv-col
         v-for="(item, index) in currentPagePlaybackList"
         :key="index"
-        :span="8"
+        :span="{
+          sm: 6,
+          md: 6,
+          lg: 6,
+          xl: 4.8,
+          xxl: 4.8,
+        }"
         class="c-pc-playback-list__item"
         :class="{
           'c-pc-playback-list__item--current':
@@ -98,7 +89,6 @@ const { onClickPlaybackItem } = usePlaybackList();
 
 <style lang="scss">
 .c-pc-playback-list {
-  max-width: 1200px;
   margin-top: -20px;
 }
 
@@ -111,10 +101,6 @@ const { onClickPlaybackItem } = usePlaybackList();
   box-sizing: border-box;
   flex-shrink: 0;
   cursor: pointer;
-
-  &:nth-child(3n + 3) {
-    margin-right: 0;
-  }
 }
 
 .c-pc-playback-list__item__cover-wrap {

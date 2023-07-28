@@ -115,7 +115,9 @@
         <!-- 右侧按钮 -->
         <div class="c-pc-player-control__content__right">
           <!-- 连麦信息 -->
-          <connect-mic-setting v-if="isConnectMicing && mainScreen === MainScreenContent.Player" />
+          <pc-connect-mic-setting
+            v-if="isConnectMicing && mainScreen === MainScreenContent.Player"
+          />
 
           <!-- 弹幕相关设置 -->
           <template v-if="barrageSetting.barrageEnabled">
@@ -137,13 +139,13 @@
           </template>
 
           <!-- 倍速设置 -->
-          <rate-setting v-if="rateSettingVisible" />
+          <pc-rate-setting v-if="rateSettingVisible" />
 
           <!-- 音量设置 -->
-          <volume-setting v-if="volumeSettingVisible" />
+          <pc-volume-setting v-if="volumeSettingVisible" />
 
           <!-- 设置面板 -->
-          <player-setting v-if="playerSettingVisible" />
+          <pc-player-setting v-if="playerSettingVisible" />
 
           <!-- 文档和视频区域切换 -->
           <div
@@ -172,23 +174,24 @@
 </template>
 
 <script setup lang="ts">
-import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
-import { PcIconClose } from '@/components/component-icons/pc/map';
-import { formatSeconds } from '@utils-ts/date';
 import { ref } from 'vue';
-import ConnectMicSetting from './connect-mic-setting.vue';
-import PcBarrageSetting from './pc-barrage-setting.vue';
-import PlayerSetting from './player-setting.vue';
-import RateSetting from './rate-setting.vue';
-import VolumeSetting from './volume-setting.vue';
+import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
+import { formatSeconds } from '@utils-ts/date';
+
 import PcPlayerProgressBar from '@/components/page-watch-common/player/player-progress-bar/pc-player-progress-bar.vue';
 import PcPlayerTimeAxisMarkContainer from '@/components/page-watch-common/player/player-time-axis-mark/pc-player-time-axis-mark-container.vue';
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
+import { PcIconClose } from '@/components/component-icons/pc/map';
 import {
   PcOriginIconReturnLive,
   PcOriginIconBarrageOff,
   PcOriginIconBarrageOn,
 } from '@/components/component-icons/pc-origin/map';
+import PcConnectMicSetting from './pc-connect-mic-setting.vue';
+import PcBarrageSetting from './pc-barrage-setting.vue';
+import PcPlayerSetting from './pc-player-setting.vue';
+import PcRateSetting from './pc-rate-setting.vue';
+import PcVolumeSetting from './pc-volume-setting.vue';
 
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';

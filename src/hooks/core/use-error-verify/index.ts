@@ -13,6 +13,8 @@ export enum ErrorVerifyType {
 export interface RedirectErrorParams {
   /** 异常类型 */
   errorType?: ErrorVerifyType;
+  /** 错误来源 */
+  causeBy?: string;
 }
 
 /**

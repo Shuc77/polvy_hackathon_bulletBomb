@@ -8,7 +8,7 @@
     :title="announcementTitle"
     :mask="false"
     :mount-el="dialogMountEl"
-    :position-computed-elem="PC_MAIN_PLAYER_SELECTOR"
+    :position-computed-elem="positionComputedElem"
     @closed="onCloseDialog"
   >
     <iar-pc-bulletin
@@ -53,12 +53,16 @@ const dialogMountEl = computed(() => {
   return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : '';
 });
 
+const positionComputedElem = computed(() => {
+  return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : PC_MAIN_PLAYER_SELECTOR;
+});
 watch(
   () => layoutStore.isFullscreen,
   () => {
     nextTick(() => {
       if (dialogRef.value) {
         dialogRef.value.setMountEl();
+        dialogRef.value.handleDocumentEventToReset();
       }
     });
   },

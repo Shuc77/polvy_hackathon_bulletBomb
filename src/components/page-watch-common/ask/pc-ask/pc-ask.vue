@@ -19,6 +19,7 @@
         :image-paste-input-enabled="imagePasteInputEnabled"
         :placeholder="askInputPlaceholder"
         @submit="onSubmitMessage"
+        @system-msg="onSendSystemMsg"
         @click-send-image="onClickSendImage"
       />
     </div>
@@ -48,7 +49,7 @@ const imagePasteInputEnabled = computed(() => {
   return questionImageEnabled.value;
 });
 
-const { msgInputWrapRef, onSubmitMessage, onClickSendImage } = useAskSend();
+const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = useAskSend();
 </script>
 
 <style lang="scss">

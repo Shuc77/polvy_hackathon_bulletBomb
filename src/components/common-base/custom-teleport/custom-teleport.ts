@@ -3,7 +3,7 @@
  */
 import { useVue } from '@/hooks/core/use-vue';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { defineComponent, nextTick, onBeforeUnmount, onMounted, watch } from 'vue';
+import { defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, watch } from 'vue';
 import { $ } from '@just4/dom';
 
 const customTeleportProps = () => ({
@@ -12,11 +12,12 @@ const customTeleportProps = () => ({
 });
 
 export const CustomTeleport = defineComponent({
+  name: 'CustomTeleport',
   props: {
     ...customTeleportProps(),
   },
   setup(props, { slots }) {
-    const { getCurrentElem } = useVue();
+    const { getCurrentElem, getInstance } = useVue();
 
     const startComment = document.createComment('teleport start');
     const $startComment = $(startComment);
@@ -45,6 +46,16 @@ export const CustomTeleport = defineComponent({
       $elem.insertAfter($startComment);
     }
 
+    function getParentElem() {
+      let parentElem: Element | undefined | null;
+      if (typeof props.to === 'string') {
+        parentElem = document.querySelector(props.to);
+      } else if (props.to instanceof Element) {
+        parentElem = props.to;
+      }
+      return parentElem;
+    }
+
     /** 设置节点位置 */
     async function setElemPosition() {
       await nextTick();
@@ -59,13 +70,7 @@ export const CustomTeleport = defineComponent({
         return;
       }
 
-      let parentElem: Element | undefined | null;
-      if (typeof props.to === 'string') {
-        parentElem = document.querySelector(props.to);
-      } else if (props.to instanceof Element) {
-        parentElem = props.to;
-      }
-
+      const parentElem = getParentElem();
       if (!parentElem) {
         resetToDefaultPosition();
         return;
@@ -92,6 +97,15 @@ export const CustomTeleport = defineComponent({
     onBeforeUnmount(() => {
       $startComment.remove();
       $endComment.remove();
+    });
+
+    onUnmounted(() => {
+      const vm = getInstance();
+      if (vm) {
+        vm.$destroy();
+        const elem = getCurrentElem();
+        elem?.remove();
+      }
     });
 
     return () => slots.default && slots.default();

@@ -84,10 +84,10 @@ export const usePlayerAction = () => {
     setVolumeDebounce(volume);
   }
 
-  /** 切换显示/隐藏弹幕设置弹窗 */
-  function toToggleBarrageSettingVisible(toShow: boolean) {
+  /** 切换显示/隐藏弹幕移动端设置弹窗 */
+  function toToggleBarrageMobileSettingVisible(toShow: boolean) {
     playerStore.$patch({
-      barrageSettingVisible: toShow,
+      barrageMobileSettingVisible: toShow,
     });
   }
 
@@ -212,7 +212,7 @@ export const usePlayerAction = () => {
     toTogglePlay,
     toRefresh,
     toChangeVolume,
-    toToggleBarrageSettingVisible,
+    toToggleBarrageMobileSettingVisible,
     toIncreaseVolume,
     toReductionVolume,
     toToggleBarrageShow,

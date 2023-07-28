@@ -24,6 +24,7 @@ export const useChatInputController = () => {
     // eslint-disable-next-line prettier/prettier
     sendSpeakMsg: sendChatSpeakMsg,
     sendImageMsg: sendChatImageMsg,
+    sendSystemMsg: sendChatSystemMsg,
   } = useSendMsg();
 
   /** 消息输入框 */
@@ -34,6 +35,11 @@ export const useChatInputController = () => {
     if (!msgInputWrapRef.value) return;
 
     msgInputWrapRef.value.focusInput();
+  }
+
+  /** 处理发送系统消息 */
+  function onSendSystemMsg({ content }: { content: string }) {
+    sendChatSystemMsg(content);
   }
 
   /** 监听输入框消息发送 */
@@ -119,6 +125,7 @@ export const useChatInputController = () => {
     msgInputWrapRef,
     focusMsgInput,
 
+    onSendSystemMsg,
     onSubmitMessage,
     onClickSendImage,
   };

@@ -10,7 +10,10 @@
     <!-- ========= 弹出层类型组件 Start ========= -->
 
     <!-- 连麦挂件 -->
-    <portrait-connect-mic-pendant v-if="connectMicPendantVisible" />
+    <portrait-connect-mic-pendant
+      v-if="connectMicPendantRenderEnabled"
+      v-show="connectMicPendantVisible"
+    />
 
     <!-- 互动功能 -->
     <portrait-iar-render v-if="!isPlaybackWatchUrl" />
@@ -117,7 +120,8 @@ const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { microActivityEnabled } = storeDefinitionToRefs(useMicroActivityStore);
 
-const { connectMicPendantVisible } = storeDefinitionToRefs(useConnectMicStore);
+const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
+  storeDefinitionToRefs(useConnectMicStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible } =
   storeDefinitionToRefs(usePlaybackStore);

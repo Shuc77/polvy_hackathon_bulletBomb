@@ -21,7 +21,9 @@ export const useLiveStartTips = () => {
   /** 关闭提示 */
   function closeTips() {
     tipsVisible.value = false;
-    watchCore.player.play();
+    if (channelStore.liveStatus === LiveStatus.Live) {
+      watchCore.player.play();
+    }
   }
 
   watch(

@@ -9,6 +9,7 @@
       :send-image-enabled="chatSetting.viewerSendImgEnabled"
       :disabled-send-image="chatInputDisabled"
       :image-paste-input-enabled="imagePasteInputEnabled"
+      @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
       @click-send-image="onClickSendImage"
     >
@@ -111,6 +112,7 @@ const {
   msgInputWrapRef,
   focusMsgInput,
 
+  onSendSystemMsg,
   onSubmitMessage,
   onClickSendImage,
 } = useChatInputController();

@@ -60,13 +60,13 @@
 
           <!-- 右侧按钮 -->
           <div class="c-mobile-player-control__inner__right">
-            <template v-if="barrageSetting.barrageEnabled">
+            <template v-if="barrageSpeedButtonVisible">
               <!-- 弹幕设置 -->
               <mobile-icon-barrage-setting
                 v-if="isHorizontalScreenOrientation || mobilePlayerIsPageFullscreen"
                 class="c-mobile-player-control__button"
                 color="#fff"
-                @click="toToggleBarrageSettingVisible(!barrageSettingVisible)"
+                @click="toToggleBarrageMobileSettingVisible(!barrageMobileSettingVisible)"
               />
               <!-- 弹幕开关 -->
               <mobile-origin-icon-barrage-on
@@ -117,9 +117,8 @@ import { usePlayerControlVisible } from './_hooks/_user-player-control-visible';
 const {
   playStatus,
   playerControlVisible,
-  barrageSetting,
   barrageShow,
-  barrageSettingVisible,
+  barrageMobileSettingVisible,
   supportLiveTimeShift,
 } = storeDefinitionToRefs(usePlayerStore);
 
@@ -131,7 +130,7 @@ const {
   toRefresh,
   toToggleMobilePageFullscreen,
   toToggleBarrageShow,
-  toToggleBarrageSettingVisible,
+  toToggleBarrageMobileSettingVisible,
 } = usePlayerAction();
 
 const {
@@ -140,6 +139,7 @@ const {
 
   playButtonVisible,
   refreshButtonVisible,
+  barrageSpeedButtonVisible,
 } = usePlayerControl();
 
 const { startHidePlayerControlTimer } = usePlayerControlVisible();

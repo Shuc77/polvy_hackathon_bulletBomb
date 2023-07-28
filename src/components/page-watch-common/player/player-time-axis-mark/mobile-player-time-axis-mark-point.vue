@@ -58,11 +58,17 @@ const emits = defineEmits({
   'mark-point-update': emitFunc<TimeAxisMarkInfo>(),
 });
 
-const { mergeTimeAxisMarkList, getFirstMarkPointDetail } = useTimeAxisMarkHook({
+const {
+  mergeTimeAxisMarkList,
+
+  getFirstMarkPointDetail,
+  toSeekByTimeAxisMark,
+} = useTimeAxisMarkHook({
   getContainerWidth: () => props.containerEl.clientWidth || 0,
 });
 
 function emitMarkPoint(markPointDetail: TimeAxisMarkInfo) {
+  toSeekByTimeAxisMark(markPointDetail);
   emits('mark-point-update', markPointDetail);
 }
 

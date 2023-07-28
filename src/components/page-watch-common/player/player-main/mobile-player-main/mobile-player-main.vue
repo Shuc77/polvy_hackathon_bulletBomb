@@ -7,6 +7,7 @@
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
     }"
+    :style="mobilePlayerMainStyle"
     @click="onClickContainer"
   >
     <!-- 播放器渲染容器 -->
@@ -29,7 +30,7 @@
     <!-- 播放器暖场/封面图  -->
     <mobile-player-cover-img v-if="isLowLatency" />
 
-    <!-- “立即观看”播放按钮 -->
+    <!-- “立即观看”播放按钮，仅用来展示  -->
     <player-play-button
       v-if="isLowLatency"
       :mode="PlayButtonMode.Text"
@@ -54,10 +55,7 @@
     </transition>
 
     <!-- 播放器弹幕设置面板 -->
-    <mobile-barrage-setting
-      v-show="barrageSettingVisible"
-      @close-setting="handleToggleBarrageSettingVisible"
-    />
+    <mobile-barrage-setting v-show="barrageMobileSettingVisible" />
 
     <!-- 精彩看点弹窗 -->
     <mobile-player-time-axis-mark-popup v-if="supportTimeAxisMark" />
@@ -65,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { unref } from 'vue';
+import { computed, unref } from 'vue';
 
 import { appEvents, eventBus } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -90,6 +88,7 @@ import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
+import { CSSProperties } from 'vue/types/jsx';
 
 const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
   storeDefinitionToRefs(useLayoutStore);
@@ -98,7 +97,7 @@ const {
   isLowLatency,
   playerControlVisible,
   logoSetting,
-  barrageSettingVisible,
+  barrageMobileSettingVisible,
   supportTimeAxisMark,
 } = storeDefinitionToRefs(usePlayerStore);
 
@@ -119,19 +118,25 @@ const { playerContainer } = usePlayerMain({
 });
 
 const { latencyModeSettingVisible, bigPlayButtonVisible } = usePlayerControl();
-const { toTogglePlay } = usePlayerAction();
+const { toPlay } = usePlayerAction();
+
+// 兼容移动端浏览器底部 Tab 存在的情况
+const mobilePlayerMainStyle = computed<CSSProperties>(() => {
+  if (!mobilePlayerIsPageFullscreen.value) return {};
+
+  const width = document.body.clientHeight;
+  return {
+    width: width + 'px',
+    marginLeft: (width / 2) * -1 + 'px',
+  };
+});
 
 function onClickContainer() {
+  // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
   if (bigPlayButtonVisible.value) {
-    toTogglePlay();
+    toPlay();
   }
   eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
-}
-
-function handleToggleBarrageSettingVisible() {
-  usePlayerStore().$patch({
-    barrageSettingVisible: false,
-  });
 }
 </script>
 
@@ -175,13 +180,15 @@ function handleToggleBarrageSettingVisible() {
   top: 50%;
   left: 50%;
   z-index: 2000;
-  width: 100vh !important;
   height: 100vw !important;
   margin-top: -50vw;
-  margin-left: -50vh;
   transform: rotate3d(0, 0, 1, 90deg) !important;
-  transform: rotate(90deg);
   transform-origin: center center;
+
+  // ios 兼容处理
+  .c-mobile-player-main__container {
+    z-index: -1;
+  }
 }
 .c-mobile-player-main--screen__horizontal {
   position: fixed;

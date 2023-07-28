@@ -1,11 +1,6 @@
 <!-- @file PC 端观看页主体布局 -->
 <template>
-  <div
-    class="c-pc-watch-layout g-outside pws-pc-watch-bg"
-    :style="{
-      backgroundImage: pcWatchBackgroundImage ? `url(${pcWatchBackgroundImage}) !important` : '',
-    }"
-  >
+  <div class="c-pc-watch-layout g-outside">
     <!-- 上半部分 -->
     <div
       class="c-pc-watch-layout__main-wrap"
@@ -153,7 +148,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { $ } from '@just4/dom';
+import { onMounted, ref } from 'vue';
 import PcBasicInfo from '@/components/common-business/basic-info/pc-basic-info.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
 import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
@@ -162,7 +158,7 @@ import PcDoc from '@/components/page-watch-common/doc/pc-doc.vue';
 import PcDonatePayQrcode from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-pay-qrcode.vue';
 import PcMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-horizontal.vue';
 import PcPageAdvert from '@/components/page-watch-common/page-advert/pc-page-advert.vue';
-import PcPlayerControl from '@/components/page-watch-common/player/player-control/pc-player-control/player-control.vue';
+import PcPlayerControl from '@/components/page-watch-common/player/player-control/pc-player-control/pc-player-control.vue';
 import PcPlayerMain from '@/components/page-watch-common/player/player-main/pc-player-main/pc-player-main.vue';
 import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
 import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
@@ -181,8 +177,6 @@ import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
-
-const { pcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
@@ -214,6 +208,16 @@ function showPlayerControl(e: MouseEvent) {
 
   showPlayerControlItem();
 }
+
+const { pcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
+
+onMounted(() => {
+  // 需要在 body 设置全局背景
+  $(document.body).addClass(['g-background', 'pws-pc-watch-bg']);
+  if (pcWatchBackgroundImage.value) {
+    document.body.style.setProperty('background-image', `url("${pcWatchBackgroundImage.value}")`);
+  }
+});
 </script>
 
 <style lang="scss">
@@ -234,15 +238,16 @@ $--layout-player-percent: 56.25% !default;
 $--layout-sub-pack-up-height: 40px !default;
 
 .c-pc-watch-layout {
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
-  background-size: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .c-pc-watch-layout__main-wrap {
   position: relative;
+  // ==START==  @PLV-TODO Remove 1rem  ==START==
   padding-top: 0.762 * 0.5625 * 0.08rem;
+  // padding-top: 3%;
+  // ==END== @PLV-TODO Remove 1rem  ==END==
   padding-bottom: 32px;
 }
 

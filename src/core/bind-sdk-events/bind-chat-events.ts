@@ -1,4 +1,4 @@
-import { redirectToErrorVerify } from '@/hooks/core/use-error-verify';
+import { ErrorVerifyType, redirectToErrorVerify } from '@/hooks/core/use-error-verify';
 import { useChatStore } from '@/store/use-chat-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatEvents } from '@polyv/live-watch-sdk';
@@ -37,8 +37,8 @@ export function bindChatModuleEvents(): void {
   });
 
   // 重复登录，页面跳走
-  watchCore.chat.eventEmitter.on(ChatEvents.CurrentUserRelogin, () => {
-    redirectToErrorVerify();
+  watchCore.chat.eventEmitter.on(ChatEvents.CurrentUserRelogin, params => {
+    redirectToErrorVerify(params);
   });
 
   // 点赞数修改
@@ -54,6 +54,13 @@ export function bindChatModuleEvents(): void {
     const onlineUserCount = watchCore.chat.getOnlineUserCount();
     chatStore.$patch({
       onlineUserCount,
+    });
+  });
+
+  // 超出直播间最大在线人数
+  watchCore.chat.eventEmitter.on(ChatEvents.OverMaxOnlineCount, () => {
+    redirectToErrorVerify({
+      errorType: ErrorVerifyType.Restrict,
     });
   });
 }
