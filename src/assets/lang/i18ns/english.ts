@@ -53,7 +53,9 @@ export const englishLang: LangConfig = {
 
   'ask.placeholderMsg': 'Hi, what can I do for you',
 
-  'base.frequentOperation': 'Your operation is too frequent, please try again later',
+  'base.agree': 'Agree',
+  'base.disagree': 'Disagree',
+  'base.sendSmsFail': 'Sending failed. Please change your phone number or try again later',
   'base.region': 'Region',
   'base.ok': 'OK',
   'base.backTop': 'Top',
@@ -87,6 +89,7 @@ export const englishLang: LangConfig = {
   'base.searchKeyword': 'Search keyword',
   'base.emptyOptions': 'Empty options',
   'base.noMore': 'No more updates',
+  'base.sendSuccess': 'Send success',
 
   'channel.descEmpty': 'No live broadcast introduction~',
 
@@ -274,9 +277,9 @@ export const englishLang: LangConfig = {
   'global.singleSession.error.unknow': 'Account has logged in other place',
   'global.singleSession.error.relogin': 'Account has logged in other place',
 
-  'interact.announcement.title': 'Announcement',
-  'interact.announcement.titleList': 'Announcement List',
-  'interact.announcement.titleDetail': 'Announcement',
+  'interact.announcement.title': 'Bulletin',
+  'interact.announcement.titleList': 'Bulletin Board',
+  'interact.announcement.titleDetail': 'Bulletin',
   'interact.answerCard.singleChoice': '【Single Choice】',
   'interact.answerCard.multiChoice': '【Multiple Choice】',
   'interact.answerCard.title': 'Answer Sheet',
@@ -462,6 +465,7 @@ export const englishLang: LangConfig = {
   'weixin.error.payTimeout': 'Payment timeout',
   'weixin.error.toWechatPay': 'Please pay on WeChat',
   'weixin.error.openInClient': 'Please open it at WeChat',
+  'weixin.snapshot.tips': 'Click Use More to authorize browsing',
 
   'withdraw.name': 'Withdraw',
   'withdraw.apply.popup.title': 'confirm',
@@ -505,6 +509,7 @@ export const englishLang: LangConfig = {
   'menu.tabName.microActivity': 'MicroActivity',
   'menu.tabName.chapter': 'Chapter',
   'menu.tabName.multiMeeting': 'MultiMeeting',
+  'menu.empty': 'Empty menu',
 
   'multiMeeting.other': 'Breakout rooms',
   'multiMeeting.text': 'Live Broadcast Room',
@@ -544,4 +549,15 @@ export const englishLang: LangConfig = {
   'barrage.speed.veryFast': 'very fast',
 
   'promote.external.link.tips': `After clicking the menu, the content of this link will be displayed on a new page; if a new page cannot be created, it will be displayed on the current page to replace the original viewing page`,
+
+  'wxAuth.dialog.title': 'Login Authorization',
+  'wxAuth.qrcode.tips': 'Please use WeChat to scan the code',
+  'wxAuth.copy': 'Copy link',
+  'wxAuth.btn.text': 'WeChat Quick Login',
+  'wxAuth.protocol.tips': 'Read and agree',
+  'wxAuth.protocol.content':
+    'Read and agree<a href="${viewerAgreement}">《User Agreement》</a> and <a href="${viewerPolicy}">《Privacy Policy》</a>',
+  'wxAuth.protocol.confirm.content':
+    '<p>In order to provide better products and services and protect the legitimate rights of users, the <a href="${viewerAgreement}">"User Agreement"</a> and <a href="${viewerPolicy}">"Privacy Policy"</a> are formulated in accordance with relevant national laws and regulations.</p><p>If you want to use our platform services, please read the <a href="${viewerAgreement}">"User Agreement"</a> and <a href="${viewerPolicy}">"Privacy Policy,"</a> and click "Agree." You will be automatically logged in.</p>',
+  'wxAuth.protocol.confirm.title': 'User Agreement and Privacy Policy',
 };

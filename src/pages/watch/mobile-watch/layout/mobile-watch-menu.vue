@@ -1,7 +1,10 @@
 <!-- @file 移动端底部菜单栏 -->
 <template>
   <div class="c-mobile-watch-mobile-menu">
-    <mobile-menu-tabs v-model="mobileMenuCurrentName">
+    <mobile-menu-tabs
+      v-model="mobileMenuCurrentName"
+      @input="trackWatchTabChange"
+    >
       <template #header-suffix>
         <mobile-follow-btn v-if="followEnabled" />
       </template>
@@ -86,7 +89,8 @@
         <!-- 回放 -->
         <mobile-menu-tab-pane
           v-else-if="
-            menu.menuType === ChannelMenuType.Previous && liveStatus === LiveStatus.Playback
+            menu.menuType === ChannelMenuType.Previous &&
+            ![LiveStatus.Live, LiveStatus.Stop].includes(liveStatus)
           "
           :key="`playback-${index}`"
           :label="menu.name"
@@ -279,6 +283,7 @@ import {
 import { translate } from '@/assets/lang';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 
 const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -302,6 +307,8 @@ const docOrCameraMenuName = computed(() => {
 
 const { followEnabled } = useFollowSetting();
 const { chatMenuAdditionData, askMenuAdditionData } = useWatchTabHook({ mode: 'mobile' });
+
+const { trackWatchTabChange } = useWatchEventTrack();
 </script>
 
 <style lang="scss">

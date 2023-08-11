@@ -5,7 +5,12 @@ import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { defineStore } from 'pinia';
 import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
-import { ChannelMenuItem, ChannelMenuType, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
+import {
+  ChannelMenuItem,
+  ChannelMenuType,
+  MultiMeetingListLayout,
+  YN,
+} from '@polyv/live-watch-sdk';
 import cloneDeep from 'lodash-es/cloneDeep';
 
 import { useInteractReceiveStore } from './use-interact-receive-store';
@@ -13,6 +18,7 @@ import { useLangStore } from './use-lang-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useMultiMeetingStore } from './use-multi-meeting-store';
 import { useChannelStore } from './use-channel-store';
+import { ynToBool } from '@utils-ts/boolean';
 
 export interface MenuDataType {
   /** 是否创建该菜单节点 */
@@ -95,6 +101,9 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       if (channelStore.isSeminarChannel) {
         menus = menus.filter(menu => menu.menuType === ChannelMenuType.Quiz);
       }
+
+      // 处理 displayEnabled 字段
+      menus = menus.filter(menu => ynToBool(menu.displayEnabled, YN.Y));
 
       return menus.map(menu => {
         return {
@@ -201,7 +210,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       const menuData = getMenuData(ChannelMenuType.Chat);
 
       return {
-        visible: true,
+        visible: !!menuData,
         label: menuData?.name ?? translate('menu.tabName.chat'),
       };
     });

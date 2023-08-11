@@ -16,7 +16,10 @@
 
         <!-- 回放 -->
         <pc-normal-tab-pane
-          v-if="menu.menuType === ChannelMenuType.Previous && liveStatus === LiveStatus.Playback"
+          v-if="
+            menu.menuType === ChannelMenuType.Previous &&
+            ![LiveStatus.Live, LiveStatus.Stop].includes(liveStatus)
+          "
           :key="`playback-${index}`"
           :label="menu.name"
           :name="TAB_NAME_PLAYBACK"
@@ -97,7 +100,7 @@ import { ChannelMenuItem, ChannelMenuType, LiveStatus } from '@polyv/live-watch-
 import { computed, unref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { randomStr } from '@polyv/utils/dist/es/string';
+import { randomStr } from '@utils-ts/string';
 import { useLayoutStore } from '@/store/use-layout-store';
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
@@ -124,11 +127,6 @@ const bottomMenuList = computed<ChannelMenuItem[]>(() => {
   const menus = unref(channelMenus).filter(menu => {
     // 需要移除的菜单栏类型
     const removeTypes = [...unref(removeMenuTypes)];
-
-    // 针对回放列表，如果当前不在回放中则过滤
-    if (menu.menuType === ChannelMenuType.Previous && unref(liveStatus) !== LiveStatus.Playback) {
-      removeTypes.push(ChannelMenuType.Previous);
-    }
 
     /** @todo 嘉宾坐席逻辑处理 */
 

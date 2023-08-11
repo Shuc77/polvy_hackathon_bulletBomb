@@ -6,7 +6,6 @@
         v-show="welcomeVisible"
         class="c-portrait-chat-welcome-tips__inner g-img-cover g-singleline"
       >
-        <span class="c-portrait-chat-welcome-tips__prefix">{{ $lang('welcome.text') }} </span>
         <span class="c-portrait-chat-welcome-tips__msg g-singleline">{{ welcomeText }}</span>
       </p>
     </transition>

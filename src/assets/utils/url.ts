@@ -1,6 +1,7 @@
 /**
  * @file 与地址有关的工具方法
  */
+import { appendToURL, parse } from '@just4/querystring';
 import { changeProtocol } from '@utils-ts/net';
 
 /**
@@ -12,4 +13,22 @@ export function fitProtocol(url: string): string {
   const protocol = (matchRs && matchRs[1]) || 'https';
 
   return changeProtocol(url, protocol);
+}
+
+/**
+ * 将新的参数拼接到 url 中
+ * @desc 和 appendToURL 不一样的地方在于会将参数去重，只保留最新的值
+ * @param {string} url - url 字符串
+ * @param {object} query - 需要添加的查询参数
+ * @returns 拼接后的 url 字符串
+ */
+export function appendUrl<T extends object>(url: string, query: T): string {
+  const searchIndex = url.indexOf('?');
+  let searchParams = {};
+  let host = url;
+  if (searchIndex !== -1) {
+    host = url.slice(0, searchIndex);
+    searchParams = parse(url.slice(searchIndex + 1));
+  }
+  return appendToURL(host, Object.assign({}, searchParams, query));
 }

@@ -9,7 +9,7 @@
 const path = require('path');
 const pkgJSON = require('../package');
 
-const { formatDate } = require('@polyv/utils/dist/cjs/date');
+const { formatDate } = require('@polyv/utils/cjs/date');
 
 /** 当前是否为开发模式 */
 const devMode = (exports.devMode = process.env.NODE_ENV !== 'production');
@@ -71,7 +71,7 @@ let devAlias = {};
 /** 别名 */
 exports.alias = {
   '@': path.resolve(__dirname, '../src'),
-  '@utils-ts': path.resolve(__dirname, '../node_modules/@polyv/utils/dist/es'),
+  '@utils-ts': path.resolve(__dirname, '../node_modules/@polyv/utils/es'),
   ...devAlias,
 };
 

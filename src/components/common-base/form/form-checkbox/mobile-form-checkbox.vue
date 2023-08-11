@@ -8,6 +8,9 @@
   >
     <div
       class="c-mobile-form-checkbox__inner"
+      :class="{
+        'c-mobile-form-checkbox__inner__circle': props.circle,
+      }"
       @click="onClickCheckbox"
     >
       <mobile-icon-check class="c-mobile-form-checkbox__inner__icon" />
@@ -53,6 +56,9 @@ const { isChecked, onClickCheckbox } = useFormCheckbox({
   background: $--color-white;
   border: 1px solid #cfd8dc;
   border-radius: 2px;
+}
+.c-mobile-form-checkbox__inner__circle {
+  border-radius: 50%;
 }
 .c-mobile-form-checkbox__inner__icon {
   display: flex;

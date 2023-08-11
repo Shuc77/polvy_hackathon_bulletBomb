@@ -1,7 +1,7 @@
 <!-- @file PC 端常规 Tabs 标签页 -->
 <template>
   <div class="c-pc-normal-tabs">
-    <pc-normal-tab-header />
+    <pc-normal-tab-header v-show="!isEmptyMenu" />
     <slot></slot>
   </div>
 </template>
@@ -14,7 +14,7 @@ const props = defineProps(tabsProps());
 
 const emit = defineEmits(tabsEmits());
 
-const { tabsInstance } = useTabs({
+const { tabsInstance, isEmptyMenu } = useTabs({
   props,
   emit,
 });

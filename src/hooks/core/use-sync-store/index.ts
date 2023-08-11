@@ -15,12 +15,14 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
+import { usePageAdvertStore } from '@/store/use-page-advert-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useShareStore } from '@/store/use-share-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 
@@ -59,6 +61,7 @@ export const useSyncStoreForWatchApp = () => {
 };
 
 export const useSyncStoreForWatchCore = () => {
+  const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const authStore = useAuthStore();
   const weixinStore = useWeixinStore();
@@ -70,6 +73,7 @@ export const useSyncStoreForWatchCore = () => {
    * @warn 优先使用 watchCore 对应模块的钩子同步，如果模块没有对应的钩子，才在这里统一同步
    */
   function syncStoreAfterWatchCoreSetuped() {
+    watchAppStore.syncWatchAppStore();
     channelStore.syncChannelStore();
     authStore.syncAuthStore();
     weixinStore.syncWeixinStore();
@@ -93,6 +97,7 @@ export const useSyncStoreForWatchPage = () => {
   const donateStore = useDonateStore();
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
+  const pageAdvertStore = usePageAdvertStore();
 
   /**
    * 进入到观看页前同步 Store
@@ -110,6 +115,7 @@ export const useSyncStoreForWatchPage = () => {
     donateStore.syncDonateStore();
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
+    pageAdvertStore.syncPageAdvertStore();
   }
 
   return {

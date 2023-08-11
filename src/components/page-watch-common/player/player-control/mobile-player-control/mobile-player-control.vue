@@ -83,6 +83,7 @@
 
             <!-- 全屏按钮 -->
             <div
+              v-show="!isHorizontalScreenOrientation"
               class="c-mobile-player-control__button"
               :class="{
                 'c-mobile-player-control__button--fullscreen': !mobilePlayerIsPageFullscreen,

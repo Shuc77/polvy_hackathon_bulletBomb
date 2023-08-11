@@ -1,13 +1,20 @@
 <!-- @file 移动端菜单栏 Tabs 标签页 -->
 <template>
   <div class="c-mobile-menu-tabs">
-    <mobile-menu-tab-header>
+    <mobile-menu-tab-header v-show="!isEmptyMenu">
       <template #header-suffix>
         <slot name="header-suffix"></slot>
       </template>
     </mobile-menu-tab-header>
 
     <div class="c-mobile-menu-tabs__body pws-main-tab-body">
+      <div
+        v-if="isEmptyMenu"
+        class="c-mobile-menu-tabs__empty pws-main-tab-empty"
+      >
+        {{ $lang('menu.empty') }}
+      </div>
+
       <slot></slot>
     </div>
   </div>
@@ -22,7 +29,7 @@ const props = defineProps(tabsProps());
 
 const emit = defineEmits(tabsEmits());
 
-const { tabsInstance } = useTabs({
+const { tabsInstance, isEmptyMenu } = useTabs({
   props,
   emit,
   switchEvent: appEvents.global.MobileBottomMenuSwitch,
@@ -44,5 +51,24 @@ defineExpose(tabsInstance);
 .c-mobile-menu-tabs__body {
   position: relative;
   flex: 1;
+}
+
+.c-mobile-menu-tabs__empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+
+  &::before {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 8px;
+    content: '';
+    background-size: 100% 100%;
+  }
 }
 </style>

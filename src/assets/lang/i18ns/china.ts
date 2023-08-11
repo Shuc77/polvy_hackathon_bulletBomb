@@ -47,7 +47,9 @@ export const chinaLang = {
 
   'ask.placeholderMsg': '您好！请问有什么问题吗',
 
-  'base.frequentOperation': '您操作过于频繁，请稍后再试',
+  'base.agree': '同意',
+  'base.disagree': '不同意',
+  'base.sendSmsFail': '发送失败，请更换手机号或稍等再试',
   'base.region': '地区',
   'base.ok': '我知道了',
   'base.backTop': '回到顶部',
@@ -81,6 +83,7 @@ export const chinaLang = {
   'base.searchKeyword': '输入关键词搜索',
   'base.emptyOptions': '暂无选项',
   'base.noMore': '没有更多了',
+  'base.sendSuccess': '发送成功',
 
   'channel.descEmpty': '暂无直播介绍~',
 
@@ -442,6 +445,7 @@ export const chinaLang = {
   'weixin.error.payTimeout': '支付超时',
   'weixin.error.toWechatPay': '请在微信中打开本页进行支付',
   'weixin.error.openInClient': '请在微信端打开',
+  'weixin.snapshot.tips': '点击下方使用完整服务',
 
   'withdraw.name': '提现',
   'withdraw.apply.popup.title': '提现',
@@ -485,6 +489,7 @@ export const chinaLang = {
   'menu.tabName.microActivity': '微活动',
   'menu.tabName.chapter': '章节',
   'menu.tabName.multiMeeting': '分会场',
+  'menu.empty': '暂无菜单',
 
   'multiMeeting.other': '其它会场',
   'multiMeeting.text': '会场直播间',
@@ -525,4 +530,15 @@ export const chinaLang = {
 
   'promote.external.link.tips':
     '点击菜单后在新页面显示此链接内容；若无法新建页面则在当前页显示，替换原观看页',
+
+  'wxAuth.dialog.title': '登录授权',
+  'wxAuth.qrcode.tips': '请使用微信扫码',
+  'wxAuth.copy': '复制直播间链接',
+  'wxAuth.btn.text': '微信快捷登录',
+  'wxAuth.protocol.tips': '请阅读并同意协议',
+  'wxAuth.protocol.content':
+    '已阅读并同意<a href="${viewerAgreement}">《用户协议》</a>及<a href="${viewerPolicy}">《隐私政策》</a>',
+  'wxAuth.protocol.confirm.content':
+    '<p>为更好地给用户提供产品及服务，保护用户的合法权益，根据国家相关法律法规规定，制定《用户协议》和《隐私政策》。</p><p>用户如需使用平台服务，请阅读<a href="${viewerAgreement}">《用户协议》</a>和<a href="${viewerPolicy}">《隐私政策》</a>后，点击“同意”，将自动登录。</p>',
+  'wxAuth.protocol.confirm.title': '用户协议及隐私政策',
 };

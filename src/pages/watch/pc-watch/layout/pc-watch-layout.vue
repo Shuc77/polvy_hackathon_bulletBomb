@@ -6,6 +6,7 @@
       class="c-pc-watch-layout__main-wrap"
       :class="{
         'c-pc-watch-layout__main-wrap--has-doc': canRenderDoc,
+        'c-pc-watch-layout__main-wrap--center': pcAsideSectionIsEmpty && !isFullscreen,
       }"
     >
       <div
@@ -26,7 +27,10 @@
         </div>
 
         <!-- 主体布局右侧 -->
-        <div class="c-pc-watch-layout__main__right">
+        <div
+          v-show="!pcAsideSectionIsEmpty"
+          class="c-pc-watch-layout__main__right"
+        >
           <!-- 右侧顶部占位 -->
           <div
             v-if="canRenderDoc"
@@ -180,7 +184,8 @@ const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStor
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { mainScreen, subScreenPackUp, isFullscreen } = storeDefinitionToRefs(useLayoutStore);
+const { mainScreen, subScreenPackUp, isFullscreen, pcAsideSectionIsEmpty } =
+  storeDefinitionToRefs(useLayoutStore);
 
 const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 
@@ -215,7 +220,11 @@ onMounted(() => {
   // 需要在 body 设置全局背景
   $(document.body).addClass(['g-background', 'pws-pc-watch-bg']);
   if (pcWatchBackgroundImage.value) {
-    document.body.style.setProperty('background-image', `url("${pcWatchBackgroundImage.value}")`);
+    document.body.style.setProperty(
+      'background-image',
+      `url("${pcWatchBackgroundImage.value}")`,
+      'important',
+    );
   }
 });
 </script>
@@ -249,6 +258,18 @@ $--layout-sub-pack-up-height: 40px !default;
   // padding-top: 3%;
   // ==END== @PLV-TODO Remove 1rem  ==END==
   padding-bottom: 32px;
+}
+
+.c-pc-watch-layout__main-wrap--center {
+  .c-pc-watch-layout__main__player-wrap,
+  .c-pc-watch-layout__main-layer {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .c-pc-watch-layout__main__left {
+    margin: 0 auto;
+  }
 }
 
 .c-pc-watch-layout__main {

@@ -1,6 +1,6 @@
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { EmotionImageData } from '@polyv/live-watch-sdk';
 
 /**
@@ -9,6 +9,8 @@ import { EmotionImageData } from '@polyv/live-watch-sdk';
 export type EmotionPickerType = 'face' | 'image';
 
 export const emotionPickerProps = () => ({
+  /** 黄脸表情开关 */
+  faceEmotionEnabled: PropUtils.bool.def(true),
   /** 图片表情开关 */
   imageEmotionEnabled: PropUtils.bool.def(true),
   /** 点击 face 表情后关闭，默认：true */
@@ -65,6 +67,16 @@ export const useEmotionPicker = (options: {
   function onClickSend() {
     emit('click-send');
   }
+
+  function initCurrentPanelTypeByProps() {
+    if (props.imageEmotionEnabled && !props.faceEmotionEnabled) {
+      currentType.value = 'image';
+    }
+  }
+
+  onBeforeMount(() => {
+    initCurrentPanelTypeByProps();
+  });
 
   return {
     currentType,

@@ -33,3 +33,12 @@ const { isIarFullScreen, welfareLotteryPendantVisible, interactSetting } =
 
 const { welfareLotterySdk, onCommentSuccess, onEntryVisibleChanged } = useWelfareLottery();
 </script>
+
+<style lang="scss">
+.plv-iar-modal__wrap--fullscreen {
+  .plv-iar-modal__wrap--fullscreen,
+  .plv-iar-modal {
+    width: $--plv-mobile-watch-full-screen-vh !important;
+  }
+}
+</style>

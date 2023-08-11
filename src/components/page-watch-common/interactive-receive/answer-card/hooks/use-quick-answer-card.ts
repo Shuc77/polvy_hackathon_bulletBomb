@@ -51,10 +51,12 @@ export const useQuickAnswerCard = () => {
 
   onBeforeMount(() => {
     eventBus.$on(appEvents.interaction.OpenQuickAnswerCard, setQuickAnswerCardVisible);
+    answerCardSdk.on(answerCardSdk.events.STOP_TEST_QUESTION, removeQuickAnswerCardEntrance);
   });
 
   onBeforeUnmount(() => {
     eventBus.$off(appEvents.interaction.OpenQuickAnswerCard, setQuickAnswerCardVisible);
+    answerCardSdk.off(answerCardSdk.events.STOP_TEST_QUESTION, removeQuickAnswerCardEntrance);
   });
 
   return {

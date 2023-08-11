@@ -179,11 +179,12 @@ defineExpose(popupInstance);
 
 // 屏幕纵向，但强制横屏展示
 .c-mobile-popup--screen__horizontal__force {
+  top: 50%;
   bottom: 0 !important;
-  left: 0;
-  width: 100vh;
-  height: 100%;
-  transform: rotate(90deg);
+  left: 50%;
+  width: $--plv-mobile-watch-full-screen-vh;
+  height: $--plv-mobile-watch-full-screen-vw;
+  transform: translate(-50%, -50%) rotate(90deg);
   .c-mobile-popup__content {
     right: 0;
     bottom: 0;

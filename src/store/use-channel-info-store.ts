@@ -101,8 +101,13 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       return info;
     });
 
-    /** 频道标题（根据多语言返回） */
-    const channelTitle = computed(() => unref(channelInfo).title);
+    /**
+     * 频道标题
+     * 一般情况会根据多语言返回对应的频道信息标题，但是通过回放地址进入观看页时，需要使用回放视频名称
+     * */
+    const channelTitle = computed(() => {
+      return watchAppStore.playbackWatchBasicInfo.videoName || unref(channelInfo).title;
+    });
 
     /** 频道主持人（根据多语言返回） */
     const channelPublisher = computed(() => {

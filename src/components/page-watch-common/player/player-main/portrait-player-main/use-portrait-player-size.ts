@@ -1,6 +1,7 @@
 import { usePageStore } from '@/store/use-page-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 import { computed, unref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 
@@ -122,19 +123,31 @@ export function computedDocPlayerSize(targetSize: PlayerSizeData): PlayerContain
 export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData | undefined>) => {
   const playerStore = usePlayerStore();
   const portraitLayoutStore = usePortraitLayoutStore();
+  const webviewStore = useWebviewStore();
+  const pageStore = usePageStore();
 
   /** 播放器容器样式 */
   const playerContainerStyle = computed(() => {
     const styles: CSSProperties = {};
 
     let sizeData: PlayerContainerSize | undefined;
+    const pageClientWidth = pageStore.pageClientWidth;
+    const pageClientHeight = pageStore.pageClientHeight;
 
     const targetSizeVal: PlayerSizeData = unref(targetSize) || {
       width: playerStore.resolutionWidth,
       height: playerStore.resolutionHeight,
     };
 
-    if (portraitLayoutStore.portraitDocWrapHeight !== 0) {
+    // webview 小窗时直接铺满全屏
+    if (webviewStore.isSmallWindow) {
+      sizeData = {
+        width: pageClientWidth,
+        height: pageClientHeight,
+        top: 0,
+        left: 0,
+      };
+    } else if (portraitLayoutStore.portraitDocWrapHeight !== 0) {
       sizeData = computedDocPlayerSize(targetSizeVal);
     } else {
       sizeData = computedPlayerSize(targetSizeVal);

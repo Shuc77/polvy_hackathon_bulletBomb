@@ -1,7 +1,7 @@
 <!-- @file 竖屏观看页 -->
 <template>
   <div
-    class="c-portrait-watch"
+    class="c-portrait-watch iphone-polyfill-inset-top"
     :style="wrapStyle"
   >
     <!-- 观看页主体布局 -->
@@ -82,7 +82,6 @@ import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-fu
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
 import PortraitPlayerControlPopup from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-control-popup.vue';
 import { usePvTrack } from '@/hooks/business/use-pv-track';
-import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -90,7 +89,6 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
-import { usePageStore } from '@/store/use-page-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useViewerStore } from '@/store/use-viewer-store';
@@ -99,9 +97,6 @@ import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, unref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
-
-const pageStore = usePageStore();
-const { pageClientHeight } = storeToRefs(pageStore);
 
 const themeStore = useThemeStore();
 const { portraitPageBgUrl } = storeToRefs(themeStore);
@@ -128,9 +123,7 @@ const { isPlaybacking, playbackListVisible, chapterVisible } =
 
 /** 外层样式 */
 const wrapStyle = computed(() => {
-  const style: CSSProperties = {
-    height: `${pageClientHeight.value}px`,
-  };
+  const style: CSSProperties = {};
 
   if (unref(portraitPageBgUrl)) {
     style.backgroundImage = `url(${unref(portraitPageBgUrl)})`;
@@ -139,10 +132,6 @@ const wrapStyle = computed(() => {
 
   return style;
 });
-
-useWindowResizeListener(() => {
-  pageStore.resetUpPageSize();
-}, true);
 
 onMounted(() => {
   /**

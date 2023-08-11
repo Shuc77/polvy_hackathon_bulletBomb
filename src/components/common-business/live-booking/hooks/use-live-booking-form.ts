@@ -12,6 +12,7 @@ import { local } from '@just4/storage';
 import { computed, reactive, ref } from 'vue';
 import { LiveBookingFormInstance } from '../types';
 import { toastBookingFail } from './use-live-booking-fail';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 
 // local 中的手机号码缓存 key
 const LOCAL_PHONE_KEY = getStorageKey('live-booking-phone');
@@ -63,8 +64,12 @@ export const useLiveBookingForm = () => {
     bookingFormData.verifyCode = '';
   }
 
+  const { trackUserConfirmReservationLive } = useWatchEventTrack();
+
   /** 提交直播预约表单 */
   async function submitLiveBookingForm() {
+    trackUserConfirmReservationLive({ reservationType: 'code' });
+
     const watchCore = getWatchCore();
     const result = await watchCore.liveBooking.submitSmsLiveBooking({
       phoneNumber: bookingFormData.phoneNumber,

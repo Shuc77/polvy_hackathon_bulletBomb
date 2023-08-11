@@ -7,6 +7,8 @@ import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
 
 export interface WeixinStoreState {
+  /** 是否进入微信快照页模式 */
+  isWeixinSnapshotPageMode: Ref<boolean>;
   /** 是否已进行微信授权 */
   weixinAuthorized: Ref<boolean>;
   /** 是否已进行微信非静默授权 */
@@ -28,6 +30,9 @@ export interface WeixinStoreAction {
 export interface WeixinStore extends WeixinStoreState, WeixinStoreAction {}
 
 export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () => {
+  /** 是否进入微信快照页模式 */
+  const isWeixinSnapshotPageMode = ref(false);
+
   /** 是否已进行微信授权 */
   const weixinAuthorized = ref(false);
 
@@ -56,6 +61,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   function syncWeixinStore() {
     const watchCore = getWatchCore();
 
+    isWeixinSnapshotPageMode.value = watchCore.weixin.isWeixinSnapshotPageMode();
     weixinAuthorized.value = watchCore.weixin.isWeixinAuthorized();
     weixinWatchAuthorized.value = watchCore.weixin.isWeixinWatchAuthorized();
     workWeixinAuthorized.value = watchCore.weixin.isWorkWeixinAuthorized();
@@ -63,6 +69,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   }
 
   return {
+    isWeixinSnapshotPageMode,
     weixinAuthorized,
     weixinWatchAuthorized,
     workWeixinAuthorized,

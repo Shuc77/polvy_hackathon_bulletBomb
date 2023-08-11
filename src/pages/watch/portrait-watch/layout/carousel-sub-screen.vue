@@ -41,10 +41,4 @@ const { channelInfoSeat } = storeDefinitionToRefs(usePortraitLayoutStore);
   overflow-y: auto;
   @include iphone-x-pb(15px);
 }
-
-.c-portrait-carousel-sub-screen__top-left {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-}
 </style>

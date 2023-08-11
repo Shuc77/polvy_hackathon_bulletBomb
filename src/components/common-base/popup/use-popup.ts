@@ -46,6 +46,8 @@ export const popupProps = () => ({
   updateOnResize: PropUtils.bool.def(false),
   /** 弹层主题，默认：default */
   theme: PropUtils.enum<PopupTheme>().def(PopupTheme.Default),
+  /** 忽略主体最大高度，默认：false */
+  ignoreContentMaxHeight: PropUtils.bool.def(false),
   /** 弹层主体高度 */
   contentHeight: PropUtils.number,
   /** 弹层主体使用页面高度百分比，0～1，默认：false */
@@ -185,7 +187,7 @@ export const usePopup = (options: {
           : `${contentRenderHeight.value}px`;
     }
 
-    if (contentMaxHeight.value) {
+    if (contentMaxHeight.value && !props.ignoreContentMaxHeight) {
       style.maxHeight = `${contentMaxHeight.value}px`;
     }
 

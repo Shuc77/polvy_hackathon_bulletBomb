@@ -1,6 +1,6 @@
 <!-- @file 移动端观看页 -->
 <template>
-  <div class="c-mobile-watch">
+  <div class="c-mobile-watch iphone-polyfill-inset-top">
     <!-- 观看页主体布局 -->
     <mobile-watch-layout />
 
@@ -42,6 +42,12 @@
     <!-- 聊天消息全文弹层 -->
     <mobile-chat-full-message />
 
+    <!-- 更多弹层 -->
+    <mobile-more-popup />
+
+    <!-- 打赏弹层 -->
+    <mobile-donate-popup v-if="showDonateFunction" />
+
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
@@ -54,6 +60,8 @@ import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
+import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
+import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import { defineAsyncComponent } from 'vue';
 import MobileWatchLayout from './layout/mobile-watch-layout.vue';
 import MobileWatchPendant from './layout/mobile-watch-pendant.vue';
@@ -68,6 +76,7 @@ import { useRedpackStore } from '@/store/use-redpack-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
+import { useDonateStore } from '@/store/use-donate-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () => import('@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'),
@@ -98,7 +107,19 @@ const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
+const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
+
 useWatchPage();
 
 usePvTrack('saas-web-watch-mobile');
 </script>
+
+<style lang="scss">
+.c-mobile-watch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+</style>

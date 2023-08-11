@@ -8,10 +8,16 @@ import { ChatMsgRedpaperType, RedpackType } from '@polyv/live-watch-sdk';
 import { RedpackStatusData } from '@/components/page-watch-common/interactive-receive/redpack-rain/types/redpack-rain-types';
 
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
+import {
+  obverseTrackShowBehavior,
+  useWatchEventTrack,
+} from '@/hooks/business/use-watch-event-track';
 
 interface RedpaperEntranceInstance {
   /** 更新红包状态 */
   updateStatus(status: string): void;
+  /** Dom 元素 */
+  $el: HTMLDivElement;
 }
 
 /**
@@ -27,6 +33,9 @@ export const useRedpaperMsg = () => {
 
   /** 红包入口实例 */
   const entranceRef = ref<RedpaperEntranceInstance>();
+
+  /** 竖屏红包消息实例 */
+  const portraitRedpaperMsgRef = ref<HTMLDivElement>();
 
   /** 发送者的昵称 */
   const sendNick = computed(() => {
@@ -69,7 +78,29 @@ export const useRedpaperMsg = () => {
     eventBus.$emit(appEvents.interaction.OpenRedpack, unref(chatMsg));
   }
 
+  const { trackUserReadRedpack } = useWatchEventTrack();
+
+  function __trackUserReadRedpack($el?: HTMLElement) {
+    obverseTrackShowBehavior({
+      $el,
+      cb: () => {
+        trackUserReadRedpack({
+          redpackId: chatMsg.value.redpackId,
+          repackType: chatMsg.value.type,
+        });
+      },
+    });
+  }
+
   onMounted(() => {
+    if (entranceRef.value) {
+      __trackUserReadRedpack(entranceRef.value.$el);
+    }
+
+    if (portraitRedpaperMsgRef.value) {
+      __trackUserReadRedpack(portraitRedpaperMsgRef.value);
+    }
+
     eventBus.$on(appEvents.interaction.SetRedpackStatus, updateEntranceStatus);
   });
 
@@ -80,6 +111,7 @@ export const useRedpaperMsg = () => {
   return {
     chatMsg,
     entranceRef,
+    portraitRedpaperMsgRef,
     redpackSdk,
     sendNick,
     redpackText,

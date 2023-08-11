@@ -7,6 +7,7 @@ import { useVue } from '@/hooks/core/use-vue';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import {
+  computed,
   inject,
   InjectionKey,
   nextTick,
@@ -33,6 +34,7 @@ export const tabsProps = () => ({
 
 export const tabsEmits = () => ({
   input: emitFunc<TabNameType>(),
+  'is-empty-callback': emitFunc<boolean>(),
 });
 
 export const TABS_PROVIDE_KEY: InjectionKey<TabsInjectContext> = Symbol('tabsProvideKey');
@@ -65,17 +67,28 @@ export const useTabs = (options: {
   const currentTabIndex = ref(-1);
   /** 面板数据列表 */
   const tabPaneData = ref<TabPaneDataItem[]>([]);
+  /** 是否为空菜单 */
+  const isEmptyMenu = computed(() => {
+    return unref(tabPaneData).length === 0;
+  });
+
+  watch(
+    () => unref(isEmptyMenu),
+    () => {
+      emit('is-empty-callback', unref(isEmptyMenu));
+    },
+    {
+      immediate: true,
+    },
+  );
 
   /** 设置当前激活的面板 */
   function setCurrentTab(name: TabNameType) {
     if (name === unref(currentTabName)) {
       return;
     }
-    const newIndex = unref(tabPaneData).findIndex(paneData => paneData.name === name);
 
-    if (newIndex === -1) {
-      return;
-    }
+    const newIndex = unref(tabPaneData).findIndex(paneData => paneData.name === name);
 
     prevTabName.value = unref(currentTabName);
     prevTabIndex.value = unref(currentTabIndex);
@@ -102,7 +115,7 @@ export const useTabs = (options: {
 
   /** 切到上一个 tab */
   function toPrevTab() {
-    // 已是最后一个
+    // 已是第一个
     if (currentTabIndex.value <= 0) {
       return;
     }
@@ -181,7 +194,7 @@ export const useTabs = (options: {
       shouldSetFirstTab = true;
     }
 
-    if (shouldSetFirstTab) {
+    if (shouldSetFirstTab && panes.length) {
       setCurrentTab(panes[0].name);
     }
   }
@@ -215,6 +228,7 @@ export const useTabs = (options: {
     currentTabName,
     prevTabIndex,
     currentTabIndex,
+    isEmptyMenu,
     setCurrentTab,
     toNextTab,
     toPrevTab,

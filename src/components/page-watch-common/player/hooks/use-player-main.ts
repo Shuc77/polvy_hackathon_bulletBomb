@@ -56,9 +56,7 @@ export const usePlayerMain = ({
    */
   async function getPlayerPaybackOptions() {
     if (channelStore.liveStatus !== LiveStatus.Playback) {
-      playbackStore.$patch({
-        currentPlaybackTarget: undefined,
-      });
+      playbackStore.updateCurrentPlaybackTarget(undefined);
       return;
     }
 
@@ -119,6 +117,8 @@ export const usePlayerMain = ({
     playerStore.$patch({
       playerInited: false,
       isPlayStarted: false,
+      playerControlVisible: false,
+      sdkPlayerUIControlVisible: false,
     });
     playbackStore.$patch({
       isPlaybacking: false,

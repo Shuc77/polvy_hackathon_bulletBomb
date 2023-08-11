@@ -44,6 +44,12 @@ export function useWeixinAuthorize() {
       return false;
     }
 
+    // 需要强制授权时，页面不进行授权
+    const checkForceWxAuth = watchCore.weixin.checkForceWxAuth();
+    if (checkForceWxAuth) {
+      return false;
+    }
+
     return true;
   });
 

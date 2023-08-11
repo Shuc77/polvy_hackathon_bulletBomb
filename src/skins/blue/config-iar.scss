@@ -6,12 +6,18 @@ $--skin-iar-common-configs: (
   // 挂件字体色
   'iar-pendant:text-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.7),
 
+  // 问答表情图标颜色
+  'iar-icon-qa-ask-emotion:icon-color': #fff,
   // 商品库内容背景色
   'iar-product-list-content:bg-color': #e5f1ff,
   // 商品库图标图片
   'iar-product-list-shop:icon-image': './imgs/pws-product-icon.png',
+  // 商品库图标颜色
+  'iar-product-list-shop:icon-color': #1b3673,
   // 商品库图标图片（职位）
   'iar-product-list-recruitment:icon-image': './imgs/pws-product-icon-recruitment.png',
+  // 商品库图标颜色（职位）
+  'iar-product-list-recruitment:icon-color': #1b3673,
   // 商品库标签背景色
   'iar-product-list-label:bg-color': rgba(#333333, 0.1),
   // 商品库标签字体色

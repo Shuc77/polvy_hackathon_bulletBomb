@@ -77,6 +77,8 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     welcomeEnabled: false,
     emotionalFeedbackEnabled: false,
     chatOnlineNumberEnable: false,
+    faceEmotionEnabled: true,
+    imageEmotionEnabled: true,
   });
 
   /**

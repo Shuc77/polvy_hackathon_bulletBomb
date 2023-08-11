@@ -9,8 +9,6 @@
       :desc-label="jobDescLabel"
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
-      @browse-product="trackProductListItemView"
-      @click-buy="trackProductListItemClick"
       @click-good-desc="openGoodDetail"
       @total-change="onGoodTotalChange"
       @job-detail="onJobDetailEvent"
@@ -54,7 +52,7 @@
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
-import { useProduct, useProductLinkParams, useProductTrack } from './hooks/use-product';
+import { useProduct, useProductLinkParams } from './hooks/use-product';
 import { useProductDetail } from './hooks/use-product-detail';
 import { useProductList } from './hooks/use-product-list';
 import { onJobDetailEvent } from './hooks/use-product-job-detail';
@@ -71,8 +69,6 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { productSdk, recruitmentEnabled, jobDescLabel } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
-
-const { trackProductListItemView, trackProductListItemClick } = useProductTrack();
 
 const { iarProductListRef, renderProductList, onGoodTotalChange } = useProductList();
 

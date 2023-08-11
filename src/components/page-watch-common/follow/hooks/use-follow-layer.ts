@@ -1,9 +1,13 @@
-import { ref, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { useFollowSetting } from './use-follow-setting';
+import {
+  obverseTrackShowBehavior,
+  useWatchEventTrack,
+} from '@/hooks/business/use-watch-event-track';
 
 /**
  * 关注弹层 hook
@@ -28,6 +32,17 @@ export const useFollowLayer = () => {
 
   useEventBusListener(appEvents.global.OpenFollowLayer, (visible: boolean) => {
     setLayerVisible(visible);
+  });
+
+  const { trackUserWatchQrCode } = useWatchEventTrack();
+
+  onMounted(() => {
+    obverseTrackShowBehavior({
+      $el: layerRef.value,
+      cb: () => {
+        trackUserWatchQrCode();
+      },
+    });
   });
 
   return {

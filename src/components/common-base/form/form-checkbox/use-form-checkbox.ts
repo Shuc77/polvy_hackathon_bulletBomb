@@ -3,6 +3,8 @@ import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, unref } from 'vue';
 
 export const formCheckboxProps = () => ({
+  /** 使用圆形样式 */
+  circle: PropUtils.bool.def(false),
   /** 是否选中，支持.sync */
   checked: PropUtils.bool.def(false),
 });

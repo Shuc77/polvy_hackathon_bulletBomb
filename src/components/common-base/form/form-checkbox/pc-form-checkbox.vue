@@ -8,6 +8,9 @@
   >
     <div
       class="c-pc-form-checkbox__inner pws-pc-checkbox-inner"
+      :class="{
+        'c-pc-form-checkbox__inner__circle': props.circle,
+      }"
       @click="onClickCheckbox"
     >
       <pc-icon-check
@@ -56,6 +59,9 @@ const { isChecked, onClickCheckbox } = useFormCheckbox({
   cursor: pointer;
   border: 1px solid #cfd8dc;
   border-radius: 2px;
+}
+.c-pc-form-checkbox__inner__circle {
+  border-radius: 50%;
 }
 .c-pc-form-checkbox__inner__icon {
   display: flex;

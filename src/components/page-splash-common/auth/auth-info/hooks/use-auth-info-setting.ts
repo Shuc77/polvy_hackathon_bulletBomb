@@ -1,4 +1,4 @@
-import { ynToBool } from '@polyv/utils/dist/es/boolean';
+import { ynToBool } from '@utils-ts/boolean';
 import { computed } from 'vue';
 import { AuthInfoType, YN } from '@polyv/live-watch-sdk';
 import { useAuthStore } from '@/store/use-auth-store';

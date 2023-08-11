@@ -1,7 +1,11 @@
 <!-- @file PC 端观看页侧边菜单栏 -->
 <template>
   <div class="c-pc-watch-aside-menu">
-    <pc-aside-tabs v-model="pcAsideTabCurrentName">
+    <pc-aside-tabs
+      v-model="pcAsideTabCurrentName"
+      @input="trackWatchTabChange"
+      @is-empty-callback="onIsEmptyCallback"
+    >
       <!-- 商品库推送气泡 -->
       <pc-product-bubble />
 
@@ -152,6 +156,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { ChannelMenuType } from '@polyv/live-watch-sdk';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
@@ -166,6 +171,15 @@ const { qaReminderVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const { chatMenuAdditionData, askMenuAdditionData } = useWatchTabHook({ mode: 'pc' });
+
+const { trackWatchTabChange } = useWatchEventTrack();
+
+function onIsEmptyCallback(isEmpty: boolean) {
+  const layoutStore = useLayoutStore();
+  layoutStore.$patch({
+    pcAsideTabIsEmpty: isEmpty,
+  });
+}
 </script>
 
 <style lang="scss">

@@ -2,7 +2,7 @@
  * @file 当前观看页地址上的参数
  */
 
-import { ChannelWatchPageSkin, PlaybackOrigin, ZoneType } from '@polyv/live-watch-sdk';
+import { ChannelWatchPageSkin, PlaybackOrigin, YN, ZoneType } from '@polyv/live-watch-sdk';
 import { parse, appendToURL } from '@just4/querystring';
 
 /** 获取默认参数值 */
@@ -50,10 +50,12 @@ export const paramGetter = {
   console: buildGetters<'1'>('console'),
   /** 多语言 */
   lang: buildGetters('lang'),
-  /** 回放 vid */
+  /** 回放地址-回放 vid */
   vid: buildGetters('vid'),
-  /** 回放来源 */
+  /** 回放地址-回放来源 */
   playbackType: buildGetters<PlaybackOrigin>('playbackType'),
+  /** 回放分享-回放视频 Id */
+  playbackSharedVid: buildGetters('playBackVid'),
   /** 渠道 id */
   promoteId: buildGetters('promoteId'),
   /** 企业微信分享海报的企微员工 ID */
@@ -64,6 +66,8 @@ export const paramGetter = {
   invitee: buildGetters('invitee'),
   /** 测试模式 token */
   testModeToken: buildGetters('testModeToken'),
+  /** 忽略微信授权 */
+  ignoreWxAuth: buildGetters<YN>('ignoreWxAuth'),
   /** 观众 id */
   viewerid: buildGetters('viewerid'),
   /** 观看条件-验证码 */
@@ -106,6 +110,8 @@ export const paramGetter = {
   skin: buildGetters<ChannelWatchPageSkin>('skin'),
   /** 是否使用 ip 地址进行 CDN 拉流 */
   ipPlay: buildGetters<'1'>('ipPlay'),
+  /** 微信快照页环境 */
+  snapshotPage: buildGetters<YN>('snapshotPage'),
 };
 
 /**

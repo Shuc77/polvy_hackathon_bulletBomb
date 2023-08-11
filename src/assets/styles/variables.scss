@@ -2,6 +2,9 @@
 @import './function.scss';
 @import './portrait.scss';
 
+$--plv-mobile-watch-full-screen-vw: var(--plv-watch-full-screen-vw) !default;
+$--plv-mobile-watch-full-screen-vh: var(--plv-watch-full-screen-vh) !default;
+
 // 最高层级的 z-index
 $--zIndex-top: 10001;
 // 一般挂件的 z-index

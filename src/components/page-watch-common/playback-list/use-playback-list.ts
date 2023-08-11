@@ -1,5 +1,6 @@
 import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
+
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { PlaybackTarget } from '@polyv/live-watch-sdk';
 
@@ -11,13 +12,10 @@ export const usePlaybackList = () => {
    */
   async function onClickPlaybackItem(target: PlaybackTarget) {
     const watchCore = getWatchCore();
-    playbackStore.$patch({
-      currentPlaybackTarget: target,
-    });
+    playbackStore.updateCurrentPlaybackTarget(target);
 
     // 聊天重放需要重新渲染聊天列表
     if (playbackStore.chatReplayEnabled) {
-      watchCore.chat.setChatMsgReplayPlaybackTarget(target);
       eventBus.$emit(appEvents.chat.ResetUpChatMsgList);
     }
 

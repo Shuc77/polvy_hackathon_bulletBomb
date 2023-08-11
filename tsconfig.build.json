@@ -7,7 +7,7 @@
         "src/*"
       ],
       "@utils-ts/*": [
-        "node_modules/@polyv/utils/dist/es/*"
+        "node_modules/@polyv/utils/es/*"
       ]
     }
   }

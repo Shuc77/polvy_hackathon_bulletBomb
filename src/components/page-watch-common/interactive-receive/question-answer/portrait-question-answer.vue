@@ -105,4 +105,9 @@ useEventBusListener(appEvents.interaction.OpenQuestionAnswer, (_visible = true) 
     }
   }
 }
+.pws-iar-icon-qa-ask-emotion-icon {
+  path {
+    fill: black;
+  }
+}
 </style>

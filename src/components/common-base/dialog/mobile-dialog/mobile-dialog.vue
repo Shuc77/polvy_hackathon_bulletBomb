@@ -60,40 +60,13 @@
 <script lang="ts" setup>
 import { ref, watch, computed } from 'vue';
 
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { emitFunc, updateModelEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 
-const props = defineProps({
-  /** 显示状态，默认：false，支持 .sync */
-  visible: PropUtils.bool.def(false),
-  /** 弹层标题 */
-  title: PropUtils.string.def(''),
-  /** 是否显示头部标题区，默认：true */
-  showHeader: PropUtils.bool.def(true),
-  /** 是否显示底部区，默认：true */
-  showFooter: PropUtils.bool.def(true),
-  /** 是否插入到 body 中，默认：true */
-  appendToBody: PropUtils.bool.def(true),
-  /** 弹层主体样式 */
-  contentStyle: PropUtils.object().def({}),
-  /** 是否显示关闭，默认：true */
-  closable: PropUtils.bool.def(true),
-  /** 禁止body滚动，默认：true */
-  bodyLocked: PropUtils.bool.def(true),
-  /** 点击蒙层关闭弹窗，默认：true */
-  closeOnClickMask: PropUtils.bool.def(true),
-  /** 蒙层透明度，默认：0.6 */
-  maskOpacity: PropUtils.number.def(0.6),
-});
+import { dialogMobileProps, dialogEmits } from '../use-dialog';
 
-const emit = defineEmits({
-  ...updateModelEmit<'visible', boolean>('visible'),
-  open: emitFunc<void>(),
-  opened: emitFunc<void>(),
-  close: emitFunc<void>(),
-  closed: emitFunc<void>(),
-});
+const props = defineProps(dialogMobileProps());
+
+const emit = defineEmits(dialogEmits());
 
 /** 当前组件 DOM 节点 */
 const dialogRef = ref<HTMLDivElement>();
