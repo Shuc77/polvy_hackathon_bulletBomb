@@ -109,6 +109,15 @@ export const usePlayerEvent = () => {
     });
   }
 
+  /** sdk 播放器 UI 控制栏显隐 */
+  function onSdkPlayerUIControlVisible(
+    data: PlayerEventsRelations[PlayerEvents.PlayerUIControlDisplay],
+  ) {
+    playerStore.$patch({
+      sdkPlayerUIControlVisible: data.visible,
+    });
+  }
+
   /** 绑定播放器事件 */
   function bindPlayerEvents() {
     unbindPlayerEvents();
@@ -121,6 +130,10 @@ export const usePlayerEvent = () => {
     watchCore.player.eventEmitter.on(PlayerEvents.VolumeChange, onVolumeChanged);
     watchCore.player.eventEmitter.on(PlayerEvents.BarrageSettingClick, onBarrageSettingClick);
     watchCore.player.eventEmitter.on(PlayerEvents.ToggleFullScreen, onToggleFullScreen);
+    watchCore.player.eventEmitter.on(
+      PlayerEvents.PlayerUIControlDisplay,
+      onSdkPlayerUIControlVisible,
+    );
   }
 
   /** 解绑播放器事件 */
@@ -134,6 +147,10 @@ export const usePlayerEvent = () => {
     watchCore.player.eventEmitter.off(PlayerEvents.VolumeChange, onVolumeChanged);
     watchCore.player.eventEmitter.off(PlayerEvents.BarrageSettingClick, onBarrageSettingClick);
     watchCore.player.eventEmitter.off(PlayerEvents.ToggleFullScreen, onToggleFullScreen);
+    watchCore.player.eventEmitter.off(
+      PlayerEvents.PlayerUIControlDisplay,
+      onSdkPlayerUIControlVisible,
+    );
   }
 
   onBeforeUnmount(() => {

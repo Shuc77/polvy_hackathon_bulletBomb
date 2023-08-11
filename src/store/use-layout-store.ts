@@ -13,6 +13,8 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useDocStore } from './use-doc-store';
+import { usePageAdvertStore } from './use-page-advert-store';
 
 export interface LayoutStoreState {
   // ---------- 公用 ---------- //
@@ -28,6 +30,10 @@ export interface LayoutStoreState {
   isFullscreen: Ref<boolean>;
   /** PC 端侧边菜单栏的激活 name */
   pcAsideTabCurrentName: Ref<string>;
+  /** PC 端侧边菜单栏是否为空 */
+  pcAsideTabIsEmpty: Ref<boolean>;
+  /** PC 端侧边区域是否为空 */
+  pcAsideSectionIsEmpty: ComputedRef<boolean>;
   /** PC 端底部菜单栏的激活 name */
   pcBottomTabCurrentName: Ref<string>;
 
@@ -65,6 +71,8 @@ export interface LayoutStoreState {
 }
 
 export interface LayoutStoreActions {
+  /** 移动端布局退出所有全屏 */
+  exitMobileLayoutFullScreen(): void;
   /** 切换文档视频区域 */
   toggleMainScreen(): void;
   /** 同步布局 store */
@@ -74,6 +82,9 @@ export interface LayoutStoreActions {
 export interface LayoutStore extends LayoutStoreState, LayoutStoreActions {}
 
 export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () => {
+  const docStore = useDocStore();
+  const pageAdvertStore = usePageAdvertStore();
+
   // ---------- 公用 ---------- //
   /** 三分屏主屏模式 */
   const mainScreenLayoutMode = ref(MainScreenLayoutMode.Ppt);
@@ -99,6 +110,29 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
 
   /** PC 端侧边菜单栏的激活 name */
   const pcAsideTabCurrentName = ref('');
+
+  /** PC 端侧边菜单栏是否为空 */
+  const pcAsideTabIsEmpty = ref(false);
+
+  /** PC 端侧边区域是否为空 */
+  const pcAsideSectionIsEmpty = computed(() => {
+    // 有文档
+    if (docStore.canRenderDoc) {
+      return false;
+    }
+
+    // 有页面广告
+    if (pageAdvertStore.advertVisible) {
+      return false;
+    }
+
+    // 有菜单栏
+    if (!unref(pcAsideTabIsEmpty)) {
+      return false;
+    }
+
+    return true;
+  });
 
   /** PC 端底部菜单栏的激活 name */
   const pcBottomTabCurrentName = ref('');
@@ -161,6 +195,13 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     );
   });
 
+  /** 移动端布局退出所有全屏 */
+  function exitMobileLayoutFullScreen() {
+    mobilePlayerIsPageFullscreen.value = false;
+    mobileNormalLatencyPlayerIsFullscreen.value = false;
+    mobileDocIsPageFullscreen.value = false;
+  }
+
   function syncLayoutStore() {
     const watchCore = getWatchCore();
     const layoutSetting = watchCore.channel.getLayoutSetting();
@@ -176,6 +217,8 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
 
     isFullscreen,
     pcAsideTabCurrentName,
+    pcAsideTabIsEmpty,
+    pcAsideSectionIsEmpty,
     pcBottomTabCurrentName,
 
     mobileWatchLayout,
@@ -195,6 +238,7 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     mobileDocIsPageFullscreen,
     isPageFullscreenOrHorizontalScreen,
 
+    exitMobileLayoutFullScreen,
     syncLayoutStore,
   };
 });

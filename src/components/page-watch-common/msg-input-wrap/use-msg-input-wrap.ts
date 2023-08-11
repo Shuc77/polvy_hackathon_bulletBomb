@@ -3,7 +3,7 @@ import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { ref, unref, watch } from 'vue';
+import { computed, ref, unref, watch } from 'vue';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { useMsgInputController } from './use-msg-input-controller';
 import { translate } from '@/assets/lang';
@@ -15,7 +15,9 @@ export const msgInputWrapProps = () => ({
   disabledInput: PropUtils.bool.def(false),
   /** 是否禁用表情选择 */
   disabledEmotionPicker: PropUtils.bool.def(false),
-  /** 是否显示图片表情发送 */
+  /** 是否显示黄脸表情 */
+  faceEmotionEnabled: PropUtils.bool.def(true),
+  /** 是否显示图片表情 */
   imageEmotionEnabled: PropUtils.bool.def(true),
   /** 是否显示图片发送(仅 PC) */
   sendImageEnabled: PropUtils.bool.def(true),
@@ -80,6 +82,11 @@ export const useMsgInputWrap = (options: {
   function onInputWidgetOverflow(isOverflow: boolean) {
     wordLimitVisible.value = isOverflow;
   }
+
+  /** 表情选择按钮是否展示 */
+  const emotionPickerBtnVisible = computed(() => {
+    return props.faceEmotionEnabled || props.imageEmotionEnabled;
+  });
 
   /** 表情面板节点 */
   const emotionRef = ref<HTMLDivElement>();
@@ -154,6 +161,7 @@ export const useMsgInputWrap = (options: {
     emit('submit', {
       contentList: msgInputController.getInputContentList(),
     });
+    msgInputController.clearInput();
   }
 
   /** 重置组件状态 */
@@ -176,6 +184,7 @@ export const useMsgInputWrap = (options: {
     wordLimitVisible,
     onInputWidgetOverflow,
 
+    emotionPickerBtnVisible,
     emotionRef,
     emotionVisible,
     toggleEmotionPanel,

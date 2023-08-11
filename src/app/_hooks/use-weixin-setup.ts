@@ -2,8 +2,6 @@ import {
   useWeixinAuthorize,
   useWorkWeixinAuthorize,
 } from '@/hooks/platform/use-weixin/use-weixin-authorize';
-import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
-import { useWeixinShare } from '@/hooks/platform/use-weixin/use-weixin-share';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { unref } from 'vue';
 import { getWatchCore } from '@/core/watch-sdk';
@@ -37,19 +35,5 @@ export const useWeixinSetup = async () => {
   if (unref(canWorkWeixinAuthorize) && !weixinStore.workWeixinAuthorized) {
     await redirectWorkWeixinAuthorize();
     return true;
-  }
-};
-
-/**
- * @hook 处理微信相关配置
- * */
-export const useWeixinConfig = async () => {
-  const weixinStore = useWeixinStore();
-
-  const { getWeixinSdk } = useWeixinSdk();
-  const { configureWeixinShare } = useWeixinShare();
-  if (weixinStore.weixinAuthorized || weixinStore.workWeixinAuthorized) {
-    await getWeixinSdk();
-    await configureWeixinShare();
   }
 };

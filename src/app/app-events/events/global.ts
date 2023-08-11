@@ -14,6 +14,10 @@ export const globalEvents = {
    */
   MobileBottomMenuSwitch: 'MobileBottomMenuSwitch',
   /**
+   * 移动端更多弹层打开
+   */
+  OpenMobileMorePopup: 'OpenMobileMorePopup',
+  /**
    * 消息输入框聚焦
    */
   MsgInputFocus: 'MsgInputFocus',

@@ -1,6 +1,8 @@
 <!-- @file 移动端协议勾选 -->
 <template>
   <div class="c-mobile-form-protocol">
+    <slot name="checkbox-label"></slot>
+
     <mobile-form-checkbox
       v-bind="attrs"
       :checked="checkboxChecked"
@@ -18,7 +20,8 @@
       :title="popupTitle"
       :visible.sync="popupVisible"
       :close-on-click-mask="false"
-      :content-percent-height="0.7"
+      ignore-content-max-height
+      :content-percent-height="0.8"
     >
       <div class="c-mobile-form-protocol-popup">
         <iframe
@@ -34,7 +37,12 @@
 import { ref, useAttrs } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import MobileFormCheckbox from '../form-checkbox/mobile-form-checkbox.vue';
-import { formProtocolProps, formProtocolEmits, useFormProtocol } from './use-form-protocol';
+import {
+  formProtocolProps,
+  formProtocolEmits,
+  useFormProtocol,
+  FormProtocolInstance,
+} from './use-form-protocol';
 
 const props = defineProps(formProtocolProps());
 const emit = defineEmits(formProtocolEmits());
@@ -43,6 +51,12 @@ const attrs = useAttrs();
 const popupVisible = ref(false);
 const popupTitle = ref('');
 const popupIframeUrl = ref('');
+
+function openProtocol(el: HTMLAnchorElement) {
+  popupIframeUrl.value = el.href;
+  popupTitle.value = el.getAttribute('title') || el.innerText;
+  popupVisible.value = true;
+}
 
 const {
   checkboxChecked,
@@ -54,14 +68,19 @@ const {
   props,
   emit,
   onProtocolClick: el => {
-    popupIframeUrl.value = el.href;
-    popupTitle.value = el.getAttribute('title') || el.innerText;
-    popupVisible.value = true;
+    openProtocol(el);
   },
+});
+
+defineExpose<FormProtocolInstance>({
+  openProtocol,
 });
 </script>
 
 <style lang="scss">
+.c-mobile-form-protocol {
+  position: relative;
+}
 .c-mobile-form-protocol__content {
   font-size: 14px;
   a {

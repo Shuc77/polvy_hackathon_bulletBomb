@@ -2,6 +2,11 @@ import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, onMounted, ref } from 'vue';
 
+export interface FormProtocolInstance {
+  /** 打开协议 */
+  openProtocol: (a: HTMLAnchorElement) => void;
+}
+
 export const formProtocolProps = () => ({
   /** 是否选中 */
   value: PropUtils.bool.def(false),

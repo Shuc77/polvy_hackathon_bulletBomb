@@ -17,10 +17,13 @@ import { useConnectMicStore } from './use-connect-mic-store';
 import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
 import { translate } from '@/assets/lang';
+import { PlaybackWatchBasicInfo } from '@polyv/live-watch-sdk';
 
 export interface WatchAppStoreState {
   /** 当前是否处于回放观看页地址 */
   isPlaybackWatchUrl: Ref<boolean>;
+  /** 回放观看页基本信息 */
+  playbackWatchBasicInfo: Ref<PlaybackWatchBasicInfo>;
   /** 当前是否为微信小程序 webview 环境 */
   isWxMiniProgram: Ref<boolean>;
   /** 是否为会议模式 */
@@ -31,6 +34,14 @@ export interface WatchAppStoreState {
   pageError: Ref<PageErrorData | undefined>;
   /** 观看页应用初始化完毕 */
   watchAppInited: Ref<boolean>;
+
+  /**
+   * 由于单页面没有路由机制，所以通过标志位来销毁组件
+   * @warn shouldShowForceAuth、shouldShowSplash、watchPageInited 三个变量只能有一个为 true
+   */
+
+  /** 是否显示强制授权页 - 强制授权页标识位 */
+  shouldShowForceAuth: Ref<boolean>;
   /** 是否显示引导页 - 引导页渲染标识位 */
   shouldShowSplash: ComputedRef<boolean>;
   /** 直播观看页是否初始化完毕 - 直播观看页渲染标识位 */
@@ -38,11 +49,17 @@ export interface WatchAppStoreState {
 }
 
 export interface WatchAppStoreActions {
-  resetUpWatchCore(): Promise<void>;
-  setupLiveWatch(): Promise<void>;
   /** 设置页面错误数据 */
   setPageError(param: PageErrorData): void;
+  /** 重置 watchCore */
+  resetUpWatchCore(): Promise<void>;
+  /** 同步 watchAppStore 数据 */
+  syncWatchAppStore(): void;
+  /** 设置直播观看页 */
+  setupLiveWatch(): Promise<void>;
+  /** 暂停直播观看页部分功能的初始化 */
   pauseConnectLiveWatch(): void;
+  /** 恢复直播观看页部分功能的初始化 */
   recoverConnectLiveWatch(): void;
 }
 
@@ -64,6 +81,9 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   /** 当前是否处于回放观看页地址 */
   const isPlaybackWatchUrl = ref(false);
 
+  /** 回放观看页基本信息 */
+  const playbackWatchBasicInfo = ref<PlaybackWatchBasicInfo>({});
+
   /** 当前是否为微信小程序 webview 环境 */
   const isWxMiniProgram = ref(false);
 
@@ -79,8 +99,13 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   /** 观看页应用初始化完毕 */
   const watchAppInited = ref(false);
 
+  /** 是否显示强制授权页 */
+  const shouldShowForceAuth = ref(false);
+
   /** 是否显示引导页 */
   const shouldShowSplash = computed(() => {
+    if (shouldShowForceAuth.value) return false;
+
     return !authStore.isAuthorized || enrollStore.needEnrollByEnter;
   });
 
@@ -106,23 +131,28 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
         title: translate('pageError.channel.unknowError'),
         desc: translate('pageError.channel.feedBack'),
       });
+      console.error('resetUpWatchCore error', error);
       // 需要抛出主流程阻塞的异常
       throw new Error('页面初始化失败！');
     }
   }
 
-  /** 设置观看页 */
-  async function setupLiveWatch(): Promise<void> {
+  /** 同步 watchAppStore 数据 */
+  function syncWatchAppStore() {
     const watchCore = getWatchCore();
 
+    shouldShowForceAuth.value = watchCore.weixin.checkForceWxAuth();
+    isPlaybackWatchUrl.value = watchCore.isPlaybackWatchByVid();
+    playbackWatchBasicInfo.value = watchCore.getPlaybackWatchBasicInfo();
+  }
+
+  /** 设置观看页 */
+  async function setupLiveWatch(): Promise<void> {
     // 从分会场跳转到主会场并授权成功，则跳回对应的分会场，跳转后阻止观看页渲染
     const checkResult = checkRedirectSubChannel();
     if (checkResult) {
       return;
     }
-
-    // 优先判断是否为回放观看页地址进入
-    isPlaybackWatchUrl.value = watchCore.isPlaybackWatchByVid();
 
     // 同步相关 store 的数据
     syncStoreBeforeWatchPageInited();
@@ -188,17 +218,20 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   return {
     isPlaybackWatchUrl,
+    playbackWatchBasicInfo,
     isWxMiniProgram,
     meetingMode,
     iframeMode,
     pageError,
     watchAppInited,
+    shouldShowForceAuth,
     shouldShowSplash,
     watchPageInited,
 
-    resetUpWatchCore,
-    setupLiveWatch,
     setPageError,
+    resetUpWatchCore,
+    syncWatchAppStore,
+    setupLiveWatch,
 
     pauseConnectLiveWatch,
     recoverConnectLiveWatch,

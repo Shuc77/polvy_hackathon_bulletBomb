@@ -9,8 +9,7 @@ import { isMobile } from '@/assets/utils/browser';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
-import { LiveStatus, RtasTrackEventId, RtasTrackEventType } from '@polyv/live-watch-sdk';
-import { ProductGoodData } from '../types/product-types';
+import { LiveStatus } from '@polyv/live-watch-sdk';
 
 /**
  * @hook 互动-商品库
@@ -77,77 +76,6 @@ export const useProductTrack = () => {
   const channelStore = useChannelStore();
   const interactReceiveStore = useInteractReceiveStore();
 
-  /**
-   * 上报商品信息
-   * @param good 商品信息
-   * @param eventType
-   * @param eventId
-   */
-  const trackProductItemData = (
-    good: ProductGoodData,
-    eventType: RtasTrackEventType,
-    eventId: RtasTrackEventId,
-  ) => {
-    if (
-      channelStore.liveStatus !== LiveStatus.Live ||
-      !interactReceiveStore.interactSetting.productTrackEnabled
-    ) {
-      return;
-    }
-    const watchCore = getWatchCore();
-
-    const { name, productId, realPrice, price, productType } = good;
-    const data: UniversalParams<string> = {
-      name, // 商品名字
-      productId, // 商品Id
-      price: `${price ?? 0}`, // 价格
-      realPrice: `${realPrice}`, // 原价
-      productType, // 商品分类
-      linkType: isMobile ? 'mobile' : 'pc',
-    };
-    if (good.logId) {
-      data.pushId = good.logId;
-    }
-
-    watchCore.rtas.trackBehaviorEvent({
-      eventType,
-      eventId,
-      data,
-    });
-  };
-
-  /**
-   * 上报商品列表中浏览商品数据
-   * @param good 商品信息
-   */
-  const trackProductListItemView = (good: ProductGoodData) => {
-    trackProductItemData(good, 'show', 'product_list_item_view');
-  };
-
-  /**
-   * 上报商品列表中点击商品购买数据
-   * @param good 商品信息
-   */
-  const trackProductListItemClick = (good: ProductGoodData) => {
-    trackProductItemData(good, 'click', 'product_push_item_click');
-  };
-
-  /**
-   * 上报商品推送中浏览商品数据
-   * @param good 商品信息
-   */
-  const trackProductPushItemView = (good: ProductGoodData) => {
-    trackProductItemData(good, 'show', 'product_push_item_view');
-  };
-
-  /**
-   * 上报商品推送中点击商品购买数据
-   * @param good 商品信息
-   */
-  const trackProductPushItemClick = (good: ProductGoodData) => {
-    trackProductItemData(good, 'click', 'product_push_item_click');
-  };
-
   /** 上报打开商品列表数据 */
   const trackOpenProductList = () => {
     if (
@@ -169,11 +97,6 @@ export const useProductTrack = () => {
   };
 
   return {
-    trackProductItemData,
-    trackProductListItemView,
-    trackProductListItemClick,
-    trackProductPushItemView,
-    trackProductPushItemClick,
     trackOpenProductList,
   };
 };

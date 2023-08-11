@@ -131,3 +131,8 @@ button {
     url('fonts/ALIBABAFont.ttf') format('truetype'),
     url('fonts/ALIBABAFont.svg') format('svg');
 }
+
+:root {
+  --plv-watch-full-screen-vw: 100vw;
+  --plv-watch-full-screen-vh: 100vh;
+}

@@ -153,6 +153,8 @@ export function useWatchApp() {
       },
       autoAuthParams: {
         code: paramGetter.password(),
+        ignoreWxAuth: paramGetter.ignoreWxAuth(),
+        wxSnapshotPageMode: paramGetter.snapshotPage(),
       },
       statisticsParams: {
         param4: paramGetter.param4(),
@@ -186,7 +188,7 @@ export function useWatchApp() {
     }
 
     // 移除地址上不需要用的参数
-    removeQueryParam(['name', 'password']);
+    removeQueryParam(['name', 'password', 'snapshotPage']);
 
     // 初始化多皮肤
     initPageSkin();
@@ -194,6 +196,7 @@ export function useWatchApp() {
     // 错误日志记录
     useErrorLogRecord();
 
+    // 初始化完毕，设置渲染标识位
     watchAppStore.$patch({
       watchAppInited: true,
     });

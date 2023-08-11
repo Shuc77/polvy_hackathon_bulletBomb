@@ -140,6 +140,7 @@ export const useMsgInputController = () => {
   /** 清除输入框内容 */
   function clearInput() {
     if (imagePasteInputRef.value) {
+      isEmptyImagePasteInput.value = true;
       imagePasteInputRef.value.clear();
       return;
     }

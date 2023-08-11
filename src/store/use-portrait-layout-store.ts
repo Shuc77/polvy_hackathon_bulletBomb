@@ -5,6 +5,7 @@ import { useChannelStore } from './use-channel-store';
 import { useDocStore } from './use-doc-store';
 import { usePageStore } from './use-page-store';
 import { usePlaybackStore } from './use-playback-store';
+import { useWebviewStore } from './use-webview-store';
 
 export enum PortraitChatTabType {
   /** 聊天室 */
@@ -46,6 +47,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     const pageStore = usePageStore();
     const playbackStore = usePlaybackStore();
     const docStore = useDocStore();
+    const webviewStore = useWebviewStore();
 
     /** 竖屏轮播屏当前索引 */
     const carouselActiveIndex = ref(1);
@@ -79,7 +81,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
 
     /** 竖屏文档容器渲染高度 */
     const portraitDocWrapHeight = computed<number>(() => {
-      if (!docStore.canRenderDoc || !docStore.documentSwitch) {
+      if (!docStore.canRenderDoc || !docStore.documentSwitch || webviewStore.isSmallWindow) {
         return 0;
       }
 

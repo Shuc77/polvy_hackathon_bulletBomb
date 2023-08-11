@@ -15,6 +15,7 @@ import {
   SmsValidType,
   SendSmsVerifyCodeFail,
   SendSmsVerifyResult,
+  CommonResult,
 } from '@polyv/live-watch-sdk';
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { ImageVerifyInputInstance } from '../form-image-verify-input/type';
@@ -161,10 +162,10 @@ export const useSmsVerifyInput = (options: {
 
     if (result.success) {
       onSendSuccess();
-      return;
+    } else {
+      onSendFail(result);
     }
 
-    toast.error(translate('base.frequentOperation'));
     slideVerifyVisible.value = false;
   }
 
@@ -194,15 +195,28 @@ export const useSmsVerifyInput = (options: {
 
     if (result.success) {
       onSendSuccess();
+    } else {
+      onSendFail(result);
+    }
+  }
+
+  function onSendFail(result: CommonResult<SendSmsVerifyCodeFail>) {
+    if (result.success) {
       return;
     }
 
     const failReason = result.failReason;
-    if (failReason === SendSmsVerifyCodeFail.ImageCaptchaError) {
-      toast.error(translate('form.error.imageCaptchaError'));
-      refreshImageVerify();
-    } else {
-      toast.error(result.failMessage || '未知错误！');
+    switch (failReason) {
+      case SendSmsVerifyCodeFail.ImageCaptchaError:
+        toast.error(translate('form.error.imageCaptchaError'));
+        refreshImageVerify();
+        break;
+      case SendSmsVerifyCodeFail.SendFrequent:
+        toast.error(translate('base.sendSmsFail'));
+        break;
+      default:
+        toast.error(result.failMessage || '未知错误！');
+        break;
     }
   }
 
@@ -221,6 +235,8 @@ export const useSmsVerifyInput = (options: {
    * 处理发送成功
    */
   function onSendSuccess() {
+    toast.success(translate('base.sendSuccess'));
+
     // 开始倒计时
     initCountDown();
 

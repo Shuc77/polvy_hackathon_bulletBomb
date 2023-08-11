@@ -51,7 +51,7 @@
       <mobile-icon-close-round
         v-if="closeVisible"
         class="c-mobile-page-advert__content__close"
-        @click="onClickClose"
+        @click="closeAdvert"
       />
     </div>
   </div>
@@ -64,11 +64,14 @@ import {
   MobileIconArrowLeft,
   MobileIconArrowRight,
 } from '@/components/component-icons/mobile/map';
-import { usePageAdvert } from './use-page-advert';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
+import { usePageAdvertStore } from '@/store/use-page-advert-store';
+import { storeToRefs } from 'pinia';
 
-const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible, onClickClose, openLink } =
-  usePageAdvert();
+const pageAdvertStore = usePageAdvertStore();
+const { closeAdvert, openLink } = pageAdvertStore;
+const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible } =
+  storeToRefs(pageAdvertStore);
 </script>
 
 <style lang="scss">

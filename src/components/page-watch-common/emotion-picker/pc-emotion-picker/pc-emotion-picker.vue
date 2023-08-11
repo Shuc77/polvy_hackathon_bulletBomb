@@ -3,6 +3,7 @@
   <div class="c-pc-emotion-picker pws-pc-emotion-panel">
     <!-- face 表情 -->
     <div
+      v-if="faceEmotionEnabled"
       v-show="currentType === 'face'"
       class="c-pc-emotion-picker__panel pws-pc-emotion-panel-scrollbar"
     >
@@ -21,6 +22,7 @@
     <!-- 类型切换 -->
     <div class="c-pc-emotion-picker__tabs pws-pc-emotion-panel-type-tab">
       <div
+        v-if="faceEmotionEnabled"
         class="c-pc-emotion-picker__tabs-item"
         :class="{
           'is-active': currentType === 'face',
@@ -57,7 +59,7 @@ const props = defineProps(emotionPickerProps());
 
 const emit = defineEmits(emotionPickerEmits());
 
-const { imageEmotionEnabled } = useProps(props);
+const { faceEmotionEnabled, imageEmotionEnabled } = useProps(props);
 
 const { currentType, switchEmotionTab, onClickFace, onClickImage } = useEmotionPicker({
   props,

@@ -7,6 +7,7 @@ import { ValidatorRules } from '@/plugins/async-validator';
 import { WeixinPayType } from '@polyv/live-watch-sdk';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 
 /** 历史提现统计错误响应 */
 export function handleStatisticsErr(e: Error) {
@@ -126,8 +127,12 @@ export const useWithdrawApplyHook = () => {
     }
   }
 
+  const { trackUserWithdrawal } = useWatchEventTrack();
+
   /** 提交表单 */
   async function submitForm() {
+    trackUserWithdrawal();
+
     const result = await watchCore.withdraw.applyWithdraw({
       amount: Number(formData.amount),
     });

@@ -24,6 +24,9 @@ import shopIconUrl from './imgs/icon-shop-car.svga';
 import { ref, unref } from 'vue';
 import { useProduct } from './hooks/use-product';
 import { appEvents, eventBus } from '@/app/app-events';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+
+const { trackUserClickProductList } = useWatchEventTrack();
 
 const containerRef = ref<HTMLDivElement>();
 
@@ -37,6 +40,7 @@ if (!unref(recruitmentEnabled)) {
 }
 
 function onClickEntrance() {
+  trackUserClickProductList();
   eventBus.$emit(appEvents.interaction.OpenPortraitProductList, true);
 }
 </script>

@@ -2,7 +2,7 @@
 <template>
   <transition name="fade">
     <div
-      v-show="layerVisible"
+      v-show="layerVisible && !isSmallWindow"
       ref="layerRef"
       class="c-portrait-follow-layer"
       @click.self="closeLayer"
@@ -25,6 +25,8 @@
 
 <script setup lang="ts">
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWebviewStore } from '@/store/use-webview-store';
 import { useFollowLayer } from '../hooks/use-follow-layer';
 import { useFollowSetting } from '../hooks/use-follow-setting';
 
@@ -33,6 +35,8 @@ const { layerRef, layerVisible, closeLayer } = useFollowLayer();
 const { followTips, followImage } = useFollowSetting();
 
 useAppendTo(layerRef);
+
+const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 </script>
 
 <style lang="scss">

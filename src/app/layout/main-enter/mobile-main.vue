@@ -1,7 +1,11 @@
 <!-- @file 移动端入口 -->
 <template>
   <div class="c-mobile-main">
-    <template v-if="shouldShowSplash">
+    <template v-if="shouldShowForceAuth">
+      <mobile-force-auth />
+    </template>
+
+    <template v-else-if="shouldShowSplash">
       <mobile-splash v-if="mobileSplashLayout === MobileSplashLayout.Normal" />
       <mobile-splash-full v-if="mobileSplashLayout === MobileSplashLayout.Large" />
     </template>
@@ -10,6 +14,9 @@
       <portrait-watch v-if="mobileWatchLayout === MobileWatchLayout.Portrait" />
       <mobile-watch v-if="mobileWatchLayout === MobileWatchLayout.Normal" />
     </template>
+
+    <!-- 微信快照页提示 -->
+    <mobile-weixin-snapshot-tips v-if="isWeixinSnapshotPageMode" />
   </div>
 </template>
 
@@ -25,6 +32,19 @@ import { useMainEnter } from './_hooks/use-main-enter';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useWeixinStore } from '@/store/use-weixin-store';
+
+const MobileWeixinSnapshotTips = defineAsyncComponent(() => {
+  return import(
+    /* webpackChunkName: "mobile-weixin-snapshot-tips" */ '@/components/common-business/weixin-snapshot-tips/mobile-weixin-snapshot-tips.vue'
+  );
+});
+
+const MobileForceAuth = defineAsyncComponent(() => {
+  return import(
+    /* webpackChunkName: "mobile-force-auth" */ '@/pages/force-auth/mobile-force-auth/mobile-force-auth.vue'
+  );
+});
 
 const MobileWatchLoader = () => {
   return import(
@@ -40,7 +60,14 @@ const PortraitWatchLoader = () => {
 };
 const PortraitWatch = defineAsyncComponent(PortraitWatchLoader);
 
-const { shouldShowSplash, watchPageInited } = storeDefinitionToRefs(useWatchAppStore);
+const {
+  shouldShowForceAuth,
+
+  shouldShowSplash,
+  watchPageInited,
+} = storeDefinitionToRefs(useWatchAppStore);
+
+const { isWeixinSnapshotPageMode } = storeDefinitionToRefs(useWeixinStore);
 
 const { mobileSplashLayout, mobileWatchLayout, isPortraitWatchLayout } =
   storeDefinitionToRefs(useLayoutStore);

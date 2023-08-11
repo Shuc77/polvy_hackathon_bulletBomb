@@ -4,6 +4,7 @@
 
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { getWatchCore } from '@/core/watch-sdk';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useChatStore } from '@/store/use-chat-store';
 import { ChatEvents, ChatEventsRelations } from '@polyv/live-watch-sdk';
 import { onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
@@ -49,11 +50,16 @@ export const useChatLike = () => {
     }
   }
 
+  const { trackUserClickLike } = useWatchEventTrack();
+
   /** 将待发送的点赞数发送到服务端 */
   async function sendLikes() {
-    if (!waitSendLikes) {
+    if (waitSendLikes <= 0) {
+      waitSendLikes = 0;
       return;
     }
+
+    trackUserClickLike({ likeCount: waitSendLikes });
 
     const watchCore = getWatchCore();
     try {

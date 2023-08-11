@@ -84,6 +84,8 @@ export interface PlayerStoreState {
   noneLiveVisible: ComputedRef<boolean>;
   /** 播放器控制栏是否显示 */
   playerControlVisible: Ref<boolean>;
+  /** sdk 播放器 UI 控制栏是否显示 */
+  sdkPlayerUIControlVisible: Ref<boolean>;
   /** 是否为音频播放器模式。注意，目前只有竖屏在使用 */
   isAudioPlayerMode: Ref<boolean>;
   /** 是否支持时间轴标记 */
@@ -297,6 +299,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 播放器控制栏是否显示 */
   const playerControlVisible = ref(false);
 
+  /** sdk 播放器 UI 控制栏是否显示 */
+  const sdkPlayerUIControlVisible = ref(false);
+
   /** 是否支持时间轴标记 */
   const supportTimeAxisMark = ref(false);
 
@@ -413,6 +418,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     isPortraitResolutionRate,
     noneLiveVisible,
     playerControlVisible,
+    sdkPlayerUIControlVisible,
 
     supportTimeAxisMark,
     supportLiveTimeShift,

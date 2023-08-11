@@ -97,7 +97,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     }
 
     return ambiguityVal
-      ? `${imageVal}?x-oss-process=image/blur,r_${imageVal},s_${imageVal}`
+      ? `${imageVal}?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`
       : imageVal;
   });
 

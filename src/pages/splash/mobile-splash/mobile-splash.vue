@@ -1,6 +1,6 @@
 <!-- @file 移动端引导页 -->
 <template>
-  <div class="c-mobile-splash pws-mobile-splash-page">
+  <div class="c-mobile-splash iphone-polyfill-inset-top pws-mobile-splash-page">
     <header class="c-mobile-splash__header">
       <div class="c-mobile-splash__header__content">
         <mobile-player-trial

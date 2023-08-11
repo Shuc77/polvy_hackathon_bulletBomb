@@ -10,8 +10,6 @@
       :plv-webview-data-size="plvWebviewDataSize"
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
-      @product-push="trackProductPushItemView"
-      @click-buy="trackProductPushItemClick"
       @job-detail="onJobDetailEvent"
     />
   </div>
@@ -19,7 +17,7 @@
 
 <script setup lang="ts">
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
-import { useProduct, useProductLinkParams, useProductTrack } from './hooks/use-product';
+import { useProduct, useProductLinkParams } from './hooks/use-product';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { YN } from '@polyv/live-watch-sdk';
@@ -37,8 +35,6 @@ const { getPlvWebviewBridge } = useWebviewStore();
 const { productSdk, recruitmentEnabled } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
-
-const { trackProductPushItemView, trackProductPushItemClick } = useProductTrack();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>

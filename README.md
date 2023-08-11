@@ -3,8 +3,8 @@
 ## 介绍
 
 - 为了让客户能够更便捷、友好地定制观看页，保利威推出了**POLYV 直播观看 SDK**，并将该 SDK 拆分成 UI 层和逻辑层
-- 该开源项目对应 **POLYV 直播观看 SDK** 的 UI 层，需要搭配逻辑层 `@polyv/live-watch-sdk` 一起使用
-- **注意:** 使用前请先阅读仓库中的 `LICENSE` 文件
+- 该开源项目对应 **POLYV 直播观看 SDK** 的 UI 层，需要搭配逻辑层 [@polyv/live-watch-sdk](https://www.npmjs.com/package/@polyv/live-watch-sdk) 一起使用
+- **注意:** 使用前请先阅读仓库中的 `LICENSE` 文件和 `CHANGELOG` 文件
 
 ## 项目说明
 

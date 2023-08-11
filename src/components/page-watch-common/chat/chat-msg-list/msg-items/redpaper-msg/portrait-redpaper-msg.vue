@@ -4,7 +4,10 @@
     class="c-portrait-redpaper-msg"
     hide-user-info
   >
-    <div class="c-portrait-redpaper-msg__content">
+    <div
+      ref="portraitRedpaperMsgRef"
+      class="c-portrait-redpaper-msg__content"
+    >
       <span class="c-portrait-redpaper-msg__icon g-img-cover"></span>
       <template>{{ sendNick }} {{ $lang('redpack.sendMsg') }}{{ redpackText }}，</template>
       <span
@@ -21,7 +24,7 @@
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useRedpaperMsg } from './use-redpaper-msg';
 
-const { sendNick, redpackText, openRedpackDialog } = useRedpaperMsg();
+const { sendNick, redpackText, portraitRedpaperMsgRef, openRedpackDialog } = useRedpaperMsg();
 </script>
 
 <style lang="scss">

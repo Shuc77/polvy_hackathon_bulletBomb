@@ -42,6 +42,7 @@
           <template #suffix>
             <!-- 表情 -->
             <div
+              v-if="emotionPickerBtnVisible"
               v-show="!emotionVisible"
               data-emotion-picker-btn
               class="c-mobile-msg-input-wrap__emotion-btn pws-mobile-msg-input-suffix-icon"
@@ -89,6 +90,7 @@
       >
         <mobile-emotion-picker
           :click-face-to-close="false"
+          :face-emotion-enabled="faceEmotionEnabled"
           :image-emotion-enabled="imageEmotionEnabled"
           @click-face="onClickFace"
           @click-image="onClickImageEmotion"
@@ -138,6 +140,7 @@ const {
   maxInputTextLength,
   wordLimitVisible,
 
+  emotionPickerBtnVisible,
   emotionRef,
   emotionVisible,
   hideEmotionPanel,

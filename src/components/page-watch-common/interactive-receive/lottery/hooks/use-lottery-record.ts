@@ -67,9 +67,10 @@ export const useLotteryRecord = (options: {
 
   /** 处理中奖列表改变事件 */
   function onLotteryListChanged(lotteryList: LotteryRecordData[] = []) {
-    interactReceiveStore.lotteryWinRecords = lotteryList;
+    const lotteryWinRecords = lotteryList.filter(item => !item.received);
 
-    if (lotteryList.length) {
+    interactReceiveStore.lotteryWinRecords = lotteryWinRecords;
+    if (lotteryWinRecords.length > 0) {
       setLotteryRecordEntrance();
     } else {
       removeLotteryRecordEntrance();

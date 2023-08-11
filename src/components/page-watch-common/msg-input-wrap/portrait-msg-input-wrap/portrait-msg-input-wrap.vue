@@ -21,6 +21,7 @@
 
         <!-- 表情 -->
         <mobile-icon-emotion
+          v-if="emotionPickerBtnVisible"
           v-show="!emotionVisible"
           class="c-portrait-msg-input-wrap__main__emotion"
           @click="onClickEmotionPickerBtn"
@@ -55,6 +56,7 @@
       >
         <portrait-emotion-picker
           :click-face-to-close="false"
+          :face-emotion-enabled="faceEmotionEnabled"
           :image-emotion-enabled="imageEmotionEnabled"
           @click-face="onClickFace"
           @click-image="onClickImageEmotion"
@@ -84,6 +86,7 @@ const {
 
   focusInput,
 
+  emotionPickerBtnVisible,
   emotionRef,
   emotionVisible,
   hideEmotionPanel,

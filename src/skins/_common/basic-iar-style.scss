@@ -41,11 +41,22 @@
     color: map.get($--skin-configs, 'main-text-color') !important;
     background-color: inherit !important;
   }
-  .pws-iar-product-list-icon {
-    background-image: url(map.get($--skin-configs, 'iar-product-list-shop:icon-image')) !important;
+  .pws-iar-icon-product-list-icon {
+    path {
+      fill: map.get($--skin-configs, 'iar-product-list-shop:icon-color');
+    }
   }
-  .pws-iar-product-list-icon-recruitment {
-    background-image: url(map.get($--skin-configs, 'iar-product-list-recruitment:icon-image')) !important;
+
+  .pws-iar-icon-qa-ask-emotion-icon {
+    path {
+      fill: map.get($--skin-configs, 'iar-icon-qa-ask-emotion:icon-color');
+    }
+  }
+
+  .pws-iar-icon-product-list-icon-recruitment {
+    path {
+      fill: map.get($--skin-configs, 'iar-product-list-recruitment:icon-color');
+    }
   }
   .pws-iar-product-list-total-highlight {
     color: map.get($--skin-configs, 'main-highlight-text-color') !important;

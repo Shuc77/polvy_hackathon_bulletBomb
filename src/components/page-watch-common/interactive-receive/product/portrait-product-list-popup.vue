@@ -30,8 +30,6 @@
           :is-plv-webview="isPlvWebview"
           :get-plv-webview-bridge="getPlvWebviewBridge"
           :plv-webview-data-size="plvWebviewDataSize"
-          @browse-product="trackProductListItemView"
-          @click-buy="trackProductListItemClick"
           @total-change="onGoodTotalChange"
           @click-good-desc="openGoodDetail"
           @click-plv-webview-jump="setProductListVisible(false)"
@@ -98,7 +96,7 @@ import { onJobDetailEvent } from './hooks/use-product-job-detail';
 import { MobileIconProduct } from '@/components/component-icons/mobile/map';
 import { YN } from '@polyv/live-watch-sdk';
 
-import { useProduct, useProductLinkParams, useProductTrack } from './hooks/use-product';
+import { useProduct, useProductLinkParams } from './hooks/use-product';
 import { useProductList } from './hooks/use-product-list';
 import { useProductDetail } from './hooks/use-product-detail';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -119,8 +117,6 @@ const { getPlvWebviewBridge } = useWebviewStore();
 const { productSdk, recruitmentEnabled, jobDescLabel } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
-
-const { trackProductListItemView, trackProductListItemClick } = useProductTrack();
 
 const { iarProductListRef, renderProductList, goodTotal, onGoodTotalChange, initProductList } =
   useProductList();

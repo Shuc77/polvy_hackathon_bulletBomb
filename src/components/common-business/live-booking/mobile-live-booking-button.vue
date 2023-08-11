@@ -52,6 +52,9 @@ import { useLiveBookingWx } from './hooks/use-live-booking-wx';
 import MobileLiveBookingFormPopup from './mobile-live-booking-form-popup.vue';
 import MobileLiveBookingSubscribePopup from './mobile-live-booking-subscribe-popup.vue';
 import { LiveBookingFormInstance } from './types';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+
+const { trackUserReservationLive } = useWatchEventTrack();
 
 const props = defineProps({
   /** 按钮使用的位置，splash-引导页（默认），player-播放器，corner-播放器角落 */
@@ -119,6 +122,7 @@ function onClickButton() {
 
 /** 处理微信预约点击 */
 async function onClickWxButton() {
+  trackUserReservationLive({ reservationType: 'official_account' });
   if (unref(isLiveBooking)) {
     wxCancelLiveBooking();
   } else {
@@ -130,6 +134,7 @@ async function onClickWxButton() {
 function onClickSmsButton() {
   const instance = unref(bookingFormRef);
 
+  trackUserReservationLive({ reservationType: 'code' });
   if (unref(isLiveBooking)) {
     instance?.cancelLiveBooking();
   } else {

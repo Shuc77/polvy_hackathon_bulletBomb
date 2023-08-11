@@ -4,10 +4,12 @@
 
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { LiveStatus, PlaybackMode, PlaybackTarget } from '@polyv/live-watch-sdk';
+import { LiveStatus, PlaybackMode, PlaybackTarget, PlaybackType } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
+import { paramGetter } from '@/hooks/core/use-query-params';
+import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 
 export interface PlaybackStoreState {
   /** 当前是否正在播放回放 */
@@ -41,6 +43,8 @@ export interface PlaybackStoreState {
 export interface PlaybackStoreActions {
   /** 同步 Store 数据 */
   syncPlaybackStore: () => void;
+  /** 更新当前回放对象 */
+  updateCurrentPlaybackTarget(target?: PlaybackTarget): void;
   /** 初始化当前回放对象 */
   initCurrentPlaybackTarget(): Promise<void>;
   /** 初始化回放列表 */
@@ -51,6 +55,8 @@ export interface PlaybackStoreActions {
   onPageChange(nextPageNumber: number): Promise<void>;
   /** 获取回放的场次Id */
   getPlaybackSessionId(): string;
+  /** 生成用于分享回放的 Vid */
+  generatePlaybackShareId(): string | undefined;
 }
 
 export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions {}
@@ -132,6 +138,27 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   }
 
   /**
+   * 根据回放列表获取当前回放对象
+   */
+  function __getCurrentPlaybackTargetByList(): PlaybackTarget | undefined {
+    if (!playbackList.value.length) return undefined;
+
+    let result = playbackList.value[0];
+
+    const playbackSharedVid = paramGetter.playbackSharedVid();
+    if (playbackSharedVid) {
+      const sharedPlaybackTarget = playbackList.value.find(
+        playbackTarget =>
+          playbackTarget.playbackOptions.type !== PlaybackType.Record &&
+          playbackTarget.playbackOptions.vid === playbackSharedVid,
+      );
+      result = sharedPlaybackTarget || result;
+    }
+
+    return result;
+  }
+
+  /**
    * 初始化当前回放对象
    * @warn 副作用：如果为列表回放，会初始化一次回放列表数据
    * */
@@ -147,10 +174,8 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     // 列表回放时，则先获取一次回放列表并设置回放对象
     if (playbackMode.value === PlaybackMode.List) {
       await initPlaybackList();
-      if (playbackList.value.length) {
-        currentPlaybackTarget.value = playbackList.value[0];
-      }
-      setChatReplayPlaybackVideoTarget();
+      const playbackTarget = __getCurrentPlaybackTargetByList();
+      updateCurrentPlaybackTarget(playbackTarget);
       return;
     }
 
@@ -158,11 +183,20 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     if (playbackMode.value === PlaybackMode.Single) {
       const watchCore = getWatchCore();
       const playbackTarget = watchCore.playback.getSinglePlaybackTarget();
-      currentPlaybackTarget.value = playbackTarget;
-      setChatReplayPlaybackVideoTarget();
+      updateCurrentPlaybackTarget(playbackTarget);
     }
   }
 
+  /** 更新当前的回放对象 */
+  function updateCurrentPlaybackTarget(target?: PlaybackTarget) {
+    currentPlaybackTarget.value = target;
+
+    updateWeixinShareConfig();
+
+    setChatReplayPlaybackVideoTarget();
+  }
+
+  /** 设置聊天重放对象 */
   function setChatReplayPlaybackVideoTarget() {
     const watchCore = getWatchCore();
     if (chatReplayEnabled.value) {
@@ -223,6 +257,21 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     return currentPlaybackTarget.value?.playbackOptions.sessionId || '';
   }
 
+  /**
+   * 生成用于分享回放的 Vid
+   * */
+  function generatePlaybackShareId() {
+    if (watchAppStore.isPlaybackWatchUrl || playbackMode.value === PlaybackMode.Single) return;
+
+    if (
+      playbackList.value.length > 0 &&
+      currentPlaybackTarget.value &&
+      currentPlaybackTarget.value.playbackOptions.type !== PlaybackType.Record
+    ) {
+      return currentPlaybackTarget.value.playbackOptions.vid;
+    }
+  }
+
   return {
     isPlaybacking,
     playbackMode,
@@ -242,11 +291,13 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     chatReplayEnabled,
 
     syncPlaybackStore,
+    updateCurrentPlaybackTarget,
     initCurrentPlaybackTarget,
     initPlaybackList,
     loadNextPlaybackList,
     onPageChange,
 
     getPlaybackSessionId,
+    generatePlaybackShareId,
   };
 });

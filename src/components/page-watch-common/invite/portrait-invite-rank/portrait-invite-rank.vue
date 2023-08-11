@@ -8,6 +8,7 @@
       'c-portrait-invite-rank--invited': hasInvitingData,
     }"
     :title="$lang('menu.tabName.invite')"
+    ignore-content-max-height
     :content-percent-height="0.784"
     :content-style="getPopupContentStyle()"
   >
@@ -70,35 +71,36 @@
           <p>{{ $lang('invite.poster.no.data') }}</p>
         </div>
       </div>
+    </div>
+    <div
+      v-if="showBottomInfo"
+      slot="footer"
+      class="c-portrait-invite-rank__foot"
+    >
+      <div class="c-portrait-invite-rank__foot--left c-portrait-invite-rank__self">
+        <div class="c-portrait-invite-rank__self__order">
+          {{ displayCurrentRankInfo.order }}
+        </div>
+        <div class="c-portrait-invite-rank__self__avatar">
+          <img :src="displayCurrentRankInfo.avatar" />
+        </div>
+        <div class="c-portrait-invite-rank__self__info">
+          <p class="g-singleline c-portrait-invite-rank__self__nick">
+            {{ displayCurrentRankInfo.nickname }}
+          </p>
+          <p class="c-portrait-invite-rank__item__invite-text">
+            {{ $lang('invite.poster.num.text') }}:
+            <span class="c-portrait-invite-rank__item__invite-num">
+              {{ displayCurrentRankInfo.inviteNum }}
+            </span>
+          </p>
+        </div>
+      </div>
       <div
-        v-if="showBottomInfo"
-        class="c-portrait-invite-rank__foot"
+        v-if="invitePosterEnabled"
+        class="c-portrait-invite-poster-entry__foot--right"
       >
-        <div class="c-portrait-invite-rank__foot--left c-portrait-invite-rank__self">
-          <div class="c-portrait-invite-rank__self__order">
-            {{ displayCurrentRankInfo.order }}
-          </div>
-          <div class="c-portrait-invite-rank__self__avatar">
-            <img :src="displayCurrentRankInfo.avatar" />
-          </div>
-          <div class="c-portrait-invite-rank__self__info">
-            <p class="g-singleline c-portrait-invite-rank__self__nick">
-              {{ displayCurrentRankInfo.nickname }}
-            </p>
-            <p class="c-portrait-invite-rank__item__invite-text">
-              {{ $lang('invite.poster.num.text') }}:
-              <span class="c-portrait-invite-rank__item__invite-num">
-                {{ displayCurrentRankInfo.inviteNum }}
-              </span>
-            </p>
-          </div>
-        </div>
-        <div
-          v-if="invitePosterEnabled"
-          class="c-portrait-invite-poster-entry__foot--right"
-        >
-          <portrait-invite-poster-entry />
-        </div>
+        <portrait-invite-poster-entry />
       </div>
     </div>
   </mobile-popup>
@@ -295,12 +297,13 @@ function getPopupContentStyle() {
   }
 }
 .c-portrait-invite-rank__foot {
-  position: absolute;
+  position: relative;
   right: 0;
   bottom: 0;
   left: 0;
   box-sizing: content-box;
   padding: 8px 84px 0 16px;
+  overflow: hidden;
   color: #333;
   background-color: #fff;
   @include iphone-x-pb(16px);

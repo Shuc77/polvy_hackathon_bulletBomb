@@ -15,6 +15,7 @@ import { changeProtocol } from '@utils-ts/net';
 import { defineStore } from 'pinia';
 import { useChannelInfoStore } from './use-channel-info-store';
 import { useThemeStore } from './use-theme-store';
+import { usePlaybackStore } from './use-playback-store';
 
 /** Web 分享平台枚举 */
 enum WebShareType {
@@ -63,8 +64,10 @@ const WebShareRedirectUrl: Record<WebShareType, string> = {
 export interface ShareStoreState {
   /** 分享按钮开关 */
   shareBtnEnabled: Ref<boolean>;
+  /** 是否使用回放标题分享 */
+  playbackShareTitleEnabled: Ref<boolean>;
   /** PC web 分享的观看地址 */
-  shareWatchUrl: Ref<string>;
+  shareWatchUrl: ComputedRef<string>;
   /** PC web 分享的观看地址二维码地址 */
   shareQrCodeUrl: ComputedRef<string>;
   /** QQ 分享跳转地址 */
@@ -99,12 +102,30 @@ export interface ShareStore extends ShareStoreState, ShareStoreAction {}
 export const useShareStore = defineStore<'share', ShareStore>('share', () => {
   const channelInfoStore = useChannelInfoStore();
   const themeStore = useThemeStore();
+  const playbackStore = usePlaybackStore();
 
   /** 分享按钮开关 */
   const shareBtnEnabled = ref(false);
 
+  /** 是否使用回放标题分享 */
+  const playbackShareTitleEnabled = ref(false);
+
+  const shareBaseWatchUrl = ref('');
+
   /** PC web 分享的观看地址 */
-  const shareWatchUrl = ref('');
+  const shareWatchUrl = computed(() => {
+    const playbackShareVid = playbackStore.generatePlaybackShareId();
+
+    return appendToURL(
+      shareBaseWatchUrl.value,
+      {
+        playBackVid: playbackShareVid,
+      },
+      {
+        ignoreEmpty: true,
+      },
+    );
+  });
 
   /** PC web 分享的观看地址二维码地址 */
   const shareQrCodeUrl = computed<string>(() => {
@@ -203,11 +224,13 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     const watchCore = getWatchCore();
 
     shareBtnEnabled.value = watchCore.share.getShareEnabled();
-    shareWatchUrl.value = watchCore.share.getShareWatchUrl();
+    playbackShareTitleEnabled.value = watchCore.share.getPlaybackShareTitleEnabled();
+    shareBaseWatchUrl.value = watchCore.share.getShareWatchUrl();
   }
 
   return {
     shareBtnEnabled,
+    playbackShareTitleEnabled,
     shareWatchUrl,
     shareQrCodeUrl,
     qqShareUrl,

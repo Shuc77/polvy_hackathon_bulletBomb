@@ -218,9 +218,7 @@ onMounted(() => {
 
 <style lang="scss">
 .c-mobile-watch-layout {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;

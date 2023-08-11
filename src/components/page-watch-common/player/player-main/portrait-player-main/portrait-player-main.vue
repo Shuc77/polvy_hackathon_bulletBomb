@@ -31,19 +31,24 @@
     <!-- 播放按钮 -->
     <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
     <div
-      v-if="normalPlayButtonVisible"
+      v-if="normalPlayButtonVisible && !isSmallWindow"
       class="c-portrait-player-main__play-button g-img-cover"
     ></div>
 
     <!-- 暂无直播占位面板 -->
     <portrait-none-live-panel v-if="noneLiveVisible" />
+
+    <!-- webview 小窗下的控制栏 -->
+    <small-window-control v-if="isSmallWindow" />
   </div>
 </template>
 
 <script setup lang="ts">
 import PortraitNoneLivePanel from '../../common/none-live-panel/portrait-none-live-panel.vue';
 import PortraitPlayerCoverImg from '../../player-cover-img/portrait-player-cover-img.vue';
+import SmallWindowControl from '../../player-control/common-player-control/small-window-control.vue';
 import { usePlayerStore } from '@/store/use-player-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerControl } from '../../hooks/use-player-control';
@@ -76,6 +81,8 @@ const { noneLiveVisible, resolutionWidth, resolutionHeight, isAudioPlayerMode } 
 const { portraitDocWrapHeight } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { normalPlayButtonVisible } = usePlayerControl();
+
+const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
 usePortraitClickPlayer();
 
@@ -139,7 +146,7 @@ const allPlayerContainerStyle = computed<CSSProperties>(() => {
   position: relative;
   width: 100%;
   height: 100%;
-  background: #212121;
+  // background: #212121;
 }
 .c-portrait-player-main__container--audio {
   opacity: 0;
@@ -179,6 +186,17 @@ const allPlayerContainerStyle = computed<CSSProperties>(() => {
   margin-top: auto;
   margin-bottom: auto;
   background-color: #00021a;
+}
+
+.c-portrait-placeholder-panel--small-window {
+  &::before,
+  &::after {
+    display: none;
+  }
+
+  .c-portrait-placeholder-panel__content {
+    height: 100%;
+  }
 }
 
 .c-portrait-player-main__play-button {

@@ -15,7 +15,7 @@ export function bindConnectMicModuleEvents(): void {
   });
 
   watchCore.connectMic.eventEmitter.on(ConnectMicEvents.NetworkInfoChange, () => {
-    connectMicStore.syncNewtowkInfo();
+    connectMicStore.syncNetworkInfo();
   });
 
   watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicListChange, () => {

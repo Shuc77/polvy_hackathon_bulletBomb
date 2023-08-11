@@ -1,22 +1,30 @@
-import { translate } from '@/assets/lang';
-import { validateUserName, validatePhoneNumber } from '@/assets/utils/validate';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
-import { SelectOptionItem } from '@/components/common-base/form/form-select/types/form-select-types';
-import { toast } from '@/hooks/components/use-toast';
+import { computed, reactive, ref, unref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { getWatchCore } from '@/core/watch-sdk';
-import { ValidatorRules } from '@/plugins/async-validator';
-import { useAuthStore } from '@/store/use-auth-store';
 import {
   AuthInfoPropValKey,
   AuthInfoPropValType,
   AuthInfoType,
   AuthSettingItemInfo,
 } from '@polyv/live-watch-sdk';
-import { storeToRefs } from 'pinia';
-import { computed, reactive, ref, unref } from 'vue';
-import { useAuthButtonInject } from '../../hooks/use-auth-button';
-import { useAuthCommon, useAuthProtocol } from '../../hooks/use-auth-common';
+import { ValidatorRules } from '@/plugins/async-validator';
+
+import { translate } from '@/assets/lang';
+import { validateUserName, validatePhoneNumber } from '@/assets/utils/validate';
+import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+
+import { useAuthStore } from '@/store/use-auth-store';
+
+import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
+import { SelectOptionItem } from '@/components/common-base/form/form-select/types/form-select-types';
+
+import { toast } from '@/hooks/components/use-toast';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { useAuthButtonInject } from '@/components/page-splash-common/auth/hooks/use-auth-button';
+import {
+  useAuthCommon,
+  useAuthProtocol,
+} from '@/components/page-splash-common/auth/hooks/use-auth-common';
 import { useAuthInfoSetting } from './use-auth-info-setting';
 
 export const authInfoFormEmits = () => ({
@@ -207,6 +215,8 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
 
   const { failMessage, handleAuthVerifySuccess, handleAuthVerifyFail } = useAuthCommon();
 
+  const { trackUserRegisterApplication } = useWatchEventTrack();
+
   async function submitAuth() {
     const watchCore = getWatchCore();
 
@@ -217,6 +227,8 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
         formValues.push(formData[field]);
       }
     });
+
+    trackUserRegisterApplication();
 
     const result = await watchCore.auth.verifyInfoAuth({
       phoneNumber: formData.phoneNumber,

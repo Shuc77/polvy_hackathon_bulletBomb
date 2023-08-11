@@ -77,7 +77,7 @@ export interface ConnectMicStoreAction {
   /** 同步连麦信息 */
   syncConnectMicInfo(): void;
   /** 同步连麦网络信息 */
-  syncNewtowkInfo(): void;
+  syncNetworkInfo(): void;
   /** 同步屏幕共享信息 */
   syncScreenShareInfo(): void;
   /** 同步连麦列表 */
@@ -245,7 +245,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   const networkInfo = ref<ConnectMicNetworkInfo>(generateDefaultNetworkInfo());
 
   /** 同步连麦网络信息 */
-  function syncNewtowkInfo(): void {
+  function syncNetworkInfo(): void {
     const watchCore = getWatchCore();
     const info = watchCore.connectMic.getNetworkInfo();
     networkInfo.value = info;
@@ -311,7 +311,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     supportSetupVideo,
 
     networkInfo,
-    syncNewtowkInfo,
+    syncNetworkInfo,
 
     screenShareInfo,
     syncScreenShareInfo,

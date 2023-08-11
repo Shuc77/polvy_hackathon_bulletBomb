@@ -7,6 +7,8 @@
       :disabled-input="chatInputDisabled"
       :disabled-emotion-picker="chatInputDisabled"
       :disabled-send-image="chatInputDisabled"
+      :face-emotion-enabled="chatSetting.faceEmotionEnabled"
+      :image-emotion-enabled="chatSetting.imageEmotionEnabled"
       render-suffix-slot
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
@@ -30,42 +32,18 @@
         ></div>
       </template>
     </mobile-msg-input-wrap>
-
-    <!-- 更多弹层 -->
-    <mobile-popup
-      class="c-mobile-more-popup"
-      :visible.sync="moreVisible"
-      :show-header="false"
-      content-background="none"
-    >
-      <mobile-more-panel @close="closeMore" />
-    </mobile-popup>
-
-    <!-- 打赏弹层 -->
-    <mobile-popup
-      class="c-mobile-donate-popup"
-      :visible.sync="donateVisible"
-      :show-header="false"
-      content-background="none"
-    >
-      <mobile-donate-panel @donate-finish="closeDonate" />
-    </mobile-popup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { useDonateStore } from '@/store/use-donate-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import MobileDonatePanel from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-panel.vue';
-import MobileMorePanel from './mobile-more-panel.vue';
-import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mobile-msg-input-wrap/mobile-msg-input-wrap.vue';
 import MobileChatMsgQuote from '@/components/page-watch-common/chat/chat-msg-quote/mobile-chat-msg-quote.vue';
+import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mobile-msg-input-wrap/mobile-msg-input-wrap.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useDonateStore } from '@/store/use-donate-store';
 
-import { useChatInputController } from '../hooks/use-chat-input-controller';
+import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
-import { useEventBusListener, appEvents } from '@/app/app-events';
+import { useChatInputController } from '../hooks/use-chat-input-controller';
 
 const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } =
   useChatInputController();
@@ -74,13 +52,18 @@ useEventBusListener(appEvents.chat.FocusToChatInput, () => {
   focusMsgInput();
 });
 
-const { chatInputPlaceholder, chatInputDisabled } = storeDefinitionToRefs(useChatStore);
+const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
+  storeDefinitionToRefs(useChatStore);
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
-const { visible: donateVisible, show: showDonate, close: closeDonate } = useSimpleVisible();
+function showMore() {
+  eventBus.$emit(appEvents.global.OpenMobileMorePopup, true);
+}
 
-const { visible: moreVisible, show: showMore, close: closeMore } = useSimpleVisible();
+function showDonate() {
+  eventBus.$emit(appEvents.donate.OpenDonatePopup, true);
+}
 </script>
 
 <style lang="scss">

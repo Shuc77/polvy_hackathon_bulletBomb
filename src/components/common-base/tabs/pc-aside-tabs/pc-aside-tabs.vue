@@ -2,10 +2,17 @@
 <template>
   <div class="c-pc-aside-tabs">
     <!-- tab 头部 -->
-    <pc-aside-tab-header />
+    <pc-aside-tab-header v-show="!isEmptyMenu" />
 
     <!-- tab 主体 -->
     <div class="c-pc-aside-tabs__body pws-main-tab-body">
+      <div
+        v-if="isEmptyMenu"
+        class="c-pc-aside-tabs__empty pws-main-tab-empty"
+      >
+        {{ $lang('menu.empty') }}
+      </div>
+
       <!-- 面板插槽 -->
       <slot></slot>
     </div>
@@ -21,7 +28,7 @@ const props = defineProps(tabsProps());
 
 const emit = defineEmits(tabsEmits());
 
-const { tabsInstance } = useTabs({
+const { tabsInstance, isEmptyMenu } = useTabs({
   props,
   emit,
   switchEvent: appEvents.global.PcAsideMenuSwitch,
@@ -41,5 +48,24 @@ defineExpose(tabsInstance);
 .c-pc-aside-tabs__body {
   position: relative;
   flex: 1;
+}
+
+.c-pc-aside-tabs__empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translate(-50%, -50%);
+
+  &::before {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 8px;
+    content: '';
+    background-size: 100% 100%;
+  }
 }
 </style>

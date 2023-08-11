@@ -51,7 +51,7 @@
       <pc-icon-close-round
         v-if="closeVisible"
         class="c-pc-page-advert__content__close"
-        @click="onClickClose"
+        @click="closeAdvert"
       />
     </div>
   </div>
@@ -64,11 +64,14 @@ import {
   PcIconArrowLeft,
   PcIconArrowRight,
 } from '@/components/component-icons/pc/map';
-import { usePageAdvert } from './use-page-advert';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/pc-import';
+import { usePageAdvertStore } from '@/store/use-page-advert-store';
+import { storeToRefs } from 'pinia';
 
-const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible, onClickClose, openLink } =
-  usePageAdvert();
+const pageAdvertStore = usePageAdvertStore();
+const { closeAdvert, openLink } = pageAdvertStore;
+const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible } =
+  storeToRefs(pageAdvertStore);
 </script>
 
 <style lang="scss">

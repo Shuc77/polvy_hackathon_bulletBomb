@@ -13,14 +13,6 @@
       <portrait-player-main v-else />
     </div>
 
-    <!-- 连麦区 -->
-    <!--    <div-->
-    <!--      v-if="filterConnectMicList.length"-->
-    <!--      class="c-mobile-watch-layout__connect-mic"-->
-    <!--    >-->
-    <!--      <portrait-connect-mic-user-list />-->
-    <!--    </div>-->
-
     <!-- 文档 -->
     <div
       v-if="canRenderDoc"
@@ -41,6 +33,7 @@
 
     <!-- 轮播屏 -->
     <div
+      v-show="!isSmallWindow"
       class="c-portrait-watch-layout__carousel-wrap"
       :style="{
         paddingTop: `${portraitDocWrapHeight}px`,
@@ -62,6 +55,7 @@ import PortraitWatchLayoutCarousel from './portrait-watch-layout-carousel.vue';
 import PortraitConnectMicContainer from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-container.vue';
 import { useDocStore } from '@/store/use-doc-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 const { portraitDocWrapHeight, portraitDocContentHeight } =
   storeDefinitionToRefs(usePortraitLayoutStore);
@@ -69,6 +63,8 @@ const { portraitDocWrapHeight, portraitDocContentHeight } =
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
 const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+
+const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
 const portraitWrap = ref<HTMLElement>();
 const portraitMicContainer = ref();

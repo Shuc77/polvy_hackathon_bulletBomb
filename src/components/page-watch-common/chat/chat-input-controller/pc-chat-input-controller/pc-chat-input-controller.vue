@@ -9,6 +9,8 @@
       :send-image-enabled="chatSetting.viewerSendImgEnabled"
       :disabled-send-image="chatInputDisabled"
       :image-paste-input-enabled="imagePasteInputEnabled"
+      :face-emotion-enabled="chatSetting.faceEmotionEnabled"
+      :image-emotion-enabled="chatSetting.imageEmotionEnabled"
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
       @click-send-image="onClickSendImage"

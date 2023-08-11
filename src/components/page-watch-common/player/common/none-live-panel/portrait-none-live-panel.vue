@@ -1,12 +1,24 @@
 <!-- @file 竖屏暂无直播占位 -->
 <template>
-  <div class="c-portrait-none-live-panel c-portrait-placeholder-panel">
+  <div
+    class="c-portrait-none-live-panel c-portrait-placeholder-panel"
+    :class="{
+      'c-portrait-placeholder-panel--small-window': isSmallWindow,
+    }"
+  >
     <div class="c-portrait-placeholder-panel__content">
       <div class="c-portrait-none-live-panel__image g-img-cover"></div>
       <p class="c-portrait-none-live-panel__text">{{ $lang('liveStatus.end') }}</p>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWebviewStore } from '@/store/use-webview-store';
+
+const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
+</script>
 
 <style lang="scss">
 .c-portrait-none-live-panel .c-portrait-placeholder-panel__content {
@@ -24,5 +36,15 @@
 .c-portrait-none-live-panel__text {
   font-size: 14px;
   color: $--color-white;
+}
+
+.c-portrait-placeholder-panel--small-window {
+  .c-portrait-none-live-panel__image {
+    width: 60px;
+    height: 46px;
+  }
+  .c-portrait-none-live-panel__text {
+    font-size: 12px;
+  }
 }
 </style>

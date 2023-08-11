@@ -1,6 +1,6 @@
 import { useChatStore } from '@/store/use-chat-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { AppConfig, createWatchCore, PolyvWatchCore } from '@polyv/live-watch-sdk';
+import { AppConfig, PolyvWatchCore, createWatchCore, setDebugMode } from '@polyv/live-watch-sdk';
 
 import { bindChannelModuleEvents } from '@/core/bind-sdk-events/bind-channel-events';
 import { bindChatModuleEvents } from '@/core/bind-sdk-events/bind-chat-events';
@@ -62,7 +62,13 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   return watchCore;
 }
 
-window.debugWatchSdk = () => {
+window.debugWatchSdk = (params?: string) => {
+  // 生产环境增加限制
+  if (WATCH_SDK_ENV === 'prod' && params !== `plv_watch_v${PROJECT_VERSION}`) {
+    return;
+  }
+
   window.watchCore = watchCore;
+  setDebugMode(true);
   console.info(watchCore);
 };

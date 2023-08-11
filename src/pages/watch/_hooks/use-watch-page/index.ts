@@ -3,6 +3,7 @@ import { useIarGlobalConfigHook } from '@/components/page-watch-common/interacti
 import { usePageViewPolling } from './_hooks/use-polling';
 import { useConnectMicSetup } from './_hooks/use-connect-mic-setup';
 import { useMainScreen } from './_hooks/use-main-screen';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 export const useWatchPage = () => {
   // 使用 pv 轮训
@@ -16,4 +17,10 @@ export const useWatchPage = () => {
 
   // 主副屏响应切换逻辑
   useMainScreen();
+
+  // 初始化 webview 逻辑
+  const webviewStore = useWebviewStore();
+  if (webviewStore.isPlvWebview) {
+    webviewStore.initWebviewBridge();
+  }
 };

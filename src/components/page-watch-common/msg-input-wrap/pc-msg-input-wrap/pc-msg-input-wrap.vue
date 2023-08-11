@@ -10,6 +10,7 @@
         class="c-pc-msg-input-wrap__emotion-picker-wrap"
       >
         <pc-emotion-picker
+          :face-emotion-enabled="faceEmotionEnabled"
           :image-emotion-enabled="imageEmotionEnabled"
           @click-face="onClickFace"
           @click-image="onClickImageEmotion"
@@ -25,6 +26,7 @@
     <div class="c-pc-msg-input-wrap__icons">
       <!-- 表情 -->
       <div
+        v-if="emotionPickerBtnVisible"
         data-emotion-picker-btn
         class="c-pc-msg-input-wrap__icons__item pws-pc-msg-bottom-input-wrap-item"
         :class="{
@@ -162,6 +164,7 @@ const {
   wordLimitVisible,
   onInputWidgetOverflow,
 
+  emotionPickerBtnVisible,
   emotionRef,
   emotionVisible,
   hideEmotionPanel,

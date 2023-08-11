@@ -47,6 +47,9 @@ import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { LiveBookingFormInstance } from './types';
+import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+
+const { trackUserReservationLive } = useWatchEventTrack();
 
 const props = defineProps({
   /** 按钮样式，默认：text，text-文本，button-按钮 */
@@ -78,6 +81,8 @@ const bookingFormRef = ref<LiveBookingFormInstance>();
 /** 处理按钮点击 */
 function onClickButton() {
   const instance = unref(bookingFormRef);
+
+  trackUserReservationLive({ reservationType: 'code' });
 
   if (unref(isSmsLiveBooking)) {
     instance?.cancelLiveBooking();

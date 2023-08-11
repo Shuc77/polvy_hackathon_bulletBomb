@@ -148,18 +148,20 @@ export const useInviteRankHook = (
       }
       resRankList.value = contents;
 
+      if (data.totalPages <= page.value) {
+        isNoMore.value = true;
+      }
+
       if (isFirst) {
         rankList.value = [];
       }
       if (resRankList.value.length > 0) {
-        rankList.value.push(...resRankList.value.splice(0, 20));
+        const pushedList = isNoMore.value ? resRankList.value : resRankList.value.splice(0, 20);
+        rankList.value.push(...pushedList);
         // 单独获取前三名数据
         if (isFirst) {
           topThreeRankItems.value = rankList.value.splice(0, 3);
         }
-      }
-      if (data.totalPages <= page.value) {
-        isNoMore.value = true;
       }
     } catch (err) {
       isLoadFailed.value = true;

@@ -4,11 +4,15 @@
     <div
       class="c-portrait-emotion-picker__panel-wrap"
       :class="{
-        'c-portrait-emotion-picker__panel-wrap--image': currentType === 'image',
+        'c-portrait-emotion-picker__panel-wrap--image':
+          faceEmotionEnabled && currentType === 'image',
       }"
     >
       <!-- face 表情 -->
-      <div class="c-portrait-emotion-picker__panel">
+      <div
+        v-if="faceEmotionEnabled"
+        class="c-portrait-emotion-picker__panel"
+      >
         <mobile-emotion-face-picker @click-face="onClickFace" />
       </div>
 
@@ -26,6 +30,7 @@
       <!-- Tab 切换 -->
       <div class="c-portrait-emotion-picker__tabs pws-mobile-emotion-picker-tabs">
         <div
+          v-if="faceEmotionEnabled"
           class="c-portrait-emotion-picker__tabs-item pws-mobile-emotion-picker-tabs-item"
           :class="{
             'is-active': currentType === 'face',
@@ -94,7 +99,7 @@ const props = defineProps(emotionPickerProps());
 
 const emit = defineEmits(emotionPickerEmits());
 
-const { imageEmotionEnabled } = useProps(props);
+const { faceEmotionEnabled, imageEmotionEnabled } = useProps(props);
 
 const { currentType, switchEmotionTab, onClickFace, onClickImage, onClickDelete, onClickSend } =
   useEmotionPicker({

@@ -56,43 +56,43 @@ const emit = defineEmits({
   background-size: 100%;
 }
 .c-mobile-more-item__icon--only-special {
-  background-image: url(../imgs/icon-menu-only-sp-mob.png);
+  background-image: url(./imgs/icon-menu-only-sp-mob.png);
 }
 .c-mobile-more-item__icon--look-all {
-  background-image: url(../imgs/icon-menu-show-all-mob.png);
+  background-image: url(./imgs/icon-menu-show-all-mob.png);
 }
 .c-mobile-more-item__icon--send-image {
-  background-image: url(../imgs/icon-menu-img-mob.png);
+  background-image: url(./imgs/icon-menu-img-mob.png);
 }
 .c-mobile-more-item__icon--announcement {
-  background-image: url(../imgs/icon-menu-announcement-mob.png);
+  background-image: url(./imgs/icon-menu-announcement-mob.png);
 }
 .c-mobile-more-item__icon--feedback {
-  background-image: url(../imgs/icon-menu-feed-back.png);
+  background-image: url(./imgs/icon-menu-feed-back.png);
 }
 .c-mobile-more-item__icon--score {
-  background-image: url(../imgs/icon-menu-score-redpack.png);
+  background-image: url(./imgs/icon-menu-score-redpack.png);
 }
 .c-mobile-more-item__icon--hide-donate {
-  background-image: url(../imgs/icon-menu-animation-hide-mob.png);
+  background-image: url(./imgs/icon-menu-animation-hide-mob.png);
 }
 .c-mobile-more-item__icon--show-donate {
-  background-image: url(../imgs/icon-menu-animation-show-mob.png);
+  background-image: url(./imgs/icon-menu-animation-show-mob.png);
 }
 .c-mobile-more-item__icon--set-nick {
-  background-image: url(../imgs/icon-menu-set-nick.png);
+  background-image: url(./imgs/icon-menu-set-nick.png);
 }
 .c-mobile-more-item__icon--language {
-  background-image: url(../imgs/icon-menu-lang-mob.png);
+  background-image: url(./imgs/icon-menu-lang-mob.png);
 }
 .c-mobile-more-item__icon--send-redpack {
-  background-image: url(../imgs/icon-menu-redenvelope-mob.png);
+  background-image: url(./imgs/icon-menu-redenvelope-mob.png);
 }
 .c-mobile-more-item__icon--withdraw {
-  background-image: url(../imgs/icon-menu-withdraw-mob.png);
+  background-image: url(./imgs/icon-menu-withdraw-mob.png);
 }
 .c-mobile-more-item__icon--message {
-  background-image: url(../imgs/icon-menu-msg.png);
+  background-image: url(./imgs/icon-menu-msg.png);
 }
 
 .c-mobile-more-item__text {

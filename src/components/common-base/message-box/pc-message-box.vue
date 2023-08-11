@@ -1,0 +1,101 @@
+<!-- @file PC端-消息弹窗 -->
+
+<template>
+  <pc-dialog
+    v-bind="{ ...filterPcDialogProps() }"
+    :visible.sync="innerVisible"
+    @after-enter="onAfterEnter"
+    @after-leave="onAfterLeave"
+    @closed="onCancel"
+  >
+    <div class="c-pc-message-box">
+      <div class="c-pc-message-box__body">
+        <p
+          v-if="props.content"
+          v-html="props.content"
+          ref="messageBoxContentRef"
+          class="c-pc-message-box__content"
+        ></p>
+      </div>
+      <div class="c-pc-message-box__footer">
+        <normal-button
+          class="c-pc-message-box__footer-button"
+          :type="ButtonType.Cancel"
+          :size="ButtonSize.Small"
+          :text="props.cancelButtonText"
+          @click="onCancel"
+        />
+        <normal-button
+          class="c-pc-message-box__footer-button"
+          :type="ButtonType.Primary"
+          :size="ButtonSize.Small"
+          :text="props.confirmButtonText"
+          @click="onConfirm"
+        />
+      </div>
+    </div>
+  </pc-dialog>
+</template>
+
+<script lang="ts" setup>
+import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
+import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
+
+import { messageBoxPcProps, messageBoxEmits, useMessageBox } from './use-message-box';
+
+const props = defineProps(messageBoxPcProps());
+const emit = defineEmits(messageBoxEmits());
+
+function filterPcDialogProps() {
+  return {
+    ...props,
+    type: undefined,
+    content: undefined,
+    cancelButtonText: undefined,
+    confirmButtonText: undefined,
+  };
+}
+
+const {
+  innerVisible,
+  messageBoxInstance,
+  messageBoxContentRef,
+
+  onAfterEnter,
+  onAfterLeave,
+  onCancel,
+  onConfirm,
+} = useMessageBox({ props, emit });
+
+defineExpose(messageBoxInstance);
+</script>
+
+<style lang="scss">
+.c-pc-message-box__body {
+  padding: 0 16px;
+  margin: 24px auto;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: #3e424e;
+}
+
+.c-pc-message-box__content {
+  a {
+    color: #3082fe;
+    text-decoration: none;
+  }
+  p + p {
+    margin-top: 8px;
+  }
+}
+.c-pc-message-box__footer {
+  padding-bottom: 24px;
+  text-align: center;
+}
+.c-pc-message-box__footer-button {
+  &:first-child {
+    margin-right: 16px;
+  }
+}
+</style>

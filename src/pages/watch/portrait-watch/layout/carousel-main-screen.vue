@@ -241,11 +241,6 @@ const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait
 <style lang="scss">
 $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 
-.c-portrait-carousel-main-screen__top-left {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-}
 .c-portrait-carousel-main-screen__top-left__item {
   display: flex;
   align-items: center;
@@ -261,9 +256,6 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 }
 
 .c-portrait-carousel-main-screen__top-right {
-  position: absolute;
-  top: 16px;
-  right: 16px;
   display: flex;
   align-items: center;
 }

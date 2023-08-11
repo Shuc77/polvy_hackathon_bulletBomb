@@ -66,51 +66,18 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { useDialogTips } from '../use-dialog-tips';
 import { PcIconClose } from '@/components/component-icons/pc/map';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { CSSProperties } from 'vue/types/jsx';
-import { emitFunc, updateModelEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types';
+
+import { dialogPcProps, dialogEmits } from '../use-dialog';
 
 /**
  * 废除参数：custom、modalStyle、closeOnClickModal
  */
-const props = defineProps({
-  /** 显示状态，默认：false，支持 .sync */
-  visible: PropUtils.bool.def(false),
-  /** 弹层标题 */
-  title: PropUtils.string.def(''),
-  /** 是否隐藏头部的边框，默认：false */
-  hideHeaderBorder: PropUtils.bool.def(false),
-  /** 是否插入到 body 中，默认：true */
-  appendToBody: PropUtils.bool.def(true),
-  /** 是否显示蒙层挡板 ,默认：true */
-  mask: PropUtils.bool.def(true),
-  /** 打开窗口后是否禁用页面的滚动，不开启 mask 下默认不锁定 */
-  bodyLocked: PropUtils.bool.def(false),
-  /** 弹层宽度，默认 560  */
-  width: PropUtils.number.def(560),
-  /** 弹层高度，默认 0  */
-  height: PropUtils.number.def(0),
-  /** 点击蒙层关闭弹窗，默认：false */
-  closeOnClickMask: PropUtils.bool.def(false),
-  /** 是否显示关闭，默认：true */
-  closable: PropUtils.bool.def(true),
-  /** 窗口是否可以拖拽，默认: false */
-  draggable: PropUtils.bool.def(false),
-  /** 用于计算定位的元素 */
-  positionComputedElem: PropUtils.string.def(''),
-  /** 渲染到某个元素中 */
-  mountEl: PropUtils.string.def(''),
-});
+const props = defineProps(dialogPcProps());
 
-const emits = defineEmits({
-  ...updateModelEmit<'visible', boolean>('visible'),
-  open: emitFunc<void>(),
-  opened: emitFunc<void>(),
-  close: emitFunc<void>(),
-  closed: emitFunc<void>(),
-});
+const emits = defineEmits(dialogEmits());
 
 const { dialogTips } = useDialogTips();
 

@@ -3,11 +3,11 @@
   <div
     class="c-mobile-player-main"
     :class="{
-      'c-mobile-player-main--page-fullscreen': mobilePlayerIsPageFullscreen,
+      'c-mobile-player-main--page-fullscreen':
+        mobilePlayerIsPageFullscreen && !isHorizontalScreenOrientation,
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
     }"
-    :style="mobilePlayerMainStyle"
     @click="onClickContainer"
   >
     <!-- 播放器渲染容器 -->
@@ -19,14 +19,6 @@
     <!-- 播放器 logo -->
     <mobile-player-logo v-if="isLowLatency && logoSetting.logoImage" />
 
-    <!-- 观看次数 -->
-    <div
-      v-if="pageViewCountLocation === PageViewShowLocation.Player && !isLowLatency"
-      class="c-mobile-player-main__pv"
-    >
-      {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
-    </div>
-
     <!-- 播放器暖场/封面图  -->
     <mobile-player-cover-img v-if="isLowLatency" />
 
@@ -37,16 +29,21 @@
       class="c-mobile-player-main__play-btn"
     />
 
-    <!-- 播放器控制栏 -->
-    <mobile-player-control
-      v-if="isLowLatency"
-      class="c-mobile-player-main__control"
+    <!-- 播放器顶部-左侧 观看次数 -->
+    <div
+      v-if="pageViewCountLocation === PageViewShowLocation.Player"
+      v-show="playerControlVisible || sdkPlayerUIControlVisible"
+      class="c-mobile-player-main__pv"
+    >
+      {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
+    </div>
+
+    <!-- 播放器顶部-右侧 延迟模式切换 -->
+    <mobile-low-latency-switch
+      v-show="latencyModeSettingVisible && (playerControlVisible || sdkPlayerUIControlVisible)"
     />
 
-    <!-- 延迟模式切换 -->
-    <mobile-low-latency-switch v-show="latencyModeSettingVisible && playerControlVisible" />
-
-    <!-- 直播时移和精彩看点入口 -->
+    <!-- 播放器底部-右侧 直播时移和精彩看点入口 -->
     <transition name="slide">
       <mobile-player-time-axis-entrance
         v-if="isLowLatency"
@@ -54,16 +51,26 @@
       />
     </transition>
 
+    <!-- 播放器控制栏 -->
+    <mobile-player-control
+      v-if="isLowLatency"
+      class="c-mobile-player-main__control"
+    />
+
+    <!-- ========= 弹出层类型组件 Start ========= -->
+
     <!-- 播放器弹幕设置面板 -->
     <mobile-barrage-setting v-show="barrageMobileSettingVisible" />
 
     <!-- 精彩看点弹窗 -->
     <mobile-player-time-axis-mark-popup v-if="supportTimeAxisMark" />
+
+    <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, unref } from 'vue';
+import { unref } from 'vue';
 
 import { appEvents, eventBus } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -88,7 +95,6 @@ import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
-import { CSSProperties } from 'vue/types/jsx';
 
 const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
   storeDefinitionToRefs(useLayoutStore);
@@ -96,6 +102,7 @@ const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
 const {
   isLowLatency,
   playerControlVisible,
+  sdkPlayerUIControlVisible,
   logoSetting,
   barrageMobileSettingVisible,
   supportTimeAxisMark,
@@ -120,17 +127,6 @@ const { playerContainer } = usePlayerMain({
 const { latencyModeSettingVisible, bigPlayButtonVisible } = usePlayerControl();
 const { toPlay } = usePlayerAction();
 
-// 兼容移动端浏览器底部 Tab 存在的情况
-const mobilePlayerMainStyle = computed<CSSProperties>(() => {
-  if (!mobilePlayerIsPageFullscreen.value) return {};
-
-  const width = document.body.clientHeight;
-  return {
-    width: width + 'px',
-    marginLeft: (width / 2) * -1 + 'px',
-  };
-});
-
 function onClickContainer() {
   // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
   if (bigPlayButtonVisible.value) {
@@ -141,8 +137,11 @@ function onClickContainer() {
 </script>
 
 <style lang="scss">
+$--player-page-fullscreen-width: $--plv-mobile-watch-full-screen-vh !default;
+$--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh / 2) * -1) !default;
+
 .c-mobile-player-main {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
   // overflow: hidden;
@@ -175,13 +174,16 @@ function onClickContainer() {
   opacity: 0.7;
 }
 
+// 播放器页面全屏
 .c-mobile-player-main--page-fullscreen {
   position: fixed;
   top: 50%;
   left: 50%;
   z-index: 2000;
+  width: $--player-page-fullscreen-width !important;
   height: 100vw !important;
   margin-top: -50vw;
+  margin-left: $--player-page-fullscreen-margin-left !important;
   transform: rotate3d(0, 0, 1, 90deg) !important;
   transform-origin: center center;
 
@@ -190,17 +192,11 @@ function onClickContainer() {
     z-index: -1;
   }
 }
+
+// 屏幕横屏
 .c-mobile-player-main--screen__horizontal {
-  position: fixed;
-  top: 0 !important;
-  left: 0 !important;
-  z-index: 2000;
-  width: 100vw !important;
+  width: $--plv-mobile-watch-full-screen-vw !important;
   height: 100% !important;
-  margin-top: 0 !important;
-  margin-left: 0 !important;
-  transform: rotate(0deg) !important;
-  transform-origin: center center;
 }
 
 .c-mobile-player-main--hide-loading {

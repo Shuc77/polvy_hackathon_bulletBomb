@@ -3,7 +3,7 @@
   <ul class="c-mobile-more-panel pws-mobile-more-panel">
     <!-- 只看主持人 -->
     <more-item
-      v-if="onlySpecialMsgWidgetVisible"
+      v-if="onlySpecialMsgWidgetVisible && chatMenuData.visible"
       :icon="onlySpecialMsg ? 'look-all' : 'only-special'"
       :text="onlySpecialMsg ? $lang('chat.lookAll') : $lang('chat.onlyHost')"
       @click="onClickOnlySpecialMsg"
@@ -11,7 +11,7 @@
 
     <!-- 发送图片 -->
     <more-item
-      v-if="chatSetting.viewerSendImgEnabled"
+      v-if="chatSetting.viewerSendImgEnabled && chatMenuData.visible"
       icon="send-image"
       :text="$lang('chat.sendImage')"
       @click="onClickSendImage"
@@ -19,7 +19,7 @@
 
     <!-- 发红包 -->
     <more-item
-      v-if="sendRedpackVisible"
+      v-if="sendRedpackVisible && chatMenuData.visible"
       icon="send-redpack"
       :text="$lang('redpack.name')"
       @click="onClickSendRedpack"
@@ -27,7 +27,7 @@
 
     <!-- 提现 -->
     <more-item
-      v-if="withdrawVisible"
+      v-if="withdrawVisible && chatMenuData.visible"
       icon="withdraw"
       :text="$lang('withdraw.name')"
       @click="onClickWithdraw"
@@ -59,7 +59,7 @@
 
     <!-- 中奖记录 -->
     <more-item
-      v-if="lotteryWinRecords.length"
+      v-if="lotteryWinRecords.length && chatMenuData.visible"
       icon="message"
       :text="$lang('base.message')"
       :dotted="hasNotReceivedLottery"
@@ -68,7 +68,7 @@
 
     <!-- 打赏特效开关 -->
     <more-item
-      v-if="showDonateGifts"
+      v-if="showDonateGifts && chatMenuData.visible"
       :icon="donateAnimationVisible ? 'show-donate' : 'hide-donate'"
       :text="donateAnimationVisible ? $lang('donate.hideAnimation') : $lang('donate.showAnimation')"
       @click="toggleDonateAnimationVisible"
@@ -76,7 +76,7 @@
 
     <!-- 积分记录 -->
     <more-item
-      v-if="scoreRedpackEnabled"
+      v-if="scoreRedpackEnabled && chatMenuData.visible"
       icon="score"
       :text="$lang('interact.scoreRecord.title')"
       @click="onClickScoreRecord"
@@ -105,6 +105,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -128,6 +129,8 @@ const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 const { sendRedpackVisible, scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
 
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
+
+const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 /** 关闭更多 */
 function closeMore() {

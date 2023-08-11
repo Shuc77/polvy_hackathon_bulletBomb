@@ -78,6 +78,12 @@
   .pws-main-tab-body {
     background-color: map.get($--skin-configs, 'main-tab-body:bg-color') !important;
   }
+  .pws-main-tab-empty {
+    color: map.get($--skin-configs, 'main-tab-body-desc:text-color');
+    &::before {
+      background-image: url(map.get($--skin-configs, 'main-tab-body-empty-icon:bg-image'));
+    }
+  }
   .pws-main-tab-body-scrollbar {
     &::-webkit-scrollbar-thumb {
       background-color: map.get($--skin-configs, 'main-tab-body:scrollbar-color') !important;

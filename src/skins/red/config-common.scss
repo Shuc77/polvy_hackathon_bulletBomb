@@ -87,6 +87,10 @@ $--skin-component-configs: (
   'main-tab-body:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
   // 主要 tab 主体滚动栏颜色
   'main-tab-body:scrollbar-color': #d31a34,
+  // 主要 tab 主体描述字体色
+  'main-tab-body-desc:text-color': rgba(#ffffff, .4),
+  // 主要 tab 空菜单图标
+  'main-tab-body-empty-icon:bg-image': '../_common/imgs/pws-icon-empty-menu-light.png',
 
   // normal tab 激活项线条背景色
   'normal-tab-header-line--active:bg-color': map.get($--skin-basic-configs, 'primary-color'),

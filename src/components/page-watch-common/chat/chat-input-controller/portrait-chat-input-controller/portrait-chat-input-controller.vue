@@ -13,6 +13,8 @@
       :placeholder="chatInputPlaceholder"
       :disabled-input="chatInputDisabled"
       :disabled-emotion-picker="chatInputDisabled"
+      :face-emotion-enabled="chatSetting.faceEmotionEnabled"
+      :image-emotion-enabled="chatSetting.imageEmotionEnabled"
       @system-msg="onSendSystemMsg"
       @submit="onSubmit"
       @click-image-emotion="closeInput"
@@ -57,7 +59,8 @@ useClickOutside(inputWrapRef, () => {
   setInputVisible(false);
 });
 
-const { chatInputPlaceholder, chatInputDisabled } = storeDefinitionToRefs(useChatStore);
+const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
+  storeDefinitionToRefs(useChatStore);
 
 function onSubmit(params: { contentList: PlvInputContent[] }) {
   onSubmitMessage(params);
