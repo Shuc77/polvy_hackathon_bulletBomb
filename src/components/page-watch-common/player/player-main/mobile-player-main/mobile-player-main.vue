@@ -20,7 +20,7 @@
     <mobile-player-logo v-if="isLowLatency && logoSetting.logoImage" />
 
     <!-- 播放器暖场/封面图  -->
-    <mobile-player-cover-img v-if="isLowLatency" />
+    <mobile-player-cover-img />
 
     <!-- “立即观看”播放按钮，仅用来展示  -->
     <player-play-button
@@ -57,6 +57,14 @@
       class="c-mobile-player-main__control"
     />
 
+    <!-- 播放器实时字幕 -->
+    <player-subtitle
+      :selector="MOBILE_LIVE_PLAYER_INNER_WRAP"
+      :bottom="40"
+      :max-len="80"
+      :init-to-player="true"
+    />
+
     <!-- ========= 弹出层类型组件 Start ========= -->
 
     <!-- 播放器弹幕设置面板 -->
@@ -90,14 +98,20 @@ import MobilePlayerLogo from '@/components/page-watch-common/player/player-logo/
 import MobileBarrageSetting from '../../player-control/mobile-player-control/mobile-barrage-setting.vue';
 import MobilePlayerTimeAxisEntrance from '../../player-time-axis-mark/mobile-player-time-axis-entrance.vue';
 import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-player-time-axis-mark-popup.vue';
+import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/player-subtitle.vue';
 
 import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
+import { useChannelStore } from '@/store/use-channel-store';
+import { translate } from '@/assets/lang';
+import { MOBILE_LIVE_PLAYER_INNER_WRAP } from '@/assets/constants/selector';
 
 const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
   storeDefinitionToRefs(useLayoutStore);
+
+const channelStore = useChannelStore();
 
 const {
   isLowLatency,
@@ -115,6 +129,9 @@ const { playerContainer } = usePlayerMain({
     return {
       showController: !unref(isLowLatency),
       skinConfig: {
+        streamStopTxt: channelStore.privateSeminarChannel
+          ? translate('seminar.noLive')
+          : translate('channel.noLive'),
         bgColor: '#2B3045',
         streamPause: require('../../imgs/player-stop.png'),
         streamStop: require('../../imgs/player-no-live.png'),

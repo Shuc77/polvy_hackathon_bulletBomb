@@ -1,10 +1,12 @@
 /**
  * @file 播放器 store
  */
+import { isMobile } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
 import {
   BarrageSetting,
   LiveStatus,
+  MobileWatchLayout,
   PlayerLogoSetting,
   PlayerWarmUpSetting,
   PlayStatus,
@@ -142,6 +144,16 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       return false;
     }
 
+    // 非无延迟 PC 端不展示自定义暖场图
+    if (!isLowLatency.value && !isMobile) {
+      return false;
+    }
+
+    // 非无延迟移动端横屏不展示自定义暖场图
+    if (!isLowLatency.value && layoutStore.mobileWatchLayout === MobileWatchLayout.Normal) {
+      return false;
+    }
+
     const isNotPlaying = playStatus.value !== PlayStatus.Playing;
     return (
       // 播放器已初始化
@@ -197,6 +209,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否处于一个可播放的模式 */
   const isPlayMode = computed<boolean>(() => {
     if (!playerEnabled.value) return false;
+
+    // 研讨会主持进入分组讨论
+    if (channelStore.isSeminarHostInGroup) return false;
 
     // 回放中
     if (playbackStore.isPlaybacking) {

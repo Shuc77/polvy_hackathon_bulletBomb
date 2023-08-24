@@ -1,18 +1,21 @@
-import { defineStore } from 'pinia';
-import { computed, ComputedRef, ref, Ref } from 'vue';
+import { translate } from '@/assets/lang';
 import { LiveStatus } from '@polyv/live-watch-sdk';
+import { defineStore } from 'pinia';
+import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
+import { useChatStore } from './use-chat-store';
 import { useDocStore } from './use-doc-store';
 import { usePageStore } from './use-page-store';
 import { usePlaybackStore } from './use-playback-store';
 import { useWebviewStore } from './use-webview-store';
 
-export enum PortraitChatTabType {
+export enum PortraitChatTabName {
   /** 聊天室 */
   'Chat' = 'Chat',
   /** 提问区 */
   'Ask' = 'Ask',
 }
+
 export interface PortraitLayoutStoreState {
   /** 竖屏轮播屏当前索引 */
   carouselActiveIndex: Ref<number>;
@@ -22,20 +25,13 @@ export interface PortraitLayoutStoreState {
   portraitDocWrapHeight: ComputedRef<number>;
   /** 频道信息位置 */
   channelInfoSeat: ComputedRef<0 | 1>;
-  /** 竖屏下聊天室当前激活的tab栏 */
-  portraitChatTab: Ref<PortraitChatTabType>;
-  /** 竖屏下提问是否有新消息 */
-  portraitAskHasNews: Ref<boolean>;
+  /** 竖屏消息区激活的 Tab 栏 */
+  portraitMessageTabCurrentName: Ref<PortraitChatTabName>;
+  /** 竖屏消息输入框占位符 */
+  portraitMessageInputPlaceholder: ComputedRef<string>;
 }
 
-export interface PortraitLayoutStoreAction {
-  /** 更换竖屏下聊天室当前tab栏 */
-  updatePortraitChatTabType(type: PortraitChatTabType): void;
-  /** 更新竖屏下提问是否有新消息 */
-  updatePortraitHasAskNews(hasNews: boolean): void;
-}
-
-export interface PortraitStore extends PortraitLayoutStoreState, PortraitLayoutStoreAction {}
+export interface PortraitStore extends PortraitLayoutStoreState {}
 
 /**
  * 竖屏布局 store
@@ -48,12 +44,24 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     const playbackStore = usePlaybackStore();
     const docStore = useDocStore();
     const webviewStore = useWebviewStore();
+    const chatStore = useChatStore();
 
     /** 竖屏轮播屏当前索引 */
     const carouselActiveIndex = ref(1);
 
-    /** 竖屏聊天信息当前激活的tab栏目 */
-    const portraitChatTab = ref(PortraitChatTabType.Chat);
+    /** 竖屏消息区激活的 Tab 栏 */
+    const portraitMessageTabCurrentName = ref(PortraitChatTabName.Chat);
+
+    /** 输入框占位符 */
+    const portraitMessageInputPlaceholder = computed(() => {
+      let placeholder = chatStore.chatInputPlaceholder;
+
+      if (unref(portraitMessageTabCurrentName) === PortraitChatTabName.Ask) {
+        placeholder = translate('chat.input.placeholder4');
+      }
+
+      return placeholder;
+    });
 
     /** 竖屏文档容器内容渲染高度 */
     const portraitDocContentHeight = computed<number>(() => {
@@ -99,28 +107,13 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       return 1;
     });
 
-    /** 竖屏下提问是否有新消息 */
-    const portraitAskHasNews = ref(false);
-
-    /** 更换竖屏下聊天室当前tab栏 */
-    const updatePortraitChatTabType = (type: PortraitChatTabType) => {
-      portraitChatTab.value = type;
-    };
-
-    /** 更新是否接受到新的提问信息 */
-    const updatePortraitHasAskNews = (hasNews: boolean) => {
-      portraitAskHasNews.value = hasNews && portraitChatTab.value === PortraitChatTabType.Chat;
-    };
-
     return {
-      portraitChatTab,
-      portraitAskHasNews,
       carouselActiveIndex,
+      portraitMessageTabCurrentName,
       portraitDocContentHeight,
       portraitDocWrapHeight,
       channelInfoSeat,
-      updatePortraitChatTabType,
-      updatePortraitHasAskNews,
+      portraitMessageInputPlaceholder,
     };
   },
 );

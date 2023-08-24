@@ -1,5 +1,6 @@
 import { isMobile } from '@/assets/utils/browser';
-import { resetImageProtocol } from '@/assets/utils/image';
+import { resizeOSSImg } from '@/assets/utils/image';
+import { fitProtocol } from '@/assets/utils/url';
 import { previewImage } from '@/hooks/components/use-image-preview';
 import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, ref, unref } from 'vue';
@@ -33,9 +34,17 @@ export const useImageMsg = () => {
 
   const imageRef = ref<HTMLImageElement>();
 
+  const chatImageUrl = computed(() => {
+    return fitProtocol(chatMsg.value.imageUrl);
+  });
+
   /** 图片地址 */
   const imageUrl = computed(() => {
-    return resetImageProtocol(unref(chatMsg).imageUrl);
+    const size = chatMsg.value.size;
+    const width = size && size.width ? size.width / 2 : undefined;
+    const height = size && size.height ? size.height / 2 : undefined;
+
+    return resizeOSSImg(chatImageUrl.value, width, height);
   });
 
   /** 图片宽高 */
@@ -148,7 +157,7 @@ export const useImageMsg = () => {
   }
 
   function onClickImage() {
-    previewImage([unref(imageUrl)]);
+    previewImage([unref(chatImageUrl)]);
   }
 
   return {

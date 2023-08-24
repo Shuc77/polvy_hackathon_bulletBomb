@@ -134,9 +134,7 @@ const {
   isCurrentViewer,
   initInviteRank,
   handleScroll,
-} = useInviteRankHook({
-  needFilterZeroInvitee: true,
-});
+} = useInviteRankHook();
 
 const popupVisible = ref(false);
 /** 是否有邀请数据 */

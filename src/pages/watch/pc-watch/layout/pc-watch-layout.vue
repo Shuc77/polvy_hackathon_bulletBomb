@@ -1,6 +1,12 @@
 <!-- @file PC 端观看页主体布局 -->
 <template>
   <div class="c-pc-watch-layout g-outside">
+    <!-- 顶部固定toast提示 -->
+    <pc-connect-mic-tips
+      v-if="isDeviceRecoverFailed"
+      class="c-pc-watch-layout__tips"
+    />
+
     <!-- 上半部分 -->
     <div
       class="c-pc-watch-layout__main-wrap"
@@ -167,7 +173,6 @@ import PcPlayerMain from '@/components/page-watch-common/player/player-main/pc-p
 import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
 import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
 import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
-
 import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -179,6 +184,7 @@ import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
+import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -187,7 +193,7 @@ const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 const { mainScreen, subScreenPackUp, isFullscreen, pcAsideSectionIsEmpty } =
   storeDefinitionToRefs(useLayoutStore);
 
-const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+const { masterMicItem, isDeviceRecoverFailed } = storeDefinitionToRefs(useConnectMicStore);
 
 const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 
@@ -249,6 +255,13 @@ $--layout-sub-pack-up-height: 40px !default;
 .c-pc-watch-layout {
   width: 100%;
   height: 100%;
+}
+
+.c-pc-watch-layout__tips {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
 }
 
 .c-pc-watch-layout__main-wrap {

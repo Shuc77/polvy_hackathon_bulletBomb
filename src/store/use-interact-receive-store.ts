@@ -54,6 +54,8 @@ export interface InteractReceiveStoreState {
   hasNotReceivedLottery: ComputedRef<boolean>;
   /** 卡片推送入口是否正在显示 */
   pushCardPendantVisible: Ref<boolean>;
+  /** 抽奖入口是否显示 */
+  lotteryPendantVisible: Ref<boolean>;
   /** 条件抽奖入口是否显示 */
   welfareLotteryPendantVisible: Ref<boolean>;
   /** 抢答入口是否显示 */
@@ -96,6 +98,8 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       productTrackEnabled: false,
       productLinkJumpTipEnabled: false,
       redpackEnabled: false,
+      lotteryManualEndEnabled: false,
+      conditionLotteryEnabled: false,
       conditionLotteryAutoPopperEnabled: false,
       watchFeedbackEnabled: false,
       voteActiveEnabled: false,
@@ -159,6 +163,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 卡片推送入口是否正在显示 */
     const pushCardPendantVisible = ref(false);
 
+    /** 抽奖入口是否显示 */
+    const lotteryPendantVisible = ref(false);
+
     /** 条件抽奖入口是否显示 */
     const welfareLotteryPendantVisible = ref(false);
 
@@ -191,6 +198,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       lotteryWinRecords,
       hasNotReceivedLottery,
       pushCardPendantVisible,
+      lotteryPendantVisible,
       welfareLotteryPendantVisible,
       rushAnswerPendantVisible,
       enrollLotteryPendantVisible,

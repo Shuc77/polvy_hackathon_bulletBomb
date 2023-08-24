@@ -12,10 +12,6 @@
     display: none !important;
   }
 
-  // .plv-cover-box {
-  //   background-color: rgb(33, 33, 33);
-  // }
-
   // 隐藏控制栏的渐变背景
   .plv-player-skin {
     display: none;
@@ -29,6 +25,15 @@
   .plv-live-warmUp {
     display: none;
   }
+  // 隐藏封面图
+  .plv-cover-box {
+    display: none;
+  }
+  // 隐藏禁播图
+  .plv-live-pause {
+    display: none;
+  }
+
 
   // ------ 点播 ------ //
   .plv-player-big-play-btn {

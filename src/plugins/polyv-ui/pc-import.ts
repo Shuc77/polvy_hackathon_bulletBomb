@@ -17,3 +17,6 @@ export { default as PlvAreaPicker } from '@polyv/polyv-ui/lib-front/area-picker'
 
 import '@polyv/polyv-ui/lib-front/theme/emotional-feedback.css';
 export { default as PlvEmotionalFeedback } from '@polyv/polyv-ui/lib-front/emotional-feedback';
+
+import '@polyv/polyv-ui/lib-admin/theme/switch.css';
+export { default as PlvSwitch } from '@polyv/polyv-ui/lib-admin/switch';

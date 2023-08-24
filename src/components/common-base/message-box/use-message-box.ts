@@ -26,6 +26,8 @@ export const messageBoxCommonProps = () => ({
   title: PropUtils.string.def(''),
   /** 是否插入到 body 中，默认：true */
   appendToBody: PropUtils.bool.def(true),
+  /** 内容居中 */
+  contentCenter: PropUtils.bool.def(false),
 
   // =======================
 

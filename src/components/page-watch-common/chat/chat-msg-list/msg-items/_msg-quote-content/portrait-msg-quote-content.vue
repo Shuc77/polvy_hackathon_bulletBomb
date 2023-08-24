@@ -19,7 +19,7 @@
       <template v-if="msgQuote.msgSource === ChatMsgSource.Image">
         <img
           class="c-portrait-msg-quote-content__main__img"
-          :src="resetImageProtocol(msgQuote.imageUrl)"
+          :src="fitProtocol(msgQuote.imageUrl)"
           @click="clickImgToPreview"
         />
       </template>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { resetImageProtocol } from '@/assets/utils/image';
+import { fitProtocol } from '@/assets/utils/url';
 import { clickImgToPreview } from '@/hooks/components/use-image-preview';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
 import { msgQuoteContentProps, useMsgQuoteContent } from './use-msg-quote-content';

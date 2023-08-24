@@ -72,9 +72,6 @@ import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types'
 
 import { dialogPcProps, dialogEmits } from '../use-dialog';
 
-/**
- * 废除参数：custom、modalStyle、closeOnClickModal
- */
 const props = defineProps(dialogPcProps());
 
 const emits = defineEmits(dialogEmits());

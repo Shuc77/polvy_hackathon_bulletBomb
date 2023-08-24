@@ -6,18 +6,26 @@ import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
 import { ErrorVerifyType, redirectToErrorVerify } from '@/hooks/core/use-error-verify';
-import { ChannelMenuType, ChatMsgQuoteOriginType, ChatSetting } from '@polyv/live-watch-sdk';
+import {
+  ChannelMenuType,
+  ChatMsgQuoteOriginType,
+  ChatSetting,
+  LiveStatus,
+} from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelMenuStore } from './use-channel-menu-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
 import { useViewerStore } from './use-viewer-store';
-import { usePortraitLayoutStore, PortraitChatTabType } from './use-portrait-layout-store';
+import { useChannelStore } from './use-channel-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface ChatStoreState {
   /** 聊天室设置信息 */
   chatSetting: Ref<ChatSetting>;
+  /** 聊天室是否显示 */
+  chatRoomVisible: ComputedRef<boolean>;
   /** 配置是否启用聊天列表 */
   chatMsgListEnabled: Ref<boolean>;
   /** 聊天室是否连接失败 */
@@ -30,6 +38,8 @@ export interface ChatStoreState {
   isKicked: Ref<boolean>;
   /** 当前用户是否被禁言 */
   isShield: Ref<boolean>;
+  /** 点赞功能是否可用 */
+  likeFeatureEnabled: ComputedRef<boolean>;
   /** 实时的点赞数 */
   realtimeLikes: Ref<number>;
   /** "只看特殊角色的消息"的控件是否展示 */
@@ -38,6 +48,8 @@ export interface ChatStoreState {
   onlySpecialMsg: Ref<boolean>;
   /** 聊天室在线人数 */
   onlineUserCount: Ref<number>;
+  /** 聊天室区域控制栏是否可用 */
+  chatInputControllerEnable: ComputedRef<boolean>;
   /** 聊天室输入框占位符 */
   chatInputPlaceholder: ComputedRef<string>;
   /** 是否禁用聊天室输入框 */
@@ -56,11 +68,12 @@ export interface ChatStoreAction {
 export interface ChatStore extends ChatStoreState, ChatStoreAction {}
 
 export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
+  const watchAppStore = useWatchAppStore();
+  const channelStore = useChannelStore();
   const channelMenuStore = useChannelMenuStore();
   const viewerStore = useViewerStore();
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
-  const portraitLayoutStore = usePortraitLayoutStore();
 
   /** 聊天室设置信息 */
   const chatSetting = ref<ChatSetting>({
@@ -81,13 +94,11 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     imageEmotionEnabled: true,
   });
 
-  /**
-   * "只看特殊角色的消息"的控件是否展示
-   * */
-  const onlySpecialMsgWidgetVisible = computed(() => {
-    if (playbackStore.chatReplayEnabled) return false;
+  /** 聊天室是否显示 */
+  const chatRoomVisible = computed(() => {
+    if (channelStore.privateSeminarChannel) return false;
 
-    return !chatSetting.value.filterManagerMsgEnabled;
+    return chatSetting.value.watchChatEnabled;
   });
 
   /** 配置是否启用聊天列表 */
@@ -108,8 +119,22 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   /** 当前用户是否被禁言 */
   const isShield = ref(false);
 
+  /** 点赞功能是否可用 */
+  const likeFeatureEnabled = computed(() => {
+    return chatSetting.value.likeEnabled && !channelStore.isSeminarChannel;
+  });
+
   /** 实时的点赞数 */
   const realtimeLikes = ref(0);
+
+  /**
+   * "只看特殊角色的消息"的控件是否展示
+   * */
+  const onlySpecialMsgWidgetVisible = computed(() => {
+    if (playbackStore.chatReplayEnabled) return false;
+
+    return !chatSetting.value.filterManagerMsgEnabled;
+  });
 
   /** 只看特殊角色的消息（包括我本地发的） */
   const onlySpecialMsg = ref(false);
@@ -121,6 +146,20 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天室在线人数 */
   const onlineUserCount = ref(0);
+
+  /** 聊天区输入框控制栏是否可用 */
+  const chatInputControllerEnable = computed(() => {
+    if (watchAppStore.isPlaybackWatchUrl) return false;
+
+    if (
+      channelStore.privateSeminarChannel ||
+      (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
+    ) {
+      return false;
+    }
+
+    return true;
+  });
 
   /** 聊天室输入框占位符 */
   const chatInputPlaceholder = computed<string>(() => {
@@ -149,10 +188,6 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     const chatMenu = channelMenuStore.getMenuData(ChannelMenuType.Chat);
     if (chatMenu && chatMenu.content) {
       placeholder = chatMenu.content;
-    }
-
-    if (portraitLayoutStore.portraitChatTab === PortraitChatTabType.Ask) {
-      placeholder = translate('chat.input.placeholder4');
     }
 
     return placeholder;
@@ -196,19 +231,28 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   return {
     chatSetting,
+    chatRoomVisible,
     chatMsgListEnabled,
+
     connectError,
     chatExited,
     chatRoomIsClosed,
     isKicked,
     isShield,
+
+    likeFeatureEnabled,
     realtimeLikes,
+
     onlySpecialMsgWidgetVisible,
     onlySpecialMsg,
+
     onlineUserCount,
+
+    chatInputControllerEnable,
     chatInputPlaceholder,
     chatInputDisabled,
     currentQuoteMsg,
+
     syncChatStore,
     toggleOnlySpecialMsg,
   };

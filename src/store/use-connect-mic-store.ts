@@ -71,6 +71,8 @@ export interface ConnectMicStoreState {
   screenShareInfo: Ref<ScreenShareInfo>;
   /** 当前推流时能否设置摄像头 */
   supportSetupVideo: ComputedRef<boolean>;
+  /** 设备采集失败 */
+  isDeviceRecoverFailed: Ref<boolean>;
 }
 
 export interface ConnectMicStoreAction {
@@ -234,6 +236,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   /** 屏幕共享信息 */
   const screenShareInfo = ref<ScreenShareInfo>(generateDefaultScreenShareInfo());
 
+  /** 设备采集失败 */
+  const isDeviceRecoverFailed = ref(false);
+
   /** 同步屏幕共享信息 */
   function syncScreenShareInfo(): void {
     const watchCore = getWatchCore();
@@ -309,6 +314,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     localConnectMicType,
     currentIsSpeaker,
     supportSetupVideo,
+    isDeviceRecoverFailed,
 
     networkInfo,
     syncNetworkInfo,

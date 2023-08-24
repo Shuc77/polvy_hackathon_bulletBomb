@@ -52,6 +52,7 @@ export const englishLang: LangConfig = {
   'auth.enter': 'Enter',
 
   'ask.placeholderMsg': 'Hi, what can I do for you',
+  'ask.news': 'News',
 
   'base.agree': 'Agree',
   'base.disagree': 'Disagree',
@@ -90,7 +91,9 @@ export const englishLang: LangConfig = {
   'base.emptyOptions': 'Empty options',
   'base.noMore': 'No more updates',
   'base.sendSuccess': 'Send success',
+  'base.deleteSuccess': 'Delete success',
 
+  'channel.noLive': 'No live streaming at the moment',
   'channel.descEmpty': 'No live broadcast introduction~',
 
   'call.connect': 'Video call',
@@ -147,6 +150,11 @@ export const englishLang: LangConfig = {
   'connectMic.error.pipNotSupport': 'This browser does not support picture-in-picture',
   'connectMic.error.notSupport1': 'The current browser does not support the video call',
   'connectMic.error.notSupport2': 'Please use Chrome (58 or above)',
+  'connectMic.deviceAutoRecoverFailed.tips1':
+    'The camera or microphone device is abnormal. Please click ',
+  'connectMic.deviceAutoRecoverFailed.tips2': ' refresh',
+  'connectMic.deviceAutoRecoverFailed.tips3':
+    ' to try again after the device is connected normally',
 
   'chat.empty': 'Nothing in chat room ~',
   'chat.connectError.tips1': 'Chatroom disconnect, you cannot chat with others, refresh now?',
@@ -192,6 +200,12 @@ export const englishLang: LangConfig = {
   'copy.linkSuccess': 'The link is copied successfully. You can download it in the browser',
 
   'doc.name': 'Document',
+  'doc.givePaint': 'The instructor has granted you permission to write on the whiteboard',
+  'doc.removePaint': 'The instructor has ended your shared whiteboard privileges',
+  'doc.enterPaint': 'Enter brush mode',
+  'doc.exitPaint': 'Exit brush mode',
+  'doc.deleteConfirm':
+    'This operation will permanently clear this page canvas. Do you want to continue?',
 
   'donate.title': 'Gift',
   'donate.cash': 'Cash',
@@ -387,6 +401,7 @@ export const englishLang: LangConfig = {
   'player.timeShift.return.live': 'Return to live',
   'player.timeAxisMark.base.text': 'Highlights',
   'player.timeAxisMark.empty.text': 'Nothing',
+  'player.subtitle.text': 'Subtitles',
 
   'playback.list': 'Playback',
   'playback.playing': 'Playing',
@@ -439,6 +454,12 @@ export const englishLang: LangConfig = {
   'risk.confirm.letter.viewAgreement': 'View Agreement',
 
   'seminar.host': 'Host',
+  'seminar.noLive': 'The live broadcast is temporarily closed',
+  'seminar.disabledChat':
+    'The live broadcast is not open to the public, and the news cannot be viewed',
+  'seminar.hostCloseLive': 'the live has been closed by Host',
+  'seminar.hostInGroup':
+    'The moderator is participating in the group discussion. Please wait a moment.',
 
   'share.title': 'Share',
   'share.wxScan': 'Scan code and share to WeChat',
@@ -509,6 +530,7 @@ export const englishLang: LangConfig = {
   'menu.tabName.microActivity': 'MicroActivity',
   'menu.tabName.chapter': 'Chapter',
   'menu.tabName.multiMeeting': 'MultiMeeting',
+  'menu.tabName.subtitle': 'Subtitles',
   'menu.empty': 'Empty menu',
 
   'multiMeeting.other': 'Breakout rooms',
@@ -560,4 +582,10 @@ export const englishLang: LangConfig = {
   'wxAuth.protocol.confirm.content':
     '<p>In order to provide better products and services and protect the legitimate rights of users, the <a href="${viewerAgreement}">"User Agreement"</a> and <a href="${viewerPolicy}">"Privacy Policy"</a> are formulated in accordance with relevant national laws and regulations.</p><p>If you want to use our platform services, please read the <a href="${viewerAgreement}">"User Agreement"</a> and <a href="${viewerPolicy}">"Privacy Policy,"</a> and click "Agree." You will be automatically logged in.</p>',
   'wxAuth.protocol.confirm.title': 'User Agreement and Privacy Policy',
+
+  'subtitle.all': 'Bilingual',
+  'subtitle.source': 'Original',
+  'subtitle.translate': 'Translated',
+  'subtitle.empty': 'No subtitles for the time being',
+  'subtitle.new': 'new',
 };

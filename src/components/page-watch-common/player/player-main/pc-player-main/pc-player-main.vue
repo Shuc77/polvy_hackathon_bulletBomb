@@ -16,6 +16,14 @@
 
     <!-- 视频区播放按钮，仅用来展示 -->
     <player-play-button />
+
+    <!--  实时字幕  -->
+    <player-subtitle
+      :full-screen-selector="PC_PLAYER_FULL_SCREEN_SELECTOR"
+      :selector="PC_MAIN_PLAYER_SELECTOR"
+      :init-to-player="true"
+      :bottom="150"
+    />
   </div>
 </template>
 
@@ -25,12 +33,23 @@ import { usePlayerMain } from '@/components/page-watch-common/player/hooks/use-p
 import PcPlayerCoverImg from '@/components/page-watch-common/player/player-cover-img/pc-player-cover-img.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PcPlayerLogo from '@/components/page-watch-common/player/player-logo/pc-player-logo.vue';
+import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/player-subtitle.vue';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelStore } from '@/store/use-channel-store';
+import { translate } from '@/assets/lang';
+
+import {
+  PC_PLAYER_FULL_SCREEN_SELECTOR,
+  PC_MAIN_PLAYER_SELECTOR,
+} from '@/assets/constants/selector';
+
 const { isLowLatency, logoSetting } = storeDefinitionToRefs(usePlayerStore);
+
+const channelStore = useChannelStore();
 
 const { playerContainer } = usePlayerMain({
   initPlayerOptions: () => {
@@ -38,6 +57,9 @@ const { playerContainer } = usePlayerMain({
       barrageEnabled: false,
       showController: false,
       skinConfig: {
+        streamStopTxt: channelStore.privateSeminarChannel
+          ? translate('seminar.noLive')
+          : translate('channel.noLive'),
         bgColor: '#2B3045',
         streamPause: require('../../imgs/player-stop.png'),
         streamStop: require('../../imgs/player-no-live.png'),

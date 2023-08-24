@@ -162,6 +162,20 @@ export const useConnectMic = () => {
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
   });
 
+  // 设备采集失败
+  function onDeviceRecoverFail() {
+    const connectMicStore = useConnectMicStore();
+    connectMicStore.$patch({
+      isDeviceRecoverFailed: true,
+    });
+  }
+  onMounted(() => {
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
+  });
+  onBeforeUnmount(() => {
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
+  });
+
   // 主讲设置
   function onSpeaker() {
     if (connectMicStore.currentIsSpeaker) {

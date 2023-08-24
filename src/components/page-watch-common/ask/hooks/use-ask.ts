@@ -1,20 +1,11 @@
-import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChannelStore } from '@/store/use-channel-store';
-import { useChatStore } from '@/store/use-chat-store';
 import { computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, unref } from 'vue';
 
-import {
-  AskEvents,
-  AskMsgType,
-  ChannelMenuType,
-  ChatMsgSource,
-  ChatMsgSpeakType,
-} from '@polyv/live-watch-sdk';
+import { AskEvents, AskMsgType, ChatMsgSource, ChatMsgSpeakType } from '@polyv/live-watch-sdk';
 import { uuidV4 } from '@utils-ts/string';
 
+import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 
 export interface UseAskOptions {
@@ -25,9 +16,7 @@ export const useAsk = (options: UseAskOptions) => {
   const { askMsgListRef } = options;
 
   const channelStore = useChannelStore();
-  const channelMenuStore = useChannelMenuStore();
-
-  const { chatInputPlaceholder, chatRoomIsClosed } = storeDefinitionToRefs(useChatStore);
+  const askStore = useAskStore();
 
   const historyStart = ref(0);
   const historyLength = 20;
@@ -39,23 +28,11 @@ export const useAsk = (options: UseAskOptions) => {
   /** 默认消息的 id */
   const placeholderMsgId = uuidV4();
 
-  /** 输入框默认值 */
-  const askInputPlaceholder = computed(() => {
-    if (unref(chatRoomIsClosed)) {
-      return translate('chat.input.placeholder');
-    } else {
-      return unref(chatInputPlaceholder);
-    }
-  });
-
   /** 提问是否可以发送图片 */
   const questionImageEnabled = ref(false);
 
   /** 渲染的消息列表 */
   const askMsgRenderList = computed<AskMsgType[]>(() => {
-    // 提问的菜单数据
-    const askMenuData = channelMenuStore.getMenuData(ChannelMenuType.Quiz);
-    const content = askMenuData?.content || translate('ask.placeholderMsg');
     const list = [...unref(askMsgList)];
 
     if (channelStore.teacherInfo) {
@@ -65,7 +42,7 @@ export const useAsk = (options: UseAskOptions) => {
         time: Date.now(),
         msgSource: ChatMsgSource.Speak,
         user: channelStore.teacherInfo,
-        content,
+        content: askStore.askWelcomeText,
       };
       list.unshift(placeholderMsg);
     }
@@ -138,11 +115,72 @@ export const useAsk = (options: UseAskOptions) => {
   });
 
   return {
-    askInputPlaceholder,
     askMsgListRef,
     askMsgList,
     askMsgRenderList,
     getAskMsgList,
     questionImageEnabled,
+  };
+};
+
+/**
+ * 提问新消息提醒 hook
+ */
+export const useAskReminder = (hookOptions: { onAskMsg: () => void }) => {
+  const { onAskMsg } = hookOptions;
+  const askStore = useAskStore();
+
+  /** 提问消息红点提示是否可见 */
+  const askReminderVisible = computed(() => {
+    return askStore.askReminderVisible;
+  });
+
+  /** 更新提问新消息提醒可见状态 */
+  function updateAskReminderVisible(visible: boolean) {
+    askStore.$patch({
+      askReminderVisible: visible,
+    });
+  }
+
+  /**
+   * 监听聊天室消息
+   */
+  function listenAskMsg() {
+    unlistenAskMsg();
+    const watchCore = getWatchCore();
+    watchCore.ask.eventEmitter.on(AskEvents.TeacherAnswer, onAskMsg);
+    watchCore.ask.eventEmitter.on(AskEvents.StudentQuestion, onAskMsg);
+  }
+
+  function unlistenAskMsg() {
+    const watchCore = getWatchCore();
+    watchCore.ask.eventEmitter.off(AskEvents.TeacherAnswer, onAskMsg);
+    watchCore.ask.eventEmitter.off(AskEvents.StudentQuestion, onAskMsg);
+  }
+
+  onMounted(() => {
+    listenAskMsg();
+  });
+
+  onBeforeUnmount(() => {
+    unlistenAskMsg();
+  });
+
+  return {
+    askReminderVisible,
+    updateAskReminderVisible,
+  };
+};
+
+export const useAskSdk = () => {
+  const watchCore = getWatchCore();
+  const askSdk = watchCore.ask.getAskSdk();
+
+  onMounted(() => {
+    askSdk.setup();
+  });
+
+  return {
+    askSdk,
   };
 };

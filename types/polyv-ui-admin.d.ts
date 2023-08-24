@@ -96,3 +96,12 @@ declare module '@polyv/polyv-ui/lib-admin/tips' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+/**
+ * 弹层
+ */
+declare module '@polyv/polyv-ui/lib-admin/popper' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

@@ -6,6 +6,10 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { MessageBoxInstance } from '@/components/common-base/message-box/use-message-box';
+import { toast } from '@/hooks/components/use-toast';
+import { translate } from '@/assets/lang';
+import { useLangStore } from '@/store/use-lang-store';
 
 export const useDoc = (
   useOptions: {
@@ -16,9 +20,12 @@ export const useDoc = (
   const channelStore = useChannelStore();
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
+  const langStore = useLangStore();
 
   /** 创建文档的外层节点 */
   const wrapRef = ref<HTMLDivElement>();
+
+  const confirmRef = ref<MessageBoxInstance>();
 
   /** 初始化文档 */
   function initDoc() {
@@ -32,6 +39,15 @@ export const useDoc = (
     watchCore.doc.setupDoc({
       container: wrapElem,
       keyboardEnabled: !playbackStore.isPlaybacking,
+      beforeClear: async () => {
+        if (confirmRef.value) {
+          const result = await confirmRef.value.$confirm();
+          if (!result) {
+            return Promise.reject(new Error());
+          }
+          toast.success(translate('base.deleteSuccess'));
+        }
+      },
       ...setupOptions,
     });
 
@@ -54,6 +70,14 @@ export const useDoc = (
       mobileDocIsPageFullscreen: evt.isFullScreen,
     });
   }
+
+  watch(
+    () => langStore.currentLang,
+    () => {
+      const watchCore = getWatchCore();
+      watchCore.doc.switchLang(langStore.currentLang);
+    },
+  );
 
   useEventBusListener(appEvents.doc.ResetUpDoc, () => {
     initDoc();
@@ -89,6 +113,7 @@ export const useDoc = (
 
   return {
     wrapRef,
+    confirmRef,
     emptyPlaceholderVisible,
   };
 };

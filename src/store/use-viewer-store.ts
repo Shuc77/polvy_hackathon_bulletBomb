@@ -9,6 +9,15 @@ import { useEnrollStore } from './use-enroll-store';
 import { isWeixin } from '@/assets/utils/browser';
 import { useWeixinStore } from './use-weixin-store';
 
+/**
+ * 检测是否为默认用户名 [内网、外网、xx]观众/[数字]
+ */
+function __checkDefaultUserNick(nickname: string): boolean {
+  const nicknamePrefix = '观众';
+  const nickNamePattern = new RegExp(nicknamePrefix + '/[0-9]+$');
+  return nickNamePattern.test(nickname);
+}
+
 export interface ViewerStoreState {
   /** 用户唯一标识 */
   viewerId: Ref<string | undefined>;
@@ -65,9 +74,10 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
       return false;
     }
 
-    // 微信中且微信授权了
-    if (isWeixin && weixinStore.weixinAuthorized) {
-      return false;
+    // 微信中且微信静默授权已经有昵称的情况
+    if (isWeixin && weixinStore.weixinWatchAuthorized && nickname.value) {
+      // 如果还是默认名称，则支持设置昵称
+      return __checkDefaultUserNick(nickname.value);
     }
 
     return true;
@@ -80,15 +90,12 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
       return true;
     }
 
-    // 检测是否为默认用户名 [内网、外网、xx]观众/[数字]
-    const nicknameVal = unref(nickname);
-    const nicknamePrefix = '观众';
-    const nickNamePattern = new RegExp(nicknamePrefix + '/[0-9]+$');
-
-    if (!nicknameVal) {
+    // 没有昵称
+    if (!nickname.value) {
       return false;
     }
-    return !nickNamePattern.test(nicknameVal);
+
+    return !__checkDefaultUserNick(nickname.value);
   });
 
   /** 同步观众信息 */

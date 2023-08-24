@@ -10,6 +10,7 @@ import { bindInteractReceiveEvents } from '@/core/bind-sdk-events/bind-interact-
 import { bindPlayerModuleEvents } from '@/core/bind-sdk-events/bind-player-events';
 import { bindUserEvents } from '@/core/bind-sdk-events/bind-user-events';
 import { bindWatchCoreEvents } from '@/core/bind-sdk-events/bind-watch-core-events';
+import { bindDocEvents } from './bind-sdk-events/bind-doc-events';
 
 /** 观看页核心模块实例 */
 let watchCore: PolyvWatchCore | undefined;
@@ -41,6 +42,7 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   bindInteractReceiveEvents();
   bindPlayerModuleEvents();
   bindUserEvents();
+  bindDocEvents();
 
   // 设置弹幕添加拦截器，如果当前只看主持人，则不添加弹幕
   watchCore.barrage.setBarrageAddIntercept(data => {

@@ -145,6 +145,8 @@ $--skin-component-configs: (
 $--skin-page-common-configs: (
   // 聊天室关闭提示图标背景
   'chat-close-tips-icon:bg-image': '../_common/imgs/pws-icon-chat-close-dark.png',
+  // 聊天室关闭提示图标背景
+  'chat-close-tips-icon__empty:bg-image': '../_common/imgs/pws-icon-chat-empty-dark.png',
   // 聊天消息关闭提示字体
   'chat-close-tips:text-color': rgba(102, 102, 102, 0.6),
 
@@ -250,4 +252,13 @@ $--skin-page-common-configs: (
   'interactive-entrance-button:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   // 互动二次入口箭头字体色
   'interactive-entrance-arrow:text-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.4),
+
+  // 实时字幕
+  // 实时字幕-下拉
+  'subtitle-select-body:bg-color':  map.get($--skin-basic-configs, 'main-bg-color'),
+  'subtitle:text-color': #333,
+  'subtitle-item:bg-color': #fbfbfb,
+  'subtitle-item:line-color': #333,
+  'subtitle-item-line:bg-color': #cfaf62,
+  'subtitle-item-line:text-color': #FFF,
 );

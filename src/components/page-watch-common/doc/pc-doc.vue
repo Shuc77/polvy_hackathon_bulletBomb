@@ -7,16 +7,31 @@
     ></div>
 
     <pc-doc-empty-placeholder v-if="emptyPlaceholderVisible" />
+
+    <!-- 画笔开关 -->
+    <pc-doc-paint-switch />
+
+    <pc-message
+      ref="confirmRef"
+      :title="$lang('base.confirm')"
+      :content="$lang('doc.deleteConfirm')"
+      :width="360"
+      content-center
+      :confirm-button-text="$lang('base.confirm')"
+      :cancel-button-text="$lang('base.cancel')"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import PcMessage from '@/components/common-base/message-box/pc-message-box.vue';
 import PcDocEmptyPlaceholder from './pc-doc-empty-placeholder.vue';
+import PcDocPaintSwitch from './doc-paint-switch/pc-doc-paint-switch.vue';
 import { useDoc } from './use-doc';
 import { useDocKeydownControl } from './_hooks/use-keydown-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
 
-const { wrapRef, emptyPlaceholderVisible } = useDoc();
+const { wrapRef, emptyPlaceholderVisible, confirmRef } = useDoc();
 
 collectPlayerKeyboardEffectElements(wrapRef);
 useDocKeydownControl();

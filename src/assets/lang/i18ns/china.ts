@@ -46,6 +46,7 @@ export const chinaLang = {
   'auth.enter': '进入直播',
 
   'ask.placeholderMsg': '您好！请问有什么问题吗',
+  'ask.news': '新消息',
 
   'base.agree': '同意',
   'base.disagree': '不同意',
@@ -84,7 +85,9 @@ export const chinaLang = {
   'base.emptyOptions': '暂无选项',
   'base.noMore': '没有更多了',
   'base.sendSuccess': '发送成功',
+  'base.deleteSuccess': '删除成功',
 
+  'channel.noLive': '当前暂无直播',
   'channel.descEmpty': '暂无直播介绍~',
 
   'call.connect': '连线',
@@ -136,6 +139,9 @@ export const chinaLang = {
   'connectMic.error.pipNotSupport': '该浏览器不支持画中画',
   'connectMic.error.notSupport1': '当前浏览器不支持连麦功能',
   'connectMic.error.notSupport2': '请使用Chrome(58以上)浏览器',
+  'connectMic.deviceAutoRecoverFailed.tips1': '摄像头或麦克风设备异常，请在设备正常连接后，点击',
+  'connectMic.deviceAutoRecoverFailed.tips2': '刷新',
+  'connectMic.deviceAutoRecoverFailed.tips3': '解决',
 
   'chat.empty': '聊天室空空如也~',
   'chat.connectError.tips1': '聊天室连接失败，无法与其他人互动，立即刷新重试？',
@@ -180,6 +186,11 @@ export const chinaLang = {
   'copy.linkSuccess': '链接复制成功，可去浏览器粘贴下载',
 
   'doc.name': '文档',
+  'doc.givePaint': '讲师已授予您书写白板权限',
+  'doc.removePaint': '讲师已结束您的共享白板权限',
+  'doc.enterPaint': '点击可以进入画笔模式',
+  'doc.exitPaint': '点击可以退出画笔模式',
+  'doc.deleteConfirm': '此操作将永久删除该页画笔, 是否继续?',
 
   'donate.title': '打赏',
   'donate.cash': '现金',
@@ -369,6 +380,7 @@ export const chinaLang = {
   'player.timeShift.return.live': '返回直播',
   'player.timeAxisMark.base.text': '精彩看点',
   'player.timeAxisMark.empty.text': '暂无',
+  'player.subtitle.text': '实时字幕',
 
   'playback.list': '回放列表',
   'playback.playing': '播放中',
@@ -419,6 +431,10 @@ export const chinaLang = {
   'risk.confirm.letter.viewAgreement': '查看协议',
 
   'seminar.host': '主持人',
+  'seminar.noLive': '直播暂不对外开放',
+  'seminar.disabledChat': '直播暂不对外开放，无法查看消息',
+  'seminar.hostCloseLive': '主持已关闭直播',
+  'seminar.hostInGroup': '主持人正在参与小组讨论，请稍等...',
 
   'share.title': '分享',
   'share.wxScan': '微信扫一扫',
@@ -489,6 +505,7 @@ export const chinaLang = {
   'menu.tabName.microActivity': '微活动',
   'menu.tabName.chapter': '章节',
   'menu.tabName.multiMeeting': '分会场',
+  'menu.tabName.subtitle': '实时字幕',
   'menu.empty': '暂无菜单',
 
   'multiMeeting.other': '其它会场',
@@ -541,4 +558,10 @@ export const chinaLang = {
   'wxAuth.protocol.confirm.content':
     '<p>为更好地给用户提供产品及服务，保护用户的合法权益，根据国家相关法律法规规定，制定《用户协议》和《隐私政策》。</p><p>用户如需使用平台服务，请阅读<a href="${viewerAgreement}">《用户协议》</a>和<a href="${viewerPolicy}">《隐私政策》</a>后，点击“同意”，将自动登录。</p>',
   'wxAuth.protocol.confirm.title': '用户协议及隐私政策',
+
+  'subtitle.all': '双语字幕',
+  'subtitle.source': '原声字幕',
+  'subtitle.translate': '翻译字幕',
+  'subtitle.empty': '暂无字幕',
+  'subtitle.new': '查看最新',
 };

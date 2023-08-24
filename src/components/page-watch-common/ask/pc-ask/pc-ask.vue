@@ -36,12 +36,16 @@ import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg
 import { useAsk } from '../hooks/use-ask';
 import { useAskSend } from '../hooks/use-ask-send';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useAskStore } from '@/store/use-ask-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
-const { askInputPlaceholder, askMsgRenderList, questionImageEnabled, getAskMsgList } = useAsk({
+const { askMsgRenderList, questionImageEnabled, getAskMsgList } = useAsk({
   askMsgListRef,
 });
+
+const { askInputPlaceholder } = storeDefinitionToRefs(useAskStore);
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {

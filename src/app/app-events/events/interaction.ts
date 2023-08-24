@@ -61,9 +61,14 @@ export const interactionEvents = {
    */
   SetRedpackStatus: 'SetRedpackStatus',
   /**
+   * 打开抽奖动画
+   * @param {boolean} visible 显示状态
+   */
+  OpenLotteryAnimation: 'OpenLotteryAnimation',
+  /**
    * 打开抽奖结果弹窗
    * @param {boolean} visible 显示状态
-   * @param {object} record 红包记录
+   * @param {object} record 中奖记录
    */
   OpenLotteryResult: 'OpenLotteryResult',
   /**

@@ -13,9 +13,6 @@ export interface TabPaneDataItem {
   showReminder: boolean;
 }
 
-/** tab 附加数据 */
-export type TabPaneAdditionalData = Pick<TabPaneDataItem, 'subLabel' | 'showReminder'>;
-
 export interface TabsInstance {
   currentTabName: Ref<TabNameType>;
   /** 设置当前激活的面板 */

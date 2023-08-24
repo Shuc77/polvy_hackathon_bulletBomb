@@ -187,8 +187,8 @@ const useDonatePayMobile = () => {
           params.amount = amount;
         }
 
-        // 泛域名支付
-        if (unref(polyvWatchDomainEnabled)) {
+        // 仅针对现金打赏优先泛域名支付
+        if (unref(polyvWatchDomainEnabled) && donateType === DonateType.Cash) {
           await skipWatchDomainPay({
             payType: WatchDomainPayType.Donate,
             params,

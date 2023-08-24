@@ -4,7 +4,7 @@
     <header class="c-pc-splash__header g-outside">
       <custom-teleport to="body">
         <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
-        <div class="c-pc-splash__header__bg__teleport__wrapper">
+        <div class="c-pc-splash__header__bg__teleport__wrapper g-outside">
           <div
             v-if="supportsFilterStyle && splashImg"
             class="c-pc-splash__header__bg g-img-cover"

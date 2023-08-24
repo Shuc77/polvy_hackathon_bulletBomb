@@ -11,7 +11,9 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { LiveStatus, PlayStatus, QualityLevelType } from '@polyv/live-watch-sdk';
 import { formatSeconds } from '@utils-ts/date';
-import { computed, unref } from 'vue';
+import { computed, unref, ref, watch } from 'vue';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 /** 播放器设置节点 */
 type PlayerSettingItem<V = string> = {
@@ -26,6 +28,9 @@ export const usePlayerControl = () => {
   const playbackStore = usePlaybackStore();
   const connectMicStore = useConnectMicStore();
   const docStore = useDocStore();
+  const subtitleOpen = ref(true);
+  const { subtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
+  const { changeLocalUerSubtitlesEnable } = useSubtitleStore();
 
   /** 播放按钮提示文案 */
   const playButtonTips = computed<string>(() => {
@@ -75,7 +80,8 @@ export const usePlayerControl = () => {
       channelStore.liveStatus === LiveStatus.Live &&
       !playerStore.supportAutoPlay &&
       !playerStore.isPlayStarted &&
-      !connectMicStore.isConnectMicing
+      !connectMicStore.isConnectMicing &&
+      !channelStore.isSeminarHostInGroup
     );
   });
 
@@ -291,6 +297,13 @@ export const usePlayerControl = () => {
     );
   });
 
+  watch(
+    () => subtitleOpen.value,
+    val => {
+      changeLocalUerSubtitlesEnable(val);
+    },
+  );
+
   return {
     playButtonTips,
     playButtonVisible,
@@ -325,6 +338,9 @@ export const usePlayerControl = () => {
     barrageSpeedButtonVisible,
 
     timeShiftReturnLiveButtonVisible,
+
+    subtitlesEnable,
+    subtitleOpen,
   };
 };
 

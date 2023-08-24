@@ -3,6 +3,8 @@ import { computed, ComputedRef, ref, Ref } from 'vue';
 import { isWeixin } from '@/assets/utils/browser';
 import { SendRedpackConfig } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
+import { useChannelStore } from './use-channel-store';
 
 export interface RedpackStoreState {
   /** 观众发红包的配置 */
@@ -23,6 +25,9 @@ export interface RedpackStoreAction {
 export interface RedpackStore extends RedpackStoreState, RedpackStoreAction {}
 
 export const useRedpackStore = defineStore<'redpack', RedpackStore>('redpack', () => {
+  const watchAppStore = useWatchAppStore();
+  const channelStore = useChannelStore();
+
   /** 观众发红包的限制 */
   const sendRedpackConfig = ref<SendRedpackConfig>({
     sendRedpackEnabled: false,
@@ -33,6 +38,9 @@ export const useRedpackStore = defineStore<'redpack', RedpackStore>('redpack', (
 
   /** 是否展示"发送红包"功能 */
   const sendRedpackVisible = computed<boolean>(() => {
+    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (channelStore.isSeminarChannel) return false;
+
     return isWeixin && sendRedpackConfig.value.sendRedpackEnabled;
   });
 

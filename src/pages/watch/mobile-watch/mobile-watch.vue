@@ -1,6 +1,6 @@
 <!-- @file 移动端观看页 -->
 <template>
-  <div class="c-mobile-watch iphone-polyfill-inset-top">
+  <div class="c-mobile-watch">
     <!-- 观看页主体布局 -->
     <mobile-watch-layout />
 

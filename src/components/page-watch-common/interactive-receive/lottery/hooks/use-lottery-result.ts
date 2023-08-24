@@ -26,6 +26,9 @@ export const useLotteryResult = () => {
   /** 设置抽奖显示状态 */
   function setLotteryResultVisible(visible = true) {
     lotteryResultVisible.value = visible;
+    if (visible) {
+      eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
+    }
   }
 
   /** 将结果状态返回到上一级 */

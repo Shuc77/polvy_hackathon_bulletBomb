@@ -1,4 +1,6 @@
 import { getWatchCore } from '@/core/watch-sdk';
+import { queryParams } from '@/hooks/core/use-query-params';
+import { appendToURL } from '@just4/querystring';
 
 /**
  * 分会场跳转相关 hook
@@ -9,10 +11,10 @@ export const useMultiMeetingRedirect = () => {
    * @param channelId 频道号
    */
   function redirectToMultiMeetingChannel(channelId: string): void {
-    // const watchUrl = `http://localhost:15020/live-watch-v3/index.html?channelId=${channelId}`;
     const watchCore = getWatchCore();
     const watchUrl = watchCore.channel.generateWatchUrl(channelId);
-    location.replace(watchUrl);
+
+    location.replace(appendToURL(watchUrl, queryParams));
   }
 
   /**

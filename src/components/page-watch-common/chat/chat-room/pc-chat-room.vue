@@ -48,7 +48,7 @@
     <pc-chat-msg-quote />
 
     <!-- 底部输入框 -->
-    <pc-chat-input-controller v-if="!isPlaybackWatchUrl" />
+    <pc-chat-input-controller v-if="chatInputControllerEnable" />
 
     <!-- 报名观看（参与互动时机） -->
     <pc-enroll v-if="needEnrollByChat" />
@@ -70,17 +70,14 @@ import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
 import PcChatMsgReplayTips from '../chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
-
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatExited } = storeDefinitionToRefs(useChatStore);
+const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 

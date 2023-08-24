@@ -183,14 +183,7 @@ export const useAuthPayMobile = () => {
   const payPrice = computed(() => authItem.price);
 
   function onClickAuthButton() {
-    dialogVisible.value = true;
-  }
-
-  /**
-   * 处理支付成功
-   */
-  async function onPaySuccess() {
-    // 如果未进行非静默授权，则先进行一次非静默授权
+    // 点击付费观看需要先做非静默授权
     if (!weixinStore.weixinWatchAuthorized) {
       redirectWeixinAuthorize({
         snsApiBase: false,
@@ -198,6 +191,13 @@ export const useAuthPayMobile = () => {
       return;
     }
 
+    dialogVisible.value = true;
+  }
+
+  /**
+   * 处理支付成功
+   */
+  async function onPaySuccess() {
     const watchCore = getWatchCore();
     const payed = await watchCore.auth.checkPayStatus();
     if (payed) {

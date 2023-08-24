@@ -23,4 +23,8 @@ export const playerEvents = {
    * 试看播放结束
    */
   TrialPlayStart: 'TrialPlayStart',
+  /**
+   * 实时字幕
+   */
+  SubtitleRealTimeCC: 'SubtitleRealTimeCC',
 };

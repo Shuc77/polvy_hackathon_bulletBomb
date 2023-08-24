@@ -31,12 +31,16 @@ import { useAsk } from '../hooks/use-ask';
 import { useAskSend } from '../hooks/use-ask-send';
 import { ref } from 'vue';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
+import { useAskStore } from '@/store/use-ask-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
-const { askInputPlaceholder, askMsgRenderList, getAskMsgList } = useAsk({
+const { askMsgRenderList, getAskMsgList } = useAsk({
   askMsgListRef,
 });
+
+const { askInputPlaceholder } = storeDefinitionToRefs(useAskStore);
 
 const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = useAskSend();
 </script>

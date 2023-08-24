@@ -2,8 +2,9 @@
 
 <template>
   <pc-dialog
-    v-bind="{ ...filterPcDialogProps() }"
+    v-bind="pcDialogProps"
     :visible.sync="innerVisible"
+    :mount-el="dialogMountEl"
     @after-enter="onAfterEnter"
     @after-leave="onAfterLeave"
     @closed="onCancel"
@@ -15,6 +16,9 @@
           v-html="props.content"
           ref="messageBoxContentRef"
           class="c-pc-message-box__content"
+          :class="{
+            'c-pc-message-box__content--center': contentCenter,
+          }"
         ></p>
       </div>
       <div class="c-pc-message-box__footer">
@@ -40,13 +44,15 @@
 <script lang="ts" setup>
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
+import { computed } from 'vue';
+import { usePcDialogMountEl } from '../dialog/use-dialog';
 
 import { messageBoxPcProps, messageBoxEmits, useMessageBox } from './use-message-box';
 
 const props = defineProps(messageBoxPcProps());
 const emit = defineEmits(messageBoxEmits());
 
-function filterPcDialogProps() {
+const pcDialogProps = computed(() => {
   return {
     ...props,
     type: undefined,
@@ -54,7 +60,7 @@ function filterPcDialogProps() {
     cancelButtonText: undefined,
     confirmButtonText: undefined,
   };
-}
+});
 
 const {
   innerVisible,
@@ -66,6 +72,8 @@ const {
   onCancel,
   onConfirm,
 } = useMessageBox({ props, emit });
+
+const { dialogMountEl } = usePcDialogMountEl();
 
 defineExpose(messageBoxInstance);
 </script>
@@ -87,6 +95,10 @@ defineExpose(messageBoxInstance);
   }
   p + p {
     margin-top: 8px;
+  }
+
+  &.c-pc-message-box__content--center {
+    text-align: center;
   }
 }
 .c-pc-message-box__footer {

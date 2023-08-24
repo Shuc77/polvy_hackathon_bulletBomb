@@ -5,4 +5,8 @@
 
 export { default as MobileOriginIconBarrageOff } from './icons/barrage-off';
 export { default as MobileOriginIconBarrageOn } from './icons/barrage-on';
+export { default as MobileOriginIconQuestion } from './icons/question';
+export { default as MobileOriginIconQuestionActive } from './icons/question-active';
+export { default as MobileOriginIconQuestionEn } from './icons/question-en';
+export { default as MobileOriginIconQuestionEnActive } from './icons/question-en-active';
 export { default as MobileOriginIconReturnLive } from './icons/return-live';
