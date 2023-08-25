@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { isWeixin } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
+import { useChannelStore } from './use-channel-store';
 
 export interface WithdrawStoreState {
   /** 是否展示“提现”功能 */
@@ -18,11 +20,17 @@ export interface WithdrawStoreAction {
 export interface WithdrawStore extends WithdrawStoreState, WithdrawStoreAction {}
 
 export const useWithdrawStore = defineStore<'withdraw', WithdrawStore>('withdraw', () => {
+  const watchAppStore = useWatchAppStore();
+  const channelStore = useChannelStore();
+
   /** 是否可以提现 */
   const withdrawEnabled = ref(false);
 
   /** 是否展示“提现”功能 */
   const withdrawVisible = computed(() => {
+    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (channelStore.isSeminarChannel) return false;
+
     return isWeixin && withdrawEnabled.value;
   });
 

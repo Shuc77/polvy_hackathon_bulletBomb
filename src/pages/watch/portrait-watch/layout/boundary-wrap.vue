@@ -1,6 +1,6 @@
 <template>
   <div
-    class="c-portrait-boundary-wrap iphone-polyfill-inset-top"
+    class="c-portrait-boundary-wrap"
     :class="{
       'c-portrait-boundary-wrap--left': seat === 'left',
       'c-portrait-boundary-wrap--right': seat === 'right',

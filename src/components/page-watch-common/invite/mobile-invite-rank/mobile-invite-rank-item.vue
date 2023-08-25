@@ -63,7 +63,7 @@ defineProps({
 .c-mobile-invite-rank__list__item {
   display: flex;
   align-items: center;
-  height: 56px;
+  min-height: 56px;
   padding: 0 16px;
   color: #adadc0;
 

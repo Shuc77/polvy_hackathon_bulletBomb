@@ -10,3 +10,6 @@ export const PC_PLAYER_FULL_SCREEN_SELECTOR = '.c-pc-watch-layout__main__fullscr
 
 /** PC 端右边侧边栏外层 */
 export const PC_LAYOUT_ASIDE_WRAP = '.c-pc-watch-layout__main__right';
+
+/** 移动端直播播放器内部 Wrap 选择器 */
+export const MOBILE_LIVE_PLAYER_INNER_WRAP = '.plwrap';

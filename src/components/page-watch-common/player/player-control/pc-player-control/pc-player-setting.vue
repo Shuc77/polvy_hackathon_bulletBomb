@@ -70,6 +70,17 @@
           </li>
         </ul>
       </div>
+
+      <!--   实时字幕开关   -->
+      <div
+        v-if="subtitlesEnable"
+        class="c-pc-player-control__setting__panel__section"
+      >
+        <div class="c-pc-player-control__setting__panel__title">
+          {{ $lang('player.subtitle.text') }}
+        </div>
+        <plv-switch v-model="subtitleOpen"></plv-switch>
+      </div>
     </div>
   </div>
 </template>
@@ -77,6 +88,7 @@
 <script setup lang="ts">
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { PlvSwitch } from '@/plugins/polyv-ui/pc-import';
 
 const {
   lineSettingVisible,
@@ -85,6 +97,8 @@ const {
   qualitySettingList,
   latencyModeSettingVisible,
   latencyModeSettingList,
+  subtitlesEnable,
+  subtitleOpen,
 } = usePlayerControl();
 
 const { toChangeLine, toChangeQualityLevel, toSetLowLowLatency } = usePlayerAction();
@@ -130,6 +144,15 @@ const { toChangeLine, toChangeQualityLevel, toSetLowLowLatency } = usePlayerActi
 
 .c-pc-player-control__setting__panel__section + .c-pc-player-control__setting__panel__section {
   margin-top: 24px;
+}
+
+.c-pc-player-control__setting__panel__section {
+  .plv-switch {
+    background: #545c6b;
+  }
+  .plv-switch--switched {
+    background: #1755ee;
+  }
 }
 
 .c-pc-player-control__setting__panel__title {

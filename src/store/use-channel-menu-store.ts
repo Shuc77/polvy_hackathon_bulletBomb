@@ -99,7 +99,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
 
       // 研讨会下不显示提问
       if (channelStore.isSeminarChannel) {
-        menus = menus.filter(menu => menu.menuType === ChannelMenuType.Quiz);
+        menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Quiz);
       }
 
       // 处理 displayEnabled 字段
@@ -190,6 +190,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         [ChannelMenuType.Vote]: [translate('menu.tabName.vote'), '投票'],
         [ChannelMenuType.MicroActivity]: [translate('menu.tabName.microActivity'), '微活动'],
         [ChannelMenuType.MultiMeeting]: [translate('menu.tabName.multiMeeting'), '分会场'],
+        [ChannelMenuType.Subtitle]: [translate('menu.tabName.subtitle'), '实时字幕'],
       };
 
       if (!translateOptions[menuType]) {

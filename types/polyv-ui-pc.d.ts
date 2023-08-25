@@ -44,3 +44,12 @@ declare module '@polyv/polyv-ui/lib-front/emotional-feedback' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+/**
+ * switch按钮
+ */
+declare module '@polyv/polyv-ui/lib-admin/switch' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

@@ -212,5 +212,35 @@
     .pws-pc-playback-list-playing {
       background-color: map.get($--skin-configs, 'pc-playback-list-playing:bg-color') !important;
     }
+
+    //   -------------- 实时字幕 -------------  //
+    .pws-pc-subtitle__top-skin {
+      .c-pc-select__body {
+        background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
+      }
+
+      .c-pc-select__body__input, .c-pc-select__body__icon {
+        color: map.get($--skin-configs, 'subtitle:text-color') !important;
+      }
+    }
+
+    .pws-pc-subtitle__content-skin {
+      .c-pc-subtitle__content-item {
+        color: map.get($--skin-configs, 'subtitle:text-color') !important;
+        background: map.get($--skin-configs, 'subtitle-item:bg-color') !important;
+      }
+      .c-pc-subtitle__content-item-line {
+        border-color: map.get($--skin-configs, 'subtitle-item:line-color') !important;;
+      }
+    }
+
+    .pws-subtitle__empty {
+      color: map.get($--skin-configs, 'subtitle:text-color') !important;
+    }
+
+    .pws-subtitle__new {
+      color: map.get($--skin-configs, 'subtitle-item-line:text-color') !important;
+      background: map.get($--skin-configs, 'subtitle-item-line:bg-color') !important;
+    }
   }
 }

@@ -1,21 +1,19 @@
 /**
  * @file 和图片相关的工具函数
  */
-import { changeProtocol, startsWithProtocol } from '@utils-ts/net';
 
 /**
- * 重置图片的地址
- * @param url 图片地址
+ * 判断浏览器是否支持webp格式
  */
-export function resetImageProtocol(url: string): string {
-  // 如果当前页面是 http 协议则用 http
-  if (startsWithProtocol(location.href, ['http'])) {
-    return changeProtocol(url, 'http');
+export const isSupportWebp = (() => {
+  try {
+    return (
+      document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0
+    );
+  } catch (err) {
+    return false;
   }
-
-  // 其余情况都用 https
-  return changeProtocol(url, 'https');
-}
+})();
 
 /**
  * 重置 oss 的图片尺寸
@@ -25,6 +23,11 @@ export function resetImageProtocol(url: string): string {
  */
 export function resizeOSSImg(url: string, width?: number, height?: number): string {
   if (!url) {
+    return url;
+  }
+
+  if (!width && !height) {
+    console.warn('需要指定图片的宽度或者高度才能进行调整');
     return url;
   }
 
@@ -39,12 +42,19 @@ export function resizeOSSImg(url: string, width?: number, height?: number): stri
   }
 
   let result = url + '?x-oss-process=image/resize,mfit';
+
   if (width) {
-    result += ',w_' + width;
+    result += ',w_' + Math.round(width);
   }
+
   if (height) {
-    result += ',h_' + height;
+    result += ',h_' + Math.round(height);
   }
+
+  if (isSupportWebp) {
+    result += '/format,webp';
+  }
+
   result += ',limit_1';
   return result;
 }

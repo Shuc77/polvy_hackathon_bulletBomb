@@ -37,6 +37,9 @@
         class="c-mobile-chat-room-pendant__item"
       />
 
+      <!-- 抽奖 -->
+      <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
+
       <!-- 条件抽奖 -->
       <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
 
@@ -45,7 +48,7 @@
 
       <!-- 点赞 -->
       <mobile-chat-like
-        v-if="chatSetting.likeEnabled"
+        v-if="likeFeatureEnabled"
         v-show="!isPageFullscreenOrHorizontalScreen"
         class="c-mobile-chat-room-pendant__item"
         :upper-has-icon="hasOtherPendant"
@@ -65,6 +68,7 @@ import CustomTeleport from '@/components/common-base/custom-teleport/custom-tele
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import MobilePushCard from '@/components/page-watch-common/interactive-receive/push-card/mobile-push-card.vue';
 import MobileRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
+import MobileLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import MobileWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/mobile-welfare-lottery.vue';
 import MobileTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/mobile-topic-pk.vue';
 import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-answer.vue';
@@ -80,7 +84,7 @@ import { computed, unref } from 'vue';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -89,6 +93,7 @@ const {
   redpackPendantVisible,
   enrollLotteryPendantVisible,
   welfareLotteryPendantVisible,
+  lotteryPendantVisible,
   rushAnswerPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
@@ -112,6 +117,7 @@ const hasOtherPendant = computed<boolean>(() => {
     unref(redpackPendantVisible) ||
     unref(enrollLotteryPendantVisible) ||
     unref(welfareLotteryPendantVisible) ||
+    unref(lotteryPendantVisible) ||
     unref(rushAnswerPendantVisible) ||
     unref(mobileChatInvitePendantVisible)
   );

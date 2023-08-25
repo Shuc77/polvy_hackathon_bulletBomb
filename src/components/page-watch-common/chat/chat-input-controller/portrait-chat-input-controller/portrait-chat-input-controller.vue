@@ -10,7 +10,7 @@
 
     <portrait-msg-input-wrap
       ref="msgInputWrapRef"
-      :placeholder="chatInputPlaceholder"
+      :placeholder="portraitMessageInputPlaceholder"
       :disabled-input="chatInputDisabled"
       :disabled-emotion-picker="chatInputDisabled"
       :face-emotion-enabled="chatSetting.faceEmotionEnabled"
@@ -18,12 +18,19 @@
       @system-msg="onSendSystemMsg"
       @submit="onSubmit"
       @click-image-emotion="closeInput"
-    />
+    >
+      <!-- 提问图标 -->
+      <portrait-ask-icon
+        slot="input-prefix"
+        class="c-portrait-chat-input-controller__question-icon"
+      />
+    </portrait-msg-input-wrap>
   </div>
 </template>
 
 <script setup lang="ts">
 import PortraitChatMsgQuote from '@/components/page-watch-common/chat/chat-msg-quote/mobile-chat-msg-quote.vue';
+import PortraitAskIcon from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-icon.vue';
 import PortraitMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/portrait-msg-input-wrap/portrait-msg-input-wrap.vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
@@ -33,12 +40,29 @@ import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
-import { PlvInputContent } from '@/plugins/polyv-ui/types';
+import { PlvInputContent, PlvInputContentText } from '@/plugins/polyv-ui/types';
+import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { getWatchCore } from '@/core/watch-sdk';
 
 const inputWrapRef = ref<HTMLDivElement>();
 
-const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } =
-  useChatInputController();
+const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } = useChatInputController(
+  {
+    submitIntercept: (contentList: PlvInputContent[]) => {
+      const portraitLayoutStore = usePortraitLayoutStore();
+
+      // 竖屏提问
+      if (portraitLayoutStore.portraitMessageTabCurrentName === PortraitChatTabName.Ask) {
+        const data = contentList[0] as PlvInputContentText;
+        const watchCore = getWatchCore();
+        watchCore.ask.sendQuestion(data.content);
+        return true;
+      }
+
+      return false;
+    },
+  },
+);
 
 useAppendTo(inputWrapRef);
 
@@ -59,8 +83,9 @@ useClickOutside(inputWrapRef, () => {
   setInputVisible(false);
 });
 
-const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
-  storeDefinitionToRefs(useChatStore);
+const { chatInputDisabled, chatSetting } = storeDefinitionToRefs(useChatStore);
+
+const { portraitMessageInputPlaceholder } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 function onSubmit(params: { contentList: PlvInputContent[] }) {
   onSubmitMessage(params);
@@ -75,5 +100,9 @@ function onSubmit(params: { contentList: PlvInputContent[] }) {
   left: 0;
   z-index: $--zIndex-top -2;
   width: 100%;
+}
+
+.c-portrait-chat-input-controller__question-icon {
+  margin-right: 8.5px;
 }
 </style>

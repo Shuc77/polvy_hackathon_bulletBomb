@@ -1,7 +1,7 @@
 /**
  * @file 聊天消息用户相关 hook
  */
-import { resetImageProtocol } from '@/assets/utils/image';
+import { fitProtocol } from '@/assets/utils/url';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import {
@@ -63,7 +63,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
    */
   const msgUserAvatar = computed<string>(() => {
     const user = unref(msgUser);
-    return resetImageProtocol(user?.pic ?? DEFAULT_VIEWER_AVATAR);
+    return fitProtocol(user?.pic ?? DEFAULT_VIEWER_AVATAR);
   });
 
   /**

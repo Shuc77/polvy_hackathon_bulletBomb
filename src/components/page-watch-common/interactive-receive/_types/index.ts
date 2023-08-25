@@ -18,6 +18,7 @@ export interface PolyvIRSceneEntrance {
   RedEnvelopePendant: PolyvIRSceneComponentOption;
   RedEnvelopeEntrance: PolyvIRSceneComponentOption;
   EvaluationPendant: PolyvIRSceneComponentOption;
+  LotteryPendant: PolyvIRSceneComponentOption;
 
   // PC 端下才有的
   PcBulletin: PolyvIRSceneComponentOption;

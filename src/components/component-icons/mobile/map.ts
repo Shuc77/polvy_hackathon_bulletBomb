@@ -30,8 +30,6 @@ export { default as MobileIconPageView } from './icons/page-view';
 export { default as MobileIconPeople } from './icons/people';
 export { default as MobileIconPlayRound } from './icons/play-round';
 export { default as MobileIconProduct } from './icons/product';
-export { default as MobileIconQuestion } from './icons/question';
-export { default as MobileIconQuestionActive } from './icons/question-active';
 export { default as MobileIconSearch } from './icons/search';
 export { default as MobileIconSmilingFace } from './icons/smiling-face';
 export { default as MobileIconTranslate } from './icons/translate';

@@ -1,7 +1,7 @@
 <!-- @file 移动端大图布局的引导页 -->
 <template>
   <div
-    class="c-mobile-splash-full iphone-polyfill-inset-top"
+    class="c-mobile-splash-full"
     :style="{
       backgroundImage: `url(${mobileSplashLargeImg})`,
     }"

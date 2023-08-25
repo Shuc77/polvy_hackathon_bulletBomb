@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
 
 import { IarLotteryStatus } from '@polyv/live-watch-sdk';
@@ -36,6 +36,10 @@ export const useLotteryAnimation = () => {
   function onVisibleChange(visible = false) {
     lotteryAnimationVisible.value = visible;
   }
+
+  useEventBusListener(appEvents.interaction.OpenLotteryAnimation, (data: { visible: boolean }) => {
+    onVisibleChange(data.visible);
+  });
 
   return {
     lotterySdk,

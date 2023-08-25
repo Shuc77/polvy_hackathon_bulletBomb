@@ -52,10 +52,10 @@
           :key="`chat-${index}`"
           :label="menu.name"
           :name="TAB_NAME_CHAT"
-          :sub-label="chatMenuAdditionData.subLabel"
-          :show-reminder="chatMenuAdditionData.showReminder"
+          :sub-label="chatSubLabel"
+          :show-reminder="chatReminderVisible"
         >
-          <template v-if="chatSetting.watchChatEnabled">
+          <template v-if="chatRoomVisible">
             <mobile-chat-room />
           </template>
           <template v-else>
@@ -69,7 +69,7 @@
           :key="`quiz-${index}`"
           :label="menu.name"
           :name="TAB_NAME_ASK"
-          :show-reminder="askMenuAdditionData.showReminder"
+          :show-reminder="askReminderVisible"
           lazy-load
         >
           <mobile-ask />
@@ -201,6 +201,16 @@
         >
           <mobile-micro-activity :is-active="mobileMenuCurrentName === TAB_NAME_MICRO_ACTIVITY" />
         </mobile-menu-tab-pane>
+
+        <!-- 实时字幕 -->
+        <mobile-menu-tab-pane
+          v-else-if="menu.menuType === ChannelMenuType.Subtitle"
+          :key="`subtitle-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_SUBTITLE"
+        >
+          <mobile-subtitle />
+        </mobile-menu-tab-pane>
       </template>
 
       <!-- 回放章节 -->
@@ -252,6 +262,7 @@ import MobileMemberList from '@/components/page-watch-common/member-list/member-
 import MobileMicroActivity from '@/components/page-watch-common/micro-activity/mobile-micro-activity/mobile-micro-activity.vue';
 import MobilePlaybackList from '@/components/page-watch-common/playback-list/mobile-playback-list/mobile-playback-list.vue';
 import MobileMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-portrait.vue';
+import MobileSubtitle from '@/components/page-watch-common/subtitle/mobile-subtitle.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -277,6 +288,7 @@ import {
   TAB_NAME_PRODUCT,
   TAB_NAME_QA,
   TAB_NAME_SEAT,
+  TAB_NAME_SUBTITLE,
   TAB_NAME_TUWEN_LIVE,
   TAB_NAME_VOTE,
 } from '@/assets/constants/tab-name';
@@ -293,7 +305,7 @@ const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelM
 
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
 
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
@@ -306,9 +318,12 @@ const docOrCameraMenuName = computed(() => {
 });
 
 const { followEnabled } = useFollowSetting();
-const { chatMenuAdditionData, askMenuAdditionData } = useWatchTabHook({ mode: 'mobile' });
 
 const { trackWatchTabChange } = useWatchEventTrack();
+
+const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
+  curActiveTabName: mobileMenuCurrentName,
+});
 </script>
 
 <style lang="scss">

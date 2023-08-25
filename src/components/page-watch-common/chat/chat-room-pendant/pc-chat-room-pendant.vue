@@ -16,6 +16,9 @@
     <!-- 话题 PK -->
     <pc-topic-pk class="c-pc-chat-room-pendant__item" />
 
+    <!-- 抽奖 -->
+    <pc-lottery-pendant class="c-pc-chat-room-pendant__item" />
+
     <!-- 条件抽奖 -->
     <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
 
@@ -24,7 +27,7 @@
 
     <!-- 点赞 -->
     <pc-chat-like
-      v-if="chatSetting.likeEnabled"
+      v-if="likeFeatureEnabled"
       class="c-pc-chat-room-pendant__item"
       :upper-has-icon="hasOtherPendant"
     />
@@ -41,6 +44,7 @@ import PcEnrollLotteryPendant from '@/components/page-watch-common/interactive-r
 import PcPushCard from '@/components/page-watch-common/interactive-receive/push-card/pc-push-card.vue';
 import PcRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
 import PcWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/pc-welfare-lottery.vue';
+import PcLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/pc-topic-pk.vue';
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
@@ -52,7 +56,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { computed, unref } from 'vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -61,6 +65,7 @@ const {
   redpackPendantVisible,
   enrollLotteryPendantVisible,
   welfareLotteryPendantVisible,
+  lotteryPendantVisible,
   rushAnswerPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
@@ -70,6 +75,7 @@ const hasOtherPendant = computed<boolean>(() => {
     unref(pushCardPendantVisible) ||
     unref(redpackPendantVisible) ||
     unref(enrollLotteryPendantVisible) ||
+    unref(lotteryPendantVisible) ||
     unref(welfareLotteryPendantVisible) ||
     unref(rushAnswerPendantVisible)
   );

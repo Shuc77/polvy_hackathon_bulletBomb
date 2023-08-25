@@ -25,6 +25,14 @@
       :network-status="networkInfo.uplinkNetworkStatus"
     />
 
+    <!-- 右上角共享画笔 -->
+    <div
+      v-if="showShareIcon && micInfoVisible"
+      class="c-pc-connect-mic-user-item__share"
+    >
+      <span>共</span>
+    </div>
+
     <!-- 底部信息 -->
     <connect-mic-info
       v-if="micInfoVisible"
@@ -58,20 +66,20 @@
 </template>
 
 <script setup lang="ts">
+import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
+import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
+import { MainScreenContent } from '@polyv/live-watch-sdk';
 import ConnectMicInfo from '../common/connect-mic-info.vue';
 import ConnectMicNetwork from '../common/connect-mic-network.vue';
-import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
-import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import ConnectMicUserItemControl from './pc-connect-mic-user-item-control.vue';
 import ScreenShareMask from './pc-connect-mic-user-item-screenshare-mask.vue';
-import { MainScreenContent } from '@polyv/live-watch-sdk';
 
 import { useConnectMicControl } from '../hooks/use-connect-mic';
 import { connectMicItemProps, useConnectMicItem } from '../hooks/use-connect-mic-item';
 
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 
 const props = defineProps(connectMicItemProps());
@@ -87,6 +95,7 @@ const {
   isLocal,
   isMaster,
   currentConnectMicType,
+  showShareIcon,
 } = useConnectMicItem({
   props,
 });
@@ -120,5 +129,19 @@ const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
   video {
     transform: none !important;
   }
+}
+
+.c-pc-connect-mic-user-item__share {
+  position: absolute;
+  top: 24px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  color: #fff;
+  text-align: center;
+  background-color: #3082fe;
+  border-radius: 50%;
 }
 </style>

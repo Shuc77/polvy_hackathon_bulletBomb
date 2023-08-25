@@ -42,6 +42,21 @@ const buildGetters = <T extends string = string>(key: string) => {
  * @desc 需要获取地址上的参数都必须通过该获取器获取
  */
 export const paramGetter = {
+  // ===========  polyv sdk 外链参数 ===========
+
+  /** 互动功能 sdk 层 js 地址 */
+  interactionSdkScriptUrl: buildGetters('interactionSdkScriptUrl'),
+  /** 直播播放器 js 地址 */
+  livePlayerScriptUrl: buildGetters('livePlayerScriptUrl'),
+  /** 无延迟直播播放器 js 地址 */
+  liveLowLatencyPlayerScriptUrl: buildGetters('liveLowLatencyPlayerScriptUrl'),
+  /** 点播播放器 js 地址 */
+  vodPlayerScriptUrl: buildGetters('vodPlayerScriptUrl'),
+  /** 连麦 sdk js 地址 */
+  rtcWebScriptUrl: buildGetters('rtcWebScriptUrl'),
+
+  // ===========  业务参数 ===========
+
   /** 频道号 */
   channelId: buildGetters('channelId'),
   /** 会议模式 */

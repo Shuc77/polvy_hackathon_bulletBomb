@@ -43,7 +43,7 @@
     <mobile-interactive-entrance />
 
     <!-- 底部输入框 -->
-    <mobile-chat-input-controller v-if="!isPlaybackWatchUrl" />
+    <mobile-chat-input-controller v-if="chatInputControllerEnable" />
 
     <!-- 报名观看（参与互动时机） -->
     <mobile-enroll v-if="needEnrollByChat" />
@@ -67,14 +67,11 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatSetting, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 

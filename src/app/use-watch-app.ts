@@ -160,6 +160,13 @@ export function useWatchApp() {
         param4: paramGetter.param4(),
         param5: paramGetter.param5(),
       },
+      sdkIntegration: {
+        interactionSdkScriptUrl: paramGetter.interactionSdkScriptUrl(),
+        livePlayerScriptUrl: paramGetter.livePlayerScriptUrl(),
+        liveLowLatencyPlayerScriptUrl: paramGetter.liveLowLatencyPlayerScriptUrl(),
+        vodPlayerScriptUrl: paramGetter.vodPlayerScriptUrl(),
+        rtcWebScriptUrl: paramGetter.rtcWebScriptUrl(),
+      },
     });
 
     // 安装观看页 SDK 核心

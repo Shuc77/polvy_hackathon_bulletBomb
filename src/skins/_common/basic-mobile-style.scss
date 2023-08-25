@@ -276,5 +276,35 @@
     .pws-mobile-meeting-portrait-no-more {
       color: rgba(map.get($--skin-configs, 'mobile-multi-meeting-portrait-title:text-color'), 0.5);
     }
+
+    //   -------------- 实时字幕 -------------  //
+    .pws-mobile-subtitle__top-skin {
+      .c-mobile-select__body {
+        background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
+      }
+
+      .c-mobile-select__body__input, .c-mobile-select__body__icon {
+        color: map.get($--skin-configs, 'subtitle:text-color') !important;
+      }
+    }
+
+    .pws-mobile-subtitle__content-skin {
+      .c-mobile-subtitle__content-item {
+        color: map.get($--skin-configs, 'subtitle:text-color') !important;
+        background: map.get($--skin-configs, 'subtitle-item:bg-color') !important;
+      }
+      .c-mobile-subtitle__content-item-line {
+        border-color: map.get($--skin-configs, 'subtitle-item:line-color') !important;;
+      }
+    }
+
+    .pws-subtitle__empty {
+      color: map.get($--skin-configs, 'subtitle:text-color') !important;
+    }
+
+    .pws-subtitle__new {
+      color: map.get($--skin-configs, 'subtitle-item-line:text-color') !important;
+      background: map.get($--skin-configs, 'subtitle-item-line:bg-color') !important;
+    }
   }
 }

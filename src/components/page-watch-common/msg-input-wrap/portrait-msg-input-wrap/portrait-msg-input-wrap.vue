@@ -7,8 +7,7 @@
         class="c-portrait-msg-input-wrap__main__form"
         @submit.prevent="submitInput"
       >
-        <!-- 提问 -->
-        <portrait-question-icon class="c-portrait-msg-input-wrap__question" />
+        <slot name="input-prefix"></slot>
 
         <input
           v-model="inputElmValue"
@@ -71,7 +70,6 @@
 
 <script setup lang="ts">
 import { MobileIconEmotion, MobileIconKeyboard } from '@/components/component-icons/mobile/map';
-import PortraitQuestionIcon from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/common/portrait-question-icon.vue';
 import PortraitEmotionPicker from '@/components/page-watch-common/emotion-picker/portrait-emotion-picker/portrait-emotion-picker.vue';
 import { PlvCollapseTransition } from '@/plugins/polyv-ui/admin-import';
 import { msgInputWrapEmits, msgInputWrapProps, useMsgInputWrap } from '../use-msg-input-wrap';
@@ -160,8 +158,5 @@ defineExpose(msgInputWrapInstance);
   font-size: 24px !important;
   color: $--color-white;
   transform: translateY(-50%);
-}
-.c-portrait-msg-input-wrap__question {
-  margin-right: 8.5px;
 }
 </style>

@@ -1,7 +1,7 @@
 <!-- @file 移动端-微信强制授权页 -->
 
 <template>
-  <div class="c-mobile-force-wx-auth iphone-polyfill-inset-top">
+  <div class="c-mobile-force-wx-auth">
     <!-- 微信下打开 -->
     <template v-if="isWeixin">
       <div

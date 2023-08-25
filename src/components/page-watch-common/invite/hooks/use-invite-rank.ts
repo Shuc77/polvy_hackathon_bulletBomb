@@ -10,20 +10,15 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { translate } from '@/assets/lang';
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { InviteRankCurrentViewer, InviteRankItem } from '@polyv/live-watch-sdk';
+import {
+  InviteRankCurrentViewer,
+  InviteRankItem,
+  InviteRankRequestFailReason,
+} from '@polyv/live-watch-sdk';
 
 const isGeneralWeixin = isWeixin && !isWorkWeixin;
 
-interface InviteRankHookOptions {
-  /** 需要筛选邀请人数为 0 的邀请者 */
-  needFilterZeroInvitee: boolean;
-}
-
-export const useInviteRankHook = (
-  hookOptions: InviteRankHookOptions = {
-    needFilterZeroInvitee: false,
-  },
-) => {
+export const useInviteRankHook = () => {
   const page = ref(0);
   const isLoading = ref(false);
   const isNoMore = ref(false);
@@ -137,17 +132,17 @@ export const useInviteRankHook = (
       });
 
       isLoading.value = false;
-      page.value = data.pageNumber;
 
-      let contents = data.contents;
-      // 过滤掉邀请数为 0 的节点
-      if (hookOptions.needFilterZeroInvitee) {
-        contents = data.contents.filter(item => {
-          return item.inviteNum !== 0;
-        });
+      if (!data.success) {
+        if (data.failReason === InviteRankRequestFailReason.FeatureClose) {
+          isNoMore.value = true;
+          return;
+        }
+        throw new Error('getRankList request failed');
       }
-      resRankList.value = contents;
 
+      page.value = data.pageNumber;
+      resRankList.value = data.contents;
       if (data.totalPages <= page.value) {
         isNoMore.value = true;
       }
@@ -165,9 +160,8 @@ export const useInviteRankHook = (
       }
     } catch (err) {
       isLoadFailed.value = true;
-      console.error('getRankList', err);
-    } finally {
       isLoading.value = false;
+      console.error('getRankList', err);
     }
   }
 

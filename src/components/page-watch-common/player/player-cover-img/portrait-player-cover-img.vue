@@ -3,6 +3,7 @@
   <div class="c-portrait-player-cover-img">
     <!-- 暖场图/播放器封面图 -->
     <div
+      v-if="warmUpSetting.warmUpImg"
       v-show="showWarmUpImg"
       data-warmup-img
       class="c-portrait-player-cover-img__warm-up-img g-img-cover"
@@ -26,6 +27,16 @@
         ...playerContainerStyle,
       }"
     />
+    <!-- 研讨会频道-主持进入分组讨论占位图 -->
+    <div
+      v-show="isSeminarHostInGroup"
+      class="c-portrait-player-cover-img__seminar__hostInGroup"
+      :style="{
+        ...playerContainerStyle,
+      }"
+    >
+      <p>{{ $lang('seminar.hostInGroup') }}</p>
+    </div>
   </div>
 </template>
 
@@ -42,6 +53,7 @@ import {
   PlayerSizeData,
   usePortraitPlayerSize,
 } from '../player-main/portrait-player-main/use-portrait-player-size';
+import { useChannelStore } from '@/store/use-channel-store';
 
 const {
   showWarmUpImg,
@@ -50,6 +62,8 @@ const {
   showAudioLivePlaceholder,
   isAudioPlayerMode,
 } = storeDefinitionToRefs(usePlayerStore);
+
+const { isSeminarHostInGroup } = storeDefinitionToRefs(useChannelStore);
 
 const imgSize = ref<PlayerSizeData>();
 const { playerContainerStyle } = usePortraitPlayerSize(imgSize);
@@ -91,5 +105,20 @@ onMounted(() => {
   position: absolute;
   width: 100%;
   height: 100%;
+}
+
+.c-portrait-player-cover-img__seminar__hostInGroup {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  color: rgba(#fff, 0.6);
+  text-align: center;
+
+  background: #272832;
 }
 </style>

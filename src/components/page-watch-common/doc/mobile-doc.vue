@@ -5,13 +5,22 @@
       ref="wrapRef"
       class="c-mobile-doc__wrap"
     ></div>
+
+    <mobile-message-box
+      ref="confirmRef"
+      :title="$lang('base.confirm')"
+      :content="$lang('doc.deleteConfirm')"
+      :confirm-button-text="$lang('base.confirm')"
+      :cancel-button-text="$lang('base.cancel')"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import MobileMessageBox from '@/components/common-base/message-box/mobile-message-box.vue';
 import { useDoc } from './use-doc';
 
-const { wrapRef } = useDoc();
+const { wrapRef, confirmRef } = useDoc();
 </script>
 
 <style lang="scss">

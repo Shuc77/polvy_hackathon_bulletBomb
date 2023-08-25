@@ -53,12 +53,40 @@ export function bindChannelModuleEvents(): void {
   });
 
   channelEventEmitter.on(ChannelEvents.LiveStatusChange, ({ liveStatus }) => {
+    channelStore.syncChannelStore();
+
     if (liveStatus === LiveStatus.End) {
       layoutStore.exitMobileLayoutFullScreen();
+
+      if (channelStore.isSeminarChannel && channelStore.privateSeminarChannel) {
+        const socket = watchCore.chat.getSocket(false);
+        socket && socket.disconnect();
+      }
+
+      return;
     }
-    channelStore.syncChannelStore();
+
+    if (liveStatus === LiveStatus.Live) {
+      console.info('直播开始');
+      if (channelStore.isSeminarChannel && !channelStore.privateSeminarChannel) {
+        watchAppStore.setupWatchCoreConnect();
+      }
+    }
   });
+
   channelEventEmitter.on(ChannelEvents.SessionIdChange, channelStore.syncChannelStore);
+
+  channelEventEmitter.on(ChannelEvents.SeminarHostJoinInGroup, () => {
+    channelStore.$patch({
+      isSeminarHostInGroup: true,
+    });
+  });
+
+  channelEventEmitter.on(ChannelEvents.SeminarHostLeaveGroup, () => {
+    channelStore.$patch({
+      isSeminarHostInGroup: false,
+    });
+  });
 
   const menuEventEmitter = watchCore.menu.eventEmitter;
   menuEventEmitter.on(MenuEvents.ChannelMenuChange, ChannelMenuStore.syncChannelMenus);

@@ -1,7 +1,7 @@
 <!-- @file 竖屏观看页 -->
 <template>
   <div
-    class="c-portrait-watch iphone-polyfill-inset-top"
+    class="c-portrait-watch"
     :style="wrapStyle"
   >
     <!-- 观看页主体布局 -->
@@ -43,7 +43,7 @@
     <portrait-chat-set-nick v-if="canSetNick" />
 
     <!-- 聊天室消息输入框 -->
-    <portrait-chat-input-controller />
+    <portrait-chat-input-controller v-if="chatInputControllerEnable" />
 
     <!-- 聊天消息全文弹层 -->
     <portrait-chat-full-message />
@@ -64,6 +64,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, unref } from 'vue';
+import { CSSProperties } from 'vue/types/jsx';
+
 import PortraitLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
 import PortraitChatInputController from '@/components/page-watch-common/chat/chat-input-controller/portrait-chat-input-controller/portrait-chat-input-controller.vue';
 import PortraitChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/portrait-chat-set-nick.vue';
@@ -94,14 +97,14 @@ import { useThemeStore } from '@/store/use-theme-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
-import { storeToRefs } from 'pinia';
-import { computed, onMounted, unref } from 'vue';
-import { CSSProperties } from 'vue/types/jsx';
+import { useChatStore } from '@/store/use-chat-store';
 
 const themeStore = useThemeStore();
-const { portraitPageBgUrl } = storeToRefs(themeStore);
+const { portraitPageBgUrl } = storeDefinitionToRefs(useThemeStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 

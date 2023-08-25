@@ -11,24 +11,27 @@
     <template v-if="!playbackChapterEntranceVisible">
       <mobile-icon-message class="c-portrait-chat-input-placeholder__icon" />
       <span class="c-portrait-chat-input-placeholder__text g-singleline">
-        {{ chatInputPlaceholder }}
+        {{ portraitMessageInputPlaceholder }}
       </span>
-      <portrait-question-icon :font-size="18" />
+      <portrait-ask-icon :font-size="18" />
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import PortraitQuestionIcon from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/common/portrait-question-icon.vue';
-import { MobileIconMessage } from '@/components/component-icons/mobile/map';
 import { appEvents, eventBus } from '@/app/app-events';
+import { MobileIconMessage } from '@/components/component-icons/mobile/map';
+import PortraitAskIcon from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-icon.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { computed, unref } from 'vue';
 
-const { chatInputPlaceholder, chatInputDisabled } = storeDefinitionToRefs(useChatStore);
+const { chatInputDisabled } = storeDefinitionToRefs(useChatStore);
+
+const { portraitMessageInputPlaceholder } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
 

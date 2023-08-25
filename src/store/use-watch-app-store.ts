@@ -17,7 +17,8 @@ import { useConnectMicStore } from './use-connect-mic-store';
 import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
 import { translate } from '@/assets/lang';
-import { PlaybackWatchBasicInfo } from '@polyv/live-watch-sdk';
+import { LiveStatus, PlaybackWatchBasicInfo } from '@polyv/live-watch-sdk';
+import { useChannelStore } from './use-channel-store';
 
 export interface WatchAppStoreState {
   /** 当前是否处于回放观看页地址 */
@@ -61,6 +62,8 @@ export interface WatchAppStoreActions {
   pauseConnectLiveWatch(): void;
   /** 恢复直播观看页部分功能的初始化 */
   recoverConnectLiveWatch(): void;
+  /** 连接聊天室 */
+  setupWatchCoreConnect(): void;
 }
 
 export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions {}
@@ -72,6 +75,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const authStore = useAuthStore();
   const enrollStore = useEnrollStore();
 
+  const channelStore = useChannelStore();
   const docStore = useDocStore();
   const playbackStore = usePlaybackStore();
   const playerStore = usePlayerStore();
@@ -166,8 +170,17 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 根据不同场景设置 watchPageInited 标识位 */
   async function __setWatchPageInited() {
-    // 回放观看页地址进入观看页，不需要连麦
-    if (isPlaybackWatchUrl.value) {
+    /**
+     * 不需要连麦，不需要连接聊天室
+     * @scene 回放观看页地址进入观看页
+     * @scene 研讨会处于"内部研讨"时不需要连接聊天室
+     * @scene 研讨会处于回放时不需要连接聊天室
+     */
+    if (
+      isPlaybackWatchUrl.value ||
+      channelStore.privateSeminarChannel ||
+      (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
+    ) {
       connectMicStore.$patch({ connectMicEnabled: false });
       watchPageInited.value = true;
       return;
@@ -204,8 +217,17 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     docStore.$patch({ docEnabled: true });
     chatStore.$patch({ chatMsgListEnabled: true });
 
-    // 回放观看页地址进观看页不需要 socket 和连麦
-    if (!isPlaybackWatchUrl.value) {
+    /**
+     * 不需要连麦，不需要连接聊天室
+     * @scene 回放观看页地址进入观看页
+     * @scene 研讨会处于"内部研讨"时不需要连接聊天室
+     * @scene 研讨会处于回放时不需要连接聊天室
+     */
+    if (
+      !isPlaybackWatchUrl.value ||
+      channelStore.privateSeminarChannel ||
+      (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
+    ) {
       connectMicStore.$patch({ connectMicEnabled: true });
       await setupWatchCoreConnect();
     }
@@ -235,5 +257,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
     pauseConnectLiveWatch,
     recoverConnectLiveWatch,
+
+    setupWatchCoreConnect,
   };
 });

@@ -22,6 +22,9 @@
     <!-- 话题 PK -->
     <mobile-topic-pk class="c-portrait-chat-room-pendant__item" />
 
+    <!-- 抽奖挂件 -->
+    <portrait-lottery-pendant class="c-portrait-chat-room-pendant__item" />
+
     <!-- 条件抽奖 -->
     <mobile-welfare-lottery class="c-portrait-chat-room-pendant__item" />
 
@@ -30,7 +33,7 @@
 
     <!-- 点赞 -->
     <portrait-chat-like
-      v-if="chatSetting.likeEnabled && !isPlaybacking"
+      v-if="likeFeatureEnabled && !isPlaybacking"
       class="c-portrait-chat-room-pendant__item"
       :upper-has-icon="hasOtherPendant"
     />
@@ -52,6 +55,7 @@ import MobileWelfareLottery from '@/components/page-watch-common/interactive-rec
 import MobileTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/mobile-topic-pk.vue';
 import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-answer.vue';
 import PortraitMicroActivityPendant from '@/components/page-watch-common/micro-activity/portrait-micro-activity/portrait-micro-activity-pendant.vue';
+import PortraitLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
 import PortraitChatLike from '../chat-like/portrait-chat-like.vue';
 
@@ -63,7 +67,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -72,6 +76,7 @@ const {
   redpackPendantVisible,
   enrollLotteryPendantVisible,
   welfareLotteryPendantVisible,
+  lotteryPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { microActivityEnabled } = storeDefinitionToRefs(useMicroActivityStore);
@@ -84,7 +89,8 @@ const hasOtherPendant = computed<boolean>(() => {
     unref(pushCardPendantVisible) ||
     unref(redpackPendantVisible) ||
     unref(enrollLotteryPendantVisible) ||
-    unref(welfareLotteryPendantVisible)
+    unref(welfareLotteryPendantVisible) ||
+    unref(lotteryPendantVisible)
   );
 });
 </script>

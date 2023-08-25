@@ -1,24 +1,24 @@
-import { ref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import { wait } from '@/assets/utils/utils';
+import { getWatchCore } from '@/core/watch-sdk';
+import { ref } from 'vue';
 
-import { useEventBusListener, appEvents, eventBus } from '@/app/app-events';
-import { useChatStore } from '@/store/use-chat-store';
+import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { useSendMsg } from '@/components/page-watch-common/chat/chat-msg-list/hooks/send-msg-hook';
+import { useChatStore } from '@/store/use-chat-store';
 
-import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
-import { PlvInputContent, PlvInputContentText } from '@/plugins/polyv-ui/types';
-import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
-import { usePortraitLayoutStore, PortraitChatTabType } from '@/store/use-portrait-layout-store';
+import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
+import { toast } from '@/hooks/components/use-toast';
+import { PlvInputContent } from '@/plugins/polyv-ui/types';
 
 /**
  * @hook 聊天输入控制器
  */
-export const useChatInputController = () => {
+export const useChatInputController = (options?: {
+  /** 提交拦截 */
+  submitIntercept?: (contentList: PlvInputContent[]) => boolean;
+}) => {
   const chatStore = useChatStore();
-  const portraitLayoutStore = usePortraitLayoutStore();
-  const watchCore = getWatchCore();
 
   const {
     // eslint-disable-next-line prettier/prettier
@@ -49,11 +49,11 @@ export const useChatInputController = () => {
     msgInputWrapRef.value.clearInput();
     msgInputWrapRef.value.resetStatus();
 
-    // 竖屏提问
-    if (portraitLayoutStore.portraitChatTab === PortraitChatTabType.Ask) {
-      const data = contentList[0] as PlvInputContentText;
-      watchCore.ask.sendQuestion(data.content);
-      return;
+    if (options?.submitIntercept) {
+      const res = options.submitIntercept(contentList);
+      if (res) {
+        return;
+      }
     }
 
     await submitMessageQueue(contentList);

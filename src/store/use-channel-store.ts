@@ -27,6 +27,10 @@ export interface ChannelStoreState {
   isPptChannel: ComputedRef<boolean>;
   /** 是否为研讨会频道 */
   isSeminarChannel: ComputedRef<boolean>;
+  /** 研讨会频道是否处于"内部研讨"状态  */
+  privateSeminarChannel: ComputedRef<boolean>;
+  /** 研讨会主持是否在分组讨论中 */
+  isSeminarHostInGroup: Ref<boolean>;
   /** 渠道 id */
   promoteId: Ref<string | undefined>;
   /** 音频模式 */
@@ -74,6 +78,16 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 是否为研讨会频道 */
   const isSeminarChannel = computed(() => unref(channelScene) === ChannelScene.Seminar);
 
+  /** 研讨会频道是否处于"内部研讨"状态 */
+  const privateSeminarChannel = computed(() => {
+    if (!isSeminarChannel.value) return false;
+
+    return liveStatus.value !== LiveStatus.Live && liveStatus.value !== LiveStatus.Playback;
+  });
+
+  /** 研讨会主持是否在分组讨论中 */
+  const isSeminarHostInGroup = ref(false);
+
   /** 渠道 id */
   const promoteId = ref<string>();
 
@@ -117,6 +131,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isAloneChannel,
     isPptChannel,
     isSeminarChannel,
+    privateSeminarChannel,
+    isSeminarHostInGroup,
     promoteId,
     audioMode,
     audioModeSwitchEnabled,

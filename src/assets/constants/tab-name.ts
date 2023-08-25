@@ -49,6 +49,11 @@ export const TAB_NAME_MEMBERS = 'members';
 export const TAB_NAME_PRODUCT = 'product';
 
 /**
+ * 实时字幕 tab 名
+ */
+export const TAB_NAME_SUBTITLE = 'subtitle';
+
+/**
  * 回放 tab 名
  */
 export const TAB_NAME_PLAYBACK = 'playback';

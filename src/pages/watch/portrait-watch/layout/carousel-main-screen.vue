@@ -66,20 +66,44 @@
 
       <!-- 聊天室消息区 -->
       <div
-        v-if="chatSetting.watchChatEnabled"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__item--pointer-event"
         @click="onClickPlayerRegion"
       >
-        <div
-          class="c-portrait-chat-msg-list__ask__tip"
-          v-if="portraitChatTab === PortraitChatTabType.Ask"
-        >
-          <mobile-icon-ask size="13"></mobile-icon-ask>
-          <span class="c-portrait-chat-msg-list__ask__tip__text">{{
-            $lang('chat.ask.channel')
-          }}</span>
+        <portrait-ask-tips v-if="portraitMessageTabCurrentName === PortraitChatTabName.Ask" />
+
+        <div class="c-portrait-carousel-main-screen__carousel__wrap">
+          <plv-carousel
+            ref="carouselRef"
+            class="c-portrait-carousel-main-screen__carousel"
+            :slide-index.sync="messageCarouselActiveIndex"
+          >
+            <!-- 聊天消息区 -->
+            <plv-carousel-item v-if="chatRoomVisible">
+              <portrait-chat-msg-list />
+            </plv-carousel-item>
+
+            <!-- 提问消息区 -->
+            <plv-carousel-item v-if="askMenuData.visible && !chatReplayEnabled">
+              <portrait-ask />
+            </plv-carousel-item>
+          </plv-carousel>
+
+          <!-- 轮播屏指示器 -->
+          <div
+            v-if="askMenuData.visible && !chatReplayEnabled"
+            class="c-portrait-carousel-main-screen__indicator"
+          >
+            <div
+              v-for="index in 2"
+              :key="index"
+              class="c-portrait-carousel-main-screen__indicator__item"
+              :class="{
+                'c-portrait-carousel-main-screen__indicator__item--active':
+                  index - 1 === messageCarouselActiveIndex,
+              }"
+            ></div>
+          </div>
         </div>
-        <portrait-chat-msg-list />
       </div>
 
       <!-- 右侧挂件 -->
@@ -107,7 +131,7 @@
           />
           <!-- 聊天室关闭提示 -->
           <portrait-chat-close-tips
-            v-if="!chatSetting.watchChatEnabled"
+            v-if="!chatRoomVisible"
             class="c-portrait-carousel-main-screen__input-wrap-item"
           />
 
@@ -165,50 +189,54 @@
 </template>
 
 <script setup lang="ts">
+import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
+import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
+import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
+import PortraitAsk from '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue';
+import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
+import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
+import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
+import PortraitChatWelcomeTips from '@/components/page-watch-common/chat/chat-welcome/portrait-chat-welcome-tips.vue';
+import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
+import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
+import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
+import PortraitDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
+import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
+import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
+import PortraitProductListEntrance from '@/components/page-watch-common/interactive-receive/product/portrait-product-list-entrance.vue';
+import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
+import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
+import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
+import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
+import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
+import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import { computed } from 'vue';
 import BoundaryWrap from './boundary-wrap.vue';
-import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
-import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
-import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
-import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
-import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
-import PortraitProductListEntrance from '@/components/page-watch-common/interactive-receive/product/portrait-product-list-entrance.vue';
-import PortraitDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
-import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
-import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
-import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
-import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
-import PortraitChatWelcomeTips from '@/components/page-watch-common/chat/chat-welcome/portrait-chat-welcome-tips.vue';
-import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
-import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
-import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
-import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
-import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
-import { MobileIconAsk } from '@/components/component-icons/mobile/map';
-import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
 
-import { useInviteStore } from '@/store/use-invite-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
-import { useDonateStore } from '@/store/use-donate-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDocStore } from '@/store/use-doc-store';
-import { usePortraitLayoutStore, PortraitChatTabType } from '@/store/use-portrait-layout-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
+import { useDonateStore } from '@/store/use-donate-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useInviteStore } from '@/store/use-invite-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
+import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useMessageCarousel } from './hooks/use-message-carousel';
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
+
+const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, chatRoomVisible } = storeDefinitionToRefs(useChatStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } =
   storeDefinitionToRefs(usePlaybackStore);
@@ -217,15 +245,16 @@ const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } 
  * 竖屏聊天输入框是否可见
  */
 const portraitChatInputVisible = computed(() => {
-  if (isPlaybackWatchUrl.value) return false;
   if (chatReplayEnabled.value) return false;
+  if (!chatInputControllerEnable.value) return false;
 
-  return chatSetting.value.watchChatEnabled;
+  return chatRoomVisible.value;
 });
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { channelInfoSeat, portraitChatTab } = storeDefinitionToRefs(usePortraitLayoutStore);
+const { channelInfoSeat, portraitMessageTabCurrentName } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
@@ -234,6 +263,8 @@ const { emitEvent: onClickDonateEntrance } = useEventBusEmitter(appEvents.donate
 const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
   appEvents.portrait.OpenPlaybackChapter,
 );
+
+const { carouselRef, messageCarouselActiveIndex } = useMessageCarousel();
 
 const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait.ClickPlayerRegion);
 </script>
@@ -359,18 +390,29 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   width: 100%;
   height: 300px;
 }
-.c-portrait-chat-msg-list__ask__tip {
-  position: absolute;
-  top: -35px;
-  display: flex;
-  align-items: center;
-  padding: 6px 8px;
-  background: #333333;
-  border-radius: 14px;
-  opacity: 0.6;
+
+.c-portrait-carousel-main-screen__carousel {
+  width: 248px;
+  height: 208px;
+  pointer-events: initial;
 }
-.c-portrait-chat-msg-list__ask__tip__text {
-  padding-left: 4px;
-  font-size: 14px;
+
+.c-portrait-carousel-main-screen__indicator {
+  display: flex;
+  margin-top: 8px;
+}
+.c-portrait-carousel-main-screen__indicator__item {
+  width: 38px;
+  height: 3px;
+  overflow: hidden;
+  background-color: rgba(#ffffff, 0.5);
+  border-radius: 10px;
+  &:last-child {
+    margin-left: 4px;
+  }
+
+  &.c-portrait-carousel-main-screen__indicator__item--active {
+    background-color: #fff;
+  }
 }
 </style>

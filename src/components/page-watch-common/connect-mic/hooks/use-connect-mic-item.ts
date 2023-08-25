@@ -3,6 +3,7 @@ import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-ut
 import { ConnectMicItem, ConnectMicFitType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { isMobile } from '@/assets/utils/browser';
+import { useDocStore } from '@/store/use-doc-store';
 
 export const connectMicItemProps = (fitType = ConnectMicFitType.Contain) => ({
   micItem: PropUtils.object<ConnectMicItem>().isRequired,
@@ -15,6 +16,7 @@ export const connectMicItemProps = (fitType = ConnectMicFitType.Contain) => ({
 export const useConnectMicItem = (options: { props: VueProps<typeof connectMicItemProps> }) => {
   const { props } = options;
   const { micInfoVisible } = useProps(props);
+  const docStore = useDocStore();
 
   const wrapRef = ref<HTMLDivElement>();
 
@@ -52,6 +54,11 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
 
   /** 当前用户的连麦方式 */
   const currentConnectMicType = computed(() => props.micItem.currentConnectMicType);
+
+  /** 是否显示共享标志 */
+  const showShareIcon = computed(() => {
+    return docStore.hasPaintAuth && unref(isLocal);
+  });
 
   watch(
     () => isPause.value,
@@ -126,6 +133,7 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
     isLocal,
     isMaster,
     currentConnectMicType,
+    showShareIcon,
     resume,
   };
 };

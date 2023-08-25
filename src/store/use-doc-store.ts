@@ -4,6 +4,7 @@ import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from './use-playback-store';
+import { getWatchCore } from '@/core/watch-sdk';
 
 export interface DocStoreState {
   /** 配置是否使用文档 */
@@ -14,11 +15,17 @@ export interface DocStoreState {
   documentProportion: Ref<number | undefined>;
   /** 文档开关 */
   documentSwitch: Ref<boolean>;
+  /** 是否具有画笔权限 */
+  hasPaintAuth: Ref<boolean>;
+  /** 是否处于画笔模式 */
+  paintMode: Ref<boolean>;
 }
 
 export interface DocStoreActions {
   /** 切换文档开关 */
   toggleDocumentSwitch(): void;
+  /** 同步文档 store */
+  syncDocStore(): void;
 }
 
 export interface DocStore extends DocStoreState, DocStoreActions {}
@@ -53,11 +60,27 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
     documentSwitch.value = !documentSwitch.value;
   }
 
+  /** 是否具有画笔权限 */
+  const hasPaintAuth = ref(false);
+
+  /** 是否处于画笔模式 */
+  const paintMode = ref(false);
+
+  function syncDocStore() {
+    const watchCore = getWatchCore();
+    const docInfo = watchCore.doc.getDocInfo();
+    hasPaintAuth.value = docInfo.hasPaintAuth;
+    paintMode.value = docInfo.paintMode;
+  }
+
   return {
     docEnabled,
     canRenderDoc,
     documentProportion,
     documentSwitch,
     toggleDocumentSwitch,
+    hasPaintAuth,
+    paintMode,
+    syncDocStore,
   };
 });

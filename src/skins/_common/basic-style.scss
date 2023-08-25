@@ -94,6 +94,9 @@
   .pws-chat-close-tips-icon {
     background-image: url(map.get($--skin-configs, 'chat-close-tips-icon:bg-image')) !important;
   }
+  .pws-chat-close-tips-icon__empty {
+    background-image: url(map.get($--skin-configs, 'chat-close-tips-icon__empty:bg-image')) !important;
+  }
   .pws-chat-close-tips-text {
     color: map.get($--skin-configs, 'chat-close-tips:text-color') !important;
   }

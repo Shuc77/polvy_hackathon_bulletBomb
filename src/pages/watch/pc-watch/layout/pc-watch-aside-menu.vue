@@ -40,11 +40,11 @@
           v-if="menu.menuType === ChannelMenuType.Chat"
           :key="`chat-${index}`"
           :label="menu.name"
-          :sub-label="chatMenuAdditionData.subLabel"
-          :show-reminder="chatMenuAdditionData.showReminder"
+          :sub-label="chatSubLabel"
+          :show-reminder="chatReminderVisible"
           :name="TAB_NAME_CHAT"
         >
-          <template v-if="chatSetting.watchChatEnabled">
+          <template v-if="chatRoomVisible">
             <pc-chat-room />
           </template>
           <template v-else>
@@ -80,7 +80,7 @@
           :key="`quiz-${index}`"
           :label="menu.name"
           :name="TAB_NAME_ASK"
-          :show-reminder="askMenuAdditionData.showReminder"
+          :show-reminder="askReminderVisible"
         >
           <pc-ask />
         </pc-aside-tab-pane>
@@ -105,6 +105,16 @@
           switch-to-refresh
         >
           <pc-product-list />
+        </pc-aside-tab-pane>
+
+        <!-- 实时字幕 tab -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Subtitle"
+          :key="`subtitle-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_SUBTITLE"
+        >
+          <pc-subtitle />
         </pc-aside-tab-pane>
       </template>
 
@@ -135,6 +145,7 @@ import PcQuestionAnswer from '@/components/page-watch-common/interactive-receive
 import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
 import PcAsk from '@/components/page-watch-common/ask/pc-ask/pc-ask.vue';
 import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
+import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -150,6 +161,7 @@ import {
   TAB_NAME_PRODUCT,
   TAB_NAME_CHAPTER,
   TAB_NAME_MICRO_ACTIVITY,
+  TAB_NAME_SUBTITLE,
 } from '@/assets/constants/tab-name';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -162,7 +174,7 @@ const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
 const { openMicStatus } = storeDefinitionToRefs(useConnectMicStore);
 
-const { chatSetting } = storeDefinitionToRefs(useChatStore);
+const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
 
 const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -170,7 +182,9 @@ const { qaReminderVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
-const { chatMenuAdditionData, askMenuAdditionData } = useWatchTabHook({ mode: 'pc' });
+const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
+  curActiveTabName: pcAsideTabCurrentName,
+});
 
 const { trackWatchTabChange } = useWatchEventTrack();
 

@@ -23,7 +23,7 @@
           <pc-status-tag class="c-pc-basic-info__main__status" />
           <!-- 无延迟标签 -->
           <label
-            v-if="isLowLatency || isConnectMicing"
+            v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
             class="c-pc-basic-info__main__low-latency g-img-cover"
           ></label>
         </h1>
@@ -150,7 +150,7 @@ const { channelTitle, channelPublisher, pageViewCount, pvShowEnabled } =
 
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 
-const { isLowLatency } = storeDefinitionToRefs(usePlayerStore);
+const { isLowLatency, supportLowLatency } = storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
