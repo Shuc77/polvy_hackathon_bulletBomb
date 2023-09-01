@@ -22,7 +22,7 @@
     />
     <!-- 音视频切换——音频模式占位图 -->
     <portrait-audio-panel
-      v-show="isAudioPlayerMode"
+      v-if="isAudioPlayerMode"
       :style="{
         ...playerContainerStyle,
       }"

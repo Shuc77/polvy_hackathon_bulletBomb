@@ -35,11 +35,23 @@ export const useImageMsg = () => {
   const imageRef = ref<HTMLImageElement>();
 
   const chatImageUrl = computed(() => {
-    return fitProtocol(chatMsg.value.imageUrl);
+    return fitProtocol(chatMsg.value.imageUrl, ['blob']);
+  });
+
+  /** 本地图片占位图 */
+  const localImagePlaceholder = computed(() => {
+    if (chatMsg.value.isLocal && chatMsg.value.isSended) {
+      return chatMsg.value.localImageUrl;
+    }
+    return undefined;
   });
 
   /** 图片地址 */
   const imageUrl = computed(() => {
+    if (chatMsg.value.isLocal && !chatMsg.value.isSended) {
+      return chatImageUrl.value;
+    }
+
     const size = chatMsg.value.size;
     const width = size && size.width ? size.width / 2 : undefined;
     const height = size && size.height ? size.height / 2 : undefined;
@@ -171,6 +183,7 @@ export const useImageMsg = () => {
     imageRef,
     imageSize,
     imageUrl,
+    localImagePlaceholder,
     isLoaded,
     imageRatio,
     onImageLoad,

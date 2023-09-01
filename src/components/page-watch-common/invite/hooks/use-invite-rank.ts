@@ -18,6 +18,11 @@ import {
 
 const isGeneralWeixin = isWeixin && !isWorkWeixin;
 
+interface TopInviteRankItem extends InviteRankItem {
+  /** 是否是造出来的数据 */
+  isFake?: true;
+}
+
 export const useInviteRankHook = () => {
   const page = ref(0);
   const isLoading = ref(false);
@@ -27,7 +32,20 @@ export const useInviteRankHook = () => {
   /** 当前可见的邀请榜列表，除去前三名 */
   const rankList = ref<InviteRankItem[]>([]);
   /** 邀请榜前三名 */
-  const topThreeRankItems = ref<InviteRankItem[]>([]);
+  const topThreeRankItems = ref<TopInviteRankItem[]>(
+    new Array(3).fill(undefined).map<TopInviteRankItem>(() => ({
+      avatar: '',
+      nickname: '--',
+      inviteNum: 0,
+      openId: Math.random().toString(),
+      isFake: true,
+    })),
+  );
+  /** (真实数据)邀请榜前三名 */
+  const realTopThreeRankItems = computed<InviteRankItem[]>(() => {
+    return topThreeRankItems.value.filter(item => !item.isFake);
+  });
+
   /** 接口获取的当前用户邀请数据 */
   const currentRankInfo = ref<InviteRankCurrentViewer | null>(null);
   /** 是否加载接口失败 */
@@ -41,22 +59,6 @@ export const useInviteRankHook = () => {
     return isGeneralWeixin && currentRankInfo.value && invitePosterEnabled.value;
   });
 
-  /** 当前用户与第一名的距离 */
-  const currentToFirstNumber = computed(() => {
-    if (!currentRankInfo.value || !topThreeRankItems.value.length) {
-      return 0;
-    }
-    return Math.abs(topThreeRankItems.value[0].inviteNum - currentRankInfo.value.inviteNum);
-  });
-
-  /** 当前用户与第二名的距离 */
-  const currentToSecondNumber = computed(() => {
-    if (!currentRankInfo.value || topThreeRankItems.value.length < 2) {
-      return 0;
-    }
-    return Math.abs(topThreeRankItems.value[1].inviteNum - currentRankInfo.value.inviteNum);
-  });
-
   /** 当前用户的排名文案 */
   const currentDes = computed<string>(() => {
     const rankInfo = unref(currentRankInfo);
@@ -66,19 +68,13 @@ export const useInviteRankHook = () => {
 
     // 我是第一名
     if (rankInfo.rank === 1) {
-      // 只有我一个人
-      if (unref(topThreeRankItems).length === 1) {
-        return translate('invite.rank.desc1');
-      }
-
-      // 有第二名
-      return translate('invite.rank.desc2', {
-        number: String(currentToSecondNumber.value),
+      return translate('invite.rank.first.desc', {
+        number: String(rankInfo.inviteNum),
       });
     }
 
-    return translate('invite.rank.desc3', {
-      number: String(currentToFirstNumber.value),
+    return translate('invite.rank.invited', {
+      number: String(rankInfo.inviteNum),
     });
   });
 
@@ -155,7 +151,10 @@ export const useInviteRankHook = () => {
         rankList.value.push(...pushedList);
         // 单独获取前三名数据
         if (isFirst) {
-          topThreeRankItems.value = rankList.value.splice(0, 3);
+          const topItems = rankList.value.splice(0, 3);
+          topThreeRankItems.value = topThreeRankItems.value.map(
+            (item, idx) => topItems[idx] || item,
+          );
         }
       }
     } catch (err) {
@@ -184,6 +183,7 @@ export const useInviteRankHook = () => {
     currentRankInfo,
     rankList,
     topThreeRankItems,
+    realTopThreeRankItems,
     isLoading,
     isNoMore,
     isLoadFailed,

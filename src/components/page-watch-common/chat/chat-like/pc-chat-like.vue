@@ -1,6 +1,9 @@
 <!-- @file PC 端聊天室点赞 -->
 <template>
-  <div class="c-pc-chat-like">
+  <div
+    class="c-pc-chat-like"
+    @click="onClickLikeWrap"
+  >
     <plv-like
       ref="likeRef"
       :icons="likeIcons"
@@ -8,6 +11,7 @@
         speed: 0.012,
       }"
       :count="realtimeLikes"
+      :readonly="isReadonlyLike"
       :appear-mode="upperHasIcon ? 'bottom-right' : 'bottom-center'"
       @click-button="onClickLike"
       @press-hold="onClickLike"
@@ -41,7 +45,7 @@ const { upperHasIcon } = useProps(props);
 
 const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
 
-const { likeRef, likeIcons, onClickLike } = useChatLike();
+const { likeRef, likeIcons, isReadonlyLike, onClickLike, onClickLikeWrap } = useChatLike();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getScopeCount(scope: any) {

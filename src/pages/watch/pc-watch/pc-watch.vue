@@ -24,6 +24,9 @@
     <!-- 聊天消息全文弹层 -->
     <pc-chat-full-message />
 
+    <!-- 实名认证弹层 -->
+    <pc-real-name-dialog />
+
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
@@ -35,6 +38,7 @@ import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-
 import PcIarRender from '@/components/page-watch-common/interactive-receive/pc-iar-render.vue';
 import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-live-start-tips.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
+import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
 import PcWatchLayout from './layout/pc-watch-layout.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';

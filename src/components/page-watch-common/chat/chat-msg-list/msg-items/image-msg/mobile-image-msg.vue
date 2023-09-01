@@ -16,10 +16,23 @@
       class="c-mobile-image-msg__content"
       :style="wrapStyle"
     >
-      <div
-        v-if="!isLoaded"
-        class="c-mobile-image-msg__content__placeholder g-img-cover"
-      ></div>
+      <template v-if="!isLoaded">
+        <!-- 默认占位图 -->
+        <div
+          v-if="!localImagePlaceholder"
+          class="c-mobile-image-msg__content__placeholder g-img-cover"
+        ></div>
+        <!-- 本地上传图片后，消息替换时用的占位图 -->
+        <img
+          v-else
+          class="c-mobile-image-msg__content__img"
+          :src="imageUrl"
+          :style="imageStyle"
+          @click="onClickImage"
+        />
+      </template>
+
+      <!-- 本地上传缓存图片 / 服务端图片 -->
       <img
         ref="imageRef"
         v-show="isLoaded"
@@ -38,8 +51,17 @@ import { MobileIconForbid } from '@/components/component-icons/mobile/map';
 import MobileMsgContainer from '../_msg-container/mobile-msg-container.vue';
 import { useImageMsg } from './use-image-msg';
 
-const { chatMsg, imageRef, imageUrl, wrapStyle, imageStyle, isLoaded, onImageLoad, onClickImage } =
-  useImageMsg();
+const {
+  chatMsg,
+  imageRef,
+  imageUrl,
+  localImagePlaceholder,
+  wrapStyle,
+  imageStyle,
+  isLoaded,
+  onImageLoad,
+  onClickImage,
+} = useImageMsg();
 </script>
 
 <style lang="scss">

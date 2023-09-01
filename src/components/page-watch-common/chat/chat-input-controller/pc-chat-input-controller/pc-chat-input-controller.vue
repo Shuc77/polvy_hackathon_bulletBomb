@@ -14,6 +14,9 @@
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
       @click-send-image="onClickSendImage"
+      @click-input-wrap="checkNeedRealNameAuth"
+      @click-image-emotion-enter="checkNeedRealNameAuth"
+      @click-send-image-enter="checkNeedRealNameAuth"
     >
       <!-- 面板区插槽 -->
       <template #panel-suffix>
@@ -53,7 +56,7 @@
           v-if="showDonateFunction"
           class="c-pc-msg-input-wrap__icons__item c-pc-chat-input-controller__donate-button pws-pc-msg-bottom-input-wrap-item"
           data-donate
-          @click="toggleDonatePanel"
+          @click="onClickDonateEnter"
         ></div>
 
         <!-- 公告 -->
@@ -109,6 +112,10 @@ import PcLotteryRecord from '@/components/page-watch-common/interactive-receive/
 import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import PcMorePanel from './input-more-panel.vue';
+import { useViewerStore } from '@/store/use-viewer-store';
+
+const viewerStore = useViewerStore();
+const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
 
 const {
   msgInputWrapRef,
@@ -141,6 +148,15 @@ const {
   togglePanel: toggleDonatePanel,
   hidePanel: hideDonatePanel,
 } = usePanelVisible([donatePanelRef, '[data-donate]']);
+
+function onClickDonateEnter() {
+  const result = checkNeedRealNameAuth();
+  if (result) {
+    return;
+  }
+
+  toggleDonatePanel();
+}
 
 // 中奖记录面板显示交互
 const lotteryRecordPanelRef = ref<HTMLDivElement>();

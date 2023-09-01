@@ -71,7 +71,7 @@
         </ul>
       </div>
 
-      <!--   实时字幕开关   -->
+      <!-- 实时字幕开关 -->
       <div
         v-if="subtitlesEnable"
         class="c-pc-player-control__setting__panel__section"
@@ -79,7 +79,10 @@
         <div class="c-pc-player-control__setting__panel__title">
           {{ $lang('player.subtitle.text') }}
         </div>
-        <plv-switch v-model="subtitleOpen"></plv-switch>
+        <plv-switch
+          :value="localUerSubtitlesEnable"
+          @change="changeSubtitleSwitch"
+        ></plv-switch>
       </div>
     </div>
   </div>
@@ -89,6 +92,9 @@
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { PlvSwitch } from '@/plugins/polyv-ui/pc-import';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { getWatchCore } from '@/core/watch-sdk';
 
 const {
   lineSettingVisible,
@@ -97,11 +103,19 @@ const {
   qualitySettingList,
   latencyModeSettingVisible,
   latencyModeSettingList,
-  subtitlesEnable,
-  subtitleOpen,
 } = usePlayerControl();
 
 const { toChangeLine, toChangeQualityLevel, toSetLowLowLatency } = usePlayerAction();
+
+const subtitleStore = useSubtitleStore();
+const { subtitlesEnable, localUerSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
+
+function changeSubtitleSwitch() {
+  const watchCore = getWatchCore();
+  const enable = !localUerSubtitlesEnable.value;
+  subtitleStore.changeLocalUerSubtitlesEnable(enable);
+  watchCore.subtitles.changeViewerSubtitleEnable(enable);
+}
 </script>
 
 <style lang="scss">

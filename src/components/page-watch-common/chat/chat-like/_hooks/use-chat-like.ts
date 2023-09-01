@@ -6,8 +6,9 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useChatStore } from '@/store/use-chat-store';
+import { useViewerStore } from '@/store/use-viewer-store';
 import { ChatEvents, ChatEventsRelations } from '@polyv/live-watch-sdk';
-import { onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
+import { computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
 import { useLikeAnimation } from './use-like-animation';
 
 /**
@@ -33,6 +34,7 @@ export const chatLikeProps = () => ({
 
 export const useChatLike = () => {
   const chatStore = useChatStore();
+  const viewerStore = useViewerStore();
 
   /** 上一刻的点击时间 */
   let lastClickTime = Date.now();
@@ -48,6 +50,11 @@ export const useChatLike = () => {
       chatStore.realtimeLikes += 1;
       lastClickTime = now;
     }
+  }
+
+  function onClickLikeWrap() {
+    const viewerStore = useViewerStore();
+    viewerStore.checkNeedRealNameAuth();
   }
 
   const { trackUserClickLike } = useWatchEventTrack();
@@ -92,6 +99,11 @@ export const useChatLike = () => {
     joinLikeAnimationCount(count);
   }
 
+  /** 点赞是否只读 */
+  const isReadonlyLike = computed(() => {
+    return viewerStore.needRealNameAuth;
+  });
+
   onMounted(() => {
     const watchCore = getWatchCore();
     watchCore.chat.eventEmitter.on(ChatEvents.ChatLike, onChatLikeEvent);
@@ -105,6 +117,8 @@ export const useChatLike = () => {
   return {
     likeRef,
     likeIcons,
+    isReadonlyLike,
     onClickLike,
+    onClickLikeWrap,
   };
 };

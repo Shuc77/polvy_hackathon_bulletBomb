@@ -35,8 +35,14 @@ export const msgInputWrapEmits = () => ({
   'system-msg': emitFunc<{ content: string }>(),
   /** 点击发送图片 */
   'click-send-image': emitFunc<void>(),
-  /** 关闭 */
+  /** 点击发送图片入口 */
+  'click-send-image-enter': emitFunc<void>(),
+  /** 点击表情 */
   'click-image-emotion': emitFunc<void>(),
+  /** 点击表情入口 */
+  'click-image-emotion-enter': emitFunc<void>(),
+  /** 点击输入框 */
+  'click-input-wrap': emitFunc<void>(),
 });
 
 export interface MsgInputWrapInstance {
@@ -100,6 +106,8 @@ export const useMsgInputWrap = (options: {
 
   /** 处理点击表情面板开关 */
   function onClickEmotionPickerBtn() {
+    emit('click-image-emotion-enter');
+
     if (props.disabledEmotionPicker) {
       return;
     }
@@ -126,6 +134,7 @@ export const useMsgInputWrap = (options: {
 
   /** 处理点击图片发送 */
   function onClickSendImage() {
+    emit('click-send-image-enter');
     if (props.disabledSendImage) {
       return;
     }

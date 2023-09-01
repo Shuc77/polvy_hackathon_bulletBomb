@@ -97,6 +97,22 @@
         @click="onClickFeedback"
       />
 
+      <!-- 语言切换 -->
+      <menu-item
+        v-if="langSwitchEnabled"
+        icon="language"
+        :text="$lang('base.changeLang')"
+        @click="onClickLanguageSwitch"
+      />
+
+      <!-- 切换双语流 -->
+      <menu-item
+        v-if="supportLanguageStream"
+        icon="stream-track"
+        :text="$lang('player.streamTrack')"
+        @click="onClickSwitchStream"
+      />
+
       <!-- 修改昵称 -->
       <!-- <menu-item
         v-if="canSetNick"
@@ -119,14 +135,6 @@
         icon="send-redpack"
         :text="$lang('redpack.name')"
         @click="onClickSendRedpack"
-      /> -->
-
-      <!-- 语言切换 -->
-      <!-- <menu-item
-        v-if="langSwitchEnabled"
-        icon="language"
-        :text="$lang('base.changeLang')"
-        @click="onClickLanguageSwitch"
       /> -->
     </ul>
   </mobile-popup>
@@ -190,7 +198,7 @@ const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 const { toggleOnlySpecialMsg } = chatStore;
 
 const playerStore = usePlayerStore();
-const { isAudioPlayerMode } = storeToRefs(playerStore);
+const { isAudioPlayerMode, supportLanguageStream } = storeToRefs(playerStore);
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
@@ -269,6 +277,12 @@ function onClickWithdraw() {
 
 /** 点击问答 */
 function onClickQuestionAnswer() {
+  const viewerStore = useViewerStore();
+  const checkResult = viewerStore.checkNeedRealNameAuth();
+  if (checkResult) {
+    return;
+  }
+
   eventBus.$emit(appEvents.interaction.OpenQuestionAnswer, true);
   closeMenu();
 }
@@ -296,6 +310,12 @@ function onClickPlayMode() {
   playerStore.$patch({
     isAudioPlayerMode: !playerStore.isAudioPlayerMode,
   });
+  closeMenu();
+}
+
+/** 点击切换语言流 */
+function onClickSwitchStream() {
+  eventBus.$emit(appEvents.portrait.OpenLangStreamPopup, true);
   closeMenu();
 }
 </script>

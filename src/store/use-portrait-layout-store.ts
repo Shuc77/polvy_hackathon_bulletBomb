@@ -7,6 +7,7 @@ import { useChatStore } from './use-chat-store';
 import { useDocStore } from './use-doc-store';
 import { usePageStore } from './use-page-store';
 import { usePlaybackStore } from './use-playback-store';
+import { usePlayerStore } from './use-player-store';
 import { useWebviewStore } from './use-webview-store';
 
 export enum PortraitChatTabName {
@@ -17,6 +18,15 @@ export enum PortraitChatTabName {
 }
 
 export interface PortraitLayoutStoreState {
+  /** 移动端竖屏播放器是否支持全屏 */
+  portraitPlayerFullscreenEnabled: Ref<boolean>;
+  /** 移动端竖屏全屏按钮是否可见 */
+  portraitPlayerFullscreenBtnVisible: ComputedRef<boolean>;
+  /**
+   * 是否移动端播放器竖屏页面全屏
+   * @warn 更新该标识位时需要同步更新 mobilePlayerIsPageFullscreen
+   * */
+  portraitPlayerIsPageFullscreen: Ref<boolean>;
   /** 竖屏轮播屏当前索引 */
   carouselActiveIndex: Ref<number>;
   /** 竖屏文档容器内容渲染高度 */
@@ -42,9 +52,29 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     const channelStore = useChannelStore();
     const pageStore = usePageStore();
     const playbackStore = usePlaybackStore();
+    const playerStore = usePlayerStore();
     const docStore = useDocStore();
     const webviewStore = useWebviewStore();
     const chatStore = useChatStore();
+
+    /** 移动端竖屏播放器是否支持全屏 */
+    const portraitPlayerFullscreenEnabled = ref(true);
+
+    /** 移动端竖屏全屏按钮是否可见 */
+    const portraitPlayerFullscreenBtnVisible = computed(() => {
+      if (docStore.canRenderDoc || channelStore.liveStatus === LiveStatus.Playback) {
+        return false;
+      }
+
+      if (!playerStore.playerInited || playerStore.isPortraitResolutionRate) {
+        return false;
+      }
+
+      return portraitPlayerFullscreenEnabled.value;
+    });
+
+    /** 是否移动端播放器竖屏页面全屏 */
+    const portraitPlayerIsPageFullscreen = ref(false);
 
     /** 竖屏轮播屏当前索引 */
     const carouselActiveIndex = ref(1);
@@ -108,6 +138,9 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     });
 
     return {
+      portraitPlayerFullscreenEnabled,
+      portraitPlayerFullscreenBtnVisible,
+      portraitPlayerIsPageFullscreen,
       carouselActiveIndex,
       portraitMessageTabCurrentName,
       portraitDocContentHeight,

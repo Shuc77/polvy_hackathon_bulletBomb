@@ -10,6 +10,7 @@ import { translate } from '@/assets/lang';
 import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
 import { toast } from '@/hooks/components/use-toast';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
+import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 
 /**
  * @hook 聊天输入控制器
@@ -21,9 +22,9 @@ export const useChatInputController = (options?: {
   const chatStore = useChatStore();
 
   const {
-    // eslint-disable-next-line prettier/prettier
     sendSpeakMsg: sendChatSpeakMsg,
     sendImageMsg: sendChatImageMsg,
+    insertLocalImageMsg: insertChatLocalImageMsg,
     sendSystemMsg: sendChatSystemMsg,
   } = useSendMsg();
 
@@ -105,10 +106,29 @@ export const useChatInputController = (options?: {
   /** 点击发送图片 */
   async function onClickSendImage() {
     const watchCore = getWatchCore();
+
+    const imageChatMsgQueueMap: { [imageId: string]: ChatMsgImageType } = {};
+
     watchCore.utils.uploadMultiImage({
-      success: ({ imageId, imageUrl, size }) => {
-        sendChatImageMsg({
+      ready: ({ imageId, previewSrc }) => {
+        imageChatMsgQueueMap[imageId] = insertChatLocalImageMsg({
           imageId,
+          imageUrl: previewSrc,
+        });
+      },
+      success: ({ imageId, imageUrl, size }) => {
+        const imageChatMsg = imageChatMsgQueueMap[imageId];
+        if (!imageChatMsg) {
+          console.warn('异步上传图片失败，尝试非异步上传', imageId, imageUrl);
+          watchCore.chat.sendImageMsg({
+            imageId,
+            imageUrl,
+            size,
+          });
+          return;
+        }
+        watchCore.chat.sendImageMsgDirectly({
+          ...imageChatMsg,
           imageUrl,
           size,
         });

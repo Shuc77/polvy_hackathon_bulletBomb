@@ -12,8 +12,8 @@
       </div>
 
       <div class="c-page-error-work-wechat__tip">
-        <p>请扫一扫上面的二维码，添加好友</p>
-        <p>添加成功后即可进入直播间</p>
+        <p>{{ $lang('pageError.work.wechat.tips1') }}</p>
+        <p>{{ $lang('pageError.work.wechat.tips2') }}</p>
       </div>
     </div>
   </div>

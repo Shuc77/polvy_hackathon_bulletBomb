@@ -3,7 +3,7 @@
   <div
     class="c-pc-auto-textarea pws-pc-chat-msg-input"
     :class="{
-      'is-diabled': disabled,
+      'is-disabled': disabled,
     }"
   >
     <textarea

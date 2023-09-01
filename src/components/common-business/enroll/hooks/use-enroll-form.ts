@@ -273,7 +273,7 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
           break;
         case SubmitEnrollError.LackRequired:
         default:
-          toast.error(result.failMessage || '未知错误！');
+          toast.error(result.failMessage || translate('base.error.unknown'));
           break;
       }
       return;

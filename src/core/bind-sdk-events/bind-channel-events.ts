@@ -12,11 +12,13 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { PageErrorType } from '@/app/layout/page-error/page-error-type';
 import { translate } from '@/assets/lang';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 export function bindChannelModuleEvents(): void {
   const watchAppStore = useWatchAppStore();
   const layoutStore = useLayoutStore();
   const channelStore = useChannelStore();
+  const channelInfoStore = useChannelInfoStore();
   const ChannelMenuStore = useChannelMenuStore();
 
   const watchCore = getWatchCore();
@@ -85,6 +87,12 @@ export function bindChannelModuleEvents(): void {
   channelEventEmitter.on(ChannelEvents.SeminarHostLeaveGroup, () => {
     channelStore.$patch({
       isSeminarHostInGroup: false,
+    });
+  });
+
+  channelEventEmitter.on(ChannelEvents.ViewerWatchDuration, ({ duration }) => {
+    channelInfoStore.$patch({
+      viewerWatchDuration: Math.floor(duration / 60),
     });
   });
 

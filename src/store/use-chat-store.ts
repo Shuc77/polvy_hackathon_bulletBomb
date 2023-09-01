@@ -195,8 +195,12 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 是否禁用聊天室输入框 */
   const chatInputDisabled = computed<boolean>(() => {
-    // 聊天室被关闭 || 聊天重放
-    if (unref(chatRoomIsClosed) || playbackStore.chatReplayEnabled) {
+    // 聊天室被关闭 || 聊天重放 || 需要实名认证
+    if (
+      unref(chatRoomIsClosed) ||
+      playbackStore.chatReplayEnabled ||
+      viewerStore.needRealNameAuth
+    ) {
       return true;
     }
 

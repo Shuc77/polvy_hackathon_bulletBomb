@@ -61,6 +61,8 @@ import { CSSProperties } from 'vue/types/jsx';
 import { useChannelStore } from '@/store/use-channel-store';
 import { LiveStatus, StreamType } from '@polyv/live-watch-sdk';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 
 const channelStore = useChannelStore();
 
@@ -119,6 +121,24 @@ const allPlayerContainerStyle = computed<CSSProperties>(() => {
   }
 
   return style;
+});
+
+const { toggleFullscreen, supportFullscreen } = useFullscreen(() => {
+  return playerContainer.value?.querySelector('video') as FullscreenElement;
+});
+
+useEventBusListener(appEvents.portrait.PlayerSystemFullscreen, () => {
+  if (supportFullscreen.value) {
+    toggleFullscreen();
+  } else {
+    console.warn('不支持通用全屏 API');
+    const videoEl = playerContainer.value?.querySelector('video') as any;
+    if (videoEl && videoEl.webkitEnterFullScreen) {
+      videoEl.webkitEnterFullScreen();
+    } else {
+      console.warn('不支持系统全屏');
+    }
+  }
 });
 </script>
 

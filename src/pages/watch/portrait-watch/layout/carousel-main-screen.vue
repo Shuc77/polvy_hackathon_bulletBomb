@@ -12,7 +12,10 @@
           <portrait-channel-info-capsule />
         </div>
 
-        <div class="c-portrait-carousel-main-screen__top-left__item">
+        <div
+          class="c-portrait-carousel-main-screen__top-left__item"
+          v-show="!portraitPlayerIsPageFullscreen"
+        >
           <!-- 邀请榜入口 -->
           <portrait-invite-rank-entrance
             v-if="inviteRankEnabled"
@@ -37,6 +40,7 @@
         <!-- 置顶公告 -->
         <portrait-announcement-entrance
           v-if="announcementFunctionVisible"
+          v-show="!portraitPlayerIsPageFullscreen"
           class="c-portrait-carousel-main-screen__top-right__item"
         />
 
@@ -48,10 +52,17 @@
       </div>
     </boundary-wrap>
 
+    <!-- 右部绝对定位的内容 -->
+    <boundary-wrap seat="right">
+      <!-- 全屏按钮 -->
+      <portrait-player-fullscreen-button v-if="portraitPlayerFullscreenBtnVisible" />
+    </boundary-wrap>
+
     <!-- 底部内容 -->
     <div class="c-portrait-carousel-main-screen__bottom">
       <!-- 打赏动画 -->
       <div
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
         <portrait-donate-animation :track-count="2" />
@@ -59,13 +70,15 @@
 
       <!-- 欢迎语 -->
       <div
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
         <portrait-chat-welcome-tips />
       </div>
 
-      <!-- 聊天室消息区 -->
+      <!-- 消息区 -->
       <div
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__item--pointer-event"
         @click="onClickPlayerRegion"
       >
@@ -108,12 +121,16 @@
 
       <!-- 右侧挂件 -->
       <div class="c-portrait-carousel-main-screen__bottom__pendant">
-        <portrait-chat-room-pendant />
+        <portrait-chat-room-pendant
+          v-if="!isPlaybackWatchUrl"
+          v-show="!portraitPlayerIsPageFullscreen"
+        />
       </div>
 
       <!-- 回放控制栏 -->
       <div
         v-if="isPlaybacking"
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__progress c-portrait-carousel-main-screen__bottom__item--padding"
       >
         <portrait-player-progress />
@@ -121,6 +138,7 @@
 
       <!-- 底部控制栏 -->
       <div
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding"
       >
         <div class="c-portrait-carousel-main-screen__input-wrap">
@@ -165,6 +183,7 @@
 
       <!-- 底部页脚 -->
       <div
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__page-footer-wrap"
       >
         <mobile-page-footer
@@ -174,7 +193,10 @@
     </div>
 
     <!-- 打赏 svga 特效 -->
-    <div class="c-portrait-carousel-main-screen__svga-donate">
+    <div
+      v-show="!portraitPlayerIsPageFullscreen"
+      class="c-portrait-carousel-main-screen__svga-donate"
+    >
       <portrait-donate-svga-animation />
     </div>
 
@@ -189,6 +211,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
 import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
@@ -206,15 +230,16 @@ import PortraitInteractiveEntrance from '@/components/page-watch-common/interact
 import PortraitProductListEntrance from '@/components/page-watch-common/interactive-receive/product/portrait-product-list-entrance.vue';
 import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
 import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
+import PortraitPlayerFullscreenButton from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-fullscreen-button.vue';
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
 import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
-import { computed } from 'vue';
 import BoundaryWrap from './boundary-wrap.vue';
 
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useDonateStore } from '@/store/use-donate-store';
@@ -226,6 +251,8 @@ import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrai
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
+
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
@@ -253,8 +280,12 @@ const portraitChatInputVisible = computed(() => {
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { channelInfoSeat, portraitMessageTabCurrentName } =
-  storeDefinitionToRefs(usePortraitLayoutStore);
+const {
+  channelInfoSeat,
+  portraitMessageTabCurrentName,
+  portraitPlayerFullscreenBtnVisible,
+  portraitPlayerIsPageFullscreen,
+} = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 

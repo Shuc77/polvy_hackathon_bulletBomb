@@ -48,6 +48,12 @@
     <!-- 打赏弹层 -->
     <mobile-donate-popup v-if="showDonateFunction" />
 
+    <!-- 实名认证弹层 -->
+    <mobile-real-name-auth-popup />
+
+    <!-- 邀请明细弹层 -->
+    <mobile-invite-detail-popup v-if="inviteDetailEnabled" />
+
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
@@ -62,6 +68,8 @@ import MobileIarRender from '@/components/page-watch-common/interactive-receive/
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
 import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
+import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
+import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/mobile-invite-detail-popup.vue';
 import { defineAsyncComponent } from 'vue';
 import MobileWatchLayout from './layout/mobile-watch-layout.vue';
 import MobileWatchPendant from './layout/mobile-watch-pendant.vue';
@@ -77,6 +85,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useInviteStore } from '@/store/use-invite-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () => import('@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'),
@@ -108,6 +117,8 @@ const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
+
+const { inviteDetailEnabled } = storeDefinitionToRefs(useInviteStore);
 
 useWatchPage();
 

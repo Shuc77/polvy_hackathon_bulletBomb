@@ -1,9 +1,6 @@
 <!-- @file 竖屏端右下角挂件 -->
 <template>
-  <div
-    v-if="!isPlaybackWatchUrl"
-    class="c-portrait-chat-room-pendant"
-  >
+  <div class="c-portrait-chat-room-pendant">
     <!-- 微活动 -->
     <portrait-micro-activity-pendant
       v-if="microActivityEnabled"
@@ -63,13 +60,10 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   pushCardPendantVisible,

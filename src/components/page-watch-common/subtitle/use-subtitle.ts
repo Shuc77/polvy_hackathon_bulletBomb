@@ -35,9 +35,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   /** 翻译语言 */
   const sourceTranslateLanguage = ref<SubtitleSourceTranslateLanguage>('Chinese');
 
-  /** 翻译语言是否打开 */
-  const subtitleTranslateEnabled = ref(true);
-
   /** 用户选择的翻译的类型 */
   const subtitleTranslateSelected = ref<'all' | 'source' | 'translate'>('all');
 
@@ -212,10 +209,10 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     const watchCore = getWatchCore();
     const subTitleConfig = watchCore.subtitles.getSubtitleConfig();
 
-    subtitleStore.changeSubtitlesEnable(subTitleConfig.subtitleRealTimeEnabled);
+    subtitleStore.syncSubtitleConfig();
+
     sourceLanguage.value = subTitleConfig.subtitleSourceLanguage;
     sourceTranslateLanguage.value = subTitleConfig.subtitleTranslateLanguage;
-    subtitleTranslateEnabled.value = subTitleConfig.subtitleTranslateEnabled;
   }
 
   onMounted(() => {
@@ -232,7 +229,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     hasNewMessage,
     scrollToBottom,
 
-    subtitleTranslateEnabled,
     subtitleTranslateSelected,
     subtitleTranslateOptions,
 

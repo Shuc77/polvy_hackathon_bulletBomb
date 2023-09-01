@@ -8,11 +8,13 @@ import { changeProtocol } from '@utils-ts/net';
  * 将 url 修改成当前访问协议/补全协议头
  * @param url 目标 url
  */
-export function fitProtocol(url: string): string {
+export function fitProtocol(url: string, excludePrefixList: string[] = ['blob']): string {
   const matchRs = /^(http(s?)):/.exec(location.href);
   const protocol = (matchRs && matchRs[1]) || 'https';
 
-  return changeProtocol(url, protocol);
+  const isExclude = excludePrefixList.some(prefix => url.startsWith(prefix));
+
+  return isExclude ? url : changeProtocol(url, protocol);
 }
 
 /**

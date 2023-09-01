@@ -81,6 +81,11 @@ export const usePageSkin = () => {
       case ChannelWatchPageSkin.Golden:
         await import(/* webpackChunkName: "skin-golden-pc" */ '@/skins/golden/_golden-pc.scss');
         break;
+      case ChannelWatchPageSkin.Freshblue:
+        await import(
+          /* webpackChunkName: "skin-freshblue-pc" */ '@/skins/freshblue/_freshblue-pc.scss'
+        );
+        break;
       default:
         await import(/* webpackChunkName: "skin-black-pc" */ '@/skins/black/_black-pc.scss');
         break;
@@ -111,6 +116,11 @@ export const usePageSkin = () => {
       case ChannelWatchPageSkin.Golden:
         await import(
           /* webpackChunkName: "skin-golden-mobile" */ '@/skins/golden/_golden-mobile.scss'
+        );
+        break;
+      case ChannelWatchPageSkin.Freshblue:
+        await import(
+          /* webpackChunkName: "skin-freshblue-mobile" */ '@/skins/freshblue/_freshblue-mobile.scss'
         );
         break;
       default:

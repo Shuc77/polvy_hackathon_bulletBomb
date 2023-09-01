@@ -15,6 +15,7 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useDocStore } from './use-doc-store';
 import { usePageAdvertStore } from './use-page-advert-store';
+import { usePortraitLayoutStore } from './use-portrait-layout-store';
 
 export interface LayoutStoreState {
   // ---------- 公用 ---------- //
@@ -84,6 +85,7 @@ export interface LayoutStore extends LayoutStoreState, LayoutStoreActions {}
 export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () => {
   const docStore = useDocStore();
   const pageAdvertStore = usePageAdvertStore();
+  const portraitLayoutStore = usePortraitLayoutStore();
 
   // ---------- 公用 ---------- //
   /** 三分屏主屏模式 */
@@ -200,6 +202,12 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     mobilePlayerIsPageFullscreen.value = false;
     mobileNormalLatencyPlayerIsFullscreen.value = false;
     mobileDocIsPageFullscreen.value = false;
+
+    if (mobileWatchLayout.value === MobileWatchLayout.Portrait) {
+      portraitLayoutStore.$patch({
+        portraitPlayerIsPageFullscreen: false,
+      });
+    }
   }
 
   function syncLayoutStore() {
@@ -208,6 +216,13 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     mainScreenLayoutMode.value = layoutSetting.mainScreenLayoutMode;
     mobileSplashLayout.value = layoutSetting.mobileSplashLayout;
     mobileWatchLayout.value = layoutSetting.mobileWatchLayout;
+
+    if (mobileWatchLayout.value === MobileWatchLayout.Portrait) {
+      const playerSetting = watchCore.player.getPlayerSetting();
+      portraitLayoutStore.$patch({
+        portraitPlayerFullscreenEnabled: playerSetting.portraitPlayerFullscreenEnabled,
+      });
+    }
   }
 
   return {

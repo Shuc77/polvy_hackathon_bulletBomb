@@ -3,7 +3,7 @@
     ref="subtitleScroll"
     class="c-pc-subtitle pws-main-tab-body-scrollbar"
   >
-    <template v-if="subtitlesTeacherEnable && subtitleList.length">
+    <template v-if="subtitlesEnable && subtitleList.length">
       <div
         v-if="subtitleTranslateEnabled"
         class="c-pc-subtitle__top pws-pc-subtitle__top-skin"
@@ -77,13 +77,12 @@ import { useSubtitle } from '@/components/page-watch-common/subtitle/use-subtitl
 
 const subtitleScroll = ref<HTMLElement>();
 
-const { subtitlesTeacherEnable } = storeDefinitionToRefs(useSubtitleStore);
+const { subtitlesEnable, subtitleTranslateEnabled } = storeDefinitionToRefs(useSubtitleStore);
 
 const {
   hasNewMessage,
   scrollToBottom,
 
-  subtitleTranslateEnabled,
   subtitleTranslateSelected,
   subtitleTranslateOptions,
 

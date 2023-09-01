@@ -128,6 +128,7 @@ export const usePlayerMain = ({
       container,
       lowLatency: playerStore.isLowLatency,
       language: langStore.currentLang === LangType.Chinese ? 0 : 1,
+      languageStreamEnabled: true,
       autoChangePlayback: true,
     };
 

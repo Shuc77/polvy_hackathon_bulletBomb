@@ -181,6 +181,12 @@ function onClickSendRedpack() {
 
 /** 点击发送图片 */
 function onClickSendImage() {
+  const viewerStore = useViewerStore();
+  const checkRealName = viewerStore.checkNeedRealNameAuth();
+  if (checkRealName) {
+    return;
+  }
+
   eventBus.$emit(appEvents.chat.ToSendImage);
   closeMore();
 }

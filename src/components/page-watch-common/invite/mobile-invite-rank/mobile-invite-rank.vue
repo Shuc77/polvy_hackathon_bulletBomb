@@ -12,7 +12,7 @@
 
       <!-- 前三名 -->
       <invite-rank-item
-        v-for="(item, index) in topThreeRankItems"
+        v-for="(item, index) in realTopThreeRankItems"
         :rank="index + 1"
         :is-current="isCurrentViewer(item)"
         :item="item"
@@ -59,15 +59,22 @@
         :is-current="true"
       >
         <div class="c-mobile-invite-rank__me__info">
-          <p
-            :class="{
-              'c-mobile-invite-rank__me__info__nick': true,
-              'c-mobile-invite-rank__me__info__nick--small': currentLang !== LangType.Chinese,
-            }"
-          >
-            {{ $lang('invite.rank.invited', { number: String(currentRankInfo.inviteNum) }) }}
+          <p class="c-mobile-invite-rank__me__info__nick">
+            {{ currentRankInfo.nickname }}
           </p>
-          <p class="c-mobile-invite-rank__me__info__margin">{{ currentDes }}</p>
+          <p
+            class="c-mobile-invite-rank__me__info__margin"
+            @click="openInviteDetail"
+          >
+            <span>{{ currentDes }}</span>
+            <span
+              v-if="inviteDetailEnabled"
+              class="c-mobile-invite-rank__me__info__detail-btn"
+            >
+              {{ $lang('invite.rank.detail.btn') }}
+              <mobile-icon-arrow-right class="c-mobile-invite-rank__me__info__icon-right" />
+            </span>
+          </p>
         </div>
         <invite-entry-capsule v-if="invitePosterEnabled" />
       </invite-rank-item>
@@ -85,19 +92,26 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { watch } from 'vue';
 import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
+import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import InviteEntryCapsule from '../mobile-invite-poster-entry/mobile-invite-poster-entry-capsule.vue';
 import InviteRankItem from './mobile-invite-rank-item.vue';
+
 import { useInviteRankHook } from '../hooks/use-invite-rank';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useLangStore } from '@/store/use-lang-store';
-import { LangType } from '@/assets/lang/lang-enum';
+import { useInviteStore } from '@/store/use-invite-store';
+import { appEvents, useEventBusEmitter } from '@/app/app-events';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+
+const props = defineProps({
+  isActive: PropUtils.bool.def(false),
+});
 
 const {
   currentRankInfo,
-  topThreeRankItems,
+  realTopThreeRankItems,
   rankList,
   isLoading,
   isNoMore,
@@ -112,11 +126,25 @@ const {
   handleScroll,
 } = useInviteRankHook();
 
-const { currentLang } = storeDefinitionToRefs(useLangStore);
+const { inviteDetailEnabled } = storeDefinitionToRefs(useInviteStore);
 
-onMounted(() => {
-  initInviteRank();
-});
+const { emitEvent: emitOpenInviteDetail } = useEventBusEmitter(appEvents.invite.OpenInviteDetail);
+
+function openInviteDetail() {
+  if (inviteDetailEnabled.value) {
+    emitOpenInviteDetail();
+  }
+}
+
+watch(
+  () => props.isActive,
+  isActive => {
+    if (isActive) {
+      initInviteRank();
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style lang="scss">
@@ -167,21 +195,27 @@ onMounted(() => {
 }
 .c-mobile-invite-rank__me__info {
   flex: 1;
-  margin-right: 16px;
+  margin-right: 8px;
 }
 .c-mobile-invite-rank__me__info__nick {
   font-size: 14px;
   word-break: break-word;
-
-  &.c-mobile-invite-rank__me__info__nick--small {
-    font-size: 12px;
-  }
 }
 
 .c-mobile-invite-rank__me__info__margin {
   margin-top: 4px;
   font-size: 12px;
   word-break: break-word;
+}
+
+.c-mobile-invite-rank__me__info__detail-btn {
+  position: relative;
+  color: #3082fe;
+}
+
+.c-mobile-invite-rank__me__info__icon-right {
+  position: absolute;
+  font-size: 12px;
 }
 
 .c-mobile-invite-rank__not__info {

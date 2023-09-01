@@ -2,7 +2,12 @@
 <template>
   <div class="c-portrait-watch-layout">
     <!-- 播放器 -->
-    <div class="c-portrait-watch-layout__player-wrap">
+    <div
+      class="c-portrait-watch-layout__player-wrap"
+      :class="{
+        'c-portrait-watch-layout__player-wrap__fullscreen': portraitPlayerIsPageFullscreen,
+      }"
+    >
       <portrait-connect-mic-container
         v-if="masterMicItem"
         ref="portraitMicContainer"
@@ -35,6 +40,9 @@
     <div
       v-show="!isSmallWindow"
       class="c-portrait-watch-layout__carousel-wrap"
+      :class="{
+        'c-portrait-watch-layout__carousel-wrap__fullscreen': portraitPlayerIsPageFullscreen,
+      }"
       :style="{
         paddingTop: `${portraitDocWrapHeight}px`,
       }"
@@ -57,7 +65,7 @@ import { useDocStore } from '@/store/use-doc-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 
-const { portraitDocWrapHeight, portraitDocContentHeight } =
+const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
   storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
@@ -126,6 +134,17 @@ watch(
   -webkit-overflow-scrolling: unset;
 }
 
+.c-portrait-watch-layout__player-wrap__fullscreen {
+  @include force-page-fullscreen;
+  // ios 兼容处理
+  .c-portrait-player-main__container {
+    z-index: -1;
+  }
+  .plvideo {
+    z-index: -1;
+  }
+}
+
 .c-portrait-watch-layout__doc-wrap {
   position: absolute;
   top: 0;
@@ -145,5 +164,9 @@ watch(
   height: 100%;
   pointer-events: none;
   -webkit-overflow-scrolling: unset;
+}
+
+.c-portrait-watch-layout__carousel-wrap__fullscreen {
+  @include force-page-fullscreen;
 }
 </style>

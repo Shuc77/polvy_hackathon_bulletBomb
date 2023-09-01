@@ -1,4 +1,4 @@
-import { isUndefined } from '@/assets/utils/types';
+import { isUndefined } from 'lodash-es';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { ChatMsgListHookOptions } from './types';
 

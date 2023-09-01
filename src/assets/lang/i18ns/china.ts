@@ -48,9 +48,12 @@ export const chinaLang = {
   'ask.placeholderMsg': '您好！请问有什么问题吗',
   'ask.news': '新消息',
 
+  'base.error.unknown': '未知错误',
+  'base.error.iarSetup': '数据请求异常，加载互动功能失败！',
   'base.agree': '同意',
   'base.disagree': '不同意',
   'base.sendSmsFail': '发送失败，请更换手机号或稍等再试',
+  'base.unSetSmsPlatformFail': '短信功能未开启，请联系直播管理员',
   'base.region': '地区',
   'base.ok': '我知道了',
   'base.backTop': '回到顶部',
@@ -86,6 +89,10 @@ export const chinaLang = {
   'base.noMore': '没有更多了',
   'base.sendSuccess': '发送成功',
   'base.deleteSuccess': '删除成功',
+  'base.system.version.deprecated': '当前设备系统版本过低，请更新版本后重试',
+  'base.submit': '提交',
+  'base.submitSuccess': '提交成功',
+  'base.smsCodeError': '短信验证码错误',
 
   'channel.noLive': '当前暂无直播',
   'channel.descEmpty': '暂无直播介绍~',
@@ -104,6 +111,7 @@ export const chinaLang = {
   'connectMic.applyConnect.audio': '语音连线',
   'connectMic.applyConnect.audioApply': '申请语音连线',
   'connectMic.cancelApply': '取消申请',
+  'connectMic.handup.tips': '确定要挂断连麦吗',
   'connectMic.endConnect': '结束连线',
   'connectMic.keepConnect': '保持连线',
   'connectMic.me': '我',
@@ -340,6 +348,9 @@ export const chinaLang = {
   'pageError.network.general.title': '当前网络不可用',
   'pageError.network.general.desc': '请检查你的网络设置',
   'pageError.network.timeout.title': '当前网络不可用（超时）',
+  'pageError.disallow.mobile.watch': '本直播仅支持PC端观看，请使用PC浏览以下地址',
+  'pageError.work.wechat.tips1': '请扫一扫上面的二维码，添加好友',
+  'pageError.work.wechat.tips2': '添加成功后即可进入直播间',
 
   'player.play.button.text': '立即播放',
   'player.play': '播放',
@@ -381,6 +392,7 @@ export const chinaLang = {
   'player.timeAxisMark.base.text': '精彩看点',
   'player.timeAxisMark.empty.text': '暂无',
   'player.subtitle.text': '实时字幕',
+  'player.streamTrack': '切换音源',
 
   'playback.list': '回放列表',
   'playback.playing': '播放中',
@@ -391,6 +403,12 @@ export const chinaLang = {
   'trial.play.finish.tip': '试看已结束',
   'trial.player.start.tip': '本次直播为付费直播，您可试看 ${time} 分钟',
   'trial.player.end.tip': '试看已结束。如果您觉得本直播不错，请点击付费观看',
+
+  'realName.phone': '验证手机号',
+  'realName.desc':
+    '根据《互联网跟帖评论服务管理规定》，用户发表评论前，需基于手机号完成验证，请您填写手机号。',
+  'realName.agreementContent':
+    '我已阅读并同意<a href="${userAgreement}" target="_blank">《用户协议》</a>和<a href="${policyAgreement}" target="_blank">《隐私政策》</a>',
 
   'redpack.receive.name': '红包',
   'redpack.finish': '，红包已被领完',
@@ -406,6 +424,7 @@ export const chinaLang = {
   'redpack.type.alipayPassword': '支付宝口令红包',
   'redpack.sendMsg': '发送了一个',
   'redpack.receive': '点击领取',
+  'redpack.receive.history.error': '获取历史领取数据失败',
 
   'redpack.name': '红包',
   'redpack.send.title': '发红包',
@@ -488,6 +507,7 @@ export const chinaLang = {
   'withdraw.redpack.receive.record.listName': '红包领取',
   'withdraw.cash.receive.record': '历史提现',
   'withdraw.cash.receive.record.listName': '提现成功',
+  'withdraw.cash.receive.history.error': '获取历史提现数据失败',
 
   'menu.tabName.desc': '直播介绍',
   'menu.tabName.chat': '聊天',
@@ -526,17 +546,20 @@ export const chinaLang = {
   'invite.rank.me': '我',
   'invite.rank.no.more': '没有更多了~',
   'invite.rank.loaded.failed': '榜单正在更新中，请稍等~',
-  'invite.rank.invited': '你已邀请${number}人',
   'invite.rank.invite.btn': '去邀请',
   'invite.rank.click.btn.desc': '点击右侧按钮，邀请微信好友观看',
-  'invite.rank.desc1': '继续保持！',
-  'invite.rank.desc2': '继续保持，还差${number}人被第二名超越',
-  'invite.rank.desc3': '距离第一名只差${number}人',
+  'invite.rank.invited': '你已邀请${number}人',
+  'invite.rank.first.desc': '稳居第一！你已邀请${number}人',
+  'invite.rank.detail.btn': '明细',
 
   'invite.poster.num.text': '邀请人数',
   'invite.poster.not.on.the.list': '未上榜',
-  'invite.poster.go.invite': '冲榜',
+  'invite.poster.go.invite': '去邀请',
   'invite.poster.no.data': '暂无邀请，赶快抓住机会上榜吧！',
+
+  'invite.detail.popup.title': '邀请明细',
+  'invite.detail.viewer.name': '观众信息',
+  'invite.detail.viewer.accessTime': '观众进入时间',
 
   'barrage.speed': '弹幕速度',
   'barrage.speed.verySlow': '缓慢',
@@ -564,4 +587,6 @@ export const chinaLang = {
   'subtitle.translate': '翻译字幕',
   'subtitle.empty': '暂无字幕',
   'subtitle.new': '查看最新',
+
+  'watch.duration.learnTime': '累计学习 ${duration} 分钟',
 };

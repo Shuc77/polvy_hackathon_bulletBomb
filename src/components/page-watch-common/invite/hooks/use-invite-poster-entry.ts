@@ -4,6 +4,7 @@ import { getIosVersion } from '@/assets/utils/browser';
 import { useInviteStore } from '@/store/use-invite-store';
 import { toast } from '@/hooks/components/use-toast';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { translate } from '@/assets/lang';
 
 export function redirectToPosterPage() {
   const { trackUserClickInvitePoster } = useWatchEventTrack();
@@ -13,7 +14,7 @@ export function redirectToPosterPage() {
 
   const iosVersion = getIosVersion();
   if (iosVersion && iosVersion <= 9) {
-    toast.error('当前设备系统版本过低，请更新版本后重试');
+    toast.error(translate('base.system.version.deprecated'));
   } else {
     window.location.href = generatePosterUrl;
   }

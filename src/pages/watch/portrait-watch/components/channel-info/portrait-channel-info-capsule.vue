@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { resizeOSSImg } from '@/assets/utils/image';
 import { shortNumber } from '@/assets/utils/number';
-import { isUndefined } from '@/assets/utils/types';
+import { isUndefined } from 'lodash-es';
 import PortraitFollowBtn from '@/components/page-watch-common/follow/follow-btn/portrait-follow-btn.vue';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChatStore } from '@/store/use-chat-store';

@@ -143,7 +143,9 @@
       :title="$lang('base.tips')"
     >
       <div class="c-portrait-connect-mic-handup-tip">
-        <div class="c-portrait-connect-mic-handup-text">确定要挂断连麦吗</div>
+        <div class="c-portrait-connect-mic-handup-text">
+          {{ $lang('connectMic.handup.tips') }}
+        </div>
         <normal-button
           :text="$lang('base.confirm')"
           block

@@ -3,7 +3,7 @@
     ref="subtitleScroll"
     class="c-mobile-subtitle"
   >
-    <template v-if="subtitlesTeacherEnable && subtitleList.length">
+    <template v-if="subtitlesEnable && subtitleList.length">
       <div
         v-if="subtitleTranslateEnabled"
         class="c-mobile-subtitle__top pws-mobile-subtitle__top-skin"
@@ -75,14 +75,13 @@ import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 import { useSubtitle } from '@/components/page-watch-common/subtitle/use-subtitle';
 
-const { subtitlesTeacherEnable } = storeDefinitionToRefs(useSubtitleStore);
+const { subtitlesEnable, subtitleTranslateEnabled } = storeDefinitionToRefs(useSubtitleStore);
 
 const subtitleScroll = ref<HTMLElement>();
 const {
   hasNewMessage,
   scrollToBottom,
 
-  subtitleTranslateEnabled,
   subtitleTranslateSelected,
   subtitleTranslateOptions,
 

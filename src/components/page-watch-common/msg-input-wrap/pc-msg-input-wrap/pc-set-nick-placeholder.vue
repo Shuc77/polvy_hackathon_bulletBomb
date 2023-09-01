@@ -5,8 +5,17 @@
     @click="onClickSetNick"
   >
     <span>{{ $lang('chat.setNick.tips1') }}</span>
-    <span class="c-pc-set-nick-placeholder--highlight pws-pc-set-nick-placeholder-highlight">
+    <span
+      v-if="!hasNickname"
+      class="c-pc-set-nick-placeholder--highlight pws-pc-set-nick-placeholder-highlight"
+    >
       {{ $lang('chat.setNick.tips2') }}
+    </span>
+    <span
+      v-else-if="needRealNameAuth"
+      class="c-pc-set-nick-placeholder--highlight pws-pc-set-nick-placeholder-highlight"
+    >
+      {{ $lang('realName.phone') }}
     </span>
     <span>{{ $lang('chat.setNick.tips3') }}</span>
   </div>
@@ -14,9 +23,20 @@
 
 <script setup lang="ts">
 import { appEvents, eventBus } from '@/app/app-events';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useViewerStore } from '@/store/use-viewer-store';
+import { unref } from 'vue';
+
+const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 
 function onClickSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  if (!unref(hasNickname)) {
+    eventBus.$emit(appEvents.chat.OpenSetNick, true);
+    return;
+  }
+
+  const viewerStore = useViewerStore();
+  viewerStore.checkNeedRealNameAuth();
 }
 </script>
 

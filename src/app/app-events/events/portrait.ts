@@ -41,4 +41,13 @@ export const portraitEvents = {
    * @param {boolean} visible 显示状态，默认：true
    */
   OpenLatencySwitchPopup: 'OpenLatencySwitchPopup',
+  /**
+   * 打开双语流切换弹层
+   * @param {boolean} visible 显示状态，默认：true
+   */
+  OpenLangStreamPopup: 'OpenLangStreamPopup',
+  /**
+   * 竖屏移动端播放器系统全屏
+   */
+  PlayerSystemFullscreen: 'PlayerSystemFullscreen',
 };

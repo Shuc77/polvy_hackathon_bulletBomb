@@ -64,7 +64,7 @@ defineProps({
   display: flex;
   align-items: center;
   min-height: 56px;
-  padding: 0 16px;
+  padding: 0 12px;
   color: #adadc0;
 
   &.c-mobile-invite-rank__list__item--me {
@@ -120,7 +120,7 @@ defineProps({
 .c-mobile-invite-rank__list__item__avatar {
   width: 32px;
   height: 32px;
-  margin-right: 16px;
+  margin-right: 12px;
   border: 2px solid transparent;
   border-radius: 50%;
 }

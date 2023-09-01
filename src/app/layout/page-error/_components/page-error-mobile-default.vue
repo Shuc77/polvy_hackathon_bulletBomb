@@ -11,11 +11,11 @@
       v-if="isDisallowMobileWatch"
       class="c-page-error-mobile-default__disallow"
     >
-      <h1 class="c-page-error-mobile-default__disallow__title">温馨提示</h1>
+      <h1 class="c-page-error-mobile-default__disallow__title">{{ $lang('base.warmTips') }}</h1>
       <div class="c-page-error-mobile-default__disallow__content-wrap">
         <div class="c-page-error-mobile-default__disallow__content">
           <div class="c-page-error-mobile-default__disallow__content-icon"></div>
-          <p>本直播仅支持PC端观看，请使用PC浏览以下地址</p>
+          <p>{{ $lang('pageError.disallow.mobile.watch') }}</p>
           <p class="c-page-error-mobile-default__disallow__content-link">{{ watchLink }}</p>
         </div>
       </div>

@@ -9,7 +9,7 @@ import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 
 import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { isUndefined } from '@/assets/utils/types';
+import { isUndefined } from 'lodash-es';
 
 import { CSSProperties } from 'vue/types/jsx';
 import { PopupInstance, PopupHorizontalScreenPosition, PopupTheme } from './types';
@@ -82,6 +82,8 @@ export const popupEmits = () => ({
   'after-leave': emitFunc<void>(),
   /** 点击返回 */
   'click-back': emitFunc<void>(),
+  /** 弹窗主体滚动 */
+  'body-scroll': emitFunc<UIEvent>(),
   /** 上下推拽 */
   'drag-vertical': emitFunc<{ translateY: number }>(),
 });
@@ -260,6 +262,10 @@ export const usePopup = (options: {
     emit('click-back');
   }
 
+  function onPopupBodyScroll(e: UIEvent) {
+    emit('body-scroll', e);
+  }
+
   /** 获取弹窗主体头部的高度 */
   function getPopupContentHeaderHeight() {
     return (popupContentHeaderRef.value && popupContentHeaderRef.value.clientHeight) || 50;
@@ -407,6 +413,7 @@ export const usePopup = (options: {
     openPopup,
     closePopup,
     onClickBack,
+    onPopupBodyScroll,
 
     firstPaint,
     draggableTipVisible,

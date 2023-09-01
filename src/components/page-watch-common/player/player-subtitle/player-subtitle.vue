@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="subtitlesTeacherEnable && localUerSubtitlesEnable"
+    v-show="subtitlesEnable && localUerSubtitlesEnable"
     class="c-player-subtitle"
     :style="`bottom: ${bottom}px`"
   >
@@ -25,7 +25,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 
 const { getCurrentElem } = useVue();
 
-const { localUerSubtitlesEnable, subtitlesTeacherEnable } = storeDefinitionToRefs(useSubtitleStore);
+const { subtitlesEnable, localUerSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
 const { isFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
 const props = defineProps({
@@ -79,7 +79,7 @@ const onSubtitleRealTimeCC = (data: SubtitleRealTimeCC) => {
 };
 
 watch(
-  () => subtitlesTeacherEnable.value,
+  () => subtitlesEnable.value,
   val => {
     if (!val) {
       receivedSubtitleText.value = '';

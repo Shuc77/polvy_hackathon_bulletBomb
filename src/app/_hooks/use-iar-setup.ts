@@ -1,6 +1,7 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import { loadIarUI } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { toast } from '@/hooks/components/use-toast';
+import { translate } from '@/assets/lang';
 
 /**
  * @hook 互动功能安装 hook
@@ -17,7 +18,7 @@ export const useIarSetup = () => {
       ]);
     } catch (error) {
       console.error(error);
-      toast.error('数据请求异常，加载互动功能失败！');
+      toast.error(translate('base.error.iarSetup'));
     }
   }
 
