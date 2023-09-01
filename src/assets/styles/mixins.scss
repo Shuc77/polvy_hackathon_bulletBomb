@@ -145,3 +145,14 @@ $mobile-font: 'PingFangSC-Regular', 'Roboto', $others-font;
   font: $font-weight $font-size ALIBABAFont, $mobile-font;
 }
 
+
+// 强制页面全屏
+@mixin force-page-fullscreen {
+  position: absolute;
+  top: 50%;
+  bottom: 0 !important;
+  left: 50%;
+  width: $--plv-mobile-watch-full-screen-vh;
+  height: $--plv-mobile-watch-full-screen-vw;
+  transform: translate(-50%, -50%) rotate(90deg);
+}

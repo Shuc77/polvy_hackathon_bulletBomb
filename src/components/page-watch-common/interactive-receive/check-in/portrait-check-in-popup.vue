@@ -5,6 +5,7 @@
     class="c-portrait-check-in-popup"
     v-show="checkInVisible"
     :check-in-sdk="checkInSdk"
+    :is-full-screen="isIarFullScreen"
     @show-entrance="showEntrance"
     @to-show="setCheckInVisible(true)"
     @to-hide="setCheckInVisible(false)"
@@ -13,9 +14,13 @@
 
 <script setup lang="ts">
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useCheckIn } from './hooks/use-check-in';
 
 const IarPortraitCheckIn = getIarComponent('PortraitCheckIn');
+
+const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { checkInSdk, checkInVisible, setCheckInVisible, showEntrance, checkInRef } = useCheckIn();
 </script>

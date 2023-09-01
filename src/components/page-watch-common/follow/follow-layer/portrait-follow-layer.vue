@@ -5,6 +5,10 @@
       v-show="layerVisible && !isSmallWindow"
       ref="layerRef"
       class="c-portrait-follow-layer"
+      :class="{
+        'c-portrait-follow-layer--page-fullscreen':
+          mobilePlayerIsPageFullscreen && !isHorizontalScreenOrientation,
+      }"
       @click.self="closeLayer"
     >
       <div class="c-portrait-follow-layer__main">
@@ -14,8 +18,16 @@
           :src="followImage"
           :alt="followTips"
         />
+        <!-- 竖屏关闭按钮-->
         <div
+          v-show="!mobilePlayerIsPageFullscreen && isVerticalScreenOrientation"
           class="c-portrait-follow-layer__main__close"
+          @click="closeLayer"
+        ></div>
+        <!-- 横屏关闭/强制全屏按钮-->
+        <div
+          v-show="mobilePlayerIsPageFullscreen || isHorizontalScreenOrientation"
+          class="c-portrait-follow-layer__main__close--horizontal"
           @click="closeLayer"
         ></div>
       </div>
@@ -26,11 +38,15 @@
 <script setup lang="ts">
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { useFollowLayer } from '../hooks/use-follow-layer';
 import { useFollowSetting } from '../hooks/use-follow-setting';
 
 const { layerRef, layerVisible, closeLayer } = useFollowLayer();
+
+const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation, isVerticalScreenOrientation } =
+  storeDefinitionToRefs(useLayoutStore);
 
 const { followTips, followImage } = useFollowSetting();
 
@@ -51,6 +67,10 @@ const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.3);
+}
+
+.c-portrait-follow-layer--page-fullscreen {
+  @include force-page-fullscreen;
 }
 
 .c-portrait-follow-layer__main {
@@ -90,6 +110,16 @@ const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
   width: 32px;
   height: 56px;
   background-image: url(./imgs/mobile-promotion-close.png);
+  background-size: contain;
+}
+
+.c-portrait-follow-layer__main__close--horizontal {
+  position: absolute;
+  top: 0;
+  right: -47px;
+  width: 32px;
+  height: 32px;
+  background-image: url(./imgs/mobile-promotion-close-1.png);
   background-size: contain;
 }
 </style>

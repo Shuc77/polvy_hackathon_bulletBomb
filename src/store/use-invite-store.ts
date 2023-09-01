@@ -31,6 +31,8 @@ export interface InviteStoreState {
   invitePosterEnabled: Ref<boolean>;
   /** 邀请榜开关 */
   inviteRankEnabled: ComputedRef<boolean>;
+  /** 邀请明细开关 */
+  inviteDetailEnabled: Ref<boolean>;
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
   mobileChatInvitePendantVisible: ComputedRef<boolean>;
   /** 移动端页面中常驻的邀请挂件是否显示 */
@@ -69,6 +71,9 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   const inviteRankEnabled = computed<boolean>(() => {
     return channelMenuStore.inviteRankMenuData.visible;
   });
+
+  /** 邀请明细开关 */
+  const inviteDetailEnabled = ref(false);
 
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
   const mobileChatInvitePendantVisible = computed<boolean>(() => {
@@ -123,6 +128,8 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
     invitePosterId.value = watchCore.invite.getInvitePosterId();
     wxInviteId.value = watchCore.invite.getWorkWxInviteId();
+
+    inviteDetailEnabled.value = watchCore.invite.getInviteDetailEnabled();
   }
 
   return {
@@ -132,6 +139,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     inviteUserUnionId,
     invitePosterEnabled,
     inviteRankEnabled,
+    inviteDetailEnabled,
     mobileChatInvitePendantVisible,
     mobileWatchInvitePendantVisible,
     generatePosterUrl,

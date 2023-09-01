@@ -9,10 +9,22 @@
       <span>{{ $lang('chat.illegalImage') }}</span>
     </div>
     <template v-else>
-      <div
-        v-if="!isLoaded"
-        class="c-portrait-image-msg__placeholder g-img-cover"
-      ></div>
+      <template v-if="!isLoaded">
+        <!-- 默认占位图 -->
+        <div
+          v-if="!localImagePlaceholder"
+          class="c-portrait-image-msg__placeholder g-img-cover"
+        ></div>
+        <!-- 本地上传图片后，消息替换时用的占位图 -->
+        <img
+          v-else
+          class="c-portrait-image-msg__img"
+          :src="imageUrl"
+          @click="onClickImage"
+        />
+      </template>
+
+      <!-- 本地上传缓存图片 / 服务端图片 -->
       <img
         v-show="isLoaded"
         ref="imageRef"
@@ -30,7 +42,16 @@ import { MobileIconForbid } from '@/components/component-icons/mobile/map';
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useImageMsg } from './use-image-msg';
 
-const { chatMsg, imageUrl, isLoaded, imageRef, onImageLoad, onClickImage } = useImageMsg();
+const {
+  chatMsg,
+  imageUrl,
+  localImagePlaceholder,
+  isLoaded,
+  imageRef,
+
+  onImageLoad,
+  onClickImage,
+} = useImageMsg();
 </script>
 
 <style lang="scss">

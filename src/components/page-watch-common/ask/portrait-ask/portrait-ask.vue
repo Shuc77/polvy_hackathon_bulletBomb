@@ -1,6 +1,7 @@
 <template>
   <div class="c-portrait-ask">
     <ask-comp-portrait
+      ref="askCompPortraitRef"
       :slogan="askWelcomeText"
       :ask-sdk="askSdk"
     />
@@ -8,7 +9,9 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLangStore } from '@/store/use-lang-store';
 import { useAskStore } from '@/store/use-ask-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import AskCompPortrait from '@polyv/chat-sdk-ui-ask-question/lib/MobileAskPortrait';
@@ -26,6 +29,16 @@ const { updateAskReminderVisible } = useAskReminder({
     );
   },
 });
+
+const askCompPortraitRef = ref();
+const langStore = useLangStore();
+watch(
+  () => langStore.currentLang,
+  () => {
+    askCompPortraitRef.value.reset();
+    askCompPortraitRef.value.getQuestionList();
+  },
+);
 </script>
 
 <style lang="scss">

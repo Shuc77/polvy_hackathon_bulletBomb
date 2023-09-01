@@ -2,7 +2,7 @@
  * @file 手机区号选择 hook
  */
 
-import { isUndefined } from '@/assets/utils/types';
+import { isUndefined } from 'lodash-es';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, ref, unref } from 'vue';

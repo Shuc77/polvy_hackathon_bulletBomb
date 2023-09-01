@@ -1,4 +1,4 @@
-import { isUndefined } from '@/assets/utils/types';
+import { isUndefined } from 'lodash-es';
 import { getWatchCore } from '@/core/watch-sdk';
 import { ChatMessageUser, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';

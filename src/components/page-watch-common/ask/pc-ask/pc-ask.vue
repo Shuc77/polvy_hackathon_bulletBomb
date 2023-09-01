@@ -18,9 +18,15 @@
         :send-image-enabled="questionImageEnabled"
         :image-paste-input-enabled="imagePasteInputEnabled"
         :placeholder="askInputPlaceholder"
+        :disabled-input="inputDisabled"
+        :disabled-emotion-picker="needRealNameAuth"
+        :disabled-send-image="needRealNameAuth"
         @submit="onSubmitMessage"
         @system-msg="onSendSystemMsg"
         @click-send-image="onClickSendImage"
+        @click-image-emotion-enter="checkNeedRealNameAuth"
+        @click-send-image-enter="checkNeedRealNameAuth"
+        @click-input-wrap="checkNeedRealNameAuth"
       />
     </div>
   </div>
@@ -38,10 +44,14 @@ import { useAskSend } from '../hooks/use-ask-send';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useAskStore } from '@/store/use-ask-store';
+import { useViewerStore } from '@/store/use-viewer-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
-const { askMsgRenderList, questionImageEnabled, getAskMsgList } = useAsk({
+const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
+const { checkNeedRealNameAuth } = useViewerStore();
+
+const { askMsgRenderList, questionImageEnabled, getAskMsgList, inputDisabled } = useAsk({
   askMsgListRef,
 });
 

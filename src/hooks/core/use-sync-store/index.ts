@@ -98,6 +98,7 @@ export const useSyncStoreForWatchPage = () => {
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
   const pageAdvertStore = usePageAdvertStore();
+  const viewerStore = useViewerStore();
 
   /**
    * 进入到观看页前同步 Store
@@ -116,6 +117,12 @@ export const useSyncStoreForWatchPage = () => {
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
     pageAdvertStore.syncPageAdvertStore();
+
+    /**
+     * 检查是否需要实名认证
+     * @description 不影响页面进入流程，无需 await
+     */
+    viewerStore.syncNeedRealNameAuth();
   }
 
   return {

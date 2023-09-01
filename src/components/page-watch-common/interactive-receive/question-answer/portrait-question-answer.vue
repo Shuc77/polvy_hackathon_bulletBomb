@@ -23,6 +23,7 @@ import MobileQuestionAnswer from './mobile-question-answer.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useQuestionAnswer } from './hooks/use-question-answer';
+import { useViewerStore } from '@/store/use-viewer-store';
 
 const { visible, setVisible } = useSimpleVisible();
 
@@ -31,6 +32,11 @@ const { qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 const { questionAnswerSdk, onPreviewImage } = useQuestionAnswer();
 
 useEventBusListener(appEvents.interaction.OpenQuestionAnswer, (_visible = true) => {
+  const viewerStore = useViewerStore();
+  const checkResult = viewerStore.checkNeedRealNameAuth();
+  if (_visible && checkResult) {
+    return;
+  }
   setVisible(_visible);
 });
 </script>

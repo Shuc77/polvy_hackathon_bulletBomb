@@ -1,6 +1,18 @@
 @import './basic-style.scss';
 @import './basic-iar-style.scss';
 
+@mixin generate-skin-special-iar-pc-style($--skin-configs) {
+  // ---------- 中奖记录 --------- //
+  .pws-iar-lottery-record-button {
+    color: map.get($--skin-configs, 'pc-msg-send-button:text-color') !important;
+    background-color: map.get($--skin-configs, 'pc-msg-send-button:bg-color') !important;
+  }
+  .pws-iar-lottery-record-button-received {
+    opacity: 0.5;
+  }
+}
+
+
 @mixin generate-skin-basic-plv-ui-pc-style($--skin-configs) {
   .pws-pc-image-paste-input-wrapper {
     color: map.get($--skin-configs, 'pc-msg-input:text-color') !important;
@@ -28,6 +40,7 @@
     @include generate-skin-basic-style($--skin-configs);
     @include generate-skin-basic-iar-pc-style($--skin-configs);
     @include generate-skin-basic-plv-ui-pc-style($--skin-configs);
+    @include generate-skin-special-iar-pc-style($--skin-configs);
 
     // 直播状态标签
     @each $status, $color in map.get($--skin-configs, 'pc-live-status-tag:color') {

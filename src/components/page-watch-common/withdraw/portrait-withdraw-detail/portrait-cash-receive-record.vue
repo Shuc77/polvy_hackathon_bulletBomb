@@ -29,6 +29,7 @@ import { onMounted } from 'vue';
 
 import { getWatchCore } from '@/core/watch-sdk';
 import { useReceiveRecordHook } from '../_hooks/use-receive-record';
+import { translate } from '@/assets/lang';
 
 const watchCore = getWatchCore();
 
@@ -41,7 +42,7 @@ const {
   getReceiveRecordList,
 } = useReceiveRecordHook({
   fetchMethod: params => watchCore.withdraw.getWithdrawRecord(params),
-  errMsg: '获取历史领取数据失败',
+  errMsg: translate('withdraw.cash.receive.history.error'),
 });
 
 onMounted(() => {

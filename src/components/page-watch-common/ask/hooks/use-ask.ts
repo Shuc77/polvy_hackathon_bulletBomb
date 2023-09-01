@@ -7,6 +7,7 @@ import { uuidV4 } from '@utils-ts/string';
 
 import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
+import { useViewerStore } from '@/store/use-viewer-store';
 
 export interface UseAskOptions {
   askMsgListRef: Ref<AskMsgListInstance | undefined>;
@@ -17,6 +18,7 @@ export const useAsk = (options: UseAskOptions) => {
 
   const channelStore = useChannelStore();
   const askStore = useAskStore();
+  const viewerStore = useViewerStore();
 
   const historyStart = ref(0);
   const historyLength = 20;
@@ -30,6 +32,10 @@ export const useAsk = (options: UseAskOptions) => {
 
   /** 提问是否可以发送图片 */
   const questionImageEnabled = ref(false);
+
+  const inputDisabled = computed(() => {
+    return viewerStore.needRealNameAuth;
+  });
 
   /** 渲染的消息列表 */
   const askMsgRenderList = computed<AskMsgType[]>(() => {
@@ -119,6 +125,7 @@ export const useAsk = (options: UseAskOptions) => {
     askMsgList,
     askMsgRenderList,
     getAskMsgList,
+    inputDisabled,
     questionImageEnabled,
   };
 };

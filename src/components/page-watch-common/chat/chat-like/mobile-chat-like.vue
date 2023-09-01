@@ -1,9 +1,13 @@
 <!-- @file 移动端聊天室点赞 -->
 <template>
-  <div class="c-mobile-chat-like">
+  <div
+    class="c-mobile-chat-like"
+    @click="onClickLikeWrap"
+  >
     <plv-like
       ref="likeRef"
       :icons="likeIcons"
+      :readonly="isReadonlyLike"
       :animation-options="{
         speed: 0.012,
       }"
@@ -41,7 +45,7 @@ const { upperHasIcon } = useProps(props);
 
 const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
 
-const { likeRef, likeIcons, onClickLike } = useChatLike();
+const { likeRef, likeIcons, isReadonlyLike, onClickLike, onClickLikeWrap } = useChatLike();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getScopeCount(scope: any) {

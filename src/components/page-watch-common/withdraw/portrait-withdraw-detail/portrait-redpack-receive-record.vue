@@ -30,6 +30,7 @@ import { onMounted } from 'vue';
 import { RedpackPayType } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useReceiveRecordHook } from '../_hooks/use-receive-record';
+import { translate } from '@/assets/lang';
 
 const watchCore = getWatchCore();
 
@@ -45,7 +46,7 @@ const {
   fetchMethodParams: {
     redPackType: RedpackPayType.Cash,
   },
-  errMsg: '获取历史领取数据失败',
+  errMsg: translate('redpack.receive.history.error'),
 });
 
 onMounted(async () => {

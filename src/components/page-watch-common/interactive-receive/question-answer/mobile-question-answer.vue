@@ -5,7 +5,7 @@
       class="c-mobile-question-answer__main"
       :question-answer-sdk="questionAnswerSdk"
       :theme="theme"
-      :has-nick="hasNickname"
+      :has-nick="innerHasNickname"
       @set-nick="onSetNick"
       @preview="onPreviewImage"
       @news="onNewsEvent"
@@ -16,12 +16,11 @@
 <script setup lang="ts">
 import { TAB_NAME_QA } from '@/assets/constants/tab-name';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { useViewerStore } from '@/store/use-viewer-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { unref } from 'vue';
-import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useQuestionAnswer } from './hooks/use-question-answer';
 
 const IarMobileQuestionAnswer = getIarComponent('MobileQuestionAnswer');
@@ -31,9 +30,7 @@ defineProps({
   theme: PropUtils.oneOf(['black', 'white'] as const).def('black'),
 });
 
-const { questionAnswerSdk, onSetNick, onPreviewImage } = useQuestionAnswer();
-
-const { hasNickname } = storeDefinitionToRefs(useViewerStore);
+const { questionAnswerSdk, onSetNick, onPreviewImage, innerHasNickname } = useQuestionAnswer();
 
 const { mobileMenuCurrentName } = storeDefinitionToRefs(useLayoutStore);
 

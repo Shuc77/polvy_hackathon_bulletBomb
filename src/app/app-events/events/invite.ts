@@ -3,6 +3,8 @@
  */
 
 export const inviteEvents = {
-  /** 邀请榜弹窗显示（竖屏） */
+  /** 打开竖屏邀请榜弹窗 */
   OpenPortraitInviteRank: 'OpenPortraitInviteRank',
+  /** 打开邀请详情弹窗 */
+  OpenInviteDetail: 'OpenInviteDetail',
 };

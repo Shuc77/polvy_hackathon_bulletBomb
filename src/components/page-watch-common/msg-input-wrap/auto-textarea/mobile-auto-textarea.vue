@@ -9,6 +9,9 @@
     <textarea
       ref="textareaRef"
       class="c-mobile-auto-textarea__inner pws-mobile-chat-msg-input-textarea"
+      :class="{
+        'c-mobile-auto-textarea__inner--disabled': disabled,
+      }"
       enterkeyhint="send"
       rows="1"
       :value="realValue"
@@ -109,5 +112,9 @@ $--textarea-min-height: 36px;
   &:disabled::placeholder {
     color: rgba(#adadc0, 0.5);
   }
+}
+
+.c-mobile-auto-textarea__inner--disabled {
+  pointer-events: none;
 }
 </style>

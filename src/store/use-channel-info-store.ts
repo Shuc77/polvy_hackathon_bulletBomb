@@ -59,6 +59,11 @@ export interface ChannelInfoStoreState {
   liveStartTimeText: ComputedRef<string>;
   /** 是否显示直播倒计时 */
   showLiveCountDown: ComputedRef<boolean>;
+
+  /** 观看时长开关 */
+  watchDurationEnabled: Ref<boolean>;
+  /** 观看时长，单位分钟 */
+  viewerWatchDuration: Ref<number>;
 }
 
 export interface ChannelInfoStoreAction {
@@ -235,6 +240,12 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       return Date.now() < liveStartTimeVal;
     });
 
+    /** 观看时长开关 */
+    const watchDurationEnabled = ref(false);
+
+    /** 观看时长，单位分钟 */
+    const viewerWatchDuration = ref(0);
+
     /** 刷新频道信息 */
     function syncChannelInfo(): void {
       const watchCore = getWatchCore();
@@ -259,6 +270,9 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       mobilePvShowLocation.value = pvSetting.mobilePvShowLocation;
 
       countdownSetting.value = watchCore.channel.getCountdownSetting();
+
+      const watchDurationSetting = watchCore.channel.getWatchDurationSetting();
+      watchDurationEnabled.value = watchDurationSetting.watchDurationEnabled;
     }
 
     return {
@@ -279,6 +293,9 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       isLiveStartCountDownEnd,
       liveStartTimeText,
       showLiveCountDown,
+
+      watchDurationEnabled,
+      viewerWatchDuration,
 
       syncChannelInfo,
     };

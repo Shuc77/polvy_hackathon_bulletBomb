@@ -130,6 +130,8 @@ export const useSmsVerifyInput = (options: {
 
     if (unref(validType) === SmsValidType.Slider) {
       slideVerifyVisible.value = true;
+    } else if (unref(validType) === SmsValidType.None) {
+      toSendNoneSmsCode();
     } else {
       toSendImageSmsCode();
     }
@@ -200,6 +202,35 @@ export const useSmsVerifyInput = (options: {
     }
   }
 
+  /**
+   * 发送短信验证码（无验证）
+   */
+  async function toSendNoneSmsCode() {
+    const watchCore = getWatchCore();
+    const validTypeVal = unref(validType);
+
+    let result: SendSmsVerifyResult | undefined;
+
+    if (validTypeVal === SmsValidType.None) {
+      result = await watchCore.sms.sendSmsVerifyCode({
+        phoneNumber: unref(phoneNumber),
+        areaCode: unref(areaCode),
+        validType: validTypeVal,
+        scene: unref(smsScene),
+      });
+    }
+
+    if (!result) {
+      return;
+    }
+
+    if (result.success) {
+      onSendSuccess();
+    } else {
+      onSendFail(result);
+    }
+  }
+
   function onSendFail(result: CommonResult<SendSmsVerifyCodeFail>) {
     if (result.success) {
       return;
@@ -214,8 +245,11 @@ export const useSmsVerifyInput = (options: {
       case SendSmsVerifyCodeFail.SendFrequent:
         toast.error(translate('base.sendSmsFail'));
         break;
+      case SendSmsVerifyCodeFail.UnSetSmsPlatform:
+        toast.error(translate('base.unSetSmsPlatformFail'));
+        break;
       default:
-        toast.error(result.failMessage || '未知错误！');
+        toast.error(result.failMessage || translate('base.error.unknown'));
         break;
     }
   }

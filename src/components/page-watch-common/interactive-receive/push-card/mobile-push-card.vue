@@ -2,9 +2,11 @@
 <template>
   <iar-push-card
     v-show="pushCardPendantVisible"
+    append-body
     class="c-mobile-push-card"
     internal
     :push-card-sdk="pushCardSdk"
+    :is-full-screen="isIarFullScreen"
     @entry-visible-changed="onEntryVisibleChanged"
   />
 </template>
@@ -17,7 +19,7 @@ import { usePushCard } from './hooks/use-push-card';
 
 const IarPushCard = getIarComponent('PushCard');
 
-const { pushCardPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { pushCardPendantVisible, isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { pushCardSdk, onEntryVisibleChanged } = usePushCard();
 </script>

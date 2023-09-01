@@ -5,6 +5,7 @@
       ref="carouselRef"
       class="c-portrait-watch-layout-carousel__main"
       :slide-index.sync="carouselActiveIndex"
+      :css-rotate-angle="portraitPlayerIsPageFullscreen ? 90 : 0"
     >
       <!-- 副屏 -->
       <plv-carousel-item>
@@ -39,7 +40,8 @@ import { useDocStore } from '@/store/use-doc-store';
 import { nextTick, ref, watch } from 'vue';
 import { PlvCarouselInstance } from '@/plugins/polyv-ui/types';
 
-const { carouselActiveIndex } = storeDefinitionToRefs(usePortraitLayoutStore);
+const { carouselActiveIndex, portraitPlayerIsPageFullscreen } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { documentSwitch } = storeDefinitionToRefs(useDocStore);
 

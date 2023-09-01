@@ -30,4 +30,8 @@ export const globalEvents = {
    * 移动端 layout 计算尺寸
    */
   MobileLayoutComputedSize: 'MobileLayoutComputedSize',
+  /**
+   * 打开手机号实名认证
+   */
+  OpenRealNameDialog: 'OpenRealNameDialog',
 };

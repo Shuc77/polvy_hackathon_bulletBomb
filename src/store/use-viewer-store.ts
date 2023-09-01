@@ -8,6 +8,7 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useEnrollStore } from './use-enroll-store';
 import { isWeixin } from '@/assets/utils/browser';
 import { useWeixinStore } from './use-weixin-store';
+import { appEvents, eventBus } from '@/app/app-events';
 
 /**
  * 检测是否为默认用户名 [内网、外网、xx]观众/[数字]
@@ -35,11 +36,17 @@ export interface ViewerStoreState {
   canSetNick: ComputedRef<boolean>;
   /** 当前是否已设置昵称 */
   hasNickname: ComputedRef<boolean>;
+  /** 当前是否需要实名认证 */
+  needRealNameAuth: Ref<boolean>;
 }
 
 export interface ViewerStoreAction {
   /** 同步观众信息 */
   syncViewerInfo: () => void;
+  /** 检查是否需要实名认证 */
+  syncNeedRealNameAuth: () => Promise<void>;
+  /** 检查实名认证，返回 true 表示终止程序执行 */
+  checkNeedRealNameAuth: () => boolean;
 }
 
 export interface ViewerStore extends ViewerStoreState, ViewerStoreAction {}
@@ -110,6 +117,28 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     authType.value = watchCore.user.getUserAuthType();
   }
 
+  /** 当前是否需要实名认证 */
+  const needRealNameAuth = ref(false);
+
+  /**
+   * 检查是否需要实名认证
+   */
+  async function syncNeedRealNameAuth() {
+    const watchCore = getWatchCore();
+    needRealNameAuth.value = await watchCore.user.needRealNameAuth();
+  }
+
+  /**
+   * 检查实名认证，返回 true 表示终止程序执行
+   */
+  function checkNeedRealNameAuth(): boolean {
+    if (unref(needRealNameAuth)) {
+      eventBus.$emit(appEvents.global.OpenRealNameDialog, true);
+    }
+
+    return unref(needRealNameAuth);
+  }
+
   return {
     viewerId,
     nickname,
@@ -120,5 +149,9 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     canSetNick,
     hasNickname,
     syncViewerInfo,
+
+    needRealNameAuth,
+    syncNeedRealNameAuth,
+    checkNeedRealNameAuth,
   };
 });

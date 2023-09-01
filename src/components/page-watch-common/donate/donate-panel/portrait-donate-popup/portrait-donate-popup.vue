@@ -23,13 +23,14 @@
 </template>
 
 <script setup lang="ts">
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { translate } from '@/assets/lang';
-import { computed, onBeforeUnmount, onMounted, ref, unref } from 'vue';
-import { PopupTheme } from '@/components/common-base/popup/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import DonatePanelGood from './portrait-donate-panel-good.vue';
+import { PopupTheme } from '@/components/common-base/popup/types';
+import { useViewerStore } from '@/store/use-viewer-store';
+import { computed, ref, unref } from 'vue';
 import DonatePanelCash from './portrait-donate-panel-cash.vue';
+import DonatePanelGood from './portrait-donate-panel-good.vue';
 
 /** 现金面板是否显示 */
 const cashPanelVisible = ref(false);
@@ -48,16 +49,16 @@ const popupTitle = computed(() => {
 
 function handleVisible(visible = true) {
   if (visible) {
+    const viewerStore = useViewerStore();
+    const checkRealName = viewerStore.checkNeedRealNameAuth();
+    if (checkRealName) {
+      return;
+    }
+
     cashPanelVisible.value = false;
   }
   popupVisible.value = visible;
 }
 
-onMounted(() => {
-  eventBus.$on(appEvents.donate.OpenDonatePopup, handleVisible);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.donate.OpenDonatePopup, handleVisible);
-});
+useEventBusListener(appEvents.donate.OpenDonatePopup, handleVisible);
 </script>

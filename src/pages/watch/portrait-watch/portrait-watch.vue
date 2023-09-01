@@ -51,6 +51,9 @@
     <!-- 播放器设置弹层 -->
     <portrait-player-control-popup />
 
+    <!-- 双语流切换 -->
+    <portrait-player-stream-track-popup v-if="supportLanguageStream" />
+
     <!-- 直播开始提示 -->
     <portrait-live-start-tips />
 
@@ -58,6 +61,12 @@
     <portrait-playback-chapter-popup
       v-if="isPlaybacking && (playbackListVisible || chapterVisible)"
     />
+
+    <!-- 实名认证弹层 -->
+    <portrait-real-name-auth-popup />
+
+    <!-- 邀请明细弹层 -->
+    <portrait-invite-detail-popup />
 
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
@@ -78,12 +87,16 @@ import PortraitMicroActivity from '@/components/page-watch-common/micro-activity
 import PortraitWithdrawApply from '@/components/page-watch-common/withdraw/portrait-withdraw-apply/portrait-withdraw-apply.vue';
 import PortraitWithdrawDetail from '@/components/page-watch-common/withdraw/portrait-withdraw-detail/portrait-withdraw-detail.vue';
 import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/components/playback-chapter-popup/portrait-playback-chapter-popup.vue';
+import PortraitRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
 import PortraitWatchLayout from './layout/portrait-watch-layout.vue';
 
 import PortraitChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
 import PortraitPlayerControlPopup from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-control-popup.vue';
+import PortraitPlayerStreamTrackPopup from '@/components/page-watch-common/player/player-stream-track/portrait-player-stream-track-popup.vue';
+import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/portrait-invite-detail-popup.vue';
+
 import { usePvTrack } from '@/hooks/business/use-pv-track';
 import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -98,6 +111,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { usePlayerStore } from '@/store/use-player-store';
 
 const themeStore = useThemeStore();
 const { portraitPageBgUrl } = storeDefinitionToRefs(useThemeStore);
@@ -123,6 +137,8 @@ const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
 
 const { isPlaybacking, playbackListVisible, chapterVisible } =
   storeDefinitionToRefs(usePlaybackStore);
+
+const { supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
 
 /** 外层样式 */
 const wrapStyle = computed(() => {

@@ -10,7 +10,7 @@
     />
 
     <div
-      v-if="!hasNickname"
+      v-if="!hasNickname || needRealNameAuth"
       class="c-pc-question-answer__set-nick"
     >
       <pc-set-nick-placeholder />
@@ -33,7 +33,7 @@ const IarPcQuestionAnswer = getIarComponent('PcQuestionAnswer');
 
 const { questionAnswerSdk, onPreviewImage } = useQuestionAnswer();
 
-const { hasNickname } = storeDefinitionToRefs(useViewerStore);
+const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 

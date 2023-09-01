@@ -17,7 +17,7 @@ import { useConnectMicStore } from './use-connect-mic-store';
 import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
 import { translate } from '@/assets/lang';
-import { LiveStatus, PlaybackWatchBasicInfo } from '@polyv/live-watch-sdk';
+import { PlaybackWatchBasicInfo, LiveStatus } from '@polyv/live-watch-sdk';
 import { useChannelStore } from './use-channel-store';
 
 export interface WatchAppStoreState {

@@ -36,9 +36,13 @@
           >
             {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
           </span>
+          <!-- 无延迟标签 -->
           <span
-            v-if="isLowLatency || isConnectMicing"
-            class="c-mobile-basic-info__channel__inner__no-delay g-img-cover"
+            v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
+            class="c-mobile-basic-info__channel__inner__low-latency g-img-cover"
+            :class="{
+              'c-mobile-basic-info__channel__inner__low-latency__en': !isChineseLang,
+            }"
           ></span>
         </div>
       </div>
@@ -60,14 +64,26 @@
           {{ channelPublisher }}
         </span>
       </div>
-      <!-- 点赞数 -->
-      <div
-        v-if="showLikeCount"
-        class="c-mobile-basic-info__author__like-count g-text-nowrap pws-mobile-basic-info-like"
-      >
-        <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
-        <span>{{ realtimeLikes }}</span>
-      </div>
+      <section class="c-mobile-basic-info__author__right">
+        <!-- 点赞数 -->
+        <div
+          v-if="!showLikeCount"
+          class="c-mobile-basic-info__author__right-item c-mobile-basic-info__author__like-count g-text-nowrap pws-mobile-basic-info-like"
+        >
+          <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
+          <span>{{ realtimeLikes }}</span>
+        </div>
+        <!-- 观看时长 -->
+        <div
+          v-if="watchDurationEnabled"
+          class="c-mobile-basic-info__author__right-item c-mobile-basic__author__watch-duration g-text-nowrap pws-mobile-basic-info-publisher"
+        >
+          <mobile-icon-watch-duration class="c-mobile-basic__author__watch-duration__icon" />
+          <span>
+            {{ $lang('watch.duration.learnTime', { duration: String(viewerWatchDuration) }) }}
+          </span>
+        </div>
+      </section>
     </div>
 
     <!-- 频道介绍 -->
@@ -87,7 +103,11 @@
 import { resizeOSSImg } from '@/assets/utils/image';
 import { shortNumber } from '@/assets/utils/number';
 
-import { MobileIconPeople, MobileIconLike } from '@/components/component-icons/mobile/map';
+import {
+  MobileIconPeople,
+  MobileIconLike,
+  MobileIconWatchDuration,
+} from '@/components/component-icons/mobile/map';
 import MobileRichTextRender from '@/components/common-base/rich-text-render/mobile-rich-text-render.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
 import MobileStatusTag from '@/components/common-business/status-tag/mobile-status-tag.vue';
@@ -95,6 +115,7 @@ import MobileStatusTag from '@/components/common-business/status-tag/mobile-stat
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
@@ -128,15 +149,20 @@ const {
   pageViewCountLocation,
   channelDescription,
   liveStartTimeText,
+
+  watchDurationEnabled,
+  viewerWatchDuration,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 
 const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
 
-const { isLowLatency } = storeDefinitionToRefs(usePlayerStore);
+const { isLowLatency, supportLowLatency } = storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
+
+const { isChineseLang } = storeDefinitionToRefs(useLangStore);
 
 /** 页面浏览次数显示状态 */
 const pageViewVisible = computed(() => {
@@ -194,6 +220,7 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
 .c-mobile-basic-info__channel__inner__bottom {
   display: flex;
   align-items: center;
+  height: 18px;
   margin-top: 8px;
   font-size: 12px;
 }
@@ -207,13 +234,18 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   border-left: 1px solid #aaa;
 }
 
-.c-mobile-basic-info__channel__inner__no-delay {
+.c-mobile-basic-info__channel__inner__low-latency {
   width: 58px;
   height: 18px;
   margin-top: -3px;
   margin-left: auto;
 
-  background-image: url(./imgs/low-latency-bg-mob.svg);
+  background-image: url(./imgs/low-latency-bg-mobile.svg);
+
+  &.c-mobile-basic-info__channel__inner__low-latency__en {
+    width: 100px;
+    background-image: url(./imgs/low-latency-bg-mobile-en.svg);
+  }
 }
 
 .c-mobile-basic-info__author {
@@ -234,17 +266,24 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   line-height: 16px;
 }
 
-.c-mobile-basic-info__author__like-count {
+.c-mobile-basic-info__author__right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.c-mobile-basic-info__author__right-item {
   display: flex;
   align-items: center;
 }
 
-.c-mobile-basic-info__author__like-count {
-  margin-left: auto;
+.c-mobile-basic-info__author__right-item + .c-mobile-basic-info__author__right-item {
+  margin-left: 8px;
 }
 
 .c-mobile-basic-info__author__publisher__icon,
-.c-mobile-basic-info__author__like-count__icon {
+.c-mobile-basic-info__author__like-count__icon,
+.c-mobile-basic__author__watch-duration__icon {
   display: flex;
   margin-right: 4px;
   font-size: 16px !important;

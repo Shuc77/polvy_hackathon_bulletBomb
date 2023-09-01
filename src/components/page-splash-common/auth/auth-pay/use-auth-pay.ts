@@ -105,7 +105,7 @@ export const useAuthPayPc = () => {
       if (payInfo.failReason === AuthPayFailReason.NotAllow) {
         toast.error(translate('auth.pay.notAllow'));
       } else {
-        toast.error(payInfo.failMessage || '未知错误');
+        toast.error(payInfo.failMessage || translate('base.error.unknown'));
       }
       return;
     }
@@ -231,7 +231,7 @@ export const useAuthPayMobile = () => {
         if (payInfo.failReason === AuthPayFailReason.NotAllow) {
           throw new Error(translate('auth.pay.notAllow'));
         } else {
-          throw new Error(payInfo.failMessage || '未知错误');
+          throw new Error(payInfo.failMessage || translate('base.error.unknown'));
         }
       }
 

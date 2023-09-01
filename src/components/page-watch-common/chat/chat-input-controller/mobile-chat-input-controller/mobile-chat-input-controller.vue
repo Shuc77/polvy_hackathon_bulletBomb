@@ -12,6 +12,7 @@
       render-suffix-slot
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
+      @click-input-wrap="checkNeedRealNameAuth"
     >
       <template #main-prefix>
         <mobile-chat-msg-quote />
@@ -44,6 +45,10 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
+import { useViewerStore } from '@/store/use-viewer-store';
+
+const viewerStore = useViewerStore();
+const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
 
 const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } =
   useChatInputController();

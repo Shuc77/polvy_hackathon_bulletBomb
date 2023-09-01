@@ -178,7 +178,7 @@
           :name="TAB_NAME_INVITE_RANK"
           lazy-load
         >
-          <mobile-invite-rank />
+          <mobile-invite-rank :is-active="mobileMenuCurrentName === TAB_NAME_INVITE_RANK" />
         </mobile-menu-tab-pane>
 
         <!-- 成员列表 -->

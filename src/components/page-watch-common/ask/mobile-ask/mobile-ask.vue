@@ -16,9 +16,15 @@
         ref="msgInputWrapRef"
         :image-emotion-enabled="false"
         :placeholder="askInputPlaceholder"
+        :disabled-input="inputDisabled"
+        :disabled-emotion-picker="needRealNameAuth"
+        :disabled-send-image="needRealNameAuth"
         @submit="onSubmitMessage"
         @click-send-image="onClickSendImage"
         @system-msg="onSendSystemMsg"
+        @click-image-emotion-enter="checkNeedRealNameAuth"
+        @click-send-image-enter="checkNeedRealNameAuth"
+        @click-input-wrap="checkNeedRealNameAuth"
       />
     </div>
   </div>
@@ -33,10 +39,14 @@ import { ref } from 'vue';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { useAskStore } from '@/store/use-ask-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useViewerStore } from '@/store/use-viewer-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
-const { askMsgRenderList, getAskMsgList } = useAsk({
+const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
+const { checkNeedRealNameAuth } = useViewerStore();
+
+const { askMsgRenderList, getAskMsgList, inputDisabled } = useAsk({
   askMsgListRef,
 });
 

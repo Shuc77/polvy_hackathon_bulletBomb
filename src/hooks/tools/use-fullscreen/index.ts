@@ -77,18 +77,18 @@ export const useFullscreen = (
   /** 是否支持浏览器全屏 */
   const supportFullscreen = computed(() => !!fieldData);
 
-  const fullscreenElement = computed<Element>(() => {
+  const getFullscreenElement = () => {
     if (typeof elementRef === 'function') {
       const res = elementRef();
       return unref(res) || document.documentElement;
     }
 
     return unref(elementRef) || document.documentElement;
-  });
+  };
 
   /** 全屏 */
   function requestFullscreen() {
-    const element = unref(fullscreenElement);
+    const element = getFullscreenElement();
     if (!fieldData || !element[fieldData.requestApiField]) {
       return;
     }

@@ -42,23 +42,29 @@
                 :key="item.openId"
                 class="c-portrait-invite-rank__item"
               >
+                <!-- 排序 -->
                 <span class="c-portrait-invite-rank__item__order">{{ idx + 4 }}</span>
+                <!-- 头像 -->
                 <img
                   class="c-portrait-invite-rank__item__avatar"
                   :src="item.avatar"
                 />
+                <!-- 昵称 -->
                 <span class="g-singleline c-portrait-invite-rank__item__nick">{{
                   item.nickname + (isCurrentViewer(item) ? `(${$lang('invite.rank.me')})` : '')
                 }}</span>
+                <!-- 邀请人数 -->
                 <span
                   class="c-portrait-invite-rank__item__invite-text"
                   :class="{
                     'c-portrait-invite-rank__item__invite-text--en':
                       currentLang === LangType.English,
                   }"
-                  >{{ $lang('invite.poster.num.text') }}：</span
+                  >{{ $lang('invite.poster.num.text') }}:</span
                 >
-                <span class="c-portrait-invite-rank__item__invite-num">{{ item.inviteNum }}</span>
+                <span class="c-portrait-invite-rank__item__invite-num">
+                  {{ item.inviteNum }}
+                </span>
               </li>
             </ul>
           </div>
@@ -84,14 +90,23 @@
         <div class="c-portrait-invite-rank__self__avatar">
           <img :src="displayCurrentRankInfo.avatar" />
         </div>
-        <div class="c-portrait-invite-rank__self__info">
+        <div
+          class="c-portrait-invite-rank__self__info"
+          @click="openInviteDetail"
+        >
           <p class="g-singleline c-portrait-invite-rank__self__nick">
             {{ displayCurrentRankInfo.nickname }}
           </p>
           <p class="c-portrait-invite-rank__item__invite-text">
-            {{ $lang('invite.poster.num.text') }}:
-            <span class="c-portrait-invite-rank__item__invite-num">
-              {{ displayCurrentRankInfo.inviteNum }}
+            <span>
+              {{ currentDes }}
+            </span>
+            <span
+              v-if="inviteDetailEnabled"
+              class="c-portrait-invite-rank__self__detail-btn"
+            >
+              {{ $lang('invite.rank.detail.btn') }}
+              <mobile-icon-arrow-right class="c-portrait-invite-rank__self__icon-right" />
             </span>
           </p>
         </div>
@@ -107,26 +122,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed } from 'vue';
 
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
+import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { PopupTheme } from '@/components/common-base/popup/types';
 
 import PortraitInvitePosterEntry from '../portrait-invite-poster-entry/portrait-invite-poster-entry.vue';
 import PortraitInviteRankTop3Item from './portrait-invite-rank-top3-item.vue';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusEmitter, useEventBusListener } from '@/app/app-events';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useInviteRankHook } from '../hooks/use-invite-rank';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import { LangType } from '@/assets/lang/lang-enum';
+import { useInviteStore } from '@/store/use-invite-store';
 
 const {
   currentRankInfo,
   rankList,
   topThreeRankItems,
+  currentDes,
 
   showBottomInfo,
   invitePosterEnabled,
@@ -135,6 +153,8 @@ const {
   initInviteRank,
   handleScroll,
 } = useInviteRankHook();
+
+const { inviteDetailEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const popupVisible = ref(false);
 /** 是否有邀请数据 */
@@ -155,13 +175,15 @@ const displayCurrentRankInfo = computed(() => {
 });
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 
-onMounted(() => {
-  eventBus.$on(appEvents.invite.OpenPortraitInviteRank, handlePortraitInviteRankVisible);
-});
+const { emitEvent: emitOpenInviteDetail } = useEventBusEmitter(appEvents.invite.OpenInviteDetail);
 
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.invite.OpenPortraitInviteRank, handlePortraitInviteRankVisible);
-});
+function openInviteDetail() {
+  if (inviteDetailEnabled.value) {
+    emitOpenInviteDetail();
+  }
+}
+
+useEventBusListener(appEvents.invite.OpenPortraitInviteRank, handlePortraitInviteRankVisible);
 
 async function handlePortraitInviteRankVisible(visible = true) {
   if (visible) {
@@ -265,10 +287,11 @@ function getPopupContentStyle() {
   width: 60px;
   font-size: 12px;
   color: #999;
-  white-space: nowrap;
+  word-break: break-word;
 }
+
 .c-portrait-invite-rank__item__invite-text--en {
-  width: 50px;
+  width: 54px;
 }
 .c-portrait-invite-rank__item__invite-num {
   display: inline-block;
@@ -300,7 +323,7 @@ function getPopupContentStyle() {
   bottom: 0;
   left: 0;
   box-sizing: content-box;
-  padding: 8px 84px 0 16px;
+  padding: 8px 92px 0 4px;
   overflow: hidden;
   color: #333;
   background-color: #fff;
@@ -322,7 +345,7 @@ function getPopupContentStyle() {
 }
 .c-portrait-invite-rank__self__avatar {
   float: left;
-  margin-right: 8px;
+  margin-left: 4px;
   > img {
     width: 38px;
     height: 38px;
@@ -332,7 +355,7 @@ function getPopupContentStyle() {
 .c-portrait-invite-rank__self__info {
   position: absolute;
   right: 0;
-  left: 86px;
+  left: 90px;
 }
 .c-portrait-invite-rank__self__nick {
   max-width: 100%;
@@ -342,6 +365,16 @@ function getPopupContentStyle() {
   font-size: 12px;
   line-height: 17px;
   color: #999;
+}
+.c-portrait-invite-rank__self__detail-btn {
+  position: relative;
+  display: inline-block;
+  padding-right: 12px;
+  color: #f98f5a;
+}
+.c-portrait-invite-rank__self__icon-right {
+  position: absolute;
+  font-size: 12px;
 }
 .c-portrait-invite-poster-entry__foot--right {
   position: absolute;

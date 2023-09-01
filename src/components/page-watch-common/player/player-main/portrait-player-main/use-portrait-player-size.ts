@@ -22,8 +22,8 @@ export interface PlayerSizeData {
  */
 function getVideoAreaHeight() {
   const pageStore = usePageStore();
-  const topStopHeight = 51;
-  const bottomStopHeight = 218;
+  const topStopHeight = 51; // 设计稿如此
+  const bottomStopHeight = 218; // 设计稿如此
 
   return {
     /** 顶部阻挡区域高度 */
@@ -126,10 +126,8 @@ export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData 
   const webviewStore = useWebviewStore();
   const pageStore = usePageStore();
 
-  /** 播放器容器样式 */
-  const playerContainerStyle = computed(() => {
-    const styles: CSSProperties = {};
-
+  /** 播放器容器数据 */
+  const playerContainerSizeData = computed(() => {
     let sizeData: PlayerContainerSize | undefined;
     const pageClientWidth = pageStore.pageClientWidth;
     const pageClientHeight = pageStore.pageClientHeight;
@@ -147,11 +145,32 @@ export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData 
         top: 0,
         left: 0,
       };
-    } else if (portraitLayoutStore.portraitDocWrapHeight !== 0) {
+      return sizeData;
+    }
+
+    // 竖屏播放器页面全屏
+    if (portraitLayoutStore.portraitPlayerIsPageFullscreen) {
+      sizeData = {
+        width: pageClientHeight,
+        height: pageClientWidth,
+        top: 0,
+        left: 0,
+      };
+      return sizeData;
+    }
+
+    if (portraitLayoutStore.portraitDocWrapHeight !== 0) {
       sizeData = computedDocPlayerSize(targetSizeVal);
     } else {
       sizeData = computedPlayerSize(targetSizeVal);
     }
+    return sizeData;
+  });
+
+  /** 播放器容器样式 */
+  const playerContainerStyle = computed(() => {
+    const styles: CSSProperties = {};
+    const sizeData = playerContainerSizeData.value;
 
     if (sizeData) {
       styles.width = `${sizeData.width}px`;
@@ -163,7 +182,27 @@ export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData 
     return styles;
   });
 
+  /** 竖屏播放器全屏按钮样式 */
+  const portraitPlayerFullscreenBtnStyle = computed(() => {
+    // 默认透明
+    const styles: CSSProperties = {
+      opacity: 0,
+    };
+
+    const sizeData = playerContainerSizeData.value;
+
+    if (sizeData) {
+      styles.top = portraitLayoutStore.portraitPlayerIsPageFullscreen
+        ? `${sizeData.height - 40}px`
+        : `${sizeData.top + sizeData.height}px`;
+      styles.opacity = 1;
+    }
+
+    return styles;
+  });
+
   return {
     playerContainerStyle,
+    portraitPlayerFullscreenBtnStyle,
   };
 };

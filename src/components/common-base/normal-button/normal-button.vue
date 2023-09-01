@@ -32,24 +32,38 @@ import { computed } from 'vue';
 import { isMobile } from '@/assets/utils/browser';
 import { normalButtonProps, normalButtonEmits } from './use-normal-button';
 import { ButtonType } from './types';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const props = defineProps(normalButtonProps());
 
 const emit = defineEmits(normalButtonEmits());
 
+const layoutStore = useLayoutStore();
+const watchAppStore = useWatchAppStore();
+
 const buttonClass = computed(() => {
   const classes = [];
   const clsPrefix = 'c-normal-button';
 
-  if (props.type) {
-    classes.push(`${clsPrefix}--${props.type}`);
+  let type = props.type;
+  if (
+    type === ButtonType.Primary &&
+    layoutStore.isPortraitWatchLayout &&
+    watchAppStore.watchPageInited
+  ) {
+    type = ButtonType.Portrait;
   }
 
-  if (props.type === ButtonType.Primary) {
+  if (type) {
+    classes.push(`${clsPrefix}--${type}`);
+  }
+
+  if (type === ButtonType.Primary) {
     classes.push('pws-normal-button-primary');
   }
 
-  if (props.type === ButtonType.AsideMenu) {
+  if (type === ButtonType.AsideMenu) {
     classes.push('pws-normal-button-aside-menu');
   }
 

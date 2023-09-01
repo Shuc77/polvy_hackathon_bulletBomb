@@ -22,10 +22,13 @@
           <!-- 直播状态标签 -->
           <pc-status-tag class="c-pc-basic-info__main__status" />
           <!-- 无延迟标签 -->
-          <label
+          <i
             v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
             class="c-pc-basic-info__main__low-latency g-img-cover"
-          ></label>
+            :class="{
+              'c-pc-basic-info__main__low-latency__en': !isChineseLang,
+            }"
+          ></i>
         </h1>
       </div>
 
@@ -62,6 +65,17 @@
 
         <div style="margin-right: 24px; margin-left: auto"></div>
 
+        <!--  =========== 右侧  =========== -->
+
+        <!-- 观看时长 -->
+        <div
+          v-if="watchDurationEnabled"
+          class="c-pc-basic-info__main__bottom__watch-duration"
+        >
+          <pc-icon-watch-duration class="c-pc-basic-info__main__bottom__watch-duration__icon" />
+          {{ $lang('watch.duration.learnTime', { duration: String(viewerWatchDuration) }) }}
+        </div>
+
         <!-- 举报反馈 -->
         <div
           v-if="interactSetting.watchFeedbackEnabled"
@@ -97,10 +111,18 @@
 
         <!-- 语言切换 -->
         <div
-          v-if="langSwitchEnabled"
+          v-if="langSwitchEnabled && !supportLanguageStream"
           class="c-pc-basic-info__main__bottom__lang-switch"
         >
           <pc-lang-switch theme="dark" />
+        </div>
+
+        <!-- 双语流切换 -->
+        <div
+          v-if="supportLanguageStream"
+          class="c-pc-basic-info__main__bottom__stream-track"
+        >
+          <pc-stream-track />
         </div>
       </div>
     </div>
@@ -114,7 +136,13 @@ import { shortNumber } from '@/assets/utils/number';
 import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
 import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
-import { PcIconShare, PcIconPeople, PcIconFeedback } from '@/components/component-icons/pc/map';
+import {
+  PcIconShare,
+  PcIconPeople,
+  PcIconFeedback,
+  PcIconWatchDuration,
+} from '@/components/component-icons/pc/map';
+import PcStreamTrack from '@/components/page-watch-common/player/player-stream-track/pc-player-stream-track.vue';
 import { usePopper } from '@/hooks/components/use-popper';
 
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -145,16 +173,25 @@ const {
   arrow: true,
 });
 
-const { channelTitle, channelPublisher, pageViewCount, pvShowEnabled } =
-  storeDefinitionToRefs(useChannelInfoStore);
+const {
+  channelTitle,
+  channelPublisher,
+
+  pageViewCount,
+  pvShowEnabled,
+
+  watchDurationEnabled,
+  viewerWatchDuration,
+} = storeDefinitionToRefs(useChannelInfoStore);
 
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 
-const { isLowLatency, supportLowLatency } = storeDefinitionToRefs(usePlayerStore);
+const { isLowLatency, supportLowLatency, supportLanguageStream } =
+  storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
-const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
+const { langSwitchEnabled, isChineseLang } = storeDefinitionToRefs(useLangStore);
 
 const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
 
@@ -209,8 +246,15 @@ $--basic-logo-size: 50px;
   width: 68px;
   height: 20px;
   margin-left: 13px;
-  background-image: url(../../../assets/images/low-latency/low-latency-bg-pc.svg);
+  background-image: url(./imgs/low-latency-bg-pc.svg);
   background-size: contain;
+
+  &.c-pc-basic-info__main__low-latency__en {
+    width: 124px;
+    height: 29px;
+    margin-left: 8px;
+    background-image: url(./imgs/low-latency-bg-pc-en.svg);
+  }
 }
 
 .c-pc-basic-info__main__bottom {
@@ -257,6 +301,20 @@ $--basic-logo-size: 50px;
   box-shadow: 0 0 12px 0 rgba(#000, 0.1);
 }
 
+.c-pc-basic-info__main__bottom__watch-duration {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin-right: 28px;
+  white-space: nowrap;
+}
+
+.c-pc-basic-info__main__bottom__watch-duration__icon {
+  display: flex;
+  margin-right: 6px;
+  font-size: 20px !important;
+}
+
 .c-pc-basic-info__main__bottom__feed-back {
   display: flex;
   align-items: center;
@@ -289,6 +347,11 @@ $--basic-logo-size: 50px;
 }
 
 .c-pc-basic-info__main__bottom__lang-switch {
+  height: 20px;
+}
+.c-pc-basic-info__main__bottom__stream-track {
+  display: flex;
+  align-items: center;
   height: 20px;
 }
 </style>

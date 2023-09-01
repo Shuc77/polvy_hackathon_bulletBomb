@@ -3,6 +3,7 @@
   <div
     class="c-mobile-player-main"
     :class="{
+      'c-mobile-player-main--normal-player-fullscreen': mobileNormalLatencyPlayerIsFullscreen,
       'c-mobile-player-main--page-fullscreen':
         mobilePlayerIsPageFullscreen && !isHorizontalScreenOrientation,
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
@@ -108,8 +109,11 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { translate } from '@/assets/lang';
 import { MOBILE_LIVE_PLAYER_INNER_WRAP } from '@/assets/constants/selector';
 
-const { mobilePlayerIsPageFullscreen, isHorizontalScreenOrientation } =
-  storeDefinitionToRefs(useLayoutStore);
+const {
+  mobilePlayerIsPageFullscreen,
+  mobileNormalLatencyPlayerIsFullscreen,
+  isHorizontalScreenOrientation,
+} = storeDefinitionToRefs(useLayoutStore);
 
 const channelStore = useChannelStore();
 
@@ -191,7 +195,17 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
   opacity: 0.7;
 }
 
-// 播放器页面全屏
+// 正常延迟播放器页面全屏
+.c-mobile-player-main--normal-player-fullscreen {
+  .plv-live-fullscreen--landscape {
+    // ios 兼容处理
+    .plvideo {
+      z-index: -1;
+    }
+  }
+}
+
+// 无延迟播放器页面全屏
 .c-mobile-player-main--page-fullscreen {
   position: fixed;
   top: 50%;

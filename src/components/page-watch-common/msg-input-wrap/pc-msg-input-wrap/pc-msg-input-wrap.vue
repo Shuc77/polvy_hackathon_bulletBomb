@@ -63,7 +63,10 @@
         v-if="hasNickname"
         class="c-pc-msg-input-wrap__msg-input"
       >
-        <div class="c-pc-msg-input-wrap__input-wrap">
+        <div
+          class="c-pc-msg-input-wrap__input-wrap"
+          @click="onClickInputWrap"
+        >
           <plv-input-paste-image
             v-if="imagePasteInputEnabled"
             ref="imagePasteInputRef"
@@ -207,6 +210,10 @@ function overMaxImageCountHandler() {
 /** 预览粘贴图钩子 */
 function previewPastedImageHandler(previewUrl: string) {
   previewImage(previewUrl);
+}
+
+function onClickInputWrap() {
+  emit('click-input-wrap');
 }
 
 defineExpose(msgInputWrapInstance);

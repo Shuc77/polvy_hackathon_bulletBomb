@@ -36,3 +36,4 @@ export { default as MobileIconTranslate } from './icons/translate';
 export { default as MobileIconVideoCall } from './icons/video-call';
 export { default as MobileIconVoiceCall } from './icons/voice-call';
 export { default as MobileIconWarningRoundFill } from './icons/warning-round-fill';
+export { default as MobileIconWatchDuration } from './icons/watch-duration';

@@ -4,6 +4,7 @@ import {
   SendEmotionImageMsgOptions,
   SendSpeakMsgOptions,
   SendImageMsgOptions,
+  ChatMsgImageType,
 } from '@polyv/live-watch-sdk';
 
 export const useSendMsg = () => {
@@ -43,10 +44,22 @@ export const useSendMsg = () => {
     eventBus.$emit(appEvents.chat.ScrollToNew);
   }
 
+  /**
+   * 插入本地图片
+   */
+  function insertLocalImageMsg(options: SendImageMsgOptions): ChatMsgImageType {
+    const watchCore = getWatchCore();
+    const imageChatMsg = watchCore.chat.insertLocalImageChatMsg(options);
+    eventBus.$emit(appEvents.chat.ScrollToNew);
+
+    return imageChatMsg;
+  }
+
   return {
     sendSpeakMsg,
     sendEmotionImageMsg,
     sendSystemMsg,
     sendImageMsg,
+    insertLocalImageMsg,
   };
 };

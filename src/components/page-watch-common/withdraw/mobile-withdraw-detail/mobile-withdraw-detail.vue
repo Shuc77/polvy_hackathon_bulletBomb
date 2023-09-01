@@ -25,16 +25,12 @@
           />
           <div class="c-mobile-withdraw-detail__info__amount-wrap">
             <p>
-              {{ $lang('withdraw.redpack.receive.record') }}：￥<span
-                class="c-mobile-withdraw-detail__info__amount"
-                >{{ totalReceive }}</span
-              >
+              {{ $lang('withdraw.redpack.receive.record') }}：￥
+              <span class="c-mobile-withdraw-detail__info__amount">{{ totalReceive }}</span>
             </p>
             <p>
-              {{ $lang('withdraw.cash.receive.record') }}：￥<span
-                class="c-mobile-withdraw-detail__info__amount"
-                >{{ totalWithdraw }}</span
-              >
+              {{ $lang('withdraw.cash.receive.record') }}：￥
+              <span class="c-mobile-withdraw-detail__info__amount">{{ totalWithdraw }}</span>
             </p>
           </div>
         </div>

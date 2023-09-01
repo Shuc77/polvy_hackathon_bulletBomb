@@ -18,7 +18,10 @@
       class="c-mobile-msg-input-wrap__main pws-mobile-msg-input-wrap-main"
     >
       <!-- 输入框 -->
-      <div class="c-mobile-msg-input-wrap__input">
+      <div
+        class="c-mobile-msg-input-wrap__input"
+        @click="onClickInputWrap"
+      >
         <!-- 设置昵称占位 -->
         <div
           v-if="!hasNickname"
@@ -155,6 +158,11 @@ const {
   emit,
   clickFaceToFocus: false,
 });
+
+function onClickInputWrap() {
+  console.log('onClickInputWrap');
+  emit('click-input-wrap');
+}
 
 /** ------------ 主体外层高度处理 ------------ */
 /** 主体节点 */

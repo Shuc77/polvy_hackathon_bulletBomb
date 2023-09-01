@@ -5,7 +5,8 @@
       v-if="!isPlaybackWatchUrl"
       class="c-mobile-chat-room-pendant"
       :class="{
-        'c-mobile-chat-room-pendant--page-fullscreen': mobilePlayerIsPageFullscreen,
+        'c-mobile-chat-room-pendant--page-fullscreen':
+          mobilePlayerIsPageFullscreen || mobileNormalLatencyPlayerIsFullscreen,
         'c-mobile-chat-room-pendant--screen__horizontal': isHorizontalScreenOrientation,
       }"
     >
@@ -100,6 +101,7 @@ const {
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
 const {
+  mobileNormalLatencyPlayerIsFullscreen,
   mobilePlayerIsPageFullscreen,
   isHorizontalScreenOrientation,
 

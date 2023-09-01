@@ -97,10 +97,12 @@ const emit = defineEmits({
 .c-portrait-more-item__icon--video {
   background-image: url(./images/icon-video.png);
 }
+.c-portrait-more-item__icon--stream-track {
+  background-image: url(./images/icon-track.png);
+}
 
 .c-portrait-more-item__icon--language {
-  // background-image: url(../images/icon-menu-lang-mob.png);
-  background: red;
+  background-image: url(./images/icon-language.svg);
 }
 .c-portrait-more-item__icon--set-nick {
   // background-image: url(../images/icon-menu-set-nick.png);

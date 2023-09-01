@@ -98,7 +98,7 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
     });
 
     if (!result.success) {
-      toast.error(result.failMessage || '未知错误！');
+      toast.error(result.failMessage || translate('base.error.unknown'));
       return;
     }
 

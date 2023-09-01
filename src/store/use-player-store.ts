@@ -94,6 +94,8 @@ export interface PlayerStoreState {
   supportTimeAxisMark: Ref<boolean>;
   /** 是否支持直播时移 */
   supportLiveTimeShift: Ref<boolean>;
+  /** 是否支持双语流 */
+  supportLanguageStream: Ref<boolean>;
 }
 
 export interface PlayerStoreAction {
@@ -323,6 +325,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否支持直播时移 */
   const supportLiveTimeShift = ref(false);
 
+  /** 是否支持双语流 */
+  const supportLanguageStream = ref(false);
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = getWatchCore();
@@ -376,6 +381,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     delayTime.value = playerInfo.delayTime;
     playStatus.value = playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
+
+    supportLanguageStream.value = playerInfo.supportLanguageStream;
 
     /**
      * 暂不支持三分屏场景和研讨会场景
@@ -437,6 +444,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     supportTimeAxisMark,
     supportLiveTimeShift,
+
+    supportLanguageStream,
 
     syncPlayerStore,
     syncWarmUpSetting,

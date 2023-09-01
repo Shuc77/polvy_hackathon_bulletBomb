@@ -95,7 +95,10 @@
           </div>
         </slot>
 
-        <div class="c-mobile-popup__body">
+        <div
+          class="c-mobile-popup__body"
+          @scroll="onPopupBodyScroll"
+        >
           <transition name="fade">
             <div
               v-show="dialogTips"
@@ -141,6 +144,7 @@ const {
   onAfterLeave,
   onClickMask,
   onClickBack,
+  onPopupBodyScroll,
   closePopup,
 
   draggableTipVisible,

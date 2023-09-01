@@ -1,3 +1,5 @@
+import { useEnrollStore } from '@/store/use-enroll-store';
+import { useViewerStore } from '@/store/use-viewer-store';
 import { ref, unref } from 'vue';
 import { EnrollDialogInstance } from './use-enroll-dialog';
 
@@ -5,13 +7,21 @@ import { EnrollDialogInstance } from './use-enroll-dialog';
  * 报名观看入口 hook
  */
 export const useEnrollEnter = () => {
+  const enrollStore = useEnrollStore();
+  const viewerStore = useViewerStore();
+
   const dialogRef = ref<EnrollDialogInstance>();
 
   /** 处理点击入口 */
   function onClickEnter() {
-    const dialogInstrance = unref(dialogRef);
-    if (dialogInstrance) {
-      dialogInstrance.openEnrollForm();
+    if (enrollStore.needEnrollByChat && viewerStore.needRealNameAuth) {
+      viewerStore.checkNeedRealNameAuth();
+      return;
+    }
+
+    const dialogInstance = unref(dialogRef);
+    if (dialogInstance) {
+      dialogInstance.openEnrollForm();
     }
   }
 

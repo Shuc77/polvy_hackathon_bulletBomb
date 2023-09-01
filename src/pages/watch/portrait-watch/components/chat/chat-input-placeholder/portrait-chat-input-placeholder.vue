@@ -43,6 +43,14 @@ const playbackChapterEntranceVisible = computed<boolean>(() => {
 });
 
 function onClickPlaceholder() {
+  const viewerStore = useViewerStore();
+
+  // 实名认证
+  const checkResult = viewerStore.checkNeedRealNameAuth();
+  if (checkResult) {
+    return;
+  }
+
   // 输入框禁用
   if (unref(chatInputDisabled)) {
     return;

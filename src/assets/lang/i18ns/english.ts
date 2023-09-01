@@ -54,9 +54,12 @@ export const englishLang: LangConfig = {
   'ask.placeholderMsg': 'Hi, what can I do for you',
   'ask.news': 'News',
 
+  'base.error.unknown': 'Unknown error',
+  'base.error.iarSetup': 'Data loading exception, function loading failure!',
   'base.agree': 'Agree',
   'base.disagree': 'Disagree',
   'base.sendSmsFail': 'Sending failed. Please change your phone number or try again later',
+  'base.unSetSmsPlatformFail': 'SMS disabled, please contact admin.',
   'base.region': 'Region',
   'base.ok': 'OK',
   'base.backTop': 'Top',
@@ -92,6 +95,11 @@ export const englishLang: LangConfig = {
   'base.noMore': 'No more updates',
   'base.sendSuccess': 'Send success',
   'base.deleteSuccess': 'Delete success',
+  'base.system.version.deprecated':
+    'The current device version is too low, please upgrade and try again',
+  'base.submit': 'Submit',
+  'base.submitSuccess': 'Submit success',
+  'base.smsCodeError': 'Sms code fail',
 
   'channel.noLive': 'No live streaming at the moment',
   'channel.descEmpty': 'No live broadcast introduction~',
@@ -110,6 +118,7 @@ export const englishLang: LangConfig = {
   'connectMic.applyConnect.audio': 'Apply audio call',
   'connectMic.applyConnect.audioApply': 'Apply audio call',
   'connectMic.cancelApply': 'Cancel Apply',
+  'connectMic.handup.tips': 'Are you sure you want to hang up?',
   'connectMic.endConnect': 'End call',
   'connectMic.keepConnect': 'Keep calling',
   'connectMic.me': 'Me',
@@ -190,7 +199,7 @@ export const englishLang: LangConfig = {
   'chat.reply': 'reply',
   'chat.illegalImage': 'Image illegal',
   'chat.moreMsg': 'Click to see more',
-  'chat.moreMsg2': 'See new message',
+  'chat.moreMsg2': 'News',
   'chat.msg.replay.tips.wait': 'The playback message is in preparation, refresh to view',
   'chat.msg.replay.tips.ing': 'Chat replay is on, showing historical messages',
   'chat.msg.fast': 'Sending too frequent try again later',
@@ -360,6 +369,9 @@ export const englishLang: LangConfig = {
   'pageError.network.general.title': 'Network error',
   'pageError.network.general.desc': 'Please check your network.',
   'pageError.network.timeout.title': 'Network error(timeout)',
+  'pageError.disallow.mobile.watch': 'For PC only, please go to pc to open the website.',
+  'pageError.work.wechat.tips1': 'Please scan the code to add friends, ',
+  'pageError.work.wechat.tips2': 'then you can enter the live room',
 
   'player.play.button.text': 'Click to enter',
   'player.play': 'Play',
@@ -402,6 +414,7 @@ export const englishLang: LangConfig = {
   'player.timeAxisMark.base.text': 'Highlights',
   'player.timeAxisMark.empty.text': 'Nothing',
   'player.subtitle.text': 'Subtitles',
+  'player.streamTrack': 'Switch Track',
 
   'playback.list': 'Playback',
   'playback.playing': 'Playing',
@@ -413,6 +426,12 @@ export const englishLang: LangConfig = {
   'trial.player.start.tip': 'This live is a paid live.You can tyr it for ${time} minute.',
   'trial.player.end.tip':
     'The trial is over. If you think this live broadcast is good, please click pay to watch',
+
+  'realName.phone': 'verify phone',
+  'realName.desc':
+    'According to Regulations on the Administration of Internet Post Comment Service, you need to verify your mobile number before posting a comment',
+  'realName.agreementContent':
+    'By submit，you agree to <a href="${userAgreement}" target="_blank">User Agreement</a> & <a href="${policyAgreement}" target="_blank">Privacy Policy</a>',
 
   'redpack.receive.name': '',
   'redpack.finish': '. The red envelope has been taken out',
@@ -428,6 +447,7 @@ export const englishLang: LangConfig = {
   'redpack.type.alipayPassword': 'Alipay password red envelope',
   'redpack.sendMsg': 'send ',
   'redpack.receive': 'receive',
+  'redpack.receive.history.error': 'Failed to get historical pickup data',
 
   'redpack.name': 'Redpack',
   'redpack.send.title': 'Red Packet',
@@ -513,6 +533,7 @@ export const englishLang: LangConfig = {
   'withdraw.redpack.receive.record.listName': 'Received',
   'withdraw.cash.receive.record': 'Cash withdrawal',
   'withdraw.cash.receive.record.listName': 'Withdrawal',
+  'withdraw.cash.receive.history.error': 'Failed to get historical cash withdrawal data',
 
   'menu.tabName.desc': 'Intro',
   'menu.tabName.chat': 'Chat',
@@ -551,17 +572,20 @@ export const englishLang: LangConfig = {
   'invite.rank.me': 'me',
   'invite.rank.no.more': 'No more',
   'invite.rank.loaded.failed': 'The list is being updated, please wait a moment~',
-  'invite.rank.invited': 'You have invited ${number} people',
   'invite.rank.invite.btn': 'Invite',
   'invite.rank.click.btn.desc': 'Click the button on the right to invite your WeChat friends',
-  'invite.rank.desc1': 'Keep going！',
-  'invite.rank.desc2': 'Keep going, or be overtaken by second place',
-  'invite.rank.desc3': 'only ${number} people short of becoming first',
+  'invite.rank.invited': 'You have invited ${number} people',
+  'invite.rank.first.desc': 'Win the top rank! You have invited ${number} people.',
+  'invite.rank.detail.btn': 'Details',
 
   'invite.poster.num.text': 'invitees',
   'invite.poster.not.on.the.list': 'Not listed',
   'invite.poster.go.invite': 'Invite',
   'invite.poster.no.data': 'No invitation at the moment. Jump at the chance to on the list.',
+
+  'invite.detail.popup.title': 'Invite details',
+  'invite.detail.viewer.name': 'viewer Info',
+  'invite.detail.viewer.accessTime': 'viewer access time',
 
   'barrage.speed': 'Barrage Speed',
   'barrage.speed.verySlow': 'very slow',
@@ -588,4 +612,6 @@ export const englishLang: LangConfig = {
   'subtitle.translate': 'Translated',
   'subtitle.empty': 'No subtitles for the time being',
   'subtitle.new': 'new',
+
+  'watch.duration.learnTime': 'Cumulative learning: ${duration} minutes',
 };

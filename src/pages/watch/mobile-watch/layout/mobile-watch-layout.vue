@@ -65,6 +65,9 @@
       <mobile-connect-mic-user-list />
     </div>
 
+    <!-- 双语流切换 -->
+    <mobile-player-stream-track v-if="supportLanguageStream" />
+
     <!-- 页面广告 -->
     <mobile-page-advert v-if="!isPlaybackWatchUrl" />
 
@@ -104,6 +107,7 @@ import MobilePlayerMain from '@/components/page-watch-common/player/player-main/
 import MobileCountDownLayer from '@/components/page-watch-common/count-down-layer/mobile-count-down-layer.vue';
 import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
 import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
+import MobilePlayerStreamTrack from '@/components/page-watch-common/player/player-stream-track/mobile-player-stream-track.vue';
 import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -118,6 +122,7 @@ import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
+import { usePlayerStore } from '@/store/use-player-store';
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -136,6 +141,8 @@ const {
 } = storeDefinitionToRefs(useLayoutStore);
 
 const { filterConnectMicList, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+
+const { supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 

@@ -2,7 +2,7 @@
  * @file 聊天室消息渲染 hook
  */
 import { translate } from '@/assets/lang';
-import { isUndefined } from '@/assets/utils/types';
+import { isUndefined } from 'lodash-es';
 import { pinia } from '@/plugins/pinia';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useLayoutStore } from '@/store/use-layout-store';

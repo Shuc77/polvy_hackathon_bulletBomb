@@ -2,7 +2,7 @@
   <mobile-popup
     :theme="PopupTheme.Portrait"
     class="c-portrait-withdraw-detail--popup"
-    title="我的红包余额"
+    :title="$lang('withdraw.detail.popup.title')"
     :visible.sync="popupVisible"
     fill-body-section
     append-to-body
@@ -26,10 +26,12 @@
         />
         <div class="c-portrait-withdraw-detail__amount">
           <p>
-            红包历史总收益：￥<span>{{ totalReceive }}</span>
+            {{ $lang('withdraw.redpack.receive.record') }}：￥
+            <span>{{ totalReceive }}</span>
           </p>
           <p>
-            已提现金额：￥<span>{{ totalWithdraw }}</span>
+            {{ $lang('withdraw.cash.receive.record') }}：￥
+            <span>{{ totalWithdraw }}</span>
           </p>
         </div>
       </div>
@@ -129,6 +131,7 @@ function handleShowWithdrawApply() {
     display: inline-block;
     width: 96px;
     margin: 16px auto 20px;
+    white-space: nowrap;
   }
   .c-portrait-withdraw-detail__amount {
     padding-bottom: 24px;
