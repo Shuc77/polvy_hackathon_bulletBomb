@@ -31,7 +31,6 @@ const projectVersion = (exports.projectVersion = pkgJSON.version);
  * 获取观看页 SDK 环境变量
  * */
 function getWatchSdkEnv() {
-  if (devMode) return 'test';
   
   return 'prod';
 }

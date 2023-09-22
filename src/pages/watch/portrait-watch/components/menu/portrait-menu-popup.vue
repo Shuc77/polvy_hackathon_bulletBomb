@@ -114,12 +114,12 @@
       />
 
       <!-- 修改昵称 -->
-      <!-- <menu-item
+      <menu-item
         v-if="canSetNick"
         icon="set-nick"
         :text="$lang('chat.setNick')"
         @click="onClickSetNick"
-      /> -->
+      />
 
       <!-- 发送图片 -->
       <!-- <menu-item

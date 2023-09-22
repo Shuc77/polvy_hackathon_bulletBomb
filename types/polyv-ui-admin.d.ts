@@ -98,6 +98,15 @@ declare module '@polyv/polyv-ui/lib-admin/tips' {
 }
 
 /**
+ * 复选框
+ */
+declare module '@polyv/polyv-ui/lib-admin/checkbox' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
  * 弹层
  */
 declare module '@polyv/polyv-ui/lib-admin/popper' {

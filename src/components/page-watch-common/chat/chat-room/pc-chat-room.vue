@@ -35,10 +35,13 @@
       <pc-chat-room-pendant />
 
       <!-- 打赏 svga 特效 -->
-      <pc-donate-svga-animation />
+      <pc-donate-svga-animation v-if="donateAnimationVisible" />
 
       <!-- 打赏动画 -->
-      <pc-donate-animation class="c-pc-chat-room__donate-animation" />
+      <pc-donate-animation
+        v-if="donateAnimationVisible"
+        class="c-pc-chat-room__donate-animation"
+      />
     </div>
 
     <!-- 互动二次入口 -->
@@ -74,6 +77,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useDonateStore } from '@/store/use-donate-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
@@ -82,6 +86,8 @@ const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatS
 const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 </script>
 
 <style lang="scss">

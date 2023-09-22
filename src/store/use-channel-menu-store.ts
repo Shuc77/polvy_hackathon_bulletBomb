@@ -8,6 +8,7 @@ import { getWatchCore } from '@/core/watch-sdk';
 import {
   ChannelMenuItem,
   ChannelMenuType,
+  LiveStatus,
   MultiMeetingListLayout,
   YN,
 } from '@polyv/live-watch-sdk';
@@ -19,6 +20,7 @@ import { useWatchAppStore } from './use-watch-app-store';
 import { useMultiMeetingStore } from './use-multi-meeting-store';
 import { useChannelStore } from './use-channel-store';
 import { ynToBool } from '@utils-ts/boolean';
+import { useChatStore } from './use-chat-store';
 
 export interface MenuDataType {
   /** 是否创建该菜单节点 */
@@ -77,6 +79,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
     const watchAppStore = useWatchAppStore();
     const langStore = useLangStore();
     const channelStore = useChannelStore();
+    const chatStore = useChatStore();
     const interactReceiveStore = useInteractReceiveStore();
     const multiMeetingStore = useMultiMeetingStore();
 
@@ -93,13 +96,19 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         menus = unref(enChannelMenus);
       }
 
+      // 回放地址进入观看页时只需要"聊天tab"
       if (watchAppStore.isPlaybackWatchUrl) {
         menus = menus.filter(menu => menu.menuType === ChannelMenuType.Chat);
       }
 
-      // 研讨会下不显示提问
-      if (channelStore.isSeminarChannel) {
+      // 研讨会下不显示提问/聊天室退出时不显示提问
+      if (channelStore.isSeminarChannel || chatStore.chatExited) {
         menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Quiz);
+      }
+
+      // 直播才显示字幕tab
+      if (channelStore.liveStatus !== LiveStatus.Live) {
+        menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Subtitle);
       }
 
       // 处理 displayEnabled 字段

@@ -1,6 +1,7 @@
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
+import { ChatMsgListHookOptions } from './types';
 
 export const useFilterSpecialMsgHook = () => {
   const chatStore = useChatStore();
@@ -43,5 +44,46 @@ export const useFilterSpecialMsgHook = () => {
   return {
     isNotSpecialMsg,
     filterSpecialMsgList,
+  };
+};
+
+/**
+ * 去除重复消息 hook
+ */
+export const useFilterRepeatMsgHook = (hookOptions: ChatMsgListHookOptions) => {
+  /**
+   * 过滤重复的消息
+   * @param chatMsgs 消息列表
+   */
+  function filterRepeatMsg(chatMsgs: ChatMsgType[]): ChatMsgType[] {
+    const virtualList = hookOptions.getVirtualList();
+
+    // 当前渲染的列表
+    const renderLen = virtualList.items.length;
+    const renderList: ChatMsgType[] = [];
+    for (let i = 0; i < renderLen; i++) {
+      const chatMsg = virtualList.items.get(i);
+      if (chatMsg) {
+        renderList.push(chatMsg);
+      }
+    }
+
+    const resultList: ChatMsgType[] = [];
+    for (let i = 0; i < chatMsgs.length; i++) {
+      const chatMsg = chatMsgs[i];
+      const resultIndex = resultList.indexOf(chatMsg);
+      const renderIndex = renderList.findIndex(item => item.id === chatMsg.id);
+      // 如果列表中重复或渲染中重复则剔除
+      if (resultIndex !== -1 || renderIndex !== -1) {
+        continue;
+      }
+      resultList.push(chatMsg);
+    }
+
+    return resultList;
+  }
+
+  return {
+    filterRepeatMsg,
   };
 };

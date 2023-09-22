@@ -31,7 +31,7 @@
 在项目根目录使用 `npm` 来执行以下命令
 
 ```sh
-npm ci #安装依赖
+npm ci #安装依赖，如果 CI 失败，请试一下 npm ci --no-cache --registry=https://registry.npmmirror.com/
 npm run dev #启动项目
 ```
 
@@ -67,6 +67,14 @@ npm run build-static
 
 - 执行完成后，源码会构建输出到 `dist-static` 文件夹中，只要将该文件夹上传到服务器即完成部署
 - 如果需要本地预览，可以启动一个 HTTP 服务器来访问 `dist-static` 文件夹，在本地预览生产环境构建最简单的方式就是使用一个 Node.js 静态文件服务器，例如 [serve](https://github.com/vercel/serve)
+
+### 其他注意事项
+
+- 外部错误页
+  - `src/hooks/core/use-error-verify` 文件跳转到的**外部错误页**，是保利威团队另外独立部署的页面。
+  - 在本地调试时，由于 `webpack-dev-server` 做了一层代理转发，能够正常访问
+  - 在实际部署时，错误页的域名默认会跟随当前页面的域名，会导致页面访问 `404`
+  - 如果想保持和保利威 SaaS 观看页一致，请写死外部错误页的域名
 
 ## 目录说明
 
@@ -106,7 +114,7 @@ npm run build-static
 - 主业务
   - 跳转应用错误页
     - `src/store/use-watch-app-store.ts` => `setPageError`
-  - 跳转外部错误页
+  - 跳转外部错误页（构建部署时请注意该文件）
     - `src/hooks/core/use-error-verify`
   - 引导页进观看页
     - `src/app/layout/main-enter/_hooks/use-main-enter.ts`
@@ -119,6 +127,8 @@ npm run build-static
     - `src/app/_hooks/use-weixin-setup`
 
 ## 补充说明
+
+请注意代码中标记 `@PLV-WARN` 的注释
 
 ### 构建图标组件
 

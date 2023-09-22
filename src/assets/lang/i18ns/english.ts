@@ -53,6 +53,7 @@ export const englishLang: LangConfig = {
 
   'ask.placeholderMsg': 'Hi, what can I do for you',
   'ask.news': 'News',
+  'ask.badWord': 'The question you sent contains prohibited words',
 
   'base.error.unknown': 'Unknown error',
   'base.error.iarSetup': 'Data loading exception, function loading failure!',
@@ -75,7 +76,7 @@ export const englishLang: LangConfig = {
   'base.tips': 'Tips',
   'base.me': 'me',
   'base.more': 'More',
-  'base.changeLang': 'Language switch',
+  'base.changeLang': 'Language',
   'base.message': 'Message',
   'base.packUp': 'Pack up',
   'base.spreadOut': 'Open',
@@ -414,6 +415,7 @@ export const englishLang: LangConfig = {
   'player.timeAxisMark.base.text': 'Highlights',
   'player.timeAxisMark.empty.text': 'Nothing',
   'player.subtitle.text': 'Subtitles',
+  'player.replaySubtitle.text': 'Replay subtitles',
   'player.streamTrack': 'Switch Track',
 
   'playback.list': 'Playback',
@@ -587,12 +589,22 @@ export const englishLang: LangConfig = {
   'invite.detail.viewer.name': 'viewer Info',
   'invite.detail.viewer.accessTime': 'viewer access time',
 
-  'barrage.speed': 'Barrage Speed',
-  'barrage.speed.verySlow': 'very slow',
+  'barrage.setting': 'Bullet setting',
+  'barrage.setting.recover': 'reset',
+
+  'barrage.size': 'Bullet size',
+  'barrage.size.verySmall': 'smaller',
+  'barrage.size.small': 'small',
+  'barrage.size.normal': 'standard',
+  'barrage.size.big': 'large',
+  'barrage.size.veryBig': 'larger',
+
+  'barrage.speed': 'Bullet speed',
+  'barrage.speed.verySlow': 'slower',
   'barrage.speed.slow': 'slow',
-  'barrage.speed.normal': 'normal',
-  'barrage.speed.fast': 'fast',
-  'barrage.speed.veryFast': 'very fast',
+  'barrage.speed.normal': 'standard',
+  'barrage.speed.fast': 'faster',
+  'barrage.speed.veryFast': 'fastest',
 
   'promote.external.link.tips': `After clicking the menu, the content of this link will be displayed on a new page; if a new page cannot be created, it will be displayed on the current page to replace the original viewing page`,
 

@@ -59,7 +59,7 @@
               </form-item>
             </template>
 
-            <!-- 文本 -->
+            <!-- 填空 -->
             <template v-if="item.type === EnrollFieldType.Text">
               <form-item
                 :label="item.name"
@@ -222,6 +222,18 @@
                 />
               </form-item>
             </template>
+
+            <!-- 文本 -->
+            <template v-if="item.type === EnrollFieldType.Tips">
+              <form-item
+                :key="`tips-${index}`"
+                :form-field="item.fieldId"
+              >
+                <span class="c-mobile-enroll-form__item__field-tips-content">
+                  {{ item.name }}
+                </span>
+              </form-item>
+            </template>
           </template>
 
           <div class="c-mobile-enroll-form__body__submit">
@@ -305,6 +317,13 @@ const { blurToCheckStatus } = useEnrollCheckMobile({
   margin: 0 auto 24px;
   border-radius: 8px;
   object-fit: cover;
+}
+
+.c-mobile-enroll-form__item__field-tips-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #757575;
+  word-break: break-word;
 }
 
 .c-mobile-enroll-form__body__submit {

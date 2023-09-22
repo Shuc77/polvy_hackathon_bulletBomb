@@ -48,7 +48,7 @@ export const useErrorCatch = (cb: (data: ErrorCatchModel) => void) => {
       const msg = error && error.stack ? processStackMsg(error) : message;
 
       const data: ErrorCatchModel = {
-        name: (error && error.name) || 'uncatchErrorName',
+        name: (error && error.name) || 'unCatchWindowErrorName',
         type: 'windowError',
         msg,
         target: target || 'global',
@@ -90,7 +90,7 @@ export const useErrorCatch = (cb: (data: ErrorCatchModel) => void) => {
     const target = vm.$options.name || vm.$options.__name || 'notFound';
 
     const data: ErrorCatchModel = {
-      name: error ? error.name : 'uncatchErrorName',
+      name: error ? error.name : 'unCatchVueErrorName',
       type: 'vueCatchError',
       msg,
       target: `Component/Tag：${target}`,

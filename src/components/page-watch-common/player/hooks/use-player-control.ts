@@ -46,7 +46,6 @@ export const usePlayerControl = () => {
 
   /**
    * 是否显示大的暂停播放按钮
-   * @desc PC 端是只在第一次播放的时候才要显示，但是移动端无延迟的情况下又需要一直显示。所以这里暂时统一处理为都要展示
    * */
   const bigPlayButtonVisible = computed<boolean>(() => {
     return (
@@ -219,7 +218,10 @@ export const usePlayerControl = () => {
     }
 
     return (
-      unref(lineSettingVisible) || unref(qualitySettingVisible) || unref(latencyModeSettingVisible)
+      unref(lineSettingVisible) ||
+      unref(qualitySettingVisible) ||
+      unref(latencyModeSettingVisible) ||
+      unref(playbackStore.replaySubtitleVisible)
     );
   });
 
@@ -282,6 +284,28 @@ export const usePlayerControl = () => {
   });
 
   /**
+   * 弹幕字号切换按钮是否显示
+   */
+  const barrageSizeButtonVisible = computed(() => {
+    if (!playerStore.barrageSetting.barrageEnabled) {
+      return false;
+    }
+
+    // 由于 PC 端的弹幕由页面创建，不使用播放器自带，因此 PC 固定显示
+    if (!isMobile) {
+      return true;
+    }
+    return playerStore.supportBarrageSize;
+  });
+
+  /**
+   * 弹幕配置是否可用
+   */
+  const barrageSettingEnabled = computed(() => {
+    return barrageSpeedButtonVisible.value || barrageSizeButtonVisible.value;
+  });
+
+  /**
    * 直播时移"返回直播"按钮是否显示
    */
   const timeShiftReturnLiveButtonVisible = computed(() => {
@@ -323,7 +347,10 @@ export const usePlayerControl = () => {
     durationTimeText,
 
     playerModeSwitcherVisible,
+
     barrageSpeedButtonVisible,
+    barrageSizeButtonVisible,
+    barrageSettingEnabled,
 
     timeShiftReturnLiveButtonVisible,
   };

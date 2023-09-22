@@ -7,14 +7,13 @@ const {
   transpileDependencies,
   outputDir,
 } = require('./build/build-config');
-const { coreJsImports } = require('./build/core-import');
 const path = require('path');
 
 /** @type {import('@vue/cli-service').ProjectOptions} */
 module.exports = {
   pages: {
     index: {
-      entry: [...coreJsImports, path.resolve(__dirname, './src/main.ts')],
+      entry: path.resolve(__dirname, './src/main.ts'),
       template: path.resolve(__dirname, './public/index.html'),
       filename: 'index.html',
     },

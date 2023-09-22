@@ -30,6 +30,7 @@ export const useBarrage = (
     barrageTarget = watchCore.barrage.setupBarrage({
       container,
       speed: playerStore.barrageSpeed,
+      size: playerStore.barrageSize,
     });
   }
 
@@ -46,10 +47,25 @@ export const useBarrage = (
     barrageTarget?.changeSpeed(speed);
   }
 
+  /** 修改弹幕字号 */
+  function changeBarrageSize(size: number) {
+    barrageTarget?.changeSize(size);
+  }
+
   watch(
     () => playerStore.barrageSpeed,
     () => {
       changeBarrageSpeed(playerStore.barrageSpeed);
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  watch(
+    () => playerStore.barrageSize,
+    () => {
+      changeBarrageSize(playerStore.barrageSize);
     },
     {
       immediate: true,
@@ -80,5 +96,6 @@ export const useBarrage = (
     setupBarrage,
     destroyBarrage,
     changeBarrageSpeed,
+    changeBarrageSize,
   };
 };

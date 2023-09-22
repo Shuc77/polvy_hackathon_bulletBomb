@@ -130,7 +130,7 @@ export const useWelcomeUserLoginTips = (controller: WelcomeController, enabled =
 
 export const usePositionClickTips = (controller: WelcomeController, enabled = true) => {
   const interactReceiveStore = useInteractReceiveStore();
-  const visibleTime = 900;
+  const visibleTime = 2000;
 
   function onProductClickEvent(
     data: InteractReceiveEventsRelations[InteractReceiveEvents.ProductClick],
@@ -201,6 +201,7 @@ export const useChatWelcomeTips = () => {
   /** 隐藏定时器 */
   let hideTimer: number | undefined;
 
+  /** 毫秒级别 */
   let visibleTime = 3000;
 
   function setVisibleTime(time: number) {

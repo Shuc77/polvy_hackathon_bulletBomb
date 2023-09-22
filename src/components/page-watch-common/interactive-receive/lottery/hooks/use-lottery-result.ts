@@ -1,6 +1,5 @@
-import { computed, onBeforeMount, onBeforeUnmount, ref, unref } from 'vue';
 import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { computed, onBeforeMount, onBeforeUnmount, ref, unref } from 'vue';
 
 import { translate } from '@/assets/lang';
 
@@ -9,14 +8,13 @@ import {
   LotteryRecordData,
   LotteryResultInstance,
 } from '../types/lottery-types';
+import { useLotterySdk } from './use-lottery-sdk';
 
 /**
  * @hook 互动-抽奖-抽奖结果
  * */
 export const useLotteryResult = () => {
-  const watchCore = getWatchCore();
-  /** 抽奖 SDK 实例 */
-  const lotterySdk = watchCore.interactReceive.getLottery();
+  const { lotterySdk } = useLotterySdk();
 
   /** 抽奖结果组件实例 */
   const lotteryResultInstance = ref<LotteryResultInstance>();
@@ -26,9 +24,6 @@ export const useLotteryResult = () => {
   /** 设置抽奖显示状态 */
   function setLotteryResultVisible(visible = true) {
     lotteryResultVisible.value = visible;
-    if (visible) {
-      eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
-    }
   }
 
   /** 将结果状态返回到上一级 */

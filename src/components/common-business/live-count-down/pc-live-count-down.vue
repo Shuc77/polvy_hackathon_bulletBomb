@@ -4,6 +4,7 @@
     <count-down
       :theme="theme"
       :end-timestamp="liveStartTime"
+      @count-down-change="onCountDownChange"
       @count-down-finish="onCountDownFinish"
     />
   </div>
@@ -24,5 +25,5 @@ defineProps({
 
 const { liveStartTime } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { onCountDownFinish } = useLiveCountDown();
+const { onCountDownChange, onCountDownFinish } = useLiveCountDown();
 </script>

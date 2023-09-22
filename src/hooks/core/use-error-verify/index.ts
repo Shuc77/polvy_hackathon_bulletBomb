@@ -24,6 +24,8 @@ export function redirectToErrorVerify(params: RedirectErrorParams = {}) {
   const channelStore = useChannelStore();
   const langStore = useLangStore();
 
+  /** @PLV-WARN */
+  // https://live.polyv.cn/error-verify
   const errorPageUrl = appendToURL('/error-verify', {
     channelId: channelStore.channelId,
     lang: langStore.currentLang,

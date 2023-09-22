@@ -37,7 +37,7 @@
             'c-pc-dialog__header--hide-border': hideHeaderBorder,
           }"
         >
-          <h1>{{ title }}</h1>
+          <h1 class="g-singleline">{{ title }}</h1>
           <pc-icon-close
             v-if="closable"
             class="c-pc-dialog__header__close"
@@ -418,7 +418,8 @@ defineExpose<DialogInstance>({
   flex-shrink: 0;
   width: 100%;
   height: 48px;
-  padding: 0 16px;
+  padding-right: 48px;
+  padding-left: 16px;
   font-size: 14px;
   line-height: 48px;
   color: $--font-color-primary;
@@ -434,6 +435,7 @@ defineExpose<DialogInstance>({
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;

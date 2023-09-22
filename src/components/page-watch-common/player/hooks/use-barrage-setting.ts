@@ -4,36 +4,23 @@
 import { computed } from 'vue';
 import { translate } from '@/assets/lang';
 import { usePlayerStore } from '@/store/use-player-store';
+import { isMobile } from '@/assets/utils/browser';
 import { usePlayerAction } from './use-player-action';
+import { speedBitMap, sizeBitMap, sizeMobileBitMap } from './use-barrage-mapping';
 
 export const useBarrageSetting = () => {
-  const { toChangeBarrageSpeed } = usePlayerAction();
+  const { toChangeBarrageSpeed, toChangeBarrageSize } = usePlayerAction();
   const playerStore = usePlayerStore();
+
+  /**
+   * 弹幕速度转换为档位值
+   */
   const formattedBarrageSpeedToSliderValue = computed(() => {
-    type SpeedMap = {
-      [key: number]: number;
-    };
-    const map: SpeedMap = {
-      340: 1,
-      270: 2,
-      200: 3,
-      130: 4,
-      60: 5,
-    };
-    return map[playerStore.barrageSpeed] || map[200];
+    return speedBitMap.get(playerStore.barrageSpeed || 200);
   });
-  function formatSliderValueToSpeed(value: number) {
-    return {
-      1: 340,
-      2: 270,
-      3: 200,
-      4: 130,
-      5: 60,
-    }[value];
-  }
+
   function handleBarrageSpeedChange(value: number) {
-    const speed = formatSliderValueToSpeed(value) as number;
-    toChangeBarrageSpeed(speed);
+    toChangeBarrageSpeed(speedBitMap.get(value));
   }
 
   const formattedBarrageSpeedToText = computed(() => {
@@ -47,9 +34,51 @@ export const useBarrageSetting = () => {
     }[playerStore.barrageSpeed];
   });
 
+  /**
+   * 弹幕速度转换为档位值
+   */
+  const formattedBarrageSizeToSliderValue = computed(() => {
+    const sizeMap = isMobile ? sizeMobileBitMap : sizeBitMap;
+    return sizeMap.get(playerStore.barrageSize || 20);
+  });
+
+  const formattedBarrageSizeToText = computed(() => {
+    const sizeMap = isMobile ? sizeMobileBitMap : sizeBitMap;
+    return {
+      // 极小（12）、小（16）、标准（20）、大（24）、特大（28）
+      1: translate('barrage.size.verySmall'),
+      2: translate('barrage.size.small'),
+      3: translate('barrage.size.normal'),
+      4: translate('barrage.size.big'),
+      5: translate('barrage.size.veryBig'),
+    }[sizeMap.get(playerStore.barrageSize)];
+  });
+
+  /**
+   * 切换弹幕字号大小
+   * @param value 档位值
+   */
+  function handleBarrageSizeChange(value: number) {
+    const sizeMap = isMobile ? sizeMobileBitMap : sizeBitMap;
+    toChangeBarrageSize(sizeMap.get(value));
+  }
+
+  /**
+   * 恢复弹幕默认设置
+   * @desc 弹幕速度&弹幕字号跟随后台默认设置, 弹幕位置恢复到顶部, 弹幕透明度恢复到55%
+   */
+  function resetAllSetting() {
+    handleBarrageSpeedChange(playerStore.barrageSpeedGrade);
+    handleBarrageSizeChange(playerStore.barrageSizeGrade);
+  }
+
   return {
     formattedBarrageSpeedToSliderValue,
     formattedBarrageSpeedToText,
     handleBarrageSpeedChange,
+    formattedBarrageSizeToSliderValue,
+    formattedBarrageSizeToText,
+    handleBarrageSizeChange,
+    resetAllSetting,
   };
 };

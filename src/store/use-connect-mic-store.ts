@@ -12,7 +12,6 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useLayoutStore } from './use-layout-store';
-import { usePlayerStore } from './use-player-store';
 
 export interface ConnectMicStoreState {
   /** 配置是否使用连麦 */
@@ -92,7 +91,6 @@ export interface ConnectMicStore extends ConnectMicStoreState, ConnectMicStoreAc
  * 连麦 store
  */
 export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('connectMic', () => {
-  const playerStore = usePlayerStore();
   const layoutStore = useLayoutStore();
 
   /** 配置是否使用连麦 */
@@ -127,11 +125,15 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 连麦挂件是否需要渲染 */
   const connectMicPendantRenderEnabled = computed(() => {
+    if (!supportConnectMic.value) {
+      return false;
+    }
+
     if (isConnectMicing.value) {
       return true;
     }
 
-    return openMicStatus.value && playerStore.isLowLatency;
+    return openMicStatus.value;
   });
 
   /** 连麦挂件是否显示 */

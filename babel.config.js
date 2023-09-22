@@ -1,6 +1,6 @@
 const isProd = process.env.NODE_ENV === 'production';
 const ProdPlugins = isProd
-  ? [['transform-remove-console', { exclude: ['error', 'warn', 'info'] }]]
+  ? [['transform-remove-console', { exclude: ['error', 'warn', 'info'] }]] // @PLV-WARN
   : [];
 
 module.exports = {

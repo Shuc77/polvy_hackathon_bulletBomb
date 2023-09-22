@@ -17,6 +17,8 @@ export interface TabsInstance {
   currentTabName: Ref<TabNameType>;
   /** 设置当前激活的面板 */
   setCurrentTab(name: TabNameType): void;
+  /** 设置默认激活的面板 */
+  setDefaultTabName(name: TabNameType): void;
 }
 
 export interface TabsInjectContext {

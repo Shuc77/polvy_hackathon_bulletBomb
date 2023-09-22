@@ -44,11 +44,32 @@ export function getIosVersion() {
 /** 针对 iOS 13 以上 iPad(ua 与桌面端 Mac OS 近似) */
 export const isDesktopIPad = /mac os x/i.test(ua) && 'ontouchend' in document;
 
-/** IE 浏览器版本号，不符合该浏览器特征时返回空字符串 */
-const ieVersion = /\bMSIE\s(\d+)/i.test(ua) || /\bTrident\/.*;\srv:(\d+)/.test(ua) ? RegExp.$1 : '';
+/** IE 浏览器版本号，不符合该浏览器特征时返回 -1 */
+const ieVersion = (() => {
+  const ua = window.navigator.userAgent;
+  const msieIndex = ua.indexOf('MSIE ');
+  const tridentIndex = ua.indexOf('Trident/');
+
+  if (msieIndex > -1) {
+    // IE 10及以下版本
+    return parseInt(ua.substring(msieIndex + 5, ua.indexOf('.', msieIndex)), 10);
+  }
+
+  if (tridentIndex > -1) {
+    // IE 11版本
+    const rvIndex = ua.indexOf('rv:');
+    return parseInt(ua.substring(rvIndex + 3, ua.indexOf('.', rvIndex)), 10);
+  }
+
+  // 不是IE浏览器
+  return -1;
+})();
+
+/** 是否为 IE */
+export const isIE = uaInfo.browser.isIE;
 
 /** 是否为低版本 IE */
-export const isLowerIE = ieVersion && Number(ieVersion) <= 10;
+export const isLowerIE = isIE && ieVersion !== -1 && ieVersion <= 10;
 
 /**
  * 判断是否模拟 PC 的 UA

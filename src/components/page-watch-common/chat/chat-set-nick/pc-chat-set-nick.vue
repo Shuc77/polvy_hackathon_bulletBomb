@@ -21,7 +21,7 @@
             v-model="formData.nickname"
             :placeholder="$lang('chat.setNick.placeholder')"
             show-word-limit
-            :maxlength="20"
+            :maxlength="nickMaxLength"
           />
         </form-item>
         <div class="c-pc-chat-set-nick__content__buttons">
@@ -52,7 +52,16 @@ import NormalButton from '@/components/common-base/normal-button/normal-button.v
 import { useChatSetNick } from './use-chat-set-nick';
 import { PC_LAYOUT_ASIDE_WRAP } from '@/assets/constants/selector';
 
-const { dialogVisible, formData, formRules, setDialogVisible, submitSetNick } = useChatSetNick();
+const {
+  dialogVisible,
+  setDialogVisible,
+
+  formData,
+  formRules,
+  submitSetNick,
+
+  nickMaxLength,
+} = useChatSetNick();
 </script>
 
 <style lang="scss">

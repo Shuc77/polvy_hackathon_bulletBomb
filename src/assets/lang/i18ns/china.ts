@@ -47,6 +47,7 @@ export const chinaLang = {
 
   'ask.placeholderMsg': '您好！请问有什么问题吗',
   'ask.news': '新消息',
+  'ask.badWord': '您发送的问题含有违禁词',
 
   'base.error.unknown': '未知错误',
   'base.error.iarSetup': '数据请求异常，加载互动功能失败！',
@@ -392,6 +393,7 @@ export const chinaLang = {
   'player.timeAxisMark.base.text': '精彩看点',
   'player.timeAxisMark.empty.text': '暂无',
   'player.subtitle.text': '实时字幕',
+  'player.replaySubtitle.text': '回放字幕',
   'player.streamTrack': '切换音源',
 
   'playback.list': '回放列表',
@@ -467,7 +469,7 @@ export const chinaLang = {
   'unit.second': '秒',
 
   'watch.liveTime': '直播时间',
-  'watch.pvSuffix': '次观看',
+  'watch.pvSuffix': '次访问',
 
   'welcome.text': '欢迎',
   'welcome.wait': '等',
@@ -561,12 +563,22 @@ export const chinaLang = {
   'invite.detail.viewer.name': '观众信息',
   'invite.detail.viewer.accessTime': '观众进入时间',
 
+  'barrage.setting': '弹幕设置',
+  'barrage.setting.recover': '恢复默认设置',
+
+  'barrage.size': '弹幕大小',
+  'barrage.size.verySmall': '较小',
+  'barrage.size.small': '小',
+  'barrage.size.normal': '标准',
+  'barrage.size.big': '大',
+  'barrage.size.veryBig': '较大',
+
   'barrage.speed': '弹幕速度',
   'barrage.speed.verySlow': '缓慢',
   'barrage.speed.slow': '较慢',
   'barrage.speed.normal': '标准',
   'barrage.speed.fast': '较快',
-  'barrage.speed.veryFast': '快速',
+  'barrage.speed.veryFast': '极快',
 
   'promote.external.link.tips':
     '点击菜单后在新页面显示此链接内容；若无法新建页面则在当前页显示，替换原观看页',

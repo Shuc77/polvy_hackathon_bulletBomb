@@ -24,6 +24,7 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { getWatchCore } from '@/core/watch-sdk';
 import { loadLocalForage } from '@/plugins/external-lib-loaders/load-localforage';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useRequestHistoryTime } from './hooks/request-history-time-hook';
 
 /** 监听聊天 Tab 切换 */
 const useChatTabSwitchWatch = (options: { cb: () => void }) => {
@@ -86,7 +87,11 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
       return useRequestHistoryReplayHook(hookOptions);
     }
 
-    return useRequestHistory(hookOptions);
+    if (chatStore.onlySpecialMsg || !chatStore.chatSetting.getChatHistoryByTimestampEnabled) {
+      return useRequestHistory(hookOptions);
+    } else {
+      return useRequestHistoryTime(hookOptions);
+    }
   }
 
   // 聊天消息队列
@@ -266,7 +271,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
   watch(
     () => chatStore.onlySpecialMsg,
     () => {
-      virtualList?.refresh();
+      initVirtualList();
     },
   );
 

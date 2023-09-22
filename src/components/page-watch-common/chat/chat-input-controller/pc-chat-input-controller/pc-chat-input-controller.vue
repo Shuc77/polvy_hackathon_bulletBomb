@@ -99,7 +99,7 @@
 import { computed, ref } from 'vue';
 
 import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
-import { isLowerIE } from '@/assets/utils/browser';
+import { isIE } from '@/assets/utils/browser';
 
 import { PcIconBulletin, PcIconTips } from '@/components/component-icons/pc/map';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
@@ -135,7 +135,7 @@ const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {
-  if (isLowerIE) return false;
+  if (isIE) return false;
   return chatSetting.value.viewerSendImgEnabled;
 });
 

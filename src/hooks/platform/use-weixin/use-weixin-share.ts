@@ -49,11 +49,6 @@ export const useWeixinShare = () => {
       params.invitePosterId = inviteStore.invitePosterId;
     }
 
-    const playbackShareVid = playbackStore.generatePlaybackShareId();
-    if (playbackShareVid) {
-      params.playBackVid = playbackShareVid;
-    }
-
     return params;
   });
 

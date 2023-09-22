@@ -8,10 +8,13 @@ import { parse, appendToURL } from '@just4/querystring';
 /** 获取默认参数值 */
 const getDefaultQueryParams = (): UniversalParams<string | undefined> => ({});
 
-/** 地址上所有的参数 */
-export const queryParams: {
-  [key: string]: string | string[] | undefined;
-} = parse(window.location.search && window.location.search.slice(1)) || {};
+/** 获取地址栏上的参数 */
+const getUrlQueryParams = (): { [key: string]: string | string[] | undefined } => {
+  return parse(window.location.search && window.location.search.slice(1)) || {};
+};
+
+/** 页面初始化时，对应地址上所有的参数 */
+export const queryParams = getUrlQueryParams();
 
 /**
  * 获取当前观看页地址上的所有参数的对象
@@ -70,7 +73,7 @@ export const paramGetter = {
   /** 回放地址-回放来源 */
   playbackType: buildGetters<PlaybackOrigin>('playbackType'),
   /** 回放分享-回放视频 Id */
-  playbackSharedVid: buildGetters('playBackVid'),
+  playBackVid: buildGetters('playBackVid'),
   /** 渠道 id */
   promoteId: buildGetters('promoteId'),
   /** 企业微信分享海报的企微员工 ID */
@@ -129,10 +132,12 @@ export const paramGetter = {
   snapshotPage: buildGetters<YN>('snapshotPage'),
 };
 
+type QueryParamsKeyType = keyof typeof paramGetter;
+
 /**
  * 移除当前观看页地址上对应的参数
  * */
-export function removeQueryParam(keys: Array<keyof typeof paramGetter>) {
+export function removeQueryParam(keys: QueryParamsKeyType[]) {
   for (const key of keys) {
     if (!queryParams[key]) {
       continue;
@@ -143,6 +148,28 @@ export function removeQueryParam(keys: Array<keyof typeof paramGetter>) {
   const newUrl = appendToURL(location.pathname, {
     ...queryParams,
   });
+  if (window.history.replaceState) {
+    window.history.replaceState(null, document.title, newUrl);
+  } else {
+    location.href = newUrl;
+  }
+}
+
+/**
+ * 添加当前观看页地址上对应的参数
+ * */
+export function appendQueryParam(params: { [key in QueryParamsKeyType]?: string } = {}) {
+  const urlParams = getUrlQueryParams();
+  const newUrl = appendToURL(
+    location.pathname,
+    {
+      ...urlParams,
+      ...params,
+    },
+    {
+      ignoreEmpty: true,
+    },
+  );
   if (window.history.replaceState) {
     window.history.replaceState(null, document.title, newUrl);
   } else {

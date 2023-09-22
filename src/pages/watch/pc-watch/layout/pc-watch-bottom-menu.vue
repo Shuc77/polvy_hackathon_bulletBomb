@@ -1,7 +1,10 @@
 <!-- @file PC 端底部菜单栏 -->
 <template>
   <div class="c-pc-watch-bottom-menu">
-    <pc-normal-tabs v-model="pcBottomTabCurrentName">
+    <pc-normal-tabs
+      v-model="pcBottomTabCurrentName"
+      ref="pcBottomMenuRef"
+    >
       <template v-for="(menu, index) in bottomMenuList">
         <!-- 直播介绍 -->
         <pc-normal-tab-pane
@@ -97,11 +100,13 @@ import PcMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { ChannelMenuItem, ChannelMenuType, LiveStatus } from '@polyv/live-watch-sdk';
-import { computed, unref } from 'vue';
+import { computed, unref, onMounted, ref, watch } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { randomStr } from '@utils-ts/string';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { paramGetter } from '@/hooks/core/use-query-params';
+import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
@@ -143,5 +148,21 @@ const bottomMenuList = computed<ChannelMenuItem[]>(() => {
   }
 
   return menus;
+});
+const pcBottomMenuRef = ref<TabsInstance>();
+onMounted(() => {
+  const playBackVid = paramGetter.playBackVid();
+  if (playBackVid) {
+    const hasPlayBack = bottomMenuList.value.findIndex(
+      item => item.menuType === ChannelMenuType.Previous,
+    );
+    if (hasPlayBack === -1) return;
+    pcBottomMenuRef.value?.setDefaultTabName(TAB_NAME_PLAYBACK);
+  }
+});
+watch(liveStatus, () => {
+  if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
+    pcBottomMenuRef.value?.setDefaultTabName('');
+  }
 });
 </script>

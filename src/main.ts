@@ -8,6 +8,13 @@ import { useLangStore } from '@/store/use-lang-store';
 import '@/assets/styles/animation.scss';
 import '@/plugins/vconsole';
 
+import { isIE } from './assets/utils/browser';
+
+// IE 兼容处理
+if (isIE) {
+  import(/* webpackChunkName: "ie-polyfill" */ '@/assets/utils/ie-polyfill/index.js');
+}
+
 console.info(
   '%c WatchApp build info: %s, %s',
   'color: white;background-color: #0070ed;padding: 5px 5px',

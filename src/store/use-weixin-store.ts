@@ -19,6 +19,8 @@ export interface WeixinStoreState {
   wxShareInfo: Ref<WxShareInfo>;
   /** 微信支付类型 */
   weixinPayType: Ref<WeixinPayType>;
+  /** 是否可以在微信中重新设置昵称 */
+  weixinResetNickEnabled: Ref<boolean>;
 }
 
 export interface WeixinStoreAction {
@@ -58,6 +60,9 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   /** 微信支付类型 */
   const weixinPayType = ref<WeixinPayType>(WeixinPayType.Enterprise);
 
+  /** 是否可以在微信中重新设置昵称 */
+  const weixinResetNickEnabled = ref(false);
+
   function syncWeixinStore() {
     const watchCore = getWatchCore();
 
@@ -65,7 +70,10 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
     weixinAuthorized.value = watchCore.weixin.isWeixinAuthorized();
     weixinWatchAuthorized.value = watchCore.weixin.isWeixinWatchAuthorized();
     workWeixinAuthorized.value = watchCore.weixin.isWorkWeixinAuthorized();
-    weixinPayType.value = watchCore.weixin.getWeixinPayType();
+
+    const weixinConfig = watchCore.weixin.getWeixinConfig();
+    weixinPayType.value = weixinConfig.weixinPayType;
+    weixinResetNickEnabled.value = weixinConfig.weixinResetNickEnabled;
   }
 
   return {
@@ -75,6 +83,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
     workWeixinAuthorized,
     wxShareInfo,
     weixinPayType,
+    weixinResetNickEnabled,
     saveWxShareInfo,
     syncWeixinStore,
   };

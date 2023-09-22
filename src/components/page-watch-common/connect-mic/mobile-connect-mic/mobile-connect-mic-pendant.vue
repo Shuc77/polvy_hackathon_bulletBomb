@@ -376,4 +376,8 @@ const { top } = useAsideDrag({
   color: #666;
   text-align: center;
 }
+
+.pv-rtc-device-layout {
+  z-index: #{$--zIndex-pendant + 1} !important;
+}
 </style>

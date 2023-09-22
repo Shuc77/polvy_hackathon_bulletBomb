@@ -13,6 +13,7 @@ import { PageErrorType } from '@/app/layout/page-error/page-error-type';
 import { translate } from '@/assets/lang';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { appEvents, eventBus } from '@/app/app-events';
 
 export function bindChannelModuleEvents(): void {
   const watchAppStore = useWatchAppStore();
@@ -94,6 +95,12 @@ export function bindChannelModuleEvents(): void {
     channelInfoStore.$patch({
       viewerWatchDuration: Math.floor(duration / 60),
     });
+  });
+
+  channelEventEmitter.on(ChannelEvents.TransmitDoubleRoomChange, () => {
+    eventBus.$emit(appEvents.player.ResetUpPlayer);
+    eventBus.$emit(appEvents.doc.ResetUpDoc);
+    eventBus.$emit(appEvents.connectMic.ResetUpConnectMic);
   });
 
   const menuEventEmitter = watchCore.menu.eventEmitter;
