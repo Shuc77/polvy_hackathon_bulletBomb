@@ -3,6 +3,7 @@
   <div class="c-mobile-watch-mobile-menu">
     <mobile-menu-tabs
       v-model="mobileMenuCurrentName"
+      ref="mobileMenuTabsRef"
       @input="trackWatchTabChange"
     >
       <template #header-suffix>
@@ -172,7 +173,7 @@
 
         <!-- 邀请榜 -->
         <mobile-menu-tab-pane
-          v-else-if="menu.menuType === ChannelMenuType.Invite"
+          v-else-if="menu.menuType === ChannelMenuType.Invite && inviteRankEnabled"
           :key="`invite-${index}`"
           :label="menu.name"
           :name="TAB_NAME_INVITE_RANK"
@@ -270,10 +271,11 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-
+import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+
 import { ChannelMenuType, LiveStatus, MainScreenContent } from '@polyv/live-watch-sdk';
-import { computed, unref } from 'vue';
+import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
 
 import {
   TAB_NAME_ASK,
@@ -296,6 +298,8 @@ import { translate } from '@/assets/lang';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { paramGetter } from '@/hooks/core/use-query-params';
+import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
 
 const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -308,6 +312,8 @@ const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
 
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
+
+const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {
@@ -323,6 +329,24 @@ const { trackWatchTabChange } = useWatchEventTrack();
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: mobileMenuCurrentName,
+});
+const mobileMenuTabsRef = ref<TabsInstance>();
+onMounted(async () => {
+  await nextTick();
+  const playBackVid = paramGetter.playBackVid();
+  if (playBackVid) {
+    const hasPlayBack = channelMenus.value.findIndex(
+      item => item.menuType === ChannelMenuType.Previous,
+    );
+    if (hasPlayBack === -1) return;
+    mobileMenuTabsRef.value?.setDefaultTabName(TAB_NAME_PLAYBACK);
+  }
+});
+
+watch(liveStatus, () => {
+  if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
+    mobileMenuTabsRef.value?.setDefaultTabName('');
+  }
 });
 </script>
 

@@ -2,8 +2,10 @@
  * @file 实时字幕 store
  */
 import { getWatchCore } from '@/core/watch-sdk';
+import { LiveStatus } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
+import { useChannelStore } from './use-channel-store';
 
 export interface SubtitleStoreState {
   /** 实时字幕开关 */
@@ -14,8 +16,12 @@ export interface SubtitleStoreState {
   subtitlesTeacherEnable: Ref<boolean>;
   /** 本地实时字幕是否开启 */
   localUerSubtitlesEnable: Ref<boolean>;
+  /** 回放字幕主字幕（原声字幕）是否显示 */
+  mainReplaySubtitleShow: Ref<boolean>;
+  /** 回放字幕副字幕（翻译字幕）是否显示 */
+  subReplaySubtitleShow: Ref<boolean>;
   /** 实时字幕是否可用 */
-  subtitlesEnable: ComputedRef<boolean>;
+  liveSubtitlesEnable: ComputedRef<boolean>;
 }
 
 export interface SubtitleStoreAction {
@@ -25,11 +31,17 @@ export interface SubtitleStoreAction {
   changeLocalUerSubtitlesEnable: (enable: boolean) => void;
   /** 同步实时字幕配置 */
   syncSubtitleConfig: () => void;
+  /** 改变主字幕是否显示 */
+  changeMainSubtitleShow: (show: boolean) => void;
+  /** 改变副字幕是否显示 */
+  changeSubSubtitleShow: (show: boolean) => void;
 }
 
 export interface SubtitleStore extends SubtitleStoreState, SubtitleStoreAction {}
 
 export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle', () => {
+  const channelStore = useChannelStore();
+
   /** 实时字幕开关 */
   const subtitleRealTimeEnabled = ref(false);
 
@@ -42,9 +54,19 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
   /** 本地实时字幕是否开启 */
   const localUerSubtitlesEnable = ref(true);
 
-  /** 实时字幕是否可用 */
-  const subtitlesEnable = computed(() => {
-    return subtitleRealTimeEnabled.value && subtitlesTeacherEnable.value;
+  /** 主字幕是否显示 */
+  const mainReplaySubtitleShow = ref(true);
+
+  /** 副字幕是否显示 */
+  const subReplaySubtitleShow = ref(true);
+
+  /** 直播实时字幕是否可用 */
+  const liveSubtitlesEnable = computed(() => {
+    return (
+      subtitleRealTimeEnabled.value &&
+      subtitlesTeacherEnable.value &&
+      channelStore.liveStatus === LiveStatus.Live
+    );
   });
 
   /**
@@ -59,6 +81,20 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
    */
   function changeLocalUerSubtitlesEnable(enable: boolean): void {
     localUerSubtitlesEnable.value = enable;
+  }
+
+  /**
+   * 改变主字幕（原声字幕）是否显示
+   */
+  function changeMainSubtitleShow(show: boolean): void {
+    mainReplaySubtitleShow.value = show;
+  }
+
+  /**
+   * 改变副字幕(翻译字幕)是否显示
+   */
+  function changeSubSubtitleShow(show: boolean): void {
+    subReplaySubtitleShow.value = show;
   }
 
   /**
@@ -77,11 +113,15 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
     subtitleTranslateEnabled,
     subtitlesTeacherEnable,
     localUerSubtitlesEnable,
+    mainReplaySubtitleShow,
+    subReplaySubtitleShow,
 
-    subtitlesEnable,
+    liveSubtitlesEnable,
 
     changeSubtitlesTeacherEnable,
     changeLocalUerSubtitlesEnable,
+    changeMainSubtitleShow,
+    changeSubSubtitleShow,
 
     syncSubtitleConfig,
   };

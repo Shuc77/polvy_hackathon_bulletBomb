@@ -46,6 +46,14 @@ export interface PlayerStoreState {
   supportBarrageSpeed: Ref<boolean>;
   /** 弹幕速度 340 | 270 | 200 | 130 | 60 */
   barrageSpeed: Ref<number>;
+  /** 弹幕速度档位 */
+  barrageSpeedGrade: Ref<number>;
+  /** 是否支持弹幕字号切换 */
+  supportBarrageSize: Ref<boolean>;
+  /** 弹幕字号 28 | 24 | 20 | 14 | 12 */
+  barrageSize: Ref<number>;
+  /** 弹幕字号档位 */
+  barrageSizeGrade: Ref<number>;
   /** 弹幕移动端设置是否显示 */
   barrageMobileSettingVisible: Ref<boolean>;
   /** 观看延迟时间，单位：毫秒 */
@@ -194,6 +202,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageEnabled: false,
     barrageDefaultShow: false,
     barrageSpeed: 200,
+    barrageSize: 20,
+    barrageSpeedDefaultGrade: 3,
+    barrageSizeDefaultGrade: 3,
   });
 
   /** 弹幕显示状态 */
@@ -204,6 +215,18 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   /** 弹幕速度 */
   const barrageSpeed = ref(200);
+
+  /** 弹幕速度档位 */
+  const barrageSpeedGrade = ref(3);
+
+  /** 是否支持弹幕字号切换 */
+  const supportBarrageSize = ref(false);
+
+  /** 弹幕字号 */
+  const barrageSize = ref(20);
+
+  /** 弹幕字号档位 */
+  const barrageSizeGrade = ref(3);
 
   /** 弹幕设置是否显示 */
   const barrageMobileSettingVisible = ref(false);
@@ -377,6 +400,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     supportBarrageSpeed.value = playerInfo.supportBarrageSpeed;
     barrageSpeed.value = playerInfo.currentBarrageSpeed;
+    barrageSpeedGrade.value = playerInfo.barrageSpeedDefaultGrade;
+
+    supportBarrageSize.value = playerInfo.supportBarrageSize;
+    barrageSize.value = playerInfo.currentBarrageSize;
+    barrageSizeGrade.value = playerInfo.barrageSizeDefaultGrade;
 
     delayTime.value = playerInfo.delayTime;
     playStatus.value = playerInfo.playStatus;
@@ -414,6 +442,10 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageShow,
     supportBarrageSpeed,
     barrageSpeed,
+    supportBarrageSize,
+    barrageSpeedGrade,
+    barrageSize,
+    barrageSizeGrade,
     barrageMobileSettingVisible,
 
     delayTime,

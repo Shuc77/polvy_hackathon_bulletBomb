@@ -256,6 +256,8 @@ $--splash-header-content-height: 406px;
 }
 
 .c-pc-splash__header__author__publisher {
+  display: inline-block;
+  max-width: 100%;
   line-height: 20px;
 }
 

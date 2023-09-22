@@ -57,6 +57,8 @@ export const useTabs = (options: {
   const { value } = useProps(props);
   const { getSlot } = useVue();
 
+  /** 默认激活的面板 name */
+  const defaultTabName = ref<TabNameType>('');
   /** 上一次激活的面板 name */
   const prevTabName = ref<TabNameType>('');
   /** 当前激活的面板 name */
@@ -82,9 +84,15 @@ export const useTabs = (options: {
     },
   );
 
+  function setDefaultTabName(name: TabNameType) {
+    defaultTabName.value = name;
+    const firstTabName = tabPaneData.value.length > 0 ? tabPaneData.value[0].name : '';
+    setCurrentTab(name || firstTabName);
+  }
+
   /** 设置当前激活的面板 */
   function setCurrentTab(name: TabNameType) {
-    if (name === unref(currentTabName)) {
+    if (tabPaneData.value.length === 0 || name === unref(currentTabName)) {
       return;
     }
 
@@ -195,7 +203,7 @@ export const useTabs = (options: {
     }
 
     if (shouldSetFirstTab && panes.length) {
-      setCurrentTab(panes[0].name);
+      setCurrentTab(defaultTabName.value || panes[0].name);
     }
   }
 
@@ -221,6 +229,7 @@ export const useTabs = (options: {
   const tabsInstance: TabsInstance = {
     currentTabName,
     setCurrentTab,
+    setDefaultTabName,
   };
 
   return {
@@ -230,6 +239,7 @@ export const useTabs = (options: {
     currentTabIndex,
     isEmptyMenu,
     setCurrentTab,
+    setDefaultTabName,
     toNextTab,
     toPrevTab,
 

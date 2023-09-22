@@ -8,6 +8,7 @@ import { uuidV4 } from '@utils-ts/string';
 import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { translate } from '@/assets/lang';
 
 export interface UseAskOptions {
   askMsgListRef: Ref<AskMsgListInstance | undefined>;
@@ -99,11 +100,17 @@ export const useAsk = (options: UseAskOptions) => {
     askMsgListInstance?.checkScrollToBottom();
   }
 
+  function onSendBadWord() {
+    const watchCore = getWatchCore();
+    watchCore.ask.sendSystemMsg(translate('ask.badWord'));
+  }
+
   function bindAskEvent() {
     const watchCore = getWatchCore();
     watchCore.ask.eventEmitter.on(AskEvents.StudentQuestion, onAskEvent);
     watchCore.ask.eventEmitter.on(AskEvents.TeacherAnswer, onAskEvent);
     watchCore.ask.eventEmitter.on(AskEvents.SystemMessage, onAskEvent);
+    watchCore.ask.eventEmitter.on(AskEvents.SendBadWord, onSendBadWord);
   }
 
   function unbindAskEvent() {
@@ -111,6 +118,7 @@ export const useAsk = (options: UseAskOptions) => {
     watchCore.ask.eventEmitter.off(AskEvents.StudentQuestion, onAskEvent);
     watchCore.ask.eventEmitter.off(AskEvents.TeacherAnswer, onAskEvent);
     watchCore.ask.eventEmitter.off(AskEvents.SystemMessage, onAskEvent);
+    watchCore.ask.eventEmitter.off(AskEvents.SendBadWord, onSendBadWord);
   }
 
   onMounted(() => {

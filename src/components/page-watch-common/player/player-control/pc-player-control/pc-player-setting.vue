@@ -71,19 +71,8 @@
         </ul>
       </div>
 
-      <!-- 实时字幕开关 -->
-      <div
-        v-if="subtitlesEnable"
-        class="c-pc-player-control__setting__panel__section"
-      >
-        <div class="c-pc-player-control__setting__panel__title">
-          {{ $lang('player.subtitle.text') }}
-        </div>
-        <plv-switch
-          :value="localUerSubtitlesEnable"
-          @change="changeSubtitleSwitch"
-        ></plv-switch>
-      </div>
+      <!-- 字幕配置  -->
+      <pc-player-subtitle-setting class="c-pc-player-control__setting__panel__section" />
     </div>
   </div>
 </template>
@@ -91,10 +80,7 @@
 <script setup lang="ts">
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
-import { PlvSwitch } from '@/plugins/polyv-ui/pc-import';
-import { useSubtitleStore } from '@/store/use-subtitle-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { getWatchCore } from '@/core/watch-sdk';
+import PcPlayerSubtitleSetting from './pc-player-subtitle-setting.vue';
 
 const {
   lineSettingVisible,
@@ -106,16 +92,6 @@ const {
 } = usePlayerControl();
 
 const { toChangeLine, toChangeQualityLevel, toSetLowLowLatency } = usePlayerAction();
-
-const subtitleStore = useSubtitleStore();
-const { subtitlesEnable, localUerSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
-
-function changeSubtitleSwitch() {
-  const watchCore = getWatchCore();
-  const enable = !localUerSubtitlesEnable.value;
-  subtitleStore.changeLocalUerSubtitlesEnable(enable);
-  watchCore.subtitles.changeViewerSubtitleEnable(enable);
-}
 </script>
 
 <style lang="scss">
@@ -158,15 +134,6 @@ function changeSubtitleSwitch() {
 
 .c-pc-player-control__setting__panel__section + .c-pc-player-control__setting__panel__section {
   margin-top: 24px;
-}
-
-.c-pc-player-control__setting__panel__section {
-  .plv-switch {
-    background: #545c6b;
-  }
-  .plv-switch--switched {
-    background: #1755ee;
-  }
 }
 
 .c-pc-player-control__setting__panel__title {

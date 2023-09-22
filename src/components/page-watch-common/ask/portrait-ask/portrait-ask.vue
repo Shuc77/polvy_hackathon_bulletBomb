@@ -4,12 +4,13 @@
       ref="askCompPortraitRef"
       :slogan="askWelcomeText"
       :ask-sdk="askSdk"
+      :lang="currentLang"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import { useAskStore } from '@/store/use-ask-store';
@@ -21,6 +22,8 @@ const { askSdk } = useAskSdk();
 
 const { askWelcomeText } = storeDefinitionToRefs(useAskStore);
 
+const { currentLang } = storeDefinitionToRefs(useLangStore);
+
 const { updateAskReminderVisible } = useAskReminder({
   onAskMsg: () => {
     const portraitLayoutStore = usePortraitLayoutStore();
@@ -31,14 +34,6 @@ const { updateAskReminderVisible } = useAskReminder({
 });
 
 const askCompPortraitRef = ref();
-const langStore = useLangStore();
-watch(
-  () => langStore.currentLang,
-  () => {
-    askCompPortraitRef.value.reset();
-    askCompPortraitRef.value.getQuestionList();
-  },
-);
 </script>
 
 <style lang="scss">

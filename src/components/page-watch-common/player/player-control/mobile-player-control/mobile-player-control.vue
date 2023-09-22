@@ -60,7 +60,7 @@
 
           <!-- 右侧按钮 -->
           <div class="c-mobile-player-control__inner__right">
-            <template v-if="barrageSpeedButtonVisible">
+            <template v-if="barrageSettingEnabled">
               <!-- 弹幕设置 -->
               <mobile-icon-barrage-setting
                 v-if="isHorizontalScreenOrientation || mobilePlayerIsPageFullscreen"
@@ -140,7 +140,7 @@ const {
 
   playButtonVisible,
   refreshButtonVisible,
-  barrageSpeedButtonVisible,
+  barrageSettingEnabled,
 } = usePlayerControl();
 
 const { startHidePlayerControlTimer } = usePlayerControlVisible();

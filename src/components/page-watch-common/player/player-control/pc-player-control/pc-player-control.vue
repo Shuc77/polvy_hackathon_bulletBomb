@@ -135,7 +135,7 @@
               @click="toToggleBarrageShow"
             />
             <!-- 弹幕设置 -->
-            <pc-barrage-setting v-show="barrageSpeedButtonVisible" />
+            <pc-barrage-setting v-show="barrageSettingEnabled" />
           </template>
 
           <!-- 倍速设置 -->
@@ -234,7 +234,7 @@ const {
   switchScreenButtonVisible,
   currentTimeText,
   durationTimeText,
-  barrageSpeedButtonVisible,
+  barrageSettingEnabled,
   timeShiftReturnLiveButtonVisible,
 } = usePlayerControl();
 

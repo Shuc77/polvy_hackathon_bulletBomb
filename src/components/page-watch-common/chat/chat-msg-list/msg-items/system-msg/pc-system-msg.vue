@@ -15,6 +15,7 @@ const { chatMsg } = useSystemMsg();
 .c-pc-system-msg {
   margin: 0 $--margin-horizontal-margin;
   font-size: 12px;
+  line-height: 1.4;
   text-align: center;
 }
 </style>

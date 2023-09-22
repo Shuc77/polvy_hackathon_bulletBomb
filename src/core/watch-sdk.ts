@@ -64,12 +64,8 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   return watchCore;
 }
 
-window.debugWatchSdk = (params?: string) => {
-  // 生产环境增加限制
-  if (WATCH_SDK_ENV === 'prod' && params !== `plv_watch_v${PROJECT_VERSION}`) {
-    return;
-  }
-
+window.debugWatchSdk = () => {
+  // @PLV-WARN
   window.watchCore = watchCore;
   setDebugMode(true);
   console.info(watchCore);

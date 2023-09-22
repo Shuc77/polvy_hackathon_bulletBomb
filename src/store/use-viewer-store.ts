@@ -81,7 +81,12 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
       return false;
     }
 
-    // 微信中且微信静默授权已经有昵称的情况
+    // 支持在微信中重新设置昵称
+    if (isWeixin && weixinStore.weixinResetNickEnabled) {
+      return true;
+    }
+
+    // 微信中、微信非静默授权已经有昵称的情况
     if (isWeixin && weixinStore.weixinWatchAuthorized && nickname.value) {
       // 如果还是默认名称，则支持设置昵称
       return __checkDefaultUserNick(nickname.value);

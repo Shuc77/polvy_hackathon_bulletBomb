@@ -30,7 +30,7 @@ export interface InviteStoreState {
   /** 邀请海报开关 */
   invitePosterEnabled: Ref<boolean>;
   /** 邀请榜开关 */
-  inviteRankEnabled: ComputedRef<boolean>;
+  inviteRankEnabled: Ref<boolean>;
   /** 邀请明细开关 */
   inviteDetailEnabled: Ref<boolean>;
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
@@ -67,9 +67,12 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   /** 邀请海报开关 */
   const invitePosterEnabled = ref(false);
 
+  /** 邀请榜配置开关 */
+  const inviteRankConfigEnabled = ref(true);
+
   /** 邀请榜开关 */
-  const inviteRankEnabled = computed<boolean>(() => {
-    return channelMenuStore.inviteRankMenuData.visible;
+  const inviteRankEnabled = computed(() => {
+    return inviteRankConfigEnabled.value && channelMenuStore.inviteRankMenuData.visible;
   });
 
   /** 邀请明细开关 */
@@ -121,6 +124,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     const watchCore = getWatchCore();
 
     invitePosterEnabled.value = isWeixin && watchCore.invite.getInvitePosterEnabled();
+    inviteRankConfigEnabled.value = watchCore.invite.getInviteRankEnabled();
 
     const inviteUserInfo = watchCore.invite.getInviteUserInfo(false);
     inviteUserOpenId.value = inviteUserInfo?.inviteOpenId;

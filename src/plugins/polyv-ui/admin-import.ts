@@ -30,5 +30,8 @@ export { default as PlvCol } from '@polyv/polyv-ui/lib-admin/col';
 import '@polyv/polyv-ui/lib-admin/theme/tips.css';
 export { default as PlvTips } from '@polyv/polyv-ui/lib-admin/tips';
 
+import '@polyv/polyv-ui/lib-admin/theme/checkbox.css';
+export { default as PlvCheckbox } from '@polyv/polyv-ui/lib-admin/checkbox';
+
 import '@polyv/polyv-ui/lib-admin/theme/popper.css';
 export { default as PlvPopper } from '@polyv/polyv-ui/lib-admin/popper';

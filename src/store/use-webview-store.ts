@@ -31,7 +31,7 @@ export interface WebviewStore extends WebviewStoreState, WebviewStoreActions {}
 export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', () => {
   const playerStore = usePlayerStore();
 
-  /** webview 敲击诶钱 */
+  /** webview 桥接器 */
   let webviewBridge: WebViewBridge | undefined;
 
   /** 是否基于保利威 webview 协议嵌入的观看页 */

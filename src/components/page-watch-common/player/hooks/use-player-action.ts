@@ -19,7 +19,7 @@ export const usePlayerAction = () => {
    * 是否不允许处理
    */
   function isNotAllowAction(): boolean {
-    return !playerStore.isPlayMode;
+    return !playerStore.isPlayMode || !playerStore.playerInited;
   }
 
   /** 播放 */
@@ -125,6 +125,14 @@ export const usePlayerAction = () => {
     getWatchCore().player.setBarrageSpeed(speed);
   }
 
+  /** 切换弹幕字号 */
+  function toChangeBarrageSize(size: number) {
+    playerStore.$patch({
+      barrageSize: size,
+    });
+    getWatchCore().player.setBarrageSize(size);
+  }
+
   /** 切换线路 */
   function toChangeLine(line: number): void {
     getWatchCore().player.changeLine(line);
@@ -217,6 +225,7 @@ export const usePlayerAction = () => {
     toReductionVolume,
     toToggleBarrageShow,
     toChangeBarrageSpeed,
+    toChangeBarrageSize,
     toChangeLine,
     toChangeQualityLevel,
     toChangeRate,

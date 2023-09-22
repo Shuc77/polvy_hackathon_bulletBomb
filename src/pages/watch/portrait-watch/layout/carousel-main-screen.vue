@@ -62,7 +62,7 @@
     <div class="c-portrait-carousel-main-screen__bottom">
       <!-- 打赏动画 -->
       <div
-        v-show="!portraitPlayerIsPageFullscreen"
+        v-show="!portraitPlayerIsPageFullscreen && donateAnimationVisible"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
         <portrait-donate-animation :track-count="2" />
@@ -149,8 +149,14 @@
           />
           <!-- 聊天室关闭提示 -->
           <portrait-chat-close-tips
-            v-if="!chatRoomVisible"
+            v-if="!chatRoomVisible && !chatExited"
             class="c-portrait-carousel-main-screen__input-wrap-item"
+          />
+          <!-- 发起转播频道被踢出提示 -->
+          <portrait-chat-error-tips
+            v-if="chatExited"
+            class="c-portrait-carousel-main-screen__input-wrap-item"
+            :content="$lang('chat.transformTip')"
           />
 
           <!-- 回放+章节入口 -->
@@ -194,7 +200,7 @@
 
     <!-- 打赏 svga 特效 -->
     <div
-      v-show="!portraitPlayerIsPageFullscreen"
+      v-show="!portraitPlayerIsPageFullscreen && donateAnimationVisible"
       class="c-portrait-carousel-main-screen__svga-donate"
     >
       <portrait-donate-svga-animation />
@@ -218,6 +224,7 @@ import MobilePageFooter from '@/components/common-business/page-footer/mobile-pa
 import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
 import PortraitAsk from '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue';
 import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
+import PortraitChatErrorTips from '@/components/page-watch-common/chat/chat-error-tips/portrait-chat-error-tips.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
 import PortraitChatWelcomeTips from '@/components/page-watch-common/chat/chat-welcome/portrait-chat-welcome-tips.vue';
@@ -261,9 +268,10 @@ const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
+const { showDonateFunction, donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { chatInputControllerEnable, chatRoomVisible } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, chatRoomVisible, chatExited } =
+  storeDefinitionToRefs(useChatStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } =
   storeDefinitionToRefs(usePlaybackStore);

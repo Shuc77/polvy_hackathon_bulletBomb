@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { isLowerIE } from '@/assets/utils/browser';
+import { isIE } from '@/assets/utils/browser';
 
 import PcAskMsgList from '../ask-msg-list/pc-ask-msg-list.vue';
 import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
@@ -59,7 +59,7 @@ const { askInputPlaceholder } = storeDefinitionToRefs(useAskStore);
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {
-  if (isLowerIE) return false;
+  if (isIE) return false;
   return questionImageEnabled.value;
 });
 

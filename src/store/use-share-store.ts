@@ -114,7 +114,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
   /** PC web 分享的观看地址 */
   const shareWatchUrl = computed(() => {
-    const playbackShareVid = playbackStore.generatePlaybackShareId();
+    const playbackShareVid = playbackStore.getPlaybackShareId();
 
     return appendToURL(
       shareBaseWatchUrl.value,

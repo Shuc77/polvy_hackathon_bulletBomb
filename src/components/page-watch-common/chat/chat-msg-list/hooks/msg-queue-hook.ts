@@ -5,7 +5,7 @@ import { RenderPosition } from '@just4/virtual-list/types';
 import { ChatEvents, ChatMsgType } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useContractHistory, useContractQueue } from './contract-history-hook';
-import { useFilterSpecialMsgHook } from './filter-special-msg-hook';
+import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions } from './types';
 
 export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
@@ -15,6 +15,7 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { contractMsgQueue } = useContractQueue();
   const { isNotSpecialMsg } = useFilterSpecialMsgHook();
+  const { filterRepeatMsg } = useFilterRepeatMsgHook(hookOptions);
 
   let joinTimer: number | undefined;
 
@@ -47,9 +48,10 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
     // 插入到是本地消息
     if (chatMsgStore.isLocalMsg(chatMsg)) {
       // 直接将队列消息插入，不需要延迟
-      const addList = chatMsgStore.concatQueueToHistoryData(true);
+      let addList = chatMsgStore.concatQueueToHistoryData(true);
       contractHistoryData();
 
+      addList = filterRepeatMsg(addList);
       virtualList.addBoundaryItems(addList, RenderPosition.Foot, true);
     }
 
@@ -86,12 +88,16 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
       const container = hookOptions.getContainerElem();
       // 是否在底部(50为误差值)
       const isBottom = container.scrollTop + container.clientHeight + 50 >= container.scrollHeight;
+      const footIsBoundary = virtualList.reachedBoundary(RenderPosition.Foot);
 
-      if (chatMsgStore.getRealStartIndex() <= 0) {
-        const renderData = chatMsgStore.concatQueueToHistoryData(true);
+      if (footIsBoundary) {
+        let renderData = chatMsgStore.concatQueueToHistoryData(true);
+        renderData = filterRepeatMsg(renderData);
+
         if (renderData.length) {
           if (isBottom && renderData.length) {
             virtualList.addBoundaryItems(renderData, RenderPosition.Foot, true);
+            chatMsgStore.hideMoreMsg();
           } else {
             /**
              * 重置滚动列表的状态

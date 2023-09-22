@@ -4,11 +4,17 @@
 
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { LiveStatus, PlaybackMode, PlaybackTarget, PlaybackType } from '@polyv/live-watch-sdk';
+import {
+  LiveStatus,
+  PlaybackMode,
+  PlaybackTarget,
+  PlaybackType,
+  ReplaySubtitleItem,
+} from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { appendQueryParam, paramGetter } from '@/hooks/core/use-query-params';
 import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 
 export interface PlaybackStoreState {
@@ -38,6 +44,12 @@ export interface PlaybackStoreState {
   playbackListVisible: ComputedRef<boolean>;
   /** 是否能够聊天重放 */
   chatReplayEnabled: ComputedRef<boolean>;
+  /** 是否能够商品库重放 */
+  productReplayEnabled: ComputedRef<boolean>;
+  /** 回放字幕数据 */
+  replaySubtitleList: ComputedRef<ReplaySubtitleItem[]>;
+  /** 是否展示回放字幕 */
+  replaySubtitleVisible: ComputedRef<boolean>;
 }
 
 export interface PlaybackStoreActions {
@@ -56,7 +68,7 @@ export interface PlaybackStoreActions {
   /** 获取回放的场次Id */
   getPlaybackSessionId(): string;
   /** 生成用于分享回放的 Vid */
-  generatePlaybackShareId(): string | undefined;
+  getPlaybackShareId(): string | undefined;
 }
 
 export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions {}
@@ -113,6 +125,33 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     return currentPlaybackTarget.value.chatReplayEnabled;
   });
 
+  /** 是否可以商品库重放 */
+  const productReplayEnabled = computed(() => {
+    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (!currentPlaybackTarget.value) return false;
+    if (channelStore.liveStatus === LiveStatus.Live) return false;
+
+    return currentPlaybackTarget.value.productReplayEnabled;
+  });
+
+  /** 回放字幕数据 */
+  const replaySubtitleList = computed(() => {
+    if (!currentPlaybackTarget.value) return [];
+    return currentPlaybackTarget.value.subtitleList;
+  });
+
+  /** 回放字幕是否展示 */
+  const replaySubtitleVisible = computed<boolean>(() => {
+    // 当前没有回放对象不展示
+    if (!currentPlaybackTarget.value) return false;
+    // 点播回放列表不展示
+    if (currentPlaybackTarget.value.playbackOptions.type === PlaybackType.Vod) return false;
+    // 直播中不展示
+    if (channelStore.liveStatus === LiveStatus.Live) return false;
+
+    return replaySubtitleList.value.length > 0;
+  });
+
   const chapterEnabled = ref(false);
 
   /** 章节是否显示 */
@@ -145,12 +184,10 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
     let result = playbackList.value[0];
 
-    const playbackSharedVid = paramGetter.playbackSharedVid();
-    if (playbackSharedVid) {
+    const playBackVid = paramGetter.playBackVid();
+    if (playBackVid) {
       const sharedPlaybackTarget = playbackList.value.find(
-        playbackTarget =>
-          playbackTarget.playbackOptions.type !== PlaybackType.Record &&
-          playbackTarget.playbackOptions.vid === playbackSharedVid,
+        playbackTarget => playbackTarget.playbackId === playBackVid,
       );
       result = sharedPlaybackTarget || result;
     }
@@ -191,9 +228,13 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   function updateCurrentPlaybackTarget(target?: PlaybackTarget) {
     currentPlaybackTarget.value = target;
 
+    appendQueryParam({ playBackVid: getPlaybackShareId() });
     updateWeixinShareConfig();
 
     setChatReplayPlaybackVideoTarget();
+
+    const watchCore = getWatchCore();
+    watchCore.playback.setCurrentPlaybackTarget(target);
   }
 
   /** 设置聊天重放对象 */
@@ -258,18 +299,12 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   }
 
   /**
-   * 生成用于分享回放的 Vid
+   * 获取用于分享回放的 Vid
    * */
-  function generatePlaybackShareId() {
-    if (watchAppStore.isPlaybackWatchUrl || playbackMode.value === PlaybackMode.Single) return;
+  function getPlaybackShareId() {
+    if (watchAppStore.isPlaybackWatchUrl || !currentPlaybackTarget.value) return;
 
-    if (
-      playbackList.value.length > 0 &&
-      currentPlaybackTarget.value &&
-      currentPlaybackTarget.value.playbackOptions.type !== PlaybackType.Record
-    ) {
-      return currentPlaybackTarget.value.playbackOptions.vid;
-    }
+    return currentPlaybackTarget.value.playbackId;
   }
 
   return {
@@ -289,6 +324,9 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     chapterVisible,
     playbackListVisible,
     chatReplayEnabled,
+    productReplayEnabled,
+    replaySubtitleList,
+    replaySubtitleVisible,
 
     syncPlaybackStore,
     updateCurrentPlaybackTarget,
@@ -298,6 +336,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     onPageChange,
 
     getPlaybackSessionId,
-    generatePlaybackShareId,
+    getPlaybackShareId,
   };
 });

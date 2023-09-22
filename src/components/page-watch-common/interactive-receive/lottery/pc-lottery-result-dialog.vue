@@ -10,7 +10,6 @@
     <iar-pc-lottery-end
       ref="lotteryResultInstance"
       :lottery-sdk="lotterySdk"
-      @to-show="setLotteryResultVisible(true)"
       @to-hide="setLotteryResultVisible(false)"
       @status-changed="onStatusChanged"
     />

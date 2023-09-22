@@ -14,8 +14,15 @@
         class="c-mobile-chat-room__topic__announcement"
       />
 
+      <!-- 发起转播频道被踢出提示 -->
+      <mobile-chat-error-tips
+        v-if="chatExited"
+        class="c-mobile-chat-room__topic__error"
+        :content="$lang('chat.transformTip')"
+      />
+
       <!-- 欢迎语 -->
-      <mobile-chat-welcome-tips v-if="chatSetting.welcomeEnabled" />
+      <mobile-chat-welcome-tips />
 
       <!-- 聊天消息重放提示 -->
       <mobile-chat-msg-replay-tips
@@ -33,10 +40,13 @@
       <mobile-chat-room-pendant />
 
       <!-- 打赏 svga 特效 -->
-      <mobile-donate-svga-animation />
+      <mobile-donate-svga-animation v-if="donateAnimationVisible" />
 
       <!-- 打赏动画 -->
-      <mobile-donate-animation class="c-mobile-chat-room__donate-animation" />
+      <mobile-donate-animation
+        v-if="donateAnimationVisible"
+        class="c-mobile-chat-room__donate-animation"
+      />
     </div>
 
     <!-- 互动二次入口 -->
@@ -57,6 +67,7 @@ import MobileDonateAnimation from '@/components/page-watch-common/donate/donate-
 import MobileDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
 import MobileAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
 import MobileInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/mobile-interactive-entrance.vue';
+import MobileChatErrorTips from '../chat-error-tips/mobile-chat-error-tips.vue';
 import MobileChatMsgList from '../chat-msg-list/mobile-chat-msg-list.vue';
 import MobileChatMsgReplayTips from '../chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant.vue';
@@ -68,16 +79,19 @@ import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useDonateStore } from '@/store/use-donate-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatSetting, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
+const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
+
+const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 </script>
 
 <style lang="scss">
@@ -105,6 +119,10 @@ const { mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
 
 .c-mobile-chat-room__topic__announcement {
   margin-bottom: 8px;
+}
+
+.c-mobile-chat-room__topic__error {
+  margin: 16px 8px 0;
 }
 
 .c-mobile-chat-room__msg-list {

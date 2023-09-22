@@ -14,6 +14,7 @@
         <form-item form-field="nickname">
           <mobile-form-input
             v-model="formData.nickname"
+            :maxlength="nickMaxLength"
             :placeholder="$lang('chat.setNick.placeholder')"
           />
         </form-item>
@@ -38,7 +39,15 @@ import FormSubmitButton from '@/components/common-base/form/form-submit-button.v
 import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
 import { useChatSetNick } from './use-chat-set-nick';
 
-const { dialogVisible, formData, formRules, submitSetNick } = useChatSetNick();
+const {
+  dialogVisible,
+
+  formData,
+  formRules,
+  submitSetNick,
+
+  nickMaxLength,
+} = useChatSetNick();
 </script>
 
 <style lang="scss">

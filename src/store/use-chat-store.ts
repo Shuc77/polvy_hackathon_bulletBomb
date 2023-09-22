@@ -92,6 +92,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     chatOnlineNumberEnable: false,
     faceEmotionEnabled: true,
     imageEmotionEnabled: true,
+    getChatHistoryByTimestampEnabled: false,
   });
 
   /** 聊天室是否显示 */
@@ -149,7 +150,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天区输入框控制栏是否可用 */
   const chatInputControllerEnable = computed(() => {
-    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (watchAppStore.isPlaybackWatchUrl || chatExited.value) return false;
 
     if (
       channelStore.privateSeminarChannel ||

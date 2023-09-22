@@ -1,35 +1,21 @@
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { ref } from 'vue';
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
 
 import { IarLotteryStatus } from '@polyv/live-watch-sdk';
+import { useLotterySdk } from './use-lottery-sdk';
 
 /**
  * @hook 互动-抽奖-抽奖动画
  * */
 export const useLotteryAnimation = () => {
-  const watchCore = getWatchCore();
-  /** 抽奖 SDK 实例 */
-  const lotterySdk = watchCore.interactReceive.getLottery();
   /** 抽奖动画是否显示 */
   const lotteryAnimationVisible = ref(false);
-  /** 当前抽奖状态 */
-  const currentLotteryStatus = ref<IarLotteryStatus>();
+
+  const { lotterySdk, openLotteryByStatus } = useLotterySdk();
 
   /** 处理抽奖状态改变 */
   function onLotteryStatusChange(status: IarLotteryStatus) {
-    currentLotteryStatus.value = status;
-
-    switch (status) {
-      case IarLotteryStatus.running:
-        lotteryAnimationVisible.value = true;
-        eventBus.$emit(appEvents.interaction.OpenLotteryResult, { visible: false });
-        break;
-      case IarLotteryStatus.over:
-      case IarLotteryStatus.end:
-        lotteryAnimationVisible.value = false;
-        break;
-    }
+    openLotteryByStatus(status);
   }
 
   /** 处理抽奖动画显示状态改变 */

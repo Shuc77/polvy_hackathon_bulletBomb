@@ -30,9 +30,9 @@
       class="c-mobile-player-main__play-btn"
     />
 
-    <!-- 播放器顶部-左侧 观看次数 -->
+    <!-- 播放器顶部-左侧 访问次数 -->
     <div
-      v-if="pageViewCountLocation === PageViewShowLocation.Player"
+      v-if="pvShowEnabled && pageViewCountLocation === PageViewShowLocation.Player"
       v-show="playerControlVisible || sdkPlayerUIControlVisible"
       class="c-mobile-player-main__pv"
     >
@@ -58,13 +58,8 @@
       class="c-mobile-player-main__control"
     />
 
-    <!-- 播放器实时字幕 -->
-    <player-subtitle
-      :selector="MOBILE_LIVE_PLAYER_INNER_WRAP"
-      :bottom="40"
-      :max-len="80"
-      :init-to-player="true"
-    />
+    <!-- 播放器字幕区 -->
+    <mobile-player-subtitle />
 
     <!-- ========= 弹出层类型组件 Start ========= -->
 
@@ -99,7 +94,7 @@ import MobilePlayerLogo from '@/components/page-watch-common/player/player-logo/
 import MobileBarrageSetting from '../../player-control/mobile-player-control/mobile-barrage-setting.vue';
 import MobilePlayerTimeAxisEntrance from '../../player-time-axis-mark/mobile-player-time-axis-entrance.vue';
 import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-player-time-axis-mark-popup.vue';
-import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/player-subtitle.vue';
+import MobilePlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/mobile-player-subtitle.vue';
 
 import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
@@ -107,7 +102,6 @@ import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { useChannelStore } from '@/store/use-channel-store';
 import { translate } from '@/assets/lang';
-import { MOBILE_LIVE_PLAYER_INNER_WRAP } from '@/assets/constants/selector';
 
 const {
   mobilePlayerIsPageFullscreen,
@@ -126,7 +120,8 @@ const {
   supportTimeAxisMark,
 } = storeDefinitionToRefs(usePlayerStore);
 
-const { pageViewCountLocation, pageViewCount } = storeDefinitionToRefs(useChannelInfoStore);
+const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
+  storeDefinitionToRefs(useChannelInfoStore);
 
 const { playerContainer } = usePlayerMain({
   initPlayerOptions: () => {

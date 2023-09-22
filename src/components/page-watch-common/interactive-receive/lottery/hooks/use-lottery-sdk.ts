@@ -19,9 +19,11 @@ export const useLotterySdk = () => {
         eventBus.$emit(appEvents.interaction.OpenLotteryResult, { visible: false });
         break;
       case IarLotteryStatus.over:
+        eventBus.$emit(appEvents.interaction.OpenLotteryResult, { visible: true });
+        eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
+        break;
       case IarLotteryStatus.end:
         eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
-        eventBus.$emit(appEvents.interaction.OpenLotteryResult, { visible: true });
         break;
     }
   }

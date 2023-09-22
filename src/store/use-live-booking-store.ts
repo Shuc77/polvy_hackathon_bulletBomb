@@ -11,6 +11,8 @@ import { getWatchCore } from '@/core/watch-sdk';
 export interface LiveBookingStoreState {
   /** 是否使用微信预约 */
   useWxBooking: Ref<boolean>;
+  /** 强制隐藏直播预约按钮 */
+  forceHideLiveBookingButton: Ref<boolean>;
   /** 是否显示直播预约按钮 */
   showLiveBookingButton: ComputedRef<boolean>;
   /** 是否已短信预约 */
@@ -54,8 +56,15 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
       return isMobile && isWeixin && !isWorkWeixin && unref(wxBookingEnabled);
     });
 
+    /** 强制隐藏直播预约按钮 */
+    const forceHideLiveBookingButton = ref(false);
+
     /** 是否显示直播预约按钮 */
     const showLiveBookingButton = computed<boolean>(() => {
+      if (forceHideLiveBookingButton.value) {
+        return false;
+      }
+
       // 没有设置开始时间
       if (!channelInfoStore.liveStartTime) {
         return false;
@@ -114,6 +123,7 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
 
     return {
       useWxBooking,
+      forceHideLiveBookingButton,
       showLiveBookingButton,
       isSmsLiveBooking,
       isWxLiveBooking,

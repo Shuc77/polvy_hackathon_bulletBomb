@@ -27,6 +27,7 @@
           :total-visible="false"
           :desc-label="jobDescLabel"
           :recruitment-enabled="recruitmentEnabled"
+          :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
           :is-plv-webview="isPlvWebview"
           :get-plv-webview-bridge="getPlvWebviewBridge"
           :plv-webview-data-size="plvWebviewDataSize"

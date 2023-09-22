@@ -33,6 +33,9 @@ export function bindPlayerModuleEvents(): void {
     if (playbackStore.chatReplayEnabled) {
       watchCore.chat.processChatMsgReplay(params);
     }
+    if (playbackStore.productReplayEnabled) {
+      watchCore.interactReceive.processProductReplay(params);
+    }
   });
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerMarqueeError, () => {

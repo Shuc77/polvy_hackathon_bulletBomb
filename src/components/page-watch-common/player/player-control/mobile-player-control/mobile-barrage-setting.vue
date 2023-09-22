@@ -13,22 +13,67 @@
       @click.self="closeBarrageSetting"
     >
       <div class="c-mobile-player-barrage-setting__content">
-        <div class="c-mobile-player-barrage-setting__label">{{ $lang('barrage.speed') }}</div>
-        <div class="c-mobile-player-barrage-setting__item">
-          <plv-slider
-            show-stops
-            :css-rotate-angle="isVerticalScreenOrientation && isPlayerFullscreen ? 90 : 0"
-            :min="1"
-            :max="5"
-            :step="1"
-            :progress-bar-visible="false"
-            :hot-area-height="44"
-            :value="formattedBarrageSpeedToSliderValue"
-            @input="handleBarrageSpeedChange"
-          />
-          <span class="c-mobile-player-barrage-setting__desc">{{
-            formattedBarrageSpeedToText
-          }}</span>
+        <!-- 顶部说明操作栏 -->
+        <div class="c-mobile-player-barrage-setting__content__top">
+          <span class="c-mobile-player-barrage-setting__content__top__left">
+            {{ $lang('barrage.setting') }}
+          </span>
+          <div
+            class="c-mobile-player-barrage-setting__content__top__right"
+            @click="resetAllSetting"
+          >
+            <span>{{ $lang('barrage.setting.recover') }}</span>
+            <img
+              class="c-mobile-player-barrage-setting__content__top__right__img"
+              src="../../imgs/icon-danmu-reset.png"
+            />
+          </div>
+        </div>
+        <!-- 弹幕字号 -->
+        <div
+          v-if="barrageSizeButtonVisible"
+          class="c-mobile-player-barrage-setting__content__option"
+        >
+          <div class="c-mobile-player-barrage-setting__label">{{ $lang('barrage.size') }}</div>
+          <div class="c-mobile-player-barrage-setting__item">
+            <plv-slider
+              show-stops
+              :css-rotate-angle="isVerticalScreenOrientation && isPlayerFullscreen ? 90 : 0"
+              :min="1"
+              :max="5"
+              :step="1"
+              :progress-bar-visible="false"
+              :hot-area-height="44"
+              :value="formattedBarrageSizeToSliderValue"
+              @input="handleBarrageSizeChange"
+            />
+            <span class="c-mobile-player-barrage-setting__desc">{{
+              formattedBarrageSizeToText
+            }}</span>
+          </div>
+        </div>
+        <!-- 弹幕速度 -->
+        <div
+          v-if="barrageSpeedButtonVisible"
+          class="c-mobile-player-barrage-setting__content__option"
+        >
+          <div class="c-mobile-player-barrage-setting__label">{{ $lang('barrage.speed') }}</div>
+          <div class="c-mobile-player-barrage-setting__item">
+            <plv-slider
+              show-stops
+              :css-rotate-angle="isVerticalScreenOrientation && isPlayerFullscreen ? 90 : 0"
+              :min="1"
+              :max="5"
+              :step="1"
+              :progress-bar-visible="false"
+              :hot-area-height="44"
+              :value="formattedBarrageSpeedToSliderValue"
+              @input="handleBarrageSpeedChange"
+            />
+            <span class="c-mobile-player-barrage-setting__desc">{{
+              formattedBarrageSpeedToText
+            }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -42,13 +87,20 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { useBarrageSetting } from '../../hooks/use-barrage-setting';
 import { usePlayerAction } from '../../hooks/use-player-action';
+import { usePlayerControl } from '../../hooks/use-player-control';
 
 const { toToggleBarrageMobileSettingVisible } = usePlayerAction();
+
+const { barrageSizeButtonVisible, barrageSpeedButtonVisible } = usePlayerControl();
 
 const {
   formattedBarrageSpeedToSliderValue,
   formattedBarrageSpeedToText,
   handleBarrageSpeedChange,
+  formattedBarrageSizeToSliderValue,
+  formattedBarrageSizeToText,
+  handleBarrageSizeChange,
+  resetAllSetting,
 } = useBarrageSetting();
 
 const {
@@ -108,7 +160,7 @@ function closeBarrageSetting() {
 }
 .c-mobile-player-barrage-setting__content {
   width: 100%;
-  padding-left: 32px;
+  padding: 0 58px 0 32px;
   font-size: 14px;
   .plv-slider {
     flex-grow: 1;
@@ -147,6 +199,31 @@ function closeBarrageSetting() {
     right: -2px;
   }
 }
+.c-mobile-player-barrage-setting__content__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 29px;
+}
+.c-mobile-player-barrage-setting__content__top__left {
+  font-size: 16px;
+}
+.c-mobile-player-barrage-setting__content__top__right {
+  position: relative;
+  cursor: pointer;
+
+  span {
+    margin-right: 2px;
+  }
+
+  .c-mobile-player-barrage-setting__content__top__right__img {
+    width: 16px;
+    height: 16px;
+  }
+}
+.c-mobile-player-barrage-setting__content__option:not(:last-child) {
+  margin-bottom: 20px;
+}
 .c-mobile-player-barrage-setting__label {
   margin-bottom: 20px;
   font-size: 14px;
@@ -157,7 +234,7 @@ function closeBarrageSetting() {
 }
 .c-mobile-player-barrage-setting__desc {
   box-sizing: border-box;
-  width: 109px;
+  width: 40px;
   padding-left: 8px;
 }
 </style>

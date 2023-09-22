@@ -6,6 +6,7 @@
       size="small"
       :theme="theme"
       :hide-zero-days="theme === 'text'"
+      @count-down-change="onCountDownChange"
       @count-down-finish="onCountDownFinish"
     />
   </div>
@@ -26,5 +27,5 @@ defineProps({
 
 const { liveStartTime } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { onCountDownFinish } = useLiveCountDown();
+const { onCountDownChange, onCountDownFinish } = useLiveCountDown();
 </script>

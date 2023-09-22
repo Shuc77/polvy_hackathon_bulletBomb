@@ -14,6 +14,9 @@ export const useChatSetNick = () => {
   /** 显示状态 */
   const dialogVisible = ref(false);
 
+  /** 昵称最大字符长度 */
+  const nickMaxLength = 20;
+
   /** 表单 */
   const formData = reactive({
     nickname: '',
@@ -87,8 +90,11 @@ export const useChatSetNick = () => {
   return {
     dialogVisible,
     setDialogVisible,
+
     formData,
     formRules,
     submitSetNick,
+
+    nickMaxLength,
   };
 };

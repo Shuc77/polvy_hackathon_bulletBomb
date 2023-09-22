@@ -8,7 +8,7 @@ import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
-import { useFilterSpecialMsgHook } from './filter-special-msg-hook';
+import { useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
 
 export const useRequestHistory = (

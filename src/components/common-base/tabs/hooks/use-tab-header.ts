@@ -101,7 +101,11 @@ export const useTabHeader = (
 
   watch(
     () => [unref(currentTabIndex), unref(tabPaneData), langStore.currentLang],
-    () => computeCurrentLineLeft(),
+    async () => {
+      computeCurrentLineLeft();
+      await nextTick();
+      scrollToCurrent();
+    },
     {
       immediate: true,
     },
