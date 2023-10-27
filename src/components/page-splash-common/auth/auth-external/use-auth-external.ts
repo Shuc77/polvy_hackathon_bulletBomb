@@ -5,7 +5,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { AuthSettingItemExternal, ExternalAuthSignParams } from '@polyv/live-watch-sdk';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
-import { paramGetter, queryParams, removeQueryParam } from '@/hooks/core/use-query-params';
+import { paramGetter, queryParams } from '@/hooks/core/use-query-params';
 import { toast } from '@/hooks/components/use-toast';
 
 /**
@@ -46,7 +46,6 @@ export const useAuthExternalAction = () => {
     );
     if (result.success) {
       await handleAuthVerifySuccess(result);
-      removeQueryParam(['userid', 'avatar', 'ts', 'sign', 'nickname']);
     } else {
       await handleAuthVerifyFail(result);
       toast.warning(failMessage.value || getDefaultFailMessage());

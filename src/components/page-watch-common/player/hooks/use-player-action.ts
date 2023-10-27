@@ -56,6 +56,15 @@ export const usePlayerAction = () => {
     }
   }
 
+  /** 受stopLivePlayEnabled 字段影响 限制togglePlay的功能  */
+  function toTogglePlayLimitByStopLivePlay(hidePlayWhenLive: boolean): void {
+    if (hidePlayWhenLive && playerStore.playStatus === PlayStatus.Playing) {
+      return;
+    }
+
+    toTogglePlay();
+  }
+
   /** 刷新 */
   function toRefresh(): void {
     if (isNotAllowAction()) {
@@ -236,5 +245,6 @@ export const usePlayerAction = () => {
     toRestart,
     toToggleMobilePageFullscreen,
     toSetLowLowLatency,
+    toTogglePlayLimitByStopLivePlay,
   };
 };

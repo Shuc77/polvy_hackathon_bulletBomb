@@ -21,6 +21,7 @@ import { useMultiMeetingStore } from './use-multi-meeting-store';
 import { useChannelStore } from './use-channel-store';
 import { ynToBool } from '@utils-ts/boolean';
 import { useChatStore } from './use-chat-store';
+import { usePolyvAIStore } from './use-polyv-ai-store';
 
 export interface MenuDataType {
   /** 是否创建该菜单节点 */
@@ -55,6 +56,8 @@ export interface ChannelMenuStoreState {
   microActivityMenuData: ComputedRef<MenuDataType>;
   /** 分会场菜单信息 */
   multiMeetingMenuData: ComputedRef<MenuDataType>;
+  /** 云席菜单信息 */
+  seatTableMenuData: ComputedRef<MenuDataType>;
 }
 
 export interface ChannelMenuStoreAction {
@@ -82,6 +85,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
     const chatStore = useChatStore();
     const interactReceiveStore = useInteractReceiveStore();
     const multiMeetingStore = useMultiMeetingStore();
+    const polyvAIStore = usePolyvAIStore();
 
     /** 中文频道菜单 */
     const cnChannelMenus = ref<ChannelMenuItem[]>([]);
@@ -109,6 +113,16 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       // 直播才显示字幕tab
       if (channelStore.liveStatus !== LiveStatus.Live) {
         menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Subtitle);
+      }
+
+      // 云席可见时才能显示对应 Tab
+      if (!interactReceiveStore.seatTableVisible) {
+        menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Seat);
+      }
+
+      // 不支持 AI 助手时，需要过滤
+      if (!polyvAIStore.AIAssistantEnabled) {
+        menus = menus.filter(menu => menu.menuType !== ChannelMenuType.AIAssistant);
       }
 
       // 处理 displayEnabled 字段
@@ -200,6 +214,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         [ChannelMenuType.MicroActivity]: [translate('menu.tabName.microActivity'), '微活动'],
         [ChannelMenuType.MultiMeeting]: [translate('menu.tabName.multiMeeting'), '分会场'],
         [ChannelMenuType.Subtitle]: [translate('menu.tabName.subtitle'), '实时字幕'],
+        [ChannelMenuType.AIAssistant]: [translate('menu.tabName.AIAssistant'), 'AI助手答疑'],
       };
 
       if (!translateOptions[menuType]) {
@@ -308,6 +323,16 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       };
     });
 
+    /** 云席菜单信息 */
+    const seatTableMenuData = computed<MenuDataType>(() => {
+      const menuData = getMenuData(ChannelMenuType.Seat);
+
+      return {
+        visible: !!menuData,
+        label: menuData?.name ?? translate('menu.tabName.seat'),
+      };
+    });
+
     return {
       cnChannelMenus,
       enChannelMenus,
@@ -321,6 +346,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       inviteRankMenuData,
       microActivityMenuData,
       multiMeetingMenuData,
+      seatTableMenuData,
 
       addChannelMenu,
       removeChannelMenu,

@@ -1,4 +1,4 @@
-<!-- @file 竖屏端自定义消息 -->
+<!-- @file 竖屏端自定义消息(服务端) -->
 <template>
   <portrait-msg-container
     class="c-portrait-customer-msg"

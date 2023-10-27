@@ -77,3 +77,8 @@ export const TAB_NAME_TUWEN_LIVE = 'tuwenLive';
  * 分会场 tab 名
  */
 export const TAB_NAME_MULTI_MEETING = 'multiMeeting';
+
+/**
+ * AI助手答疑 tab 名
+ */
+export const TAB_NAME_AI_ASSISTANT = 'aiAssistant';

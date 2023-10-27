@@ -36,23 +36,38 @@
 
     <!-- 关注公众号弹层 -->
     <mobile-live-booking-subscribe-popup ref="subscribeRef" />
+
+    <!-- 取消微信预约提示弹层 -->
+    <mobile-message-box
+      ref="bookingCancelTipsRef"
+      content-center
+      :title="$lang('base.warmTips')"
+      :content="$lang('liveBooking.cancel.tips')"
+      :confirm-button-text="$lang('base.confirm')"
+      :cancel-button-text="$lang('base.cancel')"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { translate } from '@/assets/lang';
+import { computed, ref, unref } from 'vue';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+
 import { MobileIconBooking } from '@/components/component-icons/mobile/map';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
-import { useLiveBookingStore } from '@/store/use-live-booking-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { computed, ref, unref } from 'vue';
-import { useLiveBookingWx } from './hooks/use-live-booking-wx';
 import MobileLiveBookingFormPopup from './mobile-live-booking-form-popup.vue';
 import MobileLiveBookingSubscribePopup from './mobile-live-booking-subscribe-popup.vue';
-import { LiveBookingFormInstance } from './types';
+import MobileMessageBox from '@/components/common-base/message-box/mobile-message-box.vue';
+import { MessageBoxInstance } from '@/components/common-base/message-box/use-message-box';
+
+import { useLiveBookingStore } from '@/store/use-live-booking-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { useLiveBookingWx } from './hooks/use-live-booking-wx';
+import { LiveBookingFormInstance } from './types';
 
 const { trackUserReservationLive } = useWatchEventTrack();
 
@@ -111,8 +126,11 @@ const isShowBookingCount = computed(() => {
 /** 预约表单组件实例 */
 const bookingFormRef = ref<LiveBookingFormInstance>();
 
+/** 取消预约提示弹层实例 */
+const bookingCancelTipsRef = ref<MessageBoxInstance>();
+
 /** 处理按钮点击 */
-function onClickButton() {
+async function onClickButton() {
   if (unref(useWxBooking)) {
     onClickWxButton();
   } else {
@@ -123,20 +141,27 @@ function onClickButton() {
 /** 处理微信预约点击 */
 async function onClickWxButton() {
   trackUserReservationLive({ reservationType: 'official_account' });
+
   if (unref(isLiveBooking)) {
-    wxCancelLiveBooking();
+    const res = await bookingCancelTipsRef.value?.$confirm();
+    if (res) {
+      wxCancelLiveBooking();
+    }
   } else {
     wxSubmitLiveBooking();
   }
 }
 
 /** 处理短信预约点击 */
-function onClickSmsButton() {
+async function onClickSmsButton() {
   const instance = unref(bookingFormRef);
 
   trackUserReservationLive({ reservationType: 'code' });
   if (unref(isLiveBooking)) {
-    instance?.cancelLiveBooking();
+    const res = await bookingCancelTipsRef.value?.$confirm();
+    if (res) {
+      instance?.cancelLiveBooking();
+    }
   } else {
     instance?.openBookingForm();
   }

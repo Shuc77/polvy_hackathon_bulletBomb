@@ -15,6 +15,9 @@
     <!-- 直播开始倒计时提示 -->
     <pc-live-start-tips />
 
+    <!--  取消关联转播提示   -->
+    <pc-transmit-switch-tip />
+
     <!-- 设置昵称 -->
     <pc-chat-set-nick v-if="canSetNick" />
 
@@ -37,6 +40,7 @@ import PcChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-c
 import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-chat-set-nick.vue';
 import PcIarRender from '@/components/page-watch-common/interactive-receive/pc-iar-render.vue';
 import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-live-start-tips.vue';
+import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/pc-transmit-switch-tip.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
 import PcWatchLayout from './layout/pc-watch-layout.vue';

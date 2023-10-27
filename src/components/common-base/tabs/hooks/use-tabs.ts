@@ -92,7 +92,7 @@ export const useTabs = (options: {
 
   /** 设置当前激活的面板 */
   function setCurrentTab(name: TabNameType) {
-    if (tabPaneData.value.length === 0 || name === unref(currentTabName)) {
+    if (tabPaneData.value.length === 0) {
       return;
     }
 

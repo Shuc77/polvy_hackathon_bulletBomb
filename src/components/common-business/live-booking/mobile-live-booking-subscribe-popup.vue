@@ -14,8 +14,7 @@
         class="c-mobile-live-booking-subscribe-popup__desc"
       >
         {{ $lang('liveBooking.subscribe1') }}<br />
-        {{ $lang('liveBooking.subscribe2') }}<span>{{ $lang('liveBooking.subscribe3') }}</span
-        >{{ $lang('liveBooking.subscribe4') }}
+        {{ $lang('liveBooking.subscribe2') }}
       </p>
       <p
         v-else
@@ -89,8 +88,5 @@ defineExpose(instance);
   font-size: 16px;
   line-height: 20px;
   color: #333;
-  span {
-    color: #f1453d;
-  }
 }
 </style>

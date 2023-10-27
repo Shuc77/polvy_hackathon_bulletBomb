@@ -49,6 +49,11 @@ export const chinaLang = {
   'ask.news': '新消息',
   'ask.badWord': '您发送的问题含有违禁词',
 
+  'ai.input.placeholder': '试试输入你的问题',
+  'ai.not.config': 'AI助手未上岗',
+  'ai.busy': '当前系统繁忙，请稍后再试。',
+  'ai.hello': '你好，有任何问题都可以来问我哦！',
+
   'base.error.unknown': '未知错误',
   'base.error.iarSetup': '数据请求异常，加载互动功能失败！',
   'base.agree': '同意',
@@ -68,6 +73,7 @@ export const chinaLang = {
   'base.warmTips': '温馨提示',
   'base.enterLive': '进入直播',
   'base.tips': '提示',
+  'base.you': '你',
   'base.me': '我',
   'base.more': '更多',
   'base.changeLang': '语言切换',
@@ -94,9 +100,11 @@ export const chinaLang = {
   'base.submit': '提交',
   'base.submitSuccess': '提交成功',
   'base.smsCodeError': '短信验证码错误',
+  'base.noData': '暂无数据',
 
   'channel.noLive': '当前暂无直播',
   'channel.descEmpty': '暂无直播介绍~',
+  'channel.transmitSwitch': '当前频道已取消关联，将为你退出页面',
 
   'call.connect': '连线',
   'connectMic.deviceCheck': '设备检测',
@@ -320,16 +328,16 @@ export const chinaLang = {
   'liveBooking.cancelSuccess': '取消预约成功',
   'liveBooking.smsWrong': '验证码错误，请重新输入',
   'liveBooking.fail': '预约失败',
-  'liveBooking.subscribe1': '长按二维码关注',
-  'liveBooking.subscribe2': '可以在直播开始',
-  'liveBooking.subscribe3': '前15分钟',
-  'liveBooking.subscribe4': '收到开播提醒',
+  'liveBooking.subscribe1': '关注公众号',
+  'liveBooking.subscribe2': '直播开始前可收到提醒',
   'liveBooking.welcome': '欢迎观看本次直播',
+  'liveBooking.cancel.tips': '确定取消预约吗？',
 
   'liveCountDown.text': '直播倒计时',
 
   'liveStatus.live': '直播中',
   'liveStatus.waiting': '等待中',
+  'liveStatus.waitingText': '休息一下，稍后继续',
   'liveStatus.end': '暂无直播',
   'liveStatus.stop': '直播暂停',
   'liveStatus.playback': '回放中',
@@ -340,6 +348,11 @@ export const chinaLang = {
 
   'layout.fullscreen': '全屏',
   'layout.fullscreenCancel': '取消全屏',
+
+  'motivation.like.received': '收获了',
+  'motivation.like.praise': '的夸奖',
+  'motivation.like.msg.of': '的',
+  'motivation.like.msg.praise': '夸奖',
 
   'pageError.channel.unknowError': '获取频道详情异常',
   'pageError.channel.closed': '频道号已被关闭',
@@ -528,6 +541,7 @@ export const chinaLang = {
   'menu.tabName.chapter': '章节',
   'menu.tabName.multiMeeting': '分会场',
   'menu.tabName.subtitle': '实时字幕',
+  'menu.tabName.AIAssistant': 'AI助手答疑',
   'menu.empty': '暂无菜单',
 
   'multiMeeting.other': '其它会场',
@@ -563,6 +577,16 @@ export const chinaLang = {
   'invite.detail.viewer.name': '观众信息',
   'invite.detail.viewer.accessTime': '观众进入时间',
 
+  'seatTable.me': '我的',
+  'seatTable.invite': '邀请',
+  'seatTable.chat': '发言',
+  'seatTable.myInfo': '我的信息',
+  'seatTable.follow': '收藏',
+  'seatTable.beFollowed': '被TA收藏',
+  'seatTable.seatText': '欢迎入座 ${row}排${column}座',
+  'seatTable.seatTips1': '您的专属嘉宾证已生成',
+  'seatTable.seatTips2': '领取专属嘉宾证',
+  'seatTable.seatTips3': '长按即可保存或分享',
   'barrage.setting': '弹幕设置',
   'barrage.setting.recover': '恢复默认设置',
 
@@ -588,11 +612,6 @@ export const chinaLang = {
   'wxAuth.copy': '复制直播间链接',
   'wxAuth.btn.text': '微信快捷登录',
   'wxAuth.protocol.tips': '请阅读并同意协议',
-  'wxAuth.protocol.content':
-    '已阅读并同意<a href="${viewerAgreement}">《用户协议》</a>及<a href="${viewerPolicy}">《隐私政策》</a>',
-  'wxAuth.protocol.confirm.content':
-    '<p>为更好地给用户提供产品及服务，保护用户的合法权益，根据国家相关法律法规规定，制定《用户协议》和《隐私政策》。</p><p>用户如需使用平台服务，请阅读<a href="${viewerAgreement}">《用户协议》</a>和<a href="${viewerPolicy}">《隐私政策》</a>后，点击“同意”，将自动登录。</p>',
-  'wxAuth.protocol.confirm.title': '用户协议及隐私政策',
 
   'subtitle.all': '双语字幕',
   'subtitle.source': '原声字幕',

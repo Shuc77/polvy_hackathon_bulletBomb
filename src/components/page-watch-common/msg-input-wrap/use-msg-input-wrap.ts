@@ -11,8 +11,12 @@ import { translate } from '@/assets/lang';
 export const msgInputWrapProps = () => ({
   /** 占位符 */
   placeholder: PropUtils.string,
+  /** 是否禁用设置昵称 */
+  disabledSetNick: PropUtils.bool.def(false),
   /** 是否禁用输入框 */
   disabledInput: PropUtils.bool.def(false),
+  /** 是否禁用发送按钮 */
+  disabledSubmitBtn: PropUtils.bool.def(false),
   /** 是否禁用表情选择 */
   disabledEmotionPicker: PropUtils.bool.def(false),
   /** 是否显示黄脸表情 */
@@ -146,7 +150,9 @@ export const useMsgInputWrap = (options: {
   }
 
   /** 发送按钮是否禁用 */
-  const sendBtnDisabled = msgInputController.isEmptyInputContent;
+  const sendBtnDisabled = computed(() => {
+    return props.disabledSubmitBtn || msgInputController.isEmptyInputContent.value;
+  });
 
   /** 上一次发言的时间戳 */
   let lastSendTime: number | undefined;
@@ -170,7 +176,6 @@ export const useMsgInputWrap = (options: {
     emit('submit', {
       contentList: msgInputController.getInputContentList(),
     });
-    msgInputController.clearInput();
   }
 
   /** 重置组件状态 */

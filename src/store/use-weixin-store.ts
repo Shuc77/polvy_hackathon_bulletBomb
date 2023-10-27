@@ -7,6 +7,11 @@ import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
 
 export interface WeixinStoreState {
+  /**
+   * 是否使用微信 SDK 功能
+   * @todo 后续用作 UI 层处理微信相关功能的前置逻辑
+   * */
+  wxSdkFeatureEnabled: Ref<boolean>;
   /** 是否进入微信快照页模式 */
   isWeixinSnapshotPageMode: Ref<boolean>;
   /** 是否已进行微信授权 */
@@ -32,6 +37,9 @@ export interface WeixinStoreAction {
 export interface WeixinStore extends WeixinStoreState, WeixinStoreAction {}
 
 export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () => {
+  /** 是否使用微信 SDK 功能 */
+  const wxSdkFeatureEnabled = ref(true);
+
   /** 是否进入微信快照页模式 */
   const isWeixinSnapshotPageMode = ref(false);
 
@@ -77,6 +85,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   }
 
   return {
+    wxSdkFeatureEnabled,
     isWeixinSnapshotPageMode,
     weixinAuthorized,
     weixinWatchAuthorized,

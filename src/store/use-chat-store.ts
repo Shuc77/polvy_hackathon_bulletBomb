@@ -50,6 +50,8 @@ export interface ChatStoreState {
   onlineUserCount: Ref<number>;
   /** 聊天室区域控制栏是否可用 */
   chatInputControllerEnable: ComputedRef<boolean>;
+  /** 移动端固定聊天输入框是否显示 */
+  mobileChatInputFixedVisible: Ref<boolean>;
   /** 聊天室输入框占位符 */
   chatInputPlaceholder: ComputedRef<string>;
   /** 是否禁用聊天室输入框 */
@@ -162,6 +164,9 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     return true;
   });
 
+  /** 移动端固定聊天输入框是否显示 */
+  const mobileChatInputFixedVisible = ref(false);
+
   /** 聊天室输入框占位符 */
   const chatInputPlaceholder = computed<string>(() => {
     // 聊天室被关闭
@@ -254,6 +259,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     onlineUserCount,
 
     chatInputControllerEnable,
+    mobileChatInputFixedVisible,
     chatInputPlaceholder,
     chatInputDisabled,
     currentQuoteMsg,

@@ -25,7 +25,8 @@ exports.publicPath = publicPath;
 const projectBuildTime = (exports.projectBuildTime = formatDate(new Date(), 'YYYY-MM-DD hh:mm:ss'));
 
 /** 项目版本号 */
-const projectVersion = (exports.projectVersion = pkgJSON.version);
+let projectVersion = (exports.projectVersion = pkgJSON.version);
+
 
 /**
  * 获取观看页 SDK 环境变量

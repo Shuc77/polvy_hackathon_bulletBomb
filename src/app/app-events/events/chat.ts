@@ -32,4 +32,8 @@ export const chatEvents = {
    * 触发发送图片
    */
   ToSendImage: 'ToSendImage',
+  /**
+   * 显示移动端固定输入框
+   */
+  ShowMobileFixedChatInput: 'ShowMobileFixedChatInput',
 };

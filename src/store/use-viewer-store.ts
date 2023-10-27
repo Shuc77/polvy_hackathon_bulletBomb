@@ -1,7 +1,7 @@
 /**
  * @file 观众信息 store
  */
-import { AuthType, DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
+import { AuthType, DEFAULT_VIEWER_AVATAR, ViewerSeatInfo } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -38,6 +38,8 @@ export interface ViewerStoreState {
   hasNickname: ComputedRef<boolean>;
   /** 当前是否需要实名认证 */
   needRealNameAuth: Ref<boolean>;
+  /** 云席信息 */
+  seatInfo: Ref<ViewerSeatInfo | undefined>;
 }
 
 export interface ViewerStoreAction {
@@ -110,6 +112,9 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     return !__checkDefaultUserNick(nickname.value);
   });
 
+  /** 云席信息 */
+  const seatInfo = ref<ViewerSeatInfo>();
+
   /** 同步观众信息 */
   function syncViewerInfo(): void {
     const watchCore = getWatchCore();
@@ -120,6 +125,8 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     openId.value = watchCore.user.getUserOpenId();
     unionId.value = watchCore.user.getUserUnionId();
     authType.value = watchCore.user.getUserAuthType();
+
+    seatInfo.value = watchCore.user.getUserSeatInfo();
   }
 
   /** 当前是否需要实名认证 */
@@ -154,6 +161,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     canSetNick,
     hasNickname,
     syncViewerInfo,
+    seatInfo,
 
     needRealNameAuth,
     syncNeedRealNameAuth,

@@ -28,6 +28,7 @@
           />
 
           <pc-form-protocol
+            v-if="channelAgreementConfig"
             ref="protocolRef"
             class="c-pc-force-wx-auth__protocol"
             circle
@@ -43,6 +44,7 @@
           </pc-form-protocol>
 
           <pc-message-box
+            v-if="channelAgreementConfig"
             ref="protocolConfirmRef"
             class="c-pc-force-wx-auth__confirm"
             :title="protocolConfirmInfo.title"
@@ -93,6 +95,8 @@ const { channelTitle } = storeDefinitionToRefs(useChannelInfoStore);
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 
 const {
+  channelAgreementConfig,
+
   qrcodeUrl,
   copyContent,
 
@@ -227,5 +231,14 @@ const {
   background-position: center center;
   background-size: 100% 100%;
   border: 1px solid #ccc;
+}
+
+/** 样式覆盖 @todo 多皮肤处理 */
+.c-pc-message-box {
+  .c-pc-message-box__footer {
+    .c-normal-button--primary {
+      background: $--color-primary !important;
+    }
+  }
 }
 </style>

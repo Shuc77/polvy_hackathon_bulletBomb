@@ -27,13 +27,16 @@
     <mobile-enroll-lottery-popup />
     <!-- 商品库职位详情弹层 -->
     <mobile-product-job-detail-popup />
+    <!-- 云席相关提示弹窗 -->
+    <mobile-seat-table-tips
+      v-if="seatTableVisible && isMeetingSeatTableTemplate && seatTableMenuData.visible"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { watch } from 'vue';
 import { $ } from '@just4/dom';
-
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
@@ -49,13 +52,24 @@ import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
 import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
 import MobileProductJobDetailPopup from './product/mobile-product-job-detail-popup.vue';
+import MobileSeatTableTips from './seat-table/seat-table-tips/mobile-seat-table-tips.vue';
+
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useRedpackStore } from '@/store/use-redpack-store';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
-const { isIarFullScreen, announcementFunctionVisible, interactSetting } =
-  storeDefinitionToRefs(useInteractReceiveStore);
+const {
+  isIarFullScreen,
+
+  announcementFunctionVisible,
+  seatTableVisible,
+  isMeetingSeatTableTemplate,
+  interactSetting,
+} = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
+
+const { seatTableMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 watch(
   () => isIarFullScreen.value,

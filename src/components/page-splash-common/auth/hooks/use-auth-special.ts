@@ -1,8 +1,18 @@
+import { QueryParamsKeyType } from '@/hooks/core/use-query-params';
 import { useAuthStore } from '@/store/use-auth-store';
 import { AuthType } from '@polyv/live-watch-sdk';
 import { useAuthCustomAction } from '../auth-custom/use-auth-custom';
 import { useAuthDirectAction } from '../auth-direct/use-auth-direct';
 import { useAuthExternalAction } from '../auth-external/use-auth-external';
+
+/** 特殊授权相关的参数 */
+export const AuthSpecialQueryParams: QueryParamsKeyType[] = [
+  'userid',
+  'avatar',
+  'ts',
+  'sign',
+  'nickname',
+];
 
 /**
  * 处理在页面进入后的特殊授权

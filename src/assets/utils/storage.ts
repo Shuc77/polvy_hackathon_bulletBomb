@@ -1,4 +1,4 @@
-import { local } from '@just4/storage';
+import { local, session } from '@just4/storage';
 
 /**
  * Storage 存储 key 前缀
@@ -29,4 +29,22 @@ export function setLocalStorage(key: string, value: string): void {
  */
 export function getLocalStorage(key: string): string | null {
   return local.get(getStorageKey(key));
+}
+
+/**
+ * 设置 sessionStorage
+ * @param key
+ * @param value
+ */
+export function setSessionStorage(key: string, value: string): void {
+  session.set(getStorageKey(key), value);
+}
+
+/**
+ * 获取 sessionStorage
+ * @param key
+ * @returns
+ */
+export function getSessionStorage(key: string): string | null {
+  return session.get(getStorageKey(key));
 }

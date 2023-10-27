@@ -39,9 +39,16 @@ export const usePlayerControl = () => {
     return text;
   });
 
+  /**
+   * 直播时隐藏播放按钮，不允许暂停
+   */
+  const noPauseWhenLive = computed(() => {
+    return !playerStore.stopLivePlayEnabled && channelStore.liveStatus === LiveStatus.Live;
+  });
+
   /** 是否显示暂停播放按钮 */
   const playButtonVisible = computed<boolean>(() => {
-    return !connectMicStore.isConnectMicing;
+    return !connectMicStore.isConnectMicing && !noPauseWhenLive.value;
   });
 
   /**
@@ -353,6 +360,8 @@ export const usePlayerControl = () => {
     barrageSettingEnabled,
 
     timeShiftReturnLiveButtonVisible,
+
+    noPauseWhenLive,
   };
 };
 

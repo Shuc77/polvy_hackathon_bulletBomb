@@ -1,4 +1,4 @@
-<!-- @file 移动端自定义消息 -->
+<!-- @file 移动端自定义消息(服务端) -->
 <template>
   <div class="c-mobile-customer-msg pws-chat-customer-msg">{{ chatMsg.content }}</div>
 </template>

@@ -55,6 +55,11 @@ export const englishLang: LangConfig = {
   'ask.news': 'News',
   'ask.badWord': 'The question you sent contains prohibited words',
 
+  'ai.input.placeholder': 'Try entering your question.',
+  'ai.not.config': 'AI Assistant is not configured.',
+  'ai.busy': 'The current system is busy. Please try again later.',
+  'ai.hello': 'Hello, feel free to ask me any questions!',
+
   'base.error.unknown': 'Unknown error',
   'base.error.iarSetup': 'Data loading exception, function loading failure!',
   'base.agree': 'Agree',
@@ -74,6 +79,7 @@ export const englishLang: LangConfig = {
   'base.warmTips': 'Warm Tips',
   'base.enterLive': 'Enter',
   'base.tips': 'Tips',
+  'base.you': 'you',
   'base.me': 'me',
   'base.more': 'More',
   'base.changeLang': 'Language',
@@ -101,9 +107,11 @@ export const englishLang: LangConfig = {
   'base.submit': 'Submit',
   'base.submitSuccess': 'Submit success',
   'base.smsCodeError': 'Sms code fail',
+  'base.noData': 'No data',
 
   'channel.noLive': 'No live streaming at the moment',
   'channel.descEmpty': 'No live broadcast introduction~',
+  'channel.transmitSwitch': 'The channel is no longer connected, you will be logged out.',
 
   'call.connect': 'Video call',
   'connectMic.deviceCheck': 'Equipment inspection',
@@ -339,16 +347,16 @@ export const englishLang: LangConfig = {
   'liveBooking.cancelSuccess': 'Cancel the appointment successfully',
   'liveBooking.smsWrong': 'The verification code is wrong, please re-enter',
   'liveBooking.fail': 'Booking fail',
-  'liveBooking.subscribe1': 'Long press the QR code to follow',
-  'liveBooking.subscribe2': "and you 'll receive a reminder",
-  'liveBooking.subscribe3': ' 15 minutes ',
-  'liveBooking.subscribe4': 'before this webcast.',
+  'liveBooking.subscribe1': 'Subscribe the Wechat official account',
+  'liveBooking.subscribe2': 'Receive a reminder before this webcast',
   'liveBooking.welcome': 'Welcome to the live',
+  'liveBooking.cancel.tips': 'Are you sure you want to cancel?',
 
   'liveCountDown.text': 'Countdown',
 
   'liveStatus.live': 'Live',
   'liveStatus.waiting': 'Waiting',
+  'liveStatus.waitingText': 'Take a break and continue later',
   'liveStatus.end': 'Not Live',
   'liveStatus.stop': 'Pause',
   'liveStatus.playback': 'Replaying',
@@ -359,6 +367,11 @@ export const englishLang: LangConfig = {
 
   'layout.fullscreen': 'Full screen',
   'layout.fullscreenCancel': 'Full screen off',
+
+  'motivation.like.received': ' received ',
+  'motivation.like.praise': ' praise',
+  'motivation.like.msg.of': '',
+  'motivation.like.msg.praise': 'praise',
 
   'pageError.channel.unknowError': 'Unexpceted channel detail',
   'pageError.channel.closed': 'Channel is closed',
@@ -554,6 +567,7 @@ export const englishLang: LangConfig = {
   'menu.tabName.chapter': 'Chapter',
   'menu.tabName.multiMeeting': 'MultiMeeting',
   'menu.tabName.subtitle': 'Subtitles',
+  'menu.tabName.AIAssistant': 'AI Assistant',
   'menu.empty': 'Empty menu',
 
   'multiMeeting.other': 'Breakout rooms',
@@ -589,6 +603,16 @@ export const englishLang: LangConfig = {
   'invite.detail.viewer.name': 'viewer Info',
   'invite.detail.viewer.accessTime': 'viewer access time',
 
+  'seatTable.me': 'Me',
+  'seatTable.invite': 'Invite',
+  'seatTable.chat': 'Chat',
+  'seatTable.myInfo': 'My information',
+  'seatTable.follow': 'Save',
+  'seatTable.beFollowed': 'Saved',
+  'seatTable.seatText': 'Row ${row}, seat ${column}',
+  'seatTable.seatTips1': 'Guest card has been generated',
+  'seatTable.seatTips2': 'Receive exclusive guest card',
+  'seatTable.seatTips3': 'Long press to save or share friends',
   'barrage.setting': 'Bullet setting',
   'barrage.setting.recover': 'reset',
 
@@ -613,11 +637,6 @@ export const englishLang: LangConfig = {
   'wxAuth.copy': 'Copy link',
   'wxAuth.btn.text': 'WeChat Quick Login',
   'wxAuth.protocol.tips': 'Read and agree',
-  'wxAuth.protocol.content':
-    'Read and agree<a href="${viewerAgreement}">《User Agreement》</a> and <a href="${viewerPolicy}">《Privacy Policy》</a>',
-  'wxAuth.protocol.confirm.content':
-    '<p>In order to provide better products and services and protect the legitimate rights of users, the <a href="${viewerAgreement}">"User Agreement"</a> and <a href="${viewerPolicy}">"Privacy Policy"</a> are formulated in accordance with relevant national laws and regulations.</p><p>If you want to use our platform services, please read the <a href="${viewerAgreement}">"User Agreement"</a> and <a href="${viewerPolicy}">"Privacy Policy,"</a> and click "Agree." You will be automatically logged in.</p>',
-  'wxAuth.protocol.confirm.title': 'User Agreement and Privacy Policy',
 
   'subtitle.all': 'Bilingual',
   'subtitle.source': 'Original',

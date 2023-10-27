@@ -18,6 +18,7 @@ import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { usePageAdvertStore } from '@/store/use-page-advert-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useShareStore } from '@/store/use-share-store';
 import { useThemeStore } from '@/store/use-theme-store';
@@ -98,6 +99,8 @@ export const useSyncStoreForWatchPage = () => {
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
   const pageAdvertStore = usePageAdvertStore();
+  const polyvAIStore = usePolyvAIStore();
+
   const viewerStore = useViewerStore();
 
   /**
@@ -117,6 +120,7 @@ export const useSyncStoreForWatchPage = () => {
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
     pageAdvertStore.syncPageAdvertStore();
+    polyvAIStore.syncPolyvAIStore();
 
     /**
      * 检查是否需要实名认证

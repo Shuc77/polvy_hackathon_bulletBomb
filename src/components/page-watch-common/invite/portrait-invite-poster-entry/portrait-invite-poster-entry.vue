@@ -2,7 +2,7 @@
 <template>
   <normal-button
     class="c-portrait-invite-poster-entry"
-    @click="redirectToPosterPage"
+    @click="onClickInvitePosterEntry"
   >
     {{ $lang('invite.poster.go.invite') }}
   </normal-button>
@@ -10,7 +10,7 @@
 
 <script setup lang="ts">
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { redirectToPosterPage } from '../hooks/use-invite-poster-entry';
+import { onClickInvitePosterEntry } from '../hooks/use-invite-poster-entry';
 </script>
 
 <style lang="scss">

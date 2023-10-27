@@ -129,7 +129,7 @@ export const usePlayerMain = ({
       lowLatency: playerStore.isLowLatency,
       language: langStore.currentLang === LangType.Chinese ? 0 : 1,
       languageStreamEnabled: true,
-      autoChangePlayback: true,
+      autoChangePlayback: false,
     };
 
     // 其他参数

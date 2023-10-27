@@ -8,6 +8,7 @@ import { getWatchCore } from '@/core/watch-sdk';
 
 /**
  * @hook 处理微信流程
+ * @warn 由于保利威业务授权逻辑较为复杂，请不要轻易调换微信授权和企微授权的处理顺序
  * @returns 返回 true 则表示中断页面渲染，需要进行微信授权
  */
 export const useWeixinSetup = async () => {

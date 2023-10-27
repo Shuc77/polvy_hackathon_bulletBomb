@@ -9,16 +9,23 @@
       :disabled-send-image="chatInputDisabled"
       :face-emotion-enabled="chatSetting.faceEmotionEnabled"
       :image-emotion-enabled="chatSetting.imageEmotionEnabled"
+      :is-allway-active="isAllwayActive"
       render-suffix-slot
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
       @click-input-wrap="checkNeedRealNameAuth"
     >
-      <template #main-prefix>
+      <template
+        v-if="!isPureness"
+        #main-prefix
+      >
         <mobile-chat-msg-quote />
       </template>
 
-      <template #suffix>
+      <template
+        v-if="!isPureness"
+        #suffix
+      >
         <!-- 更多 -->
         <div
           class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--more pws-mobile-more-button"
@@ -46,12 +53,22 @@ import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+
+defineProps({
+  /** 是否为纯净模式 */
+  isPureness: PropUtils.bool.def(false),
+  /** 是否处于激活状态 */
+  isAllwayActive: PropUtils.bool.def(false),
+});
 
 const viewerStore = useViewerStore();
 const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
 
-const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } =
+const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput, chatInputInstance } =
   useChatInputController();
+
+defineExpose(chatInputInstance);
 
 useEventBusListener(appEvents.chat.FocusToChatInput, () => {
   focusMsgInput();

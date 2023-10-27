@@ -13,8 +13,10 @@
       <portrait-redpaper-receive-msg
         v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive"
       />
-      <!-- 自定义消息 -->
+      <!-- 自定义消息(服务端) -->
       <portrait-customer-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomerMessage" />
+      <!-- 自定义消息(客户端) -->
+      <portrait-custom-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomMessage" />
       <!-- 文件分享消息 -->
       <portrait-file-msg v-else-if="chatMsg.msgSource === ChatMsgSource.File" />
       <!-- 系统消息 -->
@@ -34,6 +36,7 @@ import PortraitSpeakMsg from './speak-msg/portrait-speak-msg.vue';
 import PortraitRedpaperMsg from './redpaper-msg/portrait-redpaper-msg.vue';
 import PortraitRedpaperReceiveMsg from './redpaper-receive-msg/portrait-redpaper-receive-msg.vue';
 import PortraitCustomerMsg from './customer-msg/portrait-customer-msg.vue';
+import PortraitCustomMsg from './custom-msg/portrait-custom-msg.vue';
 import PortraitFileMsg from './file-msg/portrait-file-msg.vue';
 import PortraitSystemMsg from './system-msg/portrait-system-msg.vue';
 import PortraitRewardMsg from './reward-msg/portrait-reward-msg.vue';

@@ -104,6 +104,8 @@ export interface PlayerStoreState {
   supportLiveTimeShift: Ref<boolean>;
   /** 是否支持双语流 */
   supportLanguageStream: Ref<boolean>;
+  /** 直播时是否显示播放按钮， 默认开 */
+  stopLivePlayEnabled: Ref<boolean>;
 }
 
 export interface PlayerStoreAction {
@@ -351,6 +353,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否支持双语流 */
   const supportLanguageStream = ref(false);
 
+  /** 直播时是否显示播放按钮， 默认开 */
+  const stopLivePlayEnabled = ref(true);
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = getWatchCore();
@@ -411,6 +416,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     isLowLatency.value = playerInfo.isLowLatency;
 
     supportLanguageStream.value = playerInfo.supportLanguageStream;
+
+    stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
 
     /**
      * 暂不支持三分屏场景和研讨会场景
@@ -478,6 +485,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     supportLiveTimeShift,
 
     supportLanguageStream,
+
+    stopLivePlayEnabled,
 
     syncPlayerStore,
     syncWarmUpSetting,

@@ -101,4 +101,16 @@ export const interactionEvents = {
    * @param {object} jobDetail 职位详情
    */
   OpenProductJobDetail: 'OpenProductJobDetail',
+  /**
+   * 打开用户卡片
+   */
+  OpenSeatTableUserCard: 'OpenSeatTableUserCard',
+  /**
+   * 打开收藏弹层
+   */
+  OpenSeatTableFollowerPopup: 'OpenSeatTableFollowerPopup',
+  /**
+   * 刷新收藏列表
+   */
+  RefreshSeatTableFollowList: 'RefreshSeatTableFollowList',
 };

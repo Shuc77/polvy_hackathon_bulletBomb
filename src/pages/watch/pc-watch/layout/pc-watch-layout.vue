@@ -58,6 +58,7 @@
           <pc-donate-pay-qrcode class="c-pc-watch-layout__main__right__donate-pay" />
         </div>
 
+        <!-- 播放器和文档主体区--包括全屏 -->
         <div
           class="c-pc-watch-layout__main__fullscreen-wrap"
           :class="{
@@ -132,6 +133,13 @@
           <pc-count-down-layer
             class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__count-down"
           />
+
+          <!-- 课堂激励点赞动画 -->
+          <motivation-like-animation
+            v-if="donateAnimationVisible"
+            class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__motivation-like-animation"
+            :enable-types="[MotivationLikeType.Mic]"
+          />
         </div>
       </div>
     </div>
@@ -174,6 +182,7 @@ import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
 import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
 import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
 import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
+import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -182,7 +191,13 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
+import { useDonateStore } from '@/store/use-donate-store';
+
+import {
+  MainScreenContent,
+  MultiMeetingListLayout,
+  MotivationLikeType,
+} from '@polyv/live-watch-sdk';
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
 
@@ -196,6 +211,8 @@ const { mainScreen, subScreenPackUp, isFullscreen, pcAsideSectionIsEmpty } =
 const { masterMicItem, isDeviceRecoverFailed } = storeDefinitionToRefs(useConnectMicStore);
 
 const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
+
+const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const PlayerControlWrapperRef = ref<HTMLDivElement>();
 
@@ -242,6 +259,8 @@ $--layer-zIndex-barrage: 290;
 $--layer-zIndex-player-control: 300;
 // 直播倒计时层
 $--layer-zIndex-count-down: 310;
+// 课堂激励动画层
+$--layer-zIndex-motivation-like-animation: 310;
 
 // 左侧占比
 $--layout-left-width-percent: 76.2% !default;
@@ -376,6 +395,12 @@ $--layout-sub-pack-up-height: 40px !default;
 }
 .c-pc-watch-layout__main__count-down {
   z-index: $--layer-zIndex-count-down;
+}
+.c-pc-watch-layout__main__motivation-like-animation {
+  top: 25%;
+  z-index: $--layer-zIndex-motivation-like-animation;
+  height: 50%;
+  padding-bottom: 0;
 }
 
 .c-pc-watch-layout__main__fullscreen-wrap--fullscreened {

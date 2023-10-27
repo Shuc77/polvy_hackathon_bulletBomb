@@ -10,11 +10,22 @@
         <mobile-follow-btn v-if="followEnabled" />
       </template>
 
+      <!-- ========= 弹层类型组件 Start ========= -->
+
       <!-- 关注弹层 -->
       <mobile-follow-layer v-if="followEnabled" />
 
       <!-- 商品库推送气泡 -->
       <mobile-product-bubble />
+
+      <!-- 课堂激励点赞动画 -->
+      <motivation-like-animation
+        v-if="donateAnimationVisible"
+        v-show="mobileMenuCurrentName !== TAB_NAME_MICRO_ACTIVITY"
+        class="c-mobile-watch-mobile-menu__motivation-like-animation"
+      />
+
+      <!-- ========= 弹层类型组件 End ========= -->
 
       <!-- 移动端底部菜单栏顶部固定区域 -->
       <div class="c-mobile-watch-mobile-menu__topic">
@@ -168,7 +179,7 @@
           :name="TAB_NAME_SEAT"
           lazy-load
         >
-          云席
+          <mobile-seat-table />
         </mobile-menu-tab-pane>
 
         <!-- 邀请榜 -->
@@ -211,6 +222,17 @@
           :name="TAB_NAME_SUBTITLE"
         >
           <mobile-subtitle />
+        </mobile-menu-tab-pane>
+
+        <!-- AI助手答疑 -->
+        <mobile-menu-tab-pane
+          v-if="menu.menuType === ChannelMenuType.AIAssistant"
+          :key="`AIAssistant-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_AI_ASSISTANT"
+          lazy-load
+        >
+          <mobile-ai-assistant-chat />
         </mobile-menu-tab-pane>
       </template>
 
@@ -264,6 +286,9 @@ import MobileMicroActivity from '@/components/page-watch-common/micro-activity/m
 import MobilePlaybackList from '@/components/page-watch-common/playback-list/mobile-playback-list/mobile-playback-list.vue';
 import MobileMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-portrait.vue';
 import MobileSubtitle from '@/components/page-watch-common/subtitle/mobile-subtitle.vue';
+import MobileSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/mobile-seat-table.vue';
+import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/mobile-ai-assistant-chat.vue';
+import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -273,6 +298,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useDonateStore } from '@/store/use-donate-store';
 
 import { ChannelMenuType, LiveStatus, MainScreenContent } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
@@ -293,6 +319,7 @@ import {
   TAB_NAME_SUBTITLE,
   TAB_NAME_TUWEN_LIVE,
   TAB_NAME_VOTE,
+  TAB_NAME_AI_ASSISTANT,
 } from '@/assets/constants/tab-name';
 import { translate } from '@/assets/lang';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
@@ -314,6 +341,8 @@ const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
+
+const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {
@@ -369,5 +398,12 @@ watch(liveStatus, () => {
 
 .c-mobile-watch-mobile-menu__topic-item {
   margin: 16px 8px 0;
+}
+
+.c-mobile-watch-mobile-menu__motivation-like-animation {
+  z-index: 310;
+  width: 80%;
+  padding-bottom: 100%;
+  margin: 0 10%;
 }
 </style>

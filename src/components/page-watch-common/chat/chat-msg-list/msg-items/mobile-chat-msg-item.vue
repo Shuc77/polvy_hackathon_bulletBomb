@@ -19,8 +19,10 @@
       <mobile-redpaper-receive-msg
         v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive"
       />
-      <!-- 自定义消息 -->
+      <!-- 自定义消息（服务端） -->
       <mobile-customer-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomerMessage" />
+      <!-- 自定义消息(客户端) -->
+      <mobile-custom-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomMessage" />
       <!-- 文件分享消息 -->
       <mobile-file-msg v-else-if="chatMsg.msgSource === ChatMsgSource.File" />
       <!-- 系统消息 -->
@@ -31,6 +33,8 @@
       <mobile-emotion-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Emotion" />
       <!-- 图片消息 -->
       <mobile-image-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Image" />
+      <!-- 课堂激励点赞消息 -->
+      <mobile-motivation-like-msg v-else-if="chatMsg.msgSource === ChatMsgSource.MotivationLike" />
     </div>
   </div>
 </template>
@@ -40,11 +44,13 @@ import MobileSpeakMsg from './speak-msg/mobile-speak-msg.vue';
 import MobileRedpaperMsg from './redpaper-msg/mobile-redpaper-msg.vue';
 import MobileRedpaperReceiveMsg from './redpaper-receive-msg/mobile-redpaper-receive-msg.vue';
 import MobileCustomerMsg from './customer-msg/mobile-customer-msg.vue';
+import MobileCustomMsg from './custom-msg/mobile-custom-msg.vue';
 import MobileFileMsg from './file-msg/mobile-file-msg.vue';
 import MobileSystemMsg from './system-msg/mobile-system-msg.vue';
 import MobileRewardMsg from './reward-msg/mobile-reward-msg.vue';
 import MobileEmotionMsg from './emotion-msg/mobile-emotion-msg.vue';
 import MobileImageMsg from './image-msg/mobile-image-msg.vue';
+import MobileMotivationLikeMsg from './motivation-like-msg/mobile-motivation-like-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
 

@@ -31,9 +31,15 @@
     <!-- 播放按钮 -->
     <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
     <div
-      v-if="normalPlayButtonVisible && !isSmallWindow"
+      v-if="normalPlayButtonVisible && !isSmallWindow && !noPauseWhenLive"
       class="c-portrait-player-main__play-button g-img-cover"
     ></div>
+
+    <player-play-button
+      v-if="noPauseWhenLive"
+      :mode="PlayButtonMode.Text"
+      class="c-mobile-player-main__play-btn"
+    />
 
     <!-- 暂无直播占位面板 -->
     <portrait-none-live-panel v-if="noneLiveVisible" />
@@ -44,9 +50,11 @@
 </template>
 
 <script setup lang="ts">
+import { PlayButtonMode } from '../../common/player-play-button/use-player-play-button';
 import PortraitNoneLivePanel from '../../common/none-live-panel/portrait-none-live-panel.vue';
 import PortraitPlayerCoverImg from '../../player-cover-img/portrait-player-cover-img.vue';
 import SmallWindowControl from '../../player-control/common-player-control/small-window-control.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
@@ -82,7 +90,7 @@ const { noneLiveVisible, resolutionWidth, resolutionHeight, isAudioPlayerMode } 
 
 const { portraitDocWrapHeight } = storeDefinitionToRefs(usePortraitLayoutStore);
 
-const { normalPlayButtonVisible } = usePlayerControl();
+const { normalPlayButtonVisible, noPauseWhenLive } = usePlayerControl();
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 

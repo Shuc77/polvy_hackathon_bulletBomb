@@ -3,7 +3,12 @@ import { watch, onBeforeMount, onMounted } from 'vue';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 import { useWeixinConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
+
 import { usePageStore } from '@/store/use-page-store';
+import { useAuthStore } from '@/store/use-auth-store';
+
+import { removeQueryParam } from '@/hooks/core/use-query-params';
+import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hooks/use-auth-special';
 
 /**
  * 页面尺寸初始化设置
@@ -40,6 +45,7 @@ export const useMainEnter = (
   const { watchLoader } = options;
 
   const watchAppStore = useWatchAppStore();
+  const authStore = useAuthStore();
 
   watch(
     () => watchAppStore.shouldShowSplash,
@@ -61,9 +67,19 @@ export const useMainEnter = (
     },
   );
 
+  /** 移除 url 上的授权参数 */
+  function removeUrlAuthQueryParams() {
+    if (!authStore.isAuthorized) return;
+
+    removeQueryParam(['name', 'password', ...AuthSpecialQueryParams]);
+  }
+
   usePageSizeSetup();
 
   onBeforeMount(() => {
-    useWeixinConfig();
+    // eslint-disable-next-line promise/prefer-await-to-then
+    useWeixinConfig().finally(() => {
+      removeUrlAuthQueryParams();
+    });
   });
 };

@@ -1,7 +1,6 @@
 <template>
   <div class="c-portrait-ask">
     <ask-comp-portrait
-      ref="askCompPortraitRef"
       :slogan="askWelcomeText"
       :ask-sdk="askSdk"
       :lang="currentLang"
@@ -10,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import { useAskStore } from '@/store/use-ask-store';
@@ -32,8 +30,6 @@ const { updateAskReminderVisible } = useAskReminder({
     );
   },
 });
-
-const askCompPortraitRef = ref();
 </script>
 
 <style lang="scss">

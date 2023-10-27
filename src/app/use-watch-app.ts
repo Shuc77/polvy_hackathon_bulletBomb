@@ -4,7 +4,7 @@ import { getWatchCore, initWatchSdk } from '@/core/watch-sdk';
 
 import { useAuthSpecial } from '@/components/page-splash-common/auth/hooks/use-auth-special';
 import { useErrorCatch } from '@/hooks/core/use-error-catch';
-import { paramGetter, removeQueryParam } from '@/hooks/core/use-query-params';
+import { paramGetter } from '@/hooks/core/use-query-params';
 import { usePageSkin } from '@/skins/use-page-skin';
 import { useGlobalEventsEffect } from './_hooks/use-global-events-effect';
 import { useBrowserIcon, useBrowserTitle, useGlobalStyle } from './_hooks/use-global-style';
@@ -193,9 +193,6 @@ export function useWatchApp() {
     if (weixinResult) {
       return;
     }
-
-    // 移除地址上不需要用的参数
-    removeQueryParam(['name', 'password', 'snapshotPage']);
 
     // 初始化多皮肤
     initPageSkin();

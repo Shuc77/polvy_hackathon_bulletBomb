@@ -1,4 +1,4 @@
-<!-- @file PC 端自定义消息 -->
+<!-- @file PC 端自定义消息(服务端) -->
 <template>
   <div class="c-pc-customer-msg pws-chat-customer-msg">{{ chatMsg.content }}</div>
 </template>

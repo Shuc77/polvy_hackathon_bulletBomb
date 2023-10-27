@@ -28,7 +28,7 @@ export const useDoc = (
   const confirmRef = ref<MessageBoxInstance>();
 
   /** 初始化文档 */
-  function initDoc() {
+  async function initDoc() {
     const { setupOptions = {} } = useOptions;
     const wrapElem = unref(wrapRef);
     if (!wrapElem) return;
@@ -36,7 +36,7 @@ export const useDoc = (
     if (!docStore.docEnabled) return;
 
     const watchCore = getWatchCore();
-    watchCore.doc.setupDoc({
+    await watchCore.doc.setupDoc({
       container: wrapElem,
       keyboardEnabled: !playbackStore.isPlaybacking,
       beforeClear: async () => {

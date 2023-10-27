@@ -5,7 +5,7 @@
     <div
       ref="playerContainer"
       class="c-pc-player-main__container"
-      @click="toTogglePlay"
+      @click="toTogglePlayLimitByStopLivePlay(noPauseWhenLive)"
     ></div>
 
     <!-- 播放器 logo -->
@@ -15,7 +15,7 @@
     <pc-player-cover-img />
 
     <!-- 视频区播放按钮，仅用来展示 -->
-    <player-play-button />
+    <player-play-button :mode="noPauseWhenLive ? PlayButtonMode.Text : PlayButtonMode.Default" />
 
     <!-- 播放器字幕区 -->
     <player-subtitle />
@@ -27,10 +27,13 @@ import { usePlayerMain } from '@/components/page-watch-common/player/hooks/use-p
 
 import PcPlayerCoverImg from '@/components/page-watch-common/player/player-cover-img/pc-player-cover-img.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
+import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 import PcPlayerLogo from '@/components/page-watch-common/player/player-logo/pc-player-logo.vue';
 import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/pc-player-subtitle.vue';
+
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
+import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -59,9 +62,11 @@ const { playerContainer } = usePlayerMain({
   },
 });
 
+const { noPauseWhenLive } = usePlayerControl();
+
 usePlayerKeyboard(playerContainer);
 
-const { toTogglePlay } = usePlayerAction();
+const { toTogglePlayLimitByStopLivePlay } = usePlayerAction();
 </script>
 
 <style lang="scss">
