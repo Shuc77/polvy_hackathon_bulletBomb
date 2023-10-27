@@ -5,6 +5,8 @@
     :class="{
       'c-mobile-msg-input-wrap--emotion-show pws-mobile-msg-input-wrap-emotion-show':
         emotionVisible,
+      'c-mobile-msg-input-wrap--allway-active pws-mobile-msg-input-wrap-allway-active':
+        isAllwayActive,
       'c-mobile-msg-input-wrap--focus': isInputFocus,
     }"
     :style="wrapStyle"
@@ -123,6 +125,8 @@ const props = defineProps({
   ...msgInputWrapProps(),
   /** 是否渲染后缀插槽 */
   renderSuffixSlot: PropUtils.bool.def(false),
+  /** 是否处于激活状态 */
+  isAllwayActive: PropUtils.bool.def(false),
 });
 
 const emit = defineEmits(msgInputWrapEmits());
@@ -247,6 +251,7 @@ defineExpose(msgInputWrapInstance);
 .c-mobile-msg-input-wrap__input {
   position: relative;
   flex: 1;
+  min-height: $--mobile-msg-input-wrap-base-height;
   margin-right: 12px;
 }
 
@@ -291,6 +296,11 @@ defineExpose(msgInputWrapInstance);
     padding-top: 16px;
     padding-bottom: 8px;
     border-radius: 8px 8px 0 0;
+  }
+}
+.c-mobile-msg-input-wrap--allway-active {
+  .c-mobile-msg-input-wrap__main {
+    padding: 12px 12px 10px;
   }
 }
 </style>

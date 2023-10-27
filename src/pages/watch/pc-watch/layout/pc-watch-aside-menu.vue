@@ -6,8 +6,20 @@
       @input="trackWatchTabChange"
       @is-empty-callback="onIsEmptyCallback"
     >
+      <!-- ========= 弹层类型组件 Start ========= -->
+
       <!-- 商品库推送气泡 -->
       <pc-product-bubble />
+
+      <!-- 课堂激励特效，跟随"屏蔽特效"开关 -->
+      <motivation-like-animation
+        v-if="donateAnimationVisible"
+        v-show="pcAsideTabCurrentName !== TAB_NAME_MICRO_ACTIVITY"
+        class="c-pc-watch-aside-menu__motivation-like-animation"
+        :enable-types="[MotivationLikeType.Speak]"
+      />
+
+      <!-- ========= 弹层类型组件 End ========= -->
 
       <!-- PC 端观看页侧边菜单栏顶部固定区域 -->
       <div class="c-pc-watch-aside-menu__topic">
@@ -116,6 +128,17 @@
         >
           <pc-subtitle />
         </pc-aside-tab-pane>
+
+        <!-- AI助手答疑 -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.AIAssistant"
+          :key="`AIAssistant-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_AI_ASSISTANT"
+          lazy-load
+        >
+          <pc-ai-assistant-chat />
+        </pc-aside-tab-pane>
       </template>
 
       <!-- 章节 tab -->
@@ -146,6 +169,8 @@ import PcProductBubble from '@/components/page-watch-common/interactive-receive/
 import PcAsk from '@/components/page-watch-common/ask/pc-ask/pc-ask.vue';
 import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
 import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
+import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/pc-ai-assistant-chat.vue';
+import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -162,12 +187,16 @@ import {
   TAB_NAME_CHAPTER,
   TAB_NAME_MICRO_ACTIVITY,
   TAB_NAME_SUBTITLE,
+  TAB_NAME_AI_ASSISTANT,
 } from '@/assets/constants/tab-name';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useDonateStore } from '@/store/use-donate-store';
+
+import { ChannelMenuType, MotivationLikeType } from '@polyv/live-watch-sdk';
+
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
-import { ChannelMenuType } from '@polyv/live-watch-sdk';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
@@ -181,6 +210,8 @@ const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
 const { qaReminderVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
+
+const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,
@@ -210,5 +241,15 @@ function onIsEmptyCallback(isEmpty: boolean) {
 }
 .c-pc-watch-aside-menu__topic-item {
   margin: 8px 8px 0;
+}
+
+.c-pc-watch-aside-menu__motivation-like-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 20%;
 }
 </style>

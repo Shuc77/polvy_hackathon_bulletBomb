@@ -2,14 +2,14 @@
 <template>
   <div
     class="c-mobile-invite-poster-entry-capsule"
-    @click="redirectToPosterPage"
+    @click="onClickInvitePosterEntry"
   >
     {{ $lang('invite.rank.invite.btn') }}
   </div>
 </template>
 
 <script setup lang="ts">
-import { redirectToPosterPage } from '../hooks/use-invite-poster-entry';
+import { onClickInvitePosterEntry } from '../hooks/use-invite-poster-entry';
 </script>
 
 <style lang="scss">

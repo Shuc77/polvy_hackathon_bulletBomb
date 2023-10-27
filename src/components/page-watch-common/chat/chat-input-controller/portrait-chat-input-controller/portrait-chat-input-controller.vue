@@ -55,7 +55,9 @@ const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } = use
       if (portraitLayoutStore.portraitMessageTabCurrentName === PortraitChatTabName.Ask) {
         const data = contentList[0] as PlvInputContentText;
         const watchCore = getWatchCore();
-        watchCore.ask.sendQuestion(data.content);
+        watchCore.ask.sendAskSpeak({
+          content: data.content,
+        });
         return true;
       }
 

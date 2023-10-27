@@ -62,6 +62,7 @@
 import PcEnroll from '@/components/common-business/enroll/pc-enroll.vue';
 import PcDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
 import PcDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
+
 import PcAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
 import PcInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/pc-interactive-entrance.vue';
 import PcChatErrorTips from '../chat-error-tips/pc-chat-error-tips.vue';

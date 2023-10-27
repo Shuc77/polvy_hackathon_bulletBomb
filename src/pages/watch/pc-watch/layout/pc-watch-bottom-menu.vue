@@ -78,6 +78,17 @@
         >
           <pc-multi-meeting-portrait />
         </pc-normal-tab-pane>
+
+        <!-- 云席 -->
+        <pc-normal-tab-pane
+          v-if="menu.menuType === ChannelMenuType.Seat"
+          :key="`seat-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_SEAT"
+          lazy-load
+        >
+          <pc-seat-table />
+        </pc-normal-tab-pane>
       </template>
     </pc-normal-tabs>
   </div>
@@ -88,6 +99,7 @@ import {
   TAB_NAME_PLAYBACK,
   TAB_NAME_TUWEN_LIVE,
   TAB_NAME_MULTI_MEETING,
+  TAB_NAME_SEAT,
 } from '@/assets/constants/tab-name';
 import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
 import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
@@ -96,6 +108,7 @@ import PcTuwenLive from '@/components/page-watch-common/interactive-receive/tuwe
 import PcPromoteExternalLink from '@/components/page-watch-common/promote-external-link/pc-promote-external-link.vue';
 import PcPlaybackList from '@/components/page-watch-common/playback-list/pc-playback-list/pc-playback-list.vue';
 import PcMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-portrait.vue';
+import PcSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/pc-seat-table.vue';
 
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -113,32 +126,23 @@ const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 const { pcBottomTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
-/**
- * 需要移除的菜单类型
- */
-const removeMenuTypes = computed<ChannelMenuType[]>(() => {
-  return [
-    ChannelMenuType.Chat,
-    ChannelMenuType.Quiz,
-    ChannelMenuType.QA,
-    ChannelMenuType.Invite,
-    ChannelMenuType.Buy,
-    ChannelMenuType.Members,
-  ];
-});
-
 /** 底部菜单栏列表 */
 const bottomMenuList = computed<ChannelMenuItem[]>(() => {
+  // 需要保留展示的菜单类型
+  const remainTypes = [
+    ChannelMenuType.Desc,
+    ChannelMenuType.Previous,
+    ChannelMenuType.Text,
+    ChannelMenuType.Tuwen,
+    ChannelMenuType.Iframe,
+    ChannelMenuType.Seat,
+  ];
+
   const menus = unref(channelMenus).filter(menu => {
-    // 需要移除的菜单栏类型
-    const removeTypes = [...unref(removeMenuTypes)];
-
-    /** @todo 嘉宾坐席逻辑处理 */
-
-    return !removeTypes.includes(menu.menuType);
+    return remainTypes.includes(menu.menuType);
   });
 
-  // 显示分会场菜单默认在最后一个
+  // 如需显示分会场(竖向)，则默认放在最后一个
   if (unref(multiMeetingMenuData).visible) {
     menus.push({
       menuId: randomStr(8),
@@ -149,7 +153,9 @@ const bottomMenuList = computed<ChannelMenuItem[]>(() => {
 
   return menus;
 });
+
 const pcBottomMenuRef = ref<TabsInstance>();
+
 onMounted(() => {
   const playBackVid = paramGetter.playBackVid();
   if (playBackVid) {
@@ -160,6 +166,7 @@ onMounted(() => {
     pcBottomMenuRef.value?.setDefaultTabName(TAB_NAME_PLAYBACK);
   }
 });
+
 watch(liveStatus, () => {
   if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
     pcBottomMenuRef.value?.setDefaultTabName('');

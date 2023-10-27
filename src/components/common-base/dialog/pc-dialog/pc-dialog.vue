@@ -11,6 +11,9 @@
       <div
         v-show="visible"
         class="c-pc-dialog__mask"
+        :style="{
+          'z-index': zIndex,
+        }"
         @click="handleClickMask"
       ></div>
     </transition>
@@ -97,11 +100,14 @@ const happenDragged = ref(false);
 const dragPointX = ref();
 const dragPointY = ref();
 
+const zIndex = ref(3000);
+
 const dialogStyle = computed(() => {
   const style: CSSProperties = {
     width: `${props.width}px`,
     top: `${unref(top)}px`,
     left: `${unref(left)}px`,
+    zIndex: zIndex.value,
   };
   if (props.height) {
     style.height = `${props.height}px`;
@@ -159,6 +165,8 @@ function openDialog() {
 
   nextTick(() => {
     PlvPopperManager.openPopper(dialogRef.value!);
+    zIndex.value = PlvPopperManager.zIndex;
+
     if (!unref(happenDragged)) {
       resetPosition();
     }
@@ -391,13 +399,11 @@ defineExpose<DialogInstance>({
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: inherit;
   background: rgba(0, 0, 0, 0.3);
 }
 
 .c-pc-dialog__content {
   position: absolute;
-  z-index: inherit;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

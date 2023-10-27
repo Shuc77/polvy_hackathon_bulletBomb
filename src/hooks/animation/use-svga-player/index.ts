@@ -12,12 +12,22 @@ import {
 // 记录加载的promise，避免重复加载
 const loadSvgaPromises: UniversalParams<Promise<SVGAVideoEntity>> = {};
 
+interface AnimationQueryItem<T extends object = object> {
+  url: string;
+  ext: T;
+}
+
 /**
  * @hook svga 动画播放器
  */
-export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
+export const useSvgaPlayer = <T extends object = object>(
+  wrapRef: Ref<HTMLDivElement | undefined>,
+  options?: { beforePlaySvgaAnimation?: (svgaPlayer: SVGAPlayer, ext: T) => void },
+) => {
   let svgaParser: SVGAParser | undefined;
   let svgaPlayer: SVGAPlayer | undefined;
+
+  const { beforePlaySvgaAnimation = () => {} } = options || {};
 
   /**
    * 判断是否为 svga 文件地址
@@ -78,7 +88,7 @@ export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
    * 播放 svga 动画文件
    * @param url svga 文件地址
    */
-  async function playSvgaAnimation(url: string) {
+  async function playSvgaAnimation({ url, ext }: AnimationQueryItem<T>) {
     clearSvgaAnimation();
 
     try {
@@ -94,6 +104,8 @@ export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
       svgaPlayer.loops = 1;
       // 设置播放器文件
       svgaPlayer.setVideoItem(videoItem);
+      // 在播放 svg 动画前加载拦截器
+      beforePlaySvgaAnimation(svgaPlayer, ext);
       // 开始播放动画
       svgaPlayer.startAnimation();
       // 侦听播放结束，播放下一个动画
@@ -163,7 +175,7 @@ export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
    * @param url 图片地址
    * @param time 显示时间，默认 2 秒
    */
-  function playImageAnimation(url: string, time = 2000) {
+  function playImageAnimation({ url }: AnimationQueryItem<T>, time = 2000) {
     clearImageAnimation();
     currentImage.value = url;
     isPlayingAnimation.value = true;
@@ -204,20 +216,21 @@ export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
   }
 
   /** svga 动画文件队列 */
-  const animationQueue = ref<string[]>([]);
+  const animationQueue = ref<AnimationQueryItem<Ref<T>>[]>([]);
 
   /**
    * 插入 svga 文件或图片到动画队列中
    * @param url 地址
    * @param inHeader 是否从头部插入
    */
-  function pushAnimationQueue(url: string, inHeader = false) {
+  function pushAnimationQueue(url: string, inHeader = false, extParam?: T) {
     if (!url) return;
 
+    const ext = extParam || ({} as T);
     if (inHeader) {
-      animationQueue.value.unshift(url);
+      animationQueue.value.unshift({ url, ext });
     } else {
-      animationQueue.value.push(url);
+      animationQueue.value.push({ url, ext });
     }
     checkAnimationQueue();
   }
@@ -229,13 +242,13 @@ export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
       return;
     }
 
-    const url = animationQueue.value.shift();
-    if (!url) return;
+    const item = animationQueue.value.shift();
+    if (!item || !item.url) return;
 
-    if (isSvgaFileUrl(url)) {
-      playSvgaAnimation(url);
+    if (isSvgaFileUrl(item.url)) {
+      playSvgaAnimation(item);
     } else {
-      playImageAnimation(url);
+      playImageAnimation(item);
     }
   }
 
@@ -244,8 +257,6 @@ export const useSvgaPlayer = (wrapRef: Ref<HTMLDivElement | undefined>) => {
     loadSvgaFile,
     clearSvgaAnimation,
     pushAnimationQueue,
-    playSvgaAnimation,
-    playImageAnimation,
     pauseAnimationQueue,
     startAnimationQueue,
   };

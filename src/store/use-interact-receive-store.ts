@@ -14,10 +14,12 @@ import {
   getStorageTipsStatus,
 } from '@/components/page-watch-common/interactive-receive/announcement/hooks/use-announcement-tips';
 import { LotteryRecordData } from '@/components/page-watch-common/interactive-receive/lottery/types/lottery-types';
-import { InteractSetting } from '@polyv/live-watch-sdk';
+import { ChannelWatchPageSkin, InteractSetting, SeatTableTemplate } from '@polyv/live-watch-sdk';
 
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
+import { useViewerStore } from './use-viewer-store';
+import { useThemeStore } from './use-theme-store';
 
 /**
  * 互动功能二次入口数据
@@ -68,6 +70,14 @@ export interface InteractReceiveStoreState {
   isGoOnRedpackRain: Ref<boolean>;
   /** 是否显示问答的红点提示 */
   qaReminderVisible: Ref<boolean>;
+  /** 云席 SDK 是否初始化完成 */
+  seatTableSdkInited: Ref<boolean>;
+  /** 云席是否可见 */
+  seatTableVisible: ComputedRef<boolean>;
+  /** 是否为"模拟会场"云席模板 */
+  isMeetingSeatTableTemplate: ComputedRef<boolean>;
+  /** 当前观众的座位位置 */
+  seatPosition: ComputedRef<{ row: number; column: number } | undefined>;
 }
 
 export interface InteractReceiveStoreAction {
@@ -89,6 +99,8 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const watchAppStore = useWatchAppStore();
     const channelStore = useChannelStore();
     const layoutStore = useLayoutStore();
+    const themeStore = useThemeStore();
+    const viewerStore = useViewerStore();
 
     /** 互动设置信息 */
     const interactSetting = ref<InteractSetting>({
@@ -106,6 +118,13 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       redpackImage: '',
       redpackRainBottomImage: '',
       redpackRainImages: [],
+      seatTableEnabled: false,
+      seatTableTemplate: SeatTableTemplate.Meeting,
+      seatMaxNumber: 0,
+      seatVipMaxNumber: 0,
+      seatCustomTextEnabled: false,
+      seatCustomText: '',
+      seatGuestCardEnabled: false,
     });
 
     function syncInteractStore() {
@@ -184,6 +203,65 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 是否显示问答的红点提示 */
     const qaReminderVisible = ref(false);
 
+    /** 云席 SDK 是否初始化完成 */
+    const seatTableSdkInited = ref(false);
+
+    /** 是否为"模拟会场"云席模板 */
+    const isMeetingSeatTableTemplate = computed(() => {
+      return interactSetting.value.seatTableTemplate === SeatTableTemplate.Meeting;
+    });
+
+    /** 云席是否可见 */
+    const seatTableVisible = computed(() => {
+      const seatEnabled = interactSetting.value.seatTableEnabled;
+
+      let isAvailableSkinForSeat = true;
+
+      // 由于多皮肤暂未补齐，“模拟会场”模板才需要限制指定皮肤才能启用云席
+      if (isMeetingSeatTableTemplate.value && themeStore.pageSkin) {
+        isAvailableSkinForSeat = [ChannelWatchPageSkin.Red, ChannelWatchPageSkin.White].includes(
+          themeStore.pageSkin,
+        );
+      }
+
+      return seatEnabled && isAvailableSkinForSeat;
+    });
+
+    /** 当前观众的座位位置 */
+    const seatPosition = computed(() => {
+      const seatInfo = viewerStore.seatInfo;
+      if (!seatInfo) {
+        return;
+      }
+      const { seatMaxNumber, seatVipMaxNumber } = unref(interactSetting);
+      const seatNumber = seatInfo.seatNumber || 0;
+      // 普通观众，顺序超过普通座位数
+      const overNormalViewer = !seatInfo.isVip && seatNumber > seatMaxNumber;
+      // vip 观众，但顺序超过 vip 座位数
+      const overVipNumber = seatInfo.isVip && seatNumber > seatVipMaxNumber;
+      if (!seatNumber || overVipNumber || overNormalViewer) {
+        // 已无座位
+        return;
+      }
+
+      // 每行座位数
+      const columnCount = 6;
+      const mod = seatNumber % columnCount;
+      // VIP 总行数
+      const vipTotalRows = Math.ceil(seatVipMaxNumber / columnCount);
+      // 观众当前行数
+      let viewerRow = Math.ceil(seatNumber / columnCount);
+      if (!seatInfo.isVip) {
+        viewerRow = vipTotalRows + viewerRow;
+      }
+      return {
+        // 几行
+        row: viewerRow,
+        // 几座
+        column: mod === 0 ? columnCount : mod,
+      };
+    });
+
     return {
       interactSetting,
       syncInteractStore,
@@ -205,6 +283,10 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       redpackPendantVisible,
       isGoOnRedpackRain,
       qaReminderVisible,
+      seatTableSdkInited,
+      seatTableVisible,
+      isMeetingSeatTableTemplate,
+      seatPosition,
     };
   },
 );

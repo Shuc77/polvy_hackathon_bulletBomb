@@ -3,6 +3,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { usePlayerAction } from '../../../hooks/use-player-action';
 import { PlayStatus } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount } from 'vue';
+import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 
 /**
  * 判断是否点击dom区域
@@ -29,6 +30,7 @@ export const checkDomClick = (event: MouseEvent, dom: Element) => {
 export const usePortraitClickPlayer = () => {
   const playerStore = usePlayerStore();
   const { toPlay, toPause } = usePlayerAction();
+  const { noPauseWhenLive } = usePlayerControl();
 
   /** 记录点击次数 */
   let clickCount = 0;
@@ -72,7 +74,7 @@ export const usePortraitClickPlayer = () => {
 
     clickCount++;
     // 双击了播放器区域，暂停播放
-    if (clickCount === 2) {
+    if (clickCount === 2 && !noPauseWhenLive) {
       toPause();
       clickCount = 0;
     }

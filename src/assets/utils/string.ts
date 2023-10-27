@@ -44,13 +44,3 @@ export function htmlStr2Text(htmlStr: string): string | null {
   dom.innerHTML = htmlStr;
   return dom.textContent;
 }
-
-/**
- * 将字符串中的链接转成 a 标签
- * @param text 目标字符串
- */
-export function parseLinkContent(text: string) {
-  const linkReg = /(http[s]?:\/\/)([\w-]+(\.[\w-]+)+([\w\-.,@?^=%&:/~+#]*[\w\-@?^=%&/~+#])?)/g;
-
-  return text.replace(linkReg, '<a target="_blank" rel="noopener" href="$1$2">$1$2</a>');
-}

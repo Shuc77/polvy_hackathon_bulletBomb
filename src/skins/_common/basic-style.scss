@@ -223,6 +223,12 @@
     color: map.get($--skin-configs, 'chat-system-msg:text-color') !important;
   }
 
+  // 课堂激励消息
+  .pws-chat-motivation-like-msg {
+    color: map.get($--skin-configs, 'chat-motivation-like-msg:text-color') !important;
+    background: map.get($--skin-configs, 'chat-motivation-like-msg:bg') !important;
+  }
+
   // -------- 章节 -------- //
   .pws-chapter-item {
     color: map.get($--skin-configs, 'chapter-item:text-color') !important;
@@ -262,5 +268,13 @@
   }
   .pws-page-advert-arrow {
     color: map.get($--skin-configs, 'page-advert-arrow:text-color');
+  }
+
+  // -------- AI 助手答疑 -------- //
+  .pws-ai-assistant-msg-dot {
+    background-color: map.get($--skin-configs, 'pws-ai-assistant-msg-dot:bg-color');
+  }
+  .pws-ai-assistant-chat__not-config {
+    filter: map.get($--skin-configs, 'pws-ai-assistant-chat-not-config:filter');
   }
 }

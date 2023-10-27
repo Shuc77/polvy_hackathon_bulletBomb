@@ -1,4 +1,4 @@
-<!-- @file PC 端提问消息列表 -->
+<!-- @file 移动端横屏-提问消息列表 -->
 <template>
   <div
     ref="scrollRef"

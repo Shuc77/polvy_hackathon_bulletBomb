@@ -3,33 +3,38 @@ import { getWatchCore } from '@/core/watch-sdk';
 
 import { copyText, toastCopySuccess } from '@/assets/utils/copy';
 import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-authorize';
-import { isMobile, isWeixin } from '@/assets/utils/browser';
+import { isWeixin } from '@/assets/utils/browser';
 import { wait } from '@/assets/utils/utils';
-import { translate } from '@/assets/lang';
 
 import { FormProtocolInstance } from '@/components/common-base/form/form-protocol/use-form-protocol';
 import { MessageBoxInstance } from '@/components/common-base/message-box/use-message-box';
+import { useLangStore, convert2WatchSdkLang } from '@/store/use-lang-store';
+import { ChannelAgreementConfig, LanguageType } from '@polyv/live-watch-sdk';
 
-function getViewerConfig() {
-  // 隐私协议
-  const viewerPolicy = isMobile
-    ? 'https://m.polyv.net/viewer-policy/?plainText=1'
-    : 'https://www.polyv.net/viewer-policy/';
-  // 用户协议
-  const viewerAgreement = isMobile
-    ? 'https://m.polyv.net/viewer-agreement/?plainText=1'
-    : 'https://www.polyv.net/viewer-agreement/';
-
+const generateDefaultChannelAgreementConfigItem = (): ChannelAgreementConfig[LanguageType] => {
   return {
-    viewerPolicy,
-    viewerAgreement,
+    content: '',
+    dialogContent: '',
+    dialogTitle: '',
   };
-}
+};
 
 export const useForceWxAuthHook = () => {
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
 
   const watchCore = getWatchCore();
+  const langStore = useLangStore();
+
+  const channelAgreementConfig = ref<ChannelAgreementConfig>();
+
+  /** 当前频道协议配置 */
+  const currentChannelAgreementConfig = computed(() => {
+    const defaultData = generateDefaultChannelAgreementConfigItem();
+    if (!channelAgreementConfig.value) return defaultData;
+
+    const langKey = convert2WatchSdkLang(langStore.currentLang);
+    return channelAgreementConfig.value[langKey] || defaultData;
+  });
 
   const watchUrl = computed(() => {
     return window.location.href;
@@ -52,15 +57,15 @@ export const useForceWxAuthHook = () => {
   const protocolChecked = ref(false);
 
   const protocolContent = computed(() => {
-    return translate('wxAuth.protocol.content', { ...getViewerConfig() });
+    return currentChannelAgreementConfig.value.content;
   });
 
   const protocolConfirmRef = ref<MessageBoxInstance>();
 
   const protocolConfirmInfo = computed(() => {
     return {
-      content: translate('wxAuth.protocol.confirm.content', { ...getViewerConfig() }),
-      title: translate('wxAuth.protocol.confirm.title'),
+      content: currentChannelAgreementConfig.value.dialogContent,
+      title: currentChannelAgreementConfig.value.dialogTitle,
     };
   });
 
@@ -83,12 +88,15 @@ export const useForceWxAuthHook = () => {
 
   onMounted(async () => {
     if (isWeixin) {
+      channelAgreementConfig.value = await watchCore.channel.getChannelAgreementConfig();
       await wait(3000);
       protocolTipsVisible.value = false;
     }
   });
 
   return {
+    channelAgreementConfig,
+
     qrcodeUrl,
     copyContent,
 

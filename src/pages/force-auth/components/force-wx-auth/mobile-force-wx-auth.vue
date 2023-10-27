@@ -21,6 +21,7 @@
       />
 
       <mobile-form-protocol
+        v-if="channelAgreementConfig"
         ref="protocolRef"
         class="c-mobile-force-wx-auth__protocol"
         circle
@@ -36,6 +37,7 @@
       </mobile-form-protocol>
 
       <mobile-message-box
+        v-if="channelAgreementConfig"
         ref="protocolConfirmRef"
         class="c-mobile-force-wx-auth__confirm"
         :title="protocolConfirmInfo.title"
@@ -81,6 +83,8 @@ const { channelTitle } = storeDefinitionToRefs(useChannelInfoStore);
 
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 const {
+  channelAgreementConfig,
+
   qrcodeUrl,
   onClickAuthBtn,
   copyContent,
@@ -168,6 +172,7 @@ const {
   position: absolute;
   top: 21px;
   left: 8px;
+  z-index: -1;
   width: 1px;
   height: 1px;
   transform: translateX(-50%);

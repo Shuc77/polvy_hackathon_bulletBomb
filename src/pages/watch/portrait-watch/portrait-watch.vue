@@ -57,6 +57,9 @@
     <!-- 直播开始提示 -->
     <portrait-live-start-tips />
 
+    <!--  取消关联转播提示 -->
+    <portrait-transmit-switch-tip />
+
     <!-- 回放 + 章节弹层 -->
     <portrait-playback-chapter-popup
       v-if="isPlaybacking && (playbackListVisible || chapterVisible)"
@@ -83,6 +86,7 @@ import PortraitDonatePopup from '@/components/page-watch-common/donate/donate-pa
 import PortraitIarRender from '@/components/page-watch-common/interactive-receive/portrait-iar-render.vue';
 import PortraitInviteRankPopup from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank.vue';
 import PortraitLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
+import PortraitTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import PortraitMicroActivity from '@/components/page-watch-common/micro-activity/portrait-micro-activity/portrait-micro-activity.vue';
 import PortraitWithdrawApply from '@/components/page-watch-common/withdraw/portrait-withdraw-apply/portrait-withdraw-apply.vue';
 import PortraitWithdrawDetail from '@/components/page-watch-common/withdraw/portrait-withdraw-detail/portrait-withdraw-detail.vue';

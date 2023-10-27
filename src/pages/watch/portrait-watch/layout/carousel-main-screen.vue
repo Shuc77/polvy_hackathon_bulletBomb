@@ -206,6 +206,14 @@
       <portrait-donate-svga-animation />
     </div>
 
+    <!-- 课堂激励点赞特效 -->
+    <div
+      v-show="!portraitPlayerIsPageFullscreen && donateAnimationVisible"
+      class="c-portrait-carousel-main-screen__motivation-like-animation"
+    >
+      <motivation-like-animation />
+    </div>
+
     <!-- 报名观看（参与互动时机） -->
     <div
       v-if="needEnrollByChat"
@@ -241,6 +249,8 @@ import PortraitPlayerFullscreenButton from '@/components/page-watch-common/playe
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
 import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
+import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
+
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
 
@@ -414,6 +424,14 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   background-image: url(./images/icon-donate.png);
 }
 .c-portrait-carousel-main-screen__svga-donate {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+.c-portrait-carousel-main-screen__motivation-like-animation {
   position: absolute;
   bottom: 0;
   left: 0;

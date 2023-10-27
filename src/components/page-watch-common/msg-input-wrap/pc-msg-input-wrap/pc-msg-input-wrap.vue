@@ -56,11 +56,10 @@
     <!-- 输入框区 -->
     <div class="c-pc-msg-input-wrap__main">
       <!-- 设置昵称占位 -->
-      <pc-set-nick-placeholder v-if="!hasNickname" />
-
+      <pc-set-nick-placeholder v-if="needSetNick" />
       <!-- 消息输入框 -->
       <div
-        v-if="hasNickname"
+        v-else
         class="c-pc-msg-input-wrap__msg-input"
       >
         <div
@@ -135,7 +134,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { throttle } from 'lodash-es';
 import { PlvInputPasteImage } from '@/plugins/polyv-ui/admin-import';
 import { PcIconEmotion, PcIconPic, PcIconClose } from '@/components/component-icons/pc/map';
@@ -154,6 +153,14 @@ const props = defineProps(msgInputWrapProps());
 const emit = defineEmits(msgInputWrapEmits());
 
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
+
+const needSetNick = computed(() => {
+  if (props.disabledSetNick) {
+    return false;
+  }
+
+  return !hasNickname.value;
+});
 
 const {
   imagePasteInputRef,
@@ -244,6 +251,10 @@ $--chat-input-bg: #3e3e4e;
   align-items: center;
   height: $--chat-input-icon-height;
   margin-bottom: 12px;
+  &:empty {
+    height: 0;
+    margin-bottom: 0;
+  }
 }
 
 .c-pc-msg-input-wrap__icons__item {

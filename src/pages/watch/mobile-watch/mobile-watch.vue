@@ -21,6 +21,9 @@
     <!-- 直播开始提示 -->
     <mobile-live-start-tips />
 
+    <!--  取消关联转播提示 -->
+    <mobile-transmit-switch-tip />
+
     <!-- 聊天室连接失败提示 -->
     <mobile-chat-connect-error-dialog />
 
@@ -54,6 +57,9 @@
     <!-- 邀请明细弹层 -->
     <mobile-invite-detail-popup v-if="inviteDetailEnabled" />
 
+    <!-- 固定的聊天消息输入框 -->
+    <mobile-chat-input-controller-fixed v-if="chatInputControllerEnable" />
+
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
@@ -66,10 +72,12 @@ import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
+import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
 import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/mobile-invite-detail-popup.vue';
+import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import { defineAsyncComponent } from 'vue';
 import MobileWatchLayout from './layout/mobile-watch-layout.vue';
 import MobileWatchPendant from './layout/mobile-watch-pendant.vue';
@@ -86,6 +94,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInviteStore } from '@/store/use-invite-store';
+import { useChatStore } from '@/store/use-chat-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () => import('@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'),
@@ -119,6 +128,8 @@ const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
 const { inviteDetailEnabled } = storeDefinitionToRefs(useInviteStore);
+
+const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 useWatchPage();
 

@@ -25,12 +25,13 @@ const { pageSkin } = storeDefinitionToRefs(useThemeStore);
 const { setPageSkin } = usePageSkin();
 
 const selectList = [
-  ChannelWatchPageSkin.Red,
+  ChannelWatchPageSkin.Black,
   ChannelWatchPageSkin.Blue,
-  ChannelWatchPageSkin.White,
+  ChannelWatchPageSkin.Freshblue,
   ChannelWatchPageSkin.Green,
   ChannelWatchPageSkin.Golden,
-  ChannelWatchPageSkin.Black,
+  ChannelWatchPageSkin.Red,
+  ChannelWatchPageSkin.White,
 ];
 
 function onClickItem(skin: ChannelWatchPageSkin) {

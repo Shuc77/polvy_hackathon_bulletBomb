@@ -7,6 +7,7 @@
     ></div>
 
     <mobile-message-box
+      class="c-mobile-doc__message-box"
       ref="confirmRef"
       :title="$lang('base.confirm')"
       :content="$lang('doc.deleteConfirm')"
@@ -36,5 +37,9 @@ const { wrapRef, confirmRef } = useDoc();
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.c-mobile-doc__message-box {
+  z-index: $--zIndex-max-top;
 }
 </style>

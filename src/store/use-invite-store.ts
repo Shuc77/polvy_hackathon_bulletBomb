@@ -14,8 +14,9 @@ import {
   TAB_NAME_MICRO_ACTIVITY,
   TAB_NAME_SEAT,
 } from '@/assets/constants/tab-name';
-import { paramGetter } from '@/hooks/core/use-query-params';
 import { isWeixin } from '@/assets/utils/browser';
+import { paramGetter } from '@/hooks/core/use-query-params';
+import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLayoutStore } from './use-layout-store';
 
 export interface InviteStoreState {
@@ -39,6 +40,8 @@ export interface InviteStoreState {
   mobileWatchInvitePendantVisible: ComputedRef<boolean>;
   /** 邀请海报选择页地址 */
   generatePosterUrl: ComputedRef<string>;
+  /** 云席邀请海报选择页地址 */
+  generateSeatPosterUrl: ComputedRef<string>;
 }
 
 export interface InviteStoreAction {
@@ -51,6 +54,7 @@ export interface InviteStore extends InviteStoreState, InviteStoreAction {}
 export const useInviteStore = defineStore<'invite', InviteStore>('invite', () => {
   const channelMenuStore = useChannelMenuStore();
   const layoutStore = useLayoutStore();
+  const interactReceiveStore = useInteractReceiveStore();
 
   /** 企业微信分享海报的企微员工 ID */
   const wxInviteId = ref(paramGetter.wxInviteId());
@@ -119,6 +123,16 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     return watchCore.invite.getInviteGeneratePosterUrl();
   });
 
+  /** 云席邀请海报选择页地址 */
+  const generateSeatPosterUrl = computed<string>(() => {
+    const watchCore = getWatchCore();
+    return watchCore.invite.getInviteGeneratePosterUrl({
+      setSeatTable: true,
+      seatTableRow: interactReceiveStore.seatPosition?.row,
+      seatTableColumn: interactReceiveStore.seatPosition?.column,
+    });
+  });
+
   /** 同步邀请信息 */
   function syncInviteInfo() {
     const watchCore = getWatchCore();
@@ -147,6 +161,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     mobileChatInvitePendantVisible,
     mobileWatchInvitePendantVisible,
     generatePosterUrl,
+    generateSeatPosterUrl,
     syncInviteInfo,
   };
 });

@@ -44,6 +44,12 @@ export function useWeixinAuthorize() {
       return false;
     }
 
+    // 需要强制微信授权持久化时，需要进行微信授权
+    const checkForceWxAuthPersistent = watchCore.weixin.checkForceWxAuthPersistent();
+    if (checkForceWxAuthPersistent) {
+      return true;
+    }
+
     // 需要强制授权时，页面不进行授权
     const checkForceWxAuth = watchCore.weixin.checkForceWxAuth();
     if (checkForceWxAuth) {

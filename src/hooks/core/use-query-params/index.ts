@@ -132,7 +132,28 @@ export const paramGetter = {
   snapshotPage: buildGetters<YN>('snapshotPage'),
 };
 
-type QueryParamsKeyType = keyof typeof paramGetter;
+export type QueryParamsKeyType = keyof typeof paramGetter;
+
+/** 兼容 pathname 中出现多个 / 的情况 */
+function getLocationPathName() {
+  return window.location.pathname.replace(/\/+/g, '/');
+}
+
+function replaceHistoryState({ url }: { url: string }) {
+  if (url === window.location.href) return;
+
+  try {
+    if (window.history.replaceState) {
+      window.history.replaceState(null, document.title, url);
+    } else {
+      window.location.href = url;
+    }
+  } catch (error) {
+    // 可能会出现 url 非同源错误
+    console.error('replaceHistoryState error', error);
+    window.location.href = url;
+  }
+}
 
 /**
  * 移除当前观看页地址上对应的参数
@@ -145,14 +166,9 @@ export function removeQueryParam(keys: QueryParamsKeyType[]) {
     delete queryParams[key];
   }
 
-  const newUrl = appendToURL(location.pathname, {
-    ...queryParams,
-  });
-  if (window.history.replaceState) {
-    window.history.replaceState(null, document.title, newUrl);
-  } else {
-    location.href = newUrl;
-  }
+  const url = appendToURL(getLocationPathName(), { ...queryParams });
+
+  replaceHistoryState({ url });
 }
 
 /**
@@ -160,8 +176,9 @@ export function removeQueryParam(keys: QueryParamsKeyType[]) {
  * */
 export function appendQueryParam(params: { [key in QueryParamsKeyType]?: string } = {}) {
   const urlParams = getUrlQueryParams();
-  const newUrl = appendToURL(
-    location.pathname,
+
+  const url = appendToURL(
+    getLocationPathName(),
     {
       ...urlParams,
       ...params,
@@ -170,11 +187,8 @@ export function appendQueryParam(params: { [key in QueryParamsKeyType]?: string 
       ignoreEmpty: true,
     },
   );
-  if (window.history.replaceState) {
-    window.history.replaceState(null, document.title, newUrl);
-  } else {
-    location.href = newUrl;
-  }
+
+  replaceHistoryState({ url });
 }
 
 // window.paramGetter = paramGetter;

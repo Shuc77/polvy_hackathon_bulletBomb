@@ -365,8 +365,12 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
     let isServiceMsg = true;
 
     const msgSource = chatMsg.msgSource;
-    // 系统消息、红包领取消息
-    const otherSource = [ChatMsgSource.System, ChatMsgSource.RedpaperReceive];
+    // 系统消息、红包领取消息、课堂激励消息
+    const otherSource = [
+      ChatMsgSource.System,
+      ChatMsgSource.RedpaperReceive,
+      ChatMsgSource.MotivationLike,
+    ];
     if (otherSource.includes(msgSource)) {
       isServiceMsg = false;
     }

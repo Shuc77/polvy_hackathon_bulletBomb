@@ -65,6 +65,11 @@ export interface PolyvIRSceneEntrance {
   MobileVote: PolyvIRSceneComponentOption;
   MobileWelfareLottery: PolyvIRSceneComponentOption;
   MobileRushAnswer: PolyvIRSceneComponentOption;
+  MobileSeatTableMeeting: PolyvIRSceneComponentOption;
+  MobileSeatTableVertical: PolyvIRSceneComponentOption;
+  MobileSeatUserCard: PolyvIRSceneComponentOption;
+  MobileSeatFollowList: PolyvIRSceneComponentOption;
+  MobileSeatTips: PolyvIRSceneComponentOption;
 }
 
 /**

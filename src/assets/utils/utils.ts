@@ -34,3 +34,10 @@ export function getEventPosition(event: MouseEvent | TouchEvent): {
     clientY: touchY,
   };
 }
+
+/**
+ * 获取在指定范围的随机整数
+ */
+export function generateRandomInteger(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

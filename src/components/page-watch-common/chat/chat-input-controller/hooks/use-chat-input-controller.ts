@@ -12,6 +12,11 @@ import { toast } from '@/hooks/components/use-toast';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 
+export interface ChatInputInstance {
+  /** 聚焦输入框 */
+  focusMsgInput(): void;
+}
+
 /**
  * @hook 聊天输入控制器
  */
@@ -141,6 +146,10 @@ export const useChatInputController = (options?: {
 
   useEventBusListener(appEvents.chat.ToSendImage, onClickSendImage);
 
+  const chatInputInstance: ChatInputInstance = {
+    focusMsgInput,
+  };
+
   return {
     msgInputWrapRef,
     focusMsgInput,
@@ -148,5 +157,6 @@ export const useChatInputController = (options?: {
     onSendSystemMsg,
     onSubmitMessage,
     onClickSendImage,
+    chatInputInstance,
   };
 };

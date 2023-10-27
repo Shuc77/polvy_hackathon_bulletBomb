@@ -4,11 +4,14 @@ const ua = navigator.userAgent.toLowerCase();
 
 const uaInfo = getCurrentUAInfo();
 
-/** 是否移动端 */
-export const isMobile = uaInfo.isPortable;
-
 /** 是否微信（非企业微信） */
 export const isWeixin = uaInfo.client.isWx;
+
+/** 判断 PC 端微信小程序环境 */
+export const isPcMiniProgram = isWeixin && /miniprogramenv/.test(ua);
+
+/** 是否移动端 */
+export const isMobile = uaInfo.isPortable || isPcMiniProgram;
 
 /** 是否企业微信 */
 export const isWorkWeixin = uaInfo.client.isWxWork;

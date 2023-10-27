@@ -217,6 +217,10 @@ $--skin-page-common-configs: (
   'chat-redpaper-receive-msg:text-color': $--color-white,
   // 系统消息字体色
   'chat-system-msg:text-color': rgba($--color-white, 0.6),
+  // 课堂激励消息字体色
+  'chat-motivation-like-msg:text-color': rgba($--color-white, 0.6),
+  // 课堂激励消息背景色
+  'chat-motivation-like-msg:bg': rgba(0, 0, 0, 0.1),
 
   // 章节字体色
   'chapter-item:text-color': map.get($--skin-basic-configs, 'main-text-color'),
@@ -261,4 +265,7 @@ $--skin-page-common-configs: (
   'subtitle-item:line-color': #FFF,
   'subtitle-item-line:bg-color': map.get($--skin-basic-configs, 'sub-bg-color'),
   'subtitle-item-line:text-color': #FFF,
+
+  // AI 助手答疑
+  'pws-ai-assistant-msg-dot:bg-color': #3A907C,
 );

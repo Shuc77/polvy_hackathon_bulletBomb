@@ -231,18 +231,8 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     appendQueryParam({ playBackVid: getPlaybackShareId() });
     updateWeixinShareConfig();
 
-    setChatReplayPlaybackVideoTarget();
-
     const watchCore = getWatchCore();
     watchCore.playback.setCurrentPlaybackTarget(target);
-  }
-
-  /** 设置聊天重放对象 */
-  function setChatReplayPlaybackVideoTarget() {
-    const watchCore = getWatchCore();
-    if (chatReplayEnabled.value) {
-      watchCore.chat.setChatMsgReplayPlaybackTarget(currentPlaybackTarget.value);
-    }
   }
 
   /** 初始化回放列表 */

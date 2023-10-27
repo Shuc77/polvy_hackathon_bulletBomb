@@ -345,4 +345,84 @@
   .pws-iar-mobile-tuwen-live-no-more {
     color: map.get($--skin-configs, 'iar-mobile-tuwen-live-no-more:text-color') !important;
   }
+
+  // ---------- 云席  --------- //
+  // @PLV-WARN 目前只有部分皮肤适配了云席
+  @if map.has-key($--skin-configs, 'iar-mobile-seat-table-light') {
+    // 云席 loading
+    .plv-iar-seat-table__loading-wrapper {
+      background: map.get($--skin-configs, 'main-bg-color') !important;
+    }
+
+    // 云席
+    .pws-iar-seat-table-light {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-light')) !important;
+    }
+    .pws-iar-seat-table-guest-bg {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest:bg')) !important;
+    }
+    .pws-iar-seat-table-guest-like {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest-like')) !important;
+    }
+    .pws-iar-seat-table-sofa-normal {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-sofa-normal')) !important;
+    }
+    .pws-iar-seat-table-sofa-vip {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-sofa-vip')) !important;
+    }
+    .pws-iar-seat-name-text {
+      color: map.get($--skin-configs, 'iar-mobile-seat-name-text:text-color') !important;
+    }
+    .pws-iar-seat-name-bLine {
+      background-color: map.get($--skin-configs, 'iar-mobile-seat-name-bLine:bg-color') !important;
+    }
+    .pws-seat-table-current-seat {
+      border-color: map.get($--skin-configs, 'iar-mobile-seat-table-current-seat:border-color') !important;
+    }
+
+    // 云席用户卡片
+    .pws-mobile-user-card__top-bg {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-user-card-top:bg')) !important;
+    }
+    .pws-user-card__info__content__corner {
+      background: map.get($--skin-configs, 'iar-mobile-seat-user-card-content--corner:bg') !important;
+      background-blend-mode: soft-light, normal;
+    }
+    .pws-user-card__qrcode-title {
+      background-image: map.get($--skin-configs, 'iar-mobile-seat-user-card-qrcode-title:bg') !important;
+    }
+    .pws-user-card__qrcode-wrap {
+      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-user-card-qrcode-wrap:bg')) !important;
+      background-size: 100% 100% !important;
+    }
+    .pws-user-card__collection__btn {
+      background-image: map.get($--skin-configs, 'iar-mobile-seat-user-card-collect-btn:bg') !important;
+    }
+    .pws-user-card__collection__btn--cancel {
+      background: map.get($--skin-configs, 'iar-mobile-seat-user-card-collect-btn__cancel:bg') !important;
+      border-color: map.get($--skin-configs, 'primary-color') !important;
+      span {
+        background-image: map.get($--skin-configs, 'iar-mobile-seat-user-card-collect-btn__cancel:text-bg') !important;
+      }
+    }
+
+    // 云席入座提示
+    .pws-has-seat-tips__ico {
+      background: center url(map.get($--skin-configs, 'iar-mobile-seat-tips-ico:bg')) no-repeat !important;
+      background-size: cover !important;
+    }
+    .pws-has-seat-tips__seat__count {
+      color: map.get($--skin-configs, 'iar-mobile-seat-tips-seat-count:text-color') !important;
+    }
+
+
+    // 云席竖向模板
+    .pws-mobile-seat-table-vertical-bg {
+      background: map.get($--skin-configs, 'main-bg-color') !important;
+
+      .pws-iar-seat-table-guest-bg {
+        background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest-vertical:bg')) !important;
+      }
+    }
+  }
 }
