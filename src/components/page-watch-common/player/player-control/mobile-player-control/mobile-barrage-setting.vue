@@ -29,6 +29,31 @@
             />
           </div>
         </div>
+        <!-- 弹幕位置 -->
+        <div
+          v-if="barrageLocationButtonVisible"
+          class="c-mobile-player-barrage-setting__content__option"
+        >
+          <div class="c-mobile-player-barrage-setting__label">
+            {{ $lang('barrage.location') }}
+          </div>
+          <div
+            class="c-mobile-player-barrage-setting__item c-mobile-player-barrage-setting__item--location"
+          >
+            <div
+              v-for="(item, index) in barrageLocationSetting"
+              :key="index"
+              class="c-mobile-player-barrage-setting__item__local"
+              :class="{
+                'c-mobile-player-barrage-setting__item__local--active':
+                  index === currentBarrageLocationIndex,
+              }"
+              @click="handleBarrageLocationChange(item)"
+            >
+              {{ $lang(`barrage.location.${item.type}`) }}
+            </div>
+          </div>
+        </div>
         <!-- 弹幕字号 -->
         <div
           v-if="barrageSizeButtonVisible"
@@ -75,6 +100,28 @@
             }}</span>
           </div>
         </div>
+        <!--弹幕透明度-->
+        <div
+          v-if="barrageAlphaButtonVisible"
+          class="c-mobile-player-barrage-setting__content__option"
+        >
+          <div class="c-mobile-player-barrage-setting__label">
+            {{ $lang('barrage.alpha') }}
+          </div>
+          <div class="c-mobile-player-barrage-setting__item">
+            <plv-slider
+              :progress-bar-visible="false"
+              :hot-area-height="36"
+              :value="barrageAlpha"
+              @input="handleBarrageAlphaChange"
+            />
+            <span
+              class="c-mobile-player-barrage-setting__desc c-mobile-player-barrage-setting__desc--alpha"
+            >
+              {{ barrageAlpha }}%
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -91,7 +138,12 @@ import { usePlayerControl } from '../../hooks/use-player-control';
 
 const { toToggleBarrageMobileSettingVisible } = usePlayerAction();
 
-const { barrageSizeButtonVisible, barrageSpeedButtonVisible } = usePlayerControl();
+const {
+  barrageSizeButtonVisible,
+  barrageSpeedButtonVisible,
+  barrageAlphaButtonVisible,
+  barrageLocationButtonVisible,
+} = usePlayerControl();
 
 const {
   formattedBarrageSpeedToSliderValue,
@@ -100,6 +152,11 @@ const {
   formattedBarrageSizeToSliderValue,
   formattedBarrageSizeToText,
   handleBarrageSizeChange,
+  barrageAlpha,
+  handleBarrageAlphaChange,
+  handleBarrageLocationChange,
+  barrageLocationSetting,
+  currentBarrageLocationIndex,
   resetAllSetting,
 } = useBarrageSetting();
 
@@ -232,9 +289,42 @@ function closeBarrageSetting() {
   display: inline-flex;
   width: 100%;
 }
+.c-mobile-player-barrage-setting__item--location {
+  justify-content: space-around;
+}
+.c-mobile-player-barrage-setting__item__local {
+  box-sizing: border-box;
+  padding: 5px 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 13px;
+}
+.c-mobile-player-barrage-setting__item__local--active {
+  color: #2196f3;
+  border: 1px solid #2196f3;
+}
 .c-mobile-player-barrage-setting__desc {
   box-sizing: border-box;
   width: 40px;
   padding-left: 8px;
+  text-align: center;
+}
+.c-mobile-player-barrage-setting__desc--alpha {
+  width: 50px;
+}
+@media screen and (max-height: 374px) {
+  .c-mobile-player-barrage-setting__wrap {
+    align-items: flex-start;
+    overflow: auto;
+  }
+
+  .c-mobile-player-barrage-setting__content__top {
+    padding-top: 24px;
+  }
+
+  .c-mobile-player-barrage-setting__content:last-child {
+    padding-bottom: 24px;
+  }
 }
 </style>

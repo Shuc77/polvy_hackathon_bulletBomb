@@ -64,6 +64,12 @@
   .pws-iar-product-list-name {
     color: map.get($--skin-configs, 'iar-product-list-good-name:text-color') !important;
   }
+  .pws-iar-product-list-number {
+    color: #fff !important;
+  }
+  .plv-iar-product__item {
+    color: map.get($--skin-configs, 'iar-product-list-good-name:text-color') !important;
+  }
   .pws-iar-product-list-desc-label {
     color: map.get($--skin-configs, 'main-text-color') !important;
     opacity: 0.8;

@@ -59,8 +59,7 @@ import NormalButton from '@/components/common-base/normal-button/normal-button.v
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import MobileLiveBookingFormPopup from './mobile-live-booking-form-popup.vue';
 import MobileLiveBookingSubscribePopup from './mobile-live-booking-subscribe-popup.vue';
-import MobileMessageBox from '@/components/common-base/message-box/mobile-message-box.vue';
-import { MessageBoxInstance } from '@/components/common-base/message-box/use-message-box';
+import { MobileMessageBox, MessageBoxInstance } from '@/components/common-base/message-box';
 
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

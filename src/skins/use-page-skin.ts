@@ -1,17 +1,16 @@
+import { $ } from '@just4/dom';
+import { watch } from 'vue';
+import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
+
 import { isMobile } from '@/assets/utils/browser';
 import { paramGetter } from '@/hooks/core/use-query-params';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { $ } from '@just4/dom';
-import { ChannelWatchPageSkin, MobileWatchLayout } from '@polyv/live-watch-sdk';
-import { watch } from 'vue';
 
 /**
  * 页面皮肤 hook
  */
 export const usePageSkin = () => {
   const themeStore = useThemeStore();
-  const layoutStore = useLayoutStore();
 
   /**
    * 初始化观看页多皮肤
@@ -19,17 +18,12 @@ export const usePageSkin = () => {
   async function initPageSkin(): Promise<void> {
     let pageSkin = themeStore.pageSkin;
 
-    // 在非普通直播频道下只加载黑色皮肤
-    if (layoutStore.mobileWatchLayout !== MobileWatchLayout.Normal) {
-      pageSkin = ChannelWatchPageSkin.Black;
-    }
-
     const querySkin = paramGetter.skin();
     if (querySkin) {
       pageSkin = querySkin;
     }
 
-    return setPageSkin(pageSkin);
+    setPageSkin(pageSkin);
   }
 
   /**
@@ -41,7 +35,7 @@ export const usePageSkin = () => {
       pageSkin,
     });
 
-    return importPageSkin();
+    importPageSkin();
   }
 
   /**

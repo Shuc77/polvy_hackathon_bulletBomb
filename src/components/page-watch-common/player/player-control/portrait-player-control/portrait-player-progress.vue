@@ -24,6 +24,7 @@
         :slider-dot-size="12"
         :max="durationTime"
         :value="currentTime"
+        :css-rotate-angle="portraitPlayerIsPageFullscreen ? 90 : 0"
         @drag-change="toSeekVideo"
       />
     </div>
@@ -32,18 +33,29 @@
     <div class="c-portrait-player-progress__time">
       <span>{{ formatSeconds(durationTime, { segments: 3 }) }}</span>
     </div>
+
+    <!-- 退出全屏按钮 -->
+    <portrait-player-fullscreen-button
+      v-if="portraitPlayerIsPageFullscreen"
+      class="c-portrait-player-progress__fullscreen-btn"
+      :use-position="false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import SliderBar from '@/components/common-base/slider-bar/slider-bar.vue';
+import PortraitPlayerFullscreenButton from './portrait-player-fullscreen-button.vue';
 import { formatSeconds } from '@utils-ts/date';
 import { PlayStatus } from '@polyv/live-watch-sdk';
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerAction } from '../../hooks/use-player-action';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
 const { playStatus, currentTime, durationTime } = storeDefinitionToRefs(usePlayerStore);
+
+const { portraitPlayerIsPageFullscreen } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { toSeekVideo, toTogglePlay } = usePlayerAction();
 </script>
@@ -71,5 +83,8 @@ const { toSeekVideo, toTogglePlay } = usePlayerAction();
   flex: 1;
   margin-right: 16px;
   margin-left: 16px;
+}
+.c-portrait-player-progress__fullscreen-btn {
+  margin-left: 8px;
 }
 </style>

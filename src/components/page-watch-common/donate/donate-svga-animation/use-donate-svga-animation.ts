@@ -75,13 +75,13 @@ export const useDonateSvgaAnimation = () => {
     },
   );
 
-  function canPushInQueue(chatMsg: ChatMsgRewardType) {
+  function canPushInQueue(chatMsg: ChatMsgRewardType): boolean {
     const isSelfGood = chatMsg.isSelf;
     const isPayGood = !chatMsg.isFree;
 
-    // 自己打赏的必须插入
+    // 自己打赏的必须插入，只处理本地插入的
     if (isSelfGood) {
-      return true;
+      return !!chatMsg.isLocal;
     }
 
     // 屏蔽了其他人的打赏动画
@@ -99,19 +99,18 @@ export const useDonateSvgaAnimation = () => {
     if (chatMsg.msgSource !== ChatMsgSource.Reward) {
       return;
     }
+
     // 非道具打赏
     if (chatMsg.donateType !== DonateType.Good) {
       return;
     }
 
-    const isSelfGood = chatMsg.isSelf;
     const pushInQueue = canPushInQueue(chatMsg);
-
     if (!pushInQueue) {
       return;
     }
 
-    // 如果是自己的打赏则优先显示
+    const isSelfGood = chatMsg.isSelf;
     const svgaUrl = getSvgaUrl(chatMsg.gimg);
     pushAnimationQueue(svgaUrl || chatMsg.gimg, isSelfGood);
   }

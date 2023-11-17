@@ -236,12 +236,18 @@
             </template>
           </template>
 
-          <div class="c-mobile-enroll-form__body__submit">
+          <div
+            class="c-mobile-enroll-form__body__submit"
+            :class="{
+              'c-mobile-enroll-form__body__submit--near-bottom': isNearBottom,
+            }"
+          >
             <form-submit-button
               class="c-mobile-enroll-form__body__submit__button"
               :size="ButtonSize.Medium"
               block
               :text="$lang('base.enterLive')"
+              allow-disabled-click
               debounce-submit
             />
           </div>
@@ -270,8 +276,14 @@ import { SmsScene, EnrollFieldType, EnrollAuthType } from '@polyv/live-watch-sdk
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-import { enrollFormEmits, useEnrollForm, useEnrollCheckMobile } from './hooks/use-enroll-form';
+import {
+  enrollFormMobileProps,
+  enrollFormEmits,
+  useEnrollForm,
+  useEnrollCheckMobile,
+} from './hooks/use-enroll-form';
 
+defineProps(enrollFormMobileProps());
 const emit = defineEmits(enrollFormEmits());
 
 const { enrollBanner, needEnrollByEnter, smsVerifyEnabled, enrollAuthType, enrollFields } =
@@ -332,19 +344,25 @@ const { blurToCheckStatus } = useEnrollCheckMobile({
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
+  padding: 8px 0;
   background: $--color-white;
 
   &::before {
     position: absolute;
-    bottom: 88px;
+    bottom: 100%;
     left: 50%;
     width: 106%;
-    height: 20px;
+    height: 40px;
     pointer-events: none;
     content: '';
     background: linear-gradient(180deg, rgba(#fff, 0) 0%, #ffffff 100%);
     transform: translateX(-50%);
+  }
+}
+
+.c-mobile-enroll-form__body__submit--near-bottom {
+  &::before {
+    opacity: 0;
   }
 }
 </style>

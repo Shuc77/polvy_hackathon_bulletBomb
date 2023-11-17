@@ -5,12 +5,14 @@ import { appEvents, eventBus } from '@/app/app-events';
 import { translate } from '@/assets/lang';
 import { IarAnnouncementInstance } from '../types/announcement-types';
 import { useAnnouncementTips } from './use-announcement-tips';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 /**
  * @hook 互动-公告
  */
 export const useAnnouncement = () => {
   const { openAnnouncementTips } = useAnnouncementTips();
+  const interactReceiveStore = useInteractReceiveStore();
 
   const watchCore = getWatchCore();
 
@@ -91,6 +93,12 @@ export const useAnnouncement = () => {
     }
   };
 
+  function onHasBulletin(hasBulletin = false) {
+    interactReceiveStore.$patch({
+      hasBulletin,
+    });
+  }
+
   onBeforeMount(() => {
     eventBus.$on(appEvents.interaction.OpenAnnouncementList, openAnnouncementList);
     eventBus.$on(appEvents.interaction.OpenAnnouncementDetail, openAnnouncementDetail);
@@ -114,5 +122,6 @@ export const useAnnouncement = () => {
     onShowDetailFromSocket,
     onLookover,
     onClickBack,
+    onHasBulletin,
   };
 };

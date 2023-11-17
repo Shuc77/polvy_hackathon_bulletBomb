@@ -22,7 +22,6 @@ import { RenderPosition } from '@just4/virtual-list/types';
 import { isMobile } from '@/assets/utils/browser';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { getWatchCore } from '@/core/watch-sdk';
-import { loadLocalForage } from '@/plugins/external-lib-loaders/load-localforage';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useRequestHistoryTime } from './hooks/request-history-time-hook';
 
@@ -137,13 +136,6 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     if (!chatStore.chatMsgListEnabled) return;
 
     if (playbackStore.chatReplayEnabled) {
-      const localForage = await loadLocalForage();
-      watchCore.chat.addChatMsgReplayCachePlugin({
-        getItem: localForage.getItem,
-        setItem: localForage.setItem,
-        removeItem: localForage.removeItem,
-        iterate: localForage.iterate,
-      });
       await watchCore.chat.initChatMsgReplay();
     }
 

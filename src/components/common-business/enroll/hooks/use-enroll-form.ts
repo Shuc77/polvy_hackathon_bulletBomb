@@ -19,6 +19,7 @@ import {
 import { computed, reactive, ref } from 'vue';
 import { useCommonStore } from '@/store/use-common-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
 interface EnrollBasicFormData {
   /** 验证的手机号 */
@@ -35,6 +36,12 @@ interface EnrollBasicFormData {
 }
 
 type EnrollValFormData = Record<string, string | string[] | boolean>;
+
+/** 报名观看表单移动端 props */
+export const enrollFormMobileProps = () => ({
+  /** 是否已滚动接近底部 */
+  isNearBottom: PropUtils.bool.def(false),
+});
 
 export const enrollFormEmits = () => ({
   /** 关闭弹层 */
@@ -285,6 +292,9 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
       emit('close-dialog');
       return;
     }
+
+    // 提交成功提示
+    toast.success(translate('base.submitSuccess'));
 
     // 入口报名且报名成功的情况下需要重新安装 watchCore
     if (enrollStore.needEnrollByEnter && result.hasEnrolled) {

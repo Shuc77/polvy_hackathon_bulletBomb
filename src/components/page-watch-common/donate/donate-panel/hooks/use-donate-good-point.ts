@@ -7,9 +7,11 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { DonateGoodInfo, useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { onMounted, ref, unref } from 'vue';
+import { useDonateRewardMsgInsertHook } from './use-donate-reward-msg-insert';
 
 /** 礼物打赏（积分）hook */
 export const useDonateGoodPoint = () => {
+  const { insertRewardMsgForDonateGoodPoint } = useDonateRewardMsgInsertHook();
   const { showDonatePointGood } = storeDefinitionToRefs(useDonateStore);
 
   /** 当前用户剩余的积分总数 */
@@ -33,6 +35,7 @@ export const useDonateGoodPoint = () => {
         goodId: good.goodId,
         goodCount: count,
       });
+      insertRewardMsgForDonateGoodPoint(good, count);
       surplusPoint.value = points;
     } catch (e) {
       const err = e as Error;

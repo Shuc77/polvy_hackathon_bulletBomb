@@ -40,7 +40,7 @@
         <!-- 置顶公告 -->
         <portrait-announcement-entrance
           v-if="announcementFunctionVisible"
-          v-show="!portraitPlayerIsPageFullscreen"
+          v-show="!portraitPlayerIsPageFullscreen && hasBulletin"
           class="c-portrait-carousel-main-screen__top-right__item"
         />
 
@@ -96,14 +96,14 @@
             </plv-carousel-item>
 
             <!-- 提问消息区 -->
-            <plv-carousel-item v-if="askMenuData.visible && !chatReplayEnabled">
+            <plv-carousel-item v-if="askMenuData.visible">
               <portrait-ask />
             </plv-carousel-item>
           </plv-carousel>
 
           <!-- 轮播屏指示器 -->
           <div
-            v-if="askMenuData.visible && !chatReplayEnabled"
+            v-if="askMenuData.visible"
             class="c-portrait-carousel-main-screen__indicator"
           >
             <div
@@ -130,7 +130,6 @@
       <!-- 回放控制栏 -->
       <div
         v-if="isPlaybacking"
-        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__progress c-portrait-carousel-main-screen__bottom__item--padding"
       >
         <portrait-player-progress />
@@ -140,6 +139,10 @@
       <div
         v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding"
+        :class="{
+          'c-portrait-carousel-main-screen__bottom__item--hide-opacity':
+            portraitMessageInputVisible,
+        }"
       >
         <div class="c-portrait-carousel-main-screen__input-wrap">
           <!-- 聊天室输入框占位 -->
@@ -189,7 +192,7 @@
 
       <!-- 底部页脚 -->
       <div
-        v-show="!portraitPlayerIsPageFullscreen"
+        v-show="!portraitPlayerIsPageFullscreen && !portraitMessageInputVisible"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__page-footer-wrap"
       >
         <mobile-page-footer
@@ -275,7 +278,7 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { announcementFunctionVisible, interactSetting } =
+const { announcementFunctionVisible, interactSetting, hasBulletin } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { showDonateFunction, donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
@@ -290,6 +293,9 @@ const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } 
  * 竖屏聊天输入框是否可见
  */
 const portraitChatInputVisible = computed(() => {
+  if (askMenuData.value.visible) {
+    return true;
+  }
   if (chatReplayEnabled.value) return false;
   if (!chatInputControllerEnable.value) return false;
 
@@ -303,6 +309,7 @@ const {
   portraitMessageTabCurrentName,
   portraitPlayerFullscreenBtnVisible,
   portraitPlayerIsPageFullscreen,
+  portraitMessageInputVisible,
 } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
@@ -367,6 +374,9 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 }
 .c-portrait-carousel-main-screen__bottom__item--pointer-event {
   pointer-events: none;
+}
+.c-portrait-carousel-main-screen__bottom__item--hide-opacity {
+  opacity: 0;
 }
 
 .c-portrait-carousel-main-screen__bottom__progress {

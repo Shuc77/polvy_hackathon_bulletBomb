@@ -48,6 +48,8 @@ export interface InteractReceiveStoreState {
   interactiveEntrance: Ref<InteractiveEntranceData[]>;
   /** 公告提示是否显示 */
   announcementTipsVisible: Ref<boolean>;
+  /** 当前是否存在公告 */
+  hasBulletin: Ref<boolean>;
   /** 公告功能是否显示 */
   announcementFunctionVisible: ComputedRef<boolean>;
   /** 当前中奖记录列表 */
@@ -162,6 +164,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       getStorageTipsStatus() === AnnouncementTipsStatus.showing &&
         !watchAppStore.isPlaybackWatchUrl,
     );
+
+    /** 当前是否存在公告 */
+    const hasBulletin = ref(false);
 
     /** 公告功能是否显示 */
     const announcementFunctionVisible = computed(() => {
@@ -287,6 +292,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       seatTableVisible,
       isMeetingSeatTableTemplate,
       seatPosition,
+      hasBulletin,
     };
   },
 );

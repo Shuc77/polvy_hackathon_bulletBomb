@@ -47,6 +47,11 @@ export const useAuthExternalAction = () => {
     if (result.success) {
       await handleAuthVerifySuccess(result);
     } else {
+      // 如果已授权过，可以忽略此次授权失败
+      if (watchCore.auth.isAuthorized()) {
+        return;
+      }
+
       await handleAuthVerifyFail(result);
       toast.warning(failMessage.value || getDefaultFailMessage());
     }

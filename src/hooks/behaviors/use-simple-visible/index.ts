@@ -13,6 +13,8 @@ export interface SimpleVisibleOptions {
   showCallback?: () => void;
   /** 隐藏时回调 */
   hideCallback?: () => void;
+  /** 更新回调 */
+  changeCallback?: (visible: boolean) => void;
 }
 
 /**
@@ -35,6 +37,8 @@ export const useSimpleVisible = (defaultVisible = false, options: SimpleVisibleO
     } else {
       options.hideCallback && options.hideCallback();
     }
+
+    options.changeCallback && options.changeCallback(_visible);
   }
 
   /** 显示 */

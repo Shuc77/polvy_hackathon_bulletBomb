@@ -107,10 +107,6 @@ $--skin-component-configs: (
   'primary-button--active:bg-color': map.get($--skin-basic-configs, 'primary-light-1'),
   // 主题按钮 active 字体色
   'primary-button--active:text-color': $--color-white,
-  // 主题按钮 disabled 背景色
-  'primary-button--disabled:bg-color': map.get($--skin-basic-configs, 'disabled-bg-color'),
-  // 主题按钮 disabled 字体色
-  'primary-button--disabled:text-color': map.get($--skin-basic-configs, 'disabled-text-color'),
 
   // 侧边栏按钮背景色
   'aside-menu-button:bg-color': rgba($--color-white, 0.1),

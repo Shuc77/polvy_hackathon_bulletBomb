@@ -3,11 +3,11 @@
   <div
     class="c-portrait-msg-user-info"
     :class="{
-      'c-portrait-msg-user-info--actor': msgUserActor,
+      'c-portrait-msg-user-info--actor': !hideUserActor,
     }"
   >
     <portrait-msg-user-actor
-      v-if="msgUserActor"
+      v-if="!hideUserActor"
       :actor="msgUserActor"
       :user-type="msgUserType"
     />
@@ -19,7 +19,7 @@
 import PortraitMsgUserActor from '../_msg-user-actor/msg-user-actor.vue';
 import { useMsgUserInfo } from './use-msg-user-info';
 
-const { msgUserNick, msgUserActor, msgUserType } = useMsgUserInfo();
+const { msgUserNick, msgUserActor, msgUserType, hideUserActor } = useMsgUserInfo();
 </script>
 
 <style lang="scss">

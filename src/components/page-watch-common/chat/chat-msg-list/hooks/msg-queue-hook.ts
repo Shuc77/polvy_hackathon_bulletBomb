@@ -2,7 +2,7 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { RenderPosition } from '@just4/virtual-list/types';
-import { ChatEvents, ChatMsgType } from '@polyv/live-watch-sdk';
+import { ChatEvents, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useContractHistory, useContractQueue } from './contract-history-hook';
 import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-msg-hook';
@@ -131,6 +131,11 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
 
     // 对于仅看主持人，非特殊身份，非自己发言的全部过滤掉
     if (chatStore.onlySpecialMsg && isNotSpecialMsg(chatMsg)) {
+      return;
+    }
+
+    // 自己的打赏只接收本地插入的
+    if (chatMsg.msgSource === ChatMsgSource.Reward && chatMsg.isSelf && !chatMsg.isLocal) {
       return;
     }
 

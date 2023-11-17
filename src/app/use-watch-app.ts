@@ -145,6 +145,7 @@ export function useWatchApp() {
         userId: paramGetter.viewerid(),
         nick: paramGetter.nickname() || paramGetter.name(),
         pic: paramGetter.avatar(),
+        actor: paramGetter.actor(),
       },
       inviteInfo: {
         invitePosterId: paramGetter.invitePosterId(),
@@ -186,7 +187,10 @@ export function useWatchApp() {
 
     // 处理特殊授权，授权出现异常只会弹 toast，不中断页面渲染
     const { handleSpecialAuth } = useAuthSpecial();
-    await handleSpecialAuth();
+    const isSpecialAuthError = await handleSpecialAuth();
+    if (isSpecialAuthError) {
+      return;
+    }
 
     // 处理微信流程
     const weixinResult = await useWeixinSetup();

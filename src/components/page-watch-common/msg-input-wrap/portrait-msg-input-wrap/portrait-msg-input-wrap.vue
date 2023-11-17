@@ -14,6 +14,7 @@
           type="text"
           class="c-portrait-msg-input-wrap__main__input"
           :placeholder="placeholder"
+          :disabled="disabledInput"
           ref="inputElemRef"
           maxlength="200"
         />

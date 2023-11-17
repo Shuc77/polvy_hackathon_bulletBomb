@@ -48,37 +48,52 @@ class BidirectionalMap {
 }
 
 /**
- * 弹幕速度&等级映射
- * @type {BidirectionalMap}
+ * 弹幕速度档位置
  */
-export const speedBitMap = new BidirectionalMap({
+export const speedGear = {
   '340': '1',
   '270': '2',
   '200': '3',
   '130': '4',
   '60': '5',
-});
+};
+
+/**
+ * 弹幕速度&等级映射
+ * @type {BidirectionalMap}
+ */
+export const speedBitMap = new BidirectionalMap(speedGear);
+
+/**
+ * PC端弹幕字号档位值
+ */
+export const pcSizeGear = {
+  '12': '1',
+  '14': '2',
+  '20': '3',
+  '28': '4',
+  '32': '5',
+};
 
 /**
  * 弹幕字号大小&等级映射（PC端）
  * @type {BidirectionalMap}
  */
-export const sizeBitMap = new BidirectionalMap({
+export const sizeBitMap = new BidirectionalMap(pcSizeGear);
+
+/**
+ * H5端弹幕字号档位值
+ */
+export const mobileSizeGear = {
   '12': '1',
-  '16': '2',
-  '20': '3',
-  '24': '4',
+  '14': '2',
+  '16': '3',
+  '22': '4',
   '28': '5',
-});
+};
 
 /**
  * 弹幕字号大小&等级映射（移动端）
  * @type {BidirectionalMap}
  */
-export const sizeMobileBitMap = new BidirectionalMap({
-  '16': '1',
-  '20': '2',
-  '24': '3',
-  '28': '4',
-  '32': '5',
-});
+export const sizeMobileBitMap = new BidirectionalMap(mobileSizeGear);

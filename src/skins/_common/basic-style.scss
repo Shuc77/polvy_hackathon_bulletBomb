@@ -21,8 +21,7 @@
       }
     }
     &.is-disabled {
-      color: map.get($--skin-configs, 'primary-button--disabled:text-color') !important;
-      background-color: map.get($--skin-configs, 'primary-button--disabled:bg-color') !important;
+      opacity: 0.5;
     }
   }
 

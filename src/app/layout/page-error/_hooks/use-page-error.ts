@@ -14,7 +14,15 @@ export const usePageErrorHook = () => {
   });
 
   const isWorkWechatError = computed(() => {
-    return unref(pageError).type === PageErrorType.WorkWechatCode;
+    return (
+      unref(pageError).type === PageErrorType.WorkWechatBusinessError ||
+      unref(pageError).type === PageErrorType.WorkWechatFriend
+    );
+  });
+
+  /** 添加企微好友页面 */
+  const isWorkWechatFriendPage = computed(() => {
+    return unref(pageError).type === PageErrorType.WorkWechatFriend;
   });
 
   const isDisallowMobileWatch = computed(() => {
@@ -54,6 +62,8 @@ export const usePageErrorHook = () => {
     pageError,
 
     isWorkWechatError,
+    isWorkWechatFriendPage,
+
     isDisallowMobileWatch,
     isAuthError,
     isNotExistError,

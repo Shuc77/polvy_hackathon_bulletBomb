@@ -209,8 +209,9 @@ export const useWeixinShare = () => {
 
     console.info('weixin shareOptions', shareOptions);
 
-    if (isWeixin && !isWorkWeixin) {
+    if (isWeixin) {
       await updateWxShareConfig(shareOptions);
+      return;
     }
 
     if (isWorkWeixin) {

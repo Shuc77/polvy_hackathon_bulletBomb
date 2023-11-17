@@ -47,7 +47,7 @@ export const englishLang: LangConfig = {
     'Error, this page uses independent authorization, please use the authorization portal to watch',
   'auth.error.workWeixinExpire':
     'The  view channel condition have expired, and you cannot continue to watch, please contact the administrator',
-  'auth.error.workWeixinNotAllow': 'Please open this link within Wecom to watch the live stream.',
+  'auth.error.workWeixinNotAllow': 'Please open this link within Welcome to watch the live stream.',
   'auth.error.workWeixinNotStaff': 'Login failed, please confirm staff identity.',
   'auth.enter': 'Enter',
 
@@ -203,7 +203,7 @@ export const englishLang: LangConfig = {
   'chat.input.maxImageTips': 'Insert no more than ${maxCount} pictures at most',
   'chat.ask.channel': 'Question Channel',
   'chat.closeRoom': 'Chat room is closed',
-  'chat.roomClosed': 'Chat room temporarily closed',
+  'chat.roomClosed': 'Chat room is closed',
   'chat.roomReopened': 'Chat room reopened',
   'chat.reply': 'reply',
   'chat.illegalImage': 'Image illegal',
@@ -384,8 +384,13 @@ export const englishLang: LangConfig = {
   'pageError.network.general.desc': 'Please check your network.',
   'pageError.network.timeout.title': 'Network error(timeout)',
   'pageError.disallow.mobile.watch': 'For PC only, please go to pc to open the website.',
-  'pageError.work.wechat.tips1': 'Please scan the code to add friends, ',
-  'pageError.work.wechat.tips2': 'then you can enter the live room',
+  'pageError.work.wechat.friend.qrcode.generating': '二维码生成中...',
+  'pageError.work.wechat.friend.title': '扫一扫添加企微好友',
+  'pageError.work.wechat.friend.desc': '成功添加即可进入直播间',
+  'pageError.work.wechat.friend.qrcode.tips': '长按识别二维码加好友',
+  'pageError.work.wechat.businessError.title': 'Entering the channel failed.',
+  'pageError.work.wechat.businessError.desc':
+    'You are not visible within the scope of this channel. If you have any questions, please contact the live stream administrator or the Enterprise WeChat administrator.',
 
   'player.play.button.text': 'Click to enter',
   'player.play': 'Play',
@@ -629,6 +634,14 @@ export const englishLang: LangConfig = {
   'barrage.speed.normal': 'standard',
   'barrage.speed.fast': 'faster',
   'barrage.speed.veryFast': 'fastest',
+
+  'barrage.location': 'Bullet position',
+  'barrage.location.top': 'Top',
+  'barrage.location.bottom': 'Bottom',
+  'barrage.location.half': 'Half-screen',
+  'barrage.location.full': 'Full-screen',
+
+  'barrage.alpha': 'Bullet opacity',
 
   'promote.external.link.tips': `After clicking the menu, the content of this link will be displayed on a new page; if a new page cannot be created, it will be displayed on the current page to replace the original viewing page`,
 

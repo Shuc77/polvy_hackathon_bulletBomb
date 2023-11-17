@@ -11,8 +11,8 @@
     <portrait-msg-input-wrap
       ref="msgInputWrapRef"
       :placeholder="portraitMessageInputPlaceholder"
-      :disabled-input="chatInputDisabled"
-      :disabled-emotion-picker="chatInputDisabled"
+      :disabled-input="portraitChatInputDisabled"
+      :disabled-emotion-picker="portraitChatInputDisabled"
       :face-emotion-enabled="chatSetting.faceEmotionEnabled"
       :image-emotion-enabled="chatSetting.imageEmotionEnabled"
       @system-msg="onSendSystemMsg"
@@ -21,6 +21,7 @@
     >
       <!-- 提问图标 -->
       <portrait-ask-icon
+        v-if="!chatInputDisabled"
         slot="input-prefix"
         class="c-portrait-chat-input-controller__question-icon"
       />
@@ -35,7 +36,7 @@ import PortraitMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { nextTick, ref } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -72,7 +73,14 @@ const {
   visible: inputVisible,
   close: closeInput,
   setVisible: setInputVisible,
-} = useSimpleVisible();
+} = useSimpleVisible(false, {
+  changeCallback: _visible => {
+    const portraitLayoutStore = usePortraitLayoutStore();
+    portraitLayoutStore.$patch({
+      portraitMessageInputVisible: _visible,
+    });
+  },
+});
 
 useEventBusListener(appEvents.chat.FocusToChatInput, async () => {
   setInputVisible(true);
@@ -87,7 +95,16 @@ useClickOutside(inputWrapRef, () => {
 
 const { chatInputDisabled, chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { portraitMessageInputPlaceholder } = storeDefinitionToRefs(usePortraitLayoutStore);
+const { portraitMessageInputPlaceholder, portraitMessageTabCurrentName } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
+
+const portraitChatInputDisabled = computed(() => {
+  if (portraitMessageTabCurrentName.value === PortraitChatTabName.Ask) {
+    return false;
+  }
+
+  return chatInputDisabled.value;
+});
 
 function onSubmit(params: { contentList: PlvInputContent[] }) {
   onSubmitMessage(params);

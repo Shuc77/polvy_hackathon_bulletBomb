@@ -11,6 +11,7 @@ import {
   DEFAULT_VIEWER_AVATAR,
 } from '@polyv/live-watch-sdk';
 import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
+import { useHideChatMsgActorHook } from '../../hooks/hide-chat-msg-hook';
 
 /**
  * 聊天室消息用户上下文
@@ -26,6 +27,8 @@ export interface ChatMsgUserContext {
   msgUserType: ComputedRef<ChatUserType | undefined>;
   /** 消息的用户头衔 */
   msgUserActor: ComputedRef<string | undefined>;
+  /** 是否隐藏消息的用户头衔 */
+  hideUserActor: ComputedRef<boolean>;
   /** 是否为自己发言 */
   isSelfMsg: ComputedRef<boolean>;
   /** 是否为特殊用户 */
@@ -39,6 +42,8 @@ export interface ChatMsgUserContext {
 export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | undefined>) => {
   const viewerStore = useViewerStore();
   const chatMsgStore = useChatMsgStore();
+
+  const { needHideActorByUserType } = useHideChatMsgActorHook();
 
   /**
    * 消息的用户信息
@@ -89,6 +94,11 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
     return unref(msgUser)?.userId === viewerStore.viewerId;
   });
 
+  /** 是否隐藏消息的用户头衔 */
+  const hideUserActor = computed<boolean>(() => {
+    return isSelfMsg.value || !msgUserActor.value || needHideActorByUserType(msgUserType.value);
+  });
+
   /**
    * 是否为特殊用户
    */
@@ -107,6 +117,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
     msgUserActor,
     isSelfMsg,
     isSpecialUser,
+    hideUserActor,
   };
 
   return chatMsgUserContext;

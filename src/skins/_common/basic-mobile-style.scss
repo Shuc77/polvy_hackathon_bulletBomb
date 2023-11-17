@@ -307,28 +307,29 @@
       color: map.get($--skin-configs, 'subtitle-item-line:text-color') !important;
       background: map.get($--skin-configs, 'subtitle-item-line:bg-color') !important;
     }
-  }
 
-  //  -------------- 云席嘉宾证 -------------  //
-  @if map.has-key($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image') {
-    .pws-mobile-seat-table-guest-card__main {
-      background-image: url(map.get($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image')) !important;
-      background-position: center !important;
-      background-size: cover !important;
+
+    //  -------------- 云席嘉宾证 -------------  //
+    @if map.has-key($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image') {
+      .pws-mobile-seat-table-guest-card__main {
+        background-image: url(map.get($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image')) !important;
+        background-position: center !important;
+        background-size: cover !important;
+      }
+
+      .pws-mobile-seat-table-guest-card__title {
+        span {
+          background-image: none !important;
+        }
+        &::before {
+          text-shadow: unset !important;
+        }
+      }
     }
 
-    .pws-mobile-seat-table-guest-card__title {
-      span {
-        background-image: none !important;
-      }
-      &::before {
-        text-shadow: unset !important;
-      }
+    //  -------------- 移动端底部 Tabs 标签头部  -------------  //
+    .pws-mobile-popup-tab-header__current-line {
+      background: map.get($--skin-configs, 'primary-color') !important;
     }
-  }
-
-  //  -------------- 移动端底部 Tabs 标签头部  -------------  //
-  .pws-mobile-popup-tab-header__current-line {
-    background: map.get($--skin-configs, 'primary-color') !important;
   }
 }

@@ -22,6 +22,33 @@
           />
         </div>
       </div>
+      <!-- 弹幕位置 -->
+      <div
+        v-if="barrageLocationButtonVisible"
+        class="c-pc-barrage-setting__panel__option"
+      >
+        <div class="c-pc-barrage-setting__label">
+          {{ $lang('barrage.location') }}
+        </div>
+        <div class="c-pc-barrage-setting__item">
+          <div
+            v-for="(item, index) in barrageLocationSetting"
+            :key="index"
+            :class="[
+              'c-pc-barrage-setting__item__local',
+              {
+                'c-pc-barrage-setting__item__local--active': index === currentBarrageLocationIndex,
+              },
+            ]"
+            @click="handleBarrageLocationChange(item)"
+          >
+            <pc-barrage-location-button :button-type="item.type" />
+            <span class="c-pc-barrage-setting__item__local__text">{{
+              $lang(`barrage.location.${item.type}`)
+            }}</span>
+          </div>
+        </div>
+      </div>
       <!--弹幕字号-->
       <div
         v-if="barrageSizeButtonVisible"
@@ -36,12 +63,12 @@
             :min="1"
             :max="5"
             :step="1"
+            :marks="barrageSizeMark"
             :progress-bar-visible="false"
             :hot-area-height="36"
             :value="formattedBarrageSizeToSliderValue"
             @input="handleBarrageSizeChange"
           />
-          <span class="c-pc-barrage-setting__desc">{{ formattedBarrageSizeToText }}</span>
         </div>
       </div>
       <!--弹幕速度-->
@@ -58,12 +85,30 @@
             :min="1"
             :max="5"
             :step="1"
+            :marks="barrageSpeedMark"
             :progress-bar-visible="false"
             :hot-area-height="36"
             :value="formattedBarrageSpeedToSliderValue"
             @input="handleBarrageSpeedChange"
           />
-          <span class="c-pc-barrage-setting__desc">{{ formattedBarrageSpeedToText }}</span>
+        </div>
+      </div>
+      <!--弹幕透明度-->
+      <div
+        v-if="barrageAlphaButtonVisible"
+        class="c-pc-barrage-setting__panel__option c-pc-barrage-setting__panel__option__alpha"
+      >
+        <div class="c-pc-barrage-setting__label">
+          {{ $lang('barrage.alpha') }}
+        </div>
+        <div class="c-pc-barrage-setting__item">
+          <plv-slider
+            :progress-bar-visible="false"
+            :hot-area-height="36"
+            :value="barrageAlpha"
+            @input="handleBarrageAlphaChange"
+          />
+          <span class="c-pc-barrage-setting__desc">{{ barrageAlpha }}%</span>
         </div>
       </div>
     </div>
@@ -75,16 +120,27 @@ import { PcIconBarrageSetting } from '@/components/component-icons/pc/map';
 import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { useBarrageSetting } from '../../hooks/use-barrage-setting';
 import { usePlayerControl } from '../../hooks/use-player-control';
-
-const { barrageSizeButtonVisible, barrageSpeedButtonVisible } = usePlayerControl();
+import PcBarrageLocationButton from './pc-barrage-location-button.vue';
 
 const {
+  barrageSizeButtonVisible,
+  barrageSpeedButtonVisible,
+  barrageAlphaButtonVisible,
+  barrageLocationButtonVisible,
+} = usePlayerControl();
+
+const {
+  barrageSpeedMark,
   formattedBarrageSpeedToSliderValue,
-  formattedBarrageSpeedToText,
   handleBarrageSpeedChange,
   formattedBarrageSizeToSliderValue,
-  formattedBarrageSizeToText,
+  barrageSizeMark,
   handleBarrageSizeChange,
+  barrageAlpha,
+  handleBarrageAlphaChange,
+  handleBarrageLocationChange,
+  barrageLocationSetting,
+  currentBarrageLocationIndex,
   resetAllSetting,
 } = useBarrageSetting();
 </script>
@@ -141,12 +197,35 @@ const {
 .c-pc-barrage-setting__panel__option:not(:last-child) {
   margin-bottom: 20px;
 }
+.c-pc-barrage-setting__panel__option:nth-child(3) {
+  margin-bottom: 28px;
+}
+.c-pc-barrage-setting__panel__option:nth-child(4) {
+  margin-bottom: 28px;
+}
 .c-pc-barrage-setting__label {
   margin-bottom: 12px;
 }
 .c-pc-barrage-setting__item {
   display: inline-flex;
   width: 100%;
+}
+.c-pc-barrage-setting__item__local {
+  display: flex;
+  flex-direction: column;
+  margin-right: 28px;
+  font-size: 24px;
+  color: #ffffff;
+  cursor: pointer;
+  opacity: 0.5;
+}
+.c-pc-barrage-setting__item__local--active {
+  color: #2196f3;
+  opacity: 1;
+}
+.c-pc-barrage-setting__item__local__text {
+  margin-top: 4px;
+  font-size: 12px;
 }
 .c-pc-barrage-setting__panel {
   .plv-slider {
@@ -185,11 +264,19 @@ const {
   .plv-slider__runway::after {
     right: -2px;
   }
+  .plv-slider__marks__item {
+    font-size: 12px;
+  }
+}
+.c-pc-barrage-setting__panel__option__alpha {
+  .plv-slider {
+    padding: 5px 7px 5px 0;
+  }
 }
 .c-pc-barrage-setting__desc {
   box-sizing: border-box;
-  width: 68px;
-  padding-left: 8px;
-  text-align: center;
+  width: 38px;
+  font-size: 12px;
+  text-align: right;
 }
 </style>

@@ -18,7 +18,7 @@
     <div class="c-mobile-msg-user-info__nick-wrap">
       <!-- 头衔 -->
       <span
-        v-if="msgUserActor"
+        v-if="!hideUserActor"
         class="c-mobile-msg-user-info__actor g-singleline pws-chat-msg-user-actor"
       >
         {{ msgUserActor }}
@@ -34,7 +34,15 @@
 <script setup lang="ts">
 import { useMsgUserInfo } from './use-msg-user-info';
 
-const { msgUserNick, msgUserAvatar, msgUserActor, isSelfMsg, isSpecialUser } = useMsgUserInfo();
+const {
+  msgUserNick,
+  msgUserAvatar,
+  msgUserActor,
+
+  isSelfMsg,
+  isSpecialUser,
+  hideUserActor,
+} = useMsgUserInfo();
 </script>
 
 <style lang="scss">

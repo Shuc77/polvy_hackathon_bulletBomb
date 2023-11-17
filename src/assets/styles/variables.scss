@@ -38,9 +38,7 @@ $--color-primary-light-8: get-opacity-color($--color-primary, 8);
 $--color-primary-light-9: get-opacity-color($--color-primary, 9);
 
 // 背景色
-$--bg-color-disabled: #E9ECEE !default; // 不可用
 $--bg-color-portrait-popup: #262523 !default; // 竖屏下的弹层背景色
-$--bg-color-portrait-disabled: #CDCDCD !default; // 竖屏下的不可用
 
 // 字体色
 $--font-color-primary: #333333 !default; // 默认字体颜色

@@ -30,14 +30,9 @@
 
     <!-- 播放按钮 -->
     <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
-    <div
-      v-if="normalPlayButtonVisible && !isSmallWindow && !noPauseWhenLive"
-      class="c-portrait-player-main__play-button g-img-cover"
-    ></div>
-
     <player-play-button
-      v-if="noPauseWhenLive"
-      :mode="PlayButtonMode.Text"
+      v-if="normalPlayButtonVisible && !isSmallWindow"
+      :mode="noPauseWhenLive ? PlayButtonMode.Text : PlayButtonMode.Default"
       class="c-mobile-player-main__play-btn"
     />
 
@@ -225,17 +220,6 @@ useEventBusListener(appEvents.portrait.PlayerSystemFullscreen, () => {
   .c-portrait-placeholder-panel__content {
     height: 100%;
   }
-}
-
-.c-portrait-player-main__play-button {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  z-index: 999;
-  width: 80px;
-  height: 80px;
-  background-image: url(../../common/player-play-button/imgs/play-btn-2.png);
-  transform: translate(-50%, -50%);
 }
 
 .c-portrait-player-main--hide-loading {

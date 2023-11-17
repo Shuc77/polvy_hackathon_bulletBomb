@@ -97,6 +97,10 @@
 
         <div
           class="c-mobile-popup__body"
+          ref="popupContentBodyRef"
+          :class="{
+            'c-mobile-popup__body--scrollbar': forceShowBodyScrollbar,
+          }"
           @scroll="onPopupBodyScroll"
         >
           <transition name="fade">
@@ -135,8 +139,9 @@ const {
   wrapVisible,
   contentVisible,
   popupRef,
-  popupContentHeaderRef,
   popupContentRef,
+  popupContentHeaderRef,
+  popupContentBodyRef,
   popupMaskStyle,
   popupContentStyle,
   popupInstance,
@@ -368,6 +373,10 @@ defineExpose(popupInstance);
   box-sizing: border-box;
   flex: 1;
   overflow-y: auto;
+}
+.c-mobile-popup__body--scrollbar {
+  overflow-y: scroll;
+  @include scrollbar(rgba(#333333, 0.2), 8px);
 }
 
 .c-mobile-popup__tips {

@@ -74,7 +74,7 @@ export const usePortraitClickPlayer = () => {
 
     clickCount++;
     // 双击了播放器区域，暂停播放
-    if (clickCount === 2 && !noPauseWhenLive) {
+    if (clickCount === 2 && !noPauseWhenLive.value) {
       toPause();
       clickCount = 0;
     }

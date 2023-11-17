@@ -7,9 +7,16 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { isMobile } from '@/assets/utils/browser';
 import { usePlayerAction } from './use-player-action';
 import { speedBitMap, sizeBitMap, sizeMobileBitMap } from './use-barrage-mapping';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { BarrageLocationInfo } from '@polyv/live-watch-sdk';
 
 export const useBarrageSetting = () => {
-  const { toChangeBarrageSpeed, toChangeBarrageSize } = usePlayerAction();
+  const {
+    toChangeBarrageSpeed,
+    toChangeBarrageSize,
+    toChangeBarrageAlpha,
+    toChangeBarrageLocation,
+  } = usePlayerAction();
   const playerStore = usePlayerStore();
 
   /**
@@ -22,6 +29,21 @@ export const useBarrageSetting = () => {
   function handleBarrageSpeedChange(value: number) {
     toChangeBarrageSpeed(speedBitMap.get(value));
   }
+
+  function handleBarrageAlphaChange(value: number) {
+    toChangeBarrageAlpha(value);
+  }
+
+  /** 弹幕速度对应档位描述 */
+  const barrageSpeedMark: {
+    [key: number]: string;
+  } = {
+    1: translate('barrage.speed.verySlow'),
+    2: translate('barrage.speed.slow'),
+    3: translate('barrage.speed.normal'),
+    4: translate('barrage.speed.fast'),
+    5: translate('barrage.speed.veryFast'),
+  };
 
   const formattedBarrageSpeedToText = computed(() => {
     return {
@@ -42,16 +64,20 @@ export const useBarrageSetting = () => {
     return sizeMap.get(playerStore.barrageSize || 20);
   });
 
+  /** 弹幕字号对应档位描述 */
+  const barrageSizeMark: {
+    [key: number]: string;
+  } = {
+    1: translate('barrage.size.verySmall'),
+    2: translate('barrage.size.small'),
+    3: translate('barrage.size.normal'),
+    4: translate('barrage.size.big'),
+    5: translate('barrage.size.veryBig'),
+  };
+
   const formattedBarrageSizeToText = computed(() => {
     const sizeMap = isMobile ? sizeMobileBitMap : sizeBitMap;
-    return {
-      // 极小（12）、小（16）、标准（20）、大（24）、特大（28）
-      1: translate('barrage.size.verySmall'),
-      2: translate('barrage.size.small'),
-      3: translate('barrage.size.normal'),
-      4: translate('barrage.size.big'),
-      5: translate('barrage.size.veryBig'),
-    }[sizeMap.get(playerStore.barrageSize)];
+    return barrageSizeMark[sizeMap.get(playerStore.barrageSize)];
   });
 
   /**
@@ -64,21 +90,41 @@ export const useBarrageSetting = () => {
   }
 
   /**
+   * 弹幕透明度、弹幕位置选项
+   */
+  const { barrageAlpha, barrageLocationSetting, currentBarrageLocationIndex } =
+    storeDefinitionToRefs(usePlayerStore);
+
+  function handleBarrageLocationChange(options: BarrageLocationInfo) {
+    const { index } = options;
+    toChangeBarrageLocation(index);
+  }
+
+  /**
    * 恢复弹幕默认设置
    * @desc 弹幕速度&弹幕字号跟随后台默认设置, 弹幕位置恢复到顶部, 弹幕透明度恢复到55%
    */
   function resetAllSetting() {
     handleBarrageSpeedChange(playerStore.barrageSpeedGrade);
     handleBarrageSizeChange(playerStore.barrageSizeGrade);
+    handleBarrageAlphaChange(playerStore.barrageDefaultAlpha);
+    toChangeBarrageLocation(playerStore.barrageLocationDefaultId);
   }
 
   return {
+    barrageSpeedMark,
     formattedBarrageSpeedToSliderValue,
     formattedBarrageSpeedToText,
     handleBarrageSpeedChange,
+    barrageSizeMark,
     formattedBarrageSizeToSliderValue,
     formattedBarrageSizeToText,
     handleBarrageSizeChange,
+    barrageAlpha,
+    handleBarrageAlphaChange,
+    barrageLocationSetting,
+    currentBarrageLocationIndex,
+    handleBarrageLocationChange,
     resetAllSetting,
   };
 };

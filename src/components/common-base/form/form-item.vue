@@ -8,6 +8,11 @@
     }"
   >
     <div
+      v-if="formItemIsError"
+      class="c-form-item__anchor"
+      data-form-item-error
+    ></div>
+    <div
       v-if="labelText"
       class="c-form-item__label"
       :style="labelStyle"
@@ -53,6 +58,7 @@ const {
   labelStyle,
   itemErrorMessage,
   contentWidthStyle,
+  formItemIsError,
   formItemInstance,
   isMobile,
 } = useFormItem({
@@ -64,9 +70,17 @@ defineExpose(formItemInstance);
 
 <style lang="scss">
 .c-form-item {
+  position: relative;
   display: flex;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.c-form-item__anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
 }
 
 .c-form-item__label__required {

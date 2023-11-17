@@ -39,6 +39,8 @@ export interface PortraitLayoutStoreState {
   portraitMessageTabCurrentName: Ref<PortraitChatTabName>;
   /** 竖屏消息输入框占位符 */
   portraitMessageInputPlaceholder: ComputedRef<string>;
+  /** 竖屏消息输入框是否显示 */
+  portraitMessageInputVisible: Ref<boolean>;
 }
 
 export interface PortraitStore extends PortraitLayoutStoreState {}
@@ -60,21 +62,30 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     /** 移动端竖屏播放器是否支持全屏 */
     const portraitPlayerFullscreenEnabled = ref(true);
 
+    /** 是否移动端播放器竖屏页面全屏 */
+    const portraitPlayerIsPageFullscreen = ref(false);
+
     /** 移动端竖屏全屏按钮是否可见 */
     const portraitPlayerFullscreenBtnVisible = computed(() => {
-      if (docStore.canRenderDoc || channelStore.liveStatus === LiveStatus.Playback) {
+      if (docStore.canRenderDoc) {
         return false;
       }
 
-      if (!playerStore.playerInited || playerStore.isPortraitResolutionRate) {
+      if (
+        !playerStore.playerInited ||
+        playerStore.isPortraitResolutionRate ||
+        // CDN 播放器 Android 系统下未播放前全屏会导致页面卡死
+        !playerStore.isPlayStarted
+      ) {
+        return false;
+      }
+
+      if (channelStore.liveStatus === LiveStatus.Playback && portraitPlayerIsPageFullscreen.value) {
         return false;
       }
 
       return portraitPlayerFullscreenEnabled.value;
     });
-
-    /** 是否移动端播放器竖屏页面全屏 */
-    const portraitPlayerIsPageFullscreen = ref(false);
 
     /** 竖屏轮播屏当前索引 */
     const carouselActiveIndex = ref(1);
@@ -92,6 +103,9 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
 
       return placeholder;
     });
+
+    /** 竖屏消息输入框是否显示 */
+    const portraitMessageInputVisible = ref(false);
 
     /** 竖屏文档容器内容渲染高度 */
     const portraitDocContentHeight = computed<number>(() => {
@@ -147,6 +161,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       portraitDocWrapHeight,
       channelInfoSeat,
       portraitMessageInputPlaceholder,
+      portraitMessageInputVisible,
     };
   },
 );

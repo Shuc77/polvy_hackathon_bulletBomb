@@ -5,6 +5,7 @@ import { isMobile } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
 import {
   BarrageSetting,
+  BarrageLocationInfo,
   LiveStatus,
   MobileWatchLayout,
   PlayerLogoSetting,
@@ -50,10 +51,24 @@ export interface PlayerStoreState {
   barrageSpeedGrade: Ref<number>;
   /** 是否支持弹幕字号切换 */
   supportBarrageSize: Ref<boolean>;
-  /** 弹幕字号 28 | 24 | 20 | 14 | 12 */
+  /** 弹幕字号 */
   barrageSize: Ref<number>;
   /** 弹幕字号档位 */
   barrageSizeGrade: Ref<number>;
+  /** 是否支持弹幕字号切换 */
+  supportBarrageAlpha: Ref<boolean>;
+  /** 弹幕透明度 */
+  barrageAlpha: Ref<number>;
+  /** 弹幕默认透明度 */
+  barrageDefaultAlpha: Ref<number>;
+  /** 是否支持弹幕位置切换 */
+  supportBarrageLocation: Ref<boolean>;
+  /** 弹幕位置选项 */
+  barrageLocationSetting: Ref<BarrageLocationInfo[]>;
+  /** 弹幕位置当前ID */
+  currentBarrageLocationIndex: Ref<number>;
+  /** 弹幕位置默认ID */
+  barrageLocationDefaultId: Ref<number>;
   /** 弹幕移动端设置是否显示 */
   barrageMobileSettingVisible: Ref<boolean>;
   /** 观看延迟时间，单位：毫秒 */
@@ -106,6 +121,8 @@ export interface PlayerStoreState {
   supportLanguageStream: Ref<boolean>;
   /** 直播时是否显示播放按钮， 默认开 */
   stopLivePlayEnabled: Ref<boolean>;
+  /** 播放器版本，目前仅支持pc播放器 */
+  pcPlayerVersion: Ref<string>;
 }
 
 export interface PlayerStoreAction {
@@ -207,6 +224,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageSize: 20,
     barrageSpeedDefaultGrade: 3,
     barrageSizeDefaultGrade: 3,
+    barrageAlpha: 80,
+    barrageDefaultAlpha: 80,
+    barrageLocationDefaultId: 0,
   });
 
   /** 弹幕显示状态 */
@@ -229,6 +249,27 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   /** 弹幕字号档位 */
   const barrageSizeGrade = ref(3);
+
+  /** 是否支持弹幕透明度切换 */
+  const supportBarrageAlpha = ref(false);
+
+  /** 弹幕默认透明度 */
+  const barrageAlpha = ref(80);
+
+  /** 弹幕默认透明度 */
+  const barrageDefaultAlpha = ref(80);
+
+  /** 是否支持弹幕位置切换 */
+  const supportBarrageLocation = ref(false);
+
+  /** 弹幕位置选项 */
+  const barrageLocationSetting = ref<BarrageLocationInfo[]>([]);
+
+  /** 弹幕位置当前ID */
+  const currentBarrageLocationIndex = ref(0);
+
+  /** 弹幕位置默认ID */
+  const barrageLocationDefaultId = ref(0);
 
   /** 弹幕设置是否显示 */
   const barrageMobileSettingVisible = ref(false);
@@ -356,6 +397,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 直播时是否显示播放按钮， 默认开 */
   const stopLivePlayEnabled = ref(true);
 
+  /** 播放器版本，目前仅支持pc播放器 */
+  const pcPlayerVersion = ref('');
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = getWatchCore();
@@ -371,6 +415,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     const _barrageSetting = watchCore.barrage.getBarrageSetting();
     barrageSetting.value = _barrageSetting;
     barrageShow.value = _barrageSetting.barrageDefaultShow;
+
+    barrageLocationSetting.value = watchCore.barrage.getBarrageLocationSetting();
 
     syncWarmUpSetting();
   }
@@ -411,6 +457,14 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageSize.value = playerInfo.currentBarrageSize;
     barrageSizeGrade.value = playerInfo.barrageSizeDefaultGrade;
 
+    supportBarrageAlpha.value = playerInfo.supportBarrageAlpha;
+    barrageAlpha.value = playerInfo.currentBarrageAlpha;
+    barrageDefaultAlpha.value = playerInfo.barrageDefaultAlpha;
+
+    supportBarrageLocation.value = playerInfo.supportBarrageLocation;
+    currentBarrageLocationIndex.value = playerInfo.currentBarrageLocationIndex;
+    barrageLocationDefaultId.value = playerInfo.barrageLocationDefaultId;
+
     delayTime.value = playerInfo.delayTime;
     playStatus.value = playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
@@ -418,6 +472,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     supportLanguageStream.value = playerInfo.supportLanguageStream;
 
     stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
+
+    pcPlayerVersion.value = playerInfo.pcPlayerVersion;
 
     /**
      * 暂不支持三分屏场景和研讨会场景
@@ -454,6 +510,13 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageSize,
     barrageSizeGrade,
     barrageMobileSettingVisible,
+    supportBarrageAlpha,
+    barrageAlpha,
+    barrageDefaultAlpha,
+    supportBarrageLocation,
+    barrageLocationSetting,
+    barrageLocationDefaultId,
+    currentBarrageLocationIndex,
 
     delayTime,
     supportLowLatency,
@@ -487,6 +550,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     supportLanguageStream,
 
     stopLivePlayEnabled,
+    pcPlayerVersion,
 
     syncPlayerStore,
     syncWarmUpSetting,
