@@ -27,6 +27,7 @@
       @hide="setAnnouncementVisible(false)"
       @title-change="onTitleChange"
       @look-over="onLookover"
+      @has-bulletin="onHasBulletin"
     />
   </mobile-popup>
 </template>
@@ -57,6 +58,7 @@ const {
   onCloseDialog,
   onLookover,
   onClickBack,
+  onHasBulletin,
 } = useAnnouncement();
 </script>
 

@@ -6,7 +6,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { MessageBoxInstance } from '@/components/common-base/message-box/use-message-box';
+import { MessageBoxInstance } from '@/components/common-base/message-box';
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 import { useLangStore } from '@/store/use-lang-store';

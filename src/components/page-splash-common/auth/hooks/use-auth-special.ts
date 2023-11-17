@@ -1,5 +1,6 @@
 import { QueryParamsKeyType } from '@/hooks/core/use-query-params';
 import { useAuthStore } from '@/store/use-auth-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { AuthType } from '@polyv/live-watch-sdk';
 import { useAuthCustomAction } from '../auth-custom/use-auth-custom';
 import { useAuthDirectAction } from '../auth-direct/use-auth-direct';
@@ -19,12 +20,14 @@ export const AuthSpecialQueryParams: QueryParamsKeyType[] = [
  */
 export const useAuthSpecial = () => {
   const authStore = useAuthStore();
+  const watchAppStore = useWatchAppStore();
 
   /**
    * 处理特殊授权
    * @warn 注意授权顺序，不要轻易调整
+   * @returns 返回 true 表示授权错误，需要跳转到其他页面，阻止页面继续加载
    * */
-  async function handleSpecialAuth() {
+  async function handleSpecialAuth(): Promise<true | undefined> {
     // 存在独立授权
     if (authStore.hasAuth(AuthType.Direct)) {
       await doDirectAuth();
@@ -38,6 +41,10 @@ export const useAuthSpecial = () => {
     // 存在自定义授权
     if (authStore.hasAuth(AuthType.Custom)) {
       await doCustomAuth();
+    }
+
+    if (watchAppStore.pageError) {
+      return true;
     }
   }
 

@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import MobileMessageBox from '@/components/common-base/message-box/mobile-message-box.vue';
+import { MobileMessageBox } from '@/components/common-base/message-box';
 import { useDoc } from './use-doc';
 
 const { wrapRef, confirmRef } = useDoc();

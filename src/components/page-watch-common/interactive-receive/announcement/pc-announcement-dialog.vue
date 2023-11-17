@@ -17,6 +17,7 @@
       @show-detail-from-socket="onShowDetailFromSocket"
       @hide="setAnnouncementVisible(false)"
       @title-change="onTitleChange"
+      @has-bulletin="onHasBulletin"
     />
   </pc-dialog>
 </template>
@@ -46,6 +47,7 @@ const {
   setAnnouncementVisible,
   onShowDetailFromSocket,
   onCloseDialog,
+  onHasBulletin,
 } = useAnnouncement();
 const layoutStore = useLayoutStore();
 /** 弹层渲染节点 */

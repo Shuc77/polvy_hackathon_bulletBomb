@@ -1,4 +1,4 @@
-import { ref, unref, watch } from 'vue';
+import { ref, unref, watch, computed, nextTick } from 'vue';
 import { useFormWrapInject, useFormWrapPropsInject } from './use-form';
 import debounce from 'lodash-es/debounce';
 import { normalButtonProps } from '../../normal-button/use-normal-button';
@@ -13,46 +13,51 @@ export const formSubmitButtonProps = () => ({
 export const useFormSubmitButton = (options: { props: VueProps<typeof formSubmitButtonProps> }) => {
   const props = options.props;
   const formProps = useFormWrapPropsInject();
-  const formContext = useFormWrapInject();
+  const formCtx = useFormWrapInject();
 
-  /** 提交按钮是否禁用 */
-  const buttonIsDisabled = ref(false);
+  /** 标识位：根据表单上下文判断按钮是否禁用 */
+  const isDisabledByFormCtx = ref(false);
 
   /** 检查按钮是否需要禁用 */
   async function checkDisabled(): Promise<void> {
     let isDisabled = false;
 
-    if (!formContext) {
+    if (!formCtx) {
       return;
     }
 
     // 表单正在提交中
-    if (unref(formContext.isSubmiting)) {
+    if (unref(formCtx.isSubmiting)) {
       isDisabled = true;
-      buttonIsDisabled.value = isDisabled;
+      isDisabledByFormCtx.value = isDisabled;
       return;
     }
 
     // 进行表单验证
     try {
-      if (formContext.validateCurrentForm) {
-        await formContext.validateCurrentForm({
+      if (formCtx.validateCurrentForm) {
+        await formCtx.validateCurrentForm({
           showErrorMessage: false,
         });
       }
     } catch (e) {
-      if (unref(formContext.debug)) {
+      if (unref(formCtx.debug)) {
         console.error('form-submit-button-error', e);
       }
       isDisabled = true;
     }
 
-    buttonIsDisabled.value = isDisabled;
+    isDisabledByFormCtx.value = isDisabled;
   }
+
+  /** 提交按钮是否禁用 */
+  const buttonIsDisabled = computed(() => {
+    return props.disabled || isDisabledByFormCtx.value;
+  });
 
   watch(
     () => {
-      return [formProps && formProps.formData, formContext && unref(formContext.isSubmiting)];
+      return [formProps && formProps.formData, formCtx && unref(formCtx.isSubmiting)];
     },
     () => checkDisabled(),
     {
@@ -63,7 +68,26 @@ export const useFormSubmitButton = (options: { props: VueProps<typeof formSubmit
 
   /** 触发表单提交 */
   const triggerSubmitForm = () => {
-    formContext && formContext.submitForm();
+    if (props.allowDisabledClick && formCtx && formCtx.validateCurrentForm) {
+      formCtx
+        .validateCurrentForm({
+          showErrorMessage: true,
+        })
+        // eslint-disable-next-line promise/prefer-await-to-then
+        .catch(err => {
+          console.error('validateCurrentForm Err', err);
+          nextTick(() => {
+            const $formErrDom = document.querySelector('[data-form-item-error]') || undefined;
+            $formErrDom && $formErrDom.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        });
+    }
+
+    if (buttonIsDisabled.value) {
+      return;
+    }
+
+    formCtx && formCtx.submitForm();
   };
 
   /** 防抖触发表单提交 */

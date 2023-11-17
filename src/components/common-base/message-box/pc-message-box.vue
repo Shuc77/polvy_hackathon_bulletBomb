@@ -9,7 +9,10 @@
     @after-leave="onAfterLeave"
     @closed="onCancel"
   >
-    <div class="c-pc-message-box">
+    <div
+      class="c-pc-message-box"
+      ref="messageBoxRef"
+    >
       <div class="c-pc-message-box__body">
         <p
           v-if="props.content"
@@ -64,6 +67,7 @@ const pcDialogProps = computed(() => {
 
 const {
   innerVisible,
+  messageBoxRef,
   messageBoxInstance,
   messageBoxContentRef,
 

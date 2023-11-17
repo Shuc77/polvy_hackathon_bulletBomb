@@ -18,7 +18,7 @@
     <div class="c-pc-msg-user-info__nick-wrap">
       <!-- 头衔 -->
       <span
-        v-if="msgUserActor"
+        v-if="!hideUserActor"
         class="c-pc-msg-user-info__actor g-singleline pws-chat-msg-user-actor"
         :title="msgUserActor"
       >
@@ -49,7 +49,15 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { appEvents, eventBus } from '@/app/app-events';
 
-const { msgUserNick, msgUserAvatar, msgUserActor, isSelfMsg, isSpecialUser } = useMsgUserInfo();
+const {
+  msgUserNick,
+  msgUserAvatar,
+  msgUserActor,
+
+  isSelfMsg,
+  isSpecialUser,
+  hideUserActor,
+} = useMsgUserInfo();
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 

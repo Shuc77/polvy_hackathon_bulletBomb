@@ -85,18 +85,18 @@ export function useWorkWeixinAuthorize() {
 
   /** 能否进行企业微信授权 */
   const canWorkWeixinAuthorize = computed<boolean>(() => {
-    // 非企业微信
-    if (!isWorkWeixin) {
-      return false;
+    // 企业微信 || 个人微信
+    if (isWorkWeixin || isWeixin) {
+      if (watchCore.weixin.needValidateAuthByWorkFriend()) {
+        return true;
+      }
+
+      // 是否可以企微授权
+      return watchCore.weixin.getWorkWeixinAuthEnabled();
     }
 
-    // 是否可以企微授权
-    const workWeixinAuthEnabled = watchCore.weixin.getWorkWeixinAuthEnabled();
-    if (!workWeixinAuthEnabled) {
-      return false;
-    }
-
-    return true;
+    // 默认是不进行企微授权的
+    return false;
   });
 
   /**

@@ -20,18 +20,21 @@
 
 <script setup lang="ts">
 import { appEvents, eventBus } from '@/app/app-events';
+import { translate } from '@/assets/lang';
 import { MobileIconMessage } from '@/components/component-icons/mobile/map';
 import PortraitAskIcon from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-icon.vue';
+import { toast } from '@/hooks/components/use-toast';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { computed, unref } from 'vue';
 
 const { chatInputDisabled } = storeDefinitionToRefs(useChatStore);
 
-const { portraitMessageInputPlaceholder } = storeDefinitionToRefs(usePortraitLayoutStore);
+const { portraitMessageInputPlaceholder, portraitMessageTabCurrentName } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
 
@@ -52,7 +55,11 @@ function onClickPlaceholder() {
   }
 
   // 输入框禁用
-  if (unref(chatInputDisabled)) {
+  if (
+    unref(chatInputDisabled) &&
+    unref(portraitMessageTabCurrentName) === PortraitChatTabName.Chat
+  ) {
+    toast.error(translate('chat.roomClosed'));
     return;
   }
 

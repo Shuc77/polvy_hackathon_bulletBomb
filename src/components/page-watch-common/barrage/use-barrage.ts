@@ -27,10 +27,15 @@ export const useBarrage = (
     }
 
     const watchCore = getWatchCore();
+    const { direction, percent } =
+      playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex];
     barrageTarget = watchCore.barrage.setupBarrage({
       container,
       speed: playerStore.barrageSpeed,
       size: playerStore.barrageSize,
+      alpha: playerStore.barrageAlpha,
+      areaDirection: direction,
+      areaPercentage: percent,
     });
   }
 
@@ -52,6 +57,16 @@ export const useBarrage = (
     barrageTarget?.changeSize(size);
   }
 
+  /** 修改弹幕透明度 */
+  function changeBarrageAlpha(alpha: number) {
+    barrageTarget?.changeAlpha(alpha);
+  }
+
+  /** 修改弹幕位置 */
+  function changeBarrageLocation(index: number) {
+    barrageTarget?.changeLocation(index);
+  }
+
   watch(
     () => playerStore.barrageSpeed,
     () => {
@@ -66,6 +81,26 @@ export const useBarrage = (
     () => playerStore.barrageSize,
     () => {
       changeBarrageSize(playerStore.barrageSize);
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  watch(
+    () => playerStore.barrageAlpha,
+    () => {
+      changeBarrageAlpha(playerStore.barrageAlpha);
+    },
+    {
+      immediate: true,
+    },
+  );
+
+  watch(
+    () => playerStore.currentBarrageLocationIndex,
+    () => {
+      changeBarrageLocation(playerStore.currentBarrageLocationIndex);
     },
     {
       immediate: true,
@@ -95,7 +130,5 @@ export const useBarrage = (
     containerRef,
     setupBarrage,
     destroyBarrage,
-    changeBarrageSpeed,
-    changeBarrageSize,
   };
 };

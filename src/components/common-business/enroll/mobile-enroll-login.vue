@@ -67,6 +67,7 @@
           block
           :text="$lang('base.enterLive')"
           debounce-submit
+          allow-disabled-click
         />
       </div>
     </form-wrap>
@@ -107,6 +108,6 @@ const { imageVerifyInputRef, formData, formRules, submitLoginForm } = useEnrollL
 .c-mobile-enroll-login__submit {
   display: flex;
   justify-content: center;
-  padding: 20px 0;
+  padding: 8px 0;
 }
 </style>

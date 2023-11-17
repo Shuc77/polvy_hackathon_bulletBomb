@@ -48,6 +48,7 @@ export const messageBoxPcProps = () => ({
 
 export const messageBoxMobileProps = () => ({
   ...messageBoxCommonProps(),
+  /** 是否旋转 */
   isRotate: PropUtils.bool.def(false),
 });
 
@@ -111,8 +112,8 @@ export const useMessageBox = (options: {
 
   function $open() {
     innerVisible.value = true;
-    if (messageBoxContentRef.value) {
-      PlvPopperManager.openPopper(messageBoxContentRef.value);
+    if (messageBoxRef.value) {
+      PlvPopperManager.openPopper(messageBoxRef.value);
     }
   }
 

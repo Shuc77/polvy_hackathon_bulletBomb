@@ -170,7 +170,7 @@ export const useSpeakMsg = () => {
     const id = unref(chatMsg).id;
     const watchCore = getWatchCore();
 
-    return watchCore.chat.getFullMessage(id);
+    return watchCore.chat.getFullMessage(id, unref(chatMsg));
   }
 
   /** 复制当前消息 */

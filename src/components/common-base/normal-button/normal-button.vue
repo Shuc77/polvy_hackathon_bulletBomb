@@ -12,7 +12,7 @@
       },
     ]"
     :type="nativeType"
-    :disabled="disabled"
+    :disabled="!allowDisabledClick && disabled"
     @click="emit('click')"
   >
     <slot>
@@ -108,7 +108,8 @@ const buttonClass = computed(() => {
 
   &.is-disabled {
     color: $--font-color-disabled;
-    background-color: $--bg-color-disabled;
+    background-color: #e9ecee;
+    border: none;
   }
 }
 
@@ -118,7 +119,7 @@ const buttonClass = computed(() => {
 
   &.is-disabled {
     color: $--color-white;
-    background-color: $--bg-color-portrait-disabled;
+    background-color: #cdcdcd;
   }
 }
 
@@ -128,7 +129,7 @@ const buttonClass = computed(() => {
 
   &.is-disabled {
     color: $--color-white;
-    background-color: $--bg-color-portrait-disabled;
+    opacity: 0.5;
   }
 }
 

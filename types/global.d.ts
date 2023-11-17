@@ -37,4 +37,6 @@ declare global {
   interface NavigatorLanguage {
     readonly browserLanguage: string;
   }
+
+  interface FontFaceSet extends Set<FontFace> {}
 }

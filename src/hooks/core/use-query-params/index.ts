@@ -104,10 +104,6 @@ export const paramGetter = {
   userid: buildGetters('userid'),
   /** 参与者头衔 */
   actor: buildGetters('actor'),
-  /** 参与者头衔背景色 */
-  actorBgColor: buildGetters('actorBgColor'),
-  /** 参与者头衔字体颜色 */
-  actorFColor: buildGetters('actorFColor'),
   /** 自定义授权 & 外部授权 & 独立授权中的时间戳 */
   ts: buildGetters('ts'),
   /** 自定义授权 & 外部授权 & 独立授权中的签名 */

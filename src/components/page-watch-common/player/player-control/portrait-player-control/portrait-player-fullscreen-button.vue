@@ -7,8 +7,9 @@
     :class="{
       'c-portrait-player-fullscreen-button--fullscreen': !portraitPlayerIsPageFullscreen,
       'c-portrait-player-fullscreen-button--fullscreen-exit': portraitPlayerIsPageFullscreen,
+      'c-portrait-player-fullscreen-button--position': usePosition,
     }"
-    :style="portraitPlayerFullscreenBtnStyle"
+    :style="usePosition ? portraitPlayerFullscreenBtnStyle : {}"
     @click="togglePortraitPlayerFullscreen"
   ></div>
 </template>
@@ -25,6 +26,12 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
 import { usePortraitPlayerSize } from '@/components/page-watch-common/player/player-main/portrait-player-main/use-portrait-player-size';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+
+defineProps({
+  /** 是否使用定位按钮 */
+  usePosition: PropUtils.bool.def(true),
+});
 
 const isShowFullscreenButton = ref(true);
 
@@ -78,9 +85,6 @@ function isSystemFullscreenMode() {
 
 <style lang="scss">
 .c-portrait-player-fullscreen-button {
-  position: absolute;
-  right: 2px;
-
   display: flex;
   width: 32px;
   height: 32px;
@@ -88,6 +92,11 @@ function isSystemFullscreenMode() {
   pointer-events: initial;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+}
+
+.c-portrait-player-fullscreen-button--position {
+  position: absolute;
+  right: 2px;
 }
 
 .c-portrait-player-fullscreen-button--fullscreen {

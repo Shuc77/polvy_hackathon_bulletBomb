@@ -2,39 +2,76 @@ import {
   useWeixinAuthorize,
   useWorkWeixinAuthorize,
 } from '@/hooks/platform/use-weixin/use-weixin-authorize';
-import { useWeixinStore } from '@/store/use-weixin-store';
 import { unref } from 'vue';
 import { getWatchCore } from '@/core/watch-sdk';
+import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
+import { useAuthStore } from '@/store/use-auth-store';
+import { AuthType } from '@polyv/live-watch-sdk';
+import { useWorkWeixinErrorPage } from '@/hooks/platform/use-weixin/use-work-weixin-error-page';
 
 /**
- * @hook 处理微信流程
- * @warn 由于保利威业务授权逻辑较为复杂，请不要轻易调换微信授权和企微授权的处理顺序
- * @returns 返回 true 则表示中断页面渲染，需要进行微信授权
+ * @hook 处理企业微信授权
+ * @returns 返回 true 则表示中断页面渲染
  */
-export const useWeixinSetup = async () => {
-  const weixinStore = useWeixinStore();
+const useWorkWeixinSetup = async () => {
+  const watchCore = getWatchCore();
+  const authStore = useAuthStore();
 
-  /**
-   * 是否使用静默授权
-   */
-  function toSnsApiBase() {
-    const watchCore = getWatchCore();
-    return watchCore.weixin.getSnsApiBase();
+  // 非微信环境不往下继续判断
+  if (!(isWorkWeixin || isWeixin)) {
+    return false;
   }
 
-  // 处理微信授权
-  const { canWeixinAuthorize, redirectWeixinAuthorize } = useWeixinAuthorize();
-  if (unref(canWeixinAuthorize)) {
-    await redirectWeixinAuthorize({
-      snsApiBase: toSnsApiBase(),
+  const { canWorkWeixinAuthorize, redirectWorkWeixinAuthorize } = useWorkWeixinAuthorize();
+
+  if (unref(canWorkWeixinAuthorize)) {
+    await redirectWorkWeixinAuthorize({
+      snsApiBase: watchCore.weixin.getWorkWeixinSnsApiBase(),
     });
     return true;
   }
 
-  // 处理企业微信授权
-  const { canWorkWeixinAuthorize, redirectWorkWeixinAuthorize } = useWorkWeixinAuthorize();
-  if (unref(canWorkWeixinAuthorize) && !weixinStore.workWeixinAuthorized) {
-    await redirectWorkWeixinAuthorize();
+  const { isNeedErrorPageRedirect, processErrorPageRedirect } = useWorkWeixinErrorPage();
+  const isOnlyEnterpriseWeChatAuth =
+    authStore.authSettings.length === 1 && authStore.hasAuth(AuthType.EnterpriseWeChat);
+  // 单个条件时自动处理
+  if (isNeedErrorPageRedirect() && isOnlyEnterpriseWeChatAuth) {
+    const processResult = processErrorPageRedirect();
+    if (processResult) {
+      return true;
+    }
+  }
+};
+
+/**
+ * @hook 处理个人微信授权
+ * @returns 返回 true 则表示中断页面渲染
+ */
+const useGeneralWeixinSetup = async () => {
+  const watchCore = getWatchCore();
+
+  const { canWeixinAuthorize, redirectWeixinAuthorize } = useWeixinAuthorize();
+  if (unref(canWeixinAuthorize)) {
+    await redirectWeixinAuthorize({
+      snsApiBase: watchCore.weixin.getSnsApiBase(),
+    });
+    return true;
+  }
+};
+
+/**
+ * @hook 处理微信流程
+ * @warn 保利威业务相关，需要先处理个微，再处理企微
+ * @returns 返回 true 则表示中断页面渲染，需要进行微信授权或错误页跳转
+ */
+export const useWeixinSetup = async () => {
+  const generalWeixinSetupResult = await useGeneralWeixinSetup();
+  if (generalWeixinSetupResult) {
+    return true;
+  }
+
+  const workWeixinSetupResult = await useWorkWeixinSetup();
+  if (workWeixinSetupResult) {
     return true;
   }
 };

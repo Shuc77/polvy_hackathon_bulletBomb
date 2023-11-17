@@ -1,6 +1,6 @@
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
-import { ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
+import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { ChatMsgListHookOptions } from './types';
 
 export const useFilterSpecialMsgHook = () => {
@@ -13,15 +13,12 @@ export const useFilterSpecialMsgHook = () => {
    * @param excludeCurrentUser 排除当前观众，默认 true
    */
   function isNotSpecialMsg(chatMsg: ChatMsgType, excludeCurrentUser = true) {
-    const limitMsgSources = [ChatMsgSource.Speak, ChatMsgSource.Image, ChatMsgSource.Emotion];
-    if (limitMsgSources.includes(chatMsg.msgSource)) {
-      if (chatMsgStore.isSpecialUserMsg(chatMsg)) {
-        return false;
-      }
+    if (chatMsgStore.isSpecialUserMsg(chatMsg)) {
+      return false;
+    }
 
-      if (excludeCurrentUser && chatMsgStore.isSelfMsg(chatMsg)) {
-        return false;
-      }
+    if (excludeCurrentUser && chatMsgStore.isSelfMsg(chatMsg)) {
+      return false;
     }
 
     return true;

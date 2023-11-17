@@ -7,7 +7,7 @@ import { isWeixin } from '@/assets/utils/browser';
 import { wait } from '@/assets/utils/utils';
 
 import { FormProtocolInstance } from '@/components/common-base/form/form-protocol/use-form-protocol';
-import { MessageBoxInstance } from '@/components/common-base/message-box/use-message-box';
+import { MessageBoxInstance } from '@/components/common-base/message-box';
 import { useLangStore, convert2WatchSdkLang } from '@/store/use-lang-store';
 import { ChannelAgreementConfig, LanguageType } from '@polyv/live-watch-sdk';
 

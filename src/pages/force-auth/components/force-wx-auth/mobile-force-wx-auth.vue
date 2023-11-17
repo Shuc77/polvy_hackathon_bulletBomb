@@ -69,7 +69,7 @@
 
 <script lang="ts" setup>
 import MobileFormProtocol from '@/components/common-base/form/form-protocol/mobile-form-protocol.vue';
-import MobileMessageBox from '@/components/common-base/message-box/mobile-message-box.vue';
+import { MobileMessageBox } from '@/components/common-base/message-box';
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

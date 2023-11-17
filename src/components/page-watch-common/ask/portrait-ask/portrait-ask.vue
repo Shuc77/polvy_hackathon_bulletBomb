@@ -4,6 +4,7 @@
       :slogan="askWelcomeText"
       :ask-sdk="askSdk"
       :lang="currentLang"
+      :hide-actor-user-type="hideActorUserType"
     />
   </div>
 </template>
@@ -14,6 +15,8 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useAskStore } from '@/store/use-ask-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import AskCompPortrait from '@polyv/chat-sdk-ui-ask-question/lib/MobileAskPortrait';
+
+import { useHideChatMsgActorHook } from '@/components/page-watch-common/chat/chat-msg-list/hooks/hide-chat-msg-hook';
 import { useAskReminder, useAskSdk } from '../hooks/use-ask';
 
 const { askSdk } = useAskSdk();
@@ -21,6 +24,8 @@ const { askSdk } = useAskSdk();
 const { askWelcomeText } = storeDefinitionToRefs(useAskStore);
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
+
+const { hideActorUserType } = useHideChatMsgActorHook();
 
 const { updateAskReminderVisible } = useAskReminder({
   onAskMsg: () => {

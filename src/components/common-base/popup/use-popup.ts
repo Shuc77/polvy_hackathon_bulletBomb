@@ -14,6 +14,7 @@ import { isUndefined } from 'lodash-es';
 import { CSSProperties } from 'vue/types/jsx';
 import { PopupInstance, PopupHorizontalScreenPosition, PopupTheme } from './types';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
+import { isScrollNearBottom } from '@/assets/utils/dom';
 
 export const popupProps = () => ({
   /** 显示状态，默认：false，支持 .sync */
@@ -71,6 +72,8 @@ export const popupProps = () => ({
   horizontalScreenPosition: PropUtils.enum<PopupHorizontalScreenPosition>().def(
     PopupHorizontalScreenPosition.Right,
   ),
+  /** 强制展示滚动条，默认： false */
+  forceShowBodyScrollbar: PropUtils.bool.def(false),
 });
 
 export const popupEmits = () => ({
@@ -84,6 +87,8 @@ export const popupEmits = () => ({
   'click-back': emitFunc<void>(),
   /** 弹窗主体滚动 */
   'body-scroll': emitFunc<UIEvent>(),
+  /** 弹窗主体滚动接近底部 */
+  'body-scroll-near-bottom': emitFunc<boolean>(),
   /** 上下推拽 */
   'drag-vertical': emitFunc<{ translateY: number }>(),
 });
@@ -108,6 +113,8 @@ export const usePopup = (options: {
   const popupContentRef = ref<HTMLDivElement | AlloyFingerTransformHTMLElement>();
   /** 弹层主体头部 Ref */
   const popupContentHeaderRef = ref<HTMLDivElement>();
+  /** 弹层主体身体 Ref */
+  const popupContentBodyRef = ref<HTMLDivElement>();
 
   /** 弹层外层显示状态 */
   const wrapVisible = ref(false);
@@ -262,8 +269,9 @@ export const usePopup = (options: {
     emit('click-back');
   }
 
-  function onPopupBodyScroll(e: UIEvent) {
-    emit('body-scroll', e);
+  function onPopupBodyScroll(evt: UIEvent) {
+    emit('body-scroll', evt);
+    emitBodyScrollNearBottom();
   }
 
   /** 获取弹窗主体头部的高度 */
@@ -326,6 +334,12 @@ export const usePopup = (options: {
     updateScreenOrientationModeManually();
     await nextTick();
     setContentHeight();
+    emitBodyScrollNearBottom();
+  }
+
+  function emitBodyScrollNearBottom() {
+    const isNearBottom = isScrollNearBottom(popupContentBodyRef.value);
+    emit('body-scroll-near-bottom', isNearBottom);
   }
 
   /**
@@ -402,8 +416,9 @@ export const usePopup = (options: {
     wrapVisible,
     contentVisible,
     popupRef,
-    popupContentHeaderRef,
     popupContentRef,
+    popupContentHeaderRef,
+    popupContentBodyRef,
     popupMaskStyle,
     popupContentStyle,
     popupInstance,

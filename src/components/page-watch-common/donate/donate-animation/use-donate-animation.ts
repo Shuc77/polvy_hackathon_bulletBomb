@@ -111,12 +111,16 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
     if (chatMsg.msgSource !== ChatMsgSource.Reward) {
       return;
     }
-
     /** 是否需要插入到队列中 */
     const pushInQueue = canPushInQueue(chatMsg);
     const isSelfGood = chatMsg.isSelf;
 
     if (!pushInQueue) {
+      return;
+    }
+
+    // 自己的打赏只接收本地插入的
+    if (isSelfGood && !chatMsg.isLocal) {
       return;
     }
 

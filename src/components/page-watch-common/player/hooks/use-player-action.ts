@@ -142,6 +142,22 @@ export const usePlayerAction = () => {
     getWatchCore().player.setBarrageSize(size);
   }
 
+  /** 切换弹幕透明度 */
+  function toChangeBarrageAlpha(alpha: number) {
+    playerStore.$patch({
+      barrageAlpha: alpha,
+    });
+    getWatchCore().player.setBarrageAlpha(alpha);
+  }
+
+  /** 切换弹幕位置 */
+  function toChangeBarrageLocation(index: number) {
+    playerStore.$patch({
+      currentBarrageLocationIndex: index,
+    });
+    getWatchCore().player.setBarrageLocation(index);
+  }
+
   /** 切换线路 */
   function toChangeLine(line: number): void {
     getWatchCore().player.changeLine(line);
@@ -235,6 +251,8 @@ export const usePlayerAction = () => {
     toToggleBarrageShow,
     toChangeBarrageSpeed,
     toChangeBarrageSize,
+    toChangeBarrageAlpha,
+    toChangeBarrageLocation,
     toChangeLine,
     toChangeQualityLevel,
     toChangeRate,

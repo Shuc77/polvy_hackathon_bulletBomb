@@ -43,3 +43,13 @@ export function isFocusActiveForm(): boolean {
   const tagNames = ['input', 'textarea'];
   return tagNames.includes(tagName);
 }
+
+/**
+ * 判断是否已滚动接近底部
+ * @param $el Dom节点
+ */
+export function isScrollNearBottom($el?: HTMLElement | null) {
+  if (!$el) return false;
+
+  return Math.ceil($el.scrollTop + $el.clientHeight) >= Math.floor($el.scrollHeight);
+}

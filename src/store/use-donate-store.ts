@@ -61,6 +61,8 @@ export interface DonateStoreAction {
   translateGoodName: (goodName: string) => string;
   /** 获取打赏道具的价格文案 */
   getGoodPriceText: (goodPrice: string) => string;
+  /** 根据道具id获取打赏道具信息 */
+  findDonateGoodById: (targetGoodId?: string) => DonateGoodInfo | undefined;
   /** 根据道具图片获取打赏道具信息 */
   findDonateGoodByImg: (targetGoodImg: string) => DonateGoodInfo | undefined;
   /** 同步打赏 Store */
@@ -231,6 +233,13 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   }
 
   /**
+   * 根据道具id获取打赏道具信息
+   */
+  function findDonateGoodById(targetGoodId?: string): DonateGoodInfo | undefined {
+    return donateItemList.value.find(good => good.goodId === targetGoodId);
+  }
+
+  /**
    * 同步打赏 Store 数据
    */
   function syncDonateStore() {
@@ -282,6 +291,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     toggleDonateAnimationVisible,
     translateGoodName,
     getGoodPriceText,
+    findDonateGoodById,
     findDonateGoodByImg,
     syncDonateStore,
   };

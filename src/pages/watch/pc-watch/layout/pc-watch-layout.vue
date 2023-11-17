@@ -253,10 +253,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-// 弹幕层
-$--layer-zIndex-barrage: 290;
-// 控制栏层
-$--layer-zIndex-player-control: 300;
 // 直播倒计时层
 $--layer-zIndex-count-down: 310;
 // 课堂激励动画层
@@ -333,6 +329,7 @@ $--layout-sub-pack-up-height: 40px !default;
   top: 0;
   left: 0;
   // z-index: 200;
+  z-index: 0;
   width: $--layout-left-width-percent;
   height: 100%;
   pointer-events: initial;
@@ -381,9 +378,8 @@ $--layout-sub-pack-up-height: 40px !default;
 }
 
 .c-pc-watch-layout__main__player-barrage {
-  top: 32px;
-  z-index: $--layer-zIndex-barrage;
-  height: 30%;
+  z-index: 0;
+  height: 100%;
   pointer-events: none;
 }
 

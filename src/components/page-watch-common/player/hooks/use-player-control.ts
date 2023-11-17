@@ -150,9 +150,24 @@ export const usePlayerControl = () => {
     return settingList;
   });
 
+  const timeShiftEnableShowQuality = computed<boolean>(() => {
+    if (!playerStore.supportLiveTimeShift) return true;
+
+    const version = playerStore.pcPlayerVersion;
+
+    if (!version) return false;
+
+    const reg = /^(\d*).(\d*).(\d*)/;
+    const [, main, secondary] = version.match(reg) || [];
+
+    if (!main || !secondary) return false;
+
+    return Number(main) >= 1 && Number(secondary) >= 52;
+  });
+
   /** 清晰度设置是否显示 */
   const qualitySettingVisible = computed<boolean>(() => {
-    if (playerStore.supportLiveTimeShift) return false;
+    if (!timeShiftEnableShowQuality.value) return false;
 
     return (
       playerStore.qualityLevels.length > 1 &&
@@ -306,10 +321,34 @@ export const usePlayerControl = () => {
   });
 
   /**
+   * 弹幕透明度切换按钮是否显示
+   */
+  const barrageAlphaButtonVisible = computed(() => {
+    if (!playerStore.barrageSetting.barrageEnabled) {
+      return false;
+    }
+    return playerStore.supportBarrageAlpha;
+  });
+
+  /**
+   * 弹幕透位置切换按钮是否显示
+   */
+  const barrageLocationButtonVisible = computed(() => {
+    if (!playerStore.barrageSetting.barrageEnabled) {
+      return false;
+    }
+    return playerStore.supportBarrageLocation;
+  });
+
+  /**
    * 弹幕配置是否可用
    */
   const barrageSettingEnabled = computed(() => {
-    return barrageSpeedButtonVisible.value || barrageSizeButtonVisible.value;
+    return (
+      barrageSpeedButtonVisible.value ||
+      barrageSizeButtonVisible.value ||
+      barrageAlphaButtonVisible.value
+    );
   });
 
   /**
@@ -357,6 +396,8 @@ export const usePlayerControl = () => {
 
     barrageSpeedButtonVisible,
     barrageSizeButtonVisible,
+    barrageAlphaButtonVisible,
+    barrageLocationButtonVisible,
     barrageSettingEnabled,
 
     timeShiftReturnLiveButtonVisible,

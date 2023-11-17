@@ -7,7 +7,7 @@
       :class="{
         'c-page-error-pc-default__img-auth': isAuthError,
         'c-page-error-pc-default__img-not-exist': isNotExistError,
-        'c-page-error-pc-default__img-not-found': isNotFoundError,
+        'c-page-error-pc-default__img-not-found': isNotFoundError || isWorkWechatError,
       }"
     ></div>
     <h1
@@ -41,6 +41,7 @@ const {
   isAuthError,
   isNotExistError,
   isNotFoundError,
+  isWorkWechatError,
 
   reloadPage,
 } = usePageErrorHook();

@@ -27,7 +27,7 @@
         :class="{
           'c-page-error-mobile-default__img-auth': isAuthError,
           'c-page-error-mobile-default__img-not-exist': isNotExistError,
-          'c-page-error-mobile-default__img-not-found': isNotFoundError,
+          'c-page-error-mobile-default__img-not-found': isNotFoundError || isWorkWechatError,
         }"
       ></div>
       <h1 class="c-page-error-mobile-default__title">
@@ -60,6 +60,7 @@ const {
   isDisallowMobileWatch,
   isAuthError,
   isNotExistError,
+  isWorkWechatError,
   isNotFoundError,
 
   reloadPage,

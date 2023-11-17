@@ -188,7 +188,7 @@ export const chinaLang = {
   'chat.input.maxImageTips': '最多插入不超过${maxCount}张图片',
   'chat.ask.channel': '提问频道',
   'chat.closeRoom': '聊天室已关闭',
-  'chat.roomClosed': '聊天室暂时关闭',
+  'chat.roomClosed': '聊天室已关闭',
   'chat.roomReopened': '聊天室重新打开',
   'chat.reply': '回复',
   'chat.illegalImage': '图片违规',
@@ -363,8 +363,13 @@ export const chinaLang = {
   'pageError.network.general.desc': '请检查你的网络设置',
   'pageError.network.timeout.title': '当前网络不可用（超时）',
   'pageError.disallow.mobile.watch': '本直播仅支持PC端观看，请使用PC浏览以下地址',
-  'pageError.work.wechat.tips1': '请扫一扫上面的二维码，添加好友',
-  'pageError.work.wechat.tips2': '添加成功后即可进入直播间',
+  'pageError.work.wechat.friend.qrcode.generating': '二维码生成中...',
+  'pageError.work.wechat.friend.title': '扫一扫添加企微好友',
+  'pageError.work.wechat.friend.desc': '成功添加即可进入直播间',
+  'pageError.work.wechat.friend.qrcode.tips': '长按识别二维码加好友',
+  'pageError.work.wechat.businessError.title': '进入频道失败',
+  'pageError.work.wechat.businessError.desc':
+    '你未在该频道可见范围内，有疑问请联系直播管理员或企微管理员',
 
   'player.play.button.text': '立即播放',
   'player.play': '播放',
@@ -603,6 +608,14 @@ export const chinaLang = {
   'barrage.speed.normal': '标准',
   'barrage.speed.fast': '较快',
   'barrage.speed.veryFast': '极快',
+
+  'barrage.location': '弹幕位置',
+  'barrage.location.top': '顶部',
+  'barrage.location.bottom': '底部',
+  'barrage.location.half': '半屏',
+  'barrage.location.full': '全屏',
+
+  'barrage.alpha': '弹幕透明度',
 
   'promote.external.link.tips':
     '点击菜单后在新页面显示此链接内容；若无法新建页面则在当前页显示，替换原观看页',

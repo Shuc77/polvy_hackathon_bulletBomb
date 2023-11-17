@@ -96,7 +96,6 @@ defineExpose<FormProtocolInstance>({
   -webkit-overflow-scrolling: touch;
 }
 .c-mobile-form-protocol-popup__iframe {
-  z-index: 10019;
   width: 100%;
   height: 100%;
   overflow-x: hidden;

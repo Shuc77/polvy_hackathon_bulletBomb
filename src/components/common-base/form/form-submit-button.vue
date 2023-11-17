@@ -6,7 +6,8 @@
     :type="type"
     :size="size"
     :block="block"
-    :disabled="disabled || buttonIsDisabled"
+    :disabled="buttonIsDisabled"
+    :allow-disabled-click="allowDisabledClick"
     @click="onButtonClick"
   />
 </template>

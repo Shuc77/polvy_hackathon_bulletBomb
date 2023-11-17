@@ -18,11 +18,23 @@ import {
   WatchDomainPayType,
 } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, unref, watch } from 'vue';
+import { useDonateRewardMsgInsertHook } from './use-donate-reward-msg-insert';
+
+/** 支付打赏选项 */
+export interface DonatePayOptions {
+  /** 打赏类型 */
+  donateType: DonateType;
+  /** 打赏道具 id */
+  goodId?: string;
+  /** 现金打赏下的打赏金额 */
+  amount?: string | number;
+}
 
 /**
  * 打赏支付状态检查 hook
  */
 const useDonatePayCheck = () => {
+  const { insertRewardMsgForPayDonate } = useDonateRewardMsgInsertHook();
   const { waitPayDonateData } = storeDefinitionToRefs(useDonateStore);
 
   let checkTimer: number | undefined;
@@ -67,6 +79,9 @@ const useDonatePayCheck = () => {
       });
 
       if (status.paySuccess) {
+        if (waitPayDonateData.value) {
+          insertRewardMsgForPayDonate(waitPayDonateData.value);
+        }
         waitPayDonateData.value = undefined;
         clearCheckTimer();
       }
@@ -87,17 +102,9 @@ const useDonatePayCheck = () => {
   };
 };
 
-export interface DonatePayOptions {
-  /** 打赏类型 */
-  donateType: DonateType;
-  /** 打赏道具 id */
-  goodId?: string;
-  /** 现金打赏下的打赏金额 */
-  amount?: string;
-}
-
 /** PC 端支付逻辑 */
 const useDonatePayPc = () => {
+  const { insertRewardMsgForPayDonate } = useDonateRewardMsgInsertHook();
   const { waitPayDonateData } = storeDefinitionToRefs(useDonateStore);
 
   const { setCheckTimer, clearCheckTimer } = useDonatePayCheck();
@@ -138,6 +145,10 @@ const useDonatePayPc = () => {
 
       // 免费礼物
       if (payData.isFree) {
+        insertRewardMsgForPayDonate({
+          ...payOptions,
+          isFree: true,
+        });
         return;
       }
 
@@ -157,6 +168,7 @@ const useDonatePayPc = () => {
 
 /** 移动端支付逻辑 */
 const useDonatePayMobile = () => {
+  const { insertRewardMsgForPayDonate } = useDonateRewardMsgInsertHook();
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
   const { chooseWXPay } = useWeixinPay();
   const { polyvWatchDomainEnabled, skipWatchDomainPay } = usePolyvWatchDomain();
@@ -212,6 +224,10 @@ const useDonatePayMobile = () => {
 
         // 免费礼物
         if (payInfo.isFree) {
+          insertRewardMsgForPayDonate({
+            ...payOptions,
+            isFree: true,
+          });
           resolve();
           return;
         }
@@ -225,7 +241,10 @@ const useDonatePayMobile = () => {
 
         if (payInfo.wxPaySignData) {
           chooseWXPay(payInfo.wxPaySignData, {
-            successCb: () => resolve(),
+            successCb: () => {
+              insertRewardMsgForPayDonate(payOptions);
+              return resolve();
+            },
             cancelCb: () => reject(new Error('pay fail')),
           });
         }

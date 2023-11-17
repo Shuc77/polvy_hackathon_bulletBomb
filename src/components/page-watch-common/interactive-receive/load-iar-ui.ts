@@ -16,15 +16,15 @@ function getIarUIConfigByWatchSdkEnv() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20230921',
+      version: 'rc-20231102',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20230921',
+      version: 'rc-20231102',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'beta-20230921',
+      version: 'dev-20231102',
     },
   };
 
