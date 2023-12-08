@@ -10,6 +10,7 @@
         theme === PopupTheme.Portrait || theme === PopupTheme.PortraitLight,
       'c-mobile-popup--portrait--dark': theme === PopupTheme.Portrait,
       'c-mobile-popup--portrait--light': theme === PopupTheme.PortraitLight,
+      'c-mobile-popup--follow-page-skin': theme === PopupTheme.FollowPageSkin,
       'c-mobile-popup--hide-header-border': hideHeaderBorder,
       'c-mobile-popup--full-screen': fullScreen,
       'c-mobile-popup--screen__vertical': isVerticalScreen && !forceHorizontalScreen,
@@ -36,11 +37,7 @@
         ref="popupContentRef"
         v-show="contentVisible"
         class="c-mobile-popup__content"
-        :class="[
-          isHorizontalScreen || forceHorizontalScreen
-            ? 'c-mobile-popup__content--screen__horizontal__' + horizontalScreenPosition
-            : '',
-        ]"
+        :class="popupContentClass"
         :style="popupContentStyle"
       >
         <transition name="fade">
@@ -74,6 +71,9 @@
             <div
               v-if="backable"
               class="c-mobile-popup__header__btn c-mobile-popup__header__btn__back"
+              :class="{
+                'pws-mobile-popup__header__btn': theme === PopupTheme.FollowPageSkin,
+              }"
               @click="onClickBack"
             >
               <slot name="back-btn">
@@ -81,13 +81,21 @@
               </slot>
             </div>
             <!-- 标题 -->
-            <h2 class="c-mobile-popup__header__title">
+            <h2
+              class="c-mobile-popup__header__title"
+              :class="{
+                'pws-mobile-popup__header__title': theme === PopupTheme.FollowPageSkin,
+              }"
+            >
               <slot name="title">{{ title }}</slot>
             </h2>
             <!-- 关闭按钮 -->
             <div
               v-if="closable"
               class="c-mobile-popup__header__btn c-mobile-popup__header__btn__close"
+              :class="{
+                'pws-mobile-popup__header__btn': theme === PopupTheme.FollowPageSkin,
+              }"
               @click="closePopup"
             >
               <mobile-icon-close class="c-mobile-popup__header__btn__close__icon" />
@@ -144,6 +152,7 @@ const {
   popupContentBodyRef,
   popupMaskStyle,
   popupContentStyle,
+  popupContentClass,
   popupInstance,
   onAfterEnter,
   onAfterLeave,
@@ -277,7 +286,7 @@ defineExpose(popupInstance);
   width: 266px;
   height: 48px;
   margin: auto;
-  background: $--color-primary-portrait;
+  background: #ffa611;
   border-radius: 8px;
 }
 
@@ -302,7 +311,7 @@ defineExpose(popupInstance);
   content: '';
   border-top: 0;
   border-right: 10px solid transparent;
-  border-bottom: 12px solid $--color-primary-portrait;
+  border-bottom: 12px solid #ffa611;
   border-left: 10px solid transparent;
   transform: rotate(-180deg);
 }
@@ -314,7 +323,7 @@ defineExpose(popupInstance);
 
   font-size: 14px;
   line-height: 1;
-  color: $--color-primary-portrait;
+  color: #ffa611;
   text-align: center;
   background: #ffffff;
   border-radius: 642px;
@@ -416,6 +425,27 @@ defineExpose(popupInstance);
     }
     .c-mobile-popup__header__btn {
       color: $--color-white;
+    }
+  }
+}
+
+// 保持和 portrait 的布局处理
+.c-mobile-popup--follow-page-skin {
+  .c-mobile-popup__header {
+    border-bottom: none;
+  }
+  .c-mobile-popup__header__title {
+    padding: 0 16px;
+    text-align: left;
+  }
+
+  &.c-mobile-popup--backable {
+    .c-mobile-popup__header__btn__back {
+      width: 38px;
+      font-size: 20px;
+    }
+    .c-mobile-popup__header__title {
+      padding-left: 38px;
     }
   }
 }

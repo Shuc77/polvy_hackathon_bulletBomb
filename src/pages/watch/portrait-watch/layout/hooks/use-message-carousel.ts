@@ -1,7 +1,8 @@
-import { useAskStore } from '@/store/use-ask-store';
-import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import AlloyFinger from 'alloyfinger';
 import { nextTick, onMounted, ref, unref, watch } from 'vue';
+
+import { useAskStore } from '@/store/use-ask-store';
+import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
 /**
  * 竖屏消息区轮播 hook

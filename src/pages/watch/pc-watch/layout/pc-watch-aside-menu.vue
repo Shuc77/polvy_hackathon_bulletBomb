@@ -9,7 +9,7 @@
       <!-- ========= 弹层类型组件 Start ========= -->
 
       <!-- 商品库推送气泡 -->
-      <pc-product-bubble />
+      <pc-product-bubble v-if="iarSdkLoaded" />
 
       <!-- 课堂激励特效，跟随"屏蔽特效"开关 -->
       <motivation-like-animation
@@ -70,9 +70,8 @@
           :key="`vote-${index}`"
           :label="menu.name"
           :name="TAB_NAME_VOTE"
-          lazy-load
         >
-          <pc-vote-panel />
+          <pc-vote-panel v-if="iarSdkLoaded" />
         </pc-aside-tab-pane>
 
         <!-- 成员列表 tab -->
@@ -93,6 +92,7 @@
           :label="menu.name"
           :name="TAB_NAME_ASK"
           :show-reminder="askReminderVisible"
+          lazy-load
         >
           <pc-ask />
         </pc-aside-tab-pane>
@@ -105,7 +105,7 @@
           :name="TAB_NAME_QA"
           :show-reminder="qaReminderVisible"
         >
-          <pc-question-answer />
+          <pc-question-answer v-if="iarSdkLoaded" />
         </pc-aside-tab-pane>
 
         <!-- 商品库 tab -->
@@ -116,7 +116,7 @@
           :name="TAB_NAME_PRODUCT"
           switch-to-refresh
         >
-          <pc-product-list />
+          <pc-product-list v-if="iarSdkLoaded" />
         </pc-aside-tab-pane>
 
         <!-- 实时字幕 tab -->
@@ -212,6 +212,8 @@ const { qaReminderVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,

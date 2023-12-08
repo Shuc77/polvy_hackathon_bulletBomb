@@ -36,7 +36,10 @@
           ref="lotteryRecordPanelRef"
           class="c-pc-chat-input-controller__lottery-record-panel"
         >
-          <pc-lottery-record :visible.sync="lotteryRecordVisible" />
+          <pc-lottery-record
+            v-if="iarSdkLoaded"
+            :visible.sync="lotteryRecordVisible"
+          />
         </div>
 
         <!-- 更多面板 -->
@@ -132,6 +135,8 @@ useEventBusListener(appEvents.chat.FocusToChatInput, () => {
 
 const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
   storeDefinitionToRefs(useChatStore);
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {

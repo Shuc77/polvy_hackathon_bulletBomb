@@ -106,6 +106,7 @@ export const englishLang: LangConfig = {
     'The current device version is too low, please upgrade and try again',
   'base.submit': 'Submit',
   'base.submitSuccess': 'Submit success',
+  'base.submitFail': 'Submit fail',
   'base.smsCodeError': 'Sms code fail',
   'base.noData': 'No data',
 
@@ -297,6 +298,7 @@ export const englishLang: LangConfig = {
   'form.error.emailError': 'Please enter the correct email address',
   'form.error.areaError': 'Please select the correct region',
   'form.error.onlyCnAnEn': 'Only supports Chinese or English',
+  'form.error.improveInfo': 'Please complete the information',
   'form.getSmsVerify': 'Get verification code',
   'form.resend': 'Resend',
   'form.radio': 'single choice',
@@ -325,6 +327,9 @@ export const englishLang: LangConfig = {
   'interact.lottery.checkList': 'Check out the list',
   'interact.lottery.submitInfo': 'Fill in the information',
   'interact.product.jobDetail': 'Job Details',
+  'interact.product.list.title.total': '',
+  'interact.product.list.title.totalProduct': 'merchandise in total',
+  'interact.product.list.title.totalRecruitment': 'jobs',
   'interact.questionnaire.title': 'Questionnaire',
   'interact.questionnaire.result': 'Questionnaire Result',
   'interact.questionnaire.result.list': 'List',
@@ -384,6 +389,7 @@ export const englishLang: LangConfig = {
   'pageError.network.general.desc': 'Please check your network.',
   'pageError.network.timeout.title': 'Network error(timeout)',
   'pageError.disallow.mobile.watch': 'For PC only, please go to pc to open the website.',
+  // 企微好友这里固定用中文的
   'pageError.work.wechat.friend.qrcode.generating': '二维码生成中...',
   'pageError.work.wechat.friend.title': '扫一扫添加企微好友',
   'pageError.work.wechat.friend.desc': '成功添加即可进入直播间',
@@ -391,6 +397,9 @@ export const englishLang: LangConfig = {
   'pageError.work.wechat.businessError.title': 'Entering the channel failed.',
   'pageError.work.wechat.businessError.desc':
     'You are not visible within the scope of this channel. If you have any questions, please contact the live stream administrator or the Enterprise WeChat administrator.',
+  'pageError.saleInvite.limit.weixin': 'Please open WeChat to watch',
+  'pageError.saleInvite.illegalSaleCode':
+    'The link is wrong or no longer works, please contact the administrator to get a new link!',
 
   'player.play.button.text': 'Click to enter',
   'player.play': 'Play',
@@ -492,6 +501,11 @@ export const englishLang: LangConfig = {
   'risk.confirm.letter.agree': 'Agree and watch the live broadcast',
   'risk.confirm.letter.disagree': 'Disagree',
   'risk.confirm.letter.viewAgreement': 'View Agreement',
+
+  'saleInvite.confirm': 'Agree and watch the live broadcast',
+  'saleInvite.tips1': 'verify phone',
+  'saleInvite.tips2':
+    'You need to collect your personal information to watch the live broadcast. Please fill in your mobile number',
 
   'seminar.host': 'Host',
   'seminar.noLive': 'The live broadcast is temporarily closed',
@@ -608,6 +622,35 @@ export const englishLang: LangConfig = {
   'invite.detail.viewer.name': 'viewer Info',
   'invite.detail.viewer.accessTime': 'viewer access time',
 
+  // 邀请有礼活动
+  'invite.activity.pendant.text': 'Award',
+  'invite.activity.countdown.tips': 'End countdown:',
+  'invite.activity.result.title1': 'Congratulate to win the prize',
+  'invite.activity.result.title2': 'The activity is over',
+  'invite.activity.result.notWin.tips': `Sorry, you didn't win the prize`,
+  'invite.activity.result.win.btn.text1': 'View receiving information',
+  'invite.activity.result.win.btn.text2': 'Fill in the receiving information',
+  'invite.activity.result.win.btn.text3': 'Go to collect',
+  'invite.activity.detail.popup.title': 'Award',
+  'invite.activity.detail.introduce': 'Activity Description',
+  'invite.activity.detail.prizeDetail': 'Reward description',
+  'invite.activity.detail.prizeDetail.limit': 'Limited to ${count} copies',
+  'invite.activity.detail.prizeDetail.condition': 'Award conditions: No.${order}',
+  'invite.activity.will.end.tips1': 'The activity is about to end',
+  'invite.activity.will.end.tips2': 'The last chance to top the list!',
+
+  // 邀请有礼奖品
+  'invite.prize.receive.link.tips':
+    '<p style="text-align: center;">You are about to leave the live broadcast room.<br/> Do you want to continue?</p>',
+  'invite.prize.receive.link.cancel': 'Not available yet',
+  'invite.prize.receive.link.confirm': 'Continue',
+
+  'invite.prize.receive.popup.title1': 'View receipt information',
+  'invite.prize.receive.popup.title2': 'Fill in the delivery information',
+  'invite.prize.receive.popup.title3': 'Identify the QR code to receive prizes',
+  'invite.prize.receive.form.hasReceived.tips':
+    'Receipt information has been submitted. If you need to modify it, please contact the organizer.',
+
   'seatTable.me': 'Me',
   'seatTable.invite': 'Invite',
   'seatTable.chat': 'Chat',
@@ -656,6 +699,7 @@ export const englishLang: LangConfig = {
   'subtitle.translate': 'Translated',
   'subtitle.empty': 'No subtitles for the time being',
   'subtitle.new': 'new',
+  'subtitle.limit': 'The latest ${limit} records are displayed',
 
   'watch.duration.learnTime': 'Cumulative learning: ${duration} minutes',
 };

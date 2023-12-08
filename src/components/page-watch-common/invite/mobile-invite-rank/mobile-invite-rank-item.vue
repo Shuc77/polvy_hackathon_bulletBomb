@@ -4,7 +4,7 @@
     v-if="item"
     :class="{
       'c-mobile-invite-rank__list__item': true,
-      'c-mobile-invite-rank__list__item--me': isCurrent,
+      'pws-mobile-invite-rank__list__item': true,
     }"
   >
     <!-- 排名序号 -->
@@ -34,6 +34,8 @@
       <p
         :class="{
           'c-mobile-invite-rank__list__item__nick g-singleline': true,
+          'c-mobile-invite-rank__list__item__nick--me': isCurrent,
+          'pws-mobile-invite-rank__list__item__nick-me': isCurrent,
         }"
       >
         {{ item.nickname }}{{ isCurrent ? `(${$lang('invite.rank.me')})` : '' }}
@@ -68,7 +70,7 @@ defineProps({
   color: #adadc0;
 
   &.c-mobile-invite-rank__list__item--me {
-    .c-mobile-invite-rank__list__item__nick {
+    .c-mobile-invite-rank__list__item__nick--me {
       color: #78a7ed;
     }
   }

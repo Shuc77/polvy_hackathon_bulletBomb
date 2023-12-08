@@ -30,8 +30,15 @@ export function bindChatModuleEvents(): void {
     chatStore.$patch({
       connectError: false,
     });
+
+    if (!watchAppStore.watchPageChatConnected) {
+      watchAppStore.$patch({
+        watchPageChatConnected: true,
+      });
+    }
   });
 
+  // 聊天室基础信息变更
   watchCore.chat.eventEmitter.on(ChatEvents.ChatInfoChange, () => {
     chatStore.syncChatStore();
   });

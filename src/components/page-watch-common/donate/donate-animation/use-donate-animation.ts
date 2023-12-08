@@ -2,6 +2,7 @@ import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 import {
   ChatEvents,
   ChatMsgRewardType,
@@ -36,6 +37,7 @@ export const donateAnimationProps = () => ({
 export const useDonateAnimation = (options: { props: VueProps<typeof donateAnimationProps> }) => {
   const interactReceiveStore = useInteractReceiveStore();
   const donateStore = useDonateStore();
+  const playbackStore = usePlaybackStore();
 
   const { props } = options;
 
@@ -119,8 +121,8 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
       return;
     }
 
-    // 自己的打赏只接收本地插入的
-    if (isSelfGood && !chatMsg.isLocal) {
+    // 非聊天重放的场景下，自己的打赏只接收本地插入的
+    if (!playbackStore.chatReplayEnabled && isSelfGood && !chatMsg.isLocal) {
       return;
     }
 

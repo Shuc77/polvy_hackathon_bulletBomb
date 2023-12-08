@@ -131,7 +131,6 @@
         <normal-button
           :text="$lang('connectMic.applyConnect')"
           block
-          :type="ButtonType.Portrait"
           :size="ButtonSize.Medium"
           @click="onClickApplyConfirm"
         />
@@ -149,7 +148,6 @@
         <normal-button
           :text="$lang('base.confirm')"
           block
-          :type="ButtonType.Portrait"
           :size="ButtonSize.Medium"
           @click="handlerEndConnect"
         />

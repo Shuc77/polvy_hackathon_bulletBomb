@@ -27,12 +27,12 @@
   @return $--new-configs;
 }
 
-// @function merger-skin-configs($--config-1: (), $--config-2: (), $--config-3: ()) {
-//   $--new-configs: ();
-
-//   $--new-configs: map.deep-merge($--new-configs, $--config-1);
-//   $--new-configs: map.deep-merge($--new-configs, $--config-2);
-//   $--new-configs: map.deep-merge($--new-configs, $--config-3);
-
-//   @return $--new-configs;
-// }
+/**
+* 先生成原本皮肤也的配置，最后合并竖屏皮肤的配置
+*/
+@function generate-portrait-skin-setup-configs() {
+  $--new-configs: $--skin-portrait-configs;
+  $--skin-configs: generate-skin-setup-configs();
+  $--new-configs: map.deep-merge($--new-configs, $--skin-configs);
+  @return $--new-configs;
+}

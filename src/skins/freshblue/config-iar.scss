@@ -49,7 +49,7 @@ $--skin-iar-common-configs: (
   // 问答选择箭头边框色
   'iar-qa-select:border-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.8),
   // 问答节点背景色
-  'iar-qa-item:bg-color': #D2E7FF,
+  'iar-qa-item:bg-color': map.get($--skin-basic-configs, 'panel-bg-color'),
   // 问答节点内容字体色
   'iar-qa-item-content:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   // 问答节点信息字体色

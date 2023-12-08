@@ -86,7 +86,7 @@
                   :mic-item="masterMicItem"
                   :mic-info-visible="mainScreen !== MainScreenContent.Player"
                 />
-                <pc-player-main v-else />
+                <pc-player-main v-if="canRenderPlayer" />
               </div>
             </div>
           </div>
@@ -125,7 +125,10 @@
             class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-control"
           >
             <transition name="fade">
-              <pc-player-control v-show="playerControlVisible" />
+              <pc-player-control
+                v-if="canRenderPlayer"
+                v-show="playerControlVisible"
+              />
             </transition>
           </div>
 
@@ -186,6 +189,7 @@ import MotivationLikeAnimation from '@/components/page-watch-common/motivation/m
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { usePlayerStore } from '@/store/use-player-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
@@ -202,6 +206,8 @@ import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 

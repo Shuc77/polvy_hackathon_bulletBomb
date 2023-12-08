@@ -4,6 +4,7 @@
     <iar-mobile-question-answer
       class="c-mobile-question-answer__main"
       :question-answer-sdk="questionAnswerSdk"
+      :face-emotion-enabled="chatSetting.faceEmotionEnabled"
       :theme="theme"
       :has-nick="innerHasNickname"
       @set-nick="onSetNick"
@@ -18,6 +19,7 @@ import { TAB_NAME_QA } from '@/assets/constants/tab-name';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { unref } from 'vue';
@@ -33,6 +35,8 @@ defineProps({
 const { questionAnswerSdk, onSetNick, onPreviewImage, innerHasNickname } = useQuestionAnswer();
 
 const { mobileMenuCurrentName } = storeDefinitionToRefs(useLayoutStore);
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const interactReceiveStore = useInteractReceiveStore();
 

@@ -276,4 +276,9 @@
   .pws-ai-assistant-chat__not-config {
     filter: map.get($--skin-configs, 'pws-ai-assistant-chat-not-config:filter');
   }
+
+  // 滑块颜色
+  .pws-slide-bar__inner-track {
+    background-color: map.get($--skin-configs, 'primary-color') !important;
+  }
 }

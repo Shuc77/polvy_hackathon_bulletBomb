@@ -13,6 +13,8 @@ export const formPhoneInputProps = () => ({
   ...formCommonProps(),
   // 绑定值
   value: PropUtils.string,
+  /** 是否需要显示区号 */
+  needAreaCode: PropUtils.bool.def(true),
   // 区号，支持.sync
   areaCode: PropUtils.string.def('+86'),
   // 占位符

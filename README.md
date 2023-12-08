@@ -24,7 +24,7 @@
 
 项目运行前请**注意**
 
-- 确保 `node` 版本 `^14.15.4 || >=16.0.0"`
+- 确保 `node` 版本 `^14.15.4 || >=16.0.0`
 - 了解保利威基础业务概念，比如：频道号(channelId)
 - 由于项目初始化会自动设置 `husky` 钩子，请确保项目根目录存在 `.git` 文件夹，或者通过这篇[文档](https://typicode.github.io/husky/#/?id=custom-directory)指定对应的 `.git` 文件夹位置。如果完全不使用 `git`，请删除 `package.json` 中的 `prepare` 脚本命令
 
@@ -139,9 +139,15 @@ npm run build-static
 
 ### 关于项目校验
 
-- 目前该项目支持在 `git commit` 时进行校验，如校验失败需自动修复，可以执行 `npm run lint-fix` 尝试修复，如不需要该校验流程，请移除 `package.json` 中的 `precommit` 命令
+- 目前该项目支持在 `git commit` 时进行校验，如校验失败需自动修复，可以执行 `npm run lint-fix` 尝试修复。如不需要在提交代码时进行校验，可以移除 `package.json` 中的 `precommit` 命令，或者注释 `.husky/pre-commit` 的执行命令
+- 项目调试时会使用 `eslint + stylelint` 来校验代码，如不需要，可以到 `src/build/webpack.vue.config` 文件中注释相关的插件
 - 由于项目中使用的 `fork-ts-checker-webpack-plugin` 不支持 `vue2.7` 对 `script setup` 区块的代码校验，建议在生产构建前，执行 `npm run check` 来检查一遍代码
 
 ### PC 端布局
 
 由于公司业务原因，PC 端观看页设置了 `1rem` 来撑开页面布局，如果接入该项目后需要使用 `rem` 单位来实现响应式布局，请自行在代码内搜索 `@PLV-TODO Remove 1rem`，移除相关代码，还原被注释的代码即可。更多详情请咨询保利威技术团队
+
+### 关于 vscode 插件
+
+- 项目中的 `.vscode` 文件默认会推荐使用的插件，可以根据需要进行安装
+- 由于项目使用 `vue@2.7` 进行开发，推荐配合 `volar` 使用，并同步开启 [volar-takeover-mode](https://cn.vuejs.org/guide/typescript/overview.html#volar-takeover-mode) 来使用单个 ts 实例 （注意：volar 的版本迭代很快，建议暂时用 1.2.0 版本）

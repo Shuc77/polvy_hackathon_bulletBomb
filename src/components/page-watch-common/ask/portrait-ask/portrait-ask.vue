@@ -1,6 +1,7 @@
 <template>
   <div class="c-portrait-ask">
     <ask-comp-portrait
+      v-if="askSdk"
       :slogan="askWelcomeText"
       :ask-sdk="askSdk"
       :lang="currentLang"

@@ -201,8 +201,8 @@ $--carousel-indicator-size: 4px;
   width: 20%;
   height: 95px;
   text-align: center;
-  border: 1px solid transparent;
-  border-radius: 4px;
+  // border: 1px solid transparent;
+  border-radius: 8px;
   transition: all 0.1s ease-in-out;
 }
 

@@ -105,6 +105,11 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         menus = menus.filter(menu => menu.menuType === ChannelMenuType.Chat);
       }
 
+      // 会议模式不需要“往期tab”
+      if (watchAppStore.meetingMode) {
+        menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Previous);
+      }
+
       // 研讨会下不显示提问/聊天室退出时不显示提问
       if (channelStore.isSeminarChannel || chatStore.chatExited) {
         menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Quiz);

@@ -1,6 +1,5 @@
 @use 'sass:map';
 @import './function.scss';
-@import './portrait.scss';
 
 $--plv-mobile-watch-full-screen-vw: var(--plv-watch-full-screen-vw) !default;
 $--plv-mobile-watch-full-screen-vh: var(--plv-watch-full-screen-vh) !default;
@@ -16,7 +15,6 @@ $--zIndex-pendant: 2002;
 $--color-white: #FFFFFF !default; // 白色
 $--color-black: #000000 !default; // 黑色
 $--color-primary: #3082FE !default; // 主题色
-$--color-primary-portrait: #FFA611 !default; // 竖屏主题色
 
 // #458ffe
 $--color-primary-light-1: get-opacity-color($--color-primary, 1);

@@ -22,7 +22,7 @@
           />
         </form-item>
         <!-- 图片验证码 -->
-        <form-item v-if="smsVerifyEnabled">
+        <form-item v-if="imageVerifyInputEnabled">
           <mobile-form-image-verify-input
             ref="imageVerifyInputRef"
             v-model="formData.imageCaptcha"
@@ -38,6 +38,7 @@
             v-model="formData.smsCode"
             :area-code="formData.areaCode"
             :phone-number="formData.phoneNumber"
+            :valid-type="smsValidType"
             :sms-scene="SmsScene.Enroll"
             :image-id="formData.imageId"
             :image-captcha="formData.imageCaptcha"
@@ -95,7 +96,15 @@ const emit = defineEmits(enrollLoginEmits());
 const { enrollAuthType, smsVerifyEnabled, enrollAuthName, enrollAuthTips } =
   storeDefinitionToRefs(useEnrollStore);
 
-const { imageVerifyInputRef, formData, formRules, submitLoginForm } = useEnrollLogin({
+const {
+  imageVerifyInputRef,
+  imageVerifyInputEnabled,
+  smsValidType,
+
+  formData,
+  formRules,
+  submitLoginForm,
+} = useEnrollLogin({
   emit,
 });
 </script>

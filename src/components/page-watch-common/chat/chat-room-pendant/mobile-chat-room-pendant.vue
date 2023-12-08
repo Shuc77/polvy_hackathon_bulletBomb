@@ -2,7 +2,6 @@
 <template>
   <custom-teleport :to="renderParent">
     <div
-      v-if="!isPlaybackWatchUrl"
       class="c-mobile-chat-room-pendant"
       :class="{
         'c-mobile-chat-room-pendant--page-fullscreen':
@@ -65,6 +64,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, unref } from 'vue';
+
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import MobilePushCard from '@/components/page-watch-common/interactive-receive/push-card/mobile-push-card.vue';
@@ -77,17 +78,13 @@ import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional
 import MobileChatLike from '../chat-like/mobile-chat-like.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 
-import { useChatStore } from '@/store/use-chat-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { computed, unref } from 'vue';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   pushCardPendantVisible,

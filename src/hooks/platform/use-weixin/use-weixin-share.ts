@@ -207,7 +207,7 @@ export const useWeixinShare = () => {
       imgUrl: fitProtocol(themeStore.channelCoverImg),
     };
 
-    console.info('weixin shareOptions', shareOptions);
+    console.info('weixin shareOptions', JSON.parse(JSON.stringify(shareOptions)));
 
     if (isWeixin) {
       await updateWxShareConfig(shareOptions);

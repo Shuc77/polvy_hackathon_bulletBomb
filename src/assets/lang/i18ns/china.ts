@@ -99,6 +99,7 @@ export const chinaLang = {
   'base.system.version.deprecated': '当前设备系统版本过低，请更新版本后重试',
   'base.submit': '提交',
   'base.submitSuccess': '提交成功',
+  'base.submitFail': '提交失败',
   'base.smsCodeError': '短信验证码错误',
   'base.noData': '暂无数据',
 
@@ -278,6 +279,7 @@ export const chinaLang = {
   'form.error.emailError': '请输入正确的邮箱地址',
   'form.error.onlyCnAnEn': '只能包含中文或英文',
   'form.error.areaError': '请选择正确的地区',
+  'form.error.improveInfo': '请完善信息',
   'form.getSmsVerify': '获取验证码',
   'form.resend': '重新发送',
   'form.radio': '单选',
@@ -306,6 +308,9 @@ export const chinaLang = {
   'interact.lottery.checkList': '中奖名单',
   'interact.lottery.submitInfo': '填写中奖信息',
   'interact.product.jobDetail': '职位详情',
+  'interact.product.list.title.total': '共',
+  'interact.product.list.title.totalProduct': '件商品',
+  'interact.product.list.title.totalRecruitment': '个职位',
   'interact.questionnaire.title': '问卷',
   'interact.questionnaire.result': '问卷结果',
   'interact.questionnaire.result.list': '问卷列表',
@@ -370,6 +375,8 @@ export const chinaLang = {
   'pageError.work.wechat.businessError.title': '进入频道失败',
   'pageError.work.wechat.businessError.desc':
     '你未在该频道可见范围内，有疑问请联系直播管理员或企微管理员',
+  'pageError.saleInvite.limit.weixin': '专属观看请复制链接在微信下打开',
+  'pageError.saleInvite.illegalSaleCode': '链接错误或者已失效，请联系管理员获取新链接',
 
   'player.play.button.text': '立即播放',
   'player.play': '播放',
@@ -468,6 +475,10 @@ export const chinaLang = {
   'risk.confirm.letter.agree': '同意并观看直播',
   'risk.confirm.letter.disagree': '不同意',
   'risk.confirm.letter.viewAgreement': '查看协议',
+
+  'saleInvite.confirm': '同意并观看直播',
+  'saleInvite.tips1': '验证手机号',
+  'saleInvite.tips2': '观看直播需收集您的个人信息，请您填写手机号',
 
   'seminar.host': '主持人',
   'seminar.noLive': '直播暂不对外开放',
@@ -582,6 +593,34 @@ export const chinaLang = {
   'invite.detail.viewer.name': '观众信息',
   'invite.detail.viewer.accessTime': '观众进入时间',
 
+  // 邀请有礼活动
+  'invite.activity.pendant.text': '奖励',
+  'invite.activity.countdown.tips': '活动结束倒计时：',
+  'invite.activity.result.title1': '恭喜你获得奖品',
+  'invite.activity.result.title2': '活动已结束',
+  'invite.activity.result.notWin.tips': '很遗憾，你没获得奖品',
+  'invite.activity.result.win.btn.text1': '查看收货信息',
+  'invite.activity.result.win.btn.text2': '填写收货信息',
+  'invite.activity.result.win.btn.text3': '前往领取',
+  'invite.activity.detail.popup.title': '奖励',
+  'invite.activity.detail.introduce': '活动介绍',
+  'invite.activity.detail.prizeDetail': '奖励说明',
+  'invite.activity.detail.prizeDetail.limit': '限量 ${count} 份',
+  'invite.activity.detail.prizeDetail.condition': '领取条件： 第 ${order} 名',
+  'invite.activity.will.end.tips1': '活动即将结束',
+  'invite.activity.will.end.tips2': '最后的冲榜机会哦！',
+
+  // 邀请有礼奖品
+  'invite.prize.receive.link.tips':
+    '<p style="text-align: center;">即将离开直播间，前往领取奖品，<br/>是否继续？</p>',
+  'invite.prize.receive.link.cancel': '暂不领取',
+  'invite.prize.receive.link.confirm': '继续前往',
+
+  'invite.prize.receive.popup.title1': '查看收货信息',
+  'invite.prize.receive.popup.title2': '填写收货信息',
+  'invite.prize.receive.popup.title3': '识别二维码领取奖品',
+  'invite.prize.receive.form.hasReceived.tips': '已提交收货信息，若需修改请联系主办方',
+
   'seatTable.me': '我的',
   'seatTable.invite': '邀请',
   'seatTable.chat': '发言',
@@ -631,6 +670,7 @@ export const chinaLang = {
   'subtitle.translate': '翻译字幕',
   'subtitle.empty': '暂无字幕',
   'subtitle.new': '查看最新',
+  'subtitle.limit': '当前最多展示近${limit}条记录',
 
   'watch.duration.learnTime': '累计学习 ${duration} 分钟',
 };

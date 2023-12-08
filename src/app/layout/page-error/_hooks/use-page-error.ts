@@ -45,12 +45,18 @@ export const usePageErrorHook = () => {
     );
   });
 
+  /** 一客一码验证页 */
+  const isVerifySaleInvitePage = computed(() => {
+    return unref(pageError).type === PageErrorType.VerifySaleInvite;
+  });
+
   const isNotFoundError = computed(() => {
     return (
       !isAuthError.value &&
       !isNotExistError.value &&
       !isWorkWechatError.value &&
-      !isDisallowMobileWatch.value
+      !isDisallowMobileWatch.value &&
+      !isVerifySaleInvitePage.value
     );
   });
 
@@ -68,6 +74,8 @@ export const usePageErrorHook = () => {
     isAuthError,
     isNotExistError,
     isNotFoundError,
+
+    isVerifySaleInvitePage,
 
     reloadPage,
   };

@@ -25,6 +25,8 @@ export const sliderBarProps = () => ({
   wrapSliderTrackColor: PropUtils.string.def('rgba(255, 255, 255, .8)'),
   /** 内层轨道颜色 */
   innerSliderTrackColor: PropUtils.string.def('#3082FE'),
+  /** 是否跟随多皮肤 */
+  followPageSkin: PropUtils.bool.def(true),
   /** 滑块原点大小 */
   sliderDotSize: PropUtils.number.def(14),
   /** 滑块方向 */

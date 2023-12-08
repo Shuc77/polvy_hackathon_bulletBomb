@@ -1,7 +1,7 @@
 <!-- @file 竖屏端回放+章节弹层 -->
 <template>
   <mobile-popup
-    class="c-portrait-playback-chapter-popup"
+    class="c-portrait-playback-chapter-popup pws-mobile-popup"
     :visible.sync="visible"
     fill-body-section
     :theme="PopupTheme.Portrait"
@@ -20,9 +20,12 @@
     </template>
 
     <!-- 回放列表 -->
-    <portrait-playback-list v-if="listVal === 'playback'" />
+    <mobile-playback-list
+      v-if="listVal === 'playback'"
+      :show-start-time="false"
+    />
     <!-- 章节列表 -->
-    <portrait-chapter
+    <mobile-chapter
       v-if="chapterVisible"
       v-show="listVal === 'chapter'"
     />
@@ -30,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import PortraitPlaybackList from '@/components/page-watch-common/playback-list/portrait-playback-list/portrait-playback-list.vue';
-import PortraitChapter from '@/components/page-watch-common/chapter/portrait-chapter.vue';
+import MobilePlaybackList from '@/components/page-watch-common/playback-list/mobile-playback-list/mobile-playback-list.vue';
+import MobileChapter from '@/components/page-watch-common/chapter/mobile-chapter.vue';
 import PortraitNormalTabs from '@/components/common-base/tabs/portrait-normal-tabs/portrait-normal-tabs.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
 import { appEvents, useEventBusListener } from '@/app/app-events';

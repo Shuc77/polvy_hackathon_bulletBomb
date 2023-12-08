@@ -26,7 +26,7 @@
         >
           <div
             slot="suffix"
-            class="c-portrait-withdraw-apply__all"
+            class="c-portrait-withdraw-apply__all pws-mobile-withdraw-highlight"
             @click="setMaxAmount"
           >
             {{ $lang('withdraw.apply.amount.all') }}
@@ -50,7 +50,6 @@
 
       <div class="c-portrait-withdraw-apply__submit">
         <form-submit-button
-          :type="ButtonType.Portrait"
           :size="ButtonSize.Medium"
           block
           :text="$lang('withdraw.apply.btn.text')"
@@ -66,7 +65,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 
 import { PopupTheme } from '@/components/common-base/popup/types';
 import { FormTheme } from '@/components/common-base/form/types/enums';
-import { ButtonType, ButtonSize } from '@/components/common-base/normal-button/types';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
@@ -151,7 +150,7 @@ async function handleSubmitForm() {
     line-height: 17px;
     color: #cdcdcd;
     span {
-      color: $--portrait-primary-color;
+      color: #ffd16b;
     }
   }
 

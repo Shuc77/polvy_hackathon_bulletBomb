@@ -3,7 +3,10 @@
   <div class="c-mobile-rich-text-render">
     <div
       v-html="renderHtmlContent"
-      class="c-mobile-rich-text-render__content pws-mobile-rich-text-content"
+      class="c-mobile-rich-text-render__content"
+      :class="{
+        'pws-mobile-rich-text-content': followPageSkin,
+      }"
     ></div>
   </div>
 </template>

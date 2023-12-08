@@ -26,11 +26,15 @@
           <div class="c-mobile-withdraw-detail__info__amount-wrap">
             <p>
               {{ $lang('withdraw.redpack.receive.record') }}：￥
-              <span class="c-mobile-withdraw-detail__info__amount">{{ totalReceive }}</span>
+              <span class="c-mobile-withdraw-detail__info__amount pws-mobile-withdraw-highlight">{{
+                totalReceive
+              }}</span>
             </p>
             <p>
               {{ $lang('withdraw.cash.receive.record') }}：￥
-              <span class="c-mobile-withdraw-detail__info__amount">{{ totalWithdraw }}</span>
+              <span class="c-mobile-withdraw-detail__info__amount pws-mobile-withdraw-highlight">{{
+                totalWithdraw
+              }}</span>
             </p>
           </div>
         </div>
@@ -42,7 +46,8 @@
               v-for="(tab, index) in detailTabs"
               class="c-mobile-withdraw-detail__tab"
               :class="{
-                'c-mobile-withdraw-detail__tab--active': tab.value === curTab,
+                'c-mobile-withdraw-detail__tab--active pws-mobile-withdraw-tab--active':
+                  tab.value === curTab,
               }"
               :key="index"
               @click="curTab = tab.value"

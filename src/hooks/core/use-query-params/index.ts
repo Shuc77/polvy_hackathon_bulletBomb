@@ -13,7 +13,10 @@ const getUrlQueryParams = (): { [key: string]: string | string[] | undefined } =
   return parse(window.location.search && window.location.search.slice(1)) || {};
 };
 
-/** 页面初始化时，对应地址上所有的参数 */
+/**
+ * 页面初始化时，对应地址上所有的参数
+ * @warn 如果需要获取某个参数，请改用 paramGetter 来获取
+ * */
 export const queryParams = getUrlQueryParams();
 
 /**
@@ -57,12 +60,17 @@ export const paramGetter = {
   vodPlayerScriptUrl: buildGetters('vodPlayerScriptUrl'),
   /** 连麦 sdk js 地址 */
   rtcWebScriptUrl: buildGetters('rtcWebScriptUrl'),
+  /** 聊天室功能 sdk 层 js 地址 */
+  chatSdkScriptUrl: buildGetters('chatSdkScriptUrl'),
 
   // ===========  业务参数 ===========
 
   /** 频道号 */
   channelId: buildGetters('channelId'),
-  /** 会议模式 */
+  /**
+   * 会议模式
+   * 传入该参数后，在移动端横屏场景不会加载播放器和PPT
+   * */
   polyvMeeting: buildGetters<'true'>('polyvMeeting'),
   /** 是否加载 VConsole */
   console: buildGetters<'1'>('console'),
@@ -126,6 +134,8 @@ export const paramGetter = {
   ipPlay: buildGetters<'1'>('ipPlay'),
   /** 微信快照页环境 */
   snapshotPage: buildGetters<YN>('snapshotPage'),
+  /** 一客一码--销售码 */
+  saleCode: buildGetters<string>('saleCode'),
 };
 
 export type QueryParamsKeyType = keyof typeof paramGetter;

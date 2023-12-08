@@ -46,13 +46,6 @@
       fill: map.get($--skin-configs, 'iar-product-list-shop:icon-color');
     }
   }
-
-  .pws-iar-icon-qa-ask-emotion-icon {
-    path {
-      fill: map.get($--skin-configs, 'iar-icon-qa-ask-emotion:icon-color');
-    }
-  }
-
   .pws-iar-icon-product-list-icon-recruitment {
     path {
       fill: map.get($--skin-configs, 'iar-product-list-recruitment:icon-color');
@@ -142,6 +135,11 @@
   }
   .pws-iar-qa-select-arrow {
     border-color: map.get($--skin-configs, 'iar-qa-select:border-color') !important;
+  }
+  .pws-iar-icon-qa-ask-emotion-icon {
+    path {
+      fill: map.get($--skin-configs, 'iar-icon-qa-ask-emotion:icon-color');
+    }
   }
 
   // --------- 投票 --------- //
@@ -360,31 +358,34 @@
       background: map.get($--skin-configs, 'main-bg-color') !important;
     }
 
-    // 云席
-    .pws-iar-seat-table-light {
-      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-light')) !important;
+    .c-seat-table--mobile {
+      // 云席
+      .pws-iar-seat-table-light {
+        background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-light')) !important;
+      }
+      .pws-iar-seat-table-guest-bg {
+        background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest:bg')) !important;
+      }
+      .pws-iar-seat-table-guest-like {
+        background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest-like')) !important;
+      }
+      .pws-iar-seat-table-sofa-normal {
+        background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-sofa-normal')) !important;
+      }
+      .pws-iar-seat-table-sofa-vip {
+        background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-sofa-vip')) !important;
+      }
+      .pws-iar-seat-name-text {
+        color: map.get($--skin-configs, 'iar-mobile-seat-name-text:text-color') !important;
+      }
+      .pws-iar-seat-name-bLine {
+        background-color: map.get($--skin-configs, 'iar-mobile-seat-name-bLine:bg-color') !important;
+      }
+      .pws-seat-table-current-seat {
+        border-color: map.get($--skin-configs, 'iar-mobile-seat-table-current-seat:border-color') !important;
+      }
     }
-    .pws-iar-seat-table-guest-bg {
-      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest:bg')) !important;
-    }
-    .pws-iar-seat-table-guest-like {
-      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-guest-like')) !important;
-    }
-    .pws-iar-seat-table-sofa-normal {
-      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-sofa-normal')) !important;
-    }
-    .pws-iar-seat-table-sofa-vip {
-      background-image: url(map.get($--skin-configs, 'iar-mobile-seat-table-sofa-vip')) !important;
-    }
-    .pws-iar-seat-name-text {
-      color: map.get($--skin-configs, 'iar-mobile-seat-name-text:text-color') !important;
-    }
-    .pws-iar-seat-name-bLine {
-      background-color: map.get($--skin-configs, 'iar-mobile-seat-name-bLine:bg-color') !important;
-    }
-    .pws-seat-table-current-seat {
-      border-color: map.get($--skin-configs, 'iar-mobile-seat-table-current-seat:border-color') !important;
-    }
+
 
     // 云席用户卡片
     .pws-mobile-user-card__top-bg {

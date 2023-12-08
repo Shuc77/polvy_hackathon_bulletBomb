@@ -5,6 +5,7 @@ import { useChannelStore } from './use-channel-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from './use-playback-store';
 import { getWatchCore } from '@/core/watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface DocStoreState {
   /** 配置是否使用文档 */
@@ -34,6 +35,7 @@ export interface DocStore extends DocStoreState, DocStoreActions {}
  * 文档 store
  */
 export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
+  const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
 
@@ -42,10 +44,16 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
 
   /** 能否创建文档 */
   const canRenderDoc = computed(() => {
-    // 移动端下，非直播或回放下不显示
+    // 移动端下，只有在直播中或处于回放状态才能显示
     if (isMobile && !(channelStore.liveStatus === LiveStatus.Live || playbackStore.isPlaybacking)) {
       return false;
     }
+
+    // 会议模式下不支持创建文档
+    if (watchAppStore.meetingMode) {
+      return false;
+    }
+
     return channelStore.isPptChannel || channelStore.isSeminarChannel;
   });
 

@@ -188,11 +188,16 @@ export const useAskReminder = (hookOptions: { onAskMsg: () => void }) => {
 };
 
 export const useAskSdk = () => {
-  const watchCore = getWatchCore();
-  const askSdk = watchCore.ask.getAskSdk();
+  const askSdk = ref();
 
-  onMounted(() => {
-    askSdk.setup();
+  async function getAskSdk() {
+    const watchCore = getWatchCore();
+    return watchCore.ask.getAskSdk();
+  }
+
+  onMounted(async () => {
+    askSdk.value = await getAskSdk();
+    askSdk.value.setup();
   });
 
   return {

@@ -10,7 +10,8 @@
       :key="item.value"
       class="c-portrait-normal-tabs__item"
       :class="{
-        'c-portrait-normal-tabs__item--active': value === item.value,
+        'c-portrait-normal-tabs__item--active pws-portrait-normal-tabs__item--active':
+          value === item.value,
       }"
       @click="onClickTab(item.value)"
     >
@@ -40,7 +41,7 @@ const { onClickTab } = useSimpleTabs({
   margin: 0 16px;
   font-size: 14px;
   line-height: 40px;
-  border-bottom: 1px solid $--portrait-popper-border;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   &.c-portrait-normal-tabs--hide-border {
     border-bottom: none;
   }
@@ -50,7 +51,7 @@ const { onClickTab } = useSimpleTabs({
     color: #fff;
     text-align: center;
     &.c-portrait-normal-tabs__item--active {
-      color: $--portrait-primary-color;
+      color: #ffd16b;
       &::after {
         position: absolute;
         bottom: 0;
@@ -58,7 +59,7 @@ const { onClickTab } = useSimpleTabs({
         width: 56px;
         height: 2px;
         content: '';
-        background: #ffa611;
+        background: #ffd16b;
         transform: translateX(-50%);
       }
     }

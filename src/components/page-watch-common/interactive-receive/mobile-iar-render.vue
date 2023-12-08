@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { $ } from '@just4/dom';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
@@ -81,15 +81,10 @@ watch(
     }
   },
 );
+
+onMounted(() => {
+  import(
+    '@/components/page-watch-common/interactive-receive/_style/cover-mobile-interact-receive.scss'
+  );
+});
 </script>
-
-<style lang="scss">
-@import '@/components/page-watch-common/interactive-receive/_style/cover-mobile-interact-receive.scss';
-
-.plv-mobile-watch-iar--fullscreen {
-  .plv-iar-submit-tips-default__main--mobile {
-    transform: rotate(90deg);
-    transform-origin: top;
-  }
-}
-</style>

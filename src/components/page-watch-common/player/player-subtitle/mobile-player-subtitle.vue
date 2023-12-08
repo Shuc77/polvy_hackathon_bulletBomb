@@ -14,7 +14,7 @@
   <player-replay-subtitle
     v-else-if="replaySubtitleVisible"
     :selector="MOBILE_LIVE_PLAYER_INNER_WRAP"
-    :bottom="40"
+    :bottom="16"
     :max-len="80"
     :init-to-player="true"
   />

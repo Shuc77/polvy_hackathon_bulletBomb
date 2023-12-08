@@ -1,15 +1,17 @@
 import { $ } from '@just4/dom';
 import { watch } from 'vue';
-import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
+import { ChannelWatchPageSkin, MobileWatchLayout } from '@polyv/live-watch-sdk';
 
 import { isMobile } from '@/assets/utils/browser';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 /**
  * 页面皮肤 hook
  */
 export const usePageSkin = () => {
+  const layoutStore = useLayoutStore();
   const themeStore = useThemeStore();
 
   /**
@@ -48,10 +50,15 @@ export const usePageSkin = () => {
       return;
     }
 
-    if (isMobile) {
-      await importMobilePageSkin(pageSkin);
-    } else {
+    if (!isMobile) {
       await importPcPageSkin(pageSkin);
+      return;
+    }
+
+    if (layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait) {
+      await importPortraitPageSkin(pageSkin);
+    } else {
+      await importMobilePageSkin(pageSkin);
     }
   }
 
@@ -117,11 +124,55 @@ export const usePageSkin = () => {
           /* webpackChunkName: "skin-freshblue-mobile" */ '@/skins/freshblue/_freshblue-mobile.scss'
         );
         break;
-      default:
+      default: {
         await import(
           /* webpackChunkName: "skin-black-mobile" */ '@/skins/black/_black-mobile.scss'
         );
         break;
+      }
+    }
+  }
+
+  /**
+   * 加载 Portrait 竖屏端观看页多皮肤
+   * @PLV-WARN 竖屏多皮肤的处理是黑色背景 + 主题色强调，和横屏多皮肤不一样
+   */
+  async function importPortraitPageSkin(pageSkin: ChannelWatchPageSkin): Promise<void> {
+    switch (pageSkin) {
+      case ChannelWatchPageSkin.Red:
+        await import(/* webpackChunkName: "skin-red-portrait" */ '@/skins/red/_red-portrait.scss');
+        break;
+      case ChannelWatchPageSkin.Blue:
+        await import(
+          /* webpackChunkName: "skin-blue-portrait" */ '@/skins/blue/_blue-portrait.scss'
+        );
+        break;
+      case ChannelWatchPageSkin.Green:
+        await import(
+          /* webpackChunkName: "skin-green-portrait" */ '@/skins/green/_green-portrait.scss'
+        );
+        break;
+      case ChannelWatchPageSkin.White:
+        await import(
+          /* webpackChunkName: "skin-white-portrait" */ '@/skins/white/_white-portrait.scss'
+        );
+        break;
+      case ChannelWatchPageSkin.Golden:
+        await import(
+          /* webpackChunkName: "skin-golden-portrait" */ '@/skins/golden/_golden-portrait.scss'
+        );
+        break;
+      case ChannelWatchPageSkin.Freshblue:
+        await import(
+          /* webpackChunkName: "skin-freshblue-portrait" */ '@/skins/freshblue/_freshblue-portrait.scss'
+        );
+        break;
+      default: {
+        await import(
+          /* webpackChunkName: "skin-black-portrait" */ '@/skins/black/_black-portrait.scss'
+        );
+        break;
+      }
     }
   }
 

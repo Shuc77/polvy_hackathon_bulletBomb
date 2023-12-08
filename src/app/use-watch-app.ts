@@ -8,7 +8,6 @@ import { paramGetter } from '@/hooks/core/use-query-params';
 import { usePageSkin } from '@/skins/use-page-skin';
 import { useGlobalEventsEffect } from './_hooks/use-global-events-effect';
 import { useBrowserIcon, useBrowserTitle, useGlobalStyle } from './_hooks/use-global-style';
-import { useIarSetup } from './_hooks/use-iar-setup';
 import { useWeixinSetup } from './_hooks/use-weixin-setup';
 
 import { useSyncStoreForWatchApp } from '@/hooks/core/use-sync-store';
@@ -21,6 +20,8 @@ import { PageErrorType } from '@/app/layout/page-error/page-error-type';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
 import { getDefaultLang, convert2WatchSdkLang } from '@/store/use-lang-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useWeixinConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
+import { useSaleInviteIntercept } from './_hooks/use-sale-invite-intercept';
 
 /** 错误日志记录 */
 const useErrorLogRecord = () => {
@@ -45,14 +46,18 @@ const useErrorLogRecord = () => {
 const useInterceptWatchAppInit = (): boolean => {
   const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
-  const { checkRedirectMainChannelAuth, checkRedirectSubChannel } = useMultiMeetingRedirect();
 
+  const { checkSaleInvite } = useSaleInviteIntercept();
+  if (checkSaleInvite()) {
+    return true;
+  }
+
+  const { checkRedirectMainChannelAuth, checkRedirectSubChannel } = useMultiMeetingRedirect();
   // 当前处于分会场，是否需要跳转到主会场进行观看条件授权
   const checkMainChannelResult = checkRedirectMainChannelAuth();
   if (checkMainChannelResult) {
     return true;
   }
-
   // 当前处于主会场，是否需要跳回分会场
   const checkSubChannelResult = checkRedirectSubChannel();
   if (checkSubChannelResult) {
@@ -93,7 +98,6 @@ export function useWatchApp() {
   const { initPageSkin } = usePageSkin();
 
   const { syncStoreBeforeWatchAppInited } = useSyncStoreForWatchApp();
-  const { loadIarSDK } = useIarSetup();
 
   const channelStore = useChannelStore();
   const watchAppStore = useWatchAppStore();
@@ -157,6 +161,9 @@ export function useWatchApp() {
         ignoreWxAuth: paramGetter.ignoreWxAuth(),
         wxSnapshotPageMode: paramGetter.snapshotPage(),
       },
+      saleInviteParams: {
+        saleCode: paramGetter.saleCode(),
+      },
       statisticsParams: {
         param4: paramGetter.param4(),
         param5: paramGetter.param5(),
@@ -167,14 +174,15 @@ export function useWatchApp() {
         liveLowLatencyPlayerScriptUrl: paramGetter.liveLowLatencyPlayerScriptUrl(),
         vodPlayerScriptUrl: paramGetter.vodPlayerScriptUrl(),
         rtcWebScriptUrl: paramGetter.rtcWebScriptUrl(),
+        chatSdkScriptUrl: paramGetter.chatSdkScriptUrl(),
       },
     });
 
     // 安装观看页 SDK 核心
     await watchAppStore.resetUpWatchCore();
 
-    // 加载互动功能 SDK
-    await loadIarSDK();
+    // 配置微信 SDK
+    useWeixinConfig();
 
     // 同步相关 store 数据
     syncStoreBeforeWatchAppInited();
@@ -198,9 +206,6 @@ export function useWatchApp() {
       return;
     }
 
-    // 初始化多皮肤
-    initPageSkin();
-
     // 错误日志记录
     useErrorLogRecord();
 
@@ -208,6 +213,9 @@ export function useWatchApp() {
     watchAppStore.$patch({
       watchAppInited: true,
     });
+
+    // 初始化多皮肤
+    initPageSkin();
   }
 
   onBeforeMount(() => {

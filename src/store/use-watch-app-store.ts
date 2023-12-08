@@ -1,5 +1,6 @@
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
+import { PlaybackWatchBasicInfo, LiveStatus, MobileWatchLayout } from '@polyv/live-watch-sdk';
 
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { appEvents, eventBus } from '@/app/app-events';
@@ -7,8 +8,10 @@ import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
 import { PageErrorData, PageErrorType } from '@/app/layout/page-error/page-error-type';
 
+import { useChannelStore } from './use-channel-store';
 import { useAuthStore } from './use-auth-store';
 import { useEnrollStore } from './use-enroll-store';
+import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
 import { usePlayerStore } from './use-player-store';
 import { useDocStore } from './use-doc-store';
@@ -16,9 +19,9 @@ import { useChatStore } from './use-chat-store';
 import { useConnectMicStore } from './use-connect-mic-store';
 import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
+
 import { translate } from '@/assets/lang';
-import { PlaybackWatchBasicInfo, LiveStatus } from '@polyv/live-watch-sdk';
-import { useChannelStore } from './use-channel-store';
+import { isMobile } from '@/assets/utils/browser';
 
 export interface WatchAppStoreState {
   /** 当前是否处于回放观看页地址 */
@@ -28,7 +31,7 @@ export interface WatchAppStoreState {
   /** 当前是否为微信小程序 webview 环境 */
   isWxMiniProgram: Ref<boolean>;
   /** 是否为会议模式 */
-  meetingMode: Ref<boolean>;
+  meetingMode: ComputedRef<boolean>;
   /** 是否 iframe 模式 */
   iframeMode: Ref<boolean>;
   /** 页面异常数据 */
@@ -47,6 +50,9 @@ export interface WatchAppStoreState {
   shouldShowSplash: ComputedRef<boolean>;
   /** 直播观看页是否初始化完毕 - 直播观看页渲染标识位 */
   watchPageInited: Ref<boolean>;
+
+  /** 观看页聊天室 socket 已连接 */
+  watchPageChatConnected: Ref<boolean>;
 }
 
 export interface WatchAppStoreActions {
@@ -63,7 +69,7 @@ export interface WatchAppStoreActions {
   /** 恢复直播观看页部分功能的初始化 */
   recoverConnectLiveWatch(): void;
   /** 连接聊天室 */
-  setupWatchCoreConnect(): void;
+  setupWatchCoreConnect(): Promise<void>;
 }
 
 export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions {}
@@ -74,6 +80,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   const authStore = useAuthStore();
   const enrollStore = useEnrollStore();
+
+  const layoutStore = useLayoutStore();
 
   const channelStore = useChannelStore();
   const docStore = useDocStore();
@@ -92,7 +100,14 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const isWxMiniProgram = ref(false);
 
   /** 是否为会议模式 */
-  const meetingMode = ref(paramGetter.polyvMeeting() === 'true');
+  const meetingMode = computed(() => {
+    // 移动端横屏下才需要进入会议模式
+    if (isMobile && layoutStore.mobileWatchLayout === MobileWatchLayout.Normal) {
+      return paramGetter.polyvMeeting() === 'true';
+    }
+
+    return false;
+  });
 
   /** 是否 iframe 模式 */
   const iframeMode = ref(paramGetter.hasFrame() === '1');
@@ -115,6 +130,12 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 直播观看页是否初始化完毕 */
   const watchPageInited = ref(false);
+
+  /** 观看页需要聊天室 socket */
+  const watchPageNeedChatSocket = ref(false);
+
+  /** 观看页聊天室 socket 已连接 */
+  const watchPageChatConnected = ref(false);
 
   /** 设置页面异常数据 */
   function setPageError(param: PageErrorData) {
@@ -165,11 +186,11 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     await playbackStore.initCurrentPlaybackTarget();
 
     // 根据不同场景设置 watchPageInited 标识位
-    await __setWatchPageInited();
+    __setWatchPageInited();
   }
 
   /** 根据不同场景设置 watchPageInited 标识位 */
-  async function __setWatchPageInited() {
+  function __setWatchPageInited() {
     /**
      * 不需要连麦，不需要连接聊天室
      * @scene 回放观看页地址进入观看页
@@ -186,8 +207,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
       return;
     }
 
-    // 正常进入观看页，建立 socket 连接
-    await setupWatchCoreConnect();
+    // 正常进入观看页，需要建立 socket 连接
+    watchPageNeedChatSocket.value = true;
     watchPageInited.value = true;
   }
 
@@ -195,8 +216,12 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
    * 设置观看核心连接 Socket 处理
    */
   async function setupWatchCoreConnect() {
+    if (!watchPageNeedChatSocket.value) return;
+
     const watchCore = getWatchCore();
     await watchCore.connect();
+
+    watchPageChatConnected.value = true;
   }
 
   /**
@@ -218,18 +243,18 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     chatStore.$patch({ chatMsgListEnabled: true });
 
     /**
-     * 不需要连麦，不需要连接聊天室
-     * @scene 回放观看页地址进入观看页
-     * @scene 研讨会处于"内部研讨"时不需要连接聊天室
-     * @scene 研讨会处于回放时不需要连接聊天室
+     * 需要连麦，需要连接聊天室
      */
     if (
-      !isPlaybackWatchUrl.value ||
-      channelStore.privateSeminarChannel ||
-      (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
+      !(
+        isPlaybackWatchUrl.value ||
+        channelStore.privateSeminarChannel ||
+        (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
+      )
     ) {
-      connectMicStore.$patch({ connectMicEnabled: true });
+      watchPageNeedChatSocket.value = true;
       await setupWatchCoreConnect();
+      connectMicStore.$patch({ connectMicEnabled: true });
     }
 
     eventBus.$emit(appEvents.player.ResetUpPlayer);
@@ -258,6 +283,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     pauseConnectLiveWatch,
     recoverConnectLiveWatch,
 
+    watchPageChatConnected,
     setupWatchCoreConnect,
   };
 });

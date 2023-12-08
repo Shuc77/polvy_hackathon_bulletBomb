@@ -18,7 +18,6 @@
         </p>
         <normal-button
           class="c-portrait-withdraw-detail__info__btn"
-          :type="ButtonType.Portrait"
           :size="ButtonSize.Small"
           block
           :text="$lang('withdraw.detail.btn.text')"
@@ -27,11 +26,17 @@
         <div class="c-portrait-withdraw-detail__amount">
           <p>
             {{ $lang('withdraw.redpack.receive.record') }}：￥
-            <span>{{ totalReceive }}</span>
+            <span
+              class="c-portrait-withdraw-detail__amount__highlight-text pws-mobile-withdraw-highlight"
+              >{{ totalReceive }}</span
+            >
           </p>
           <p>
             {{ $lang('withdraw.cash.receive.record') }}：￥
-            <span>{{ totalWithdraw }}</span>
+            <span
+              class="c-portrait-withdraw-detail__amount__highlight-text pws-mobile-withdraw-highlight"
+              >{{ totalWithdraw }}</span
+            >
           </p>
         </div>
       </div>
@@ -58,7 +63,7 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 
 import { PopupTheme } from '@/components/common-base/popup/types';
-import { ButtonType, ButtonSize } from '@/components/common-base/normal-button/types';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import PortraitNormalTabs from '@/components/common-base/tabs/portrait-normal-tabs/portrait-normal-tabs.vue';
@@ -142,9 +147,9 @@ function handleShowWithdrawApply() {
       margin: 0 8px;
       color: #fff;
     }
-    span {
-      color: $--portrait-primary-color;
-    }
+  }
+  .c-portrait-withdraw-detail__amount__highlight-text {
+    color: #ffd16b;
   }
 }
 
@@ -163,7 +168,7 @@ function handleShowWithdrawApply() {
     padding: 11px 0;
     margin: 0 16px;
     color: #fff;
-    border-bottom: 1px solid $--portrait-popper-border;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     .c-portrait-withdraw-detail__contents__item__title {
       margin-bottom: 2px;
       font-size: 14px;
@@ -177,7 +182,7 @@ function handleShowWithdrawApply() {
       position: absolute;
       top: 50%;
       right: 16px;
-      color: $--portrait-primary-color;
+      color: #ffd16b;
       transform: translateY(-50%);
     }
   }

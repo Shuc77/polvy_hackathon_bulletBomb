@@ -7,17 +7,21 @@ import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
 import { computed, Ref, unref, watch } from 'vue';
 import { countDownSizes, countdownThemes } from './types';
 
-export const countDownProps = () => ({
-  /** 尺寸，small-小型尺寸，常用于移动端 */
-  size: PropUtils.oneOf(countDownSizes).def('default'),
-  /** 倒计时样式，square-方形，text-文本，默认：square */
-  theme: PropUtils.oneOf(countdownThemes).def('square'),
+export const countDownCommonProps = () => ({
   /** 计时时间，优先级高于 endTimestamp */
   second: PropUtils.number.def(undefined),
   /** 结束的时间戳 */
   endTimestamp: PropUtils.number.def(undefined),
   /** 只有 0 天时是否隐藏天数，默认：true */
   hideZeroDays: PropUtils.bool.def(true),
+});
+
+export const countDownProps = () => ({
+  ...countDownCommonProps(),
+  /** 尺寸，small-小型尺寸，常用于移动端 */
+  size: PropUtils.oneOf(countDownSizes).def('default'),
+  /** 倒计时样式，square-方形，text-文本，默认：square */
+  theme: PropUtils.oneOf(countdownThemes).def('square'),
 });
 
 /**
@@ -71,7 +75,7 @@ export interface UseCountDownOptions {
  * @param {Function} options.emit 回调方法
  */
 export const useCountDown = (options: {
-  props: VueProps<typeof countDownProps>;
+  props: VueProps<typeof countDownCommonProps>;
   emit: VueEmit<typeof countDownEmits>;
 }) => {
   const { props, emit } = options;

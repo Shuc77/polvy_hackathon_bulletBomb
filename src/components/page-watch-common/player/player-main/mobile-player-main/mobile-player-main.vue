@@ -8,6 +8,7 @@
         mobilePlayerIsPageFullscreen && !isHorizontalScreenOrientation,
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
+      'c-mobile-player-main--hide': isConnectMicing,
     }"
     @click="onClickContainer"
   >
@@ -80,10 +81,12 @@ import { appEvents, eventBus } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
+import { useConnectMicing } from '../../hooks/use-connect-micing';
 
 import PlayerPlayButton from '../../common/player-play-button/player-play-button.vue';
 import { PlayButtonMode } from '../../common/player-play-button/use-player-play-button';
@@ -142,6 +145,7 @@ const { playerContainer } = usePlayerMain({
 
 const { latencyModeSettingVisible, bigPlayButtonVisible } = usePlayerControl();
 const { toPlay } = usePlayerAction();
+const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 function onClickContainer() {
   // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
@@ -150,6 +154,8 @@ function onClickContainer() {
   }
   eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
 }
+
+useConnectMicing();
 </script>
 
 <style lang="scss">
@@ -161,6 +167,14 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
   width: 100%;
   height: 100%;
   // overflow: hidden;
+
+  &.c-mobile-player-main--hide {
+    top: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none;
+    visibility: hidden;
+  }
 }
 
 .c-mobile-player-main__play-btn {

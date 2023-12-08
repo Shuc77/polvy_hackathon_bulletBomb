@@ -106,7 +106,7 @@ export const useMsgInputWrap = (options: {
     visible: emotionVisible,
     togglePanel: toggleEmotionPanel,
     hidePanel: hideEmotionPanel,
-  } = usePanelVisible([emotionRef, '[data-emotion-picker-btn']);
+  } = usePanelVisible([emotionRef, '[data-emotion-picker-btn]']);
 
   /** 处理点击表情面板开关 */
   function onClickEmotionPickerBtn() {

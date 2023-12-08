@@ -1,7 +1,7 @@
 /**
  * @file 全局样式及页面元素处理
  */
-import { isIOS, isMobile } from '@/assets/utils/browser';
+import { isIOS } from '@/assets/utils/browser';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { $ } from '@just4/dom';
@@ -27,9 +27,9 @@ export const useGlobalStyle = () => {
    * 移除骨架屏节点
    */
   function removeSkeleton(): void {
-    if (isMobile) {
-      const skeleton = document.querySelector('#skeleton');
-      skeleton?.parentNode?.removeChild(skeleton);
+    const skeleton = document.querySelector('#skeleton');
+    if (skeleton) {
+      skeleton.remove();
     }
   }
 

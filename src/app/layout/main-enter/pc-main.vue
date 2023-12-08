@@ -1,9 +1,18 @@
 <!-- @file PC 端入口 -->
 <template>
   <div class="c-pc-main g-pc-main-layout">
-    <pc-force-auth v-if="shouldShowForceAuth" />
-    <pc-splash v-else-if="shouldShowSplash" />
-    <pc-watch v-else-if="watchPageInited" />
+    <pc-force-auth
+      v-if="shouldShowForceAuth"
+      @hook:mounted="onPageMounted"
+    />
+    <pc-splash
+      v-else-if="shouldShowSplash"
+      @hook:mounted="onPageMounted"
+    />
+    <pc-watch
+      v-else-if="watchPageInited"
+      @hook:mounted="onPageMounted"
+    />
   </div>
 </template>
 
@@ -11,10 +20,7 @@
 import '@/plugins/polyv-ui/pc-import';
 import { defineAsyncComponent } from 'vue';
 
-import PcSplash from '@/pages/splash/pc-splash/pc-splash.vue';
-import PcWatch from '@/pages/watch/pc-watch/pc-watch.vue';
-
-import { useMainEnter } from './_hooks/use-main-enter';
+import { mainEnterEmits, useMainEnter } from './_hooks/use-main-enter';
 import { usePageLayoutStyle } from './_hooks/use-page-layout-style';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -26,7 +32,18 @@ const PcForceAuth = defineAsyncComponent(() => {
   );
 });
 
-useMainEnter();
+const PcSplash = defineAsyncComponent(() => {
+  return import(/* webpackChunkName: "pc-splash" */ '@/pages/splash/pc-splash/pc-splash.vue');
+});
+
+const PcWatch = defineAsyncComponent(() => {
+  return import(/* webpackChunkName: "pc-watch" */ '@/pages/watch/pc-watch/pc-watch.vue');
+});
+
+const emit = defineEmits(mainEnterEmits());
+
+const { onPageMounted } = useMainEnter({ emit });
+
 usePageLayoutStyle();
 
 const {

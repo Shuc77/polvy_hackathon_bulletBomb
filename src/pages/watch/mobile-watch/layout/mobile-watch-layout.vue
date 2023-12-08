@@ -12,6 +12,7 @@
 
     <!-- 播放器 -->
     <div
+      v-if="canRenderPlayer"
       class="c-mobile-watch-layout__player"
       :class="{
         'c-mobile-watch-layout__player--hide': !(
@@ -28,7 +29,7 @@
             :key="`master-stream-${masterMicItem.streamId}`"
             :mic-item="masterMicItem"
           />
-          <mobile-player-main v-else />
+          <mobile-player-main />
         </div>
       </div>
     </div>
@@ -36,7 +37,7 @@
     <!-- 文档 -->
     <div
       v-if="canRenderDoc"
-      class="c-mobile-watch-layout__doc"
+      class="c-mobile-watch-layout__doc pws-mobile-doc-container"
       :class="{
         'c-mobile-watch-layout__doc--hide': !(
           mainScreen === MainScreenContent.Doc || mobileMenuCurrentName === TAB_NAME_DOC_OR_VIDEO
@@ -87,7 +88,7 @@
     >
       <!-- 快速答题卡 -->
       <div class="c-mobile-watch-layout__quick-answer-card">
-        <mobile-quick-answer-card />
+        <mobile-quick-answer-card v-if="iarSdkLoaded" />
       </div>
 
       <!-- 菜单栏 -->
@@ -97,7 +98,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, ref, unref, watch } from 'vue';
 
 import MobileConnectMicUserItem from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-item.vue';
 import MobileConnectMicUserList from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-list.vue';
@@ -108,7 +109,7 @@ import MobileCountDownLayer from '@/components/page-watch-common/count-down-laye
 import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
 import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
 import MobilePlayerStreamTrack from '@/components/page-watch-common/player/player-stream-track/mobile-player-stream-track.vue';
-import MobileWatchMenu from './mobile-watch-menu.vue';
+// import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -123,6 +124,11 @@ import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { usePlayerStore } from '@/store/use-player-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+
+const MobileWatchMenu = defineAsyncComponent(
+  () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
+);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -140,9 +146,11 @@ const {
   mobileDocIsPageFullscreen,
 } = storeDefinitionToRefs(useLayoutStore);
 
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
 const { filterConnectMicList, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 
-const { supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
+const { canRenderPlayer, supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
@@ -152,6 +160,8 @@ const layoutBottomRef = ref<HTMLDivElement>();
 
 // 顶部占位距离 => 决定 layoutTopElem.clientHeight => 决定播放器高度
 const layoutTopDistance = computed(() => {
+  if (!canRenderPlayer.value) return '0';
+
   if (isVerticalScreenOrientation.value) return '56.25%';
   if (isHorizontalScreenOrientation.value) return `${document.documentElement.clientHeight}px`;
   return '56.25%';

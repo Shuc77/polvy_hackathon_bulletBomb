@@ -5,14 +5,16 @@
     class="c-portrait-chat-msg-item"
   >
     <div class="c-portrait-chat-msg-item__content">
+      <template v-if="iarSdkLoaded">
+        <!-- 红包消息 -->
+        <portrait-redpaper-msg v-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
+        <!-- 红包领取消息 -->
+        <portrait-redpaper-receive-msg
+          v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive"
+        />
+      </template>
       <!-- 发言消息 -->
       <portrait-speak-msg v-if="chatMsg.msgSource === ChatMsgSource.Speak" />
-      <!-- 红包消息 -->
-      <portrait-redpaper-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
-      <!-- 红包领取消息 -->
-      <portrait-redpaper-receive-msg
-        v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive"
-      />
       <!-- 自定义消息(服务端) -->
       <portrait-customer-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomerMessage" />
       <!-- 自定义消息(客户端) -->
@@ -44,12 +46,16 @@ import PortraitEmotionMsg from './emotion-msg/portrait-emotion-msg.vue';
 import PortraitImageMsg from './image-msg/portrait-image-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const props = defineProps(chatMsgItemProps());
 
 const { chatMsg, msgVisible } = useChatMsgItem({
   props,
 });
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">

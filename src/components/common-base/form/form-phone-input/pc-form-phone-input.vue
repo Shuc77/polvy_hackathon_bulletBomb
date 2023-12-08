@@ -11,6 +11,7 @@
       @blur="onFormInputBlur"
     >
       <div
+        v-if="props.needAreaCode"
         slot="prefix"
         ref="referenceRef"
         class="c-pc-form-phone-input__area-code"

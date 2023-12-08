@@ -181,6 +181,22 @@ export const usePopup = (options: {
     return contentComputedHeight.value;
   });
 
+  /** 弹层主体动态类名 */
+  const popupContentClass = computed(() => {
+    const classList: string[] = [];
+    if (isHorizontalScreenOrientation.value || props.forceHorizontalScreen) {
+      classList.push(
+        `c-mobile-popup__content--screen__horizontal__${props.horizontalScreenPosition}`,
+      );
+    }
+
+    if (props.theme === PopupTheme.FollowPageSkin) {
+      classList.push('pws-mobile-popup__content');
+    }
+
+    return classList;
+  });
+
   /** 弹层主体样式 */
   const popupContentStyle = computed(() => {
     let style: CSSProperties = {};
@@ -420,6 +436,7 @@ export const usePopup = (options: {
     popupContentHeaderRef,
     popupContentBodyRef,
     popupMaskStyle,
+    popupContentClass,
     popupContentStyle,
     popupInstance,
     onAfterEnter,

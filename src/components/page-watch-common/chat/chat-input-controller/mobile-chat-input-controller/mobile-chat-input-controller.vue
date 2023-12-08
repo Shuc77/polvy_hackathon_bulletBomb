@@ -9,7 +9,7 @@
       :disabled-send-image="chatInputDisabled"
       :face-emotion-enabled="chatSetting.faceEmotionEnabled"
       :image-emotion-enabled="chatSetting.imageEmotionEnabled"
-      :is-allway-active="isAllwayActive"
+      :is-alway-active="isAlwayActive"
       render-suffix-slot
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
@@ -59,7 +59,7 @@ defineProps({
   /** 是否为纯净模式 */
   isPureness: PropUtils.bool.def(false),
   /** 是否处于激活状态 */
-  isAllwayActive: PropUtils.bool.def(false),
+  isAlwayActive: PropUtils.bool.def(false),
 });
 
 const viewerStore = useViewerStore();

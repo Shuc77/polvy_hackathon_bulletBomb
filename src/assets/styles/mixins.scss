@@ -27,6 +27,33 @@
   }
 }
 
+// 处理绝对定位时的 bottom
+@mixin iphone-x-b($normalBottom, $isReplace: true) {
+  @if $normalBottom == 0 {
+    $normalBottom: unquote('0px');
+  }
+
+  @if $isReplace {
+    bottom: $normalBottom;
+    .g-page--ios & {
+      @supports (bottom: env(safe-area-inset-bottom)) or (bottom: constant(safe-area-inset-bottom, $normalBottom)) {
+        bottom: unquote('max(constant(safe-area-inset-bottom, #{$normalBottom}), #{$normalBottom})');
+        bottom: unquote('max(env(safe-area-inset-bottom, #{$normalBottom}), #{$normalBottom})');
+      }
+    }
+  } @else {
+    // 安全距离与原底部padding值叠加
+    // ios < 11.2
+    bottom: calc(constant(safe-area-inset-bottom) + #{$normalBottom});
+    // ios >= 11.2
+    bottom: calc(env(safe-area-inset-bottom) + #{$normalBottom});
+    // 兼容不支持calc(env(safe-area-inset-bottom)和calc(constant(safe-area-inset-bottom)这两种写法的浏览器，假设安全距离为0，设置bottom为传出的值
+    @supports not(bottom: calc(env(safe-area-inset-bottom) + #{$normalBottom}) or (bottom: calc(constant(safe-area-inset-bottom, $normalBottom) + #{$normalBottom}))) {
+      bottom: $normalBottom;
+    }
+  }
+}
+
 @mixin clear-input-style {
   background: none;
   border: none;

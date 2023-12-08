@@ -99,7 +99,7 @@
           </form-item>
           <!-- 图片验证码 -->
           <form-item
-            v-if="smsVerifyEnabled"
+            v-if="imageVerifyInputEnabled"
             :key="`image-code-${index}`"
             label=" "
           >
@@ -120,9 +120,10 @@
               v-model="formData.smsCode"
               :area-code="formData.areaCode"
               :phone-number="formData[generateFormField(index)]"
+              :sms-scene="SmsScene.AuthInfo"
+              :valid-type="smsValidType"
               :image-id="formData.imageId"
               :image-captcha="formData.imageCaptcha"
-              :sms-scene="SmsScene.AuthInfo"
               :image-verify-input-ref="imageVerifyInputRef"
             />
           </form-item>
@@ -186,6 +187,8 @@ const {
   authFormInstance,
   hasMobileField,
   imageVerifyInputRef,
+  imageVerifyInputEnabled,
+  smsValidType,
 
   onPhoneNumberChange,
   formatSelectOptions,

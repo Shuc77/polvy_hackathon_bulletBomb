@@ -135,7 +135,7 @@
               </form-item>
               <!-- 图片验证码 -->
               <form-item
-                v-if="smsVerifyEnabled"
+                v-if="imageVerifyInputEnabled"
                 :key="`image-code-${index}`"
               >
                 <mobile-form-image-verify-input
@@ -154,6 +154,7 @@
                   v-model="formData.smsCode"
                   :area-code="formData.areaCode"
                   :phone-number="formData[item.fieldId]"
+                  :valid-type="smsValidType"
                   :sms-scene="SmsScene.Enroll"
                   :image-id="formData.imageId"
                   :image-captcha="formData.imageCaptcha"
@@ -291,6 +292,8 @@ const { enrollBanner, needEnrollByEnter, smsVerifyEnabled, enrollAuthType, enrol
 
 const {
   imageVerifyInputRef,
+  smsValidType,
+  imageVerifyInputEnabled,
   formData,
   formRules,
   onPhoneNumberChange,

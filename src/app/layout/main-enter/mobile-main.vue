@@ -2,17 +2,29 @@
 <template>
   <div class="c-mobile-main">
     <template v-if="shouldShowForceAuth">
-      <mobile-force-auth />
+      <mobile-force-auth @hook:mounted="onPageMounted" />
     </template>
 
     <template v-else-if="shouldShowSplash">
-      <mobile-splash v-if="mobileSplashLayout === MobileSplashLayout.Normal" />
-      <mobile-splash-full v-if="mobileSplashLayout === MobileSplashLayout.Large" />
+      <mobile-splash
+        v-if="mobileSplashLayout === MobileSplashLayout.Normal"
+        @hook:mounted="onPageMounted"
+      />
+      <mobile-splash-full
+        v-if="mobileSplashLayout === MobileSplashLayout.Large"
+        @hook:mounted="onPageMounted"
+      />
     </template>
 
     <template v-else-if="watchPageInited">
-      <portrait-watch v-if="mobileWatchLayout === MobileWatchLayout.Portrait" />
-      <mobile-watch v-if="mobileWatchLayout === MobileWatchLayout.Normal" />
+      <portrait-watch
+        v-if="mobileWatchLayout === MobileWatchLayout.Portrait"
+        @hook:mounted="onPageMounted"
+      />
+      <mobile-watch
+        v-if="mobileWatchLayout === MobileWatchLayout.Normal"
+        @hook:mounted="onPageMounted"
+      />
     </template>
 
     <!-- 微信快照页提示 -->
@@ -27,7 +39,7 @@ import { defineAsyncComponent } from 'vue';
 import MobileSplashFull from '@/pages/splash/mobile-splash/mobile-splash-full.vue';
 import MobileSplash from '@/pages/splash/mobile-splash/mobile-splash.vue';
 
-import { useMainEnter } from './_hooks/use-main-enter';
+import { mainEnterEmits, useMainEnter } from './_hooks/use-main-enter';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -60,6 +72,8 @@ const PortraitWatchLoader = () => {
 };
 const PortraitWatch = defineAsyncComponent(PortraitWatchLoader);
 
+const emit = defineEmits(mainEnterEmits());
+
 const {
   shouldShowForceAuth,
 
@@ -72,7 +86,8 @@ const { isWeixinSnapshotPageMode } = storeDefinitionToRefs(useWeixinStore);
 const { mobileSplashLayout, mobileWatchLayout, isPortraitWatchLayout } =
   storeDefinitionToRefs(useLayoutStore);
 
-useMainEnter({
+const { onPageMounted } = useMainEnter({
+  emit,
   watchLoader: () => {
     if (isPortraitWatchLayout.value) {
       return PortraitWatchLoader();

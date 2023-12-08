@@ -162,4 +162,20 @@ $--skin-page-mobile-configs: (
   'mobile-multi-meeting-portrait-time:text-color': rgba(#333, 0.6),
   // 多会场竖屏 PV 字体色
   'mobile-multi-meeting-portrait-pv:text-color': rgba(#333, 0.6),
+
+  // 邀请有礼活动 banner 底部背景图
+  'mobile-invite-activity-banner:bottom-bg': './imgs/pws-mobile-invite-activity-banner-bottom-bg.png',
+  // 邀请榜底部颜色
+  'mobile-invite-rank-bottom:bg-color': #E1EEFC,
+  // 邀请海报入口
+  'mobile-invite-poster-entry-capsule:bg-color': linear-gradient(157deg, #46A6FE 0%, #1F67FD 100%),
+
+  // 移动端弹窗主体字体色
+  'mobile-mobile-popup__content:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 移动端弹窗主体背景色
+  'mobile-mobile-popup__content:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
+  // 移动端弹窗主体-头部标题字体色
+  'mobile-mobile-popup__header__title:text-color':  map.get($--skin-basic-configs, 'main-text-color'),
+  // 移动端弹窗主体-头部按钮颜色
+  'mobile-mobile-popup__header__btn:text-color': map.get($--skin-basic-configs, 'main-text-color'),
 );

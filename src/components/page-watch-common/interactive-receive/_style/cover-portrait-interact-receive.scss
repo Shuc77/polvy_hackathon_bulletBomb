@@ -1,18 +1,44 @@
 // @file 竖屏端的互动功能接收端样式覆盖
 
+// ============  全局 ============ //
+
 // 按钮
 .plv-iar-default-btn {
-  background: $--color-primary-portrait !important;
-
   &:disabled {
     opacity: 0.6;
   }
 }
 
-// 快速问答
-.plv-iar-quick-answer-default__btn {
-  background: $--color-primary-portrait !important;
+// ============  卡片推送 ============ //
+
+// 卡片推送
+.plv-iar-push-card,
+.plv-iar-push-card__modal {
+  z-index: 400;
 }
+.plv-iar-default-push-card--fullscreen {
+  z-index: 2002;
+}
+
+// ============  话题 pk ============ //
+
+// 话题 pk
+.plv-iar-modal--topic {
+  z-index: $--zIndex-top - 1;
+}
+
+
+// ============  抽奖 ============ //
+
+// 条件抽奖
+.plv-iar-welfare-lottery__modal--normal,
+.plv-iar-welfare-lottery__modal--gift-box,
+.plv-iar-welfare-lottery__on-lottery-modal {
+  z-index: $--zIndex-top;
+}
+
+
+// ============  商品库 ============ //
 
 // 商品库
 .pws-iar-product-list-wrap {
@@ -22,6 +48,7 @@
   background: none;
 }
 .plv-iar-product__content {
+  padding-top: 10px;
   background-color: initial;
 
   &::-webkit-scrollbar {
@@ -43,15 +70,31 @@
   height: 28px;
   font-size: 12px;
   line-height: 28px;
-  background: $--color-primary-portrait;
 }
 .plv-iar-product__buy-button.plv-iar-product__buy-button--disabled {
   .pws-iar-product-list-button {
-    background: #CDCDCD;
+    // background: #CDCDCD;
+    opacity: 0.5;
   }
 }
+
+// ============  问答 ============ //
 
 // 问答
 .plv-ia-qa-ask-emotion {
   margin-bottom: 0 !important;
+}
+
+// ============  快速问答 ============ //
+
+.c-portrait-iar-render__quick-answer-card {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  z-index: 99;
+
+  width: 100%;
+
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }

@@ -11,7 +11,7 @@
 import { eventBus, appEvents } from '@/app/app-events';
 
 function showInviteRank() {
-  eventBus.$emit(appEvents.invite.OpenPortraitInviteRank, true);
+  eventBus.$emit(appEvents.invite.OpenPortraitInviteRank);
 }
 </script>
 

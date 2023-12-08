@@ -17,7 +17,7 @@
       <p class="c-portrait-withdraw-detail__contents__item__date">
         {{ convertReceiveDate(record.receiveTime) }}
       </p>
-      <p class="c-portrait-withdraw-detail__contents__item__amount">
+      <p class="c-portrait-withdraw-detail__contents__item__amount pws-mobile-withdraw-highlight">
         {{ convertAmount(record.amount) }}
       </p>
     </li>

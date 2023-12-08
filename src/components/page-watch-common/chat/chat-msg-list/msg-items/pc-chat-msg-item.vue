@@ -11,12 +11,14 @@
       {{ msgTimeText }}
     </div>
     <div class="c-pc-chat-msg-item__content">
+      <template v-if="iarSdkLoaded">
+        <!-- 红包消息 -->
+        <pc-redpaper-msg v-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
+        <!-- 红包领取消息 -->
+        <pc-redpaper-receive-msg v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive" />
+      </template>
       <!-- 发言消息 -->
       <pc-speak-msg v-if="chatMsg.msgSource === ChatMsgSource.Speak" />
-      <!-- 红包消息 -->
-      <pc-redpaper-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
-      <!-- 红包领取消息 -->
-      <pc-redpaper-receive-msg v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive" />
       <!-- 自定义消息(服务端) -->
       <pc-customer-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomerMessage" />
       <!-- 自定义消息(客户端) -->
@@ -51,12 +53,16 @@ import PcSpeakMsg from './speak-msg/pc-speak-msg.vue';
 import PcSystemMsg from './system-msg/pc-system-msg.vue';
 import PcMotivationLikeMsg from './motivation-like-msg/pc-motivation-like-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const props = defineProps(chatMsgItemProps());
 
 const { showMsgTime, chatMsg, msgTimeText, msgVisible } = useChatMsgItem({
   props,
 });
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">

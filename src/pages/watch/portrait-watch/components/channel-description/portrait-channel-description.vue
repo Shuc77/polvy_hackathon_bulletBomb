@@ -12,6 +12,7 @@
       v-else
       class="c-portrait-channel-description__content"
       :html-content="channelDescription"
+      :follow-page-skin="false"
     />
   </div>
 </template>

@@ -19,10 +19,13 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface PlayerStoreState {
   /** 配置是否使用播放器 */
   playerEnabled: Ref<boolean>;
+  /** 能否创建播放器 */
+  canRenderPlayer: ComputedRef<boolean>;
   /** 是否处于可播放的模式 */
   isPlayMode: ComputedRef<boolean>;
   /** 播放器是否已初始化 */
@@ -137,12 +140,23 @@ export interface PlayerStoreAction {
 export interface PlayerStore extends PlayerStoreState, PlayerStoreAction {}
 
 export const usePlayerStore = defineStore<'player', PlayerStore>('player', () => {
+  const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
 
   /** 配置是否使用播放器 */
   const playerEnabled = ref(true);
+
+  /** 能否创建播放器 */
+  const canRenderPlayer = computed(() => {
+    // 会议模式下不支持创建播放器
+    if (watchAppStore.meetingMode) {
+      return false;
+    }
+
+    return true;
+  });
 
   /** 播放器是否已初始化 */
   const playerInited = ref(false);
@@ -491,6 +505,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   return {
     playerEnabled,
+    canRenderPlayer,
     isAudioPlayerMode,
     isPlayMode,
     playerInited,

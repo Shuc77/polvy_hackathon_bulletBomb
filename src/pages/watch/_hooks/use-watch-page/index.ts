@@ -6,9 +6,8 @@ import { toast } from '@/hooks/components/use-toast';
 
 import { useIarGlobalConfigHook } from '@/components/page-watch-common/interactive-receive/use-iar-global-config';
 
-import { useConnectMicSetup } from './_hooks/use-connect-mic-setup';
 import { useMainScreen } from './_hooks/use-main-screen';
-import { usePageViewPolling } from './_hooks/use-polling';
+import { usePageViewPolling, usePolyvMeetingPolling } from './_hooks/use-polling';
 
 import { useChannelStore } from '@/store/use-channel-store';
 import { useWebviewStore } from '@/store/use-webview-store';
@@ -17,8 +16,8 @@ export const useWatchPage = () => {
   // 使用 pv 轮训
   usePageViewPolling();
 
-  // 使用连麦
-  useConnectMicSetup();
+  // 使用会议模式轮询
+  usePolyvMeetingPolling();
 
   // 设置互动功能全局配置
   useIarGlobalConfigHook();
@@ -32,6 +31,7 @@ export const useWatchPage = () => {
     webviewStore.initWebviewBridge();
   }
 
+  // 研讨会"内部研讨"逻辑
   const channelStore = useChannelStore();
   watch(
     () => channelStore.liveStatus,

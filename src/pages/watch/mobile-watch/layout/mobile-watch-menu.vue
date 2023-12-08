@@ -16,7 +16,7 @@
       <mobile-follow-layer v-if="followEnabled" />
 
       <!-- 商品库推送气泡 -->
-      <mobile-product-bubble />
+      <mobile-product-bubble v-if="iarSdkLoaded" />
 
       <!-- 课堂激励点赞动画 -->
       <motivation-like-animation
@@ -95,7 +95,7 @@
           :name="TAB_NAME_QA"
           lazy-load
         >
-          <mobile-question-answer />
+          <mobile-question-answer v-if="iarSdkLoaded" />
         </mobile-menu-tab-pane>
 
         <!-- 回放 -->
@@ -120,7 +120,7 @@
           :name="TAB_NAME_PRODUCT"
           switch-to-refresh
         >
-          <mobile-product-list />
+          <mobile-product-list v-if="iarSdkLoaded" />
         </mobile-menu-tab-pane>
 
         <!-- 图文直播 -->
@@ -131,7 +131,7 @@
           :name="TAB_NAME_TUWEN_LIVE"
           lazy-load
         >
-          <mobile-tuwen-live />
+          <mobile-tuwen-live v-if="iarSdkLoaded" />
         </mobile-menu-tab-pane>
 
         <!-- 图文菜单 -->
@@ -166,9 +166,8 @@
           :key="`vote-${index}`"
           :label="menu.name"
           :name="TAB_NAME_VOTE"
-          lazy-load
         >
-          <mobile-vote-panel />
+          <mobile-vote-panel v-if="iarSdkLoaded" />
         </mobile-menu-tab-pane>
 
         <!-- 云席 -->
@@ -179,7 +178,7 @@
           :name="TAB_NAME_SEAT"
           lazy-load
         >
-          <mobile-seat-table />
+          <mobile-seat-table v-if="iarSdkLoaded" />
         </mobile-menu-tab-pane>
 
         <!-- 邀请榜 -->
@@ -299,6 +298,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import { ChannelMenuType, LiveStatus, MainScreenContent } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
@@ -343,6 +343,8 @@ const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {
