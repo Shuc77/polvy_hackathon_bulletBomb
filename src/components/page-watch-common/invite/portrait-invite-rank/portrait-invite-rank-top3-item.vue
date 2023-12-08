@@ -4,6 +4,7 @@
     v-if="data"
     :class="[
       'c-portrait-invite-rank__top-three__item',
+      `c-portrait-invite-rank__top-three__item--theme__${theme}`,
       `c-portrait-invite-rank__top-three__item--${order}`,
     ]"
   >
@@ -46,6 +47,7 @@ import { tupleString } from '@/assets/utils/array';
 defineProps({
   data: PropUtils.objectType<InviteRankItem>().isRequired,
   order: PropUtils.oneOf(tupleString('first', 'second', 'third')).def('first'),
+  theme: PropUtils.oneOf(tupleString('light', 'dark')).def('light'),
 });
 </script>
 
@@ -55,6 +57,19 @@ defineProps({
   padding-top: 20px;
   text-align: center;
 }
+
+.c-portrait-invite-rank__top-three__item--theme__dark {
+  .c-portrait-invite-rank__top-three__item__detail__nick {
+    color: #333;
+  }
+  .c-portrait-invite-rank__top-three__item__detail__num {
+    color: rgba(#333, 0.8);
+    > span {
+      color: #333;
+    }
+  }
+}
+
 .c-portrait-invite-rank__top-three__item__avatar {
   position: relative;
   width: 64px;

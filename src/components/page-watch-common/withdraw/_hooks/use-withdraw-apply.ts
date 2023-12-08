@@ -108,7 +108,10 @@ export const useWithdrawApplyHook = () => {
 
   /** 提示语 */
   const withdrawApplyTips = computed(() =>
-    translate('withdraw.apply.tips', { amount: `<span>1</span>`, day: '<span>3</span>' }),
+    translate('withdraw.apply.tips', {
+      amount: `<span class='pws-mobile-withdraw-highlight'>1</span>`,
+      day: `<span class='pws-mobile-withdraw-highlight'>3</span>`,
+    }),
   );
 
   /** 设置最大提现额 */

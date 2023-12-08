@@ -16,6 +16,8 @@ export enum PageErrorType {
   WorkWechatFriend = 'WorkWechatFriend',
   /** 未知错误 */
   UnknownError = 'UnknownError',
+  /** 校验一客一码(销售邀请) */
+  VerifySaleInvite = 'VerifySaleInvite',
 }
 
 /**
@@ -25,7 +27,7 @@ export interface PageErrorData {
   /** 异常类型 */
   type: PageErrorType;
   /** 标题 */
-  title: string;
+  title?: string;
   /** 描述 */
   desc?: string;
   /** 是否展示重新加载的按钮 */

@@ -14,7 +14,9 @@
           {{ convertReceiveDate(record.applyTime) }}
         </p>
       </div>
-      <p class="c-mobile-cash-receive-record__item-amount">-{{ convertAmount(record.amount) }}</p>
+      <p class="c-mobile-cash-receive-record__item-amount pws-mobile-withdraw-highlight">
+        -{{ convertAmount(record.amount) }}
+      </p>
     </li>
     <li
       v-show="loadingVisible"

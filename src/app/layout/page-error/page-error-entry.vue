@@ -2,13 +2,16 @@
 <template>
   <div class="c-page-error">
     <page-error-work-wechat-friend v-if="isWorkWechatFriendPage" />
+    <page-error-verify-sale-invite v-else-if="isVerifySaleInvitePage" />
     <page-error-pc-default v-else-if="!isMobileErrorPage" />
     <page-error-mobile-default v-else />
   </div>
 </template>
 
 <script lang="ts" setup>
+import PageErrorVerifySaleInvite from './_components/page-error-verify-sale-invite/page-error-verify-sale-invite.vue';
 import PageErrorWorkWechatFriend from './_components/page-error-work-wechat-friend.vue';
+
 import PageErrorPcDefault from './_components/page-error-pc-default.vue';
 import PageErrorMobileDefault from './_components/page-error-mobile-default.vue';
 
@@ -18,7 +21,7 @@ import { usePageErrorHook } from './_hooks/use-page-error';
 /** 使用移动端的异常页面 */
 const isMobileErrorPage = isMobile || isMockPc;
 
-const { isWorkWechatFriendPage } = usePageErrorHook();
+const { isWorkWechatFriendPage, isVerifySaleInvitePage } = usePageErrorHook();
 </script>
 
 <style>

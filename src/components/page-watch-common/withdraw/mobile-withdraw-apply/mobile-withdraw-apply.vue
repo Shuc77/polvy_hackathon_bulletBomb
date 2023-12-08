@@ -25,7 +25,7 @@
           >
             <span
               slot="suffix"
-              class="c-mobile-withdraw-apply__form-item__all-btn"
+              class="c-mobile-withdraw-apply__form-item__all-btn pws-mobile-withdraw-highlight"
               @click="setMaxAmount"
             >
               {{ $lang('withdraw.apply.amount.all') }}

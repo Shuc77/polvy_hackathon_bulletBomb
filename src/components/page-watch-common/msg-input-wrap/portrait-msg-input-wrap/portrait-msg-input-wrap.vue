@@ -54,7 +54,7 @@
         ref="emotionRef"
         class="c-portrait-msg-input-wrap__emotion-panel"
       >
-        <portrait-emotion-picker
+        <mobile-emotion-picker
           :click-face-to-close="false"
           :face-emotion-enabled="faceEmotionEnabled"
           :image-emotion-enabled="imageEmotionEnabled"
@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { MobileIconEmotion, MobileIconKeyboard } from '@/components/component-icons/mobile/map';
-import PortraitEmotionPicker from '@/components/page-watch-common/emotion-picker/portrait-emotion-picker/portrait-emotion-picker.vue';
+import MobileEmotionPicker from '@/components/page-watch-common/emotion-picker/mobile-emotion-picker/mobile-emotion-picker.vue';
 import { PlvCollapseTransition } from '@/plugins/polyv-ui/admin-import';
 import { msgInputWrapEmits, msgInputWrapProps, useMsgInputWrap } from '../use-msg-input-wrap';
 
@@ -136,7 +136,6 @@ defineExpose(msgInputWrapInstance);
   border: none;
   border-radius: 18px;
   outline: none;
-  caret-color: #ffa611;
 }
 
 .c-portrait-msg-input-wrap__main__submit {
@@ -144,11 +143,19 @@ defineExpose(msgInputWrapInstance);
   height: 36px;
   margin-left: 8px;
   line-height: 36px;
-  color: #ffa611;
+  // color: #ffa611;
   text-align: center;
 }
 .c-portrait-msg-input-wrap__main__submit--disabled {
   color: #c4c4c4;
+}
+
+.c-portrait-msg-input-wrap--emotion-show {
+  .c-portrait-msg-input-wrap__main {
+    padding-top: 16px;
+    padding-bottom: 8px;
+    border-radius: 8px 8px 0 0;
+  }
 }
 
 .c-portrait-msg-input-wrap__main__emotion {

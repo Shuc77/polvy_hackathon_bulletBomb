@@ -19,7 +19,6 @@
     <div class="c-portrait-player-progress__main">
       <slider-bar
         wrap-slider-track-color="rgba(255, 255, 255, 0.4)"
-        inner-slider-track-color="#FFC815"
         :slider-track-size="2"
         :slider-dot-size="12"
         :max="durationTime"

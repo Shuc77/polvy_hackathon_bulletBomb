@@ -9,16 +9,16 @@ import { useInviteStore } from '@/store/use-invite-store';
 
 export function redirectToPosterPage() {
   const channelMenuStore = useChannelMenuStore();
-  const { trackUserClickInvitePoster } = useWatchEventTrack();
-  const { generatePosterUrl, generateSeatPosterUrl } = useInviteStore();
+  const { generatePosterUrl, getGenerateSeatPosterUrl } = useInviteStore();
 
+  const { trackUserClickInvitePoster } = useWatchEventTrack();
   trackUserClickInvitePoster();
 
   const iosVersion = getIosVersion();
   if (iosVersion && iosVersion <= 9) {
     toast.error(translate('base.system.version.deprecated'));
   } else {
-    const url = channelMenuStore.seatTableMenuData ? generateSeatPosterUrl : generatePosterUrl;
+    const url = channelMenuStore.seatTableMenuData ? getGenerateSeatPosterUrl() : generatePosterUrl;
     window.location.href = url;
   }
 }

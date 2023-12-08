@@ -13,6 +13,12 @@
           :options="subtitleTranslateOptions"
         />
       </div>
+      <div
+        v-if="displayNumberLimitEnabled && displayNumber > 0"
+        class="c-pc-subtitle__limit"
+      >
+        {{ $lang('subtitle.limit', { limit: String(displayNumber) }) }}
+      </div>
       <div class="c-pc-subtitle__content pws-pc-subtitle__content-skin c-subtitle__scroll">
         <div
           v-for="(item, index) of subtitleList"
@@ -90,6 +96,8 @@ const {
   currentSubtitle,
   sourceLanguage,
   sourceTranslateLanguage,
+  displayNumberLimitEnabled,
+  displayNumber,
 } = useSubtitle(subtitleScroll);
 </script>
 
@@ -100,6 +108,13 @@ const {
   padding: 0 16px 16px 16px;
   overflow: auto;
   @include scrollbar;
+}
+
+.c-pc-subtitle__limit {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #adadc0;
+  text-align: center;
 }
 
 .c-pc-subtitle__top {

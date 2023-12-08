@@ -14,6 +14,7 @@
     <div class="c-pc-ask__input">
       <pc-msg-input-wrap
         ref="msgInputWrapRef"
+        :face-emotion-enabled="chatSetting.faceEmotionEnabled"
         :image-emotion-enabled="false"
         :send-image-enabled="questionImageEnabled"
         :image-paste-input-enabled="imagePasteInputEnabled"
@@ -45,11 +46,14 @@ import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useAskStore } from '@/store/use-ask-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { useChatStore } from '@/store/use-chat-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
 const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 const { checkNeedRealNameAuth } = useViewerStore();
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const { askMsgRenderList, questionImageEnabled, getAskMsgList, inputDisabled } = useAsk({
   askMsgListRef,

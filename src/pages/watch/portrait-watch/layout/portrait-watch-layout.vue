@@ -15,7 +15,7 @@
           paddingTop: `${portraitDocWrapHeight}px`,
         }"
       />
-      <portrait-player-main v-else />
+      <portrait-player-main v-if="canRenderPlayer" />
     </div>
 
     <!-- 文档 -->
@@ -64,9 +64,12 @@ import PortraitConnectMicContainer from '@/components/page-watch-common/connect-
 import { useDocStore } from '@/store/use-doc-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { usePlayerStore } from '@/store/use-player-store';
 
 const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
   storeDefinitionToRefs(usePortraitLayoutStore);
+
+const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 

@@ -4,6 +4,7 @@
     <iar-pc-question-answer
       class="c-pc-question-answer__main"
       :question-answer-sdk="questionAnswerSdk"
+      :face-emotion-enabled="chatSetting.faceEmotionEnabled"
       :has-nick="hasNickname"
       @preview="onPreviewImage"
       @news="onNewsEvent"
@@ -28,6 +29,7 @@ import PcSetNickPlaceholder from '@/components/page-watch-common/msg-input-wrap/
 import { unref } from 'vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useQuestionAnswer } from './hooks/use-question-answer';
+import { useChatStore } from '@/store/use-chat-store';
 
 const IarPcQuestionAnswer = getIarComponent('PcQuestionAnswer');
 
@@ -36,6 +38,8 @@ const { questionAnswerSdk, onPreviewImage } = useQuestionAnswer();
 const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const interactReceiveStore = useInteractReceiveStore();
 

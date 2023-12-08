@@ -1,6 +1,7 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 import { RenderPosition } from '@just4/virtual-list/types';
 import { ChatEvents, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted } from 'vue';
@@ -11,6 +12,7 @@ import { ChatMsgListHookOptions } from './types';
 export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
   const chatStore = useChatStore();
   const chatMsgStore = useChatMsgStore();
+  const playbackStore = usePlaybackStore();
 
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { contractMsgQueue } = useContractQueue();
@@ -134,8 +136,13 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
       return;
     }
 
-    // 自己的打赏只接收本地插入的
-    if (chatMsg.msgSource === ChatMsgSource.Reward && chatMsg.isSelf && !chatMsg.isLocal) {
+    // 非聊天重放状态下，自己的打赏只接收本地插入的
+    if (
+      !playbackStore.chatReplayEnabled &&
+      chatMsg.msgSource === ChatMsgSource.Reward &&
+      chatMsg.isSelf &&
+      !chatMsg.isLocal
+    ) {
       return;
     }
 

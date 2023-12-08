@@ -11,6 +11,7 @@
       @blur="onFormInputBlur"
     >
       <div
+        v-if="props.needAreaCode"
         slot="prefix"
         class="c-mobile-form-phone-input__area-code"
         @click="openAreaCodePopup"

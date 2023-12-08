@@ -1,13 +1,13 @@
 import { ref, unref, watch } from 'vue';
 import { LiveStatus } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
+import { usePlayerAction } from '../player/hooks/use-player-action';
 
 /**
  * 直播开始提示 hook
  */
 export const useLiveStartTips = () => {
-  const watchCore = getWatchCore();
+  const { toPlay } = usePlayerAction();
   const channelStore = useChannelStore();
 
   /** 提示是否显示 */
@@ -22,7 +22,7 @@ export const useLiveStartTips = () => {
   function closeTips() {
     tipsVisible.value = false;
     if (channelStore.liveStatus === LiveStatus.Live) {
-      watchCore.player.play();
+      toPlay();
     }
   }
 

@@ -7,11 +7,11 @@
     <template v-if="!pageError && watchAppInited">
       <pc-main
         v-if="!isMobile"
-        @hook:mounted="onLayoutMounted"
+        @page-mounted="onLayoutMounted"
       />
       <mobile-main
         v-else
-        @hook:mounted="onLayoutMounted"
+        @page-mounted="onLayoutMounted"
       />
     </template>
 

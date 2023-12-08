@@ -51,6 +51,9 @@
         <!-- 轨道内层 -->
         <div
           class="c-slide-bar__inner-track"
+          :class="{
+            'pws-slide-bar__inner-track': followPageSkin,
+          }"
           :style="innerTrackStyle"
         ></div>
       </div>

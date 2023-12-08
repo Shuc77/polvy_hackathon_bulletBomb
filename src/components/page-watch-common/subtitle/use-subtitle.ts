@@ -35,6 +35,12 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   /** 翻译语言 */
   const sourceTranslateLanguage = ref<SubtitleSourceTranslateLanguage>('Chinese');
 
+  /** 实时字幕显示数量限制开关 */
+  const displayNumberLimitEnabled = ref(false);
+
+  /** 实时字幕最多显示多少条 */
+  const displayNumber = ref(-1);
+
   /** 用户选择的翻译的类型 */
   const subtitleTranslateSelected = ref<'all' | 'source' | 'translate'>('all');
 
@@ -98,6 +104,18 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     addSubtitleListener();
   }
 
+  function spliceSubtitle() {
+    let value = displayNumber.value;
+    if (!displayNumberLimitEnabled.value || value < 1) return;
+    if (currentSubtitle.value) {
+      value++;
+    }
+    const num = subtitleList.value.length - value;
+    if (num > 0) {
+      subtitleList.value.splice(0, num);
+    }
+  }
+
   const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
   const { mobileMenuCurrentName } = storeDefinitionToRefs(useLayoutStore);
@@ -127,6 +145,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   function getSubtitleList() {
     const watchCore = getWatchCore();
     subtitleList.value = cloneDeep(watchCore.subtitles.getSubtitlesList());
+    spliceSubtitle();
     nextTick(() => {
       subtitleScroll.value?.scrollTo({
         top: subtitleScroll.value.offsetHeight,
@@ -146,6 +165,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
         [sourceLanguage.value]: data.text,
       };
       subtitleList.value.push(params);
+      spliceSubtitle();
     } else {
       currentSubtitle.value = data.text;
     }
@@ -213,6 +233,8 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
     sourceLanguage.value = subTitleConfig.subtitleSourceLanguage;
     sourceTranslateLanguage.value = subTitleConfig.subtitleTranslateLanguage;
+    displayNumberLimitEnabled.value = subTitleConfig.subtitleDisplayNumberLimitEnabled;
+    displayNumber.value = subTitleConfig.subtitleDisplayNumber;
   }
 
   onMounted(() => {
@@ -236,5 +258,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     currentSubtitle,
     sourceLanguage,
     sourceTranslateLanguage,
+    displayNumberLimitEnabled,
+    displayNumber,
   };
 };

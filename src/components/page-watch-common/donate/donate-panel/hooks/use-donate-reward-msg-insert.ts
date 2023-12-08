@@ -1,18 +1,30 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import { DonateGoodInfo, useDonateStore } from '@/store/use-donate-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 import { DonateType } from '@polyv/live-watch-sdk';
 import type { DonatePayOptions } from './use-donate-pay';
 
 export const useDonateRewardMsgInsertHook = () => {
   const donateStore = useDonateStore();
+  const playbackStore = usePlaybackStore();
   const watchCore = getWatchCore();
+
+  function __enableInsertLocalRewardMsg() {
+    if (playbackStore.chatReplayEnabled) {
+      return false;
+    }
+
+    return true;
+  }
 
   function insertRewardMsgForPayDonate(
     options: DonatePayOptions & {
       /** 是否免费，默认 false */
       isFree?: boolean;
     },
-  ) {
+  ): void {
+    if (!__enableInsertLocalRewardMsg()) return;
+
     const { donateType, amount, goodId, isFree = false } = options;
 
     if (donateType === DonateType.Good) {
@@ -33,7 +45,9 @@ export const useDonateRewardMsgInsertHook = () => {
     }
   }
 
-  function insertRewardMsgForDonateGoodPoint(good: DonateGoodInfo, count: number) {
+  function insertRewardMsgForDonateGoodPoint(good: DonateGoodInfo, count: number): void {
+    if (!__enableInsertLocalRewardMsg()) return;
+
     watchCore.chat.insertLocalRewardChatMsg({
       goodImage: good.goodImage,
       goodName: good.goodName,

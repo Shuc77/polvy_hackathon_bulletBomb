@@ -4,6 +4,7 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useChannelMenuStore } from './use-channel-menu-store';
 import { useChatStore } from './use-chat-store';
+import { usePlaybackStore } from './use-playback-store';
 
 export interface AskStore {
   /** 输入框占位符 */
@@ -17,14 +18,15 @@ export interface AskStore {
 export const useAskStore = defineStore<'ask', AskStore>('ask', () => {
   const chatStore = useChatStore();
   const channelMenuStore = useChannelMenuStore();
+  const playbackStore = usePlaybackStore();
 
   /** 输入框占位符 */
   const askInputPlaceholder = computed(() => {
-    if (chatStore.chatRoomIsClosed) {
+    if (chatStore.chatRoomIsClosed || playbackStore.chatReplayEnabled) {
       return translate('chat.input.placeholder');
-    } else {
-      return chatStore.chatInputPlaceholder;
     }
+
+    return chatStore.chatInputPlaceholder;
   });
 
   /** 获取欢迎语 */

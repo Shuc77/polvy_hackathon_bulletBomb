@@ -18,6 +18,11 @@ import { isWeixin } from '@/assets/utils/browser';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLayoutStore } from './use-layout-store';
+import {
+  InviteActivityInfo,
+  InviteActivityStatus,
+  InvitePrizeWinnerInfo,
+} from '@polyv/live-watch-sdk';
 
 export interface InviteStoreState {
   /** 企业微信分享海报的企微员工 ID */
@@ -34,19 +39,33 @@ export interface InviteStoreState {
   inviteRankEnabled: Ref<boolean>;
   /** 邀请明细开关 */
   inviteDetailEnabled: Ref<boolean>;
+  /** 邀请有礼活动信息 */
+  inviteActivityInfo: Ref<InviteActivityInfo>;
+  /** 邀请有礼活动即将结束提示 */
+  inviteActivityWillEndTipVisible: Ref<boolean>;
+  /** 邀请有礼中奖信息 */
+  invitePrizeWinnerInfo: Ref<InvitePrizeWinnerInfo | null>;
+  /** 邀请有礼活动开关 */
+  inviteActivityEnabled: ComputedRef<boolean>;
+  /** 邀请有礼活动状态 */
+  inviteActivityStatus: ComputedRef<InviteActivityStatus>;
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
   mobileChatInvitePendantVisible: ComputedRef<boolean>;
   /** 移动端页面中常驻的邀请挂件是否显示 */
   mobileWatchInvitePendantVisible: ComputedRef<boolean>;
   /** 邀请海报选择页地址 */
-  generatePosterUrl: ComputedRef<string>;
-  /** 云席邀请海报选择页地址 */
-  generateSeatPosterUrl: ComputedRef<string>;
+  generatePosterUrl: Ref<string>;
 }
 
 export interface InviteStoreAction {
+  /** 获取云席邀请海报选择页地址 */
+  getGenerateSeatPosterUrl: () => string;
   /** 同步邀请信息 */
   syncInviteInfo: () => void;
+  /** 同步邀请有礼活动信息 */
+  syncInviteActivityInfo: () => void;
+  /** 同步邀请有礼中奖信息 */
+  syncInvitePrizeWinnerInfo: () => Promise<void>;
 }
 
 export interface InviteStore extends InviteStoreState, InviteStoreAction {}
@@ -82,8 +101,36 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   /** 邀请明细开关 */
   const inviteDetailEnabled = ref(false);
 
+  /** 邀请有礼活动信息 */
+  const inviteActivityInfo = ref<InviteActivityInfo>({
+    id: null,
+    enabled: false,
+    introduction: '',
+    endTime: null,
+    status: InviteActivityStatus.NoExist,
+  });
+
+  const inviteActivityWillEndTipVisible = ref(false);
+
+  /** 邀请有礼中奖信息 */
+  const invitePrizeWinnerInfo = ref<InvitePrizeWinnerInfo | null>(null);
+
+  /** 邀请有礼活动开关 */
+  const inviteActivityEnabled = computed(() => {
+    return inviteActivityInfo.value.enabled;
+  });
+
+  /** 邀请有礼活动状态 */
+  const inviteActivityStatus = computed(() => {
+    return inviteActivityInfo.value.status;
+  });
+
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
   const mobileChatInvitePendantVisible = computed<boolean>(() => {
+    if (!isWeixin) {
+      return false;
+    }
+
     // 如果存在邀请榜的 tab 则不显示邀请榜挂件
     if (channelMenuStore.inviteRankMenuData.visible) {
       return false;
@@ -94,6 +141,10 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
   /** 移动端页面中常驻的邀请挂件是否显示 */
   const mobileWatchInvitePendantVisible = computed<boolean>(() => {
+    if (!isWeixin) {
+      return false;
+    }
+
     // 如果存在邀请榜的 tab 则不显示邀请榜挂件
     if (channelMenuStore.inviteRankMenuData.visible) {
       return false;
@@ -118,26 +169,23 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   });
 
   /** 邀请海报选择页地址 */
-  const generatePosterUrl = computed<string>(() => {
-    const watchCore = getWatchCore();
-    return watchCore.invite.getInviteGeneratePosterUrl();
-  });
+  const generatePosterUrl = ref<string>('');
 
-  /** 云席邀请海报选择页地址 */
-  const generateSeatPosterUrl = computed<string>(() => {
+  /** 获取云席邀请海报选择页地址 */
+  function getGenerateSeatPosterUrl() {
     const watchCore = getWatchCore();
     return watchCore.invite.getInviteGeneratePosterUrl({
       setSeatTable: true,
       seatTableRow: interactReceiveStore.seatPosition?.row,
       seatTableColumn: interactReceiveStore.seatPosition?.column,
     });
-  });
+  }
 
   /** 同步邀请信息 */
   function syncInviteInfo() {
     const watchCore = getWatchCore();
 
-    invitePosterEnabled.value = isWeixin && watchCore.invite.getInvitePosterEnabled();
+    invitePosterEnabled.value = watchCore.invite.getInvitePosterEnabled();
     inviteRankConfigEnabled.value = watchCore.invite.getInviteRankEnabled();
 
     const inviteUserInfo = watchCore.invite.getInviteUserInfo(false);
@@ -146,8 +194,21 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
     invitePosterId.value = watchCore.invite.getInvitePosterId();
     wxInviteId.value = watchCore.invite.getWorkWxInviteId();
+    generatePosterUrl.value = watchCore.invite.getInviteGeneratePosterUrl();
 
     inviteDetailEnabled.value = watchCore.invite.getInviteDetailEnabled();
+  }
+
+  /** 同步邀请有礼活动信息 */
+  function syncInviteActivityInfo() {
+    const watchCore = getWatchCore();
+    inviteActivityInfo.value = watchCore.invite.getInviteActivityInfo();
+  }
+
+  /** 同步邀请有礼中奖信息 */
+  async function syncInvitePrizeWinnerInfo() {
+    const watchCore = getWatchCore();
+    invitePrizeWinnerInfo.value = await watchCore.invite.getInvitePrizeWinnerInfo();
   }
 
   return {
@@ -158,10 +219,20 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     invitePosterEnabled,
     inviteRankEnabled,
     inviteDetailEnabled,
+
+    inviteActivityInfo,
+    inviteActivityWillEndTipVisible,
+    invitePrizeWinnerInfo,
+    inviteActivityEnabled,
+    inviteActivityStatus,
+
     mobileChatInvitePendantVisible,
     mobileWatchInvitePendantVisible,
     generatePosterUrl,
-    generateSeatPosterUrl,
+
+    getGenerateSeatPosterUrl,
     syncInviteInfo,
+    syncInviteActivityInfo,
+    syncInvitePrizeWinnerInfo,
   };
 });

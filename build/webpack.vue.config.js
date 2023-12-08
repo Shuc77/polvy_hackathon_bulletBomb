@@ -117,6 +117,12 @@ let webpackVueConfig = {
       files: ['**/*.{vue,css,scss}'],
     }),
   ],
+
+  optimization: {
+    splitChunks: {
+      minSize: 0.5 * 1024 * 1024,
+    },
+  },
 };
 
 if (process.env.USE_ANALYZER) {

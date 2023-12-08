@@ -5,7 +5,9 @@
       class="c-mobile-invite-rank__list"
       @scroll="handleScroll"
     >
-      <div class="c-mobile-invite-rank__list__title">
+      <mobile-invite-activity-banner v-if="inviteActivityEnabled" />
+
+      <div class="c-mobile-invite-rank__list__title pws-mobile-invite-rank__list__title">
         <span>{{ $lang('invite.rank') }}</span>
         <span>{{ $lang('invite.rank.people.number') }}</span>
       </div>
@@ -35,13 +37,13 @@
       </div>
       <div
         v-else-if="isNoMore"
-        class="c-mobile-invite-rank__list__nomore"
+        class="c-mobile-invite-rank__list__nomore pws-mobile-invite-rank__nomore"
       >
         {{ $lang('invite.rank.no.more') }}
       </div>
       <div
         v-else-if="isLoadFailed"
-        class="c-mobile-invite-rank__list__failed"
+        class="c-mobile-invite-rank__list__failed .pws-mobile-invite-rank__failed"
       >
         {{ $lang('invite.rank.loaded.failed') }}
       </div>
@@ -50,8 +52,12 @@
     <!-- 我的排名信息 -->
     <section
       v-if="showBottomInfo"
-      class="c-mobile-invite-rank__me"
+      class="c-mobile-invite-rank__me pws-mobile-invite-rank-bottom"
     >
+      <mobile-invite-activity-will-end-tip
+        v-if="inviteActivityWillEndTipVisible"
+        class="c-mobile-invite-rank__invite-activity-will-end-tip"
+      />
       <invite-rank-item
         v-if="currentRankInfo"
         :rank="currentRankInfo.rank"
@@ -80,7 +86,7 @@
       </invite-rank-item>
       <div
         v-else
-        class="c-mobile-invite-rank__not__info"
+        class="c-mobile-invite-rank__not__info pws-mobile-invite-rank__not__info"
       >
         <span class="c-mobile-invite-rank__not__info__text">
           {{ $lang('invite.rank.click.btn.desc') }}
@@ -97,6 +103,8 @@ import ListLoading from '@/components/common-base/list-loading/list-loading.vue'
 import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import InviteEntryCapsule from '../mobile-invite-poster-entry/mobile-invite-poster-entry-capsule.vue';
 import InviteRankItem from './mobile-invite-rank-item.vue';
+import MobileInviteActivityBanner from '../mobile-invite-activity/mobile-invite-activity-banner/mobile-invite-activity-banner.vue';
+import MobileInviteActivityWillEndTip from '../mobile-invite-activity/mobile-invite-activity-will-end-tip/mobile-invite-activity-will-end-tip.vue';
 
 import { useInviteRankHook } from '../hooks/use-invite-rank';
 
@@ -126,7 +134,8 @@ const {
   handleScroll,
 } = useInviteRankHook();
 
-const { inviteDetailEnabled } = storeDefinitionToRefs(useInviteStore);
+const { inviteDetailEnabled, inviteActivityEnabled, inviteActivityWillEndTipVisible } =
+  storeDefinitionToRefs(useInviteStore);
 
 const { emitEvent: emitOpenInviteDetail } = useEventBusEmitter(appEvents.invite.OpenInviteDetail);
 
@@ -185,13 +194,20 @@ watch(
   text-align: center;
 }
 
+.c-mobile-invite-rank__invite-activity-will-end-tip {
+  position: absolute;
+  right: 8px;
+  bottom: 56px;
+  @include iphone-x-b(90px);
+}
+
 .c-mobile-invite-rank__me {
   z-index: 10;
   flex-shrink: 0;
   width: 100%;
   word-wrap: break-word;
   background: #292b32;
-  @include iphone-x-pb(0);
+  @include iphone-x-pb(16px);
 }
 .c-mobile-invite-rank__me__info {
   flex: 1;

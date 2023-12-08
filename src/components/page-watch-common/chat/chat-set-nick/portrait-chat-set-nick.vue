@@ -28,7 +28,6 @@
           <form-submit-button
             :text="$lang('base.confirm')"
             :size="ButtonSize.Small"
-            :type="ButtonType.Portrait"
           />
         </div>
       </form-wrap>
@@ -39,7 +38,7 @@
 <script setup lang="ts">
 import { FormTheme, FormSize } from '@/components/common-base/form/types/enums';
 import { PopupTheme } from '@/components/common-base/popup/types';
-import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';

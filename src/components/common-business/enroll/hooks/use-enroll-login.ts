@@ -2,14 +2,14 @@ import { DEFAULT_PHONE_NUMBER_AREA_CODE } from '@/assets/constants/defaults';
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
 import { toast } from '@/hooks/components/use-toast';
 import { getWatchCore } from '@/core/watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { EnrollAuthType } from '@polyv/live-watch-sdk';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useEnrollSms } from './use-enroll-sms';
 
 export const enrollLoginEmits = () => ({
   /** 点击取消 */
@@ -27,7 +27,7 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
   const watchAppStore = useWatchAppStore();
   const enrollStore = useEnrollStore();
 
-  const imageVerifyInputRef = ref<ImageVerifyInputInstance>();
+  const { imageVerifyInputRef, imageVerifyInputEnabled, smsValidType } = useEnrollSms();
 
   /** 表单对象 */
   const formData = reactive({
@@ -133,6 +133,9 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
 
   return {
     imageVerifyInputRef,
+    imageVerifyInputEnabled,
+    smsValidType,
+
     formData,
     formRules,
     submitLoginForm,

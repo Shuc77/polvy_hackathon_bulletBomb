@@ -1,20 +1,83 @@
 // @file 移动端的互动功能接收端样式覆盖
 
+// ============  全局 ============ //
+
 // 加载
 .plv-ia-loading-container {
   color: #adadc0;
 }
 
-// 卡片推送
+.plv-mobile-watch-iar--fullscreen {
+  .plv-iar-submit-tips-default__main--mobile {
+    transform: rotate(90deg);
+    transform-origin: top;
+  }
+}
+
+// ============  卡片推送 ============ //
+
 .plv-iar-push-card,
 .plv-iar-push-card__modal {
   z-index: 400;
 }
 .plv-iar-default-push-card--fullscreen {
-  z-index: 2002;
+  z-index: $--zIndex-pendant;
 }
 
-// 图文直播
+// ============  话题 pk ============ //
+
+.plv-iar-modal--topic {
+  z-index: $--zIndex-top - 1;
+}
+
+// ============  抽奖 ============ //
+
+// 条件抽奖
+.plv-iar-welfare-lottery__modal--normal,
+.plv-iar-welfare-lottery__modal--gift-box,
+.plv-iar-welfare-lottery__on-lottery-modal {
+  z-index: $--zIndex-top;
+}
+
+
+// ============  商品库 ============ //
+
+// 商品推送
+.plv-iar-product-bubble {
+  pointer-events: none;
+}
+.plv-iar-product-bubble__wrap {
+  pointer-events: initial;
+}
+
+
+// ============  问答 ============ //
+
+// 问答
+.plv-ia-qa-ask-emotion {
+  height: 100%;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  background-size: 32px;
+}
+
+// ============  抢答 ============ //
+
+// 抢答弹窗
+.plv-iar-modal--rush-answer {
+  z-index: $--zIndex-top;
+}
+
+// ============  红包 ============ //
+
+.plv-iar-default-red-envelope {
+  position: relative;
+  z-index: $--zIndex-top;
+}
+
+
+// ============  图文直播 ============ //
+
 .plv-ia-tuwen-message-item {
   .plv-ia-tuwen-message-item-content {
     .pws-plv-ia-tuwen-message-item-content-name {
@@ -31,36 +94,4 @@
       color: #adadc0;
     }
   }
-}
-
-// 条件抽奖
-.plv-iar-welfare-lottery__modal--normal,
-.plv-iar-welfare-lottery__modal--gift-box,
-.plv-iar-welfare-lottery__on-lottery-modal {
-  z-index: 11;
-}
-
-// 商品推送
-.plv-iar-product-bubble {
-  pointer-events: none;
-}
-.plv-iar-product-bubble__wrap {
-  pointer-events: initial;
-}
-
-// 问答
-.plv-ia-qa-ask-emotion {
-  height: 100%;
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-  background-size: 32px;
-}
-
-// 抢答弹窗
-.plv-iar-modal--rush-answer {
-  z-index: 9999;
-}
-.plv-iar-default-red-envelope {
-  position: relative;
-  z-index: 999;
 }

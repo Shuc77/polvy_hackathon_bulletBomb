@@ -11,14 +11,16 @@
       {{ msgTimeText }}
     </div>
     <div class="c-mobile-chat-msg-item__content">
+      <template v-if="iarSdkLoaded">
+        <!-- 红包消息 -->
+        <mobile-redpaper-msg v-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
+        <!-- 红包领取消息 -->
+        <mobile-redpaper-receive-msg
+          v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive"
+        />
+      </template>
       <!-- 发言消息 -->
       <mobile-speak-msg v-if="chatMsg.msgSource === ChatMsgSource.Speak" />
-      <!-- 红包消息 -->
-      <mobile-redpaper-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
-      <!-- 红包领取消息 -->
-      <mobile-redpaper-receive-msg
-        v-else-if="chatMsg.msgSource === ChatMsgSource.RedpaperReceive"
-      />
       <!-- 自定义消息（服务端） -->
       <mobile-customer-msg v-else-if="chatMsg.msgSource === ChatMsgSource.CustomerMessage" />
       <!-- 自定义消息(客户端) -->
@@ -53,12 +55,16 @@ import MobileImageMsg from './image-msg/mobile-image-msg.vue';
 import MobileMotivationLikeMsg from './motivation-like-msg/mobile-motivation-like-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const props = defineProps(chatMsgItemProps());
 
 const { showMsgTime, chatMsg, msgTimeText, msgVisible } = useChatMsgItem({
   props,
 });
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">

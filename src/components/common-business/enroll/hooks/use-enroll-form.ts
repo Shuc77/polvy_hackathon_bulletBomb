@@ -2,7 +2,6 @@
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
 import { useDialogTipsUtils } from '@/components/common-base/dialog/use-dialog-tips';
 import { toast } from '@/hooks/components/use-toast';
 import { getWatchCore } from '@/core/watch-sdk';
@@ -16,10 +15,11 @@ import {
   EnrollFormContent,
   SubmitEnrollError,
 } from '@polyv/live-watch-sdk';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useCommonStore } from '@/store/use-common-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { useEnrollSms } from './use-enroll-sms';
 
 interface EnrollBasicFormData {
   /** 验证的手机号 */
@@ -58,6 +58,8 @@ export const enrollFormEmits = () => ({
 export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }) => {
   const { emit } = options;
 
+  const { imageVerifyInputRef, imageVerifyInputEnabled, smsValidType } = useEnrollSms();
+
   const watchAppStore = useWatchAppStore();
   const enrollStore = useEnrollStore();
   const commonStore = useCommonStore();
@@ -82,8 +84,6 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
 
     return data;
   }
-
-  const imageVerifyInputRef = ref<ImageVerifyInputInstance>();
 
   /** 填写表单对象 */
   const formData = reactive<EnrollBasicFormData & EnrollValFormData>({
@@ -316,6 +316,8 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
     EnrollFieldType,
     EnrollAuthType,
     imageVerifyInputRef,
+    smsValidType,
+    imageVerifyInputEnabled,
     formData,
     formRules,
     onPhoneNumberChange,

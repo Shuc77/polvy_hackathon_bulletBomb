@@ -14,7 +14,7 @@
           {{ convertReceiveDate(record.receiveTime) }}
         </p>
       </div>
-      <p class="c-mobile-redpack-receive-record__item-amount">
+      <p class="c-mobile-redpack-receive-record__item-amount pws-mobile-withdraw-highlight">
         +{{ convertAmount(record.amount) }}
       </p>
     </li>

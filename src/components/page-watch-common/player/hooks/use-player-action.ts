@@ -40,6 +40,15 @@ export const usePlayerAction = () => {
     getWatchCore().player.pause();
   }
 
+  /** 停止拉流 */
+  function toStop(): void {
+    if (isNotAllowAction()) {
+      return;
+    }
+
+    getWatchCore().player.stop();
+  }
+
   /** 如果当前是暂停则调用播放 */
   function toTryPlay() {
     if (playerStore.playStatus === PlayStatus.Pause) {
@@ -242,6 +251,7 @@ export const usePlayerAction = () => {
   return {
     toPlay,
     toPause,
+    toStop,
     toTogglePlay,
     toRefresh,
     toChangeVolume,

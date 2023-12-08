@@ -40,6 +40,8 @@ export interface InteractiveEntranceData {
 }
 
 export interface InteractReceiveStoreState {
+  /** 互动 SDK 加载完成，注意不一定加载成功 */
+  iarSdkLoaded: Ref<boolean>;
   /** 互动设置信息 */
   interactSetting: Ref<InteractSetting>;
   /** 互动功能是否全屏处理 */
@@ -103,6 +105,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const layoutStore = useLayoutStore();
     const themeStore = useThemeStore();
     const viewerStore = useViewerStore();
+
+    /** 互动 SDK 加载完成，注意不一定加载成功 */
+    const iarSdkLoaded = ref(false);
 
     /** 互动设置信息 */
     const interactSetting = ref<InteractSetting>({
@@ -268,6 +273,8 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     });
 
     return {
+      iarSdkLoaded,
+
       interactSetting,
       syncInteractStore,
 

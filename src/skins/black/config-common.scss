@@ -3,6 +3,13 @@ $--skin-type: 'black';
 
 // 主题色
 $--skin-primary-color: #3082FE;
+$--skin-main-highlight-text-color: #5394f6;
+
+@if map-has-key($--skin-portrait, 'skin-type') {
+  $--skin-primary-color: map-get($--skin-portrait, 'primary-color');
+  $--skin-main-highlight-text-color: map-get($--skin-portrait, 'main-highlight-text-color');
+}
+
 // 次要主题色
 $--skin-sub-primary-color: #498CF1;
 
@@ -48,7 +55,7 @@ $--skin-basic-configs: (
   // 正文字体色
   'main-text-color': #adadc0,
   // 正文高亮字体色
-  'main-highlight-text-color': #5394f6,
+  'main-highlight-text-color': $--skin-main-highlight-text-color,
   // 描述字体色
   'describe-text-color': #adadc0,
   // 禁用字体色

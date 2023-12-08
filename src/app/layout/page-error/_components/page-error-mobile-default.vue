@@ -30,7 +30,10 @@
           'c-page-error-mobile-default__img-not-found': isNotFoundError || isWorkWechatError,
         }"
       ></div>
-      <h1 class="c-page-error-mobile-default__title">
+      <h1
+        v-if="pageError.title"
+        class="c-page-error-mobile-default__title"
+      >
         {{ pageError.title }}
       </h1>
       <p

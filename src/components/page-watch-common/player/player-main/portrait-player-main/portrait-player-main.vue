@@ -5,6 +5,7 @@
     :class="{
       'c-portrait-player-main--none-live': noneLiveVisible,
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
+      'c-portrait-player-main--hide': isConnectMicing,
     }"
   >
     <div
@@ -53,11 +54,13 @@ import PlayerPlayButton from '@/components/page-watch-common/player/common/playe
 import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
 import { useResolutionSize } from '../../hooks/use-resolution-size';
 import { usePortraitClickPlayer } from './_hooks/use-portrait-click-player';
+import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { usePortraitPlayerSize } from './use-portrait-player-size';
 import { computed, unref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
@@ -89,6 +92,8 @@ const { normalPlayButtonVisible, noPauseWhenLive } = usePlayerControl();
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
+const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
+
 usePortraitClickPlayer();
 
 useResolutionSize({
@@ -107,27 +112,41 @@ const allPlayerContainerStyle = computed<CSSProperties>(() => {
     resolutionProportion = resolutionHeight.value / resolutionWidth.value;
   }
 
-  /**
-   * 条件：
-   * 客户端推流
-   * 显示了文档
-   * 流比例超过 4:3（高：宽）
-   */
-  if (
-    resolutionProportion &&
-    resolutionProportion > 1.3 &&
-    unref(portraitDocWrapHeight) > 0 &&
-    channelStore.liveStatus === LiveStatus.Live &&
-    channelStore.currentStreamType === StreamType.Client
-  ) {
-    style.marginTop = `-${unref(portraitDocWrapHeight) * (2 / 3)}px`;
+  // 流比例超过 4:3（高：宽）
+  const resolutionRule = resolutionProportion && resolutionProportion > 1.3;
+  // 客户端推流或者处于回放状态
+  const liveStatusRule =
+    (channelStore.liveStatus === LiveStatus.Live &&
+      channelStore.currentStreamType === StreamType.Client) ||
+    channelStore.liveStatus === LiveStatus.Playback;
+  // 显示了文档
+  const docRule = unref(portraitDocWrapHeight) > 0;
+
+  // 规则成立时，需要向上移动，才能让画面展示得比较好，247/288 是设计方案如此
+  if (resolutionRule && liveStatusRule && docRule) {
+    style.marginTop = `-${unref(portraitDocWrapHeight) * (247 / 288)}px`;
   }
 
   return style;
 });
 
 const { toggleFullscreen, supportFullscreen } = useFullscreen(() => {
-  return playerContainer.value?.querySelector('video') as FullscreenElement;
+  const videos =
+    playerContainer.value?.querySelectorAll('video') || ([] as unknown as HTMLElement[]);
+
+  let fullscreenElem: HTMLElement | undefined;
+  /**
+   * 由于低延迟 FLV 下会出现 2 个 video 标签
+   * 多余的 video 会设置 display:none;
+   * 这里优先使用显示中的 video 标签进行全屏
+   */
+  videos.forEach(elem => {
+    if (elem.clientWidth && elem.clientHeight) {
+      fullscreenElem = elem;
+    }
+  });
+
+  return fullscreenElem as FullscreenElement;
 });
 
 useEventBusListener(appEvents.portrait.PlayerSystemFullscreen, () => {
@@ -143,6 +162,8 @@ useEventBusListener(appEvents.portrait.PlayerSystemFullscreen, () => {
     }
   }
 });
+
+useConnectMicing();
 </script>
 
 <style lang="scss">
@@ -152,6 +173,15 @@ useEventBusListener(appEvents.portrait.PlayerSystemFullscreen, () => {
   position: relative;
   width: 100%;
   height: 100%;
+
+  &.c-portrait-player-main--hide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none;
+    visibility: hidden;
+  }
 }
 
 .c-portrait-player-main__container-wrap {

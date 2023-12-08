@@ -2,12 +2,12 @@
   <div
     v-show="mobileChatInputFixedVisible"
     ref="wrapRef"
-    class="c-mobile-chat-inputcontroller-fixed"
+    class="c-mobile-chat-input-controller-fixed"
   >
     <mobile-chat-input-controller
       ref="inputInstance"
       is-pureness
-      is-allway-active
+      is-alway-active
     />
   </div>
 </template>
@@ -51,7 +51,7 @@ useClickOutside(wrapRef, () => {
 </script>
 
 <style lang="scss">
-.c-mobile-chat-inputcontroller-fixed {
+.c-mobile-chat-input-controller-fixed {
   position: fixed;
   bottom: 0;
   left: 0;

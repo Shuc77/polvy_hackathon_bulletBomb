@@ -10,9 +10,15 @@
         <div class="c-portrait-product-list__title">
           <mobile-icon-product class="c-portrait-product-list__title__icon" />
           <span>
-            共
-            <span class="c-product__title__number"> {{ goodTotal }} </span>
-            {{ recruitmentEnabled ? '个职位' : '件商品' }}
+            {{ $lang('interact.product.list.title.total') }}
+            <span class="c-product__title__number pws-portrait-iar-product-title-number">
+              {{ goodTotal }}
+            </span>
+            {{
+              recruitmentEnabled
+                ? $lang('interact.product.list.title.totalRecruitment')
+                : $lang('interact.product.list.title.totalProduct')
+            }}
           </span>
         </div>
       </template>
@@ -44,7 +50,7 @@
       v-if="recruitmentEnabled"
       :title="jobDescLabel"
       :visible.sync="goodDetailVisible"
-      :theme="PopupTheme.Portrait"
+      :theme="PopupTheme.FollowPageSkin"
       :mask-opacity="0"
       backable
       content-percent-height
@@ -71,7 +77,6 @@
           >
             <template #default="{ buttonText, disabled }">
               <normal-button
-                :type="ButtonType.Portrait"
                 :size="ButtonSize.Medium"
                 block
                 :text="buttonText"
@@ -86,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { ref, onBeforeMount, onBeforeUnmount } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
@@ -157,7 +162,7 @@ onBeforeUnmount(() => {
   }
 
   .c-product__title__number {
-    color: $--color-primary-portrait;
+    color: #ffa611;
   }
 }
 

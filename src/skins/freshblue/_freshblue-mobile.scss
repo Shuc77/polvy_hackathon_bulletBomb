@@ -1,4 +1,13 @@
 @import '../_common/basic-mobile-style.scss';
-@import './config.scss';
 
+// 加载配置
+@import '../_common/functions.scss';
+@import './config-common.scss';
+@import './config-pc.scss';
+@import './config-mobile.scss';
+@import './config-iar.scss';
+
+$--skin-configs: generate-skin-setup-configs();
+
+// 生成样式
 @include generate-skin-basic-mobile-style($--skin-configs);

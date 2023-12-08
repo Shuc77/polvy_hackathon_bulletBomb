@@ -50,7 +50,7 @@
           :name="TAB_NAME_TUWEN_LIVE"
           lazy-load
         >
-          <pc-tuwen-live />
+          <pc-tuwen-live v-if="iarSdkLoaded" />
         </pc-normal-tab-pane>
 
         <!-- 推广外链 -->
@@ -95,6 +95,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, unref, onMounted, ref, watch } from 'vue';
+
 import {
   TAB_NAME_PLAYBACK,
   TAB_NAME_TUWEN_LIVE,
@@ -109,22 +111,24 @@ import PcPromoteExternalLink from '@/components/page-watch-common/promote-extern
 import PcPlaybackList from '@/components/page-watch-common/playback-list/pc-playback-list/pc-playback-list.vue';
 import PcMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-portrait.vue';
 import PcSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/pc-seat-table.vue';
+import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
 
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { ChannelMenuItem, ChannelMenuType, LiveStatus } from '@polyv/live-watch-sdk';
-import { computed, unref, onMounted, ref, watch } from 'vue';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { randomStr } from '@utils-ts/string';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+
+import { randomStr } from '@utils-ts/string';
 import { paramGetter } from '@/hooks/core/use-query-params';
-import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 const { pcBottomTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 底部菜单栏列表 */
 const bottomMenuList = computed<ChannelMenuItem[]>(() => {

@@ -172,7 +172,7 @@ onBeforeUnmount(() => {
   position: absolute;
   bottom: 150px;
   left: 10%;
-  z-index: 9;
+  z-index: 7;
   width: 80%;
   font-size: v-bind(fontsize);
   line-height: 1.5;

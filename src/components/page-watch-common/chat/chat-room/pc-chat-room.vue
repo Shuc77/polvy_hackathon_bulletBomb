@@ -5,7 +5,7 @@
     <div class="c-pc-chat-room__topic">
       <!-- 置顶公告 -->
       <pc-announcement-top
-        v-if="announcementFunctionVisible"
+        v-if="announcementFunctionVisible && iarSdkLoaded"
         class="c-pc-chat-room__topic__announcement"
       />
 
@@ -32,7 +32,7 @@
       <pc-chat-msg-list />
 
       <!-- 右下角挂件 -->
-      <pc-chat-room-pendant />
+      <pc-chat-room-pendant v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
       <!-- 打赏 svga 特效 -->
       <pc-donate-svga-animation v-if="donateAnimationVisible" />
@@ -45,7 +45,7 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <pc-interactive-entrance />
+    <pc-interactive-entrance v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 消息引用 -->
     <pc-chat-msg-quote />
@@ -74,6 +74,7 @@ import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
 import PcChatMsgReplayTips from '../chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -86,7 +87,10 @@ const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatS
 
 const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
-const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { announcementFunctionVisible, iarSdkLoaded } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 </script>

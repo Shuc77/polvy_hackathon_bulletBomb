@@ -8,6 +8,8 @@ import { computed } from 'vue';
 export const richTextRenderProps = () => ({
   /** html 富文本内容 */
   htmlContent: PropUtils.string.def(''),
+  /** 是否跟随页面多皮肤，默认 true */
+  followPageSkin: PropUtils.bool.def(true),
 });
 
 export const useRichTextRender = (options: { props: VueProps<typeof richTextRenderProps> }) => {

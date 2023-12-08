@@ -6,6 +6,7 @@ import {
   ChannelAudioMode,
   ChannelScene,
   LiveStatus,
+  SmsConfig,
   StreamType,
   TeacherInfoType,
 } from '@polyv/live-watch-sdk';
@@ -43,6 +44,8 @@ export interface ChannelStoreState {
   teacherInfo: Ref<TeacherInfoType | undefined>;
   /** 当前直播推流类型 */
   currentStreamType: Ref<StreamType | undefined>;
+  /** 短信功能全局配置 */
+  smsConfig: Ref<SmsConfig>;
 }
 
 export interface ChannelStoreActions {
@@ -108,6 +111,11 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 讲师信息 */
   const teacherInfo = ref<TeacherInfoType>();
 
+  /** 短信功能全局配置 */
+  const smsConfig = ref<SmsConfig>({
+    smsImageCaptchaEnabled: true,
+  });
+
   /** 同步频道 Store 数据 */
   function syncChannelStore(): void {
     const watchCore = getWatchCore();
@@ -121,6 +129,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
     audioMode.value = watchCore.channel.getAudioMode();
     audioModeSwitchEnabled.value = watchCore.channel.getAudioModeSwitchEnabled();
+
+    smsConfig.value = watchCore.sms.getSmsConfig();
   }
 
   return {
@@ -139,6 +149,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isCustomLiveAudioMode,
     teacherInfo,
     currentStreamType,
+
+    smsConfig,
 
     syncChannelStore,
   };

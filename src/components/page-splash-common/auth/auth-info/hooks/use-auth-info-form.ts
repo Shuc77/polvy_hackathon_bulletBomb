@@ -1,4 +1,4 @@
-import { computed, reactive, ref, unref } from 'vue';
+import { computed, reactive, unref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { getWatchCore } from '@/core/watch-sdk';
 import {
@@ -15,7 +15,6 @@ import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 
 import { useAuthStore } from '@/store/use-auth-store';
 
-import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
 import { SelectOptionItem } from '@/components/common-base/form/form-select/types/form-select-types';
 
 import { toast } from '@/hooks/components/use-toast';
@@ -26,6 +25,7 @@ import {
   useAuthProtocol,
 } from '@/components/page-splash-common/auth/hooks/use-auth-common';
 import { useAuthInfoSetting } from './use-auth-info-setting';
+import { useAuthInfoSms } from './use-auth-info-sms';
 
 export const authInfoFormEmits = () => ({
   /** 关闭窗口 */
@@ -62,10 +62,10 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
 
   const { authInfoFields } = storeToRefs(authStore);
 
+  const { imageVerifyInputRef, imageVerifyInputEnabled, smsValidType } = useAuthInfoSms();
+
   /** 提示信息 */
   const infoDesc = computed(() => authItem.infoDesc);
-
-  const imageVerifyInputRef = ref<ImageVerifyInputInstance>();
 
   /** 格式化下拉选项 */
   function formatSelectOptions(options?: string): SelectOptionItem[] {
@@ -265,6 +265,8 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
     infoDesc,
     authInfoFields,
     imageVerifyInputRef,
+    imageVerifyInputEnabled,
+    smsValidType,
     AuthInfoType,
     fieldPrefix,
     formData,

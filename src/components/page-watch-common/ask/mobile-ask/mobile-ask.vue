@@ -14,6 +14,7 @@
     <div class="c-mobile-ask__input">
       <mobile-msg-input-wrap
         ref="msgInputWrapRef"
+        :face-emotion-enabled="chatSetting.faceEmotionEnabled"
         :image-emotion-enabled="false"
         :placeholder="askInputPlaceholder"
         :disabled-input="inputDisabled"
@@ -40,11 +41,14 @@ import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { useAskStore } from '@/store/use-ask-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { useChatStore } from '@/store/use-chat-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
 const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 const { checkNeedRealNameAuth } = useViewerStore();
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const { askMsgRenderList, getAskMsgList, inputDisabled } = useAsk({
   askMsgListRef,
@@ -57,6 +61,8 @@ const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = 
 
 <style lang="scss">
 .c-mobile-ask {
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   height: 100%;

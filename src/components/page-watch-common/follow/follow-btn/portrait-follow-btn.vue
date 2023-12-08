@@ -6,7 +6,6 @@
       class="c-portrait-follow-btn__content"
       :text="followEntrance"
       :size="ButtonSize.XMini"
-      :type="ButtonType.Portrait"
       @click="onClickFollowBtn"
     />
 
@@ -18,7 +17,7 @@
 <script setup lang="ts">
 import PortraitFollowLayer from '../follow-layer/portrait-follow-layer.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { useFollowBtn } from '@/components/page-watch-common/follow/hooks/use-follow-btn';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 

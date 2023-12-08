@@ -127,6 +127,7 @@ const { currentType, switchEmotionTab, onClickFace, onClickImage, onClickDelete,
   flex-shrink: 0;
   width: 50%;
   height: 200px;
+  max-height: 20vh;
   padding: 0 16px;
   overflow-y: auto;
 }

@@ -15,7 +15,7 @@
     :full-screen-selector="PC_PLAYER_FULL_SCREEN_SELECTOR"
     :selector="PC_MAIN_PLAYER_SELECTOR"
     :init-to-player="true"
-    :bottom="150"
+    :bottom="106"
   />
 </template>
 

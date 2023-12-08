@@ -1,9 +1,6 @@
 <!-- @file PC 端聊天室右下角挂件 -->
 <template>
-  <div
-    class="c-pc-chat-room-pendant"
-    v-if="!isPlaybackWatchUrl"
-  >
+  <div class="c-pc-chat-room-pendant">
     <!-- 卡片推送 -->
     <pc-push-card class="c-pc-chat-room-pendant__item" />
 
@@ -40,6 +37,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, unref } from 'vue';
+
 import PcEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import PcPushCard from '@/components/page-watch-common/interactive-receive/push-card/pc-push-card.vue';
 import PcRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
@@ -50,15 +49,11 @@ import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.v
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
 import PcChatLike from '../chat-like/pc-chat-like.vue';
 
-import { useChatStore } from '@/store/use-chat-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { computed, unref } from 'vue';
+import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   pushCardPendantVisible,

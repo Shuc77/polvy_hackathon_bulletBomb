@@ -15,9 +15,10 @@
       <li
         v-for="(item, index) in rateSettingList"
         :key="index"
-        class="c-portrait-player-control__select-item"
+        class="c-portrait-player-control__select-item pws-portrait-player-control__select-item"
         :class="{
-          'c-portrait-player-control__select-item--active': item.active,
+          'c-portrait-player-control__select-item--active pws-portrait-player-control__select-item--activity':
+            item.active,
         }"
         @click="onClickItem(item.value)"
       >

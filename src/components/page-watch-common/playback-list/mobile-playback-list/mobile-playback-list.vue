@@ -41,7 +41,7 @@
           {{ item.title }}
         </p>
         <p
-          v-if="item.startTime"
+          v-if="item.startTime && showStartTime"
           class="c-mobile-playback-list__item__start-time pws-mobile-playback-list-time"
         >
           {{ formatDate(item.startTime, DATE_FORMAT_COMPLETE) }}
@@ -49,13 +49,13 @@
       </div>
       <div
         v-if="isLoading"
-        class="c-mobile-playback-list__tips"
+        class="c-mobile-playback-list__tips pws-mobile-playback-list-tips"
       >
         <list-loading />
       </div>
       <div
         v-if="isNoMore"
-        class="c-mobile-playback-list__tips"
+        class="c-mobile-playback-list__tips pws-mobile-playback-list-tips"
       >
         {{ $lang('playback.no.more') }}
       </div>
@@ -76,6 +76,7 @@ import { formatDuration } from '@/assets/utils/date-time';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlaybackList } from '../use-playback-list';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
 const playbackStore = usePlaybackStore();
 const {
@@ -85,6 +86,10 @@ const {
   isLoading,
   isNoMore,
 } = storeDefinitionToRefs(usePlaybackStore);
+
+defineProps({
+  showStartTime: PropUtils.bool.def(true),
+});
 
 const { onClickPlaybackItem } = usePlaybackList();
 
@@ -124,6 +129,7 @@ const debounceHandlePlaybackListScroll = debounce(handlePlaybackListScroll, 300)
   width: 100%;
   margin-bottom: 12px;
   overflow: hidden;
+  border-radius: 10px;
 
   &::before {
     display: block;

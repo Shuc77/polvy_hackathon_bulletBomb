@@ -1,6 +1,9 @@
 <!-- @file PC 端播放器 -->
 <template>
-  <div class="c-pc-player-main">
+  <div
+    class="c-pc-player-main"
+    :class="{ 'c-pc-player-main__hide': isConnectMicing }"
+  >
     <!-- 播放器渲染容器 -->
     <div
       ref="playerContainer"
@@ -34,13 +37,17 @@ import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitl
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { useConnectMicing } from '../../hooks/use-connect-micing';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { translate } from '@/assets/lang';
 
 const { isLowLatency, logoSetting } = storeDefinitionToRefs(usePlayerStore);
+
+const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 const channelStore = useChannelStore();
 
@@ -67,6 +74,8 @@ const { noPauseWhenLive } = usePlayerControl();
 usePlayerKeyboard(playerContainer);
 
 const { toTogglePlayLimitByStopLivePlay } = usePlayerAction();
+
+useConnectMicing();
 </script>
 
 <style lang="scss">
@@ -76,6 +85,15 @@ const { toTogglePlayLimitByStopLivePlay } = usePlayerAction();
   position: relative;
   width: 100%;
   height: 100%;
+
+  &.c-pc-player-main__hide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 1px;
+    opacity: 0;
+  }
 }
 
 .c-pc-player-main__container {

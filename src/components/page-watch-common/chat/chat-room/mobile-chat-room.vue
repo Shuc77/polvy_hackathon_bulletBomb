@@ -10,7 +10,7 @@
     <div class="c-mobile-chat-room__topic">
       <!-- 置顶公告 -->
       <mobile-announcement-top
-        v-if="announcementFunctionVisible"
+        v-if="announcementFunctionVisible && iarSdkLoaded"
         class="c-mobile-chat-room__topic__announcement"
       />
 
@@ -37,7 +37,7 @@
       <mobile-chat-msg-list />
 
       <!-- 右下角挂件 -->
-      <mobile-chat-room-pendant />
+      <mobile-chat-room-pendant v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
       <!-- 打赏 svga 特效 -->
       <mobile-donate-svga-animation v-if="donateAnimationVisible" />
@@ -50,7 +50,7 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <mobile-interactive-entrance />
+    <mobile-interactive-entrance v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 底部输入框 -->
     <mobile-chat-input-controller v-if="chatInputControllerEnable" />
@@ -74,6 +74,7 @@ import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant
 import MobileChatWelcomeTips from '../chat-welcome/chat-welcome-tips.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -87,7 +88,10 @@ const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatS
 
 const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
-const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { iarSdkLoaded, announcementFunctionVisible } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
 
@@ -97,6 +101,7 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 <style lang="scss">
 .c-mobile-chat-room {
   position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   height: 100%;

@@ -20,13 +20,11 @@
       v-if="showLiveBookingButton"
       class="c-portrait-count-down-layout__live-booking"
       button-position="corner"
-      :button-type="ButtonType.Portrait"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ButtonType } from '@/components/common-base/normal-button/types';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import MobileLiveCountDown from '@/components/common-business/live-count-down/mobile-live-count-down.vue';

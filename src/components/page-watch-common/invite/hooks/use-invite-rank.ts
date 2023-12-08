@@ -8,15 +8,13 @@ import { useInviteStore } from '@/store/use-invite-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 
 import { translate } from '@/assets/lang';
-import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
+import { isWeixin } from '@/assets/utils/browser';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import {
   InviteRankCurrentViewer,
   InviteRankItem,
   InviteRankRequestFailReason,
 } from '@polyv/live-watch-sdk';
-
-const isGeneralWeixin = isWeixin && !isWorkWeixin;
 
 interface TopInviteRankItem extends InviteRankItem {
   /** 是否是造出来的数据 */
@@ -31,7 +29,7 @@ export const useInviteRankHook = () => {
   const resRankList = ref<InviteRankItem[]>([]);
   /** 当前可见的邀请榜列表，除去前三名 */
   const rankList = ref<InviteRankItem[]>([]);
-  /** 邀请榜前三名 */
+  /** 邀请榜前三名(包含假数据) */
   const topThreeRankItems = ref<TopInviteRankItem[]>(
     new Array(3).fill(undefined).map<TopInviteRankItem>(() => ({
       avatar: '',
@@ -41,9 +39,14 @@ export const useInviteRankHook = () => {
       isFake: true,
     })),
   );
-  /** (真实数据)邀请榜前三名 */
+  /** 邀请榜前三名(真实数据) */
   const realTopThreeRankItems = computed<InviteRankItem[]>(() => {
     return topThreeRankItems.value.filter(item => !item.isFake);
+  });
+
+  /** 是否存在邀请榜数据 */
+  const isExistInviteRankData = computed(() => {
+    return realTopThreeRankItems.value.length > 0;
   });
 
   /** 接口获取的当前用户邀请数据 */
@@ -56,7 +59,7 @@ export const useInviteRankHook = () => {
 
   /** 是否显示底部信息 */
   const showBottomInfo = computed(() => {
-    return isGeneralWeixin && currentRankInfo.value && invitePosterEnabled.value;
+    return isWeixin && currentRankInfo.value && invitePosterEnabled.value;
   });
 
   /** 当前用户的排名文案 */
@@ -89,7 +92,7 @@ export const useInviteRankHook = () => {
     isLoading.value = false;
     isNoMore.value = false;
     await getRankList(true);
-    if (isGeneralWeixin) {
+    if (isWeixin) {
       await getCurrentRankInfo();
     }
   }
@@ -184,6 +187,7 @@ export const useInviteRankHook = () => {
     rankList,
     topThreeRankItems,
     realTopThreeRankItems,
+    isExistInviteRankData,
     isLoading,
     isNoMore,
     isLoadFailed,

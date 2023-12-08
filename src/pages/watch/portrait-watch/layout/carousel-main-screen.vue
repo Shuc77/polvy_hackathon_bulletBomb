@@ -23,6 +23,7 @@
           />
           <!-- 互动二次入口 -->
           <portrait-interactive-entrance
+            v-if="!isPlaybackWatchUrl && iarSdkLoaded"
             class="c-portrait-carousel-main-screen__top-left__item__children"
           />
         </div>
@@ -39,7 +40,7 @@
       <div class="c-portrait-carousel-main-screen__top-right">
         <!-- 置顶公告 -->
         <portrait-announcement-entrance
-          v-if="announcementFunctionVisible"
+          v-if="announcementFunctionVisible && iarSdkLoaded"
           v-show="!portraitPlayerIsPageFullscreen && hasBulletin"
           class="c-portrait-carousel-main-screen__top-right__item"
         />
@@ -91,12 +92,12 @@
             :slide-index.sync="messageCarouselActiveIndex"
           >
             <!-- 聊天消息区 -->
-            <plv-carousel-item v-if="chatRoomVisible">
-              <portrait-chat-msg-list />
+            <plv-carousel-item>
+              <portrait-chat-msg-list v-if="chatRoomVisible" />
             </plv-carousel-item>
 
             <!-- 提问消息区 -->
-            <plv-carousel-item v-if="askMenuData.visible">
+            <plv-carousel-item v-if="askMenuData.visible && watchPageChatConnected">
               <portrait-ask />
             </plv-carousel-item>
           </plv-carousel>
@@ -122,7 +123,7 @@
       <!-- 右侧挂件 -->
       <div class="c-portrait-carousel-main-screen__bottom__pendant">
         <portrait-chat-room-pendant
-          v-if="!isPlaybackWatchUrl"
+          v-if="!isPlaybackWatchUrl && iarSdkLoaded"
           v-show="!portraitPlayerIsPageFullscreen"
         />
       </div>
@@ -152,7 +153,7 @@
           />
           <!-- 聊天室关闭提示 -->
           <portrait-chat-close-tips
-            v-if="!chatRoomVisible && !chatExited"
+            v-if="portraitChatCloseTipsVisible"
             class="c-portrait-carousel-main-screen__input-wrap-item"
           />
           <!-- 发起转播频道被踢出提示 -->
@@ -174,7 +175,7 @@
         <div class="c-portrait-carousel-main-screen__bottom__right-auto">
           <!-- 商品库入口 -->
           <portrait-product-list-entrance
-            v-if="interactSetting.productEnabled"
+            v-if="interactSetting.productEnabled && !isPlaybackWatchUrl && iarSdkLoaded"
             class="c-portrait-carousel-main-screen__bottom__button"
           />
 
@@ -228,12 +229,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 
 import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
 import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
-import PortraitAsk from '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue';
 import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
 import PortraitChatErrorTips from '@/components/page-watch-common/chat/chat-error-tips/portrait-chat-error-tips.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
@@ -272,7 +272,13 @@ import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrai
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const PortraitAsk = defineAsyncComponent(() => {
+  return import(
+    /* webpackChunkName: "portrait-ask" */ '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue'
+  );
+});
+
+const { isPlaybackWatchUrl, watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
@@ -289,18 +295,7 @@ const { chatInputControllerEnable, chatRoomVisible, chatExited } =
 const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } =
   storeDefinitionToRefs(usePlaybackStore);
 
-/**
- * 竖屏聊天输入框是否可见
- */
-const portraitChatInputVisible = computed(() => {
-  if (askMenuData.value.visible) {
-    return true;
-  }
-  if (chatReplayEnabled.value) return false;
-  if (!chatInputControllerEnable.value) return false;
-
-  return chatRoomVisible.value;
-});
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
@@ -311,6 +306,34 @@ const {
   portraitPlayerIsPageFullscreen,
   portraitMessageInputVisible,
 } = storeDefinitionToRefs(usePortraitLayoutStore);
+
+/**
+ * 竖屏聊天输入框是否可见
+ */
+const portraitChatInputVisible = computed(() => {
+  if (
+    askMenuData.value.visible &&
+    portraitMessageTabCurrentName.value === PortraitChatTabName.Ask
+  ) {
+    return true;
+  }
+
+  if (chatReplayEnabled.value) return false;
+  if (!chatInputControllerEnable.value) return false;
+
+  return chatRoomVisible.value;
+});
+
+const portraitChatCloseTipsVisible = computed(() => {
+  if (
+    askMenuData.value.visible &&
+    portraitMessageTabCurrentName.value === PortraitChatTabName.Ask
+  ) {
+    return false;
+  }
+
+  return !chatRoomVisible.value && !chatExited.value;
+});
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 

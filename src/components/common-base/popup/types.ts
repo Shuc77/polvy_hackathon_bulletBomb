@@ -8,6 +8,8 @@ export enum PopupTheme {
   Portrait = 'portrait',
   /** 竖屏主题-白色主题 */
   PortraitLight = 'portrait-light',
+  /** 跟随页面皮肤 */
+  FollowPageSkin = 'follow-page-skin',
 }
 
 export interface PopupInstance {

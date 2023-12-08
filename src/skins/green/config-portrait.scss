@@ -1,0 +1,15 @@
+@import './config-common.scss';
+
+$--skin-portrait-configs: (
+  // 播放器配置选择项
+  'portrait-player-control-select-item:text-color': map.get($--skin-basic-configs, 'panel-text-color'),
+  'portrait-player-control-select-item:border-color': map.get($--skin-basic-configs, 'panel-text-color'),
+  'portrait-player-control-select-item--activity:text-color': map.get($--skin-basic-configs, 'primary-color'),
+  'portrait-player-control-select-item--activity:border-color': map.get($--skin-basic-configs, 'primary-color'),
+
+  // 回放列表
+  'portrait-playback-list-title:text-color': map.get($--skin-basic-configs, 'panel-text-color'),
+
+  // 回放章节
+  'portrait-chapter-item:text-color':map.get($--skin-basic-configs, 'panel-text-color'),
+);

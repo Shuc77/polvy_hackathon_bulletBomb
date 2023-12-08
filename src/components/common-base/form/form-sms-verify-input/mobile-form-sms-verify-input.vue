@@ -4,7 +4,7 @@
     <mobile-form-input
       v-bind="attrs"
       :placeholder="inputPlaceholder"
-      :maxlength="5"
+      :maxlength="4"
       :clearabled="false"
       :value="value"
       @input="onInputChange"

@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import PcAnnouncementDialog from './announcement/pc-announcement-dialog.vue';
 import PcAnswerCardDialog from './answer-card/pc-answer-card-dialog.vue';
 import PcQuickAnswerCardDialog from './answer-card/pc-quick-answer-card-dialog.vue';
@@ -46,8 +47,10 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
-</script>
 
-<style lang="scss">
-@import '@/components/page-watch-common/interactive-receive/_style/cover-pc-interact-receive.scss';
-</style>
+onMounted(() => {
+  import(
+    '@/components/page-watch-common/interactive-receive/_style/cover-pc-interact-receive.scss'
+  );
+});
+</script>

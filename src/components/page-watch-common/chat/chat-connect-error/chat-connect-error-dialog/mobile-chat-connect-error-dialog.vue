@@ -20,7 +20,6 @@
             class="c-mobile-chat-connect-error-dialog__btns__item"
             :text="$lang('base.confirm')"
             :size="ButtonSize.Small"
-            :type="isPortraitWatchLayout ? ButtonType.Portrait : ButtonType.Primary"
             @click="onConfirm"
           />
         </div>
@@ -33,16 +32,12 @@
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { ref } from 'vue';
 import { useChatConnectError } from '../use-chat-connect-error';
 
 const { connectErrorVisible, errorDialogContentText, onConfirm, onCancel } = useChatConnectError();
 
 const wrapRef = ref<HTMLDivElement>();
-
-const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
 useAppendTo(wrapRef);
 </script>
