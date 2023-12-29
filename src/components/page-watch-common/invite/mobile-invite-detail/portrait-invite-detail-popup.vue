@@ -25,7 +25,7 @@
       >
         <!-- 头像 -->
         <img
-          :src="item.avatar || DEFAULT_VIEWER_AVATAR"
+          :src="item.avatar || plvDefaultResource.defaultViewerAvatar"
           :alt="item.nickname"
           class="c-portrait-invite-detail-popup__content__list__item__avatar"
         />
@@ -44,12 +44,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useInviteDetail } from './use-invite-detail';
 import { formatDate } from '@polyv/utils/es/date';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useCommonStore } from '@/store/use-common-store';
+
+const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
 
 const {
   totalInviteDetailList,

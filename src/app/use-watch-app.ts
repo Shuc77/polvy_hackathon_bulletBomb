@@ -1,9 +1,8 @@
-import Vue, { onBeforeMount } from 'vue';
+import { onBeforeMount } from 'vue';
 
 import { getWatchCore, initWatchSdk } from '@/core/watch-sdk';
 
 import { useAuthSpecial } from '@/components/page-splash-common/auth/hooks/use-auth-special';
-import { useErrorCatch } from '@/hooks/core/use-error-catch';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { usePageSkin } from '@/skins/use-page-skin';
 import { useGlobalEventsEffect } from './_hooks/use-global-events-effect';
@@ -15,6 +14,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 import { translate } from '@/assets/lang';
 import { isMobile, isMockPc } from '@/assets/utils/browser';
+import { loadForceAutoplay } from '@/assets/utils/video/force-autoplay';
 
 import { PageErrorType } from '@/app/layout/page-error/page-error-type';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
@@ -22,21 +22,6 @@ import { getDefaultLang, convert2WatchSdkLang } from '@/store/use-lang-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useWeixinConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 import { useSaleInviteIntercept } from './_hooks/use-sale-invite-intercept';
-
-/** 错误日志记录 */
-const useErrorLogRecord = () => {
-  // const watchCore = getWatchCore();
-  const { windowErrorHandler, promiseErrorHandler, vueErrorHandler } = useErrorCatch(data => {
-    // watchCore.logger.error('watch-app', 'error-log-record', JSON.stringify(data));
-    console.log(data);
-  });
-
-  windowErrorHandler();
-  promiseErrorHandler();
-  Vue.config.errorHandler = (error, vm, info) => {
-    vueErrorHandler(error, vm, info);
-  };
-};
 
 /**
  * 拦截观看页应用初始化
@@ -91,6 +76,7 @@ const useInterceptWatchAppInit = (): boolean => {
  * @hook 观看页应用 hook
  */
 export function useWatchApp() {
+  // 设置浏览器标题和logo
   useBrowserTitle();
   useBrowserIcon();
 
@@ -206,9 +192,6 @@ export function useWatchApp() {
       return;
     }
 
-    // 错误日志记录
-    useErrorLogRecord();
-
     // 初始化完毕，设置渲染标识位
     watchAppStore.$patch({
       watchAppInited: true,
@@ -216,6 +199,9 @@ export function useWatchApp() {
 
     // 初始化多皮肤
     initPageSkin();
+
+    // 处理强制自动播放，pc不支持该逻辑
+    isMobile && loadForceAutoplay();
   }
 
   onBeforeMount(() => {

@@ -11,6 +11,8 @@ const path = require('path');
 
 /** @type {import('@vue/cli-service').ProjectOptions} */
 module.exports = {
+  crossorigin: 'anonymous', // @PLV-WARN 跨域处理
+
   pages: {
     index: {
       entry: path.resolve(__dirname, './src/main.ts'),

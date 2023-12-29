@@ -255,5 +255,13 @@
       color: map.get($--skin-configs, 'subtitle-item-line:text-color') !important;
       background: map.get($--skin-configs, 'subtitle-item-line:bg-color') !important;
     }
+
+    // -------- 弹幕边框 -------- //
+    .plv-player-module-danmu-node--self {
+      box-sizing: border-box;
+      padding: 4px 8px !important;
+      border: solid 1px $--skin-primary-color !important;
+      border-radius: 4px !important;
+    }
   }
 }

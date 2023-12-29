@@ -96,10 +96,10 @@ export const useCountDown = (options: {
     const surplusVal = unref(surplusTime);
 
     const fields: CountDownFieldItem[] = [
-      { field: 'days', title: 'DAY', unit: translate('unit.day') },
-      { field: 'hours', title: 'HOUR', unit: translate('unit.hour') },
-      { field: 'minutes', title: 'MIN', unit: translate('unit.minute') },
-      { field: 'seconds', title: 'SEC', unit: translate('unit.second') },
+      { field: 'days', title: translate('unit.dayTitle'), unit: translate('unit.day') },
+      { field: 'hours', title: translate('unit.hourTitle'), unit: translate('unit.hour') },
+      { field: 'minutes', title: translate('unit.minuteTitle'), unit: translate('unit.minute') },
+      { field: 'seconds', title: translate('unit.secondTitle'), unit: translate('unit.second') },
     ];
 
     fields.forEach(({ field, title, unit }) => {

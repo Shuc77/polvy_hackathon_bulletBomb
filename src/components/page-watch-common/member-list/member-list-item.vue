@@ -10,7 +10,7 @@
     <span class="c-member-list-item__avatar__wrap">
       <span
         class="c-member-list-item__avatar"
-        :style="{ backgroundImage: `url(${member.pic || DEFAULT_VIEWER_AVATAR})` }"
+        :style="{ backgroundImage: `url(${member.pic || plvDefaultResource.defaultViewerAvatar})` }"
       ></span>
     </span>
     <span class="c-member-list-item__nick g-singleline">
@@ -20,15 +20,17 @@
 </template>
 
 <script setup lang="ts">
-import { DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
 import { translate } from '@/assets/lang';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { getWatchCore } from '@/core/watch-sdk';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useCommonStore } from '@/store/use-common-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { onMounted, ref } from 'vue';
 import { MemberAdditionalGroupTypes, MemberInfo } from './use-member-list';
 
 const { translateNick } = useLangStore();
+const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
 
 const props = defineProps({
   member: PropUtils.objectType<MemberInfo>().def(),

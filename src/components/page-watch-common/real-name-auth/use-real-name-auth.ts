@@ -27,10 +27,9 @@ export const useRealNameAuth = () => {
   const userAgreement = computed(() => {
     /** 用户协议（中文版） */
     const userAgreementCn =
-      'https://polyv-doc.oss-cn-shenzhen.aliyuncs.com/basic/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.pdf';
+      'https://doc-oss.polyv.net/basic/%E7%94%A8%E6%88%B7%E5%8D%8F%E8%AE%AE.pdf';
     /** 用户协议（英文版） */
-    const userAgreementEn =
-      'https://polyv-doc.oss-cn-shenzhen.aliyuncs.com/basic/User%20Agreement.pdf';
+    const userAgreementEn = 'https://doc-oss.polyv.net/basic/User%20Agreement.pdf';
 
     const url = langStore.currentLang === LangType.Chinese ? userAgreementCn : userAgreementEn;
 
@@ -47,10 +46,9 @@ export const useRealNameAuth = () => {
   const policyAgreement = computed(() => {
     /** 隐私协议（中文版） */
     const policyAgreementCn =
-      'https://polyv-doc.oss-cn-shenzhen.aliyuncs.com/basic/%E9%9A%90%E7%A7%81%E6%94%BF%E7%AD%96.pdf';
+      'https://doc-oss.polyv.net/basic/%E9%9A%90%E7%A7%81%E6%94%BF%E7%AD%96.pdf';
     /** 隐私协议（英文版） */
-    const policyAgreementEn =
-      'https://polyv-doc.oss-cn-shenzhen.aliyuncs.com/basic/Privacy%20Policy.pdf';
+    const policyAgreementEn = 'https://doc-oss.polyv.net/basic/Privacy%20Policy.pdf';
 
     const url = langStore.currentLang === LangType.Chinese ? policyAgreementCn : policyAgreementEn;
 

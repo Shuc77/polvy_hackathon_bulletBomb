@@ -522,9 +522,13 @@ export const englishLang: LangConfig = {
   'share.weibo': 'Weibo',
 
   'unit.day': 'D',
+  'unit.dayTitle': 'DAY',
   'unit.hour': 'H',
+  'unit.hourTitle': 'HOUR',
   'unit.minute': 'M',
+  'unit.minuteTitle': 'MIN',
   'unit.second': 'S',
+  'unit.secondTitle': 'SEC',
 
   'watch.liveTime': 'Live start time',
   'watch.pvSuffix': 'views',

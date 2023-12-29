@@ -220,7 +220,7 @@
           :label="menu.name"
           :name="TAB_NAME_SUBTITLE"
         >
-          <mobile-subtitle />
+          <mobile-subtitle v-if="subtitleModuleSetuped" />
         </mobile-menu-tab-pane>
 
         <!-- AI助手答疑 -->
@@ -327,6 +327,7 @@ import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -345,6 +346,8 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { subtitleModuleSetuped } = storeDefinitionToRefs(useSubtitleStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {

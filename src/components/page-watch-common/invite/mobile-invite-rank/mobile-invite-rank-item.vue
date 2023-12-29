@@ -24,7 +24,7 @@
 
     <!-- 头像 -->
     <img
-      :src="item.avatar || DEFAULT_VIEWER_AVATAR"
+      :src="item.avatar || plvDefaultResource.defaultViewerAvatar"
       :alt="item.nickname"
       class="c-mobile-invite-rank__list__item__avatar"
     />
@@ -48,8 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import { InviteRankItem, DEFAULT_VIEWER_AVATAR } from '@polyv/live-watch-sdk';
+import { InviteRankItem } from '@polyv/live-watch-sdk';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { useCommonStore } from '@/store/use-common-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 defineProps({
   /** 邀请榜节点 */
@@ -59,6 +61,8 @@ defineProps({
   /** 是否为我自己 */
   isCurrent: PropUtils.bool.def(false),
 });
+
+const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
 </script>
 
 <style lang="scss">

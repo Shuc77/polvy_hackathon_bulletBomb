@@ -45,7 +45,11 @@ export const loadWorkWeixinLoginSdk = (): Promise<WwLoginCtor> => {
   if (!loadPromise) {
     loadPromise = new Promise<WwLoginCtor>((resolve, reject) => {
       (async () => {
-        await loadScript('//wwcdn.weixin.qq.com/node/wework/wwopen/js/wwLogin-1.2.7.js');
+        await loadScript('//wwcdn.weixin.qq.com/node/wework/wwopen/js/wwLogin-1.2.7.js', {
+          props: {
+            crossOrigin: 'anonymous',
+          },
+        });
 
         if (window.WwLogin) {
           resolve(window.WwLogin);

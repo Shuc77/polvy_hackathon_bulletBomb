@@ -30,7 +30,7 @@
         :key="item.id"
         class="c-player-subtitle-setting-section-check"
         :checked="mainReplaySubtitleShow"
-        @change="changeMainSubtitleShow"
+        @change="changeMainReplaySubtitleShow"
       >
         {{ item.name || $lang('subtitle.source') }}
       </plv-checkbox>
@@ -39,7 +39,7 @@
         :key="item.id"
         class="c-player-subtitle-setting-section-check"
         :checked="subReplaySubtitleShow"
-        @change="changeSubSubtitleShow"
+        @change="changeSubReplaySubtitleShow"
       >
         {{ item.name || $lang('subtitle.translate') }}
       </plv-checkbox>
@@ -70,8 +70,8 @@ const { replaySubtitleVisible, replaySubtitleList } = storeDefinitionToRefs(useP
 const {
   changeLocalUerSubtitlesEnable,
 
-  changeMainSubtitleShow,
-  changeSubSubtitleShow,
+  changeMainReplaySubtitleShow,
+  changeSubReplaySubtitleShow,
 } = useSubtitleStore();
 
 function changeSubtitleSwitch() {

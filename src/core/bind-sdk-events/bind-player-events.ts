@@ -5,11 +5,13 @@ import { toast } from '@/hooks/components/use-toast';
 import { usePlayerStore } from '@/store/use-player-store';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 export function bindPlayerModuleEvents(): void {
   const watchCore = getWatchCore();
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
+  const subtitleStore = useSubtitleStore();
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerInfoChange, () => {
     playerStore.syncPlayerInfo();
@@ -40,5 +42,9 @@ export function bindPlayerModuleEvents(): void {
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerMarqueeError, () => {
     toast.error(translate('player.marquee.checkError'));
+  });
+
+  watchCore.player.eventEmitter.on(PlayerEvents.PlayerSubtitleSwitched, ({ checked }) => {
+    subtitleStore.changeLocalUerSubtitlesEnable(checked);
   });
 }

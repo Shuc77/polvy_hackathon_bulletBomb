@@ -1,3 +1,11 @@
+/**
+ * @file 错误日志记录处理
+ *
+ * @PLV-WARN
+ * 从 v1.0.0 开始，保利威不再通过该文件去处理错误日志
+ * 保利威 SaaS 团队会注入 aegis 库来上报错误日志，需要注意，开源版本没有注入 aegis 库
+ */
+
 import { VueConstructor } from 'vue';
 
 type VueIns = InstanceType<VueConstructor>;

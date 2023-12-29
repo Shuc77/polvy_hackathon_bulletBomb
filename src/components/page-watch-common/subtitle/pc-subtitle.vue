@@ -1,3 +1,4 @@
+<!-- @file PC端实时字幕列表 -->
 <template>
   <div
     ref="subtitleScroll"
@@ -14,10 +15,10 @@
         />
       </div>
       <div
-        v-if="displayNumberLimitEnabled && displayNumber > 0"
+        v-if="subtitleDisplayNumberLimitEnabled && subtitleDisplayNumber > 0"
         class="c-pc-subtitle__limit"
       >
-        {{ $lang('subtitle.limit', { limit: String(displayNumber) }) }}
+        {{ $lang('subtitle.limit', { limit: String(subtitleDisplayNumber) }) }}
       </div>
       <div class="c-pc-subtitle__content pws-pc-subtitle__content-skin c-subtitle__scroll">
         <div
@@ -26,16 +27,16 @@
           class="c-pc-subtitle__content-item"
         >
           <div v-if="subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source'">
-            {{ item[sourceLanguage] }}
+            {{ item[liveSubtitleSourceLanguage] }}
           </div>
           <div
-            v-if="subtitleTranslateSelected === 'all' && item[sourceTranslateLanguage]"
+            v-if="subtitleTranslateSelected === 'all' && item[liveSubtitleSourceTranslateLanguage]"
             class="c-pc-subtitle__content-item-line"
           ></div>
           <div
             v-if="
               (subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'translate') &&
-              item[sourceTranslateLanguage]
+              item[liveSubtitleSourceTranslateLanguage]
             "
             class="c-pc-subtitle__content-item-translate"
             :class="{
@@ -43,7 +44,7 @@
                 subtitleTranslateSelected === 'translate',
             }"
           >
-            {{ item[sourceTranslateLanguage] }}
+            {{ item[liveSubtitleSourceTranslateLanguage] }}
           </div>
         </div>
         <div
@@ -83,7 +84,15 @@ import { useSubtitle } from '@/components/page-watch-common/subtitle/use-subtitl
 
 const subtitleScroll = ref<HTMLElement>();
 
-const { liveSubtitlesEnable, subtitleTranslateEnabled } = storeDefinitionToRefs(useSubtitleStore);
+const {
+  liveSubtitlesEnable,
+  subtitleTranslateEnabled,
+
+  liveSubtitleSourceLanguage,
+  liveSubtitleSourceTranslateLanguage,
+  subtitleDisplayNumberLimitEnabled,
+  subtitleDisplayNumber,
+} = storeDefinitionToRefs(useSubtitleStore);
 
 const {
   hasNewMessage,
@@ -94,10 +103,6 @@ const {
 
   subtitleList,
   currentSubtitle,
-  sourceLanguage,
-  sourceTranslateLanguage,
-  displayNumberLimitEnabled,
-  displayNumber,
 } = useSubtitle(subtitleScroll);
 </script>
 

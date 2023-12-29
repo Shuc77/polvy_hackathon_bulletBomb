@@ -101,37 +101,38 @@ export const useWeixinShare = () => {
     const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
 
+    if (!wx) {
+      console.warn('window.wx is not exist, will use default behavior');
+      return;
+    }
+
     // 自定义“分享给朋友”及“分享到QQ”按钮的分享内容
-    wx &&
-      wx.updateAppMessageShareData({
-        ...shareOptions,
-        success() {
-          console.info('Wx sdk: updateAppMessageShareData success');
-        },
-        fail(e) {
-          watchCore.logger.error(
-            LoggerName.Weixin,
-            'update-app-message-share-fail',
-            JSON.stringify(e),
-          );
-        },
-      });
+    wx.updateAppMessageShareData({
+      ...shareOptions,
+      success() {
+        console.info('Wx sdk: updateAppMessageShareData success');
+      },
+      fail(e) {
+        console.info('updateAppMessageShareData shareOptions', JSON.stringify(shareOptions));
+        watchCore.logger.error(
+          LoggerName.Weixin,
+          'update-app-message-share-fail',
+          JSON.stringify(e),
+        );
+      },
+    });
 
     // 自定义“分享到朋友圈”及“分享到 QQ 空间”按钮的分享内容
-    wx &&
-      wx.updateTimelineShareData({
-        ...shareOptions,
-        success() {
-          console.info('Wx sdk: updateTimelineShareData success');
-        },
-        fail(e) {
-          watchCore.logger.error(
-            LoggerName.Weixin,
-            'update-timeline-share-fail',
-            JSON.stringify(e),
-          );
-        },
-      });
+    wx.updateTimelineShareData({
+      ...shareOptions,
+      success() {
+        console.info('Wx sdk: updateTimelineShareData success');
+      },
+      fail(e) {
+        console.info('updateTimelineShareData shareOptions', JSON.stringify(shareOptions));
+        watchCore.logger.error(LoggerName.Weixin, 'update-timeline-share-fail', JSON.stringify(e));
+      },
+    });
   }
 
   /**
@@ -143,6 +144,11 @@ export const useWeixinShare = () => {
     const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
 
+    if (!wx) {
+      console.warn('window.wx is not exist, will use default behavior');
+      return;
+    }
+
     // 自定义转发
     wx.onMenuShareAppMessage &&
       wx.onMenuShareAppMessage({
@@ -151,6 +157,7 @@ export const useWeixinShare = () => {
           console.info('Wx sdk: onMenuShareAppMessage success');
         },
         fail(e) {
+          console.info('onMenuShareAppMessage shareOptions', JSON.stringify(shareOptions));
           watchCore.logger.error(
             LoggerName.Weixin,
             'on-menu-share-app-message-fail',
@@ -166,6 +173,7 @@ export const useWeixinShare = () => {
           console.info('Wx sdk: onMenuShareWechat success');
         },
         fail(e) {
+          console.info('onMenuShareWechat shareOptions', JSON.stringify(shareOptions));
           watchCore.logger.error(
             LoggerName.Weixin,
             'on-menu-share-share-wechat-fail',
@@ -182,6 +190,7 @@ export const useWeixinShare = () => {
           console.info('Wx sdk: onMenuShareTimeline success');
         },
         fail(e) {
+          console.info('onMenuShareTimeline shareOptions', JSON.stringify(shareOptions));
           watchCore.logger.error(
             LoggerName.Weixin,
             'on-menu-share-timeline-fail',

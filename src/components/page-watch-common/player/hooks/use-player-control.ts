@@ -150,25 +150,8 @@ export const usePlayerControl = () => {
     return settingList;
   });
 
-  const timeShiftEnableShowQuality = computed<boolean>(() => {
-    if (!playerStore.supportLiveTimeShift) return true;
-
-    const version = playerStore.pcPlayerVersion;
-
-    if (!version) return false;
-
-    const reg = /^(\d*).(\d*).(\d*)/;
-    const [, main, secondary] = version.match(reg) || [];
-
-    if (!main || !secondary) return false;
-
-    return Number(main) >= 1 && Number(secondary) >= 52;
-  });
-
   /** 清晰度设置是否显示 */
   const qualitySettingVisible = computed<boolean>(() => {
-    if (!timeShiftEnableShowQuality.value) return false;
-
     return (
       playerStore.qualityLevels.length > 1 &&
       [LiveStatus.Live, LiveStatus.Playback].includes(channelStore.liveStatus)

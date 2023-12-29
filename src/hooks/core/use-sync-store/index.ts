@@ -7,6 +7,7 @@ import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { useCommonStore } from '@/store/use-common-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
@@ -28,6 +29,8 @@ import { useWeixinStore } from '@/store/use-weixin-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 
 export const useSyncStoreForWatchApp = () => {
+  const commonStore = useCommonStore();
+
   const channelStore = useChannelStore();
   const channelInfoStore = useChannelInfoStore();
   const viewerStore = useViewerStore();
@@ -44,6 +47,8 @@ export const useSyncStoreForWatchApp = () => {
    * @desc 引导页和观看页共用的数据需要在应用初始化时同步
    */
   function syncStoreBeforeWatchAppInited() {
+    commonStore.syncCommonStore();
+
     channelStore.syncChannelStore();
     channelInfoStore.syncChannelInfo();
     viewerStore.syncViewerInfo();

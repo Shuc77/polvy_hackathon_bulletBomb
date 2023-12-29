@@ -2,8 +2,11 @@ import type { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 import type { ComputedRef, Ref } from 'vue';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface Window extends Record<string, unknown> {}
+  interface Window extends Record<string, unknown> {
+    aegis?: {
+      error: (err: Error) => void;
+    };
+  }
 
   interface HTMLElement {
     __vueVm?: Vue;

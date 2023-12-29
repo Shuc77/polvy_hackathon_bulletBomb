@@ -5,41 +5,29 @@ import { getWatchCore } from '@/core/watch-sdk';
 import {
   SubtitleRealTimeCC,
   SubtitleTranslate,
-  PlayerEvents,
-  SubtitleSourceLanguage,
   SubtitleEvents,
   SubtitlesListItem,
-  SubtitleEnabled,
   SubtitleSliceType,
-  SubtitleSourceTranslateLanguage,
-  PlayStatus,
 } from '@polyv/live-watch-sdk';
 
-import { eventBus, appEvents } from '@/app/app-events';
 import { translate } from '@/assets/lang';
 import { TAB_NAME_SUBTITLE } from '@/assets/constants/tab-name';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { usePlayerStore } from '@/store/use-player-store';
 
+/**
+ * 实时字幕列表 hook
+ * @hook
+ */
 export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
-  const subtitleStore = useSubtitleStore();
+  const {
+    liveSubtitleSourceLanguage,
 
-  const { playStatus } = storeDefinitionToRefs(usePlayerStore);
-
-  /** 原声语言 */
-  const sourceLanguage = ref<SubtitleSourceLanguage>('Chinese');
-
-  /** 翻译语言 */
-  const sourceTranslateLanguage = ref<SubtitleSourceTranslateLanguage>('Chinese');
-
-  /** 实时字幕显示数量限制开关 */
-  const displayNumberLimitEnabled = ref(false);
-
-  /** 实时字幕最多显示多少条 */
-  const displayNumber = ref(-1);
+    subtitleDisplayNumber,
+    subtitleDisplayNumberLimitEnabled,
+  } = storeDefinitionToRefs(useSubtitleStore);
 
   /** 用户选择的翻译的类型 */
   const subtitleTranslateSelected = ref<'all' | 'source' | 'translate'>('all');
@@ -83,7 +71,8 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
   function addSubtitleListener() {
     if (!subtitleScroll.value) return;
-    subtitleScroll.value?.addEventListener('scroll', e => {
+
+    subtitleScroll.value.addEventListener('scroll', e => {
       const el = e.target as HTMLElement;
       const scrollEl = el.querySelector('.c-subtitle__scroll');
       if (scrollEl && scrollEl.clientHeight < el.offsetHeight) return;
@@ -95,8 +84,9 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     if (!isBottom.value && check) return;
     // 变成异步任务，先让eventListener检查
     setTimeout(() => {
-      subtitleScroll.value?.scrollTo(0, subtitleScroll.value.scrollHeight);
-    });
+      if (!subtitleScroll.value) return;
+      subtitleScroll.value.scrollTo(0, subtitleScroll.value.scrollHeight);
+    }, 0);
   }
 
   function firstToSubtitle() {
@@ -105,8 +95,8 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   }
 
   function spliceSubtitle() {
-    let value = displayNumber.value;
-    if (!displayNumberLimitEnabled.value || value < 1) return;
+    let value = subtitleDisplayNumber.value;
+    if (!subtitleDisplayNumberLimitEnabled.value || value < 1) return;
     if (currentSubtitle.value) {
       value++;
     }
@@ -154,15 +144,11 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   }
 
   function onSubtitleRealTimeCC(data: SubtitleRealTimeCC) {
-    if (playStatus.value === PlayStatus.Playing) {
-      eventBus.$emit(appEvents.player.SubtitleRealTimeCC, data);
-    }
-
     if (data.sliceType === SubtitleSliceType.End) {
       currentSubtitle.value = '';
       const params: SubtitlesListItem = {
         index: data.index,
-        [sourceLanguage.value]: data.text,
+        [liveSubtitleSourceLanguage.value]: data.text,
       };
       subtitleList.value.push(params);
       spliceSubtitle();
@@ -186,26 +172,12 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     subtitleList.value = [];
   }
 
-  function onSubtitleEnableToggle(data: SubtitleEnabled) {
-    subtitleStore.changeSubtitlesTeacherEnable(data.enable);
-  }
-
-  function onPlayerSubtitleSwitched({ checked }: { checked: boolean }) {
-    subtitleStore.changeLocalUerSubtitlesEnable(checked);
-  }
-
   function bindSubtitleEvent() {
     const watchCore = getWatchCore();
 
     watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
     watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
-    watchCore.subtitles.eventEmitter.on(
-      SubtitleEvents.SubtitleEnableToggle,
-      onSubtitleEnableToggle,
-    );
-
-    watchCore.player.eventEmitter.on(PlayerEvents.PlayerSubtitleSwitched, onPlayerSubtitleSwitched);
   }
 
   function unbindSubtitleEvent() {
@@ -214,31 +186,9 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
     watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
-    watchCore.subtitles.eventEmitter.off(
-      SubtitleEvents.SubtitleEnableToggle,
-      onSubtitleEnableToggle,
-    );
-
-    watchCore.player.eventEmitter.off(
-      PlayerEvents.PlayerSubtitleSwitched,
-      onPlayerSubtitleSwitched,
-    );
-  }
-
-  function getSubtitleConfig() {
-    const watchCore = getWatchCore();
-    const subTitleConfig = watchCore.subtitles.getSubtitleConfig();
-
-    subtitleStore.syncSubtitleConfig();
-
-    sourceLanguage.value = subTitleConfig.subtitleSourceLanguage;
-    sourceTranslateLanguage.value = subTitleConfig.subtitleTranslateLanguage;
-    displayNumberLimitEnabled.value = subTitleConfig.subtitleDisplayNumberLimitEnabled;
-    displayNumber.value = subTitleConfig.subtitleDisplayNumber;
   }
 
   onMounted(() => {
-    getSubtitleConfig();
     bindSubtitleEvent();
     getSubtitleList();
   });
@@ -256,9 +206,5 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
     subtitleList,
     currentSubtitle,
-    sourceLanguage,
-    sourceTranslateLanguage,
-    displayNumberLimitEnabled,
-    displayNumber,
   };
 };

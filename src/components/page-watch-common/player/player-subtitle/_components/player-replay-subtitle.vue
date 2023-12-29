@@ -82,10 +82,10 @@ const setReplaySrtList = async (isOriginal: 'Y' | 'N', url?: string) => {
 
   if (ynToBool(isOriginal)) {
     mainSrtList.value = tempSrtList;
-    subtitleStore.changeMainSubtitleShow(true);
+    subtitleStore.changeMainReplaySubtitleShow(true);
   } else {
     translatedSrtList.value = tempSrtList;
-    subtitleStore.changeSubSubtitleShow(true);
+    subtitleStore.changeSubReplaySubtitleShow(true);
   }
 };
 
@@ -97,8 +97,8 @@ const setReplaySubtitleList = (list: ReplaySubtitleItem[]) => {
 watch(
   () => replaySubtitleList.value,
   () => {
-    subtitleStore.changeMainSubtitleShow(false);
-    subtitleStore.changeSubSubtitleShow(false);
+    subtitleStore.changeMainReplaySubtitleShow(false);
+    subtitleStore.changeSubReplaySubtitleShow(false);
 
     if (!replaySubtitleList.value.length) return;
 
@@ -125,9 +125,9 @@ const onPlayerUIReplaySubtitleChecked = (
   data: PlayerEventsRelations[PlayerEvents.PlayerUIReplaySubtitleChecked],
 ) => {
   if (ynToBool(data.isOriginal)) {
-    subtitleStore.changeMainSubtitleShow(data.checked);
+    subtitleStore.changeMainReplaySubtitleShow(data.checked);
   } else {
-    subtitleStore.changeSubSubtitleShow(data.checked);
+    subtitleStore.changeSubReplaySubtitleShow(data.checked);
   }
 };
 

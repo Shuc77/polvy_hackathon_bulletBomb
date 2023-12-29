@@ -14,6 +14,9 @@
     <div
       v-else
       class="c-player-play-button__mode--default"
+      :class="{
+        'c-player-play-button__mode--play-btn3': newPlayerPauseStyleEnabled,
+      }"
     ></div>
   </div>
 </template>
@@ -21,12 +24,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { usePlayerStore } from '@/store/use-player-store';
 
 import { usePlayerPlayButtonProps, PlayButtonMode } from './use-player-play-button';
 
 const props = defineProps(usePlayerPlayButtonProps());
 
 const { bigPlayButtonVisible } = usePlayerControl();
+const { newPlayerPauseStyleEnabled } = usePlayerStore();
 
 const isTextMode = computed(() => {
   return props.mode === PlayButtonMode.Text;
@@ -90,6 +95,15 @@ const isTextMode = computed(() => {
     height: 24px;
     margin-top: -8px;
     margin-right: 4px;
+  }
+}
+
+.c-player-play-button__mode--play-btn3 {
+  width: 70px;
+
+  &::after {
+    background-image: url(./imgs/play-btn-3.svg);
+    background-size: 100% 100%;
   }
 }
 </style>
