@@ -9,6 +9,7 @@
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
       'c-mobile-player-main--hide': isConnectMicing,
+      'c-mobile-player-main--new-play-btn': newPlayerPauseStyleEnabled,
     }"
     @click="onClickContainer"
   >
@@ -121,6 +122,7 @@ const {
   logoSetting,
   barrageMobileSettingVisible,
   supportTimeAxisMark,
+  newPlayerPauseStyleEnabled,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
@@ -242,6 +244,16 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
 .c-mobile-player-main--hide-loading {
   .vcp-loading {
     display: none !important;
+  }
+}
+
+.c-mobile-player-main--new-play-btn {
+  .plv-live-cover__btn,
+  .plv-live-big-play-btn,
+  .plv-player-big-play-btn {
+    background: url('../../common/player-play-button/imgs/play-btn-3.svg') no-repeat;
+    background-position: center;
+    background-size: 70px;
   }
 }
 </style>

@@ -2,17 +2,18 @@
  * @file 播放器 hook
  */
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
-import { appEvents, useEventBusListener } from '@/app/app-events';
+import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { getImgSize } from '@/assets/utils/image';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useLangStore } from '@/store/use-lang-store';
-import { LiveStatus, SetupPlayerOptions } from '@polyv/live-watch-sdk';
+import { LiveStatus, SetupPlayerOptions, SetupPlayerPlaybackOptions } from '@polyv/live-watch-sdk';
 import { usePlayerEvent } from './use-player-event';
 import { LangType } from '@/assets/lang/lang-enum';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { getForceAutoResult } from '@/assets/utils/video/force-autoplay';
 
 export type InitPlayerOptions = Omit<SetupPlayerOptions, 'container'>;
 
@@ -30,6 +31,7 @@ export const usePlayerMain = ({
   const playbackStore = usePlaybackStore();
   const { currentPlaybackTarget } = storeDefinitionToRefs(usePlaybackStore);
   const langStore = useLangStore();
+  const forceAutoPlayRs = getForceAutoResult();
 
   /** 播放器渲染容器 */
   const playerContainer = ref<HTMLDivElement>();
@@ -50,17 +52,38 @@ export const usePlayerMain = ({
     } catch (e) {}
   }
 
+  /** 已经强制切换回放过了 */
+  let __hadForceChangePlayback = false;
+
   /**
    * 获取播放器的回放参数
    * @warn 副作用：修改回放视频尺寸，非回放状态清空 currentPlaybackTarget
    */
-  async function getPlayerPaybackOptions() {
+  async function getPlayerPaybackOptions(): Promise<SetupPlayerPlaybackOptions | undefined> {
     if (channelStore.liveStatus !== LiveStatus.Playback) {
       playbackStore.updateCurrentPlaybackTarget(undefined);
       return;
     }
 
     if (!currentPlaybackTarget.value) {
+      if (__hadForceChangePlayback) {
+        console.error('已尝试过强制切回放，切换失败，请检查后台是否开启观看页回放功能');
+        return;
+      }
+
+      // 进行强制切换回放处理
+      const watchCore = getWatchCore();
+      if (watchCore.channel.getForceChangePlaybackEnabled()) {
+        playbackStore.syncPlaybackStore();
+        await playbackStore.initCurrentPlaybackTarget();
+        // 聊天重放需要重新渲染聊天列表
+        if (playbackStore.chatReplayEnabled) {
+          eventBus.$emit(appEvents.chat.ResetUpChatMsgList);
+        }
+        __hadForceChangePlayback = true;
+        return getPlayerPaybackOptions();
+      }
+
       console.error('处于回放状态，但不存在回放对象');
       return;
     }
@@ -76,6 +99,7 @@ export const usePlayerMain = ({
       await setResolutionSizeByImage(currentPlaybackTarget.value.firstImage);
     }
 
+    __hadForceChangePlayback = false; // 重置状态
     return currentPlaybackTarget.value.playbackOptions;
   }
 
@@ -129,7 +153,7 @@ export const usePlayerMain = ({
       lowLatency: playerStore.isLowLatency,
       language: langStore.currentLang === LangType.Chinese ? 0 : 1,
       languageStreamEnabled: true,
-      autoChangePlayback: false,
+      autoChangePlayback: false, // @PLV-WARN 默认不要更改该选项配置，如果业务上需要直播结束后自动切换回放，请先咨询保利威工作人员
     };
 
     // 其他参数
@@ -153,12 +177,18 @@ export const usePlayerMain = ({
       await getPushStreamInfo();
     }
 
+    if (forceAutoPlayRs) {
+      playerOptions.extraPlayerOptions = Object.assign(playerOptions.extraPlayerOptions || {}, {
+        customVideoElement: forceAutoPlayRs.media,
+      });
+    }
+
     const watchCore = getWatchCore();
     await watchCore.player.setupPlayer(playerOptions);
 
     bindPlayerEvents();
 
-    if (playerOptions.playbackOptions || watchCore.player.getAutoChangePlaybackEnabled()) {
+    if (watchCore.player.supportPlaybackVideo().support) {
       playbackStore.$patch({
         isPlaybacking: true,
       });

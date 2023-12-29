@@ -2,7 +2,10 @@
 <template>
   <div
     class="c-pc-player-main"
-    :class="{ 'c-pc-player-main__hide': isConnectMicing }"
+    :class="{
+      'c-pc-player-main__hide': isConnectMicing,
+      'c-pc-player-main--new-play-btn': newPlayerPauseStyleEnabled,
+    }"
   >
     <!-- 播放器渲染容器 -->
     <div
@@ -45,7 +48,8 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { translate } from '@/assets/lang';
 
-const { isLowLatency, logoSetting } = storeDefinitionToRefs(usePlayerStore);
+const { isLowLatency, logoSetting, newPlayerPauseStyleEnabled } =
+  storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
@@ -102,5 +106,13 @@ useConnectMicing();
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.c-pc-player-main--new-play-btn {
+  .pv-video-player {
+    .pv-icon-btn-play {
+      opacity: 0;
+    }
+  }
 }
 </style>

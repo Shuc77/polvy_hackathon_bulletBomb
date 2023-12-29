@@ -493,9 +493,13 @@ export const chinaLang = {
   'share.weibo': '新浪微博',
 
   'unit.day': '天',
+  'unit.dayTitle': '天',
   'unit.hour': '时',
+  'unit.hourTitle': '时',
   'unit.minute': '分',
+  'unit.minuteTitle': '分',
   'unit.second': '秒',
+  'unit.secondTitle': '秒',
 
   'watch.liveTime': '直播时间',
   'watch.pvSuffix': '次访问',

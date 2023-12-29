@@ -2,9 +2,6 @@
  * @file 一些静态资源的默认地址（包括通过 require 引入到图片）
  */
 
-/** 默认 SVGA 文件目录 */
-export const DEFAULT_SVGA_DIRECTORY = 'https://s1.videocc.net/default-img/donate-svga/';
-
 /** 默认分享图标 - QQ */
 export const DEFAULT_SHARE_QQ_ICON: string = require('@/assets/images/share/qq.png');
 

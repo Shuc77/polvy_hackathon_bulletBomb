@@ -1,7 +1,6 @@
 /**
  * @file 打赏 svga 特效 hook
  */
-import { DEFAULT_SVGA_DIRECTORY } from '@/assets/constants/defaults';
 import { useSvgaPlayer } from '@/hooks/animation/use-svga-player';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useDonateStore } from '@/store/use-donate-store';
@@ -16,25 +15,9 @@ import {
 } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 
-const svgaMap: UniversalParams<string> = {
-  coffee: 'coffee.svga',
-  like: 'like.svga',
-  handclap: 'handclap.svga',
-  666: '666.svga',
-  star: 'star.svga',
-  diamond: 'diamond.svga',
-  car: 'car.svga',
-  rocket: 'rocket.svga',
-  bear: 'bear.svga',
-  crown: 'crown.svga',
-  cup: 'cup.svga',
-  microphone: 'microphone.svga',
-  villa: 'villa.svga',
-  house: 'villa.svga', // 旧版的house图匹配新版的别墅动画
-};
-
 export const useDonateSvgaAnimation = () => {
   const donateStore = useDonateStore();
+  const watchCore = getWatchCore();
   const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);
 
   /** 用于渲染动画的 ref 节点 */
@@ -51,16 +34,7 @@ export const useDonateSvgaAnimation = () => {
       return goodInfo.dynamicFile;
     }
 
-    // 如果没有则截取图片文件名来获取默认的 svga 文件
-    const a = document.createElement('a');
-    a.href = gimg;
-    const paths = a.pathname.split('/');
-    const goodName = paths[paths.length - 1].split('.')[0];
-    if (!svgaMap[goodName]) {
-      return undefined;
-    }
-
-    return DEFAULT_SVGA_DIRECTORY + svgaMap[goodName];
+    return watchCore.donate.getDonateSvgaUrl(gimg);
   }
 
   // 如果正在显示红包雨不显示打赏特效

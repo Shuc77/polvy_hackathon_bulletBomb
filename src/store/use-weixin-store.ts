@@ -7,10 +7,7 @@ import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
 
 export interface WeixinStoreState {
-  /**
-   * 是否使用微信 SDK 功能
-   * @todo 后续用作 UI 层处理微信相关功能的前置逻辑
-   * */
+  /** 是否使用微信 SDK 功能 */
   wxSdkFeatureEnabled: Ref<boolean>;
   /** 是否进入微信快照页模式 */
   isWeixinSnapshotPageMode: Ref<boolean>;

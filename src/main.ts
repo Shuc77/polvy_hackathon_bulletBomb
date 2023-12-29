@@ -40,6 +40,13 @@ Vue.use(i18nInstall, {
   },
 });
 
+Vue.config.errorHandler = error => {
+  console.error(error);
+  if (window.aegis) {
+    window.aegis.error(error);
+  }
+};
+
 new Vue({
   pinia,
   components: {

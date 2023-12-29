@@ -2,9 +2,10 @@ import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useCommonStore } from '@/store/use-common-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { appendToURL } from '@just4/querystring';
-import { DEFAULT_SPLASH_IMG, InvitePosterData, YN } from '@polyv/live-watch-sdk';
+import { InvitePosterData, YN } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@polyv/utils/es/boolean';
 import { formatDate } from '@utils-ts/date';
 import { onMounted, ref } from 'vue';
@@ -23,6 +24,7 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
   const channelStore = useChannelStore();
   const channelInfoStore = useChannelInfoStore();
   const viewerStore = useViewerStore();
+  const commonStore = useCommonStore();
   const { props } = options;
 
   const posterData = ref<InvitePosterData>();
@@ -65,7 +67,8 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
       avatar: viewerStore.avatar,
       nickname: viewerStore.nickname,
       name: channelInfoStore.channelTitle,
-      inviteCoverImage: promotion.inviteCoverImage || DEFAULT_SPLASH_IMG,
+      inviteCoverImage:
+        promotion.inviteCoverImage || commonStore.plvDefaultResource.defaultSplashImg,
       publisher: channelInfoStore.channelPublisher,
       startTime,
       watchUrl: promotion.watchUrl + watchParams,

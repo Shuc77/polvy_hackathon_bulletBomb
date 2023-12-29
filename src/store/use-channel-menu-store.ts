@@ -105,7 +105,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         menus = menus.filter(menu => menu.menuType === ChannelMenuType.Chat);
       }
 
-      // 会议模式不需要“往期tab”
+      // 会议模式不需要“往期tab” || 单个视频回放时不需要
       if (watchAppStore.meetingMode) {
         menus = menus.filter(menu => menu.menuType !== ChannelMenuType.Previous);
       }

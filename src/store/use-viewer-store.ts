@@ -1,7 +1,7 @@
 /**
  * @file 观众信息 store
  */
-import { AuthType, DEFAULT_VIEWER_AVATAR, ViewerSeatInfo } from '@polyv/live-watch-sdk';
+import { AuthType, ViewerSeatInfo } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -9,6 +9,7 @@ import { useEnrollStore } from './use-enroll-store';
 import { isWeixin } from '@/assets/utils/browser';
 import { useWeixinStore } from './use-weixin-store';
 import { appEvents, eventBus } from '@/app/app-events';
+import { useCommonStore } from './use-common-store';
 
 /**
  * 检测是否为默认用户名 [内网、外网、xx]观众/[数字]
@@ -56,13 +57,14 @@ export interface ViewerStore extends ViewerStoreState, ViewerStoreAction {}
 export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () => {
   const enrollStore = useEnrollStore();
   const weixinStore = useWeixinStore();
+  const commonStore = useCommonStore();
 
   /** 用户唯一标识 */
   const viewerId = ref<string>();
   /** 用户昵称 */
   const nickname = ref<string>('');
   /** 用户头像 */
-  const avatar = ref<string>(DEFAULT_VIEWER_AVATAR);
+  const avatar = ref<string>(commonStore.plvDefaultResource.defaultViewerAvatar);
   /** openId */
   const openId = ref<string>();
   /** unionId */
@@ -72,6 +74,11 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
 
   /** 当前能否设置昵称 */
   const canSetNick = computed<boolean>(() => {
+    // 如果是默认名称，则支持设置昵称
+    if (__checkDefaultUserNick(nickname.value)) {
+      return true;
+    }
+
     // 报名观看使用姓名作为昵称
     if (enrollStore.enrollNickEnabled) {
       return false;
@@ -121,7 +128,8 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
 
     viewerId.value = watchCore.user.getUserId();
     nickname.value = watchCore.user.getUserNick() || '';
-    avatar.value = watchCore.user.getUserAvatar() || DEFAULT_VIEWER_AVATAR;
+    avatar.value =
+      watchCore.user.getUserAvatar() || commonStore.plvDefaultResource.defaultViewerAvatar;
     openId.value = watchCore.user.getUserOpenId();
     unionId.value = watchCore.user.getUserUnionId();
     authType.value = watchCore.user.getUserAuthType();

@@ -127,9 +127,15 @@ function getWeixinSdkByChannelId(channelId: string): Promise<WechatJsSdk.Wx> {
  */
 export const useWeixinSdk = () => {
   const channelStore = useChannelStore();
+  const weixinStore = useWeixinStore();
 
   /** 获取微信 js-sdk */
-  const getWeixinSdk = () => {
+  const getWeixinSdk = (): Promise<WechatJsSdk.Wx | undefined> => {
+    if (!weixinStore.wxSdkFeatureEnabled) {
+      console.warn('weixin-sdk is disabled');
+      return new Promise(resolve => resolve(undefined));
+    }
+
     return getWeixinSdkByChannelId(channelStore.channelId);
   };
 

@@ -3,13 +3,9 @@
  */
 import { fitProtocol } from '@/assets/utils/url';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
+import { useCommonStore } from '@/store/use-common-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import {
-  ChatMessageUser,
-  ChatMsgType,
-  ChatUserType,
-  DEFAULT_VIEWER_AVATAR,
-} from '@polyv/live-watch-sdk';
+import { ChatMessageUser, ChatMsgType, ChatUserType } from '@polyv/live-watch-sdk';
 import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
 import { useHideChatMsgActorHook } from '../../hooks/hide-chat-msg-hook';
 
@@ -42,6 +38,7 @@ export interface ChatMsgUserContext {
 export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | undefined>) => {
   const viewerStore = useViewerStore();
   const chatMsgStore = useChatMsgStore();
+  const commonStore = useCommonStore();
 
   const { needHideActorByUserType } = useHideChatMsgActorHook();
 
@@ -68,7 +65,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
    */
   const msgUserAvatar = computed<string>(() => {
     const user = unref(msgUser);
-    return fitProtocol(user?.pic ?? DEFAULT_VIEWER_AVATAR);
+    return fitProtocol(user?.pic ?? commonStore.plvDefaultResource.defaultViewerAvatar);
   });
 
   /**

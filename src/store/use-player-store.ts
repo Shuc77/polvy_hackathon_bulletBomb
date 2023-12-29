@@ -124,8 +124,8 @@ export interface PlayerStoreState {
   supportLanguageStream: Ref<boolean>;
   /** 直播时是否显示播放按钮， 默认开 */
   stopLivePlayEnabled: Ref<boolean>;
-  /** 播放器版本，目前仅支持pc播放器 */
-  pcPlayerVersion: Ref<string>;
+  /** 播放器新版暂停样式开关 */
+  newPlayerPauseStyleEnabled: Ref<boolean>;
 }
 
 export interface PlayerStoreAction {
@@ -411,8 +411,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 直播时是否显示播放按钮， 默认开 */
   const stopLivePlayEnabled = ref(true);
 
-  /** 播放器版本，目前仅支持pc播放器 */
-  const pcPlayerVersion = ref('');
+  /** 播放器新版暂停样式开关 */
+  const newPlayerPauseStyleEnabled = ref(false);
 
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
@@ -487,7 +487,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
 
-    pcPlayerVersion.value = playerInfo.pcPlayerVersion;
+    newPlayerPauseStyleEnabled.value = playerInfo.newPlayerPauseStyleEnabled;
 
     /**
      * 暂不支持三分屏场景和研讨会场景
@@ -565,7 +565,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     supportLanguageStream,
 
     stopLivePlayEnabled,
-    pcPlayerVersion,
+    newPlayerPauseStyleEnabled,
 
     syncPlayerStore,
     syncWarmUpSetting,

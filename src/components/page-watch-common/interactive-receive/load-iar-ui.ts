@@ -16,15 +16,15 @@ function getIarUIConfigByWatchSdkEnv() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20231207',
+      version: 'rc-20231228',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20231207',
+      version: 'rc-20231228',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20231207',
+      version: 'dev-20231228',
     },
   };
 
@@ -53,7 +53,11 @@ export function loadIarUI(): Promise<PolyvIRSceneType> {
     const url = getIarUILoaderUrl();
     iarUILoader = new Promise((resolve, reject) => {
       (async () => {
-        await loadScript(url);
+        await loadScript(url, {
+          props: {
+            crossOrigin: 'anonymous',
+          },
+        });
         if (window.PolyvIRScene) {
           resolve(window.PolyvIRScene);
         } else {
