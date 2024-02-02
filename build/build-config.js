@@ -60,6 +60,7 @@ exports.transpileDependencies = [
   'lodash-es',
   'js-base64',
   '@polyv/utils',
+  'force-autoplay',
 ];
 
 /** 需要配置到 sass-resources-loader 的资源 */

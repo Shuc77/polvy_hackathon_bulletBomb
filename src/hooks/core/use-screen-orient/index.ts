@@ -35,6 +35,13 @@ export const useScreenOrientHook = (params: {
     return screenOrientationMode.value === ScreenOrientationMode.Horizontal;
   });
 
+  /** 根据窗口宽高重设旋转方向 */
+  function resetScreenOrientationModeByWindow() {
+    if (window.innerWidth < window.innerHeight) {
+      screenOrientationMode.value = ScreenOrientationMode.Vertical;
+    }
+  }
+
   /** 手动更新当前屏幕的旋转方向 */
   function updateScreenOrientationModeManually() {
     if (window.orientation === 180 || window.orientation === 0) {
@@ -43,6 +50,8 @@ export const useScreenOrientHook = (params: {
     if (window.orientation === 90 || window.orientation === -90) {
       screenOrientationMode.value = ScreenOrientationMode.Horizontal;
     }
+
+    resetScreenOrientationModeByWindow();
   }
 
   /** 监听屏幕旋转方向的改变 */
@@ -54,6 +63,8 @@ export const useScreenOrientHook = (params: {
       } else {
         screenOrientationMode.value = ScreenOrientationMode.Horizontal;
       }
+
+      resetScreenOrientationModeByWindow();
       autoListenCb(screenOrientationMode.value);
     }, 200);
   }
@@ -71,6 +82,7 @@ export const useScreenOrientHook = (params: {
     if (autoListen) {
       // 处理屏幕旋转
       listenOrientationEvent();
+      // 手动执行一遍
       onOrientationChange();
     }
   });

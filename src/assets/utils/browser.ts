@@ -10,8 +10,24 @@ export const isWeixin = uaInfo.client.isWx;
 /** 判断 PC 端微信小程序环境 */
 export const isPcMiniProgram = isWeixin && /miniprogramenv/.test(ua);
 
+function __isMobile() {
+  const ua = navigator.userAgent;
+  if (/mobile|android/i.test(ua)) {
+    return true;
+  } else {
+    if (
+      /\b(Windows\sNT|Macintosh|x86(_(32|64))?|amd64|i[1-6]86)\b/.test(ua) ||
+      !('onorientationchange' in window)
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
+
 /** 是否移动端 */
-export const isMobile = uaInfo.isPortable || isPcMiniProgram;
+export const isMobile = __isMobile() || isPcMiniProgram; // uaInfo.isPortable || isPcMiniProgram;
 
 /** 是否企业微信 */
 export const isWorkWeixin = uaInfo.client.isWxWork;

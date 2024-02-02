@@ -110,7 +110,9 @@ export const useFormInput = (options: {
     let value = target.value;
     if (props.type === 'number') {
       value = value.slice(0, props.maxlength);
-      target.value = value;
+      if (inputRef.value) {
+        inputRef.value.setAttribute('value', value);
+      }
     }
     emit('input', value);
   }

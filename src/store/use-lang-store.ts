@@ -3,7 +3,7 @@ import { LangType } from '@/assets/lang/lang-enum';
 import { getWatchCore } from '@/core/watch-sdk';
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { local } from '@just4/storage';
-import { LanguageType } from '@polyv/live-watch-sdk';
+import { LanguageType, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 
@@ -52,11 +52,25 @@ export interface LangStore extends LangStoreState, LangStoreAction {}
 
 /** 获取当前页面加载后的默认多语言 */
 export function getDefaultLang(): LangType {
-  return getCacheLang() || LangType.Chinese;
+  return getWatchSdkRecommendLang() || getCacheLang() || getBrowserLang();
+}
+
+/** 获取 sdk 推荐的多语言 */
+function getWatchSdkRecommendLang(): LangType | undefined {
+  const setting = PlvChannelModule.getRecommendLangSetting();
+  if (!setting.preferRecommendSetting) {
+    return undefined;
+  }
+
+  if (setting.isFollowBrowserLang) {
+    return getBrowserLang();
+  }
+
+  return convert2CurrentLang(setting.defaultLangType);
 }
 
 /** 获取浏览器缓存中的多语言 */
-export function getCacheLang(): LangType | undefined {
+function getCacheLang(): LangType | undefined {
   /** 判断目标是否为一个多语言 */
   const isAllowLang = (target: unknown): target is LangType => {
     return Object.values(LangType).includes(target as LangType);
@@ -78,7 +92,7 @@ export function getCacheLang(): LangType | undefined {
 }
 
 /** 获取浏览器当前的语言配置 */
-export function getBrowserLang(): LangType {
+function getBrowserLang(): LangType {
   // 系统浏览器的多语言;
   const browserLang = (navigator.language || navigator.browserLanguage).toLowerCase();
   if (browserLang) {
@@ -179,7 +193,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     isShowSevenLanguage.value = langSetting.isShowSevenLanguage;
     japLangEnabled.value = langSetting.japLangEnabled;
 
-    const cacheLang = getCacheLang();
+    const cacheLang = getWatchSdkRecommendLang() || getCacheLang();
     // 缓存中不存在多语言时，需要响应后台配置
     if (!cacheLang) {
       currentLang.value = langSetting.isFollowBrowserLang

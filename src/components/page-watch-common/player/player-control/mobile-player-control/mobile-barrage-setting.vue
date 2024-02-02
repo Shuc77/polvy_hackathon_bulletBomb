@@ -113,6 +113,7 @@
               :progress-bar-visible="false"
               :hot-area-height="36"
               :value="barrageAlpha"
+              :css-rotate-angle="isVerticalScreenOrientation && isPlayerFullscreen ? 90 : 0"
               @input="handleBarrageAlphaChange"
             />
             <span

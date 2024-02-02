@@ -2,6 +2,7 @@
 <template>
   <div class="c-pc-form-phone-input">
     <pc-form-input
+      ref="inputRef"
       v-bind="attrs"
       type="number"
       :value="value"
@@ -60,6 +61,7 @@ const { referenceRef, popperRef, popperVisible, hidePopper } = usePopper({
 });
 
 const {
+  inputRef,
   inputPlaceholder,
 
   onFormInputChange,

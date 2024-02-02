@@ -495,6 +495,7 @@ export const englishLang: LangConfig = {
     'The minimum split amount is greater than or equal to ${average} yuan',
   'redpack.bad.words': 'There are sensitive words ',
   'redpack.send.amount.low': 'The amount should not be less than 1 yuan', // 发红包限制
+  'redpack.send.amount.dotLimit': 'The amount should only be entered in two decimal places',
   'redpack.greeting.long': 'Blessing words too long',
   'redpack.unsupported': 'The red packets type is not supported',
 
@@ -559,6 +560,7 @@ export const englishLang: LangConfig = {
   'withdraw.apply.success.msg': 'Successful application for withdrawals',
   'withdraw.apply.rules.amount.required': 'Fill in the total amount',
   'withdraw.apply.rules.amount.low': 'The amount should not be less than 1 yuan',
+  'withdraw.apply.rules.amount.dotLimit': 'The amount should only be entered in two decimal places',
 
   'withdraw.error.noUser': 'The WeChat user is not found',
   'withdraw.error.getCashExceed': 'The amount exceeds the user balance',

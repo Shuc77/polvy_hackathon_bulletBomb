@@ -1,6 +1,5 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import {
-  ChannelMultiMeetingItem,
   LiveStatus,
   MultiMeetingItem,
   MultiMeetingListLayout,
@@ -8,17 +7,6 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ref, Ref, unref } from 'vue';
-
-export interface MultiMeetingData extends Required<ChannelMultiMeetingItem> {
-  /** 是否为当前频道 */
-  isCurrent: boolean;
-  /** 直播状态 */
-  liveStatus: LiveStatus;
-  /** 显示图标 */
-  showIcon: boolean;
-  /** 跳转地址 */
-  watchUrl: string;
-}
 
 export interface MultiMeetingStoreState {
   /** 分会场开关 */

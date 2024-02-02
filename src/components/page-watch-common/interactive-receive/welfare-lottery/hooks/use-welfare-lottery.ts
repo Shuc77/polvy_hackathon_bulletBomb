@@ -1,20 +1,38 @@
-import { appEvents, useEventBusListener } from '@/app/app-events';
+import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import { useSendMsg } from '@/components/page-watch-common/chat/chat-msg-list/hooks/send-msg-hook';
+import { useEnrollStore } from '@/store/use-enroll-store';
+import {
+  forceChangePlvPopperManagerZIndex,
+  recoverPlvPopperManagerZIndex,
+} from '@/plugins/polyv-ui/helper';
 
 /**
  * @hook 互动-抽奖-条件抽奖
  * */
 export const useWelfareLottery = () => {
   const interactReceiveStore = useInteractReceiveStore();
+  const enrollStore = useEnrollStore();
   const { sendSpeakMsg } = useSendMsg();
 
   const watchCore = getWatchCore();
   /** 条件抽奖 SDK 实例 */
   const welfareLotterySdk = watchCore.interactReceive.getWelfareLottery();
+
+  /** 参与评论、答题抽奖的拦截器 */
+  const beforeJoinLottery = async (): Promise<boolean> => {
+    if (enrollStore.needEnrollByChat) {
+      eventBus.$emit(appEvents.global.OpenEnrollDialog);
+      forceChangePlvPopperManagerZIndex(11000); // 需要大于 $--zIndex-top，11000 是互动抽奖功能里的层级
+      return false;
+    }
+
+    recoverPlvPopperManagerZIndex();
+    return true;
+  };
 
   /**
    * 处理抽奖弹窗中的文本发言
@@ -47,6 +65,7 @@ export const useWelfareLottery = () => {
 
   return {
     welfareLotterySdk,
+    beforeJoinLottery,
     onCommentSuccess,
     checkLotteryComment,
     onEntryVisibleChanged,

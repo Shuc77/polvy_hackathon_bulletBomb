@@ -11,6 +11,7 @@ import { removeQueryParam } from '@/hooks/core/use-query-params';
 import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hooks/use-auth-special';
 import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
+import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 
 /**
  * 页面尺寸初始化设置
@@ -82,6 +83,8 @@ export const useMainEnter = (options: {
 
   /** 移除 url 上的授权参数 */
   function removeUrlAuthQueryParams() {
+    removeQueryParam(['snapshotPage']);
+
     if (!authStore.isAuthorized) return;
 
     removeQueryParam(['name', 'password', ...AuthSpecialQueryParams]);
@@ -97,6 +100,9 @@ export const useMainEnter = (options: {
   async function onPageMounted() {
     console.log('[render] main-enter mounted');
     emit('page-mounted');
+
+    // 页面组件 mounted 后需要再更新一遍分享配置，确保数据正确
+    updateWeixinShareConfig();
 
     // 加载互动功能 SDK
     await loadIarSDK();

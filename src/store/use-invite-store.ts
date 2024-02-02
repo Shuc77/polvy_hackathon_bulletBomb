@@ -15,7 +15,7 @@ import {
   TAB_NAME_SEAT,
 } from '@/assets/constants/tab-name';
 import { isWeixin } from '@/assets/utils/browser';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { appendQueryParam, paramGetter } from '@/hooks/core/use-query-params';
 import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLayoutStore } from './use-layout-store';
 import {
@@ -192,11 +192,15 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     inviteUserOpenId.value = inviteUserInfo?.inviteOpenId;
     inviteUserUnionId.value = inviteUserInfo?.inviteUnionId;
 
-    invitePosterId.value = watchCore.invite.getInvitePosterId();
     wxInviteId.value = watchCore.invite.getWorkWxInviteId();
     generatePosterUrl.value = watchCore.invite.getInviteGeneratePosterUrl();
 
     inviteDetailEnabled.value = watchCore.invite.getInviteDetailEnabled();
+
+    if (invitePosterEnabled.value) {
+      invitePosterId.value = watchCore.invite.getInvitePosterId();
+      appendQueryParam({ invitePosterId: invitePosterId.value });
+    }
   }
 
   /** 同步邀请有礼活动信息 */

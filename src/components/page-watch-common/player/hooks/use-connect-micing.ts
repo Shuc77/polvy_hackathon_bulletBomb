@@ -5,6 +5,34 @@ import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use
 import { PlayStatus } from '@polyv/live-watch-sdk';
 import { isMobile } from '@/assets/utils/browser';
 
+const useConnectMicingPlayerHelper = () => {
+  const playerStore = usePlayerStore();
+
+  const { toPlay, toChangeVolume, toPause, toStop } = usePlayerAction();
+
+  function recoverPlay(recordVolume?: number) {
+    if (!isMobile) {
+      toChangeVolume(recordVolume || 1);
+    }
+    if (isMobile && document.hidden) return;
+    toPlay();
+  }
+
+  function forcePausePlay() {
+    // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
+    if (playerStore.isLowLatency) {
+      toStop();
+    } else {
+      toPause();
+    }
+  }
+
+  return {
+    recoverPlay,
+    forcePausePlay,
+  };
+};
+
 /**
  * 处理连麦后暂停播放器逻辑
  * @hook
@@ -12,30 +40,22 @@ import { isMobile } from '@/assets/utils/browser';
 export const useConnectMicing = () => {
   const connectMicStore = useConnectMicStore();
   const playerStore = usePlayerStore();
-  const { toPause, toPlay, toStop, toChangeVolume } = usePlayerAction();
+
+  const { recoverPlay, forcePausePlay } = useConnectMicingPlayerHelper();
 
   let recordVolume: number | undefined;
 
   function onConnectMicingChange(isConnectMicing: boolean) {
     // 断开连麦恢复播放器状态
     if (!isConnectMicing) {
-      if (!isMobile) {
-        toChangeVolume(recordVolume || 1);
-      }
-      toPlay();
-      return;
+      return recoverPlay(recordVolume);
     }
 
     if (!isMobile) {
       recordVolume = playerStore.currentVolume;
     }
 
-    // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
-    if (playerStore.isLowLatency) {
-      toStop();
-    } else {
-      toPause();
-    }
+    forcePausePlay();
   }
 
   /**
@@ -52,7 +72,7 @@ export const useConnectMicing = () => {
 
     nextTick(() => {
       if (connectMicStore.isConnectMicing) {
-        toPause();
+        forcePausePlay();
       }
     });
   }

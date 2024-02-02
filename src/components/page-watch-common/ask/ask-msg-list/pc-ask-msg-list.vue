@@ -7,6 +7,7 @@
   >
     <template v-for="(item, index) in askMsgList">
       <pc-chat-msg-item
+        :category="ChatMsgItemCategory.Ask"
         :key="item.id"
         :chat-msg="item"
         :prev-chat-msg="askMsgList[index - 1]"
@@ -18,6 +19,7 @@
 
 <script setup lang="ts">
 import PcChatMsgItem from '@/components/page-watch-common/chat/chat-msg-list/msg-items/pc-chat-msg-item.vue';
+import { ChatMsgItemCategory } from '../../chat/chat-msg-list/msg-items/use-chat-msg-item';
 import { askMsgListEmits, askMsgListProps, useAskMsgList } from './use-ask-msg-list';
 
 defineProps(askMsgListProps());

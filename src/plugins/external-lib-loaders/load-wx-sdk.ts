@@ -16,11 +16,7 @@ export const loadWxSdk = () => {
   if (!loadPromise) {
     loadPromise = new Promise((resolve, reject) => {
       (async () => {
-        await loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js', {
-          props: {
-            crossOrigin: 'anonymous',
-          },
-        });
+        await loadScript('//res.wx.qq.com/open/js/jweixin-1.6.0.js');
 
         if (window.wx) {
           resolve(window.wx);
@@ -46,11 +42,7 @@ export const loadWorkWxSdk = () => {
   if (!loadPromise) {
     loadPromise = new Promise((resolve, reject) => {
       (async () => {
-        await loadScript('//res.wx.qq.com/open/js/jweixin-1.2.0.js', {
-          props: {
-            crossOrigin: 'anonymous',
-          },
-        });
+        await loadScript('//res.wx.qq.com/open/js/jweixin-1.2.0.js');
 
         if (window.wx) {
           resolve(window.wx);

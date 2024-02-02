@@ -16,6 +16,7 @@ import { defineStore } from 'pinia';
 import { useChannelInfoStore } from './use-channel-info-store';
 import { useThemeStore } from './use-theme-store';
 import { usePlaybackStore } from './use-playback-store';
+import { appendQueryParam } from '@/hooks/core/use-query-params';
 
 /** Web 分享平台枚举 */
 enum WebShareType {
@@ -82,6 +83,8 @@ export interface ShareStoreState {
   twitterShareUrl: ComputedRef<string>;
   /** PC web 分享列表 */
   webShareList: ComputedRef<WebShareData[]>;
+  /** 一客一码--销售邀请的客户id */
+  saleInviteCustomerId: Ref<string | null>;
 }
 
 export interface ShareStoreAction {
@@ -111,6 +114,9 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
   const playbackShareTitleEnabled = ref(false);
 
   const shareBaseWatchUrl = ref('');
+
+  /** 一客一码--销售邀请的客户id */
+  const saleInviteCustomerId = ref<string | null>(null);
 
   /** PC web 分享的观看地址 */
   const shareWatchUrl = computed(() => {
@@ -226,11 +232,18 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     shareBtnEnabled.value = watchCore.share.getShareEnabled();
     playbackShareTitleEnabled.value = watchCore.share.getPlaybackShareTitleEnabled();
     shareBaseWatchUrl.value = watchCore.share.getShareWatchUrl();
+
+    saleInviteCustomerId.value = watchCore.saleInvite.getSaleInviteCustomerId();
+
+    if (saleInviteCustomerId.value) {
+      appendQueryParam({ inviteCustomerId: saleInviteCustomerId.value });
+    }
   }
 
   return {
     shareBtnEnabled,
     playbackShareTitleEnabled,
+    saleInviteCustomerId,
     shareWatchUrl,
     shareQrCodeUrl,
     qqShareUrl,

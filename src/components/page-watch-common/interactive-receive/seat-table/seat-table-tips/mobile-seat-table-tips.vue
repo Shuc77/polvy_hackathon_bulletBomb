@@ -5,6 +5,7 @@
   <mobile-guest-card v-if="isWeixin && interactSetting.seatGuestCardEnabled" />
   <!-- 云席入座提示 -->
   <iar-mobile-seat-tips
+    class="plv-iar-mobile-seat-tips"
     v-else-if="seatPosition"
     :seat-table-sdk="seatTableSdk"
     :row="seatPosition.row"
@@ -26,3 +27,10 @@ const { seatPosition, interactSetting } = storeDefinitionToRefs(useInteractRecei
 
 const { seatTableSdk } = useSeatTable();
 </script>
+
+<style lang="scss">
+.plv-iar-mobile-seat-tips {
+  position: relative;
+  z-index: $--zIndex-top;
+}
+</style>

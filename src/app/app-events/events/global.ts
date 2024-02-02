@@ -34,4 +34,8 @@ export const globalEvents = {
    * 打开手机号实名认证
    */
   OpenRealNameDialog: 'OpenRealNameDialog',
+  /**
+   * 打开报名观看弹窗
+   */
+  OpenEnrollDialog: 'OpenEnrollDialog',
 };

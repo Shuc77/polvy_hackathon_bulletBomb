@@ -20,6 +20,8 @@ interface WxShareUrlParams {
   invitePosterId?: string;
   /** 回放分享-回放 Id */
   playBackVid?: string;
+  /** 一客一码邀请 Id */
+  inviteCustomerId?: string;
 }
 
 /**
@@ -45,8 +47,13 @@ export const useWeixinShare = () => {
     }
 
     // 针对开启邀请的频道添加邀请参数到微信分享 url
-    if (inviteStore.invitePosterEnabled && inviteStore.invitePosterId) {
+    if (inviteStore.invitePosterId) {
       params.invitePosterId = inviteStore.invitePosterId;
+    }
+
+    // 一客一码--销售邀请的客户id
+    if (shareStore.saleInviteCustomerId) {
+      params.inviteCustomerId = shareStore.saleInviteCustomerId;
     }
 
     return params;
@@ -85,7 +92,9 @@ export const useWeixinShare = () => {
       return shareInfo.wxShareUrl;
     }
 
-    return appendUrl<WxShareUrlParams>(window.location.href, unref(wxShareUrlParams));
+    return appendUrl<WxShareUrlParams>(window.location.href, unref(wxShareUrlParams), {
+      forbiddenFields: ['snapshotPage'],
+    });
   });
 
   /** 隐藏微信分享 */

@@ -1,5 +1,7 @@
 import { getWatchCore } from '@/core/watch-sdk';
+import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useViewerStore } from '@/store/use-viewer-store';
 
 /** 卡片推送 hook */
 export const usePushCard = () => {
@@ -17,5 +19,27 @@ export const usePushCard = () => {
   return {
     pushCardSdk,
     onEntryVisibleChanged,
+  };
+};
+
+export const usePushCardLinkParams = () => {
+  const watchCore = getWatchCore();
+  const channelStore = useChannelStore();
+  const viewerStore = useViewerStore();
+
+  /** 获取链接参数 */
+  const getLinkParams = () => {
+    const saleInfo = watchCore.user.getUserSaleInfo();
+    return {
+      userId: viewerStore.viewerId,
+      // 频道号
+      channelId: channelStore.channelId,
+      // 跟进人 id
+      saleId: saleInfo.saleId,
+    };
+  };
+
+  return {
+    getLinkParams,
   };
 };

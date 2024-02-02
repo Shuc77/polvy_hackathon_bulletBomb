@@ -45,9 +45,15 @@ export const usePopper = (options: UsePopperOptions = {}) => {
   const outSideClickDelayHide = options.outSideClickDelayHide ?? ref(false);
   /** 弹层宽度跟随触发节点 */
   const followReferenceWidth = options.followReferenceWidth ?? ref(false);
+  /** 强制 ZIndex */
+  const forceZIndex = options.forceZIndex ?? null;
 
   const appendToBody = options.appendToBody ?? true;
   const mountEl = options.mountEl ?? '';
+
+  if (!appendToBody && !mountEl) {
+    console.warn('[use-popper] need mountEl');
+  }
 
   const { popperVisible, showPopper, hidePopper, togglePopper, delayShowPopper, delayHidePopper } =
     usePopperVisible(options);
@@ -97,6 +103,7 @@ export const usePopper = (options: UsePopperOptions = {}) => {
     popperVisible,
     appendToBody,
     mountEl,
+    forceZIndex,
     showPopper,
     hidePopper,
     togglePopper,

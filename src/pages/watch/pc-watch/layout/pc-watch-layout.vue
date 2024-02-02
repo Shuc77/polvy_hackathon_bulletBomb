@@ -247,7 +247,7 @@ const { pcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
 
 onMounted(() => {
   // 需要在 body 设置全局背景
-  $(document.body).addClass(['g-background', 'pws-pc-watch-bg']);
+  $(document.body).addClass(['plv-pc-watch-bg', 'pws-pc-watch-bg']);
   if (pcWatchBackgroundImage.value) {
     document.body.style.setProperty(
       'background-image',
@@ -272,6 +272,13 @@ $--layout-right-width-percent: 100% - $--layout-left-width-percent !default;
 $--layout-player-percent: 56.25% !default;
 // 副屏收起时的高度
 $--layout-sub-pack-up-height: 40px !default;
+
+.plv-pc-watch-bg {
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: top;
+  background-size: cover;
+}
 
 .c-pc-watch-layout {
   width: 100%;

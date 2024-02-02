@@ -40,6 +40,7 @@ export const useSyncStoreForWatchApp = () => {
 
   const liveBookingStore = useLiveBookingStore();
   const shareStore = useShareStore();
+  const inviteStore = useInviteStore();
   const multiMeetingStore = useMultiMeetingStore();
 
   /**
@@ -58,6 +59,7 @@ export const useSyncStoreForWatchApp = () => {
 
     liveBookingStore.syncLiveBookingStore();
     shareStore.syncShareStore();
+    inviteStore.syncInviteInfo();
     multiMeetingStore.syncMultiMeetingStore();
   }
 
@@ -101,6 +103,7 @@ export const useSyncStoreForWatchPage = () => {
   const redpackStore = useRedpackStore();
   const withdrawStore = useWithdrawStore();
   const donateStore = useDonateStore();
+  const shareStore = useShareStore();
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
   const pageAdvertStore = usePageAdvertStore();
@@ -122,6 +125,7 @@ export const useSyncStoreForWatchPage = () => {
     redpackStore.syncRedpackStore();
     withdrawStore.syncWithdrawStore();
     donateStore.syncDonateStore();
+    shareStore.syncShareStore();
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
     pageAdvertStore.syncPageAdvertStore();

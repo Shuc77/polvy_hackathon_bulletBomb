@@ -1,6 +1,13 @@
 import { useChatStore } from '@/store/use-chat-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { AppConfig, PolyvWatchCore, createWatchCore, setDebugMode } from '@polyv/live-watch-sdk';
+import {
+  AppConfig,
+  PolyvWatchCore,
+  createWatchCore,
+  setDebugMode,
+  SdkLoaderEnv,
+  destroyWatchCore,
+} from '@polyv/live-watch-sdk';
 
 import { bindChannelModuleEvents } from '@/core/bind-sdk-events/bind-channel-events';
 import { bindChatModuleEvents } from '@/core/bind-sdk-events/bind-chat-events';
@@ -35,6 +42,10 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
 
   watchCore = createWatchCore(appConfig);
 
+  if (WATCH_SDK_ENV !== SdkLoaderEnv.Prod) {
+    setDebugMode(true);
+  }
+
   // 绑定 SDK 相关事件的监听回调
   bindWatchCoreEvents();
   bindChannelModuleEvents();
@@ -66,6 +77,12 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   });
 
   return watchCore;
+}
+
+/** 销毁观看页应用对象 */
+export function destroyWatchSdk() {
+  destroyWatchCore();
+  watchCore = undefined;
 }
 
 window.debugWatchSdk = () => {

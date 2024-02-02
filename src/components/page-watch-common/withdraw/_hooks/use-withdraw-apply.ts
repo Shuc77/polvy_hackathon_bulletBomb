@@ -79,7 +79,7 @@ export const useWithdrawApplyHook = () => {
             const reg = /^\d+(\.\d{0,2})?$/;
             const matchResult = `${val}`.match(reg);
             if (matchResult === null) {
-              errorMsg = '提现金额为小数位最多两位的数字';
+              errorMsg = translate('withdraw.apply.rules.amount.dotLimit');
             }
 
             if (errorMsg) {

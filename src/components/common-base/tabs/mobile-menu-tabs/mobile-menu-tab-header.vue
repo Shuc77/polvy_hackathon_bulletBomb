@@ -76,6 +76,8 @@ const { leftArrowVisible: leftShadowVisible, rightArrowVisible: rightShadowVisib
 
 <style lang="scss">
 .c-mobile-menu-tab-header {
+  position: relative;
+  z-index: 11;
   display: flex;
   flex-shrink: 0;
   width: 100%;

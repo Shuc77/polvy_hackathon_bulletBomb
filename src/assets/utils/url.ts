@@ -1,7 +1,7 @@
 /**
  * @file 与地址有关的工具方法
  */
-import { appendToURL, parse } from '@just4/querystring';
+import { appendToURL, IQSStringifyOptions, parse } from '@just4/querystring';
 import { changeProtocol } from '@utils-ts/net';
 
 /**
@@ -24,13 +24,28 @@ export function fitProtocol(url: string, excludePrefixList: string[] = ['blob'])
  * @param {object} query - 需要添加的查询参数
  * @returns 拼接后的 url 字符串
  */
-export function appendUrl<T extends object>(url: string, query: T): string {
+export function appendUrl<T extends object>(
+  url: string,
+  query: T,
+  options?: Readonly<IQSStringifyOptions> & {
+    /** 禁止的参数 */
+    forbiddenFields: string[];
+  },
+): string {
   const searchIndex = url.indexOf('?');
-  let searchParams = {};
+  let searchParams = {} as { [key: string]: string | string[] };
   let host = url;
   if (searchIndex !== -1) {
     host = url.slice(0, searchIndex);
     searchParams = parse(url.slice(searchIndex + 1));
   }
-  return appendToURL(host, Object.assign({}, searchParams, query));
+
+  const payload = Object.assign({}, searchParams, query);
+  if (options && Array.isArray(options.forbiddenFields)) {
+    options?.forbiddenFields.forEach(field => {
+      delete payload[field];
+    });
+  }
+
+  return appendToURL(host, payload, options);
 }

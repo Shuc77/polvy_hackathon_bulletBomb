@@ -47,6 +47,7 @@ export const useMsgRender = (
       }
 
       const propsData: ChatMsgItemPropsType = {
+        category: hookOptions.category,
         containerElem: hookOptions.getContainerElem(),
         getVirtualList: hookOptions.getVirtualList,
         chatMsg,

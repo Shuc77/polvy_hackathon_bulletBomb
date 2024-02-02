@@ -4,10 +4,11 @@
 
 import { translate } from '@/assets/lang';
 import { formCommonProps, useFormCommonValidate } from '../hooks/use-form-common';
-import { computed } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { InputValueType } from '../form-input/hooks/use-form-input';
+import { FormInputInstance } from '../form-input/types/form-input-types';
 
 export const formPhoneInputProps = () => ({
   ...formCommonProps(),
@@ -37,6 +38,8 @@ export const useFormPhoneInput = (options: {
     props,
   });
 
+  const inputRef = ref<FormInputInstance>();
+
   /** 输入框占位文本 */
   const inputPlaceholder = computed(() => {
     return props.placeholder || translate('form.placeholder.phoneInput');
@@ -45,6 +48,11 @@ export const useFormPhoneInput = (options: {
   /** 处理表单输入框修改 */
   function onFormInputChange(val: InputValueType) {
     emit('input', `${val}`);
+
+    const inputInstance = unref(inputRef);
+    if (inputInstance) {
+      inputInstance.forceUpdate();
+    }
   }
 
   /** 处理表单输入框失焦 */
@@ -63,6 +71,7 @@ export const useFormPhoneInput = (options: {
   }
 
   return {
+    inputRef,
     inputPlaceholder,
     onFormInputChange,
     onFormInputBlur,
