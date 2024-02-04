@@ -1,66 +1,44 @@
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
-import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { ref, unref, watch } from 'vue';
+import { usePopper } from '@/hooks/components/use-popper';
 
 export const msgTipsControlProps = () => ({
   /** 是否禁用提示，默认：true */
   disabledTips: PropUtils.bool.def(true),
 });
 
-export const useMsgTipsControl = (options: { props: VueProps<typeof msgTipsControlProps> }) => {
-  const { props } = options;
-
-  /** 外层节点 */
-  const referenceRef = ref<HTMLDivElement>();
-
-  const { listenClickOutSide, removeListenClickOutSide } = useClickOutside(
-    referenceRef,
-    onClickOutside,
-    false,
-  );
+export const useMsgTipsControl = (options: {
+  props: VueProps<typeof msgTipsControlProps>;
+  mountEl: string;
+}) => {
+  const { props, mountEl } = options;
 
   /** 提示是否显示 */
   const {
-    visible: tipsVisible,
-    toggle: toggleTipsVisible,
-    close: closeTips,
-  } = useSimpleVisible(false);
-
-  /** 点击内容 */
-  function onClickControl() {
-    if (props.disabledTips) {
-      return;
-    }
-
-    listenClickOutSide();
-    toggleTipsVisible();
-  }
+    referenceRef,
+    popperRef,
+    popperVisible: tipsVisible,
+    hidePopper: closeTips,
+  } = usePopper({
+    arrow: {
+      color: 'rgba(66, 68, 83, 0.95)',
+      size: 5,
+    },
+    placement: 'top',
+    popperDisabled: props.disabledTips,
+    forceZIndex: 10,
+    appendToBody: false,
+    mountEl,
+  });
 
   /** 点击提示 */
   function onClickTips() {
     closeTips();
   }
 
-  /** 处理点击外部 */
-  function onClickOutside() {
-    removeListenClickOutSide();
-    closeTips();
-  }
-
-  watch(
-    () => unref(tipsVisible),
-    () => {
-      if (!unref(tipsVisible)) {
-        removeListenClickOutSide();
-      }
-    },
-  );
-
   return {
     referenceRef,
+    popperRef,
     tipsVisible,
-    onClickControl,
     onClickTips,
   };
 };

@@ -39,6 +39,8 @@ export interface UsePopperOptions {
   appendToBody?: boolean;
   /** 渲染到某个元素中(Dom节点选择器) */
   mountEl?: string;
+  /** 强制 zIndex，默认 null */
+  forceZIndex?: number | null;
 }
 
 export interface PopperVisibleResult {

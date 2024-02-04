@@ -28,12 +28,13 @@ import { useSaleInviteIntercept } from './_hooks/use-sale-invite-intercept';
  * @desc 存在需要拦截的情况下，拦截器内部会自行处理，调用方需要终止初始化函数继续执行
  * @returns 是否需要拦截
  * */
-const useInterceptWatchAppInit = (): boolean => {
+const useInterceptWatchAppInit = async (): Promise<boolean> => {
   const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
 
   const { checkSaleInvite } = useSaleInviteIntercept();
-  if (checkSaleInvite()) {
+  const checkSaleInviteResult = await checkSaleInvite();
+  if (checkSaleInviteResult) {
     return true;
   }
 
@@ -142,6 +143,10 @@ export function useWatchApp() {
         wxInviteId: paramGetter.wxInviteId(),
         invitee: paramGetter.invitee(),
       },
+      domainInfo: {
+        // @PLV-WARN
+        // 此处可以传入相关的域名配置，非必要无需修改，使用 SDK 内部默认值即可，需要注意保利威的业务页面会依赖 watchPageDomain 参数去拼接域名跳转，具体业务可以咨询保利威团队
+      },
       autoAuthParams: {
         code: paramGetter.password(),
         ignoreWxAuth: paramGetter.ignoreWxAuth(),
@@ -149,6 +154,7 @@ export function useWatchApp() {
       },
       saleInviteParams: {
         saleCode: paramGetter.saleCode(),
+        inviteCustomerId: paramGetter.inviteCustomerId(),
       },
       statisticsParams: {
         param4: paramGetter.param4(),
@@ -174,7 +180,7 @@ export function useWatchApp() {
     syncStoreBeforeWatchAppInited();
 
     /** 需要拦截观看页应用初始化 */
-    const needInterceptWatchAppInit = useInterceptWatchAppInit();
+    const needInterceptWatchAppInit = await useInterceptWatchAppInit();
     if (needInterceptWatchAppInit) {
       return;
     }

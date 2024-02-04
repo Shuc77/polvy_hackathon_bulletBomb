@@ -13,11 +13,7 @@ export const loadAliAwsc = () => {
   if (!loadPromise) {
     loadPromise = new Promise((resolve, reject) => {
       (async () => {
-        await loadScript('https://g.alicdn.com/AWSC/AWSC/awsc.js', {
-          props: {
-            crossOrigin: 'anonymous',
-          },
-        });
+        await loadScript('https://g.alicdn.com/AWSC/AWSC/awsc.js');
 
         if (window.AWSC) {
           resolve(window.AWSC);

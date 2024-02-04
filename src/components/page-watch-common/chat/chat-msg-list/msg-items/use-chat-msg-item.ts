@@ -8,7 +8,17 @@ import { useChatMsgData } from './_hooks/chat-msg-data-hook';
 import { useChatMsgTime } from './_hooks/chat-msg-time-hook';
 import { useChatMsgUser } from './_hooks/chat-msg-user-hook';
 
+/** 消息组件类别 */
+export enum ChatMsgItemCategory {
+  /** 聊天讨论区 */
+  Chat = 'chat',
+  /** 提问区 */
+  Ask = 'ask',
+}
+
 export const chatMsgItemProps = () => ({
+  /** 消息组件类别 */
+  category: PropUtils.enum<ChatMsgItemCategory>().def(ChatMsgItemCategory.Chat),
   /** 消息滚动容器 */
   containerElem: PropUtils.oneOfType<HTMLDivElement>([HTMLDivElement]),
   /** 获取虚拟列表方法 */

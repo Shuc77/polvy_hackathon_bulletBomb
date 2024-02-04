@@ -1,7 +1,7 @@
 /**
  * @file 全局样式及页面元素处理
  */
-import { isIOS } from '@/assets/utils/browser';
+import { isIOS, isPcMiniProgram } from '@/assets/utils/browser';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { $ } from '@just4/dom';
@@ -20,6 +20,12 @@ export const useGlobalStyle = () => {
     if (isIOS) {
       $(document.documentElement).addClass(iosPageClass);
       $(document.body).addClass(iosPageClass);
+    }
+
+    // 针对 pc 小程序环境添加 css 标识
+    const pcMiniProgramClass = 'g-page--pc-mini-program';
+    if (isPcMiniProgram) {
+      $(document.documentElement).addClass(pcMiniProgramClass);
     }
   }
 

@@ -8,6 +8,8 @@
     }"
     v-show="lotteryAnimationVisible"
     :lottery-sdk="lotterySdk"
+    :btn-text="interactSetting.lotteryGiftButtonTextCH"
+    :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
     @lottery-status-changed="onLotteryStatusChange"
     @is-show-changed="onVisibleChange"
   />
@@ -30,7 +32,7 @@ const lotteryAniRef = ref();
 
 useAppendTo(lotteryAniRef);
 
-const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
+const { isIarFullScreen, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { lotterySdk, lotteryAnimationVisible, onLotteryStatusChange, onVisibleChange } =
   useLotteryAnimation();

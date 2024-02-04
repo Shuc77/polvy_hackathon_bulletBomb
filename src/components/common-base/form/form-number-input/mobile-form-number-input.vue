@@ -5,7 +5,7 @@
       ref="inputRef"
       v-bind="attrs"
       type="number"
-      :value="value"
+      :value="stringVal"
       @input="onInputChange"
     >
       <template
@@ -33,7 +33,7 @@ const emit = defineEmits(formNumberInputEmits());
 
 const attrs = useAttrs();
 
-const { inputRef, value, onInputChange } = useFormNumberInput({
+const { inputRef, stringVal, onInputChange } = useFormNumberInput({
   props,
   emit,
 });

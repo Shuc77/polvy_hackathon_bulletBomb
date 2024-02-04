@@ -8,6 +8,9 @@
     :invite-url="generatePosterUrl"
     :is-auto-popper="interactSetting.conditionLotteryAutoPopperEnabled"
     :is-full-screen="isIarFullScreen"
+    :before-join-lottery="beforeJoinLottery"
+    :btn-text="interactSetting.lotteryGiftButtonTextCH"
+    :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
     @comment-success="onCommentSuccess"
     @entry-visible-changed="onEntryVisibleChanged"
   />
@@ -31,7 +34,13 @@ const { generatePosterUrl } = storeDefinitionToRefs(useInviteStore);
 const { isIarFullScreen, welfareLotteryPendantVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { welfareLotterySdk, onCommentSuccess, onEntryVisibleChanged } = useWelfareLottery();
+const {
+  welfareLotterySdk,
+
+  beforeJoinLottery,
+  onCommentSuccess,
+  onEntryVisibleChanged,
+} = useWelfareLottery();
 </script>
 
 <style lang="scss">

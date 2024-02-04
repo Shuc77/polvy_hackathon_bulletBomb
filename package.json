@@ -1,6 +1,6 @@
 {
   "name": "polyv-web-live-watch-sdk",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -35,7 +35,7 @@
     "@just4/virtual-list": "0.12.0",
     "@polyv/chat-sdk-ui-ask-question": "0.3.0-rc.3",
     "@polyv/icons-vue": "1.2.0",
-    "@polyv/live-watch-sdk": "1.0.0",
+    "@polyv/live-watch-sdk": "1.1.0",
     "@polyv/polyv-ui": "2.29.0",
     "@polyv/utils": "2.6.0",
     "@polyv/web-view-bridge": "0.1.0-rc.1",

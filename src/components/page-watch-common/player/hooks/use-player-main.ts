@@ -9,6 +9,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useLangStore } from '@/store/use-lang-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { LiveStatus, SetupPlayerOptions, SetupPlayerPlaybackOptions } from '@polyv/live-watch-sdk';
 import { usePlayerEvent } from './use-player-event';
 import { LangType } from '@/assets/lang/lang-enum';
@@ -31,6 +32,7 @@ export const usePlayerMain = ({
   const playbackStore = usePlaybackStore();
   const { currentPlaybackTarget } = storeDefinitionToRefs(usePlaybackStore);
   const langStore = useLangStore();
+  const layoutStore = useLayoutStore();
   const forceAutoPlayRs = getForceAutoResult();
 
   /** 播放器渲染容器 */
@@ -217,6 +219,14 @@ export const usePlayerMain = ({
       }
 
       initPlayer();
+    },
+  );
+
+  watch(
+    () => layoutStore.mobilePlayerIsPageFullscreen,
+    () => {
+      const watchCore = getWatchCore();
+      watchCore.player.resizeBarrage();
     },
   );
 

@@ -12,7 +12,6 @@
       <div
         ref="referenceRef"
         class="c-mobile-msg-container__content__inner"
-        @click="onClickControl"
       >
         <div
           v-if="bubbleModel"
@@ -22,21 +21,26 @@
           <slot></slot>
         </div>
         <slot v-else></slot>
+      </div>
 
-        <!-- 气泡提示 -->
-        <transition
-          v-if="!disabledTips"
-          name="fade"
+      <!-- 气泡提示 -->
+      <transition
+        v-if="!disabledTips"
+        name="fade"
+      >
+        <div
+          v-show="tipsVisible"
+          ref="popperRef"
+          class="c-mobile-msg-container__tips-bubble--popper"
         >
           <div
-            v-show="tipsVisible"
             class="c-mobile-msg-container__tips-bubble"
             @click.stop="onClickTips"
           >
             <slot name="tips-content"></slot>
           </div>
-        </transition>
-      </div>
+        </div>
+      </transition>
 
       <!-- 气泡后缀内容 -->
       <div class="c-mobile-msg-container__content__suffix">
@@ -83,7 +87,10 @@ const { isSpecialUser } = useChatMsgUserInject();
 
 const { bubbleStyle } = useMsgContainer({ props });
 
-const { referenceRef, tipsVisible, onClickControl, onClickTips } = useMsgTipsControl({ props });
+const { referenceRef, popperRef, tipsVisible, onClickTips } = useMsgTipsControl({
+  props,
+  mountEl: 'c-mobile-msg-container',
+});
 </script>
 
 <style lang="scss">
@@ -102,28 +109,12 @@ const { referenceRef, tipsVisible, onClickControl, onClickTips } = useMsgTipsCon
 }
 
 .c-mobile-msg-container__tips-bubble {
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
   padding: 10px 15px;
   font-size: 14px;
   color: rgba($--color-white, 0.8);
   white-space: nowrap;
-  background-color: rgba(#424453, 0.95);
+  background-color: rgba(66, 68, 83, 0.95);
   border-radius: 4px;
-  transform: translateX(-50%);
-
-  &::after {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    height: 0;
-    content: '';
-    border-color: rgba(#424453, 0.95) transparent transparent transparent;
-    border-style: solid;
-    border-width: 5px;
-    transform: translateX(-50%);
-  }
 }
 
 .c-mobile-msg-container__content__bubble {

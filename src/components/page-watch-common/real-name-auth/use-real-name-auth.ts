@@ -9,13 +9,13 @@ import { toast } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useLangStore } from '@/store/use-lang-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { appendToURL } from '@just4/querystring';
 import { RealNameFail } from '@polyv/live-watch-sdk';
 import { computed, reactive, unref } from 'vue';
 
 export const useRealNameAuth = () => {
   const langStore = useLangStore();
   const viewerStore = useViewerStore();
+  const watchCore = getWatchCore();
 
   const { visible, setVisible } = useSimpleVisible(false);
 
@@ -34,9 +34,7 @@ export const useRealNameAuth = () => {
     const url = langStore.currentLang === LangType.Chinese ? userAgreementCn : userAgreementEn;
 
     if (isMobile) {
-      return appendToURL('https://live.polyv.cn/transit-jump/pdf.html', {
-        url,
-      });
+      return watchCore.utils.generatePdfPreviewUrl(url);
     }
 
     return url;
@@ -53,9 +51,7 @@ export const useRealNameAuth = () => {
     const url = langStore.currentLang === LangType.Chinese ? policyAgreementCn : policyAgreementEn;
 
     if (isMobile) {
-      return appendToURL('https://live.polyv.cn/transit-jump/pdf.html', {
-        url,
-      });
+      return watchCore.utils.generatePdfPreviewUrl(url);
     }
 
     return url;

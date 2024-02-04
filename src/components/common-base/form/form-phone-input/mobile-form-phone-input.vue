@@ -2,6 +2,7 @@
 <template>
   <div class="c-mobile-form-phone-input">
     <mobile-form-input
+      ref="inputRef"
       v-bind="attrs"
       type="number"
       :value="value"
@@ -67,6 +68,7 @@ function openAreaCodePopup() {
 }
 
 const {
+  inputRef,
   inputPlaceholder,
 
   onFormInputChange,

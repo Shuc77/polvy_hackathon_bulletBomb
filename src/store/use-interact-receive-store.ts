@@ -132,6 +132,8 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       seatCustomTextEnabled: false,
       seatCustomText: '',
       seatGuestCardEnabled: false,
+      lotteryGiftButtonTextCH: '',
+      lotteryGiftButtonTextEN: '',
     });
 
     function syncInteractStore() {

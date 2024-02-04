@@ -1,6 +1,6 @@
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { ref, unref } from 'vue';
+import { computed, ref, unref } from 'vue';
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { FormInputInstance } from '../form-input/types/form-input-types';
 import { formCommonProps } from '../hooks/use-form-common';
@@ -31,6 +31,18 @@ export const useFormNumberInput = (options: {
 
   const inputRef = ref<FormInputInstance>();
 
+  /** 记录输入的值 */
+  const tempInputVal = ref('');
+
+  const stringVal = computed(() => {
+    // 兼容处理，需要界面能够展示 1.0， 0.01 之类的字符
+    if (Number(tempInputVal.value) === props.value && tempInputVal.value.substring(0, 1) !== '.') {
+      return tempInputVal.value;
+    }
+
+    return String(props.value);
+  });
+
   /**
    * 格式化值
    */
@@ -38,6 +50,7 @@ export const useFormNumberInput = (options: {
     if (val === '') {
       return val;
     }
+
     return Number(val);
   }
 
@@ -60,9 +73,12 @@ export const useFormNumberInput = (options: {
   }
 
   function onInputChange(val: InputValueType): void {
-    let newVal = formatValue(val);
-    newVal = checkMaxMin(newVal);
-    emit('input', newVal);
+    const newVal = checkMaxMin(val);
+
+    tempInputVal.value = String(newVal);
+    const emitVal = formatValue(newVal);
+
+    emit('input', emitVal);
 
     const inputInstance = unref(inputRef);
     if (inputInstance) {
@@ -72,6 +88,7 @@ export const useFormNumberInput = (options: {
 
   return {
     inputRef,
+    stringVal,
     value,
     onInputChange,
   };

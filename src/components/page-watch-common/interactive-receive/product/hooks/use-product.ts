@@ -43,16 +43,19 @@ export const useProduct = () => {
 
 /** 商品库跳转参数 hook */
 export const useProductLinkParams = () => {
+  const watchCore = getWatchCore();
   const channelStore = useChannelStore();
   const viewerStore = useViewerStore();
   const inviteStore = useInviteStore();
 
   /** 获取链接参数 */
   const getLinkParams = () => {
+    const saleInfo = watchCore.user.getUserSaleInfo();
     return {
       openId: viewerStore.openId,
       unionId: viewerStore.unionId,
       userId: viewerStore.viewerId,
+      nickname: viewerStore.nickname,
       // 邀请人 openId
       inviteOpenId: inviteStore.inviteUserOpenId,
       // 邀请人 unionId
@@ -63,6 +66,8 @@ export const useProductLinkParams = () => {
       channelId: channelStore.channelId,
       // 当前场次号
       sessionId: channelStore.currentSessionId,
+      // 跟进人 id
+      saleId: saleInfo.saleId,
     };
   };
 

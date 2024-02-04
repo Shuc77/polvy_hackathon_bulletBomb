@@ -1,35 +1,35 @@
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { useChannelStore } from '@/store/use-channel-store';
 import { useCommonStore } from '@/store/use-common-store';
-import { useViewerStore } from '@/store/use-viewer-store';
-import { appendToURL } from '@just4/querystring';
 import { InvitePosterData, YN } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@polyv/utils/es/boolean';
 import { formatDate } from '@utils-ts/date';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { CSSProperties } from 'vue/types/jsx';
 
 export const invitePosterProps = () => ({
   type: PropUtils.number.def(0),
   extraInfo: PropUtils.oneOfType([Object, Array]),
 });
 
-// 海报合成页路径
-const posterOrigin = 'https://live.polyv.cn';
-// const posterOrigin = 'http://127.0.0.1:15014';
-const posterBaseUrl = `${posterOrigin}/invite-poster/poster.html`;
-
 export const useInvitePoster = (options: { props: VueProps<typeof invitePosterProps> }) => {
-  const channelStore = useChannelStore();
   const channelInfoStore = useChannelInfoStore();
-  const viewerStore = useViewerStore();
   const commonStore = useCommonStore();
   const { props } = options;
 
   const posterData = ref<InvitePosterData>();
 
   const posterIframeRef = ref<HTMLIFrameElement>();
+
+  const posterIframeStyle = computed<CSSProperties>(() => {
+    const iframeWidth = 0.768 * document.documentElement.clientWidth;
+    const iframeHeight = (667 / 375) * iframeWidth;
+    return {
+      width: `${iframeWidth}px`,
+      height: `${iframeHeight}px`,
+    };
+  });
 
   /** iframe 地址 */
   const iframeUrl = ref('');
@@ -63,20 +63,17 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
 
     const params = {
       type,
-      channelId: channelStore.channelId,
-      avatar: viewerStore.avatar,
-      nickname: viewerStore.nickname,
       name: channelInfoStore.channelTitle,
-      inviteCoverImage:
-        promotion.inviteCoverImage || commonStore.plvDefaultResource.defaultSplashImg,
       publisher: channelInfoStore.channelPublisher,
       startTime,
       watchUrl: promotion.watchUrl + watchParams,
+      inviteCoverImage:
+        promotion.inviteCoverImage || commonStore.plvDefaultResource.defaultSplashImg,
       customUserType: promotion.customUserType,
       footerText,
     };
 
-    iframeUrl.value = appendToURL(posterBaseUrl, params);
+    iframeUrl.value = watchCore.invite.getInvitePosterUrl(params);
   }
 
   function postCustomPosterData() {
@@ -159,7 +156,9 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
 
   function onWindowMessage(e: MessageEvent) {
     const data = e.data;
-    if (!e.origin.startsWith(posterOrigin)) {
+    const watchCore = getWatchCore();
+    const domainInfo = watchCore.domain.getDomainInfo();
+    if (!e.origin.startsWith(domainInfo.watchPageDomain)) {
       return;
     }
     if (typeof data === 'string' && data.indexOf('data:image') > -1) {
@@ -184,6 +183,7 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
   return {
     iframeUrl,
     posterIframeRef,
+    posterIframeStyle,
     loaded,
     posterBase64,
   };

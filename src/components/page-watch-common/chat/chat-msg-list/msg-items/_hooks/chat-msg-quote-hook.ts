@@ -1,11 +1,11 @@
 import { appEvents, eventBus } from '@/app/app-events';
-import { TAB_NAME_ASK } from '@/assets/constants/tab-name';
 import { useChatStore } from '@/store/use-chat-store';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatMsgQuoteOriginType } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
+import { ChatMsgItemCategory } from '../use-chat-msg-item';
+import { useChatMsgDataInject } from './chat-msg-data-hook';
 
 /**
  * 聊天消息回复 hook
@@ -15,17 +15,15 @@ export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType
   const chatStore = useChatStore();
   const watchAppStore = useWatchAppStore();
   const viewerStore = useViewerStore();
-  const layoutStore = useLayoutStore();
+
+  const { category } = useChatMsgDataInject<ChatMsgQuoteOriginType>();
 
   /** 能否进行引用回复 */
   const canQuoteReply = computed<boolean>(() => {
     if (watchAppStore.isPlaybackWatchUrl) return false;
 
     // 当前处于提问不需要回复
-    if (
-      layoutStore.mobileMenuCurrentName === TAB_NAME_ASK ||
-      layoutStore.pcAsideTabCurrentName === TAB_NAME_ASK
-    ) {
+    if (category.value === ChatMsgItemCategory.Ask) {
       return false;
     }
 

@@ -161,6 +161,8 @@ useConnectMicing();
 </script>
 
 <style lang="scss">
+@import './_styles/cover-mobile-player.scss';
+
 $--player-page-fullscreen-width: $--plv-mobile-watch-full-screen-vh !default;
 $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh / 2) * -1) !default;
 

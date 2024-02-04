@@ -6,6 +6,9 @@
     :welfare-lottery-sdk="welfareLotterySdk"
     :watch-url="watchUrl"
     :is-auto-popper="interactSetting.conditionLotteryAutoPopperEnabled"
+    :before-join-lottery="beforeJoinLottery"
+    :btn-text="interactSetting.lotteryGiftButtonTextCH"
+    :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
     @comment-success="onCommentSuccess"
     @entry-visible-changed="onEntryVisibleChanged"
   />
@@ -26,5 +29,11 @@ const { watchUrl } = storeDefinitionToRefs(useChannelStore);
 const { welfareLotteryPendantVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { welfareLotterySdk, onCommentSuccess, onEntryVisibleChanged } = useWelfareLottery();
+const {
+  welfareLotterySdk,
+
+  beforeJoinLottery,
+  onCommentSuccess,
+  onEntryVisibleChanged,
+} = useWelfareLottery();
 </script>

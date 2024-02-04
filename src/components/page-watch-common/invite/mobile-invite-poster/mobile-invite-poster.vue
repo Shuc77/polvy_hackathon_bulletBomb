@@ -6,6 +6,7 @@
       ref="posterIframeRef"
       class="c-mobile-invite-poster__iframe"
       :src="iframeUrl"
+      :style="posterIframeStyle"
     />
     <div
       v-show="!loaded"
@@ -24,7 +25,14 @@ import { useInvitePoster, invitePosterProps } from './use-invite-poster';
 
 const props = defineProps(invitePosterProps());
 
-const { iframeUrl, posterBase64, loaded, posterIframeRef } = useInvitePoster({ props });
+const {
+  iframeUrl,
+  posterIframeRef,
+  posterIframeStyle,
+
+  posterBase64,
+  loaded,
+} = useInvitePoster({ props });
 </script>
 
 <style lang="scss">
@@ -34,8 +42,8 @@ const { iframeUrl, posterBase64, loaded, posterIframeRef } = useInvitePoster({ p
   height: 100%;
 }
 .c-mobile-invite-poster__iframe {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  pointer-events: none;
   border: none;
   opacity: 0;
 }

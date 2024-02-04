@@ -469,6 +469,7 @@ export const chinaLang = {
   'redpack.equal.amount.limit': '最低平分金额大于等于 ${average} 元',
   'redpack.bad.words': '涉及敏感词',
   'redpack.send.amount.low': '金额不能小于1元',
+  'redpack.send.amount.dotLimit': '金额只能输入两位小数',
   'redpack.greeting.long': '祝福语过长',
   'redpack.unsupported': '不支持该红包类型',
 
@@ -530,6 +531,7 @@ export const chinaLang = {
   'withdraw.apply.success.msg': '提现申请成功',
   'withdraw.apply.rules.amount.required': '请填写提现金额',
   'withdraw.apply.rules.amount.low': '金额不能小于1元',
+  'withdraw.apply.rules.amount.dotLimit': '金额只能输入两位小数',
 
   'withdraw.error.noUser': '找不到该微信用户',
   'withdraw.error.getCashExceed': '提取金额超过用户余额',

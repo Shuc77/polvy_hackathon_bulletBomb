@@ -34,11 +34,7 @@ export function loadSvgaPlayer(): Promise<SVGASdk> {
   if (!svgaPlayerLoader) {
     svgaPlayerLoader = new Promise((resolve, reject) => {
       (async () => {
-        await loadScript(SVGA_PLAYER_URL, {
-          props: {
-            crossOrigin: 'anonymous',
-          },
-        });
+        await loadScript(SVGA_PLAYER_URL);
         if (window.SVGA) {
           resolve(window.SVGA);
         } else {

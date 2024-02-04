@@ -1,6 +1,7 @@
 /**
  * @file 微信 store
  */
+import { isWeixin } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
 import { WeixinPayType, WxShareInfo, YN } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
@@ -71,7 +72,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   function syncWeixinStore() {
     const watchCore = getWatchCore();
 
-    isWeixinSnapshotPageMode.value = watchCore.weixin.isWeixinSnapshotPageMode();
+    isWeixinSnapshotPageMode.value = isWeixin && watchCore.weixin.isWeixinSnapshotPageMode();
     weixinAuthorized.value = watchCore.weixin.isWeixinAuthorized();
     weixinWatchAuthorized.value = watchCore.weixin.isWeixinWatchAuthorized();
     workWeixinAuthorized.value = watchCore.weixin.isWorkWeixinAuthorized();

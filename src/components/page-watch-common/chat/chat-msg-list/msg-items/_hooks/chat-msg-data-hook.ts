@@ -1,12 +1,13 @@
 import { VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { ChatMsgType, ChatMsgQuoteType } from '@polyv/live-watch-sdk';
 import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
-import { chatMsgItemProps } from '../use-chat-msg-item';
+import { ChatMsgItemCategory, chatMsgItemProps } from '../use-chat-msg-item';
 
 /**
  * 聊天室消息数据上下文
  */
 export interface ChatMsgDataContext<MsgType extends ChatMsgType = ChatMsgType> {
+  category: ComputedRef<ChatMsgItemCategory>;
   /** 聊天消息 */
   chatMsg: ComputedRef<MsgType>;
   /** 上一条消息 */
@@ -45,6 +46,7 @@ export const useChatMsgDataInject = <
  */
 export const useChatMsgData = (props: VueProps<typeof chatMsgItemProps>, autoProvide = true) => {
   const chatMsg = computed(() => props.chatMsg);
+  const category = computed(() => props.category);
   const prevChatMsg = computed(() => props.prevChatMsg);
   const nextChatMsg = computed(() => props.nextChatMsg);
 
@@ -61,6 +63,7 @@ export const useChatMsgData = (props: VueProps<typeof chatMsgItemProps>, autoPro
   });
 
   const chatMsgDataContext: ChatMsgDataContext = {
+    category,
     chatMsg,
     prevChatMsg,
     nextChatMsg,

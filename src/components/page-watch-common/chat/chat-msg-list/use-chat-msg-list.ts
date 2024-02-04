@@ -24,6 +24,7 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useRequestHistoryTime } from './hooks/request-history-time-hook';
+import { ChatMsgItemCategory } from './msg-items/use-chat-msg-item';
 
 /** 监听聊天 Tab 切换 */
 const useChatTabSwitchWatch = (options: { cb: () => void }) => {
@@ -66,6 +67,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
   const { ChatMsgItemComponent } = options;
 
   const hookOptions: ChatMsgListHookOptions = {
+    category: ChatMsgItemCategory.Chat,
     getContainerElem,
     getVirtualList,
   };

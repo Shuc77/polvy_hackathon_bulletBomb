@@ -13,7 +13,6 @@
       <div
         ref="referenceRef"
         class="c-portrait-msg-container__content"
-        @click="onClickControl"
       >
         <slot name="msg-left"></slot>
 
@@ -23,22 +22,26 @@
         </div>
 
         <slot name="msg-right"></slot>
+      </div>
 
-        <!-- 气泡提示 -->
-        <transition
-          v-if="!disabledTips"
-          name="fade"
+      <!-- 气泡提示 -->
+      <transition
+        v-if="!disabledTips"
+        name="fade"
+      >
+        <div
+          v-show="tipsVisible"
+          ref="popperRef"
+          class="c-portrait-msg-container__tips-bubble--popper"
         >
           <div
-            v-show="tipsVisible"
             class="c-portrait-msg-container__tips-bubble"
             @click.stop="onClickTips"
           >
             <slot name="tips-content"></slot>
           </div>
-        </transition>
-      </div>
-
+        </div>
+      </transition>
       <slot name="msg-footer"></slot>
     </div>
   </div>
@@ -64,7 +67,10 @@ const emit = defineEmits({
   'click-container': emitFunc<void>(),
 });
 
-const { referenceRef, tipsVisible, onClickControl, onClickTips } = useMsgTipsControl({ props });
+const { referenceRef, popperRef, tipsVisible, onClickTips } = useMsgTipsControl({
+  props,
+  mountEl: 'c-portrait-msg-container',
+});
 const { askMenuData } = useChannelMenuStore();
 </script>
 
@@ -88,28 +94,12 @@ const { askMenuData } = useChannelMenuStore();
   align-items: center;
 }
 .c-portrait-msg-container__tips-bubble {
-  position: absolute;
-  bottom: calc(100% + 15px);
-  left: 50%;
   padding: 10px 15px;
   font-size: 14px;
   color: rgba($--color-white, 0.8);
   white-space: nowrap;
-  background-color: rgba(#424453, 0.95);
+  background-color: rgba(66, 68, 83, 0.95);
   border-radius: 4px;
-  transform: translateX(-50%);
-
-  &::after {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    height: 0;
-    content: '';
-    border-color: rgba(#424453, 0.95) transparent transparent transparent;
-    border-style: solid;
-    border-width: 5px;
-    transform: translateX(-50%);
-  }
 }
 .c-portrait-msg-container__bubble__margin {
   margin-right: 20px;

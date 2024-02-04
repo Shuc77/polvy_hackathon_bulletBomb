@@ -70,6 +70,12 @@ export const useSendRedpackHook = (
               });
             }
 
+            const reg = /^\d+(\.\d{0,2})?$/;
+            const matchResult = `${val}`.match(reg);
+            if (matchResult === null) {
+              errorMsg = translate('redpack.send.amount.dotLimit');
+            }
+
             if (errorMsg) {
               return [errorMsg];
             }

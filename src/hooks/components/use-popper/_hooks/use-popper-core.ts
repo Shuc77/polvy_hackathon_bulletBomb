@@ -16,74 +16,78 @@ export const usePopperCoreOptions = (
   popperOptions: PopperOptions,
   getPopperCtx: () => PopperInstance | undefined,
 ) => {
-  const { onPopperEvent, placement, popperOffset } = popperOptions;
+  const { onPopperEvent, placement, popperOffset, forceZIndex } = popperOptions;
+
+  // 样式计算，使用 top/left/right/bottom 进行定位
+  const computeStylesMod: Pick<ComputeStylesModifier, 'name' | 'options'> = {
+    name: 'computeStyles',
+    options: {
+      gpuAcceleration: false,
+      adaptive: false,
+    },
+  };
+
+  // 事件监听
+  const eventListenersMod: Pick<EventListenersModifier, 'name' | 'fn'> = {
+    name: 'eventListeners',
+    fn: ({ state }) => {
+      const isReferenceHidden = !!state.modifiersData.hide?.isReferenceHidden;
+      if (typeof onPopperEvent === 'function') {
+        onPopperEvent({ isReferenceHidden });
+      }
+
+      if (state.styles.popper && forceZIndex) {
+        state.styles.popper.zIndex = String(forceZIndex);
+      }
+    },
+  };
+
+  // 偏移量
+  const offsetMod: Pick<OffsetModifier, 'name' | 'options'> = {
+    name: 'offset',
+    options: {
+      offset: ({ placement }) => {
+        let skidding = 0;
+        let distance = 0;
+
+        const offsetVal = unref(popperOffset);
+        if (offsetVal) {
+          const offsetValSkidding = offsetVal[0] ?? 0;
+          const offsetValDistance = offsetVal[1] ?? 0;
+          skidding += offsetValSkidding;
+          distance += offsetValDistance;
+        }
+
+        // 根据箭头的大小自动叠加 offset
+        const ctx = getPopperCtx();
+        const arrowElem = ctx?.state?.elements?.arrow;
+        if (arrowElem instanceof HTMLElement) {
+          const width = arrowElem.offsetWidth;
+          const height = arrowElem.offsetHeight;
+
+          if (placement.includes('top') || placement.includes('bottom')) {
+            distance += height / 2;
+          }
+
+          if (placement.includes('left') || placement.includes('right')) {
+            distance += width / 2;
+          }
+        }
+
+        return [skidding, distance];
+      },
+    },
+  };
+
+  // 箭头
+  const arrowMod: Pick<ArrowModifier, 'name' | 'options'> = {
+    name: 'arrow',
+    options: {
+      padding: 6,
+    },
+  };
 
   const popperCoreOptions = computed<OptionsGeneric<Modifier<unknown, unknown>>>(() => {
-    // 样式计算，使用 top/left/right/bottom 进行定位
-    const computeStylesMod: Pick<ComputeStylesModifier, 'name' | 'options'> = {
-      name: 'computeStyles',
-      options: {
-        gpuAcceleration: false,
-        adaptive: false,
-      },
-    };
-
-    // 事件监听
-    const eventListenersMod: Pick<EventListenersModifier, 'name' | 'fn'> = {
-      name: 'eventListeners',
-      fn: ({ state }) => {
-        const isReferenceHidden = !!state.modifiersData.hide?.isReferenceHidden;
-        if (typeof onPopperEvent === 'function') {
-          onPopperEvent({ isReferenceHidden });
-        }
-      },
-    };
-
-    // 偏移量
-    const offsetMod: Pick<OffsetModifier, 'name' | 'options'> = {
-      name: 'offset',
-      options: {
-        offset: ({ placement }) => {
-          let skidding = 0;
-          let distance = 0;
-
-          const offsetVal = unref(popperOffset);
-          if (offsetVal) {
-            const offsetValSkidding = offsetVal[0] ?? 0;
-            const offsetValDistance = offsetVal[1] ?? 0;
-            skidding += offsetValSkidding;
-            distance += offsetValDistance;
-          }
-
-          // 根据箭头的大小自动叠加 offset
-          const ctx = getPopperCtx();
-          const arrowElem = ctx?.state?.elements?.arrow;
-          if (arrowElem instanceof HTMLElement) {
-            const width = arrowElem.offsetWidth;
-            const height = arrowElem.offsetHeight;
-
-            if (placement.includes('top') || placement.includes('bottom')) {
-              distance += height / 2;
-            }
-
-            if (placement.includes('left') || placement.includes('right')) {
-              distance += width / 2;
-            }
-          }
-
-          return [skidding, distance];
-        },
-      },
-    };
-
-    // 箭头
-    const arrowMod: Pick<ArrowModifier, 'name' | 'options'> = {
-      name: 'arrow',
-      options: {
-        padding: 6,
-      },
-    };
-
     return {
       placement: unref(placement),
       strategy: 'absolute',

@@ -9,21 +9,27 @@ import { parse, appendToURL } from '@just4/querystring';
 const getDefaultQueryParams = (): UniversalParams<string | undefined> => ({});
 
 /** 获取地址栏上的参数 */
-const getUrlQueryParams = (): { [key: string]: string | string[] | undefined } => {
+export const getUrlQueryParams = (): UniversalParams<string | string[] | undefined> => {
   return parse(window.location.search && window.location.search.slice(1)) || {};
 };
 
 /**
- * 页面初始化时，对应地址上所有的参数
- * @warn 如果需要获取某个参数，请改用 paramGetter 来获取
- * */
-export const queryParams = getUrlQueryParams();
+ * 地址栏参数，每次操作地址栏变化时都会同步更改该变量
+ * {@link appendQueryParam} 添加参数到地址栏
+ * {@link removeQueryParam} 从地址栏移除参数
+ */
+export let queryParams = getUrlQueryParams();
+
+/** 设置 queryParams */
+function __setQueryParams(params: UniversalParams<string | string[] | undefined>) {
+  queryParams = { ...params };
+}
 
 /**
  * 获取当前观看页地址上的所有参数的对象
  * @desc 如果从地址上获取不到，会从默认值中获取，如果默认值也获取不到，则返回 undefined
  * */
-export function getQueryParam(key: string): string | undefined {
+function __getQueryParamItem(key: string): string | undefined {
   const result = queryParams[key];
 
   if (typeof result !== 'undefined') {
@@ -39,7 +45,7 @@ export function getQueryParam(key: string): string | undefined {
 
 const buildGetters = <T extends string = string>(key: string) => {
   return (): T | undefined => {
-    return getQueryParam(key) as T | undefined;
+    return __getQueryParamItem(key) as T | undefined;
   };
 };
 
@@ -136,6 +142,8 @@ export const paramGetter = {
   snapshotPage: buildGetters<YN>('snapshotPage'),
   /** 一客一码--销售码 */
   saleCode: buildGetters<string>('saleCode'),
+  /** 一客一码--销售邀请的客户id */
+  inviteCustomerId: buildGetters<string>('inviteCustomerId'),
 };
 
 export type QueryParamsKeyType = keyof typeof paramGetter;
@@ -165,15 +173,17 @@ function replaceHistoryState({ url }: { url: string }) {
  * 移除当前观看页地址上对应的参数
  * */
 export function removeQueryParam(keys: QueryParamsKeyType[]) {
+  const urlParams = getUrlQueryParams();
   for (const key of keys) {
-    if (!queryParams[key]) {
+    if (!urlParams[key]) {
       continue;
     }
-    delete queryParams[key];
+    delete urlParams[key];
   }
 
-  const url = appendToURL(getLocationPathName(), { ...queryParams });
+  __setQueryParams(urlParams);
 
+  const url = appendToURL(getLocationPathName(), queryParams);
   replaceHistoryState({ url });
 }
 
@@ -183,26 +193,11 @@ export function removeQueryParam(keys: QueryParamsKeyType[]) {
 export function appendQueryParam(params: { [key in QueryParamsKeyType]?: string } = {}) {
   const urlParams = getUrlQueryParams();
 
-  const url = appendToURL(
-    getLocationPathName(),
-    {
-      ...urlParams,
-      ...params,
-    },
-    {
-      ignoreEmpty: true,
-    },
-  );
+  __setQueryParams({
+    ...urlParams,
+    ...params,
+  });
 
+  const url = appendToURL(getLocationPathName(), queryParams, { ignoreEmpty: true });
   replaceHistoryState({ url });
 }
-
-// window.paramGetter = paramGetter;
-
-export const useQueryParam = () => {
-  return {
-    paramGetter,
-    getQueryParam,
-    removeQueryParam,
-  };
-};

@@ -1,3 +1,4 @@
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { ref, unref } from 'vue';
@@ -24,6 +25,10 @@ export const useEnrollEnter = () => {
       dialogInstance.openEnrollForm();
     }
   }
+
+  useEventBusListener(appEvents.global.OpenEnrollDialog, () => {
+    onClickEnter();
+  });
 
   return {
     dialogRef,
