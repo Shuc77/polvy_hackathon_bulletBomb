@@ -178,17 +178,11 @@ $--skin-page-common-configs: (
   'chat-msg-special-quote-content:text-color': rgba(#830b0b, 0.8),
   // 聊天消息特殊身份回复内容字体色
   'chat-msg-special-quote-content:border-color': rgba(#830b0b, 0.2),
-  // 聊天消息回复按钮字体色
-  'chat-msg-quote-button:text-color': map.get($--skin-basic-configs, 'main-highlight-text-color'),
   // 聊天回复引用背景色
   'chat-quote-msg:bg-color': #721a1a,
   // 聊天回复引用字体色
   'chat-quote-msg:text-color': map.get($--skin-basic-configs, 'main-text-color'),
 
-  // 聊天消息翻译按钮字体色
-  'chat-msg-translate-button:text-color': rgba($--color-white, 0.6),
-  // 聊天消息翻译按钮 hover 字体色
-  'chat-msg-translate-button--hover:text-color': map.get($--skin-basic-configs, 'main-highlight-text-color'),
   // 聊天消息翻译成功提示字体色
   'chat-msg-translate-finish:text-color': rgba(#830b0b, 0.6),
   // 聊天消息特殊身份翻译成功提示字体色

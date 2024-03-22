@@ -3,8 +3,8 @@
   <div
     class="c-mobile-player-barrage-setting"
     :class="{
-      'c-mobile-player-barrage-setting--fullscreen':
-        mobileNormalLatencyPlayerIsFullscreen && isVerticalScreenOrientation,
+      'c-mobile-player-barrage-setting--force-horizontal':
+        isNormalLatencyPlayerForceHorizontalFullscreen,
     }"
     @click.self="closeBarrageSetting"
   >
@@ -162,13 +162,24 @@ const {
 } = useBarrageSetting();
 
 const {
-  mobilePlayerIsPageFullscreen: isMobLowLatencyPlayerFullscreen,
+  mobilePlayerIsPageFullscreen,
   isVerticalScreenOrientation,
   mobileNormalLatencyPlayerIsFullscreen,
 } = storeDefinitionToRefs(useLayoutStore);
 
 const isPlayerFullscreen = computed(() => {
-  return isMobLowLatencyPlayerFullscreen.value || mobileNormalLatencyPlayerIsFullscreen.value;
+  return mobilePlayerIsPageFullscreen.value || mobileNormalLatencyPlayerIsFullscreen.value;
+});
+
+/**
+ * 正常延迟播放器页面全屏
+ */
+const isNormalLatencyPlayerForceHorizontalFullscreen = computed(() => {
+  return (
+    mobileNormalLatencyPlayerIsFullscreen.value &&
+    mobilePlayerIsPageFullscreen.value &&
+    isVerticalScreenOrientation.value
+  );
 });
 
 watch(isVerticalScreenOrientation, newVal => {
@@ -193,7 +204,7 @@ function closeBarrageSetting() {
   color: #fff;
   pointer-events: initial;
 }
-.c-mobile-player-barrage-setting--fullscreen {
+.c-mobile-player-barrage-setting--force-horizontal {
   position: fixed;
   top: calc((100vh - 100vw) / 2);
   left: calc((100vw - 100vh) / 2);
@@ -210,7 +221,8 @@ function closeBarrageSetting() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 393px;
+  min-width: 393px;
+  max-width: 90%;
   height: 100%;
   color: #fff;
   background: rgba(#000, 0.8);

@@ -4,10 +4,11 @@
     ref="checkInRef"
     class="c-portrait-check-in-popup"
     v-show="checkInVisible"
+    enable-sound-effects
     :check-in-sdk="checkInSdk"
     :is-full-screen="isIarFullScreen"
     @show-entrance="showEntrance"
-    @to-show="setCheckInVisible(true)"
+    @to-show="setCheckInVisible(true, false)"
     @to-hide="setCheckInVisible(false)"
   />
 </template>

@@ -12,6 +12,11 @@ export const useVue = () => {
     return instanceVm?.proxy;
   }
 
+  /** 销毁当前 vue 实例对象 */
+  function destroyCurrentInstance() {
+    getInstance()?.$destroy();
+  }
+
   /** 获取当前组件的 dom 节点 */
   function getCurrentElem() {
     const instance = getInstance();
@@ -31,6 +36,7 @@ export const useVue = () => {
 
   return {
     getInstance,
+    destroyCurrentInstance,
     getCurrentElem,
     getCurrentChildrens,
     getSlot,

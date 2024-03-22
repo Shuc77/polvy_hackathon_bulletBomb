@@ -4,6 +4,7 @@
     class="c-pc-msg-container"
     :class="{
       'c-pc-msg-container--special pws-chat-msg-container-special': isSpecialUser,
+      'c-pc-msg-container--suffix-align-center': suffixMode === 'align-center',
     }"
   >
     <pc-msg-user-info />
@@ -14,6 +15,7 @@
           v-if="bubbleModel"
           class="c-pc-msg-container__content__bubble pws-chat-msg-bubble"
           :style="bubbleStyle"
+          @contextmenu="evt => emits('bubble-contextmenu', evt)"
         >
           <slot></slot>
         </div>
@@ -52,10 +54,15 @@ import PcMsgUserInfo from '../_msg-user-info/pc-msg-user-info.vue';
 import { msgContainerProps, useMsgContainer } from './use-msg-container';
 import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 
 const props = defineProps(msgContainerProps());
 
-const { bubbleModel } = useProps(props);
+const emits = defineEmits({
+  'bubble-contextmenu': emitFunc<MouseEvent>(),
+});
+
+const { bubbleModel, suffixMode } = useProps(props);
 
 const { isSpecialUser } = useChatMsgUserInject();
 
@@ -84,6 +91,13 @@ const { bubbleStyle } = useMsgContainer({
   line-height: 21px;
   word-break: break-word;
   border-radius: 0 6px 6px 6px;
+}
+
+.c-pc-msg-container--suffix-align-center {
+  .c-pc-msg-container__content__suffix {
+    align-self: center;
+    opacity: 1;
+  }
 }
 
 .c-pc-msg-container__content__suffix {

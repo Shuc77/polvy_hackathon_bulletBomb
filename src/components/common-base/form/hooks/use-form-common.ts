@@ -60,7 +60,11 @@ export const useFormCommonValidate = (options: { props: VueProps<typeof formComm
       return;
     }
 
-    await validateCurrentFormItem();
+    try {
+      await validateCurrentFormItem();
+    } catch (error) {
+      console.error('blur-validate', (error as Error).message);
+    }
   }
 
   /** 在聚焦时移除表单节点异常提示 */

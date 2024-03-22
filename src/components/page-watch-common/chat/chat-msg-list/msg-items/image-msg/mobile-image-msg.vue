@@ -3,6 +3,7 @@
   <mobile-msg-container
     class="c-mobile-image-msg"
     bubble-padding="8px"
+    :suffix-mode="'align-center'"
   >
     <div
       v-if="chatMsg.isIllegal"
@@ -43,12 +44,18 @@
         @click="onClickImage"
       />
     </div>
+
+    <!-- 消息状态 -->
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </mobile-msg-container>
 </template>
 
 <script setup lang="ts">
 import { MobileIconForbid } from '@/components/component-icons/mobile/map';
 import MobileMsgContainer from '../_msg-container/mobile-msg-container.vue';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 import { useImageMsg } from './use-image-msg';
 
 const {

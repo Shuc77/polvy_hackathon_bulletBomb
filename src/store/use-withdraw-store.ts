@@ -4,6 +4,7 @@ import { isWeixin } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
+import { PlvWithdrawModule } from '@polyv/live-watch-sdk';
 
 export interface WithdrawStoreState {
   /** 是否展示“提现”功能 */
@@ -23,8 +24,10 @@ export const useWithdrawStore = defineStore<'withdraw', WithdrawStore>('withdraw
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
 
+  const __withdrawConfig = PlvWithdrawModule.generateDefaultWithdrawConfig();
+
   /** 是否可以提现 */
-  const withdrawEnabled = ref(false);
+  const withdrawEnabled = ref(__withdrawConfig.withdrawEnabled);
 
   /** 是否展示“提现”功能 */
   const withdrawVisible = computed(() => {
@@ -35,7 +38,7 @@ export const useWithdrawStore = defineStore<'withdraw', WithdrawStore>('withdraw
   });
 
   /** 最大提现额度 */
-  const withdrawMaxAmount = ref(0);
+  const withdrawMaxAmount = ref(__withdrawConfig.withdrawMaxAmount);
 
   /** 同步提现 Store */
   function syncWithdrawStore() {

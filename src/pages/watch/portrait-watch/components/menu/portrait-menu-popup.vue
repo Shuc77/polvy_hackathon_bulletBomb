@@ -121,6 +121,14 @@
         @click="onClickSetNick"
       />
 
+      <!-- 绑定手机号 -->
+      <menu-item
+        v-if="bindMobileVisible"
+        icon="bind-mobile"
+        :text="$lang('identityInfo.bindMobile')"
+        @click="onClickBindMobile"
+      />
+
       <!-- 发送图片 -->
       <!-- <menu-item
         v-if="chatSetting.viewerSendImgEnabled"
@@ -152,6 +160,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { usePlayerStore } from '@/store/use-player-store';
@@ -211,6 +220,8 @@ const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 const { scoreRedpackEnabled, sendRedpackVisible } = storeDefinitionToRefs(useRedpackStore);
 
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
+
+const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
 /** 点击线路切换 */
 function onClickLineSetting() {
@@ -316,6 +327,12 @@ function onClickPlayMode() {
 /** 点击切换语言流 */
 function onClickSwitchStream() {
   eventBus.$emit(appEvents.portrait.OpenLangStreamPopup, true);
+  closeMenu();
+}
+
+/** 点击绑定手机号 */
+function onClickBindMobile() {
+  eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog, true);
   closeMenu();
 }
 </script>

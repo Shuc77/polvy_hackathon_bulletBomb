@@ -3,6 +3,7 @@
   <div class="c-portrait-player-progress">
     <!-- 播放暂停按钮 -->
     <div
+      v-if="playButtonVisible"
       class="c-portrait-player-progress__button g-img-contain"
       :class="{
         'c-portrait-player-progress__button--pause': playStatus === PlayStatus.Playing,
@@ -11,12 +12,18 @@
     ></div>
 
     <!-- 当前播放时间 -->
-    <div class="c-portrait-player-progress__time">
+    <div
+      v-if="playbackTimeVisible"
+      class="c-portrait-player-progress__time"
+    >
       <span>{{ formatSeconds(currentTime, { segments: 3 }) }}</span>
     </div>
 
     <!-- 进度条 -->
-    <div class="c-portrait-player-progress__main">
+    <div
+      v-if="playerProgressVisible"
+      class="c-portrait-player-progress__main"
+    >
       <slider-bar
         wrap-slider-track-color="rgba(255, 255, 255, 0.4)"
         :slider-track-size="2"
@@ -29,7 +36,10 @@
     </div>
 
     <!-- 总时长 -->
-    <div class="c-portrait-player-progress__time">
+    <div
+      v-if="playbackTimeVisible"
+      class="c-portrait-player-progress__time"
+    >
       <span>{{ formatSeconds(durationTime, { segments: 3 }) }}</span>
     </div>
 
@@ -51,12 +61,15 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 
 const { playStatus, currentTime, durationTime } = storeDefinitionToRefs(usePlayerStore);
 
 const { portraitPlayerIsPageFullscreen } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { toSeekVideo, toTogglePlay } = usePlayerAction();
+
+const { playbackTimeVisible, playerProgressVisible, playButtonVisible } = usePlayerControl();
 </script>
 
 <style lang="scss">

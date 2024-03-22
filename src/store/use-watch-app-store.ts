@@ -1,6 +1,12 @@
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { PlaybackWatchBasicInfo, LiveStatus, MobileWatchLayout } from '@polyv/live-watch-sdk';
+import {
+  PlaybackWatchBasicInfo,
+  LiveStatus,
+  MobileWatchLayout,
+  generateDefaultAccountInfo,
+  AccountInfo,
+} from '@polyv/live-watch-sdk';
 
 import { paramGetter } from '@/hooks/core/use-query-params';
 import { appEvents, eventBus } from '@/app/app-events';
@@ -16,6 +22,7 @@ import { usePlaybackStore } from './use-playback-store';
 import { usePlayerStore } from './use-player-store';
 import { useDocStore } from './use-doc-store';
 import { useChatStore } from './use-chat-store';
+import { useFinanceStore } from './use-finance-store';
 import { useConnectMicStore } from './use-connect-mic-store';
 import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
@@ -38,6 +45,8 @@ export interface WatchAppStoreState {
   pageError: Ref<PageErrorData | undefined>;
   /** 观看页应用初始化完毕 */
   watchAppInited: Ref<boolean>;
+  /** 账户信息 */
+  accountInfo: Ref<AccountInfo>;
 
   /**
    * 由于单页面没有路由机制，所以通过标志位来销毁组件
@@ -90,6 +99,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const chatStore = useChatStore();
   const connectMicStore = useConnectMicStore();
 
+  const financeStore = useFinanceStore();
+
   /** 当前是否处于回放观看页地址 */
   const isPlaybackWatchUrl = ref(false);
 
@@ -125,7 +136,11 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const shouldShowSplash = computed(() => {
     if (shouldShowForceAuth.value) return false;
 
-    return !authStore.isAuthorized || enrollStore.needEnrollByEnter;
+    return (
+      !authStore.isAuthorized ||
+      enrollStore.needEnrollByEnter ||
+      financeStore.shouldShowSplashByRiskEvaluation
+    );
   });
 
   /** 直播观看页是否初始化完毕 */
@@ -136,6 +151,9 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 观看页聊天室 socket 已连接 */
   const watchPageChatConnected = ref(false);
+
+  /** 账户信息 */
+  const accountInfo = ref(generateDefaultAccountInfo());
 
   /** 设置页面异常数据 */
   function setPageError(param: PageErrorData) {
@@ -166,7 +184,9 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   function syncWatchAppStore() {
     const watchCore = getWatchCore();
 
-    shouldShowForceAuth.value = watchCore.weixin.checkForceWxAuth();
+    accountInfo.value = watchCore.getAccountInfo();
+    shouldShowForceAuth.value =
+      watchCore.weixin.checkForceWxAuth() || watchCore.identity.checkIdentityWxAuth();
     isPlaybackWatchUrl.value = watchCore.isPlaybackWatchByVid();
     playbackWatchBasicInfo.value = watchCore.getPlaybackWatchBasicInfo();
   }
@@ -191,6 +211,14 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 根据不同场景设置 watchPageInited 标识位 */
   function __setWatchPageInited() {
+    // 开启风险确认函时，需要暂停部分功能初始化和 Socket 链接
+    // 等到观众同意确认后再进行恢复
+    if (financeStore.riskConfirmEnabled) {
+      pauseConnectLiveWatch();
+      watchPageInited.value = true;
+      return;
+    }
+
     /**
      * 不需要连麦，不需要连接聊天室
      * @scene 回放观看页地址进入观看页
@@ -270,6 +298,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     meetingMode,
     iframeMode,
     pageError,
+    accountInfo,
     watchAppInited,
     shouldShowForceAuth,
     shouldShowSplash,

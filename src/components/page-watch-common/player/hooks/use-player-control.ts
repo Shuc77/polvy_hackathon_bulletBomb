@@ -46,9 +46,25 @@ export const usePlayerControl = () => {
     return !playerStore.stopLivePlayEnabled && channelStore.liveStatus === LiveStatus.Live;
   });
 
+  /** 回放时隐藏播放|暂停按钮 */
+  const noPauseWhenPlayback = computed(() => {
+    return (
+      !playerStore.playbackShowPlayButtonEnabled && channelStore.liveStatus === LiveStatus.Playback
+    );
+  });
+
+  /**
+   * 是否显示倍速按钮
+   */
+  const rateButtonVisible = computed(() => {
+    return channelStore.liveStatus === LiveStatus.Playback && playerStore.playbackMultiplierEnabled;
+  });
+
   /** 是否显示暂停播放按钮 */
   const playButtonVisible = computed<boolean>(() => {
-    return !connectMicStore.isConnectMicing && !noPauseWhenLive.value;
+    return (
+      !connectMicStore.isConnectMicing && !(noPauseWhenLive.value || noPauseWhenPlayback.value)
+    );
   });
 
   /**
@@ -110,7 +126,9 @@ export const usePlayerControl = () => {
 
   /** 倍速设置是否显示 */
   const rateSettingVisible = computed<boolean>(() => {
-    return playbackStore.isPlaybacking && playerStore.rateList.length > 0;
+    return (
+      playbackStore.isPlaybacking && playerStore.rateList.length > 0 && rateButtonVisible.value
+    );
   });
 
   /** 可选的倍速列表 */
@@ -238,14 +256,18 @@ export const usePlayerControl = () => {
   /** 播放器进度条是否显示 */
   const playerProgressVisible = computed<boolean>(() => {
     /** 回放进度条是否显示 */
-    const playbackProgressVisible = playbackStore.isPlaybacking && playerStore.durationTime !== 0;
+    let playbackProgressVisible = playbackStore.isPlaybacking && playerStore.durationTime !== 0;
+
+    if (!playerStore.playbackProgressBarEnabled) {
+      playbackProgressVisible = false;
+    }
 
     return playbackProgressVisible || playerStore.supportLiveTimeShift;
   });
 
   /** 回放时间是否显示 */
   const playbackTimeVisible = computed<boolean>(() => {
-    return playbackStore.isPlaybacking;
+    return playbackStore.isPlaybacking && playerStore.playbackProgressBarEnabled;
   });
 
   /** 当前播放时间文案 */

@@ -34,8 +34,14 @@ export const useAsk = (options: UseAskOptions) => {
   /** 提问是否可以发送图片 */
   const questionImageEnabled = ref(false);
 
+  /** 输入框是否禁用 */
   const inputDisabled = computed(() => {
     return viewerStore.needRealNameAuth;
+  });
+
+  /** 提问区输入框占位符 */
+  const askInputPlaceholder = computed(() => {
+    return translate('ask.input.placeholder');
   });
 
   /** 渲染的消息列表 */
@@ -133,7 +139,9 @@ export const useAsk = (options: UseAskOptions) => {
     askMsgList,
     askMsgRenderList,
     getAskMsgList,
+
     inputDisabled,
+    askInputPlaceholder,
     questionImageEnabled,
   };
 };

@@ -59,6 +59,10 @@
         :msg-quote="msgQuote"
       />
     </template>
+
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </portrait-msg-container>
 </template>
 
@@ -67,6 +71,7 @@ import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import PortraitMsgQuoteContent from '../_msg-quote-content/portrait-msg-quote-content.vue';
 import { useSpeakMsg } from './use-speak-msg';
 import { useChatMsgQuote } from '../_hooks/chat-msg-quote-hook';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 
 const { speakHtmlContent, chatMsg, msgQuote, copyMsg, showCompleteMsg } = useSpeakMsg();
 

@@ -1,5 +1,6 @@
-import { onMounted, unref } from 'vue';
+import { isMobile } from '@/assets/utils/browser';
 import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
+import { onMounted, unref } from 'vue';
 import { PopperOptions } from '../_popper-type';
 
 /**
@@ -84,6 +85,60 @@ export const usePopperInteractive = (popperOptions: PopperOptions) => {
     }
   };
 
+  // ============== long-press 交互 ============== //
+  let showTimer: number | undefined;
+  const removeShowTimer = () => {
+    clearTimeout(showTimer);
+    showTimer = undefined;
+  };
+
+  const onDownEvent = () => {
+    showTimer = window.setTimeout(() => {
+      showPopper();
+      removeShowTimer();
+    }, 1000);
+  };
+
+  const onUpEvent = () => {
+    removeShowTimer();
+  };
+
+  const onContextMenuEvent = (event: Event) => {
+    event.preventDefault();
+  };
+
+  useClickOutside(
+    () => {
+      const { referenceElem, popperElem } = getElement();
+      const elements: HTMLElement[] = [];
+      referenceElem && elements.push(referenceElem);
+      popperElem && elements.push(popperElem);
+      return elements;
+    },
+    () => {
+      if (unref(trigger).includes('long-press')) {
+        hidePopper();
+      }
+    },
+  );
+
+  const listenElemLongPressEvent = () => {
+    if (unref(popperDisabled)) {
+      return;
+    }
+    const { referenceElem } = getElement();
+    if (referenceElem && !isMobile) {
+      referenceElem.addEventListener('mousedown', onDownEvent);
+      referenceElem.addEventListener('mouseup', onUpEvent);
+    }
+    if (referenceElem && isMobile) {
+      referenceElem.addEventListener('contextmenu', onContextMenuEvent);
+      referenceElem.addEventListener('touchstart', onDownEvent);
+      referenceElem.addEventListener('touchcancel', onUpEvent);
+      referenceElem.addEventListener('touchend', onUpEvent);
+    }
+  };
+
   /** 设置交互 */
   const setInteractive = () => {
     const triggerVal = unref(trigger);
@@ -95,6 +150,9 @@ export const usePopperInteractive = (popperOptions: PopperOptions) => {
     }
     if (triggerVal.includes('focus')) {
       listenElemFocusEvent();
+    }
+    if (triggerVal.includes('long-press')) {
+      listenElemLongPressEvent();
     }
   };
 

@@ -28,6 +28,13 @@ export const usePageViewPolling = () => {
       });
     } else {
       watchCore.channel.stopPageViewPolling();
+
+      // eslint-disable-next-line promise/prefer-await-to-then
+      watchCore.channel.getLatestPageView().then(pageViewCount => {
+        channelInfoStore.$patch({
+          pageViewCount,
+        });
+      });
     }
   });
 

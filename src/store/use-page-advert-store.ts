@@ -1,6 +1,6 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { PageAdvertItem } from '@polyv/live-watch-sdk';
+import { PageAdvertItem, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { ref, Ref } from 'vue';
 
@@ -27,14 +27,16 @@ export interface PageAdvertStoreActions {
 export interface PageAdvertStore extends PageAdvertStoreState, PageAdvertStoreActions {}
 
 export const usePageAdvertStore = defineStore<'pageAdvert', PageAdvertStore>('pageAdvert', () => {
+  const __pageAdvertSetting = PlvChannelModule.generateDefaultPageAdvertSetting();
+
   /** 页面广告开关 */
-  const pageAdvertEnabled = ref(false);
+  const pageAdvertEnabled = ref(__pageAdvertSetting.pageAdvertEnabled);
 
   /** 页面广告列表 */
-  const pageAdvertList = ref<PageAdvertItem[]>([]);
+  const pageAdvertList = ref<PageAdvertItem[]>(__pageAdvertSetting.pageAdvertList);
 
   /** 关闭按钮是否显示 */
-  const closeVisible = ref(false);
+  const closeVisible = ref(__pageAdvertSetting.closeAdvertEnabled);
 
   /** 广告是否显示 */
   const { visible: advertVisible, close: closeAdvert } = useSimpleVisible(true);

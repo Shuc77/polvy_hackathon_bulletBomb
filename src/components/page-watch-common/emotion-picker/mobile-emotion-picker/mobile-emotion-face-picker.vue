@@ -20,7 +20,7 @@ const { containerRef, onClickContainer } = useEmotionFacePicker({
 <style lang="scss">
 .c-mobile-emotion-face-picker {
   padding: 14px 8px 0;
-  .plv-emotion-panel__item {
+  .plv-emotion-menu__item {
     margin: 0 14px 16px 0;
   }
 }
@@ -28,11 +28,11 @@ const { containerRef, onClickContainer } = useEmotionFacePicker({
 // 若支持grid布局，优化边距问题
 @supports (display: grid) {
   .c-mobile-emotion-face-picker {
-    .plv-emotion-panel__item {
+    .plv-emotion-menu__item {
       margin: 0;
     }
 
-    .plv-emotion-panel {
+    .plv-emotion-menu {
       display: grid;
       grid-template-columns: repeat(auto-fill, 32px);
       grid-gap: 16px 14px;

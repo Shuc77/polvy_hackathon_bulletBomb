@@ -22,6 +22,7 @@ import { getDefaultLang, convert2WatchSdkLang } from '@/store/use-lang-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useWeixinConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 import { useSaleInviteIntercept } from './_hooks/use-sale-invite-intercept';
+import { useUserIdentityIntercept } from './_hooks/use-user-identity-intercept';
 
 /**
  * 拦截观看页应用初始化
@@ -32,6 +33,7 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
   const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
 
+  // 一客一码验证拦截
   const { checkSaleInvite } = useSaleInviteIntercept();
   const checkSaleInviteResult = await checkSaleInvite();
   if (checkSaleInviteResult) {
@@ -195,6 +197,13 @@ export function useWatchApp() {
     // 处理微信流程
     const weixinResult = await useWeixinSetup();
     if (weixinResult) {
+      return;
+    }
+
+    // 用户系统手机号拦截
+    const { checkIdentityInfoLogin } = useUserIdentityIntercept();
+    const checkIdentityInfoLoginResult = checkIdentityInfoLogin();
+    if (checkIdentityInfoLoginResult) {
       return;
     }
 

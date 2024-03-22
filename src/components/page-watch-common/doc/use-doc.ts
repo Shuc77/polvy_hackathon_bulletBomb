@@ -9,7 +9,6 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { MessageBoxInstance } from '@/components/common-base/message-box';
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
-import { useLangStore } from '@/store/use-lang-store';
 
 export const useDoc = (
   useOptions: {
@@ -20,7 +19,6 @@ export const useDoc = (
   const channelStore = useChannelStore();
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
-  const langStore = useLangStore();
 
   /** 创建文档的外层节点 */
   const wrapRef = ref<HTMLDivElement>();
@@ -70,14 +68,6 @@ export const useDoc = (
       mobileDocIsPageFullscreen: evt.isFullScreen,
     });
   }
-
-  watch(
-    () => langStore.currentLang,
-    () => {
-      const watchCore = getWatchCore();
-      watchCore.doc.switchLang(langStore.currentLang);
-    },
-  );
 
   useEventBusListener(appEvents.doc.ResetUpDoc, () => {
     initDoc();

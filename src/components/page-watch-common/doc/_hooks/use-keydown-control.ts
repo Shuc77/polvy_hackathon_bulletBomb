@@ -1,5 +1,6 @@
 import { KeyCodeMap } from '@/assets/constants/key-code';
 import { getWatchCore } from '@/core/watch-sdk';
+import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
@@ -11,10 +12,11 @@ import { onBeforeUnmount, watchEffect } from 'vue';
 export const useDocKeydownControl = () => {
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
+  const docStore = useDocStore();
 
   function onKeydownEvent(event: KeyboardEvent) {
     const keyCode = event.keyCode;
-    if (layoutStore.mainScreen !== MainScreenContent.Doc) {
+    if (layoutStore.mainScreen !== MainScreenContent.Doc || !docStore.viewerPptTurningEnabled) {
       return;
     }
 

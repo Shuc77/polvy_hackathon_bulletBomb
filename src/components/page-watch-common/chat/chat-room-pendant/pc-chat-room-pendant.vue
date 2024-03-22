@@ -1,6 +1,12 @@
 <!-- @file PC 端聊天室右下角挂件 -->
 <template>
   <div class="c-pc-chat-room-pendant">
+    <!-- 风险测评 -->
+    <risk-evaluation-entrance
+      v-if="riskEvaluationEntranceEnabled"
+      class="c-pc-chat-room-pendant__item"
+    />
+
     <!-- 卡片推送 -->
     <pc-push-card class="c-pc-chat-room-pendant__item" />
 
@@ -48,12 +54,15 @@ import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
 import PcChatLike from '../chat-like/pc-chat-like.vue';
+import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useFinanceStore } from '@/store/use-finance-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
+const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
 const {
   pushCardPendantVisible,

@@ -4,6 +4,7 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import {
   LiveStatus,
+  PlvSubtitleModule,
   SubtitleSourceLanguage,
   SubtitleSourceTranslateLanguage,
 } from '@polyv/live-watch-sdk';
@@ -56,14 +57,16 @@ export interface SubtitleStore extends SubtitleStoreState, SubtitleStoreAction {
 export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle', () => {
   const channelStore = useChannelStore();
 
+  const __subtitleConfig = PlvSubtitleModule.generateDefaultSubtitleConfig();
+
   /** 字幕模块安装完成 */
   const subtitleModuleSetuped = ref(false);
 
   /** 实时字幕开关 */
-  const subtitleRealTimeEnabled = ref(false);
+  const subtitleRealTimeEnabled = ref(__subtitleConfig.subtitleRealTimeEnabled);
 
   /** 实时字幕翻译开关 */
-  const subtitleTranslateEnabled = ref(true);
+  const subtitleTranslateEnabled = ref(__subtitleConfig.subtitleTranslateEnabled);
 
   /** 讲师是否打开实时字幕 */
   const subtitlesTeacherEnable = ref(true);
@@ -87,16 +90,20 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
   });
 
   /** 原声语言 */
-  const liveSubtitleSourceLanguage = ref<SubtitleSourceLanguage>('Chinese');
+  const liveSubtitleSourceLanguage = ref<SubtitleSourceLanguage>(
+    __subtitleConfig.subtitleSourceLanguage,
+  );
 
   /** 翻译语言 */
-  const liveSubtitleSourceTranslateLanguage = ref<SubtitleSourceTranslateLanguage>('Chinese');
+  const liveSubtitleSourceTranslateLanguage = ref<SubtitleSourceTranslateLanguage>(
+    __subtitleConfig.subtitleTranslateLanguage,
+  );
 
   /** 实时字幕显示数量限制开关 */
-  const subtitleDisplayNumberLimitEnabled = ref(false);
+  const subtitleDisplayNumberLimitEnabled = ref(__subtitleConfig.subtitleDisplayNumberLimitEnabled);
 
   /** 实时字幕最多显示多少条 */
-  const subtitleDisplayNumber = ref(-1);
+  const subtitleDisplayNumber = ref(__subtitleConfig.subtitleDisplayNumber);
 
   /**
    * 同步实时字幕配置

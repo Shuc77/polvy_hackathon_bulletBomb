@@ -32,6 +32,16 @@
       <pc-icon-set-nick class="c-pc-chat-input-controller__more-panel__icon" />
       {{ $lang('chat.setNick') }}
     </div>
+
+    <!-- 绑定手机号 -->
+    <div
+      v-if="bindMobileVisible"
+      class="c-pc-chat-input-controller__more-panel__item pws-pc-more-panel-item"
+      @click="onClickBindMobile"
+    >
+      <pc-icon-bind-mobile class="c-pc-chat-input-controller__more-panel__icon" />
+      {{ $lang('identityInfo.bindMobile') }}
+    </div>
   </div>
 </template>
 
@@ -39,10 +49,11 @@
 import { appEvents, eventBus } from '@/app/app-events';
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import PcFormCheckbox from '@/components/common-base/form/form-checkbox/pc-form-checkbox.vue';
-import { PcIconSetNick } from '@/components/component-icons/pc/map';
+import { PcIconSetNick, PcIconBindMobile } from '@/components/component-icons/pc/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeToRefs } from 'pinia';
 
@@ -59,6 +70,8 @@ const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
+const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+
 function onClickSpecialMsg() {
   chatStore.toggleOnlySpecialMsg();
 }
@@ -69,6 +82,11 @@ function onClickDonateAnimation() {
 
 function onClickSetNick() {
   eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  emit('close');
+}
+
+function onClickBindMobile() {
+  eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog);
   emit('close');
 }
 </script>

@@ -13,6 +13,7 @@ import { bindChannelModuleEvents } from '@/core/bind-sdk-events/bind-channel-eve
 import { bindChatModuleEvents } from '@/core/bind-sdk-events/bind-chat-events';
 import { bindConnectMicModuleEvents } from '@/core/bind-sdk-events/bind-connect-mic-events';
 import { bindEnrollModuleEvents } from '@/core/bind-sdk-events/bind-enroll-events';
+import { bindFinanceRiskEvaluationEvents } from '@/core/bind-sdk-events/bind-finance-risk-evaluation-events';
 import { bindInteractReceiveEvents } from '@/core/bind-sdk-events/bind-interact-receive-events';
 import { bindPlayerModuleEvents } from '@/core/bind-sdk-events/bind-player-events';
 import { bindUserEvents } from '@/core/bind-sdk-events/bind-user-events';
@@ -58,6 +59,7 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
   bindDocEvents();
   bindInviteModuleEvents();
   bindSubtitleEvents();
+  bindFinanceRiskEvaluationEvents();
 
   // 设置弹幕添加拦截器，如果当前只看主持人，则不添加弹幕
   watchCore.barrage.setBarrageAddIntercept(data => {

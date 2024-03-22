@@ -87,6 +87,24 @@
   .pws-iar-product-list-item {
     border-bottom-color: map.get($--skin-configs, 'iar-product-list-item:border-color') !important;
   }
+  .plv-iar-product-label-list__item {
+    color: map.get($--skin-configs, 'iar-product-list-product-label-item:text-color') !important;
+    background-color: map.get($--skin-configs, 'iar-product-list-product-label-item:bg-color') !important;
+
+    &.plv-iar-product-label-list__item--active {
+      color: map.get($--skin-configs, 'iar-product-list-product-label-item--active:text-color') !important;
+      border-color: map.get($--skin-configs, 'iar-product-list-product-label-item--active:border-color') !important;
+    }
+  }
+  .plv-iar-product-label-list__arrow__icon {
+    color: map.get($--skin-configs, 'iar-product-list-product-label-item:text-color') !important;
+  }
+  .plv-iar-product-label-list__shadow--left {
+    background: linear-gradient(90deg, rgba(map.get($--skin-configs, 'iar-product-list-content:bg-color'), 1) 0, rgba(map.get($--skin-configs, 'iar-product-list-content:bg-color'), 0) 100%);
+  }
+  .plv-iar-product-label-list__shadow--right {
+    background: linear-gradient(90deg, rgba(map.get($--skin-configs, 'iar-product-list-content:bg-color'), 0) 0, rgba(map.get($--skin-configs, 'iar-product-list-content:bg-color'), 1) 100%);
+  }
 
   // ---------- 中奖记录 --------- //
   .pws-iar-lottery-record-button {

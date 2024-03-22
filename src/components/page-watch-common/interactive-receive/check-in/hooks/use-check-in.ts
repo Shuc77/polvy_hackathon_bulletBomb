@@ -37,8 +37,8 @@ export const useCheckIn = () => {
   };
 
   /** 设置签到是否显示 */
-  const setCheckInVisible = async (visible = true) => {
-    if (visible) {
+  const setCheckInVisible = async (visible = true, toGetInfo = true) => {
+    if (visible && toGetInfo) {
       await getCheckInInfo();
     }
     checkInVisible.value = visible;

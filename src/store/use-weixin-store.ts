@@ -3,7 +3,7 @@
  */
 import { isWeixin } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
-import { WeixinPayType, WxShareInfo, YN } from '@polyv/live-watch-sdk';
+import { PlvWeixinModule, WeixinPayType, WxShareInfo, YN } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
 
@@ -63,11 +63,13 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
     wxShareInfo.value = info;
   }
 
+  const __weixinConfig = PlvWeixinModule.generateDefaultWeixinConfig();
+
   /** 微信支付类型 */
-  const weixinPayType = ref<WeixinPayType>(WeixinPayType.Enterprise);
+  const weixinPayType = ref<WeixinPayType>(__weixinConfig.weixinPayType);
 
   /** 是否可以在微信中重新设置昵称 */
-  const weixinResetNickEnabled = ref(false);
+  const weixinResetNickEnabled = ref(__weixinConfig.weixinResetNickEnabled);
 
   function syncWeixinStore() {
     const watchCore = getWatchCore();

@@ -6,7 +6,8 @@
       'c-mobile-speak-msg--over-style': chatMsg.isOverLength,
     }"
     :render-other-content="!!translatedContent"
-    :disabled-tips="!canQuoteReply"
+    :disabled-tips="!(canQuoteReply || canTranslate)"
+    :suffix-mode="'align-center'"
   >
     <!-- 消息引用 -->
     <mobile-msg-quote-content
@@ -22,12 +23,13 @@
 
     <!-- tips 中的按钮 -->
     <template
-      v-if="canQuoteReply"
+      v-if="canQuoteReply || canTranslate"
       #tips-content
     >
       <div class="c-mobile-speak-msg__tips">
         <!-- 回复 -->
         <div
+          v-if="canQuoteReply"
           class="c-mobile-speak-msg__tips-btn"
           @click="onClickQuote"
         >
@@ -40,6 +42,14 @@
         >
           {{ $lang('base.copy') }}
         </div>
+        <!-- 翻译 -->
+        <span
+          v-if="canTranslate"
+          class="c-mobile-speak-msg__tips-btn"
+          @click="translateCurrentMsg"
+        >
+          {{ $lang('base.translate') }}
+        </span>
       </div>
     </template>
 
@@ -62,18 +72,6 @@
       </span>
     </div>
 
-    <!-- 右侧按钮 -->
-    <template #suffix>
-      <!-- 翻译 -->
-      <div
-        v-if="canTranslate"
-        class="c-mobile-speak-msg__suffix__item pws-chat-msg-translate-button"
-        @click="translateCurrentMsg"
-      >
-        <mobile-icon-translate class="c-mobile-speak-msg__translate-icon" />
-      </div>
-    </template>
-
     <!-- 翻译后的内容 -->
     <template #other-content>
       <span
@@ -85,18 +83,20 @@
         <span>{{ $lang('base.translateFinish') }}</span>
       </div>
     </template>
+
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </mobile-msg-container>
 </template>
 
 <script setup lang="ts">
 import MobileMsgQuoteContent from '../_msg-quote-content/mobile-msg-quote-content.vue';
-import {
-  MobileIconTranslate,
-  MobileIconCheckRoundFill,
-} from '@/components/component-icons/mobile/map';
+import { MobileIconCheckRoundFill } from '@/components/component-icons/mobile/map';
 import MobileMsgContainer from '../_msg-container/mobile-msg-container.vue';
 import { useSpeakMsg, useSpeakMsgTranslate } from './use-speak-msg';
 import { useChatMsgQuote } from '../_hooks/chat-msg-quote-hook';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 
 const { speakHtmlContent, chatMsg, msgQuote, copyMsg, showCompleteMsg } = useSpeakMsg();
 

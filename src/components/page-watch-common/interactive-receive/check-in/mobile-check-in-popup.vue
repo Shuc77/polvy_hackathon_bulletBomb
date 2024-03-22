@@ -13,7 +13,7 @@
       :check-in-sdk="checkInSdk"
       enable-sound-effects
       @show-entrance="showEntrance"
-      @to-show="setCheckInVisible(true)"
+      @to-show="setCheckInVisible(true, false)"
       @to-hide="setCheckInVisible(false)"
     />
   </mobile-popup>

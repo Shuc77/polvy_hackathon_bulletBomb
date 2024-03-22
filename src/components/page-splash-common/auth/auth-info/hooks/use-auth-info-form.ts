@@ -26,6 +26,7 @@ import {
 } from '@/components/page-splash-common/auth/hooks/use-auth-common';
 import { useAuthInfoSetting } from './use-auth-info-setting';
 import { useAuthInfoSms } from './use-auth-info-sms';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 export const authInfoFormEmits = () => ({
   /** 关闭窗口 */
@@ -56,6 +57,8 @@ export interface AuthInfoFormInstance {
 export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmits> }) => {
   const { emit } = options;
 
+  const identityStore = useIdentityStore();
+
   const authStore = useAuthStore();
   const { authItem } = useAuthButtonInject<AuthSettingItemInfo>();
   const { smsVerifyEnabled, hasMobileField } = useAuthInfoSetting();
@@ -81,6 +84,15 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
       };
     });
   }
+
+  /** 是否显示登录入口 */
+  const showLoginEnter = computed(() => {
+    if (identityStore.identitySetting.watchUserSystemEnabled) {
+      return false;
+    }
+
+    return unref(hasMobileField);
+  });
 
   /** 表单字段前缀 */
   const fieldPrefix = 'propValue' as const;
@@ -276,6 +288,7 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
     smsVerifyEnabled,
     authFormInstance,
     hasMobileField,
+    showLoginEnter,
 
     onPhoneNumberChange,
     formatSelectOptions,

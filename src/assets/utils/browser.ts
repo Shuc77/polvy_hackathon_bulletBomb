@@ -4,11 +4,17 @@ const ua = navigator.userAgent.toLowerCase();
 
 const uaInfo = getCurrentUAInfo();
 
+/** 是否为 MAC */
+export const isMac = uaInfo.os.isMacOS;
+
 /** 是否微信（非企业微信） */
 export const isWeixin = uaInfo.client.isWx;
 
+/** 是否企业微信 */
+export const isWorkWeixin = uaInfo.client.isWxWork;
+
 /** 判断 PC 端微信小程序环境 */
-export const isPcMiniProgram = isWeixin && /miniprogramenv/.test(ua);
+export const isPcMiniProgram = (isWeixin || isWorkWeixin) && /miniprogramenv/.test(ua);
 
 function __isMobile() {
   const ua = navigator.userAgent;
@@ -28,9 +34,6 @@ function __isMobile() {
 
 /** 是否移动端 */
 export const isMobile = __isMobile() || isPcMiniProgram; // uaInfo.isPortable || isPcMiniProgram;
-
-/** 是否企业微信 */
-export const isWorkWeixin = uaInfo.client.isWxWork;
 
 /** 是否为 QQ 浏览器 */
 export const isQQBrowser = uaInfo.client.isQQBrowser;

@@ -30,6 +30,14 @@ $--skin-iar-common-configs: (
   'iar-product-list-item:border-color': rgba($--color-white, 0.1),
   // 商品库商品名称字体色
   'iar-product-list-good-name:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 商品库标签节点背景色
+  'iar-product-list-product-label-item:bg-color': rgba(#fff, 0.1),
+  // 商品库标签节点字体色
+  'iar-product-list-product-label-item:text-color': #fff,
+  // 商品库标签节点激活字体色
+  'iar-product-list-product-label-item--active:text-color': #f15d5d,
+  // 商品库标签节点激活边框色
+  'iar-product-list-product-label-item--active:border-color': #f15d5d,
 
   // 置顶公告背景色
   'iar-bulletin-top-banner:bg-color': #38A68D,

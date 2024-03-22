@@ -13,6 +13,8 @@ import {
   PlayStatus,
   QualityLevelItem,
   WarmUpType,
+  PlvBarrageModule,
+  PlvPlayerModule,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -126,6 +128,12 @@ export interface PlayerStoreState {
   stopLivePlayEnabled: Ref<boolean>;
   /** 播放器新版暂停样式开关 */
   newPlayerPauseStyleEnabled: Ref<boolean>;
+  /** 回放时是否显示倍速按钮，默认开 */
+  playbackMultiplierEnabled: Ref<boolean>;
+  /** 回放时是否显示进度条，默认开 */
+  playbackProgressBarEnabled: Ref<boolean>;
+  /** 回放时是否显示左下角播放/暂停按钮，默认开 */
+  playbackShowPlayButtonEnabled: Ref<boolean>;
 }
 
 export interface PlayerStoreAction {
@@ -144,6 +152,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
+
+  const __defaultPlayerInfo = PlvPlayerModule.generateDefaultPlayerInfo();
 
   /** 配置是否使用播放器 */
   const playerEnabled = ref(true);
@@ -168,18 +178,13 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const playStatus = ref<PlayStatus>(PlayStatus.Pause);
 
   /** 是否支持无延迟观看 */
-  const supportLowLatency = ref(false);
+  const supportLowLatency = ref(__defaultPlayerInfo.supportLowLatency);
 
   /** 是否无延迟观看 */
-  const isLowLatency = ref(false);
+  const isLowLatency = ref(__defaultPlayerInfo.isLowLatency);
 
   /** 播放器暖场设置 */
-  const warmUpSetting = ref<PlayerWarmUpSetting>({
-    warmUpType: undefined,
-    warmUpImg: undefined,
-    warmUpVideo: undefined,
-    warmUpHref: undefined,
-  });
+  const warmUpSetting = ref<PlayerWarmUpSetting>({});
 
   /** 是否显示播放器暖场图片 */
   const showWarmUpImg = computed<boolean>(() => {
@@ -223,67 +228,52 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   });
 
   /** 播放器 logo 设置 */
-  const logoSetting = ref<PlayerLogoSetting>({
-    logoImage: undefined,
-    logoHref: undefined,
-    logoOpacity: 1,
-    logoPosition: 'tl',
-  });
+  const logoSetting = ref<PlayerLogoSetting>(PlvPlayerModule.generateDefaultPlayerLogoSetting());
 
   /** 弹幕设置 */
-  const barrageSetting = ref<BarrageSetting>({
-    barrageEnabled: false,
-    barrageDefaultShow: false,
-    barrageSpeed: 200,
-    barrageSize: 20,
-    barrageSpeedDefaultGrade: 3,
-    barrageSizeDefaultGrade: 3,
-    barrageAlpha: 80,
-    barrageDefaultAlpha: 80,
-    barrageLocationDefaultId: 0,
-  });
+  const barrageSetting = ref<BarrageSetting>(PlvBarrageModule.generateDefaultBarrageSetting());
 
   /** 弹幕显示状态 */
   const barrageShow = ref(false);
 
   /** 是否支持弹幕速度切换 */
-  const supportBarrageSpeed = ref(false);
+  const supportBarrageSpeed = ref(__defaultPlayerInfo.supportBarrageSpeed);
 
   /** 弹幕速度 */
-  const barrageSpeed = ref(200);
+  const barrageSpeed = ref(__defaultPlayerInfo.currentBarrageSpeed);
 
   /** 弹幕速度档位 */
-  const barrageSpeedGrade = ref(3);
+  const barrageSpeedGrade = ref(__defaultPlayerInfo.barrageSpeedDefaultGrade);
 
   /** 是否支持弹幕字号切换 */
-  const supportBarrageSize = ref(false);
+  const supportBarrageSize = ref(__defaultPlayerInfo.supportBarrageSize);
 
   /** 弹幕字号 */
-  const barrageSize = ref(20);
+  const barrageSize = ref(__defaultPlayerInfo.currentBarrageSize);
 
   /** 弹幕字号档位 */
-  const barrageSizeGrade = ref(3);
+  const barrageSizeGrade = ref(__defaultPlayerInfo.barrageSizeDefaultGrade);
 
   /** 是否支持弹幕透明度切换 */
-  const supportBarrageAlpha = ref(false);
+  const supportBarrageAlpha = ref(__defaultPlayerInfo.supportBarrageAlpha);
 
   /** 弹幕默认透明度 */
-  const barrageAlpha = ref(80);
+  const barrageAlpha = ref(__defaultPlayerInfo.currentBarrageAlpha);
 
   /** 弹幕默认透明度 */
-  const barrageDefaultAlpha = ref(80);
+  const barrageDefaultAlpha = ref(__defaultPlayerInfo.barrageDefaultAlpha);
 
   /** 是否支持弹幕位置切换 */
-  const supportBarrageLocation = ref(false);
+  const supportBarrageLocation = ref(__defaultPlayerInfo.supportBarrageLocation);
 
   /** 弹幕位置选项 */
   const barrageLocationSetting = ref<BarrageLocationInfo[]>([]);
 
   /** 弹幕位置当前ID */
-  const currentBarrageLocationIndex = ref(0);
+  const currentBarrageLocationIndex = ref(__defaultPlayerInfo.currentBarrageLocationIndex);
 
   /** 弹幕位置默认ID */
-  const barrageLocationDefaultId = ref(0);
+  const barrageLocationDefaultId = ref(__defaultPlayerInfo.barrageLocationDefaultId);
 
   /** 弹幕设置是否显示 */
   const barrageMobileSettingVisible = ref(false);
@@ -314,40 +304,40 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   });
 
   /** 播放器延迟时间 */
-  const delayTime = ref(0);
+  const delayTime = ref(__defaultPlayerInfo.delayTime);
 
   /** 是否支持刷新 api */
-  const supportRefresh = ref(false);
+  const supportRefresh = ref(__defaultPlayerInfo.supportRefresh);
 
   /** 是否支持自动播放 */
-  const supportAutoPlay = ref(false);
+  const supportAutoPlay = ref(__defaultPlayerInfo.supportAutoPlay);
 
   /** 当前音量 */
-  const currentVolume = ref(0.5);
+  const currentVolume = ref(__defaultPlayerInfo.currentVolume);
 
   /** 总线路数 */
-  const lineCount = ref(0);
+  const lineCount = ref(__defaultPlayerInfo.lineCount);
 
   /** 当前线路索引 */
-  const currentLine = ref(0);
+  const currentLine = ref(__defaultPlayerInfo.currentLine);
 
   /** 可选的清晰度列表 */
   const qualityLevels = ref<QualityLevelItem[]>([]);
 
   /** 当前清晰度级别 */
-  const currentQualityLevel = ref<number>(0);
+  const currentQualityLevel = ref<number>(__defaultPlayerInfo.currentQualityLevel);
 
   /** 可选的倍速列表 */
-  const rateList = ref<number[]>([]);
+  const rateList = ref<number[]>(__defaultPlayerInfo.rateList);
 
   /** 当前倍速 */
-  const currentRate = ref(0);
+  const currentRate = ref(__defaultPlayerInfo.currentRate);
 
   /** 当前播放时间 */
-  const currentTime = ref(0);
+  const currentTime = ref(__defaultPlayerInfo.currentTime);
 
   /** 当前播放总时长 */
-  const durationTime = ref(0);
+  const durationTime = ref(__defaultPlayerInfo.durationTime);
 
   /** 视频流宽度，仅用作比例计算 */
   const resolutionWidth = ref<number>();
@@ -400,19 +390,28 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const sdkPlayerUIControlVisible = ref(false);
 
   /** 是否支持时间轴标记 */
-  const supportTimeAxisMark = ref(false);
+  const supportTimeAxisMark = ref(__defaultPlayerInfo.supportTimeAxisMark);
 
   /** 是否支持直播时移 */
-  const supportLiveTimeShift = ref(false);
+  const supportLiveTimeShift = ref(__defaultPlayerInfo.supportLiveTimeShift);
 
   /** 是否支持双语流 */
-  const supportLanguageStream = ref(false);
+  const supportLanguageStream = ref(__defaultPlayerInfo.supportLanguageStream);
 
   /** 直播时是否显示播放按钮， 默认开 */
-  const stopLivePlayEnabled = ref(true);
+  const stopLivePlayEnabled = ref(__defaultPlayerInfo.stopLivePlayEnabled);
 
   /** 播放器新版暂停样式开关 */
-  const newPlayerPauseStyleEnabled = ref(false);
+  const newPlayerPauseStyleEnabled = ref(__defaultPlayerInfo.newPlayerPauseStyleEnabled);
+
+  /** 回放时是否显示倍速按钮，默认开 */
+  const playbackMultiplierEnabled = ref(__defaultPlayerInfo.playbackMultiplierEnabled);
+
+  /** 回放时是否显示进度条，默认开 */
+  const playbackProgressBarEnabled = ref(__defaultPlayerInfo.playbackProgressBarEnabled);
+
+  /** 回放时是否显示左下角播放/暂停按钮，默认开 */
+  const playbackShowPlayButtonEnabled = ref(__defaultPlayerInfo.playbackShowPlayButtonEnabled);
 
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
@@ -438,8 +437,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 同步暖场设置 */
   function syncWarmUpSetting() {
     const watchCore = getWatchCore();
-    const _warmUpSetting = watchCore.player.getPlayerWarmUpSetting();
-    warmUpSetting.value = _warmUpSetting;
+    warmUpSetting.value = watchCore.player.getPlayerWarmUpSetting();
   }
 
   /** 同步播放器信息 */
@@ -488,6 +486,10 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
 
     newPlayerPauseStyleEnabled.value = playerInfo.newPlayerPauseStyleEnabled;
+
+    playbackMultiplierEnabled.value = playerInfo.playbackMultiplierEnabled;
+    playbackProgressBarEnabled.value = playerInfo.playbackProgressBarEnabled;
+    playbackShowPlayButtonEnabled.value = playerInfo.playbackShowPlayButtonEnabled;
 
     /**
      * 暂不支持三分屏场景和研讨会场景
@@ -566,6 +568,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     stopLivePlayEnabled,
     newPlayerPauseStyleEnabled,
+    playbackMultiplierEnabled,
+    playbackProgressBarEnabled,
+    playbackShowPlayButtonEnabled,
 
     syncPlayerStore,
     syncWarmUpSetting,

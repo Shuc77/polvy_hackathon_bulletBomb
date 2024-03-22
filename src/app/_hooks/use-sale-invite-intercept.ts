@@ -33,14 +33,6 @@ export const useSaleInviteIntercept = () => {
         throw new Error('当前进入微信快照页，不进入一客一码流程');
       }
 
-      if (!isWeixin) {
-        watchAppStore.setPageError({
-          type: PageErrorType.UnknownError,
-          desc: translate('pageError.saleInvite.limit.weixin'),
-        });
-        return true;
-      }
-
       if (watchCore.saleInvite.isIllegalSaleCode()) {
         watchAppStore.setPageError({
           type: PageErrorType.UnknownError,
@@ -49,7 +41,17 @@ export const useSaleInviteIntercept = () => {
         return true;
       }
 
-      if (!weixinStore.weixinWatchAuthorized) {
+      const inviteCustomerUsageScenario = watchCore.saleInvite.getInviteCustomerUsageScenario();
+
+      if (!isWeixin && inviteCustomerUsageScenario === 'wechat') {
+        watchAppStore.setPageError({
+          type: PageErrorType.UnknownError,
+          desc: translate('pageError.saleInvite.limit.weixin'),
+        });
+        return true;
+      }
+
+      if (isWeixin && !weixinStore.weixinWatchAuthorized) {
         // 如果没有微信静默授权，则需要先进行授权
         redirectWeixinAuthorize({
           snsApiBase: false,
@@ -63,6 +65,8 @@ export const useSaleInviteIntercept = () => {
         window.location.reload();
         return false;
       }
+
+      //
 
       // 进入一客一码校验页面
       watchAppStore.setPageError({

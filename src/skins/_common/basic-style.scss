@@ -150,23 +150,10 @@
     border-bottom-color: map.get($--skin-configs, 'chat-msg-special-quote-content:border-color') !important;
   }
 
-  // 聊天消息发送按钮
-  .pws-chat-msg-quote-button {
-    color: map.get($--skin-configs, 'chat-msg-quote-button:text-color') !important;
-  }
-
   // 聊天引用回复消息
   .pws-chat-quote-msg {
     color: map.get($--skin-configs, 'chat-quote-msg:text-color') !important;
     background-color: map.get($--skin-configs, 'chat-quote-msg:bg-color') !important;
-  }
-
-  // 聊天消息翻译按钮
-  .pws-chat-msg-translate-button {
-    color: map.get($--skin-configs, 'chat-msg-translate-button:text-color') !important;
-    &:hover {
-      color: map.get($--skin-configs, 'chat-msg-translate-button--hover:text-color') !important;
-    }
   }
 
   // 聊天消息翻译完成

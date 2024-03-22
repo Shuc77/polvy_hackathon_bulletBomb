@@ -4,6 +4,7 @@
     class="c-mobile-msg-container"
     :class="{
       'c-mobile-msg-container--special pws-chat-msg-container-special': isSpecialUser,
+      'c-mobile-msg-container--suffix-align-center': suffixMode === 'align-center',
     }"
   >
     <mobile-msg-user-info />
@@ -81,7 +82,7 @@ const props = defineProps({
   ...msgTipsControlProps(),
 });
 
-const { bubbleModel } = useProps(props);
+const { bubbleModel, suffixMode } = useProps(props);
 
 const { isSpecialUser } = useChatMsgUserInject();
 
@@ -90,6 +91,7 @@ const { bubbleStyle } = useMsgContainer({ props });
 const { referenceRef, popperRef, tipsVisible, onClickTips } = useMsgTipsControl({
   props,
   mountEl: 'c-mobile-msg-container',
+  popperTrigger: 'click',
 });
 </script>
 
@@ -131,6 +133,12 @@ const { referenceRef, popperRef, tipsVisible, onClickTips } = useMsgTipsControl(
   .c-mobile-msg-container__content__bubble {
     color: $--color-white;
     background-color: #5394f6;
+  }
+}
+
+.c-mobile-msg-container--suffix-align-center {
+  .c-mobile-msg-container__content__suffix {
+    align-self: center;
   }
 }
 

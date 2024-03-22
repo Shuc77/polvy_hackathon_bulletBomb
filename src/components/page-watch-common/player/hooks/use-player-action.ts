@@ -3,10 +3,12 @@
  */
 import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { PlayStatus } from '@polyv/live-watch-sdk';
 import debounce from 'lodash-es/debounce';
+import { usePlayerControl } from './use-player-control';
 
 /**
  * 播放器操作 hook
@@ -14,6 +16,9 @@ import debounce from 'lodash-es/debounce';
 export const usePlayerAction = () => {
   const playerStore = usePlayerStore();
   const layoutStore = useLayoutStore();
+  const connectMicStore = useConnectMicStore();
+
+  const { playButtonVisible, bigPlayButtonVisible } = usePlayerControl();
 
   /**
    * 是否不允许处理
@@ -25,6 +30,12 @@ export const usePlayerAction = () => {
   /** 播放 */
   function toPlay(): void {
     if (isNotAllowAction()) {
+      return;
+    }
+
+    // 避免连麦中播放播放器导致重音
+    if (connectMicStore.isConnectMicing) {
+      console.warn('isConnectMicing, player can not to play');
       return;
     }
 
@@ -65,13 +76,41 @@ export const usePlayerAction = () => {
     }
   }
 
-  /** 受stopLivePlayEnabled 字段影响 限制togglePlay的功能  */
-  function toTogglePlayLimitByStopLivePlay(hidePlayWhenLive: boolean): void {
-    if (hidePlayWhenLive && playerStore.playStatus === PlayStatus.Playing) {
+  /**
+   * 不显示大播放按钮，并且不显示左下角播放暂停按钮，部分操作失效:
+   * 1.点击播放器区域
+   * 2.键盘空格按键
+   * 3.竖屏双击屏幕
+   * */
+  function toTogglePlayInLimit(): void {
+    const { playButtonVisible, bigPlayButtonVisible } = usePlayerControl();
+    if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
       return;
     }
 
     toTogglePlay();
+  }
+
+  /**
+   * 不显示大播放按钮，并且不显示左下角播放暂停按钮，播放操作失效
+   * */
+  function toPlayInLimit(): void {
+    if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
+      return;
+    }
+
+    toPlay();
+  }
+
+  /**
+   * 不显示大播放按钮，并且不显示左下角播放暂停按钮，暂停操作失效
+   * */
+  function toPauseInLimit(): void {
+    if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
+      return;
+    }
+
+    toPause();
   }
 
   /** 刷新 */
@@ -211,6 +250,16 @@ export const usePlayerAction = () => {
   }
 
   /**
+   * 不显示进度条，键盘左右按键seek对应失效
+   */
+  function toForwardVideoInLimit() {
+    const { playerProgressVisible } = usePlayerControl();
+    if (!playerProgressVisible.value) return;
+
+    toForwardVideo();
+  }
+
+  /**
    * 视频后退
    * @param second 秒数，默认：15
    */
@@ -220,6 +269,16 @@ export const usePlayerAction = () => {
     playerStore.$patch({
       currentTime,
     });
+  }
+
+  /**
+   * 不显示进度条，键盘左右按键seek对应失效
+   */
+  function toBackOffVideoInLimit() {
+    const { playerProgressVisible } = usePlayerControl();
+    if (!playerProgressVisible.value) return;
+
+    toBackOffVideo();
   }
 
   /** 重新播放 */
@@ -273,6 +332,10 @@ export const usePlayerAction = () => {
     toRestart,
     toToggleMobilePageFullscreen,
     toSetLowLowLatency,
-    toTogglePlayLimitByStopLivePlay,
+    toTogglePlayInLimit,
+    toPlayInLimit,
+    toPauseInLimit,
+    toForwardVideoInLimit,
+    toBackOffVideoInLimit,
   };
 };

@@ -47,6 +47,14 @@ export function bindChannelModuleEvents(): void {
       return;
     }
 
+    if (failReason === ChannelSetupFailReason.NotAllowDomain) {
+      watchAppStore.setPageError({
+        type: PageErrorType.UnknownError,
+        title: translate('pageError.NotAllowDomain.title'),
+      });
+      return;
+    }
+
     watchAppStore.setPageError({
       type: PageErrorType.UnknownError,
       title: translate('pageError.channel.unknowError'),

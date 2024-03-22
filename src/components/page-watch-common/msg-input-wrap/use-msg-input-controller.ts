@@ -108,11 +108,11 @@ export const useMsgInputController = () => {
     }
 
     if (autoTextareaRef.value) {
-      return !unref(autoTextareaInputValue);
+      return !unref(autoTextareaInputValue).trim();
     }
 
     if (inputElemRef.value) {
-      return !unref(inputElmValue);
+      return !unref(inputElmValue).trim();
     }
 
     return true;

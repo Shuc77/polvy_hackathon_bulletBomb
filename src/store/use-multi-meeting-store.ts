@@ -4,6 +4,7 @@ import {
   MultiMeetingItem,
   MultiMeetingListLayout,
   MultiMeetingLiveStatusData,
+  PlvMultiMeetingModule,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ref, Ref, unref } from 'vue';
@@ -39,14 +40,16 @@ export interface MultiMeetingStore extends MultiMeetingStoreState, MultiMeetingS
 export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStore>(
   'multiMeeting',
   () => {
+    const __multiMeetingSetting = PlvMultiMeetingModule.generateDefaultMultiMeetingSetting();
+
     /** 分会场开关 */
-    const multiMeetingEnabled = ref(false);
+    const multiMeetingEnabled = ref(__multiMeetingSetting.multiMeetingEnabled);
 
     /** 分会场最大数量 */
-    const multiMeetingMaxCount = ref(0);
+    const multiMeetingMaxCount = ref(__multiMeetingSetting.multiMeetingMaxCount);
 
     /** 分会场模板 */
-    const multiMeetingListLayout = ref(MultiMeetingListLayout.Horizontal);
+    const multiMeetingListLayout = ref(__multiMeetingSetting.multiMeetingListLayout);
 
     /** 分会场频道状态 */
     const multiMeetingLiveStatus = ref<MultiMeetingLiveStatusData[]>([]);

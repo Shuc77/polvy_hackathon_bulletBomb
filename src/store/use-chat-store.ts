@@ -11,6 +11,7 @@ import {
   ChatMsgQuoteOriginType,
   ChatSetting,
   LiveStatus,
+  PlvChatModule,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -78,24 +79,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   const playbackStore = usePlaybackStore();
 
   /** 聊天室设置信息 */
-  const chatSetting = ref<ChatSetting>({
-    watchChatEnabled: true,
-    showCustomMessageEnabled: false,
-    quoteReplyEnabled: false,
-    chatTranslateEnabled: false,
-    chatRobotEnabled: false,
-    restrictChatEnabled: false,
-    maxViewers: Infinity,
-    likeEnabled: false,
-    filterManagerMsgEnabled: false,
-    viewerSendImgEnabled: false,
-    welcomeEnabled: false,
-    emotionalFeedbackEnabled: false,
-    chatOnlineNumberEnable: false,
-    faceEmotionEnabled: true,
-    imageEmotionEnabled: true,
-    getChatHistoryByTimestampEnabled: false,
-  });
+  const chatSetting = ref<ChatSetting>(PlvChatModule.generateDefaultChatSetting());
 
   /** 聊天室是否显示 */
   const chatRoomVisible = computed(() => {
@@ -170,11 +154,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   /** 聊天室输入框占位符 */
   const chatInputPlaceholder = computed<string>(() => {
     // 聊天室被关闭
-    if (unref(chatRoomIsClosed)) {
-      return translate('chat.closeRoom');
-    }
-
-    if (playbackStore.chatReplayEnabled) {
+    if (unref(chatRoomIsClosed) || playbackStore.chatReplayEnabled) {
       return translate('chat.roomClosed');
     }
 

@@ -2,7 +2,7 @@
 <template>
   <div class="c-mobile-auth-info-form">
     <div
-      v-if="hasMobileField"
+      v-if="showLoginEnter"
       class="c-mobile-auth-info-form__registered-entrance"
       @click="onClickLogined"
     >
@@ -177,7 +177,7 @@ const {
   protocolContent,
   smsVerifyEnabled,
   authFormInstance,
-  hasMobileField,
+  showLoginEnter,
   imageVerifyInputRef,
   imageVerifyInputEnabled,
   smsValidType,

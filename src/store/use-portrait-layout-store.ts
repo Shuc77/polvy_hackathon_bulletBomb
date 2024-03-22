@@ -98,7 +98,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       let placeholder = chatStore.chatInputPlaceholder;
 
       if (unref(portraitMessageTabCurrentName) === PortraitChatTabName.Ask) {
-        placeholder = translate('chat.input.placeholder4');
+        placeholder = translate('ask.input.placeholder');
       }
 
       return placeholder;

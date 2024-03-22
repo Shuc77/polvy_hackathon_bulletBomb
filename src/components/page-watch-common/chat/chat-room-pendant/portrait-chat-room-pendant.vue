@@ -1,6 +1,12 @@
 <!-- @file 竖屏端右下角挂件 -->
 <template>
   <div class="c-portrait-chat-room-pendant">
+    <!-- 风险测评 -->
+    <risk-evaluation-entrance
+      v-if="riskEvaluationEntranceEnabled"
+      class="c-portrait-chat-room-pendant__item"
+    />
+
     <!-- 微活动 -->
     <portrait-micro-activity-pendant
       v-if="microActivityEnabled"
@@ -45,6 +51,7 @@
 <script setup lang="ts">
 import { computed, unref } from 'vue';
 
+import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import PortraitPushCard from '@/components/page-watch-common/interactive-receive/push-card/mobile-push-card.vue';
 import MobileRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
@@ -60,10 +67,12 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useFinanceStore } from '@/store/use-finance-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
+const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
 const {
   pushCardPendantVisible,

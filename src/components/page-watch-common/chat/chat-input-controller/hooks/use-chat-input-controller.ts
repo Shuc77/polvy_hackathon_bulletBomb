@@ -138,8 +138,15 @@ export const useChatInputController = (options?: {
           size,
         });
       },
-      fail: () => {
+      fail: (err, options) => {
+        console.warn(err);
         toast.error(translate('watchCore.error.uploadImage'));
+        if (!options?.imageId) return;
+        const imageMsg = imageChatMsgQueueMap[options?.imageId];
+        if (imageMsg) {
+          imageMsg.isSendFailed = true;
+          watchCore.chat.replaceChatMsg(imageMsg.id, imageMsg);
+        }
       },
     });
   }

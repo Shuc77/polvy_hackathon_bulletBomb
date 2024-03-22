@@ -11,7 +11,7 @@
     <div
       ref="playerContainer"
       class="c-pc-player-main__container"
-      @click="toTogglePlayLimitByStopLivePlay(noPauseWhenLive)"
+      @click="toTogglePlayInLimit"
     ></div>
 
     <!-- 播放器 logo -->
@@ -77,7 +77,7 @@ const { noPauseWhenLive } = usePlayerControl();
 
 usePlayerKeyboard(playerContainer);
 
-const { toTogglePlayLimitByStopLivePlay } = usePlayerAction();
+const { toTogglePlayInLimit } = usePlayerAction();
 
 useConnectMicing();
 </script>
@@ -97,6 +97,11 @@ useConnectMicing();
     z-index: -1;
     height: 1px;
     opacity: 0;
+    .plv-watch-sdk__player-wrap-volc {
+      > div {
+        font-size: 0;
+      }
+    }
   }
 }
 

@@ -176,10 +176,16 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
   /** 移动端布局底部区域的高度 */
   const mobileLayoutBottomHeight = ref(0);
 
-  /** 移动端下是否正在页面全屏 */
+  /**
+   * 移动端下是否正在页面全屏
+   * @desc 正常延迟的页面全屏 / 无延迟的页面全屏
+   *  */
   const mobilePlayerIsPageFullscreen = ref(false);
 
-  /** 移动端下的常规延迟直播播放器是否处于全屏状态 */
+  /**
+   * 移动端下的常规延迟直播播放器是否处于全屏状态
+   * @desc 正常延迟的页面全屏 / 正常延迟的系统全屏
+   */
   const mobileNormalLatencyPlayerIsFullscreen = ref(false);
 
   /** 文档是否处于页面全屏 */
@@ -190,11 +196,7 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
 
   /** 当前是页面全屏或者横屏 */
   const isPageFullscreenOrHorizontalScreen = computed(() => {
-    return (
-      unref(mobileNormalLatencyPlayerIsFullscreen) ||
-      unref(mobilePlayerIsPageFullscreen) ||
-      unref(isHorizontalScreenOrientation)
-    );
+    return unref(mobilePlayerIsPageFullscreen) || unref(isHorizontalScreenOrientation);
   });
 
   /** 移动端布局退出所有全屏 */

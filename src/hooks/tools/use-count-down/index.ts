@@ -1,6 +1,6 @@
 import { SimilarResponsive } from '@/assets/utils/vue-utils';
 import { Countdown, IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
-import { computed, onUnmounted, ref, unref } from 'vue';
+import { computed, isRef, onUnmounted, ref, unref } from 'vue';
 
 export interface UseSecondCountDownOptions {
   /** 总秒数，单位秒 */
@@ -17,10 +17,39 @@ export interface UseSecondCountDownOptions {
  * @hook 简单的秒数倒计时
  */
 export const useSecondCountDown = (options: UseSecondCountDownOptions = {}) => {
-  const second = options.second ?? ref();
-  const endTimestamp = options.endTimestamp ?? ref();
-  const onCountDownChange = options.onCountDownChange;
-  const onCountDownFinish = options.onCountDownFinish;
+  let second = options.second ?? ref();
+  let endTimestamp = options.endTimestamp ?? ref();
+  let onCountDownChange = options.onCountDownChange;
+  let onCountDownFinish = options.onCountDownFinish;
+
+  function __updateSecond(paramSecond: UseSecondCountDownOptions['second']) {
+    if (isRef(second)) {
+      second.value = isRef(paramSecond) ? paramSecond.value : paramSecond;
+    } else {
+      second = paramSecond || second;
+    }
+  }
+
+  function __updateEndTimestamp(paramEndTimestamp: UseSecondCountDownOptions['endTimestamp']) {
+    if (isRef(endTimestamp)) {
+      endTimestamp.value = isRef(paramEndTimestamp) ? paramEndTimestamp.value : paramEndTimestamp;
+    } else {
+      endTimestamp = paramEndTimestamp || endTimestamp;
+    }
+  }
+
+  function updateOptions(options: UseSecondCountDownOptions = {}) {
+    if (options.second) {
+      __updateSecond(options.second);
+    }
+
+    if (options.endTimestamp) {
+      __updateEndTimestamp(options.endTimestamp);
+    }
+
+    onCountDownChange = options.onCountDownChange;
+    onCountDownFinish = options.onCountDownFinish;
+  }
 
   /** 默认的倒计时数据 */
   const defaultSurplusData: CountDownSurplusData = {
@@ -72,7 +101,11 @@ export const useSecondCountDown = (options: UseSecondCountDownOptions = {}) => {
   }
 
   /** 开始倒计时 */
-  function startCountDown(): void {
+  function startCountDown(options?: UseSecondCountDownOptions): void {
+    if (options) {
+      updateOptions(options);
+    }
+
     if (countDownInstance) {
       countDownInstance.start();
     } else {

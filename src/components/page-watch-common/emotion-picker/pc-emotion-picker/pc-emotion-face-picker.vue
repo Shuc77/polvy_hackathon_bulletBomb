@@ -23,7 +23,7 @@ const { containerRef, onClickContainer } = useEmotionFacePicker({
   padding-bottom: 20px;
   padding-left: 20px;
 
-  .plv-emotion-panel__item {
+  .plv-emotion-menu__item {
     margin: 0 14px 16px 0;
   }
 }
@@ -33,11 +33,11 @@ const { containerRef, onClickContainer } = useEmotionFacePicker({
   .c-pc-emotion-face-picker {
     padding-right: 20px;
 
-    .plv-emotion-panel__item {
+    .plv-emotion-menu__item {
       margin: 0;
     }
 
-    .plv-emotion-panel {
+    .plv-emotion-menu {
       display: grid;
       grid-template-columns: repeat(auto-fill, 32px);
       grid-gap: 16px 14px;
