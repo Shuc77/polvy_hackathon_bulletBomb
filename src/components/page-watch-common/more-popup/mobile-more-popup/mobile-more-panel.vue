@@ -89,6 +89,14 @@
       :text="$lang('interact.feedBack.title')"
       @click="onClickFeedback"
     />
+
+    <!-- 绑定手机号 -->
+    <more-item
+      v-if="bindMobileVisible"
+      icon="bind-mobile"
+      :text="$lang('identityInfo.bindMobile')"
+      @click="onClickBindMobile"
+    />
   </ul>
 </template>
 
@@ -106,6 +114,7 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -131,6 +140,8 @@ const { sendRedpackVisible, scoreRedpackEnabled } = storeDefinitionToRefs(useRed
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+
+const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
 /** 关闭更多 */
 function closeMore() {
@@ -200,6 +211,12 @@ function onClickWithdraw() {
 /** 点击中奖记录 */
 function onClickLotteryRecord() {
   eventBus.$emit(appEvents.interaction.OpenLotteryRecord, true);
+  closeMore();
+}
+
+/** 点击绑定手机号 */
+function onClickBindMobile() {
+  eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog, true);
   closeMore();
 }
 </script>

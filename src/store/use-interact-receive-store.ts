@@ -14,7 +14,12 @@ import {
   getStorageTipsStatus,
 } from '@/components/page-watch-common/interactive-receive/announcement/hooks/use-announcement-tips';
 import { LotteryRecordData } from '@/components/page-watch-common/interactive-receive/lottery/types/lottery-types';
-import { ChannelWatchPageSkin, InteractSetting, SeatTableTemplate } from '@polyv/live-watch-sdk';
+import {
+  ChannelWatchPageSkin,
+  InteractSetting,
+  PlvInteractReceiveModule,
+  SeatTableTemplate,
+} from '@polyv/live-watch-sdk';
 
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
@@ -110,31 +115,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const iarSdkLoaded = ref(false);
 
     /** 互动设置信息 */
-    const interactSetting = ref<InteractSetting>({
-      enrollLotteryEnabled: false,
-      recruitmentEnabled: false,
-      productEnabled: false,
-      productTrackEnabled: false,
-      productLinkJumpTipEnabled: false,
-      redpackEnabled: false,
-      lotteryManualEndEnabled: false,
-      conditionLotteryEnabled: false,
-      conditionLotteryAutoPopperEnabled: false,
-      watchFeedbackEnabled: false,
-      voteActiveEnabled: false,
-      redpackImage: '',
-      redpackRainBottomImage: '',
-      redpackRainImages: [],
-      seatTableEnabled: false,
-      seatTableTemplate: SeatTableTemplate.Meeting,
-      seatMaxNumber: 0,
-      seatVipMaxNumber: 0,
-      seatCustomTextEnabled: false,
-      seatCustomText: '',
-      seatGuestCardEnabled: false,
-      lotteryGiftButtonTextCH: '',
-      lotteryGiftButtonTextEN: '',
-    });
+    const interactSetting = ref<InteractSetting>(
+      PlvInteractReceiveModule.generateDefaultInteractSetting(),
+    );
 
     function syncInteractStore() {
       const watchCore = getWatchCore();

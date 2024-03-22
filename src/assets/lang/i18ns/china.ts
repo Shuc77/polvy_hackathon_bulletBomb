@@ -45,6 +45,7 @@ export const chinaLang = {
   'auth.error.workWeixinNotStaff': '登录失败，请确认员工身份',
   'auth.enter': '进入直播',
 
+  'ask.input.placeholder': '发起提问',
   'ask.placeholderMsg': '您好！请问有什么问题吗',
   'ask.news': '新消息',
   'ask.badWord': '您发送的问题含有违禁词',
@@ -54,6 +55,7 @@ export const chinaLang = {
   'ai.busy': '当前系统繁忙，请稍后再试。',
   'ai.hello': '你好，有任何问题都可以来问我哦！',
 
+  'base.back': '返回',
   'base.error.unknown': '未知错误',
   'base.error.iarSetup': '数据请求异常，加载互动功能失败！',
   'base.agree': '同意',
@@ -82,6 +84,7 @@ export const chinaLang = {
   'base.spreadOut': '展开',
   'base.copy': '复制',
   'base.fullText': '全文',
+  'base.translate': '翻译',
   'base.translateFinish': '翻译完成',
   'base.camera': '摄像头',
   'base.popup.supportDragUp': '弹窗支持向上拖动',
@@ -102,6 +105,8 @@ export const chinaLang = {
   'base.submitFail': '提交失败',
   'base.smsCodeError': '短信验证码错误',
   'base.noData': '暂无数据',
+  'base.reSendWhenIsShield': '发送失败！你已经被禁言。',
+  'base.needCheck': '请勾选',
 
   'channel.noLive': '当前暂无直播',
   'channel.descEmpty': '暂无直播介绍~',
@@ -185,10 +190,8 @@ export const chinaLang = {
   'chat.input.placeholder': '我也来参与一下互动',
   'chat.input.placeholder2': '跟大家聊点什么吧~',
   'chat.input.placeholder3': '点击设置昵称参与互动',
-  'chat.input.placeholder4': '发起提问',
   'chat.input.maxImageTips': '最多插入不超过${maxCount}张图片',
   'chat.ask.channel': '提问频道',
-  'chat.closeRoom': '聊天室已关闭',
   'chat.roomClosed': '聊天室已关闭',
   'chat.roomReopened': '聊天室重新打开',
   'chat.reply': '回复',
@@ -377,6 +380,7 @@ export const chinaLang = {
     '你未在该频道可见范围内，有疑问请联系直播管理员或企微管理员',
   'pageError.saleInvite.limit.weixin': '专属观看请复制链接在微信下打开',
   'pageError.saleInvite.illegalSaleCode': '链接错误或者已失效，请联系管理员获取新链接',
+  'pageError.NotAllowDomain.title': '请求来源非法',
 
   'player.play.button.text': '立即播放',
   'player.play': '播放',
@@ -473,9 +477,13 @@ export const chinaLang = {
   'redpack.greeting.long': '祝福语过长',
   'redpack.unsupported': '不支持该红包类型',
 
-  'risk.confirm.letter.agree': '同意并观看直播',
+  'risk.confirm.letter.title': '欢迎进入直播间',
+  'risk.confirm.letter.agree': '同意',
   'risk.confirm.letter.disagree': '不同意',
   'risk.confirm.letter.viewAgreement': '查看协议',
+  'risk.confirm.letter.disagreeTips1': '为了您有更好的观看体验',
+  'risk.confirm.letter.disagreeTips2': '请同意协议后进入直播间',
+  'risk.confirm.letter.readAll.tips': '请阅读以上全部内容',
 
   'saleInvite.confirm': '同意并观看直播',
   'saleInvite.tips1': '验证手机号',
@@ -678,5 +686,9 @@ export const chinaLang = {
   'subtitle.new': '查看最新',
   'subtitle.limit': '当前最多展示近${limit}条记录',
 
+  'identityInfo.bindMobile': '绑定手机号',
+
   'watch.duration.learnTime': '累计学习 ${duration} 分钟',
+
+  'chatStatus.resendImageError': '图片重发失败',
 };

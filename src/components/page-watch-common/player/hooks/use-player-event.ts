@@ -5,6 +5,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { usePlaybackList } from '@/components/page-watch-common/playback-list/use-playback-list';
 import { useLayoutStore } from '@/store/use-layout-store';
 import {
+  FullScreenMode,
   PlaybackMode,
   PlaybackTarget,
   PlayerEvents,
@@ -103,10 +104,20 @@ export const usePlayerEvent = () => {
   }
 
   /** 全屏 */
-  function onToggleFullScreen(data: PlayerEventsRelations[PlayerEvents.ToggleFullScreen]) {
+  function onToggleFullScreen({
+    isPlayerFullscreen,
+    fullScreenMode,
+  }: PlayerEventsRelations[PlayerEvents.ToggleFullScreen]) {
     layoutStore.$patch({
-      mobileNormalLatencyPlayerIsFullscreen: data.isPlayerFullscreen,
+      mobileNormalLatencyPlayerIsFullscreen: isPlayerFullscreen,
     });
+
+    // 正常延迟播放器网页全屏时需要同步处理标识位
+    if (fullScreenMode === FullScreenMode.WebHtml) {
+      layoutStore.$patch({
+        mobilePlayerIsPageFullscreen: isPlayerFullscreen,
+      });
+    }
   }
 
   /** sdk 播放器 UI 控制栏显隐 */

@@ -9,6 +9,8 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useCommonStore } from '@/store/use-common-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useFinanceStore } from '@/store/use-finance-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLangStore } from '@/store/use-lang-store';
@@ -42,6 +44,7 @@ export const useSyncStoreForWatchApp = () => {
   const shareStore = useShareStore();
   const inviteStore = useInviteStore();
   const multiMeetingStore = useMultiMeetingStore();
+  const identityStore = useIdentityStore();
 
   /**
    * 初始化 watchApp 时同步 Store
@@ -61,6 +64,7 @@ export const useSyncStoreForWatchApp = () => {
     shareStore.syncShareStore();
     inviteStore.syncInviteInfo();
     multiMeetingStore.syncMultiMeetingStore();
+    identityStore.syncIdentityStore();
   }
 
   return {
@@ -75,6 +79,8 @@ export const useSyncStoreForWatchCore = () => {
   const weixinStore = useWeixinStore();
   const langStore = useLangStore();
 
+  const financeStore = useFinanceStore();
+
   /**
    * PolyvWatchCoreEvents.WatchCoreSetuped 钩子同步 Store
    * @desc 同步需要响应授权变化或者接口变化的数据
@@ -86,6 +92,8 @@ export const useSyncStoreForWatchCore = () => {
     authStore.syncAuthStore();
     weixinStore.syncWeixinStore();
     langStore.syncLangStore();
+
+    financeStore.syncFinanceStore();
   }
 
   return {

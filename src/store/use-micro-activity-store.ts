@@ -3,6 +3,7 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 
 import { useChannelMenuStore } from './use-channel-menu-store';
+import { useCommonStore } from './use-common-store';
 
 export interface MicroActivityStoreState {
   /** 微活动开关 */
@@ -20,13 +21,14 @@ export type MicroActivityStore = MicroActivityStoreState;
 export const useMicroActivityStore = defineStore<'microActivity', MicroActivityStore>(
   'microActivity',
   () => {
+    const commonStore = useCommonStore();
     const channelMenuStore = useChannelMenuStore();
 
     /** 微活动开关 */
     const microActivityEnabled = ref(false);
 
     /** 微活动-挂件Icon */
-    const microActivityPendantIcon = ref('');
+    const microActivityPendantIcon = ref(commonStore.plvDefaultResource.defaultWidgetGame);
 
     /** 微活动名称 */
     const microActivityTitle = computed(() => {

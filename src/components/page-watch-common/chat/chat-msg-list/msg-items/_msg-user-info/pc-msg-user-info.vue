@@ -19,14 +19,38 @@
       <!-- 头衔 -->
       <span
         v-if="!hideUserActor"
-        class="c-pc-msg-user-info__actor g-singleline pws-chat-msg-user-actor"
-        :title="msgUserActor"
+        class="c-pc-msg-user-info__label c-pc-msg-user-info__actor g-singleline pws-chat-msg-user-actor"
+        :class="{
+          'c-pc-msg-user-info__actor--not-special': !isSpecialUser,
+        }"
       >
-        {{ msgUserActor }}
+        <span
+          class="c-pc-msg-user-info__label-inner c-pc-msg-user-info__actor-inner"
+          :title="msgUserActor"
+        >
+          {{ msgUserActor }}
+        </span>
       </span>
+
+      <!-- 提问区标签 -->
+      <template v-if="showUserQuestionLabel">
+        <span
+          v-for="(questionLabel, index) in msgUserQuestionLabels"
+          :key="`${questionLabel}_${index}`"
+          class="c-pc-msg-user-info__label c-pc-msg-user-info__questionLabel g-singleline"
+        >
+          <span
+            class="c-pc-msg-user-info__label-inner c-pc-msg-user-questionLabel-inner"
+            :title="questionLabel"
+          >
+            {{ questionLabel }}
+          </span>
+        </span>
+      </template>
+
       <!-- 昵称 -->
       <span
-        class="c-pc-msg-user-info__nick g-singleline pws-chat-msg-user-nickname"
+        class="c-pc-msg-user-info__nick pws-chat-msg-user-nickname"
         :title="msgUserNick"
       >
         {{ msgUserNick }}{{ isSelfMsg ? `(${$lang('base.me')})` : '' }}
@@ -53,10 +77,12 @@ const {
   msgUserNick,
   msgUserAvatar,
   msgUserActor,
+  msgUserQuestionLabels,
 
   isSelfMsg,
   isSpecialUser,
   hideUserActor,
+  showUserQuestionLabel,
 } = useMsgUserInfo();
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
@@ -72,11 +98,9 @@ function onClickSetNick() {
 .c-pc-msg-user-info {
   position: relative;
   box-sizing: border-box;
-  height: $--msg-user-avatar-size;
   padding-right: $--msg-container-padding-size;
   padding-left: $--msg-user-avatar-padding;
   margin: 0 $--margin-horizontal-margin;
-  line-height: $--msg-user-avatar-size;
 }
 
 .c-pc-msg-user-info__avatar {
@@ -93,27 +117,56 @@ function onClickSetNick() {
 .c-pc-msg-user-info__nick-wrap {
   position: relative;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
+  display: inline-block;
   max-width: 100%;
-  font-size: 14px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: normal;
 }
 
-.c-pc-msg-user-info__actor {
+.c-pc-msg-user-info__label {
+  box-sizing: border-box;
+  display: inline-flex;
   flex-shrink: 0;
-  max-width: 48px;
+  align-items: center;
+  justify-content: center;
+  max-width: 110px;
   height: 18px;
+  margin: 2px;
+  line-height: 18px;
+  border-radius: 18px;
+}
+.c-pc-msg-user-info__label-inner {
+  display: inline-block;
   padding: 0 6px;
   font-size: 12px;
-  line-height: 18px;
-  white-space: nowrap;
-  vertical-align: middle;
-  border-radius: 9px;
+  border-radius: 18px;
   transform: scale(0.833);
 }
 
+.c-pc-msg-user-info__questionLabel {
+  color: #fff;
+  background-color: #626be9;
+}
+// 一般通过多皮肤处理
+.c-pc-msg-user-info__actor {
+  color: #fff;
+  background-color: #5394f6;
+}
+// 非特殊角色样式暂时只用一套，所以优先级比多皮肤高
+.c-pc-msg-user-info__actor.c-pc-msg-user-info__actor--not-special {
+  color: #fff !important;
+  background: none !important;
+  border-image-source: url('../_imgs/img-user-actor-bg.png');
+  border-image-slice: 0 20 0 20 fill;
+  border-image-width: 0 8px 0 8px;
+  .c-pc-msg-user-info__actor-inner {
+    background: none !important;
+  }
+}
+
 .c-pc-msg-user-info__set-nick {
-  display: flex;
+  display: inline-flex;
   flex-shrink: 0;
   padding: 0 8px;
   font-size: 16px !important;

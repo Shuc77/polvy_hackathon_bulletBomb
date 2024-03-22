@@ -7,6 +7,7 @@ import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { isMobile, isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { useChannelInfoStore } from './use-channel-info-store';
 import { getWatchCore } from '@/core/watch-sdk';
+import { PlvLiveBookingModule } from '@polyv/live-watch-sdk';
 
 export interface LiveBookingStoreState {
   /** 是否使用微信预约 */
@@ -45,11 +46,13 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
   () => {
     const channelInfoStore = useChannelInfoStore();
 
+    const __liveBookingConfig = PlvLiveBookingModule.generateDefaultLiveBookingConfig();
+
     /** 是否开启了短信预约 */
-    const smsBookingEnabled = ref(false);
+    const smsBookingEnabled = ref(__liveBookingConfig.smsBookingEnabled);
 
     /** 是否开启了微信预约 */
-    const wxBookingEnabled = ref(false);
+    const wxBookingEnabled = ref(__liveBookingConfig.wxBookingEnabled);
 
     /** 是否使用微信预约 */
     const useWxBooking = computed<boolean>(() => {
@@ -79,10 +82,10 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
     });
 
     /** 是否已短信预约 */
-    const isSmsLiveBooking = ref(false);
+    const isSmsLiveBooking = ref(__liveBookingConfig.isSmsLiveBooking);
 
     /** 是否已微信预约 */
-    const isWxLiveBooking = ref(false);
+    const isWxLiveBooking = ref(__liveBookingConfig.isWxLiveBooking);
 
     /** 是否已预约直播 */
     const isLiveBooking = computed<boolean>(() => {
@@ -90,19 +93,19 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
     });
 
     /** 是否已关注了微信公众号 */
-    const isWxSubscribed = ref(false);
+    const isWxSubscribed = ref(__liveBookingConfig.isWxSubscribed);
 
     /** 微信预约弹层提示文案 */
-    const wxBookingTips = ref('');
+    const wxBookingTips = ref(__liveBookingConfig.wxBookingTips);
 
     /** 是否展示微信预约人数 */
-    const wxBookingCountVisible = ref(false);
+    const wxBookingCountVisible = ref(__liveBookingConfig.wxBookingCountVisible);
 
     /** 微信预约人数 */
-    const wxBookingCount = ref(0);
+    const wxBookingCount = ref(__liveBookingConfig.wxBookingCount);
 
     /** 微信公众号图片 */
-    const wxMpImageUrl = ref('');
+    const wxMpImageUrl = ref(__liveBookingConfig.wxMpImageUrl);
 
     /** 同步直播预约 Store 数据 */
     function syncLiveBookingStore(): void {

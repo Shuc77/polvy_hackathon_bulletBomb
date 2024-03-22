@@ -3,6 +3,7 @@
   <pc-msg-container
     class="c-pc-image-msg"
     bubble-padding="8px"
+    :suffix-mode="'align-center'"
   >
     <div
       v-if="chatMsg.isIllegal"
@@ -43,6 +44,11 @@
         @click="onClickImage"
       />
     </div>
+
+    <!-- 消息状态 -->
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </pc-msg-container>
 </template>
 
@@ -50,6 +56,7 @@
 import { PcIconForbid } from '@/components/component-icons/pc/map';
 import PcMsgContainer from '../_msg-container/pc-msg-container.vue';
 import { useImageMsg } from './use-image-msg';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 
 const {
   chatMsg,

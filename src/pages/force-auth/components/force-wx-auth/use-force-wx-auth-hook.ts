@@ -1,40 +1,30 @@
-import { computed, onMounted, ref } from 'vue';
 import { getWatchCore } from '@/core/watch-sdk';
+import { computed, onMounted, ref } from 'vue';
 
-import { copyText, toastCopySuccess } from '@/assets/utils/copy';
-import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-authorize';
 import { isWeixin } from '@/assets/utils/browser';
+import { copyText, toastCopySuccess } from '@/assets/utils/copy';
 import { wait } from '@/assets/utils/utils';
+import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-authorize';
 
 import { FormProtocolInstance } from '@/components/common-base/form/form-protocol/use-form-protocol';
 import { MessageBoxInstance } from '@/components/common-base/message-box';
-import { useLangStore, convert2WatchSdkLang } from '@/store/use-lang-store';
-import { ChannelAgreementConfig, LanguageType } from '@polyv/live-watch-sdk';
-
-const generateDefaultChannelAgreementConfigItem = (): ChannelAgreementConfig[LanguageType] => {
-  return {
-    content: '',
-    dialogContent: '',
-    dialogTitle: '',
-  };
-};
+import { useChannelAgreement } from '@/hooks/business/use-channel-agreement';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useIdentityStore } from '@/store/use-identity-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 export const useForceWxAuthHook = () => {
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
 
   const watchCore = getWatchCore();
-  const langStore = useLangStore();
+  const themeStore = useThemeStore();
+  const channelInfoStore = useChannelInfoStore();
+  const identityStore = useIdentityStore();
+  const watchAppStore = useWatchAppStore();
 
-  const channelAgreementConfig = ref<ChannelAgreementConfig>();
-
-  /** 当前频道协议配置 */
-  const currentChannelAgreementConfig = computed(() => {
-    const defaultData = generateDefaultChannelAgreementConfigItem();
-    if (!channelAgreementConfig.value) return defaultData;
-
-    const langKey = convert2WatchSdkLang(langStore.currentLang);
-    return channelAgreementConfig.value[langKey] || defaultData;
-  });
+  const { channelAgreementConfig, protocolContent, protocolConfirmInfo, initChanelAgreement } =
+    useChannelAgreement();
 
   const watchUrl = computed(() => {
     return window.location.href;
@@ -56,18 +46,29 @@ export const useForceWxAuthHook = () => {
 
   const protocolChecked = ref(false);
 
-  const protocolContent = computed(() => {
-    return currentChannelAgreementConfig.value.content;
+  const imageUrl = computed(() => {
+    let res = themeStore.channelCoverImg;
+
+    const identitySetting = identityStore.identitySetting;
+    if (identitySetting.watchUserSystemEnabled && watchAppStore.accountInfo.companyLogo) {
+      res = watchAppStore.accountInfo.companyLogo;
+    }
+
+    return res;
+  });
+
+  const titleText = computed(() => {
+    let res = channelInfoStore.channelTitle;
+
+    const identitySetting = identityStore.identitySetting;
+    if (identitySetting.watchUserSystemEnabled && watchAppStore.accountInfo.companyName) {
+      res = watchAppStore.accountInfo.companyName;
+    }
+
+    return res;
   });
 
   const protocolConfirmRef = ref<MessageBoxInstance>();
-
-  const protocolConfirmInfo = computed(() => {
-    return {
-      content: currentChannelAgreementConfig.value.dialogContent,
-      title: currentChannelAgreementConfig.value.dialogTitle,
-    };
-  });
 
   function onClickProtocolConfirmLink(a: HTMLAnchorElement) {
     if (protocolRef.value) {
@@ -75,20 +76,32 @@ export const useForceWxAuthHook = () => {
     }
   }
 
+  /** 防止重复点击 */
+  let btnEnabled = true;
+
   async function onClickAuthBtn() {
-    if (!protocolChecked.value) {
-      const res = await protocolConfirmRef.value?.$confirm();
-      if (!res) {
-        return;
+    if (!btnEnabled) return;
+
+    try {
+      if (!protocolChecked.value) {
+        const res = await protocolConfirmRef.value?.$confirm();
+        if (!res) {
+          return;
+        }
+        protocolChecked.value = true;
       }
-      protocolChecked.value = true;
+
+      btnEnabled = false;
+      await redirectWeixinAuthorize({ snsApiBase: false });
+    } catch (error) {
+      btnEnabled = true;
+      console.error(error);
     }
-    redirectWeixinAuthorize({ snsApiBase: false });
   }
 
   onMounted(async () => {
     if (isWeixin) {
-      channelAgreementConfig.value = await watchCore.channel.getChannelAgreementConfig();
+      initChanelAgreement();
       await wait(3000);
       protocolTipsVisible.value = false;
     }
@@ -105,6 +118,8 @@ export const useForceWxAuthHook = () => {
     protocolContent,
     protocolTipsVisible,
     protocolConfirmInfo,
+    imageUrl,
+    titleText,
 
     protocolConfirmRef,
     onClickProtocolConfirmLink,

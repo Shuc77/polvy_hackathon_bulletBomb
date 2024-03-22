@@ -4,8 +4,7 @@
     class="c-mobile-player-main"
     :class="{
       'c-mobile-player-main--normal-player-fullscreen': mobileNormalLatencyPlayerIsFullscreen,
-      'c-mobile-player-main--page-fullscreen':
-        mobilePlayerIsPageFullscreen && !isHorizontalScreenOrientation,
+      'c-mobile-player-main--page-fullscreen': lowLatencyPlayerIsPageFullscreen,
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
       'c-mobile-player-main--hide': isConnectMicing,
@@ -76,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { unref } from 'vue';
+import { computed, unref } from 'vue';
 
 import { appEvents, eventBus } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -112,6 +111,14 @@ const {
   mobileNormalLatencyPlayerIsFullscreen,
   isHorizontalScreenOrientation,
 } = storeDefinitionToRefs(useLayoutStore);
+
+const lowLatencyPlayerIsPageFullscreen = computed(() => {
+  return (
+    mobilePlayerIsPageFullscreen.value &&
+    !mobileNormalLatencyPlayerIsFullscreen.value &&
+    !isHorizontalScreenOrientation.value
+  );
+});
 
 const channelStore = useChannelStore();
 
@@ -208,7 +215,7 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
   opacity: 0.7;
 }
 
-// 正常延迟播放器页面全屏
+// 正常延迟播放器全屏
 .c-mobile-player-main--normal-player-fullscreen {
   .plv-live-fullscreen--landscape {
     // ios 兼容处理

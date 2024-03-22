@@ -13,18 +13,30 @@
       v-else-if="watchPageInited"
       @hook:mounted="onPageMounted"
     />
+
+    <!-- 风险测评 -->
+    <pc-risk-evaluation v-if="iarSdkLoaded" />
+    <risk-evaluation-redirect-dialog />
+    <!-- 风险确认函 -->
+    <pc-risk-confirm-letter />
   </div>
 </template>
 
 <script setup lang="ts">
 import '@/plugins/polyv-ui/pc-import';
 import { defineAsyncComponent } from 'vue';
+import {
+  PcRiskEvaluation,
+  RiskEvaluationRedirectDialog,
+} from '@/components/page-watch-common/interactive-receive/risk-evaluation';
+import PcRiskConfirmLetter from '@/components/common-business/risk-confirm-letter/pc-risk-confirm-letter.vue';
 
 import { mainEnterEmits, useMainEnter } from './_hooks/use-main-enter';
 import { usePageLayoutStyle } from './_hooks/use-page-layout-style';
 
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const PcForceAuth = defineAsyncComponent(() => {
   return import(
@@ -43,6 +55,8 @@ const PcWatch = defineAsyncComponent(() => {
 const emit = defineEmits(mainEnterEmits());
 
 const { onPageMounted } = useMainEnter({ emit });
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 usePageLayoutStyle();
 

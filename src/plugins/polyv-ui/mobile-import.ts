@@ -1,4 +1,6 @@
 /* eslint-disable import/first */
+import './cover-styles.scss';
+
 import '@polyv/polyv-ui/lib-front-mob/theme/like.css';
 export { default as PlvLike } from '@polyv/polyv-ui/lib-front-mob/like';
 

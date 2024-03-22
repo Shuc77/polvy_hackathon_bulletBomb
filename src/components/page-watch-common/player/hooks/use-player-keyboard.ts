@@ -21,8 +21,13 @@ export const collectPlayerKeyboardEffectElements = (el: Ref<HTMLElement | undefi
 export const usePlayerKeyboard = (playerContainer: Ref<HTMLDivElement | undefined>) => {
   collectPlayerKeyboardEffectElements(playerContainer);
 
-  const { toTogglePlay, toForwardVideo, toBackOffVideo, toIncreaseVolume, toReductionVolume } =
-    usePlayerAction();
+  const {
+    toTogglePlayInLimit,
+    toForwardVideoInLimit,
+    toBackOffVideoInLimit,
+    toIncreaseVolume,
+    toReductionVolume,
+  } = usePlayerAction();
 
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
@@ -83,21 +88,21 @@ export const usePlayerKeyboard = (playerContainer: Ref<HTMLDivElement | undefine
     // 空格键：播放暂停
     if (keyCode === KeyCodeMap.Space) {
       event.preventDefault();
-      toTogglePlay();
+      toTogglePlayInLimit();
       return;
     }
 
     // 右箭头：控制视频前进
     if (keyCode === KeyCodeMap.ArrowRight && !docInMainScreen) {
       event.preventDefault();
-      toForwardVideo();
+      toForwardVideoInLimit();
       return;
     }
 
     // 左箭头：控制视频后退
     if (keyCode === KeyCodeMap.ArrowLeft && !docInMainScreen) {
       event.preventDefault();
-      toBackOffVideo();
+      toBackOffVideoInLimit();
       return;
     }
 

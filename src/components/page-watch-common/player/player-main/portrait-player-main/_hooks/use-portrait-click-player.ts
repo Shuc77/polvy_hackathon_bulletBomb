@@ -29,7 +29,7 @@ export const checkDomClick = (event: MouseEvent, dom: Element) => {
  */
 export const usePortraitClickPlayer = () => {
   const playerStore = usePlayerStore();
-  const { toPlay, toPause } = usePlayerAction();
+  const { toPlayInLimit, toPauseInLimit } = usePlayerAction();
   const { noPauseWhenLive } = usePlayerControl();
 
   /** 记录点击次数 */
@@ -61,7 +61,7 @@ export const usePortraitClickPlayer = () => {
 
     // 当前处于暂停状态，触发播放
     if (playerStore.isPlayMode && playerStore.playStatus === PlayStatus.Pause) {
-      toPlay();
+      toPlayInLimit();
       return;
     }
 
@@ -75,7 +75,7 @@ export const usePortraitClickPlayer = () => {
     clickCount++;
     // 双击了播放器区域，暂停播放
     if (clickCount === 2 && !noPauseWhenLive.value) {
-      toPause();
+      toPauseInLimit();
       clickCount = 0;
     }
 

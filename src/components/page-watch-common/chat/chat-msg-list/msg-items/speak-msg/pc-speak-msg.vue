@@ -6,6 +6,8 @@
       'c-pc-speak-msg--over-style': chatMsg.isOverLength,
     }"
     :render-other-content="!!translatedContent"
+    @bubble-contextmenu="onBubbleContextmenu"
+    :suffix-mode="'align-center'"
   >
     <!-- 消息引用 -->
     <pc-msg-quote-content
@@ -40,27 +42,6 @@
       </span>
     </div>
 
-    <!-- 右侧按钮 -->
-    <template #suffix>
-      <!-- 引用回复 -->
-      <div
-        v-if="canQuoteReply"
-        class="c-pc-msg-container__content__suffix c-pc-msg-container__content__suffix--reply pws-chat-msg-quote-button"
-        @click="onClickQuote"
-      >
-        {{ $lang('chat.reply') }}
-      </div>
-
-      <!-- 翻译 -->
-      <div
-        v-if="canTranslate"
-        class="c-pc-msg-container__content__suffix c-pc-msg-container__content__suffix--translate pws-chat-msg-translate-button"
-        @click="translateCurrentMsg"
-      >
-        <pc-icon-translate class="c-pc-speak-msg__translate-icon" />
-      </div>
-    </template>
-
     <!-- 翻译后的内容 -->
     <template #other-content>
       <span
@@ -72,21 +53,66 @@
         <span>{{ $lang('base.translateFinish') }}</span>
       </div>
     </template>
+
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </pc-msg-container>
 </template>
 
 <script setup lang="ts">
 import PcMsgQuoteContent from '../_msg-quote-content/pc-msg-quote-content.vue';
-import { PcIconCheckRoundFill, PcIconTranslate } from '@/components/component-icons/pc/map';
+import {
+  PcIconCheckRoundFill,
+  PcIconCopy,
+  PcIconReply,
+  PcIconTranslate,
+} from '@/components/component-icons/pc/map';
 import PcMsgContainer from '../_msg-container/pc-msg-container.vue';
 import { useSpeakMsg, useSpeakMsgTranslate } from './use-speak-msg';
 import { useChatMsgQuote } from '../_hooks/chat-msg-quote-hook';
+import { useContextMenu } from '@/hooks/components/use-context-menu';
+import { translate } from '@/assets/lang';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 
 const { speakHtmlContent, chatMsg, msgQuote, copyMsg, showCompleteMsg } = useSpeakMsg();
 
 const { translatedContent, canTranslate, translateCurrentMsg } = useSpeakMsgTranslate(chatMsg);
 
 const { canQuoteReply, onClickQuote } = useChatMsgQuote(chatMsg);
+
+const { createContextMenu } = useContextMenu();
+
+function onBubbleContextmenu(evt: MouseEvent) {
+  evt.preventDefault();
+  createContextMenu(
+    {
+      x: evt.pageX,
+      y: evt.pageY,
+      offsetX: 10,
+      offsetY: -10,
+    },
+    [
+      {
+        hidden: !canQuoteReply.value,
+        getIcon: () => PcIconReply,
+        content: translate('chat.reply'),
+        onClick: onClickQuote,
+      },
+      {
+        getIcon: () => PcIconCopy,
+        content: translate('base.copy'),
+        onClick: copyMsg,
+      },
+      {
+        hidden: !canTranslate.value,
+        getIcon: () => PcIconTranslate,
+        content: translate('base.translate'),
+        onClick: translateCurrentMsg,
+      },
+    ],
+  );
+}
 </script>
 
 <style lang="scss">
@@ -154,11 +180,6 @@ const { canQuoteReply, onClickQuote } = useChatMsgQuote(chatMsg);
   }
 }
 
-.c-pc-speak-msg__translate-icon {
-  display: flex;
-  font-size: 20px !important;
-  cursor: pointer;
-}
 .c-pc-speak-msg__translate-finish {
   display: flex;
   align-items: center;
@@ -170,13 +191,5 @@ const { canQuoteReply, onClickQuote } = useChatMsgQuote(chatMsg);
   display: inline-flex;
   margin-right: 4px;
   font-size: 12px !important;
-}
-
-.c-pc-msg-container__content__suffix--reply {
-  margin-bottom: 11px;
-  cursor: pointer;
-}
-.c-pc-msg-container__content__suffix--translate {
-  margin-top: -4px;
 }
 </style>

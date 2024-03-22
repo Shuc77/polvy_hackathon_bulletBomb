@@ -25,6 +25,11 @@ export const usePageErrorHook = () => {
     return unref(pageError).type === PageErrorType.WorkWechatFriend;
   });
 
+  /** 用户信息输入页面 */
+  const isIdentityInfoInfoPage = computed(() => {
+    return unref(pageError).type === PageErrorType.IdentityInfoInput;
+  });
+
   const isDisallowMobileWatch = computed(() => {
     return unref(pageError).type === PageErrorType.MobileChannelClosed;
   });
@@ -76,6 +81,7 @@ export const usePageErrorHook = () => {
     isNotFoundError,
 
     isVerifySaleInvitePage,
+    isIdentityInfoInfoPage,
 
     reloadPage,
   };

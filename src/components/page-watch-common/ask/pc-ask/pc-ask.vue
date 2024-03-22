@@ -44,7 +44,6 @@ import { useAsk } from '../hooks/use-ask';
 import { useAskSend } from '../hooks/use-ask-send';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useAskStore } from '@/store/use-ask-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useChatStore } from '@/store/use-chat-store';
 
@@ -55,11 +54,16 @@ const { checkNeedRealNameAuth } = useViewerStore();
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { askMsgRenderList, questionImageEnabled, getAskMsgList, inputDisabled } = useAsk({
+const {
+  askMsgRenderList,
+  questionImageEnabled,
+  getAskMsgList,
+
+  inputDisabled,
+  askInputPlaceholder,
+} = useAsk({
   askMsgListRef,
 });
-
-const { askInputPlaceholder } = storeDefinitionToRefs(useAskStore);
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {

@@ -5,7 +5,7 @@
       <div class="c-mobile-enroll-form__body__content">
         <!-- 已报名入口 -->
         <div
-          v-if="needEnrollByEnter"
+          v-if="showLoginEnrollEnter"
           class="c-mobile-enroll-form__entrance"
           @click="onClickEnrolled"
         >
@@ -287,7 +287,7 @@ import {
 defineProps(enrollFormMobileProps());
 const emit = defineEmits(enrollFormEmits());
 
-const { enrollBanner, needEnrollByEnter, smsVerifyEnabled, enrollAuthType, enrollFields } =
+const { enrollBanner, showLoginEnrollEnter, smsVerifyEnabled, enrollAuthType, enrollFields } =
   storeDefinitionToRefs(useEnrollStore);
 
 const {

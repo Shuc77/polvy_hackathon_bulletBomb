@@ -1,6 +1,13 @@
 // @file 移动端的互动功能接收端样式覆盖
 
 // ============  全局 ============ //
+.plv-iar-pendant {
+  width: 36px;
+}
+.plv-iar-pendant__icon {
+  width: 36px;
+  height: 36px;
+}
 
 // 加载
 .plv-ia-loading-container {

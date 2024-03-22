@@ -1,6 +1,9 @@
 <!-- @file 竖屏端表情消息 -->
 <template>
-  <portrait-msg-container class="c-portrait-emotion-msg">
+  <portrait-msg-container
+    class="c-portrait-emotion-msg"
+    :suffix-mode="'align-center'"
+  >
     <div
       v-if="!isLoaded"
       class="c-portrait-emotion-msg__placeholder g-img-cover"
@@ -12,12 +15,16 @@
       @load="onImgLoad"
       @click="onClickEmotion"
     />
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </portrait-msg-container>
 </template>
 
 <script setup lang="ts">
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useEmotionMsg } from './use-emotion-msg';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 
 const { emotionUrl, isLoaded, onImgLoad, onClickEmotion } = useEmotionMsg();
 </script>

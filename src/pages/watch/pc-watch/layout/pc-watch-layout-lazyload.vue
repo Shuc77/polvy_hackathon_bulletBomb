@@ -25,6 +25,9 @@
 
     <!-- 实名认证弹层 -->
     <pc-real-name-dialog />
+
+    <!-- 绑定用户信息 -->
+    <pc-bind-identity-info-dialog v-if="bindMobileVisible" />
   </div>
 </template>
 
@@ -37,16 +40,20 @@ import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-l
 import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/pc-transmit-switch-tip.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
+import PcBindIdentityInfoDialog from '@/components/common-business/bind-identity-info/pc-bind-identity-info.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 </script>

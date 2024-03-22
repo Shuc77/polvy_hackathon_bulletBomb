@@ -11,13 +11,13 @@
 import { computed } from 'vue';
 import { eventBus, appEvents } from '@/app/app-events';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
+import { CSSProperties } from 'vue/types/jsx';
 
 const microActivityStore = useMicroActivityStore();
 
-const iconStyle = computed(() => {
-  const defaultIconUrl = 'https://s4.videocc.net/default-img/widget/icon-game.svg';
+const iconStyle = computed<CSSProperties>(() => {
   return {
-    'background-image': `url(${microActivityStore.microActivityPendantIcon || defaultIconUrl})`,
+    'background-image': `url(${microActivityStore.microActivityPendantIcon})`,
   };
 });
 

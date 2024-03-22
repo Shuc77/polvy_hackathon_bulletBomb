@@ -6,9 +6,11 @@ import {
   EnrollFieldItemMobile,
   EnrollFieldType,
   EnrollFillTime,
+  PlvEnrollModule,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { ComputedRef, Ref, computed, ref, unref } from 'vue';
+import { useIdentityStore } from './use-identity-store';
 
 export interface EnrollStoreState {
   /** 报名观看开关 */
@@ -39,6 +41,8 @@ export interface EnrollStoreState {
   needEnrollByEnter: ComputedRef<boolean>;
   /** 需要在互动前进行报名观看 */
   needEnrollByChat: ComputedRef<boolean>;
+  /** 显示登录入口 */
+  showLoginEnrollEnter: ComputedRef<boolean>;
   /** 入口文本 */
   entranceText: ComputedRef<string>;
   /** 报名观看标题 */
@@ -60,29 +64,33 @@ export interface EnrollStore extends EnrollStoreState, EnrollStoreAction {}
  * 报名观看 store
  */
 export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () => {
+  const identityStore = useIdentityStore();
+
+  const __enrollInfo = PlvEnrollModule.generateDefaultEnrollInfo();
+
   /** 报名观看开关 */
-  const enrollEnabled = ref(false);
+  const enrollEnabled = ref(__enrollInfo.enrollEnabled);
 
   /** 报名审核开关 */
-  const auditEnabled = ref(false);
+  const auditEnabled = ref(__enrollInfo.auditEnabled);
 
   /** 是否已有报名记录 */
-  const hasEnrolled = ref(false);
+  const hasEnrolled = ref(__enrollInfo.hasEnrolled);
 
   /** 是否已审核通过 */
-  const hasAudited = ref(false);
+  const hasAudited = ref(__enrollInfo.hasAudited);
 
   /** 填写时机 */
-  const fillTime = ref<EnrollFillTime>(EnrollFillTime.BeforeEnter);
+  const fillTime = ref<EnrollFillTime>(__enrollInfo.fillTime);
 
   /** 报名表单字段 */
-  const enrollFields = ref<EnrollFieldItem[]>([]);
+  const enrollFields = ref<EnrollFieldItem[]>(__enrollInfo.enrollFields);
 
   /** 验证方式 */
-  const enrollAuthType = ref<EnrollAuthType>(EnrollAuthType.Mobile);
+  const enrollAuthType = ref<EnrollAuthType>(__enrollInfo.enrollAuthType);
 
   /** 是否需要短信验证 */
-  const smsVerifyEnabled = ref(false);
+  const smsVerifyEnabled = ref(__enrollInfo.smsVerifyEnabled);
 
   /** 验证字段对象 */
   const enrollAuthField = computed<EnrollFieldItemMobile | undefined>(() => {
@@ -123,6 +131,13 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     );
   });
 
+  const showLoginEnrollEnter = computed<boolean>(() => {
+    if (identityStore.identitySetting.watchUserSystemEnabled) {
+      return false;
+    }
+    return unref(needEnrollByEnter);
+  });
+
   /** 需要在互动前进行报名观看 */
   const needEnrollByChat = computed<boolean>(
     () =>
@@ -135,22 +150,27 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
   );
 
   /** 入口原始文本 */
-  const entranceOriginText = ref('');
+  const entranceOriginText = ref(__enrollInfo.entranceText);
 
   /** 入口文本 */
   const entranceText = computed<string>(() => {
-    const text = unref(entranceOriginText) ?? translate('enroll.text');
+    let text = unref(entranceOriginText) ?? translate('enroll.text');
+
+    if (identityStore.identitySetting.watchUserSystemEnabled && auditNotPass.value) {
+      text = translate('enroll.auditing');
+    }
+
     return text === '报名观看' ? translate('enroll.text') : text;
   });
 
   /** 报名观看标题 */
-  const enrollTitle = ref('');
+  const enrollTitle = ref(__enrollInfo.enrollTitle);
 
   /** banner 头部图 */
-  const enrollBanner = ref('');
+  const enrollBanner = ref(__enrollInfo.enrollBanner);
 
   /** 是否使用报名观看姓名作为昵称 */
-  const enrollNickEnabled = ref(false);
+  const enrollNickEnabled = ref(__enrollInfo.enrollNickEnabled);
 
   /** 同步信息 */
   function syncEnrollInfo() {
@@ -187,6 +207,7 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     auditNotPass,
     needEnrollByEnter,
     needEnrollByChat,
+    showLoginEnrollEnter,
     entranceText,
     enrollTitle,
     enrollBanner,

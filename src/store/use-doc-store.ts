@@ -20,6 +20,8 @@ export interface DocStoreState {
   hasPaintAuth: Ref<boolean>;
   /** 是否处于画笔模式 */
   paintMode: Ref<boolean>;
+  /** 翻页开关 */
+  viewerPptTurningEnabled: Ref<boolean>;
 }
 
 export interface DocStoreActions {
@@ -74,11 +76,15 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
   /** 是否处于画笔模式 */
   const paintMode = ref(false);
 
+  /** 翻页开关 */
+  const viewerPptTurningEnabled = ref(true);
+
   function syncDocStore() {
     const watchCore = getWatchCore();
     const docInfo = watchCore.doc.getDocInfo();
     hasPaintAuth.value = docInfo.hasPaintAuth;
     paintMode.value = docInfo.paintMode;
+    viewerPptTurningEnabled.value = docInfo.viewerPptTurningEnabled;
   }
 
   return {
@@ -89,6 +95,7 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
     toggleDocumentSwitch,
     hasPaintAuth,
     paintMode,
+    viewerPptTurningEnabled,
     syncDocStore,
   };
 });

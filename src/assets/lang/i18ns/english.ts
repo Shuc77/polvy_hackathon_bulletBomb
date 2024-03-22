@@ -51,6 +51,7 @@ export const englishLang: LangConfig = {
   'auth.error.workWeixinNotStaff': 'Login failed, please confirm staff identity.',
   'auth.enter': 'Enter',
 
+  'ask.input.placeholder': 'Initiate a question',
   'ask.placeholderMsg': 'Hi, what can I do for you',
   'ask.news': 'News',
   'ask.badWord': 'The question you sent contains prohibited words',
@@ -60,6 +61,7 @@ export const englishLang: LangConfig = {
   'ai.busy': 'The current system is busy. Please try again later.',
   'ai.hello': 'Hello, feel free to ask me any questions!',
 
+  'base.back': 'Back',
   'base.error.unknown': 'Unknown error',
   'base.error.iarSetup': 'Data loading exception, function loading failure!',
   'base.agree': 'Agree',
@@ -88,6 +90,7 @@ export const englishLang: LangConfig = {
   'base.spreadOut': 'Open',
   'base.copy': 'Copy',
   'base.fullText': 'Full text',
+  'base.translate': 'Translate',
   'base.translateFinish': 'Completed',
   'base.camera': 'Camera',
   'base.popup.supportDragUp': 'Support drag up',
@@ -109,6 +112,8 @@ export const englishLang: LangConfig = {
   'base.submitFail': 'Submit fail',
   'base.smsCodeError': 'Sms code fail',
   'base.noData': 'No data',
+  'base.reSendWhenIsShield': 'Failed to send! You have been banned.',
+  'base.needCheck': 'Please check ',
 
   'channel.noLive': 'No live streaming at the moment',
   'channel.descEmpty': 'No live broadcast introduction~',
@@ -200,13 +205,11 @@ export const englishLang: LangConfig = {
   'chat.input.placeholder': 'Join the chat',
   'chat.input.placeholder2': 'Join the chat',
   'chat.input.placeholder3': 'Click to set nickname to participate in interaction',
-  'chat.input.placeholder4': 'Initiate a question',
   'chat.input.maxImageTips': 'Insert no more than ${maxCount} pictures at most',
   'chat.ask.channel': 'Question Channel',
-  'chat.closeRoom': 'Chat room is closed',
   'chat.roomClosed': 'Chat room is closed',
   'chat.roomReopened': 'Chat room reopened',
-  'chat.reply': 'reply',
+  'chat.reply': 'Reply',
   'chat.illegalImage': 'Image illegal',
   'chat.moreMsg': 'Click to see more',
   'chat.moreMsg2': 'News',
@@ -400,6 +403,7 @@ export const englishLang: LangConfig = {
   'pageError.saleInvite.limit.weixin': 'Please open WeChat to watch',
   'pageError.saleInvite.illegalSaleCode':
     'The link is wrong or no longer works, please contact the administrator to get a new link!',
+  'pageError.NotAllowDomain.title': 'Illegal source of request',
 
   'player.play.button.text': 'Click to enter',
   'player.play': 'Play',
@@ -499,9 +503,14 @@ export const englishLang: LangConfig = {
   'redpack.greeting.long': 'Blessing words too long',
   'redpack.unsupported': 'The red packets type is not supported',
 
-  'risk.confirm.letter.agree': 'Agree and watch the live broadcast',
+  'risk.confirm.letter.title': 'Welcome to the live broadcast',
+  'risk.confirm.letter.agree': 'Agree',
   'risk.confirm.letter.disagree': 'Disagree',
   'risk.confirm.letter.viewAgreement': 'View Agreement',
+  'risk.confirm.letter.disagreeTips1': 'For a better viewing experience for you',
+  'risk.confirm.letter.disagreeTips2':
+    'Please agree to the agreement and enter the live broadcast room',
+  'risk.confirm.letter.readAll.tips': 'Please read all of the above content',
 
   'saleInvite.confirm': 'Agree and watch the live broadcast',
   'saleInvite.tips1': 'verify phone',
@@ -707,5 +716,9 @@ export const englishLang: LangConfig = {
   'subtitle.new': 'new',
   'subtitle.limit': 'The latest ${limit} records are displayed',
 
+  'identityInfo.bindMobile': 'Bind mobile',
+
   'watch.duration.learnTime': 'Cumulative learning: ${duration} minutes',
+
+  'chatStatus.resendImageError': 'Image resend failed',
 };

@@ -7,10 +7,10 @@
       <div
         class="c-mobile-force-wx-auth__cover g-img-cover"
         :style="{
-          backgroundImage: `url(${channelCoverImg})`,
+          backgroundImage: `url(${imageUrl})`,
         }"
       ></div>
-      <div class="c-mobile-force-wx-auth__title g-multiline">{{ channelTitle }}</div>
+      <div class="c-mobile-force-wx-auth__title g-multiline">{{ titleText }}</div>
 
       <normal-button
         class="c-mobile-force-wx-auth__btn"
@@ -72,22 +72,18 @@ import MobileFormProtocol from '@/components/common-base/form/form-protocol/mobi
 import { MobileMessageBox } from '@/components/common-base/message-box';
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
 
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
-
 import { isWeixin } from '@/assets/utils/browser';
 import { useForceWxAuthHook } from './use-force-wx-auth-hook';
-import { useThemeStore } from '@/store/use-theme-store';
 
-const { channelTitle } = storeDefinitionToRefs(useChannelInfoStore);
-
-const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 const {
   channelAgreementConfig,
 
   qrcodeUrl,
   onClickAuthBtn,
   copyContent,
+
+  imageUrl,
+  titleText,
 
   protocolRef,
   protocolChecked,

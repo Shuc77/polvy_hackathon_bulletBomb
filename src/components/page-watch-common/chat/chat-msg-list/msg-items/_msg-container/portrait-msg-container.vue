@@ -3,6 +3,9 @@
   <div
     class="c-portrait-msg-container"
     @click="emit('click-container')"
+    :class="{
+      'c-portrait-msg-container--suffix-align-center': suffixMode === 'align-center',
+    }"
   >
     <div
       class="c-portrait-msg-container__bubble"
@@ -44,6 +47,11 @@
       </transition>
       <slot name="msg-footer"></slot>
     </div>
+
+    <!-- 气泡后缀内容 -->
+    <div class="c-portrait-msg-container__content__suffix">
+      <slot name="suffix"></slot>
+    </div>
   </div>
 </template>
 
@@ -60,6 +68,8 @@ const props = defineProps({
   hideUserInfo: PropUtils.bool.def(false),
   /** 是否使用提示气泡，默认：false */
   useMsgTipsControl: PropUtils.bool.def(false),
+
+  suffixMode: PropUtils.string.def('align-center'),
 });
 
 const emit = defineEmits({
@@ -76,6 +86,7 @@ const { askMenuData } = useChannelMenuStore();
 
 <style lang="scss">
 .c-portrait-msg-container {
+  display: flex;
   font-size: 14px;
   line-height: 22px;
 }
@@ -102,6 +113,23 @@ const { askMenuData } = useChannelMenuStore();
   border-radius: 4px;
 }
 .c-portrait-msg-container__bubble__margin {
-  margin-right: 20px;
+  margin-right: 8px;
+}
+
+.c-portrait-msg-container--suffix-align-center {
+  .c-portrait-msg-container__content__suffix {
+    align-self: center;
+  }
+}
+
+.c-portrait-msg-container__content__suffix {
+  flex-shrink: 0;
+  font-size: 12px;
+  line-height: initial;
+  white-space: nowrap;
+
+  &:empty {
+    display: none;
+  }
 }
 </style>

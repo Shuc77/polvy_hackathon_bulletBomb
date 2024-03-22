@@ -4,11 +4,16 @@
     <div
       class="c-mobile-chat-room-pendant"
       :class="{
-        'c-mobile-chat-room-pendant--page-fullscreen':
-          mobilePlayerIsPageFullscreen || mobileNormalLatencyPlayerIsFullscreen,
+        'c-mobile-chat-room-pendant--page-fullscreen': mobilePlayerIsPageFullscreen,
         'c-mobile-chat-room-pendant--screen__horizontal': isHorizontalScreenOrientation,
       }"
     >
+      <!-- 风险测评 -->
+      <risk-evaluation-entrance
+        v-if="riskEvaluationEntranceEnabled"
+        class="c-mobile-chat-room-pendant__item"
+      />
+
       <!-- 卡片推送 -->
       <mobile-push-card
         v-show="!isPageFullscreenOrHorizontalScreen"
@@ -77,14 +82,17 @@ import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
 import MobileChatLike from '../chat-like/mobile-chat-like.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
+import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useFinanceStore } from '@/store/use-finance-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
+const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
 const {
   pushCardPendantVisible,
@@ -98,7 +106,6 @@ const {
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
 const {
-  mobileNormalLatencyPlayerIsFullscreen,
   mobilePlayerIsPageFullscreen,
   isHorizontalScreenOrientation,
 

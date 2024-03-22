@@ -84,9 +84,12 @@
   }
 }
 
-@mixin scrollbar($scrollbar-color: null, $borderRadius: 3px) {
+@mixin scrollbar($scrollbar-color: null, $borderRadius: 3px, $scrollbar-width: 6px) {
   &::-webkit-scrollbar {
     width: 6px;
+    @if ($scrollbar-width) {
+      width: $scrollbar-width;
+    }
     border-radius: $borderRadius;
   }
   &::-webkit-scrollbar-thumb {

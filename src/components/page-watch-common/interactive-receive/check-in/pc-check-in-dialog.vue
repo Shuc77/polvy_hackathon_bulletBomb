@@ -12,7 +12,7 @@
       enable-sound-effects
       :mount-node="dialogMountEl"
       @show-entrance="showEntrance"
-      @to-show="setCheckInVisible(true)"
+      @to-show="setCheckInVisible(true, false)"
       @to-hide="setCheckInVisible(false)"
     />
   </pc-dialog>

@@ -70,6 +70,9 @@
       <!-- 邀请有礼中奖领取弹窗 -->
       <mobile-invite-prize-receive-popup />
     </template>
+
+    <!-- 绑定用户身份信息弹层 -->
+    <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
   </div>
 </template>
 
@@ -87,6 +90,7 @@ import PortraitWithdrawApply from '@/components/page-watch-common/withdraw/portr
 import PortraitWithdrawDetail from '@/components/page-watch-common/withdraw/portrait-withdraw-detail/portrait-withdraw-detail.vue';
 import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/components/playback-chapter-popup/portrait-playback-chapter-popup.vue';
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
+import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
 
 import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
@@ -110,6 +114,7 @@ import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -137,4 +142,6 @@ const { isPlaybacking, playbackListVisible, chapterVisible } =
 const { supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 </script>

@@ -1,12 +1,11 @@
 import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
 import {
+  PlvConnectMicModule,
   ConnectMicItem,
   ConnectMicNetworkInfo,
   ConnectMicStatus,
   ConnectMicType,
-  generateDefaultNetworkInfo,
-  generateDefaultScreenShareInfo,
   ScreenShareInfo,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
@@ -96,23 +95,25 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   /** 配置是否使用连麦 */
   const connectMicEnabled = ref(true);
 
+  const __connectMicInfo = PlvConnectMicModule.generateDefaultConnectMicInfo();
+
   /** 当前环境是否支持连麦 */
-  const supportConnectMic = ref(true);
+  const supportConnectMic = ref(__connectMicInfo.supportConnectMic);
 
   /** 是否开启了连麦 */
-  const openMicStatus = ref(false);
+  const openMicStatus = ref(__connectMicInfo.openMicStatus);
 
   /** 连麦类型 */
-  const connectMicType = ref<ConnectMicType>(ConnectMicType.Video);
+  const connectMicType = ref<ConnectMicType>(__connectMicInfo.connectMicType);
 
   /** 用户连麦状态 */
-  const connectMicStatus = ref<ConnectMicStatus>(ConnectMicStatus.NotConnect);
+  const connectMicStatus = ref<ConnectMicStatus>(__connectMicInfo.connectMicStatus);
 
   /** 连麦排序显示开关 */
-  const showJoinQueueNumberEnabled = ref(false);
+  const showJoinQueueNumberEnabled = ref(__connectMicInfo.showJoinQueueNumberEnabled);
 
   /** 当前连麦请求排序 */
-  const currentMicIndex = ref(-1);
+  const currentMicIndex = ref(__connectMicInfo.currentMicIndex);
 
   /** 最大显示连麦序号 */
   const maxMicIndex = ref(50);
@@ -233,10 +234,12 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   });
 
   /** 当前是否为主讲 */
-  const currentIsSpeaker = ref(false);
+  const currentIsSpeaker = ref(__connectMicInfo.currentIsSpeaker);
 
   /** 屏幕共享信息 */
-  const screenShareInfo = ref<ScreenShareInfo>(generateDefaultScreenShareInfo());
+  const screenShareInfo = ref<ScreenShareInfo>(
+    PlvConnectMicModule.generateDefaultScreenShareInfo(),
+  );
 
   /** 设备采集失败 */
   const isDeviceRecoverFailed = ref(false);
@@ -249,7 +252,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   }
 
   /** 连麦网络信息 */
-  const networkInfo = ref<ConnectMicNetworkInfo>(generateDefaultNetworkInfo());
+  const networkInfo = ref<ConnectMicNetworkInfo>(PlvConnectMicModule.generateDefaultNetworkInfo());
 
   /** 同步连麦网络信息 */
   function syncNetworkInfo(): void {

@@ -5,7 +5,7 @@ import { PopperArrowOptions } from './_hooks/use-popper-arrow';
 export type PopperOffset = [number, number];
 
 /** 弹层触发方式 */
-export type PopperTrigger = 'click' | 'hover' | 'focus' | 'custom';
+export type PopperTrigger = 'click' | 'hover' | 'focus' | 'long-press' | 'custom';
 
 export interface UsePopperOptions {
   popperVisible?: boolean | Ref<boolean>;

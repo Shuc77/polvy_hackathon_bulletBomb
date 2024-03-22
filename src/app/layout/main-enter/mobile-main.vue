@@ -29,6 +29,12 @@
 
     <!-- 微信快照页提示 -->
     <mobile-weixin-snapshot-tips v-if="isWeixinSnapshotPageMode" />
+
+    <!-- 风险测评 -->
+    <mobile-risk-evaluation v-if="iarSdkLoaded" />
+    <risk-evaluation-redirect-dialog />
+    <!-- 风险确认函 -->
+    <mobile-risk-confirm-letter />
   </div>
 </template>
 
@@ -36,6 +42,11 @@
 import { MobileSplashLayout, MobileWatchLayout } from '@polyv/live-watch-sdk';
 import { defineAsyncComponent } from 'vue';
 
+import MobileRiskConfirmLetter from '@/components/common-business/risk-confirm-letter/mobile-risk-confirm-letter.vue';
+import {
+  MobileRiskEvaluation,
+  RiskEvaluationRedirectDialog,
+} from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 import MobileSplashFull from '@/pages/splash/mobile-splash/mobile-splash-full.vue';
 import MobileSplash from '@/pages/splash/mobile-splash/mobile-splash.vue';
 
@@ -45,6 +56,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const MobileWeixinSnapshotTips = defineAsyncComponent(() => {
   return import(
@@ -85,6 +97,8 @@ const { isWeixinSnapshotPageMode } = storeDefinitionToRefs(useWeixinStore);
 
 const { mobileSplashLayout, mobileWatchLayout, isPortraitWatchLayout } =
   storeDefinitionToRefs(useLayoutStore);
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { onPageMounted } = useMainEnter({
   emit,

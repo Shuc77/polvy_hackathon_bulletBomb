@@ -11,6 +11,8 @@ export const msgContainerProps = () => ({
   bubblePadding: PropUtils.string,
   /** 是否渲染另一个内容，默认：false */
   renderOtherContent: PropUtils.bool.def(false),
+  /** suffixMode下默认显示, align-center: 垂直居中， 默认: true */
+  suffixMode: PropUtils.string.def('align-center'),
 });
 
 export const useMsgContainer = (options: { props: VueProps<typeof msgContainerProps> }) => {

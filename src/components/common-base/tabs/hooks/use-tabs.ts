@@ -165,21 +165,21 @@ export const useTabs = (options: {
     return panes;
   }
 
-  /** 更新标签面板数据 */
-  async function updateTabPaneData() {
-    await nextTick();
+  /**
+   * 是否需要更新 tab 面板数据
+   */
+  function __shouldUpdateTabPaneData() {
     const panes = getTabPaneData();
     const paneDataVal = unref(tabPaneData);
 
     // 是否需要更新 tab 面板数据
     let shouldUpdateTabPaneData = false;
-    // 是否需要重置到第一个 tab
-    let shouldSetFirstTab = false;
 
     if (panes.length !== paneDataVal.length) {
       shouldUpdateTabPaneData = true;
     } else {
-      panes.forEach((paneData, index) => {
+      for (let index = 0; index < panes.length; index++) {
+        const paneData = panes[index];
         const oldItem = paneDataVal[index];
         for (const key in paneData) {
           const field = key as keyof TabPaneDataItem;
@@ -187,11 +187,28 @@ export const useTabs = (options: {
             shouldUpdateTabPaneData = true;
           }
         }
-      });
+      }
     }
 
-    if (shouldUpdateTabPaneData) {
-      if (panes.length !== tabPaneData.value.length) {
+    return shouldUpdateTabPaneData;
+  }
+
+  /** 更新标签面板数据 */
+  async function updateTabPaneData() {
+    await nextTick();
+    const panes = getTabPaneData();
+    const paneDataVal = unref(tabPaneData);
+
+    // 是否需要重置到第一个 tab
+    let shouldSetFirstTab = false;
+
+    if (__shouldUpdateTabPaneData()) {
+      if (
+        panes.length !== paneDataVal.length ||
+        (panes.length === paneDataVal.length &&
+          panes.length > 0 &&
+          panes[0].label !== paneDataVal[0].label)
+      ) {
         shouldSetFirstTab = true;
       }
       tabPaneData.value = panes;

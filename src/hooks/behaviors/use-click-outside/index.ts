@@ -1,6 +1,7 @@
 import Vue, { onBeforeUnmount, onMounted, Ref } from 'vue';
 import { getRefElem } from '@/assets/utils/vue-utils';
 import { isFunction } from '@/assets/utils/function';
+import { isMac } from '@/assets/utils/browser';
 
 export type ClickOutsideTargetType = RefOrElement | string | Ref<Vue>;
 
@@ -79,12 +80,14 @@ export const useClickOutside = (
       return;
     }
     isListen = true;
-    document.addEventListener('mouseup', handleDocumentClick);
+    const evtName = isMac ? 'click' : 'mouseup';
+    document.addEventListener(evtName, handleDocumentClick);
   };
 
   /** 取消监听 */
   const removeListenClickOutSide = () => {
-    document.removeEventListener('mouseup', handleDocumentClick);
+    const evtName = isMac ? 'click' : 'mouseup';
+    document.removeEventListener(evtName, handleDocumentClick);
     isListen = false;
   };
 

@@ -38,4 +38,8 @@ export const globalEvents = {
    * 打开报名观看弹窗
    */
   OpenEnrollDialog: 'OpenEnrollDialog',
+  /**
+   * 打开绑定用户信息弹窗
+   */
+  OpenBindIdentityInfoDialog: 'OpenBindIdentityInfoDialog',
 };

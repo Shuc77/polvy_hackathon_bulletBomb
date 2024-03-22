@@ -1,16 +1,15 @@
 import { appEvents, eventBus } from '@/app/app-events';
-import { TAB_NAME_ASK } from '@/assets/constants/tab-name';
 import { translate } from '@/assets/lang';
 import { copyText } from '@/assets/utils/copy';
 import { isString } from '@/assets/utils/string';
 import { getWatchCore } from '@/core/watch-sdk';
 import { toast } from '@/hooks/components/use-toast';
 import { useChatStore } from '@/store/use-chat-store';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatMsgSpeakType } from '@polyv/live-watch-sdk';
 import { computed, ref, unref } from 'vue';
 import { FullMsgData } from '../../../chat-full-message/type';
+import { ChatMsgItemCategory } from '../use-chat-msg-item';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
 
@@ -70,8 +69,9 @@ export const useSpeakMsgContent = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) 
 export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) => {
   const watchCore = getWatchCore();
   const chatStore = useChatStore();
-  const layoutStore = useLayoutStore();
   const { isSelfMsg } = useChatMsgUserBasic(chatMsgRef);
+
+  const { category } = useChatMsgDataInject<ChatMsgSpeakType>();
 
   /** 用于翻译的内容 */
   const translateOriginContent = computed<string>(() => {
@@ -103,10 +103,7 @@ export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>
     }
 
     // 当前处于提问不需要翻译
-    if (
-      layoutStore.mobileMenuCurrentName === TAB_NAME_ASK ||
-      layoutStore.pcAsideTabCurrentName === TAB_NAME_ASK
-    ) {
+    if (category.value === ChatMsgItemCategory.Ask) {
       return false;
     }
 

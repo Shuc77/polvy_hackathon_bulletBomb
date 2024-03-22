@@ -41,6 +41,8 @@ export interface ViewerStoreState {
   needRealNameAuth: Ref<boolean>;
   /** 云席信息 */
   seatInfo: Ref<ViewerSeatInfo | undefined>;
+  /** 是否需要隐藏用户头衔 */
+  needHideUserActor: Ref<boolean>;
 }
 
 export interface ViewerStoreAction {
@@ -122,6 +124,9 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
   /** 云席信息 */
   const seatInfo = ref<ViewerSeatInfo>();
 
+  /** 是否需要隐藏用户头衔 */
+  const needHideUserActor = ref<boolean>(true);
+
   /** 同步观众信息 */
   function syncViewerInfo(): void {
     const watchCore = getWatchCore();
@@ -135,6 +140,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     authType.value = watchCore.user.getUserAuthType();
 
     seatInfo.value = watchCore.user.getUserSeatInfo();
+    needHideUserActor.value = watchCore.user.needHideUserActor();
   }
 
   /** 当前是否需要实名认证 */
@@ -174,5 +180,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     needRealNameAuth,
     syncNeedRealNameAuth,
     checkNeedRealNameAuth,
+
+    needHideUserActor,
   };
 });

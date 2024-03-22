@@ -3,6 +3,7 @@
   <pc-msg-container
     class="c-pc-emotion-msg"
     :bubble-model="false"
+    :suffix-mode="'align-center'"
   >
     <div
       v-if="!isLoaded"
@@ -15,12 +16,16 @@
       @load="onImgLoad"
       @click="onClickEmotion"
     />
+    <template #suffix>
+      <msg-status-suffix></msg-status-suffix>
+    </template>
   </pc-msg-container>
 </template>
 
 <script setup lang="ts">
 import PcMsgContainer from '../_msg-container/pc-msg-container.vue';
 import { useEmotionMsg } from './use-emotion-msg';
+import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
 
 const { emotionUrl, isLoaded, onImgLoad, onClickEmotion } = useEmotionMsg();
 </script>

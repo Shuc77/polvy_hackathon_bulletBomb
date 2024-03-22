@@ -101,16 +101,16 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   /** 已加载的列表 */
   const playbackList = ref<PlaybackTarget[]>([]);
 
+  /** 已加载的列表映射 */
+  const playbackListMap = ref<{ [pageNumber: string]: PlaybackTarget[] }>({ 0: [] });
+
   /** 当前页的回放列表 */
   const currentPagePlaybackList = computed<PlaybackTarget[]>(() => {
-    if (pageNumber.value === 0) {
+    if (pageNumber.value === 0 || !playbackList.value.length) {
       return [];
     }
-    const pageNumberVal = unref(pageNumber);
-    const pageSizeVal = unref(pageSize);
-    const start = (pageNumberVal - 1) * pageSizeVal;
-    const end = start + pageSizeVal;
-    return playbackList.value.slice(start, end);
+    const idx = pageNumber.value <= 0 ? 0 : pageNumber.value;
+    return playbackListMap.value[idx];
   });
 
   /** 当前播放的回放对象 */
@@ -250,18 +250,30 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
       return;
     }
 
+    await loadPlaybackListByPageNumber(pageNumber.value + 1);
+  }
+
+  /** 指定页码加载回放列表 */
+  async function loadPlaybackListByPageNumber(pageNo: number) {
+    if (pageNo < 0 || playbackListMap.value[pageNo]) {
+      return;
+    }
+
     isLoading.value = true;
     try {
       const watchCore = getWatchCore();
       const data = await watchCore.playback.getPlaybackList({
-        pageNumber: unref(pageNumber) + 1,
+        pageNumber: pageNo,
         pageSize: unref(pageSize),
       });
 
       pageNumber.value = data.pageNumber;
       isNoMore.value = data.pageNumber >= data.totalPages;
       totalPages.value = data.totalPages;
+
       playbackList.value.push(...data.contents);
+      playbackListMap.value[data.pageNumber] = data.contents;
+
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
@@ -270,17 +282,17 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
   /** 监听分页器切换事件 */
   async function onPageChange(nextPageNumber: number) {
-    if (nextPageNumber === pageNumber.value) return;
-
-    if (nextPageNumber < pageNumber.value) {
-      pageNumber.value = pageNumber.value - 1;
+    if (
+      nextPageNumber < 0 ||
+      nextPageNumber === pageNumber.value ||
+      nextPageNumber > totalPages.value
+    )
       return;
-    }
 
-    if (isNoMore.value) {
-      pageNumber.value = pageNumber.value + 1;
+    if (!playbackListMap.value[nextPageNumber]) {
+      await loadPlaybackListByPageNumber(nextPageNumber);
     } else {
-      await loadNextPlaybackList();
+      pageNumber.value = nextPageNumber;
     }
   }
 

@@ -22,6 +22,7 @@ import {
   InviteActivityInfo,
   InviteActivityStatus,
   InvitePrizeWinnerInfo,
+  PlvInviteModule,
 } from '@polyv/live-watch-sdk';
 
 export interface InviteStoreState {
@@ -102,13 +103,9 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   const inviteDetailEnabled = ref(false);
 
   /** 邀请有礼活动信息 */
-  const inviteActivityInfo = ref<InviteActivityInfo>({
-    id: null,
-    enabled: false,
-    introduction: '',
-    endTime: null,
-    status: InviteActivityStatus.NoExist,
-  });
+  const inviteActivityInfo = ref<InviteActivityInfo>(
+    PlvInviteModule.generateDefaultInviteActivityInfo(),
+  );
 
   const inviteActivityWillEndTipVisible = ref(false);
 

@@ -62,6 +62,9 @@
 
     <!-- 固定的聊天消息输入框 -->
     <mobile-chat-input-controller-fixed v-if="chatInputControllerEnable" />
+
+    <!-- 绑定用户身份信息弹层 -->
+    <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
   </div>
 </template>
 
@@ -84,6 +87,7 @@ import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobil
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
+import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -97,6 +101,7 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () => import('@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'),
@@ -134,4 +139,6 @@ const { inviteDetailEnabled, inviteActivityEnabled } = storeDefinitionToRefs(use
 const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 </script>

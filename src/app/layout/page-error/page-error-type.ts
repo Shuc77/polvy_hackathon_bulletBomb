@@ -18,6 +18,8 @@ export enum PageErrorType {
   UnknownError = 'UnknownError',
   /** 校验一客一码(销售邀请) */
   VerifySaleInvite = 'VerifySaleInvite',
+  /** 用户系统信息输入 */
+  IdentityInfoInput = 'IdentityInfoInput',
 }
 
 /**

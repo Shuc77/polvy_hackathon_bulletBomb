@@ -95,20 +95,24 @@ export const useFormWrap = (options: {
 
   /** 验证并触发表单提交 */
   async function submitForm(validateOptions: FormValidateOptions): Promise<void> {
-    await validateCurrentForm(validateOptions);
+    try {
+      await validateCurrentForm(validateOptions);
 
-    emit('submit-form', unref(formData));
+      emit('submit-form', unref(formData));
 
-    const submitActionFn = unref(submitAction);
-    if (typeof submitActionFn === 'function') {
-      isSubmiting.value = true;
-      try {
-        await submitActionFn(unref(formData));
-      } catch (e) {
-        isSubmiting.value = false;
-      } finally {
-        isSubmiting.value = false;
+      const submitActionFn = unref(submitAction);
+      if (typeof submitActionFn === 'function') {
+        isSubmiting.value = true;
+        try {
+          await submitActionFn(unref(formData));
+        } catch (e) {
+          isSubmiting.value = false;
+        } finally {
+          isSubmiting.value = false;
+        }
       }
+    } catch (error) {
+      console.error('submitForm-error', (error as Error).message);
     }
   }
 

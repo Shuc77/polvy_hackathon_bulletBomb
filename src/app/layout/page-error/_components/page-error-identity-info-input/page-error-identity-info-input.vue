@@ -1,0 +1,164 @@
+<!-- @file 用户系统输入验证页 -->
+
+<template>
+  <div class="c-identity-info-input">
+    <div class="c-identity-info-input__tips">
+      <div class="c-identity-info-input__tips__bg1"></div>
+      <div class="c-identity-info-input__tips__bg2"></div>
+      <p class="c-identity-info-input__tips--main">
+        {{ $lang('saleInvite.tips1') }}
+      </p>
+      <p class="c-identity-info-input__tips--sub">
+        {{ $lang('saleInvite.tips2') }}
+      </p>
+    </div>
+    <div class="c-identity-info-input-form">
+      <div class="c-identity-info-input-form__content">
+        <form-wrap
+          label-model="inline"
+          :form-data="formData"
+          :form-rules="formRules"
+          :submit-action="submitForm"
+        >
+          <form-item form-field="phoneNumber">
+            <mobile-form-phone-input
+              v-model="formData.phoneNumber"
+              :area-code.sync="formData.areaCode"
+            />
+          </form-item>
+
+          <form-item form-field="smsCode">
+            <mobile-form-sms-verify-input
+              v-model="formData.smsCode"
+              :area-code="formData.areaCode"
+              :phone-number="formData.phoneNumber"
+              :sms-scene="SmsScene.IdentityInfo"
+              :valid-type="SmsValidType.Slider"
+            />
+          </form-item>
+
+          <form-item v-if="channelAgreementConfig">
+            <form-protocol
+              circle
+              v-model="formData.protocolChecked"
+              :content="protocolContent"
+            />
+          </form-item>
+
+          <div class="c-identity-info-input-form__submit">
+            <form-submit-button
+              :type="ButtonType.Custom"
+              :size="ButtonSize.Medium"
+              block
+              :text="$lang('saleInvite.confirm')"
+              debounce-submit
+            />
+          </div>
+        </form-wrap>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { SmsScene, SmsValidType } from '@polyv/live-watch-sdk';
+import { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
+
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormItem from '@/components/common-base/form/form-item.vue';
+import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
+import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
+import {
+  IdentityInfoScene,
+  useIdentityInfoInput,
+} from '@/components/common-business/bind-identity-info/use-identity-info-input';
+import { defineAsyncComponent } from 'vue';
+import { isMobile } from '@/assets/utils/browser';
+
+const FormProtocol = defineAsyncComponent(() => {
+  if (isMobile) {
+    return import('@/components/common-base/form/form-protocol/mobile-form-protocol.vue');
+  }
+
+  return import('@/components/common-base/form/form-protocol/pc-form-protocol.vue');
+});
+
+const { formData, formRules, submitForm, protocolContent, channelAgreementConfig } =
+  useIdentityInfoInput({
+    scene: IdentityInfoScene.Login,
+  });
+</script>
+
+<style lang="scss">
+.c-identity-info-input {
+  max-width: 600px;
+  margin: auto;
+}
+
+.c-identity-info-input__tips {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 52px;
+  padding: 60px 30px 0 30px;
+  font-family: PingFangSC-Medium;
+
+  font-size: 14px;
+  line-height: 20px;
+  color: #999999;
+  &--main {
+    position: relative;
+    margin-bottom: 12px;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333333;
+    &::after {
+      position: absolute;
+      top: 17px;
+      left: 0;
+      display: block;
+      width: 76px;
+      height: 10px;
+      content: '';
+      background: linear-gradient(90deg, #3f76fc 0%, rgba(63, 118, 252, 0.1) 105%);
+      border-radius: 100% 100% 0 0;
+    }
+  }
+}
+.c-identity-info-input__tips__bg1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 96%;
+  height: 180px;
+  background-color: #d0dffb;
+  filter: blur(70px);
+  transform: translateY(-60%) translateX(-20%);
+}
+.c-identity-info-input__tips__bg2 {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: -1;
+  width: 72%;
+  height: 160px;
+  background-color: #f8e9ef;
+  filter: blur(70px);
+  transform: translateY(-60%) translateX(50%);
+}
+
+.c-identity-info-input-form {
+  padding: 20px 30px 34px;
+}
+.c-identity-info-input-form__submit {
+  margin-top: 24px;
+  .c-normal-button {
+    color: #fff;
+    background-color: #3082fe;
+    &.is-disabled {
+      opacity: 0.5;
+    }
+  }
+}
+</style>

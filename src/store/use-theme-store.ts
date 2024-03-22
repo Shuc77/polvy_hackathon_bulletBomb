@@ -2,10 +2,9 @@
  * @file 皮肤主题 store
  */
 import { getWatchCore } from '@/core/watch-sdk';
-import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
+import { ChannelWatchPageSkin, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { useCommonStore } from './use-common-store';
 
 export interface ThemeStore {
   /** 观看页皮肤 */
@@ -38,22 +37,22 @@ export interface ThemeStore {
 
 /** 皮肤主题 store */
 export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
-  const commonStore = useCommonStore();
+  const __themeSetting = PlvChannelModule.generateDefaultThemeSetting();
 
   /** 观看页皮肤 */
   const pageSkin = ref<ChannelWatchPageSkin>();
 
   /** 浏览器标签页图标 */
-  const browserFavIcon = ref(commonStore.plvDefaultResource.defaultBrowserIcon);
+  const browserFavIcon = ref(__themeSetting.browserFavIcon);
 
   /** 频道图标 */
-  const channelCoverImg = ref(commonStore.plvDefaultResource.defaultChannelLogo);
+  const channelCoverImg = ref(__themeSetting.channelCoverImg);
 
   /** 频道引导页封面图 */
-  const splashImg = ref(commonStore.plvDefaultResource.defaultSplashImg);
+  const splashImg = ref(__themeSetting.splashImg);
 
   /** 移动端引导页大图 */
-  const mobileSplashLargeImg = ref(commonStore.plvDefaultResource.defaultSplashFullImg);
+  const mobileSplashLargeImg = ref(__themeSetting.mobileSplashLargeImg);
 
   /** PC 端观看页背景图 */
   const pcWatchBackgroundImage = ref<string>();
@@ -104,13 +103,10 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
     pageSkin.value = themeSetting.pageSkin;
 
-    browserFavIcon.value =
-      themeSetting.browserFavIcon || commonStore.plvDefaultResource.defaultBrowserIcon;
-    channelCoverImg.value =
-      themeSetting.channelCoverImg || commonStore.plvDefaultResource.defaultChannelLogo;
-    splashImg.value = themeSetting.splashImg || commonStore.plvDefaultResource.defaultSplashImg;
-    mobileSplashLargeImg.value =
-      themeSetting.mobileSplashLargeImg || commonStore.plvDefaultResource.defaultSplashFullImg;
+    browserFavIcon.value = themeSetting.browserFavIcon;
+    channelCoverImg.value = themeSetting.channelCoverImg;
+    splashImg.value = themeSetting.splashImg;
+    mobileSplashLargeImg.value = themeSetting.mobileSplashLargeImg;
 
     pcWatchBackgroundImage.value = themeSetting.pcWatchBackgroundImage;
     mobileChatBackgroundImage.value = themeSetting.mobileChatBackgroundImage;

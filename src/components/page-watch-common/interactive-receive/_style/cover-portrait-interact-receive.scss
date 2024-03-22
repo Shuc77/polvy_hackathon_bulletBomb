@@ -2,6 +2,15 @@
 
 // ============  全局 ============ //
 
+.plv-iar-pendant {
+  width: 36px;
+}
+.plv-iar-pendant__icon {
+  width: 36px;
+  height: 36px;
+}
+
+
 // 按钮
 .plv-iar-default-btn {
   &:disabled {
@@ -40,41 +49,70 @@
 
 // ============  商品库 ============ //
 
-// 商品库
-.pws-iar-product-list-wrap {
-  padding: 0;
-}
-.pws-iar-product-list-wrap {
-  background: none;
-}
-.plv-iar-product__content {
-  padding-top: 10px;
-  background-color: initial;
-
-  &::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+.c-portrait-product-list__wrap {
+  // 商品库
+  .pws-iar-product-list-wrap {
+    padding: 0;
   }
-}
-.pws-iar-product-list-number {
-  border-radius: 6px;
-}
-.pws-iar-product-list-cover {
-  border-radius: 10px;
-}
-.pws-iar-product-list-cover-number {
-  border-radius: 0 0 6px 0;
-}
-.pws-iar-product-list-button {
-  min-width: 72px;
-  height: 28px;
-  font-size: 12px;
-  line-height: 28px;
-}
-.plv-iar-product__buy-button.plv-iar-product__buy-button--disabled {
+  .pws-iar-product-list-wrap {
+    background: none;
+  }
+  .plv-iar-product__content {
+    background-color: initial;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+  }
+  .plv-iar-product-label-list {
+    margin-bottom: 14px !important;
+    background: #262523 !important;
+  }
+  .plv-iar-product-label-list__scroll {
+    padding: 8px 0 !important;
+  }
+  .plv-iar-product-label-list__arrow {
+    height: 48px !important;
+  }
+  .plv-iar-product-label-list__arrow__icon {
+    color: #fff !important;
+  }
+  .plv-iar-product-label-list__shadow--left {
+    background: linear-gradient(90deg, #262523 0, rgba(#262523, 0) 100%) !important;
+  }
+  .plv-iar-product-label-list__shadow--right {
+    background: linear-gradient(90deg, rgba(#262523, 0) 0, #262523 100%) !important;
+  }
+  .plv-iar-product-label-list__item {
+    color: #fff !important;
+    background-color: rgba(#fff, 0.1) !important;
+
+    &.plv-iar-product-label-list__item--active {
+      color: #f15d5d !important;
+      border-color: #f15d5d !important;
+    }
+  }
+  .pws-iar-product-list-number {
+    border-radius: 6px;
+  }
+  .pws-iar-product-list-cover {
+    border-radius: 10px;
+  }
+  .pws-iar-product-list-cover-number {
+    border-radius: 0 0 6px 0;
+  }
   .pws-iar-product-list-button {
-    // background: #CDCDCD;
-    opacity: 0.5;
+    min-width: 72px;
+    height: 28px;
+    font-size: 12px;
+    line-height: 28px;
+  }
+  .plv-iar-product__buy-button.plv-iar-product__buy-button--disabled {
+    .pws-iar-product-list-button {
+      // background: #CDCDCD;
+      opacity: 0.5;
+    }
   }
 }
 

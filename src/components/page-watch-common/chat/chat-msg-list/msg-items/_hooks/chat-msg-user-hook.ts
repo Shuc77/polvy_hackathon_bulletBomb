@@ -23,6 +23,8 @@ export interface ChatMsgUserContext {
   msgUserType: ComputedRef<ChatUserType | undefined>;
   /** 消息的用户头衔 */
   msgUserActor: ComputedRef<string | undefined>;
+  /** 消息的用户提问区标签 */
+  msgUserQuestionLabels: ComputedRef<string[]>;
   /** 是否隐藏消息的用户头衔 */
   hideUserActor: ComputedRef<boolean>;
   /** 是否为自己发言 */
@@ -85,15 +87,25 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
   });
 
   /**
+   * 消息的用户头衔
+   */
+  const msgUserQuestionLabels = computed<string[]>(() => {
+    const user = unref(msgUser);
+    return user && user.label && Array.isArray(user.label.question) ? user.label.question : [];
+  });
+
+  /**
    * 是否为自己发言
    */
   const isSelfMsg = computed<boolean>(() => {
     return unref(msgUser)?.userId === viewerStore.viewerId;
   });
 
-  /** 是否隐藏消息的用户头衔 */
+  /**
+   * 是否隐藏消息的用户头衔
+   * */
   const hideUserActor = computed<boolean>(() => {
-    return isSelfMsg.value || !msgUserActor.value || needHideActorByUserType(msgUserType.value);
+    return !msgUserActor.value || needHideActorByUserType(msgUserType.value);
   });
 
   /**
@@ -112,6 +124,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
     msgUserAvatar,
     msgUserType,
     msgUserActor,
+    msgUserQuestionLabels,
     isSelfMsg,
     isSpecialUser,
     hideUserActor,

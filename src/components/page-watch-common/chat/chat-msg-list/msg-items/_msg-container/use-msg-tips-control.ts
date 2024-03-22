@@ -1,5 +1,6 @@
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { usePopper } from '@/hooks/components/use-popper';
+import { PopperTrigger } from '@/hooks/components/use-popper/_popper-type';
 
 export const msgTipsControlProps = () => ({
   /** 是否禁用提示，默认：true */
@@ -9,8 +10,9 @@ export const msgTipsControlProps = () => ({
 export const useMsgTipsControl = (options: {
   props: VueProps<typeof msgTipsControlProps>;
   mountEl: string;
+  popperTrigger?: PopperTrigger;
 }) => {
-  const { props, mountEl } = options;
+  const { props, mountEl, popperTrigger } = options;
 
   /** 提示是否显示 */
   const {
@@ -23,6 +25,7 @@ export const useMsgTipsControl = (options: {
       color: 'rgba(66, 68, 83, 0.95)',
       size: 5,
     },
+    trigger: popperTrigger,
     placement: 'top',
     popperDisabled: props.disabledTips,
     forceZIndex: 10,
