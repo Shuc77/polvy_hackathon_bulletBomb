@@ -3,6 +3,7 @@
   <div
     class="c-portrait-msg-container"
     @click="emit('click-container')"
+    ref="referenceRef"
     :class="{
       'c-portrait-msg-container--suffix-align-center': suffixMode === 'align-center',
     }"
@@ -14,8 +15,8 @@
       <slot name="msg-header"></slot>
 
       <div
-        ref="referenceRef"
         class="c-portrait-msg-container__content"
+        @click="onClickReferenceRef"
       >
         <slot name="msg-left"></slot>
 
@@ -27,24 +28,6 @@
         <slot name="msg-right"></slot>
       </div>
 
-      <!-- 气泡提示 -->
-      <transition
-        v-if="!disabledTips"
-        name="fade"
-      >
-        <div
-          v-show="tipsVisible"
-          ref="popperRef"
-          class="c-portrait-msg-container__tips-bubble--popper"
-        >
-          <div
-            class="c-portrait-msg-container__tips-bubble"
-            @click.stop="onClickTips"
-          >
-            <slot name="tips-content"></slot>
-          </div>
-        </div>
-      </transition>
       <slot name="msg-footer"></slot>
     </div>
 
@@ -59,11 +42,10 @@
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
-import { msgTipsControlProps, useMsgTipsControl } from './use-msg-tips-control';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { ref } from 'vue';
 
-const props = defineProps({
-  ...msgTipsControlProps(),
+defineProps({
   /** 是否隐藏用户信息，默认：false */
   hideUserInfo: PropUtils.bool.def(false),
   /** 是否使用提示气泡，默认：false */
@@ -75,13 +57,24 @@ const props = defineProps({
 const emit = defineEmits({
   /** 点击容器 */
   'click-container': emitFunc<void>(),
+  /** 点击聊天消息显示气泡 */
+  'click-msg-to-tips': emitFunc<{
+    target: HTMLDivElement;
+    mountEl: string;
+  }>(),
 });
 
-const { referenceRef, popperRef, tipsVisible, onClickTips } = useMsgTipsControl({
-  props,
-  mountEl: 'c-portrait-msg-container',
-});
 const { askMenuData } = useChannelMenuStore();
+
+const referenceRef = ref(null);
+
+function onClickReferenceRef() {
+  if (!referenceRef.value) return;
+  emit('click-msg-to-tips', {
+    target: referenceRef.value,
+    mountEl: 'c-portrait-chat-msg-list__container',
+  });
+}
 </script>
 
 <style lang="scss">

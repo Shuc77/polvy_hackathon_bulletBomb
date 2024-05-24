@@ -21,9 +21,13 @@ export interface ChatInputInstance {
  * @hook 聊天输入控制器
  */
 export const useChatInputController = (options?: {
+  autoListen?: boolean;
   /** 提交拦截 */
   submitIntercept?: (contentList: PlvInputContent[]) => boolean;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { autoListen = true } = options || {};
+
   const chatStore = useChatStore();
 
   const {
@@ -151,7 +155,9 @@ export const useChatInputController = (options?: {
     });
   }
 
-  useEventBusListener(appEvents.chat.ToSendImage, onClickSendImage);
+  if (autoListen) {
+    useEventBusListener(appEvents.chat.ToSendImage, onClickSendImage);
+  }
 
   const chatInputInstance: ChatInputInstance = {
     focusMsgInput,

@@ -41,6 +41,9 @@ export const useSvgaPlayer = <T extends object = object>(
   /** 是否正在播放动画 */
   const isPlayingAnimation = ref(false);
 
+  /** 当前正在播放的动画item */
+  const currentAnimationItem = ref<AnimationQueryItem | undefined>();
+
   /** 创建 svga 播放器 */
   async function createSvgaPlayer() {
     if (!wrapRef.value) {
@@ -170,6 +173,15 @@ export const useSvgaPlayer = <T extends object = object>(
     },
   );
 
+  watch(
+    () => unref(isPlayingAnimation),
+    () => {
+      if (!isPlayingAnimation.value) {
+        currentAnimationItem.value = undefined;
+      }
+    },
+  );
+
   /**
    * 播放图片动画
    * @param url 图片地址
@@ -222,9 +234,18 @@ export const useSvgaPlayer = <T extends object = object>(
    * 插入 svga 文件或图片到动画队列中
    * @param url 地址
    * @param inHeader 是否从头部插入
+   * @param filterRepeat 是否过滤重复的svg动画
    */
-  function pushAnimationQueue(url: string, inHeader = false, extParam?: T) {
+  function pushAnimationQueue(url: string, inHeader = false, extParam?: T, filterRepeat = false) {
     if (!url) return;
+
+    if (filterRepeat) {
+      const existsInQueue = animationQueue.value.some(item => item.url === url);
+
+      if (existsInQueue || currentAnimationItem.value?.url === url) {
+        return;
+      }
+    }
 
     const ext = extParam || ({} as T);
     if (inHeader) {
@@ -244,6 +265,8 @@ export const useSvgaPlayer = <T extends object = object>(
 
     const item = animationQueue.value.shift();
     if (!item || !item.url) return;
+
+    currentAnimationItem.value = item;
 
     if (isSvgaFileUrl(item.url)) {
       playSvgaAnimation(item);

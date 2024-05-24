@@ -87,6 +87,11 @@ export function destroyWatchSdk() {
   watchCore = undefined;
 }
 
+export const getSocket = () => {
+  const watchCore = getWatchCore();
+  return watchCore.chat.getSocket(false);
+};
+
 window.debugWatchSdk = () => {
   // @PLV-WARN
   window.watchCore = watchCore;

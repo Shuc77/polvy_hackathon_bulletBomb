@@ -9,21 +9,21 @@
     >
       <!-- 副屏 -->
       <plv-carousel-item>
-        <carousel-page-container>
+        <carousel-page-container click-for-player>
           <carousel-sub-screen />
         </carousel-page-container>
       </plv-carousel-item>
 
       <!-- 主屏 -->
       <plv-carousel-item>
-        <carousel-page-container>
+        <carousel-page-container click-for-player>
           <carousel-main-screen />
         </carousel-page-container>
       </plv-carousel-item>
 
       <!-- 空白屏 -->
       <plv-carousel-item>
-        <carousel-page-container />
+        <carousel-page-container click-for-player />
       </plv-carousel-item>
     </plv-carousel>
   </div>

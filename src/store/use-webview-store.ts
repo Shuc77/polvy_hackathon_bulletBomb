@@ -1,18 +1,33 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { getWatchCore, getSocket } from '@/core/watch-sdk';
 import { UserEvents } from '@polyv/live-watch-sdk';
 import type { WebViewBridge } from '@polyv/web-view-bridge';
 import { isWebView } from '@polyv/web-view-bridge/is-webview';
+import { debounce } from 'lodash-es';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useLayoutStore } from './use-layout-store';
 import { usePlayerStore } from './use-player-store';
+import { useWatchAppStore } from './use-watch-app-store';
+
+/**
+ * 原生 Webview-Feed 的逻辑是
+ * 1、进入页面后，主动触发页面锁定处理 【原生端默认不锁定】
+ * 2、监听可滚动的元素，如果滚动到一定程度再通知原生解锁页面滚动
+ * 3、页面解锁滚动有前提条件，比如当前不能处于全屏状态
+ */
 
 export interface WebviewStoreState {
   /** 是否基于保利威 webview 协议嵌入的观看页 */
   isPlvWebview: Ref<boolean>;
   /** 是否 webview 内嵌小窗状态 */
   isSmallWindow: Ref<boolean>;
+  /** 当前 Webview 页面是否激活 */
+  curWebviewPageIsActive: Ref<boolean>;
   /** 在 webview 中小窗化时，打开的小窗宽高 */
   plvWebviewDataSize: ComputedRef<{ width: number; height: number }>;
+  /** 是否允许当前 webview 解锁原生拖拽逻辑 */
+  allowWebviewPageUnlockDrag: ComputedRef<boolean>;
 }
 
 export interface WebviewStoreActions {
@@ -20,27 +35,51 @@ export interface WebviewStoreActions {
   initWebviewBridge(): Promise<void>;
   /** 获取桥接器对象 */
   getPlvWebviewBridge(): WebViewBridge | undefined;
+  /** 发送用户信息 */
+  sendUserInfo(): void;
   /** 恢复到正常窗口 */
   toNormalWindow(): void;
   /** 关闭当前 webview 页面 */
   closeWindow(): void;
+  /** 锁定当前 webview 页面 */
+  toLockDrag(): void;
+  /** 解锁当前 webview 页面 */
+  toUnlockDrag(): void;
+  /** 移动到上一个 webview Feed 页面 */
+  toNextWebview(): void;
+  /** 移动到下一个 webview Feed 页面 */
+  toPrevWebview(): void;
 }
 
 export interface WebviewStore extends WebviewStoreState, WebviewStoreActions {}
 
 export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', () => {
+  const { forcePausePlay, toPlay, toFreezePlay } = usePlayerAction();
+
+  const watchAppStore = useWatchAppStore();
   const playerStore = usePlayerStore();
+  const layoutStore = useLayoutStore();
 
   /** webview 桥接器 */
   let webviewBridge: WebViewBridge | undefined;
 
   /** 是否基于保利威 webview 协议嵌入的观看页 */
   const isPlvWebview = ref(isWebView());
-  // const isPlvWebview = ref(true);
 
   /** 是否 webview 内嵌小窗状态 */
   const isSmallWindow = ref(false);
   // const isSmallWindow = ref(true);
+
+  const curWebviewPageIsActive = ref(true);
+
+  const curWebviewPageIsLockDrag = ref(false);
+
+  const allowWebviewPageUnlockDrag = computed(() => {
+    // 非全屏状态下才允许解锁拖拽
+    return !(
+      layoutStore.isPageFullscreenOrHorizontalScreen || layoutStore.mobileDocIsPageFullscreen
+    );
+  });
 
   /** 在 webview 中小窗化时，打开的小窗宽高 */
   const plvWebviewDataSize = computed(() => ({
@@ -48,22 +87,51 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     height: playerStore.isPortraitResolutionRate ? 160 : 90,
   }));
 
+  const onWebviewIsActive = () => {
+    console.warn('[webview-bridge-feed-flow] onWebviewIsActive');
+    curWebviewPageIsActive.value = true;
+
+    toLockDrag();
+
+    if (!watchAppStore.isLiveWatchConnected) {
+      console.warn('[webview-bridge-feed-flow] onWebviewIsActive recoverConnectLiveWatch');
+      watchAppStore.recoverConnectLiveWatch();
+      return;
+    }
+
+    toFreezePlay(false);
+    toPlay();
+    getSocket()?.connect();
+  };
+
+  const onWebviewIsInactive = () => {
+    console.warn('[webview-bridge-feed-flow] onWebviewIsInactive');
+    curWebviewPageIsActive.value = false;
+
+    toLockDrag();
+
+    // 注意，页面初始化时在这里写的方法基本是无效的，只能到对应回调的地方去处理，此处只是页面初始化完成后的一般性逻辑处理
+    forcePausePlay();
+    getSocket()?.disconnect();
+  };
+
   /** 初始化桥接器 */
   async function initWebviewBridge() {
     if (webviewBridge || !isPlvWebview.value) {
       return;
     }
+
     try {
       const { WebViewBridge } = await import(
         /* webpackChunkName: "web-view-bridge" */ '@polyv/web-view-bridge'
       );
       webviewBridge = new WebViewBridge();
       await webviewBridge.connectWebViewBridge();
+      console.warn('[webview-bridge-feed-flow] connect');
 
       __listenEvents();
-      __sendInitInfo();
     } catch (e) {
-      console.warn(e);
+      console.warn('initWebviewBridge', e);
     }
   }
 
@@ -99,8 +167,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
       // iOS 系统级小窗情况，暂停 web 播放，交由 iOS 原生播放
       if (event?.isPIP) {
-        const watchCore = getWatchCore();
-        watchCore.player.pause();
+        forcePausePlay();
       }
     });
 
@@ -110,8 +177,19 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
       // iOS 系统级小窗情况，恢复 web 播放
       if (event?.isPIP) {
-        const watchCore = getWatchCore();
-        watchCore.player.play();
+        toPlay();
+      }
+    });
+
+    webviewBridge.on('callWebViewEvent', ({ event }: { event?: string }) => {
+      console.warn(`[webview-bridge][callWebViewEvent] ${event || 'unknown'}`);
+      if (event === 'isActive') {
+        onWebviewIsActive();
+        return;
+      }
+
+      if (event === 'isInactive') {
+        onWebviewIsInactive();
       }
     });
   }
@@ -136,7 +214,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   /**
    * 传参给 webview。主要是 iOS 系统级小窗需要下列信息
    */
-  function __sendInitInfo() {
+  function sendUserInfo() {
     if (!webviewBridge) {
       return;
     }
@@ -180,13 +258,55 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     webviewBridge?.sendData('closeWindow', {});
   }
 
+  /** 锁定当前 webview Feed 页面 */
+  function toLockDrag() {
+    console.warn('[webview-bridge-feed-flow][callAppEvent] toLockDrag');
+    curWebviewPageIsLockDrag.value = true;
+    webviewBridge?.sendData('callAppEvent', { event: 'toLockDrag' });
+  }
+
+  /** 解锁当前 webview Feed 页面 */
+  function toUnlockDrag() {
+    if (!allowWebviewPageUnlockDrag.value) {
+      return;
+    }
+
+    console.warn('[webview-bridge-feed-flow][callAppEvent]  toUnlockDrag');
+    curWebviewPageIsLockDrag.value = false;
+    webviewBridge?.sendData('callAppEvent', { event: 'toUnlockDrag' });
+  }
+
+  /** 移动到下一个 webview Feed 页面 */
+  const toNextWebview = debounce(() => {
+    console.warn('[webview-bridge-feed-flow][callAppEvent]  toNextWebview');
+    curWebviewPageIsLockDrag.value = false;
+    webviewBridge?.sendData('callAppEvent', { event: 'toNextWebview' });
+  }, 300);
+
+  /** 移动到上一个 webview Feed 页面 */
+  const toPrevWebview = debounce(() => {
+    if (!allowWebviewPageUnlockDrag.value) {
+      return;
+    }
+
+    console.warn('[webview-bridge-feed-flow][callAppEvent]  toPrevWebview');
+    webviewBridge?.sendData('callAppEvent', { event: 'toPrevWebview' });
+  }, 300);
+
   return {
     isPlvWebview,
     isSmallWindow,
+    curWebviewPageIsActive,
     plvWebviewDataSize,
+    allowWebviewPageUnlockDrag,
     initWebviewBridge,
     getPlvWebviewBridge,
+    sendUserInfo,
     toNormalWindow,
     closeWindow,
+    toLockDrag,
+    toUnlockDrag,
+    toNextWebview,
+    toPrevWebview,
   };
 });

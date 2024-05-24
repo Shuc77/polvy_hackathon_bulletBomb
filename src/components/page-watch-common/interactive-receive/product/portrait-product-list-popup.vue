@@ -10,15 +10,10 @@
         <div class="c-portrait-product-list__title">
           <mobile-icon-product class="c-portrait-product-list__title__icon" />
           <span>
-            {{ $lang('interact.product.list.title.total') }}
+            {{ $lang('interact.product.list.title.quantity') }}：
             <span class="c-product__title__number pws-portrait-iar-product-title-number">
               {{ goodTotal }}
             </span>
-            {{
-              recruitmentEnabled
-                ? $lang('interact.product.list.title.totalRecruitment')
-                : $lang('interact.product.list.title.totalProduct')
-            }}
           </span>
         </div>
       </template>

@@ -145,6 +145,10 @@ export const useConnectMic = () => {
   onMounted(() => {
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.TeacherHangUp, onHandUpMic);
+    // 当前是被邀请的状态，需要弹出邀请面板
+    if (connectMicStore.inviteStatus) {
+      onInviteConnectMic();
+    }
   });
   onBeforeUnmount(() => {
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);

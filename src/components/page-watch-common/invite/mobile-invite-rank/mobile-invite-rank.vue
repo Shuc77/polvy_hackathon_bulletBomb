@@ -5,47 +5,55 @@
       class="c-mobile-invite-rank__list"
       @scroll="handleScroll"
     >
-      <mobile-invite-activity-banner v-if="inviteActivityEnabled" />
+      <div>
+        <mobile-invite-activity-banner v-if="inviteActivityEnabled" />
 
-      <div class="c-mobile-invite-rank__list__title pws-mobile-invite-rank__list__title">
-        <span>{{ $lang('invite.rank') }}</span>
-        <span>{{ $lang('invite.rank.people.number') }}</span>
-      </div>
+        <div class="c-mobile-invite-rank__list__title pws-mobile-invite-rank__list__title">
+          <span v-if="inviteListSettingInfo.inviteListDisplayType === 'partial'">
+            {{ $lang('invite.rank') }}
+          </span>
+          <span>{{ $lang('invite.rank.people.number') }}</span>
+        </div>
 
-      <!-- 前三名 -->
-      <invite-rank-item
-        v-for="(item, index) in realTopThreeRankItems"
-        :rank="index + 1"
-        :is-current="isCurrentViewer(item)"
-        :item="item"
-        :key="item.openId"
-      />
+        <!-- 前三名 -->
+        <invite-rank-item
+          v-for="(item, index) in realTopThreeRankItems"
+          :rank="index + 1"
+          :is-current="isCurrentViewer(item)"
+          :item="item"
+          :key="item.openId"
+        />
 
-      <!-- 除开前三名的列表 -->
-      <invite-rank-item
-        v-for="(item, index) in rankList"
-        :rank="index + 4"
-        :is-current="isCurrentViewer(item)"
-        :item="item"
-        :key="item.openId"
-      />
-      <div
-        v-if="isLoading"
-        class="c-mobile-invite-rank__list--loading"
-      >
-        <list-loading />
-      </div>
-      <div
-        v-else-if="isNoMore"
-        class="c-mobile-invite-rank__list__nomore pws-mobile-invite-rank__nomore"
-      >
-        {{ $lang('invite.rank.no.more') }}
-      </div>
-      <div
-        v-else-if="isLoadFailed"
-        class="c-mobile-invite-rank__list__failed .pws-mobile-invite-rank__failed"
-      >
-        {{ $lang('invite.rank.loaded.failed') }}
+        <!-- 除开前三名的列表 -->
+        <invite-rank-item
+          v-for="(item, index) in rankList"
+          :rank="index + 4"
+          :is-current="isCurrentViewer(item)"
+          :item="item"
+          :key="item.openId"
+        />
+        <div
+          v-if="isLoading"
+          class="c-mobile-invite-rank__list--loading"
+        >
+          <list-loading />
+        </div>
+        <div
+          v-else-if="isNoMore"
+          class="c-mobile-invite-rank__list__nomore pws-mobile-invite-rank__nomore"
+        >
+          {{
+            inviteListSettingInfo.inviteListDisplayType === 'partial'
+              ? onlyTopLimitTips
+              : $lang('invite.rank.no.more')
+          }}
+        </div>
+        <div
+          v-else-if="isLoadFailed"
+          class="c-mobile-invite-rank__list__failed .pws-mobile-invite-rank__failed"
+        >
+          {{ $lang('invite.rank.loaded.failed') }}
+        </div>
       </div>
     </section>
 
@@ -124,6 +132,8 @@ const {
   isLoading,
   isNoMore,
   isLoadFailed,
+  inviteListSettingInfo,
+  onlyTopLimitTips,
 
   showBottomInfo,
   currentDes,
@@ -172,6 +182,9 @@ watch(
 }
 
 .c-mobile-invite-rank__list__title {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   height: 40px;

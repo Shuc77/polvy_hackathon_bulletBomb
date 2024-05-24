@@ -31,6 +31,8 @@ export const englishLang: LangConfig = {
     'Pause paying to enter the channel, please contact the administrator to open other viewing conditions',
   'auth.workWeixin.title': 'Work wechat login',
   'auth.workWeixin.qrcodeLoading': 'Qrcode loading',
+  'auth.error.systemException': 'system exception',
+  'auth.error.invalidWatchAuth': 'invalid authentication, please reload page',
   'auth.error.checkProtocol': 'Please tick the privacy statement',
   'auth.error.unknown': 'unknown',
   'auth.error.codeEmpty': 'Please enter verification information',
@@ -293,6 +295,11 @@ export const englishLang: LangConfig = {
   'form.placeholder.smsVerify': 'SMS verification code',
   'form.placeholder.imageVerify': 'Please enter the verification code',
   'form.placeholder.enterCountry': 'Please enter the country name',
+  'form.placeholder.contacts': 'Please enter the contact',
+  'form.placeholder.address': 'Please enter the address',
+  'form.placeholder.corpName': 'Please enter the corp name',
+  'form.placeholder.position': 'Please enter the position',
+  'form.placeholder.email': 'Please enter the email',
   'form.error.phoneNumberRequired': 'Please enter the phone number',
   'form.error.phoneNumberError': 'Please enter the correct mobile phone number',
   'form.error.smsVerifyRequired': 'Please enter SMS verification code',
@@ -333,6 +340,7 @@ export const englishLang: LangConfig = {
   'interact.product.list.title.total': '',
   'interact.product.list.title.totalProduct': 'merchandise in total',
   'interact.product.list.title.totalRecruitment': 'jobs',
+  'interact.product.list.title.quantity': 'quantity',
   'interact.questionnaire.title': 'Questionnaire',
   'interact.questionnaire.result': 'Questionnaire Result',
   'interact.questionnaire.result.list': 'List',
@@ -403,8 +411,10 @@ export const englishLang: LangConfig = {
   'pageError.saleInvite.limit.weixin': 'Please open WeChat to watch',
   'pageError.saleInvite.illegalSaleCode':
     'The link is wrong or no longer works, please contact the administrator to get a new link!',
-  'pageError.NotAllowDomain.title': 'Illegal source of request',
+  'pageError.NotAllowDomain.title':
+    'Illegal source of request, Please to configure the secure domain',
 
+  'player.error.sdkLoad': 'Failed to load player. Please refresh.',
   'player.play.button.text': 'Click to enter',
   'player.play': 'Play',
   'player.pause': 'Pause',
@@ -439,6 +449,8 @@ export const englishLang: LangConfig = {
   'player.latencyMode.low': 'Undelayed',
   'player.latencyMode.normal': 'Normal',
   'player.latency.error': 'Undelayed playmode error, you are now in normal playmode',
+  'player.latency.restrictError':
+    'Live streaming has failed. Please refresh the page or contact admin.',
   'player.mode.audio': 'Audio',
   'player.mode.video': 'Video',
   'player.audio.ing': 'Audio playing',
@@ -516,6 +528,11 @@ export const englishLang: LangConfig = {
   'saleInvite.tips1': 'verify phone',
   'saleInvite.tips2':
     'You need to collect your personal information to watch the live broadcast. Please fill in your mobile number',
+  'saleInvite.username': 'Contacts',
+  'saleInvite.address': 'Address',
+  'saleInvite.corpName': 'CorpName',
+  'saleInvite.position': 'Position',
+  'saleInvite.email': 'Email',
 
   'seminar.host': 'Host',
   'seminar.noLive': 'The live broadcast is temporarily closed',
@@ -625,6 +642,8 @@ export const englishLang: LangConfig = {
   'invite.rank.invite.btn': 'Invite',
   'invite.rank.click.btn.desc': 'Click the button on the right to invite your WeChat friends',
   'invite.rank.invited': 'You have invited ${number} people',
+  'invite.rank.onlyShow': '(Only the top ${number} are shown)',
+  'invite.rank.onlyShowBottom': 'Only the top ${number} are shown',
   'invite.rank.first.desc': 'Win the top rank! You have invited ${number} people.',
   'invite.rank.detail.btn': 'Details',
 

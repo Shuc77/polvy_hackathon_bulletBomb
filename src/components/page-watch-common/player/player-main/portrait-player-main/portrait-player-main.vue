@@ -22,7 +22,14 @@
             'c-portrait-player-main__container--audio': isAudioPlayerMode,
           }"
           :style="allPlayerContainerStyle"
-        ></div>
+        >
+          <div
+            v-if="playerSdkLoadError"
+            class="c-portrait-player-main__player-sdk-load-error"
+          >
+            {{ $lang('player.error.sdkLoad') }}
+          </div>
+        </div>
 
         <!-- 播放器封面图 -->
         <portrait-player-cover-img />
@@ -83,8 +90,14 @@ const { playerContainer } = usePlayerMain({
   },
 });
 
-const { noneLiveVisible, resolutionWidth, resolutionHeight, isAudioPlayerMode } =
-  storeDefinitionToRefs(usePlayerStore);
+const {
+  playerSdkLoadError,
+
+  noneLiveVisible,
+  resolutionWidth,
+  resolutionHeight,
+  isAudioPlayerMode,
+} = storeDefinitionToRefs(usePlayerStore);
 
 const { portraitDocWrapHeight } = storeDefinitionToRefs(usePortraitLayoutStore);
 
@@ -210,6 +223,24 @@ useConnectMicing();
   .c-portrait-player-main__container {
     opacity: 0;
   }
+}
+
+.c-portrait-player-main__player-sdk-load-error {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  line-height: 16px;
+  color: #fff;
 }
 
 .c-portrait-placeholder-panel {

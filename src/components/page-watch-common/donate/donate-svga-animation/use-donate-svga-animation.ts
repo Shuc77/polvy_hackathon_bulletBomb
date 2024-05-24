@@ -86,7 +86,7 @@ export const useDonateSvgaAnimation = () => {
 
     const isSelfGood = chatMsg.isSelf;
     const svgaUrl = getSvgaUrl(chatMsg.gimg);
-    pushAnimationQueue(svgaUrl || chatMsg.gimg, isSelfGood);
+    pushAnimationQueue(svgaUrl || chatMsg.gimg, isSelfGood, undefined, true);
   }
 
   onMounted(() => {

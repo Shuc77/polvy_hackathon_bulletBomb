@@ -371,6 +371,7 @@
     // 邀请榜相关
     .pws-mobile-invite-rank__list__title {
       color: map.get($--skin-configs, 'describe-text-color') !important;
+      background-color: map.get($--skin-configs, 'mobile-invite-rank-bottom:bg-color');
     }
     .pws-mobile-invite-rank__list__item {
       color: map.get($--skin-configs, 'describe-text-color') !important;

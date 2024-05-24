@@ -12,6 +12,7 @@ export interface PolyvIRSceneEntrance {
   PortraitCheckIn: PolyvIRSceneComponentOption;
   EnrollLotteryPendant: PolyvIRSceneComponentOption;
   ProductBubble: PolyvIRSceneComponentOption;
+  ProductDialog: PolyvIRSceneComponentOption;
   ProductJob: PolyvIRSceneComponentOption;
   ProductButton: PolyvIRSceneComponentOption;
   PushCard: PolyvIRSceneComponentOption;

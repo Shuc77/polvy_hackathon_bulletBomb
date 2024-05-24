@@ -141,6 +141,12 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
 
     seatInfo.value = watchCore.user.getUserSeatInfo();
     needHideUserActor.value = watchCore.user.needHideUserActor();
+
+    if (viewerId.value && window.aegis) {
+      window.aegis.setConfig({
+        uin: viewerId.value,
+      });
+    }
   }
 
   /** 当前是否需要实名认证 */

@@ -244,6 +244,14 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     }
   }
 
+  function scrollToHideMsgTips() {
+    containerRef.value?.addEventListener('scroll', () => {
+      chatMsgStore.$patch({
+        isMsgTipsPopperVisible: false,
+      });
+    });
+  }
+
   useEventBusListener(appEvents.chat.ResetUpChatMsgList, () => {
     initVirtualList();
   });
@@ -252,6 +260,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     initVirtualList();
     eventBus.$on(appEvents.chat.ScrollToNew, scrollToNew);
     watchCore.chat.eventEmitter.on(ChatEvents.ChatMsgReplayReload, reloadChatReplayData);
+    scrollToHideMsgTips();
   });
 
   onBeforeUnmount(() => {

@@ -22,6 +22,7 @@ import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
 import { useWatchAppStore } from './use-watch-app-store';
+import { useWebviewStore } from './use-webview-store';
 
 export interface PlayerStoreState {
   /** 配置是否使用播放器 */
@@ -30,6 +31,8 @@ export interface PlayerStoreState {
   canRenderPlayer: ComputedRef<boolean>;
   /** 是否处于可播放的模式 */
   isPlayMode: ComputedRef<boolean>;
+  /** 播放器 sdk 加载失败 */
+  playerSdkLoadError: Ref<boolean>;
   /** 播放器是否已初始化 */
   playerInited: Ref<boolean>;
   /** 是否已开始播放 */
@@ -134,6 +137,8 @@ export interface PlayerStoreState {
   playbackProgressBarEnabled: Ref<boolean>;
   /** 回放时是否显示左下角播放/暂停按钮，默认开 */
   playbackShowPlayButtonEnabled: Ref<boolean>;
+  /** cdn播放器且处于横屏模板 */
+  isCdnWithNormalLayout: Ref<boolean>;
 }
 
 export interface PlayerStoreAction {
@@ -152,6 +157,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
+  const webViewStore = useWebviewStore();
 
   const __defaultPlayerInfo = PlvPlayerModule.generateDefaultPlayerInfo();
 
@@ -167,6 +173,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     return true;
   });
+
+  const playerSdkLoadError = ref(false);
 
   /** 播放器是否已初始化 */
   const playerInited = ref(false);
@@ -186,6 +194,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 播放器暖场设置 */
   const warmUpSetting = ref<PlayerWarmUpSetting>({});
 
+  /** cdn播放器且处于横屏模板 */
+  const isCdnWithNormalLayout = computed<boolean>(() => {
+    return !isLowLatency.value && layoutStore.mobileWatchLayout === MobileWatchLayout.Normal;
+  });
+
   /** 是否显示播放器暖场图片 */
   const showWarmUpImg = computed<boolean>(() => {
     if (playbackStore.isPlaybacking) {
@@ -198,7 +211,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     }
 
     // 非无延迟移动端横屏不展示自定义暖场图
-    if (!isLowLatency.value && layoutStore.mobileWatchLayout === MobileWatchLayout.Normal) {
+    if (isCdnWithNormalLayout.value) {
       return false;
     }
 
@@ -478,7 +491,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageLocationDefaultId.value = playerInfo.barrageLocationDefaultId;
 
     delayTime.value = playerInfo.delayTime;
-    playStatus.value = playerInfo.playStatus;
+    playStatus.value = !webViewStore.curWebviewPageIsActive
+      ? PlayStatus.Pause
+      : playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
 
     supportLanguageStream.value = playerInfo.supportLanguageStream;
@@ -506,6 +521,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   }
 
   return {
+    playerSdkLoadError,
     playerEnabled,
     canRenderPlayer,
     isAudioPlayerMode,
@@ -541,6 +557,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     supportRefresh,
     supportAutoPlay,
     currentVolume,
+    isCdnWithNormalLayout,
 
     lineCount,
     currentLine,

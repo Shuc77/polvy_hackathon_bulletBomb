@@ -55,7 +55,15 @@
         class="c-mobile-basic-info__author__publisher pws-mobile-basic-info-publisher"
         @click="togglePublisherFullVisible"
       >
-        <mobile-icon-people class="c-mobile-basic-info__author__publisher__icon" />
+        <img
+          v-if="channelPublisherPic"
+          :src="channelPublisherPic"
+          class="c-mobile-basic-info__author__publisher__icon"
+        />
+        <mobile-icon-people
+          v-else
+          class="c-mobile-basic-info__author__publisher__icon"
+        />
         <span
           :class="{
             'g-multiline': !publisherFullVisible,
@@ -67,7 +75,7 @@
       <section class="c-mobile-basic-info__author__right">
         <!-- 点赞数 -->
         <div
-          v-if="!showLikeCount"
+          v-if="showLikeCount"
           class="c-mobile-basic-info__author__right-item c-mobile-basic-info__author__like-count g-text-nowrap pws-mobile-basic-info-like"
         >
           <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
@@ -144,6 +152,7 @@ const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 const {
   channelTitle,
   channelPublisher,
+  channelPublisherPic,
   pvShowEnabled,
   pageViewCount,
   pageViewCountLocation,
@@ -250,7 +259,7 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
 
 .c-mobile-basic-info__author {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   padding: 10px 16px;
 
   font-size: 12px;
@@ -261,7 +270,7 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
 
 .c-mobile-basic-info__author__publisher {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-right: 16px;
   line-height: 16px;
 }
@@ -281,7 +290,15 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   margin-left: 8px;
 }
 
-.c-mobile-basic-info__author__publisher__icon,
+.c-mobile-basic-info__author__publisher__icon {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  font-size: 16px !important;
+  border-radius: 50%;
+}
+
 .c-mobile-basic-info__author__like-count__icon,
 .c-mobile-basic__author__watch-duration__icon {
   display: flex;

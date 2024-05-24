@@ -78,7 +78,7 @@ export function bindChannelModuleEvents(): void {
     }
 
     if (liveStatus === LiveStatus.Live) {
-      console.info('直播开始');
+      console.log('直播开始');
       if (channelStore.isSeminarChannel && !channelStore.privateSeminarChannel) {
         watchAppStore.setupWatchCoreConnect();
       }

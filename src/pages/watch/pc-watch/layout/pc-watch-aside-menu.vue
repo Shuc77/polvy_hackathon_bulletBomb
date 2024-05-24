@@ -29,7 +29,7 @@
 
       <!-- 连麦 tab -->
       <pc-aside-tab-pane
-        v-if="openMicStatus"
+        v-if="connectMicPendantRenderEnabled"
         :label="$lang('call.connect')"
         :name="TAB_NAME_CONNECT_MIC"
       >
@@ -202,7 +202,7 @@ import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
-const { openMicStatus } = storeDefinitionToRefs(useConnectMicStore);
+const { connectMicPendantRenderEnabled } = storeDefinitionToRefs(useConnectMicStore);
 
 const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
 

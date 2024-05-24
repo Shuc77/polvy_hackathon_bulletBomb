@@ -16,15 +16,15 @@ function getIarUIConfigByWatchSdkEnv() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20240321',
+      version: 'rc-20240516',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20240321',
+      version: 'rc-20240516',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20240321',
+      version: 'dev-20240516',
     },
   };
 
@@ -34,8 +34,7 @@ function getIarUIConfigByWatchSdkEnv() {
 /**
  * 获取互动功能 UI 的加载地址
  */
-function getIarUILoaderUrl() {
-  const { domain, version } = getIarUIConfigByWatchSdkEnv();
+function getIarUILoaderUrl(domain: string, version: string) {
   return `${domain}/interactions-receive-sdk-ui-default/${version}/lib/${interactAppEntrance}/${interactAppEntrance}.umd.min.js`;
 }
 
@@ -50,10 +49,13 @@ export function loadIarUI(): Promise<PolyvIRSceneType> {
   }
 
   if (!iarUILoader) {
-    const url = getIarUILoaderUrl();
+    const { domain, version } = getIarUIConfigByWatchSdkEnv();
+    const url = getIarUILoaderUrl(domain, version);
+
     iarUILoader = new Promise((resolve, reject) => {
       (async () => {
         await loadScript(url, {
+          backupURL: getIarUILoaderUrl(domain.replace('websdk', 'websdk2'), version),
           props: {
             crossOrigin: 'anonymous',
           },

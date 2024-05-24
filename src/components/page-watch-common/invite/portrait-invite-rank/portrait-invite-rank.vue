@@ -7,7 +7,7 @@
       'c-portrait-invite-rank': true,
       'c-portrait-invite-rank--invite-activity': inviteActivityEnabled,
     }"
-    :title="$lang('menu.tabName.invite')"
+    :title="translate('menu.tabName.invite')"
     ignore-content-max-height
     :content-percent-height="0.784"
     :content-style="getPopupContentStyle()"
@@ -51,6 +51,17 @@
                 :order="idx + 4"
                 :key="item.openId"
               ></portrait-invite-rank-item>
+
+              <div
+                class="c-portrait-invite-rank__list__no-more-tips"
+                v-if="isNoMore"
+              >
+                {{
+                  inviteListSettingInfo.inviteListDisplayType === 'partial'
+                    ? onlyTopLimitTips
+                    : $lang('invite.rank.no.more')
+                }}
+              </div>
             </div>
           </div>
         </template>
@@ -134,6 +145,7 @@ import { useInviteRankHook } from '../hooks/use-invite-rank';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { useInviteStore } from '@/store/use-invite-store';
+import { translate } from '@/assets/lang';
 
 const { inviteDetailEnabled, inviteActivityEnabled, inviteActivityWillEndTipVisible } =
   storeDefinitionToRefs(useInviteStore);
@@ -144,12 +156,16 @@ const {
   topThreeRankItems,
   isExistInviteRankData,
   currentDes,
+  inviteListSettingInfo,
+  onlyTopLimitTips,
 
   showBottomInfo,
   invitePosterEnabled,
 
   initInviteRank,
   handleScroll,
+
+  isNoMore,
 } = useInviteRankHook();
 
 const popupVisible = ref(false);
@@ -248,10 +264,14 @@ const inviteTop3Theme = computed(() => {
 
 // 邀请榜前三
 .c-portrait-invite-rank__top-three {
+  position: sticky;
+  top: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding: 0 16px;
+  padding-bottom: 10px;
+  background: rgb(255, 235, 212);
 }
 // 邀请列表
 .c-portrait-invite-rank__list__wrapper {
@@ -363,5 +383,12 @@ const inviteTop3Theme = computed(() => {
   position: absolute;
   top: 11px;
   right: 16px;
+}
+
+.c-portrait-invite-rank__list__no-more-tips {
+  padding: 12px 0;
+  font-size: 14px;
+  color: #999999;
+  text-align: center;
 }
 </style>

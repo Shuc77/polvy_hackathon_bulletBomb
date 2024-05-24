@@ -10,9 +10,11 @@ import {
   PlaybackTarget,
   PlayerEvents,
   PlayerEventsRelations,
+  PlayStatus,
 } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount } from 'vue';
 import { usePlayerAction } from './use-player-action';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /**
  * 播放器相关事件 hook
@@ -21,17 +23,40 @@ export const usePlayerEvent = () => {
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
-  const { toToggleBarrageMobileSettingVisible } = usePlayerAction();
+  const webviewStore = useWebviewStore();
+
+  const { toToggleBarrageMobileSettingVisible, forcePausePlay, toFreezePlay } = usePlayerAction();
+
+  function onPlayerConfigLoaded(): void {
+    if (!webviewStore.curWebviewPageIsActive) {
+      toFreezePlay(true);
+    }
+  }
 
   function onPlayerInited(): void {
     playerStore.$patch({
       playerInited: true,
     });
+
+    if (!webviewStore.curWebviewPageIsActive) {
+      forcePausePlay();
+      toFreezePlay(true);
+    }
   }
 
   function onPlayerPlaying(): void {
+    if (!webviewStore.curWebviewPageIsActive) {
+      playerStore.$patch({
+        isPlayStarted: false,
+        playStatus: PlayStatus.Pause,
+      });
+      forcePausePlay();
+      return;
+    }
+
     playerStore.$patch({
       isPlayStarted: true,
+      playStatus: PlayStatus.Playing,
     });
   }
 
@@ -134,6 +159,7 @@ export const usePlayerEvent = () => {
     unbindPlayerEvents();
     const watchCore = getWatchCore();
 
+    watchCore.player.eventEmitter.on(PlayerEvents.PlayerConfigLoaded, onPlayerConfigLoaded);
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerInited, onPlayerInited);
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerPlaying, onPlayerPlaying);
     watchCore.player.eventEmitter.on(PlayerEvents.HistoryPlay, onHistoryPlay);
@@ -151,6 +177,7 @@ export const usePlayerEvent = () => {
   function unbindPlayerEvents() {
     const watchCore = getWatchCore();
 
+    watchCore.player.eventEmitter.off(PlayerEvents.PlayerConfigLoaded, onPlayerConfigLoaded);
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerInited, onPlayerInited);
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerPlaying, onPlayerPlaying);
     watchCore.player.eventEmitter.off(PlayerEvents.HistoryPlay, onHistoryPlay);

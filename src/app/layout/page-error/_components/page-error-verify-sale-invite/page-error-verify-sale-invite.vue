@@ -2,54 +2,69 @@
 
 <template>
   <div class="c-verify-sale-invite">
-    <div class="c-verify-sale-invite__tips">
-      <div class="c-verify-sale-invite__tips__bg1"></div>
-      <div class="c-verify-sale-invite__tips__bg2"></div>
-      <p class="c-verify-sale-invite__tips--main">
-        {{ $lang('saleInvite.tips1') }}
-      </p>
-      <p class="c-verify-sale-invite__tips--sub">
-        {{ $lang('saleInvite.tips2') }}
-      </p>
-    </div>
-    <div class="c-verify-sale-invite-form">
-      <div class="c-verify-sale-invite-form__content">
-        <form-wrap
-          label-model="inline"
-          :form-data="formData"
-          :form-rules="formRules"
-          :submit-action="submitForm"
-        >
-          <form-item form-field="phoneNumber">
-            <mobile-form-phone-input
-              v-model="formData.phoneNumber"
-              :area-code.sync="formData.areaCode"
-            />
-          </form-item>
-
-          <form-item
-            v-if="saleInviteVerifySmsEnabled"
-            form-field="smsCode"
+    <div class="c-verify-sale-invite__content">
+      <div class="c-verify-sale-invite__tips">
+        <div class="c-verify-sale-invite__tips__bg1"></div>
+        <div class="c-verify-sale-invite__tips__bg2"></div>
+        <p class="c-verify-sale-invite__tips--main">
+          {{ $lang('saleInvite.tips1') }}
+        </p>
+        <p class="c-verify-sale-invite__tips--sub">
+          {{ $lang('saleInvite.tips2') }}
+        </p>
+      </div>
+      <div class="c-verify-sale-invite-form">
+        <div class="c-verify-sale-invite-form__content">
+          <form-wrap
+            label-model="header"
+            :form-data="formData"
+            :form-rules="formRules"
+            :submit-action="submitForm"
           >
-            <mobile-form-sms-verify-input
-              v-model="formData.smsCode"
-              :area-code="formData.areaCode"
-              :phone-number="formData.phoneNumber"
-              :sms-scene="SmsScene.SaleInvite"
-              :valid-type="SmsValidType.Slider"
-            />
-          </form-item>
+            <form-item form-field="phoneNumber">
+              <mobile-form-phone-input
+                v-model="formData.phoneNumber"
+                :area-code.sync="formData.areaCode"
+              />
+            </form-item>
 
-          <div class="c-verify-sale-invite-form__submit">
-            <form-submit-button
-              :type="ButtonType.Custom"
-              :size="ButtonSize.Medium"
-              block
-              :text="$lang('saleInvite.confirm')"
-              debounce-submit
-            />
-          </div>
-        </form-wrap>
+            <form-item
+              v-if="saleInviteVerifySmsEnabled"
+              form-field="smsCode"
+            >
+              <mobile-form-sms-verify-input
+                v-model="formData.smsCode"
+                :area-code="formData.areaCode"
+                :phone-number="formData.phoneNumber"
+                :sms-scene="SmsScene.SaleInvite"
+                :valid-type="SmsValidType.Slider"
+              />
+            </form-item>
+
+            <form-item
+              v-for="(item, index) in collectSetting.fieldList"
+              :key="index"
+              :form-field="item.type"
+              :label="getTranslateByType(item.type).label"
+              :required="item.required"
+            >
+              <mobile-form-input
+                v-model="formData[item.type]"
+                :placeholder="getTranslateByType(item.type).placeholder"
+              />
+            </form-item>
+
+            <div class="c-verify-sale-invite-form__submit">
+              <form-submit-button
+                :type="ButtonType.Custom"
+                :size="ButtonSize.Medium"
+                block
+                :text="$lang('saleInvite.confirm')"
+                debounce-submit
+              />
+            </div>
+          </form-wrap>
+        </div>
       </div>
     </div>
   </div>
@@ -64,6 +79,7 @@ import FormItem from '@/components/common-base/form/form-item.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
 import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
+import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
 import { useVerifySaleInvite } from './use-verify-sale-invite';
 
 const {
@@ -72,11 +88,21 @@ const {
   formData,
   formRules,
   submitForm,
+  getTranslateByType,
+  collectSetting,
 } = useVerifySaleInvite();
 </script>
 
 <style lang="scss">
 .c-verify-sale-invite {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.c-verify-sale-invite__content {
   max-width: 600px;
   margin: auto;
 }
@@ -111,7 +137,7 @@ const {
   }
 }
 .c-verify-sale-invite__tips__bg1 {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: -1;
@@ -122,7 +148,7 @@ const {
   transform: translateY(-60%) translateX(-20%);
 }
 .c-verify-sale-invite__tips__bg2 {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   z-index: -1;
@@ -134,10 +160,14 @@ const {
 }
 
 .c-verify-sale-invite-form {
-  padding: 20px 30px 34px;
+  padding: 20px 30px 0;
 }
 .c-verify-sale-invite-form__submit {
-  margin-top: 24px;
+  position: sticky;
+  bottom: 0;
+  padding-top: 24px;
+  padding-bottom: 34px;
+  background: #fff;
   .c-normal-button {
     color: #fff;
     background-color: #3082fe;

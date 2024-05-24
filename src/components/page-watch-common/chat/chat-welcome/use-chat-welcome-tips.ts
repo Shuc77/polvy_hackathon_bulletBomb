@@ -12,6 +12,8 @@ import {
   ChatMessageUser,
   InteractReceiveEvents,
   InteractReceiveEventsRelations,
+  ProductLinkJumpTipDetail,
+  IarProductType,
 } from '@polyv/live-watch-sdk';
 import { computed, onBeforeUnmount, onMounted, ref, unref, watchEffect } from 'vue';
 
@@ -131,12 +133,60 @@ export const useWelcomeUserLoginTips = (controller: WelcomeController, enabled =
 export const usePositionClickTips = (controller: WelcomeController, enabled = true) => {
   const interactReceiveStore = useInteractReceiveStore();
   const visibleTime = 2000;
+  const watchCore = getWatchCore();
 
   function onProductClickEvent(
     data: InteractReceiveEventsRelations[InteractReceiveEvents.ProductClick],
   ) {
-    const text = `${data.nickname}${translate('welcome.deliver')}${data.name}`;
-    controller.setWelcomeText(text, 'position', visibleTime);
+    const productLinkJumpTipDetail = watchCore.interactReceive.getProductLinkJumpTipDetail();
+
+    let text;
+
+    if (productLinkJumpTipDetail) {
+      text = getWelcomeTextByProductType(data, productLinkJumpTipDetail);
+    } else if (data.type === 'delivery' || data.type === IarProductType.Job) {
+      // 兼容旧版type
+      text = getDefaultWelcomeText(data.nickname, data.name);
+    }
+
+    text && controller.setWelcomeText(text, 'position', visibleTime);
+  }
+
+  function getWelcomeTextByProductType(
+    data: InteractReceiveEventsRelations[InteractReceiveEvents.ProductClick],
+    productLinkJumpTipDetail: ProductLinkJumpTipDetail,
+  ) {
+    // 获取与产品类型相对应的提示语
+    let templateText: string | undefined;
+    switch (data.type) {
+      case IarProductType.Finance:
+        templateText = productLinkJumpTipDetail.financialProductTip;
+        break;
+      case IarProductType.Job:
+        templateText = productLinkJumpTipDetail.jobProductTip;
+        break;
+      case IarProductType.Normal:
+        templateText = productLinkJumpTipDetail.ordinaryProductTip;
+        break;
+    }
+
+    // 如果找到了对应的提示语且不为空，则进行模板替换；否则，使用默认欢迎文字
+    if (templateText) {
+      return replaceProductTip(templateText, data.nickname, data.name);
+    } else {
+      return getDefaultWelcomeText(data.nickname, data.name);
+    }
+  }
+
+  function getDefaultWelcomeText(nickName: string, name: string) {
+    return `${nickName}${translate('welcome.deliver')}${name}`;
+  }
+
+  function replaceProductTip(templateText: string, nickName: string, productName: string) {
+    const nickNameReg = /{{nickName}}/g;
+    const productReg = /{{productName}}/g;
+
+    return templateText.replace(nickNameReg, nickName).replace(productReg, productName);
   }
 
   onMounted(() => {

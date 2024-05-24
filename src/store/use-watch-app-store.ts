@@ -29,6 +29,7 @@ import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-me
 
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
+import { useWebviewStore } from './use-webview-store';
 
 export interface WatchAppStoreState {
   /** 当前是否处于回放观看页地址 */
@@ -59,6 +60,9 @@ export interface WatchAppStoreState {
   shouldShowSplash: ComputedRef<boolean>;
   /** 直播观看页是否初始化完毕 - 直播观看页渲染标识位 */
   watchPageInited: Ref<boolean>;
+
+  /** 直播观看页部分功能已初始化 */
+  isLiveWatchConnected: Ref<boolean>;
 
   /** 观看页聊天室 socket 已连接 */
   watchPageChatConnected: Ref<boolean>;
@@ -100,6 +104,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const connectMicStore = useConnectMicStore();
 
   const financeStore = useFinanceStore();
+  const webviewStore = useWebviewStore();
 
   /** 当前是否处于回放观看页地址 */
   const isPlaybackWatchUrl = ref(false);
@@ -148,6 +153,9 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 观看页需要聊天室 socket */
   const watchPageNeedChatSocket = ref(false);
+
+  /** 直播观看页部分功能已初始化 */
+  const isLiveWatchConnected = ref(false);
 
   /** 观看页聊天室 socket 已连接 */
   const watchPageChatConnected = ref(false);
@@ -213,7 +221,10 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   function __setWatchPageInited() {
     // 开启风险确认函时，需要暂停部分功能初始化和 Socket 链接
     // 等到观众同意确认后再进行恢复
-    if (financeStore.riskConfirmEnabled) {
+    if (
+      financeStore.riskConfirmEnabled ||
+      (paramGetter.watchPageInitStatus() === 'inactive' && !isLiveWatchConnected.value)
+    ) {
       pauseConnectLiveWatch();
       watchPageInited.value = true;
       return;
@@ -237,18 +248,27 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
     // 正常进入观看页，需要建立 socket 连接
     watchPageNeedChatSocket.value = true;
+    isLiveWatchConnected.value = true;
     watchPageInited.value = true;
   }
 
+  // 处理重复连接 socket 的逻辑
+  let connecting = false;
   /**
    * 设置观看核心连接 Socket 处理
    */
   async function setupWatchCoreConnect() {
-    if (!watchPageNeedChatSocket.value) return;
+    if (!watchPageNeedChatSocket.value || watchPageChatConnected.value) return;
 
     const watchCore = getWatchCore();
+    if (connecting) {
+      return;
+    }
+
+    connecting = true;
     await watchCore.connect();
 
+    connecting = false;
     watchPageChatConnected.value = true;
   }
 
@@ -256,6 +276,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
    * 暂停直播观看页部分功能的初始化
    * */
   async function pauseConnectLiveWatch() {
+    isLiveWatchConnected.value = false;
     playerStore.$patch({ playerEnabled: false });
     docStore.$patch({ docEnabled: false });
     chatStore.$patch({ chatMsgListEnabled: false });
@@ -266,6 +287,14 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
    * 恢复直播观看页部分功能的初始化
    */
   async function recoverConnectLiveWatch() {
+    // 当前如果处于 webview 激活状态，要优先设置状态位
+    if (webviewStore.curWebviewPageIsActive) {
+      isLiveWatchConnected.value = true;
+    }
+
+    if (!watchPageInited.value) return;
+
+    isLiveWatchConnected.value = true;
     playerStore.$patch({ playerEnabled: true });
     docStore.$patch({ docEnabled: true });
     chatStore.$patch({ chatMsgListEnabled: true });
@@ -309,6 +338,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     syncWatchAppStore,
     setupLiveWatch,
 
+    isLiveWatchConnected,
     pauseConnectLiveWatch,
     recoverConnectLiveWatch,
 

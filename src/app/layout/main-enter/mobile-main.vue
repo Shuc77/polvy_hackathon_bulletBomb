@@ -1,6 +1,11 @@
 <!-- @file 移动端入口 -->
 <template>
-  <div class="c-mobile-main">
+  <div
+    class="c-mobile-main"
+    @touchstart="onTouchStart"
+    @touchmove="onTouchMove"
+    @touchend="onTouchEnd"
+  >
     <template v-if="shouldShowForceAuth">
       <mobile-force-auth @hook:mounted="onPageMounted" />
     </template>
@@ -57,6 +62,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useWebviewFeedTouch } from '@/hooks/behaviors/use-webview-feed';
 
 const MobileWeixinSnapshotTips = defineAsyncComponent(() => {
   return import(
@@ -83,6 +89,8 @@ const PortraitWatchLoader = () => {
   );
 };
 const PortraitWatch = defineAsyncComponent(PortraitWatchLoader);
+
+const { onTouchStart, onTouchEnd, onTouchMove } = useWebviewFeedTouch();
 
 const emit = defineEmits(mainEnterEmits());
 

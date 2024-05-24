@@ -6,8 +6,8 @@
       'c-mobile-speak-msg--over-style': chatMsg.isOverLength,
     }"
     :render-other-content="!!translatedContent"
-    :disabled-tips="!(canQuoteReply || canTranslate)"
     :suffix-mode="'align-center'"
+    @click-msg-to-tips="onBubbleChatMsgTips"
   >
     <!-- 消息引用 -->
     <mobile-msg-quote-content
@@ -20,38 +20,6 @@
       class="c-mobile-speak-msg__content"
       v-html="speakHtmlContent"
     ></div>
-
-    <!-- tips 中的按钮 -->
-    <template
-      v-if="canQuoteReply || canTranslate"
-      #tips-content
-    >
-      <div class="c-mobile-speak-msg__tips">
-        <!-- 回复 -->
-        <div
-          v-if="canQuoteReply"
-          class="c-mobile-speak-msg__tips-btn"
-          @click="onClickQuote"
-        >
-          {{ $lang('chat.reply') }}
-        </div>
-        <!-- 复制 -->
-        <div
-          class="c-mobile-speak-msg__tips-btn"
-          @click="copyMsg"
-        >
-          {{ $lang('base.copy') }}
-        </div>
-        <!-- 翻译 -->
-        <span
-          v-if="canTranslate"
-          class="c-mobile-speak-msg__tips-btn"
-          @click="translateCurrentMsg"
-        >
-          {{ $lang('base.translate') }}
-        </span>
-      </div>
-    </template>
 
     <!-- 字数过长下底部按钮 -->
     <div
@@ -97,12 +65,47 @@ import MobileMsgContainer from '../_msg-container/mobile-msg-container.vue';
 import { useSpeakMsg, useSpeakMsgTranslate } from './use-speak-msg';
 import { useChatMsgQuote } from '../_hooks/chat-msg-quote-hook';
 import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
+import { translate } from '@/assets/lang';
+import { useSingleChatMsgTips } from '@/hooks/components/use-single-chat-msg-tips/_hooks/use-single-chat-msg-tips';
+import { SingleChatMsgTipsOriginOptions } from '@/hooks/components/use-single-chat-msg-tips/_types';
 
 const { speakHtmlContent, chatMsg, msgQuote, copyMsg, showCompleteMsg } = useSpeakMsg();
 
 const { translatedContent, canTranslate, translateCurrentMsg } = useSpeakMsgTranslate(chatMsg);
 
 const { canQuoteReply, onClickQuote } = useChatMsgQuote(chatMsg);
+
+const { createChatMsgTips } = useSingleChatMsgTips();
+
+function onBubbleChatMsgTips(options: SingleChatMsgTipsOriginOptions) {
+  if (!canQuoteReply.value && !canTranslate.value) {
+    return;
+  }
+
+  const { target, mountEl } = options;
+  if (!target || !mountEl) return;
+
+  createChatMsgTips({
+    target,
+    mountEl,
+    itemData: [
+      {
+        hidden: !canQuoteReply.value,
+        content: translate('chat.reply'),
+        onClick: onClickQuote,
+      },
+      {
+        content: translate('base.copy'),
+        onClick: copyMsg,
+      },
+      {
+        hidden: !canTranslate.value,
+        content: translate('base.translate'),
+        onClick: translateCurrentMsg,
+      },
+    ],
+  });
+}
 </script>
 
 <style lang="scss">

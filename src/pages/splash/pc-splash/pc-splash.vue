@@ -29,7 +29,15 @@
           <h1 class="c-pc-splash__header__title">{{ channelTitle }}</h1>
           <!-- 主持人 -->
           <div class="c-pc-splash__header__author">
-            <pc-icon-people class="c-pc-splash__header__author__icon" />
+            <img
+              v-if="channelPublisherPic"
+              class="c-pc-splash__header__author__icon"
+              :src="channelPublisherPic"
+            />
+            <pc-icon-people
+              v-else
+              class="c-pc-splash__header__author__icon"
+            />
             <span
               ref="publisherReferenceRef"
               class="c-pc-splash__header__author__publisher g-singleline g-vmid"
@@ -150,8 +158,14 @@ const { isAuthorized } = storeDefinitionToRefs(useAuthStore);
 
 const { needEnrollByEnter } = storeDefinitionToRefs(useEnrollStore);
 
-const { channelTitle, channelPublisher, channelDescription, showLiveCountDown, liveStartTimeText } =
-  storeDefinitionToRefs(useChannelInfoStore);
+const {
+  channelTitle,
+  channelPublisher,
+  channelPublisherPic,
+  channelDescription,
+  showLiveCountDown,
+  liveStartTimeText,
+} = storeDefinitionToRefs(useChannelInfoStore);
 
 const { splashImg } = storeDefinitionToRefs(useThemeStore);
 
@@ -250,9 +264,12 @@ $--splash-header-content-height: 406px;
 
 .c-pc-splash__header__author__icon {
   display: flex;
-  margin-right: 6px;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
   font-size: 20px !important;
   line-height: 20px;
+  border-radius: 50%;
 }
 
 .c-pc-splash__header__author__publisher {

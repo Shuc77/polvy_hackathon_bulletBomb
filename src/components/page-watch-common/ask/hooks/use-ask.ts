@@ -2,13 +2,34 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, unref } from 'vue';
 
-import { AskEvents, AskMsgType, ChatMsgSource, ChatMsgSpeakType } from '@polyv/live-watch-sdk';
+import {
+  AskEvents,
+  AskMsgType,
+  ChatMsgSource,
+  ChatMsgSpeakType,
+  AskEventsRelations,
+} from '@polyv/live-watch-sdk';
 import { uuidV4 } from '@utils-ts/string';
 
 import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { translate } from '@/assets/lang';
+
+/**
+ * 倒序查找数组
+ */
+function reverseFindIndex<T>(
+  arr: T[],
+  predicate: (value: T, index: number, array: T[]) => boolean,
+): number {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (predicate(arr[i], i, arr)) {
+      return i;
+    }
+  }
+  return -1;
+}
 
 export interface UseAskOptions {
   askMsgListRef: Ref<AskMsgListInstance | undefined>;
@@ -92,6 +113,44 @@ export const useAsk = (options: UseAskOptions) => {
     askMsgListInstance?.recordFirstElem();
   }
 
+  /**
+   * 根据消息内容删除提问， 倒序查找
+   * @param askMsg
+   */
+  function removeMsgByContent(askMsg: ChatMsgSpeakType) {
+    const reverseIndex = reverseFindIndex(askMsgList.value, item => {
+      return item.msgSource === ChatMsgSource.Speak && item.content.indexOf(askMsg.content) !== -1;
+    });
+
+    if (reverseIndex !== -1) {
+      askMsgList.value.splice(reverseIndex, 1);
+    }
+  }
+
+  /**
+   * 根据id删除提问
+   * @param id
+   */
+  function removeMsgById(id: string) {
+    const index = askMsgList.value.findIndex(item => {
+      return item.id === id;
+    });
+
+    if (index !== -1) {
+      askMsgList.value.splice(index, 1);
+    }
+  }
+
+  function replaceMsg(id: string, askMsg: AskMsgType) {
+    const reverseIndex = reverseFindIndex(askMsgList.value, item => {
+      return item.id === id;
+    });
+
+    if (reverseIndex !== -1) {
+      askMsgList.value.splice(reverseIndex, 1, askMsg);
+    }
+  }
+
   onMounted(() => {
     getAskMsgList();
     const watchCore = getWatchCore();
@@ -111,12 +170,26 @@ export const useAsk = (options: UseAskOptions) => {
     watchCore.ask.sendSystemMsg(translate('ask.badWord'));
   }
 
+  function onReplaceMessage(evt: AskEventsRelations[AskEvents.ReplaceAskMessage]) {
+    replaceMsg(evt.id, evt.askMsg);
+  }
+
+  function onRemoveMessage(evt: AskEventsRelations[AskEvents.RemoveAskMessage]) {
+    if (evt.askMsg && evt.askMsg.msgSource === ChatMsgSource.Speak) {
+      removeMsgByContent(evt.askMsg);
+    } else if (evt.id) {
+      removeMsgById(evt.id);
+    }
+  }
+
   function bindAskEvent() {
     const watchCore = getWatchCore();
     watchCore.ask.eventEmitter.on(AskEvents.StudentQuestion, onAskEvent);
     watchCore.ask.eventEmitter.on(AskEvents.TeacherAnswer, onAskEvent);
     watchCore.ask.eventEmitter.on(AskEvents.SystemMessage, onAskEvent);
     watchCore.ask.eventEmitter.on(AskEvents.SendBadWord, onSendBadWord);
+    watchCore.ask.eventEmitter.on(AskEvents.ReplaceAskMessage, onReplaceMessage);
+    watchCore.ask.eventEmitter.on(AskEvents.RemoveAskMessage, onRemoveMessage);
   }
 
   function unbindAskEvent() {
@@ -125,6 +198,8 @@ export const useAsk = (options: UseAskOptions) => {
     watchCore.ask.eventEmitter.off(AskEvents.TeacherAnswer, onAskEvent);
     watchCore.ask.eventEmitter.off(AskEvents.SystemMessage, onAskEvent);
     watchCore.ask.eventEmitter.off(AskEvents.SendBadWord, onSendBadWord);
+    watchCore.ask.eventEmitter.off(AskEvents.ReplaceAskMessage, onReplaceMessage);
+    watchCore.ask.eventEmitter.off(AskEvents.RemoveAskMessage, onRemoveMessage);
   }
 
   onMounted(() => {

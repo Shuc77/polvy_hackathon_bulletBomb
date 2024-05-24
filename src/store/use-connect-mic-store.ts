@@ -11,6 +11,7 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useLayoutStore } from './use-layout-store';
+import { useWebviewStore } from './use-webview-store';
 
 export interface ConnectMicStoreState {
   /** 配置是否使用连麦 */
@@ -19,6 +20,8 @@ export interface ConnectMicStoreState {
   supportConnectMic: Ref<boolean>;
   /** 是否开启了连麦 */
   openMicStatus: Ref<boolean>;
+  /** 邀请上麦状态 */
+  inviteStatus: Ref<boolean>;
   /** 连麦类型 */
   connectMicType: Ref<ConnectMicType>;
   /** 用户连麦状态 */
@@ -91,6 +94,7 @@ export interface ConnectMicStore extends ConnectMicStoreState, ConnectMicStoreAc
  */
 export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('connectMic', () => {
   const layoutStore = useLayoutStore();
+  const webviewStore = useWebviewStore();
 
   /** 配置是否使用连麦 */
   const connectMicEnabled = ref(true);
@@ -102,6 +106,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 是否开启了连麦 */
   const openMicStatus = ref(__connectMicInfo.openMicStatus);
+
+  /** 邀请上麦状态 */
+  const inviteStatus = ref(__connectMicInfo.inviteStatus);
 
   /** 连麦类型 */
   const connectMicType = ref<ConnectMicType>(__connectMicInfo.connectMicType);
@@ -134,7 +141,11 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
       return true;
     }
 
-    return openMicStatus.value;
+    if (!webviewStore.curWebviewPageIsActive) {
+      return false;
+    }
+
+    return openMicStatus.value || inviteStatus.value;
   });
 
   /** 连麦挂件是否显示 */
@@ -143,7 +154,8 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
       !layoutStore.mobileDocIsPageFullscreen &&
       !layoutStore.mobileNormalLatencyPlayerIsFullscreen &&
       !layoutStore.mobilePlayerIsPageFullscreen &&
-      !layoutStore.isPageFullscreenOrHorizontalScreen
+      !layoutStore.isPageFullscreenOrHorizontalScreen &&
+      !(inviteStatus.value && !isConnectMicing.value)
     );
   });
 
@@ -280,6 +292,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
     supportConnectMic.value = connectMicInfo.supportConnectMic;
     openMicStatus.value = connectMicInfo.openMicStatus;
+    inviteStatus.value = connectMicInfo.inviteStatus;
     connectMicType.value = connectMicInfo.connectMicType;
     connectMicStatus.value = connectMicInfo.connectMicStatus;
     showJoinQueueNumberEnabled.value = connectMicInfo.showJoinQueueNumberEnabled;
@@ -296,6 +309,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     connectMicEnabled,
     supportConnectMic,
     openMicStatus,
+    inviteStatus,
     connectMicType,
     connectMicStatus,
     showJoinQueueNumberEnabled,

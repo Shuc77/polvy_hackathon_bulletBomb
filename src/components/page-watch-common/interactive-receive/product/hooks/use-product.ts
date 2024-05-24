@@ -21,6 +21,16 @@ export const useProduct = () => {
   /** 商品库 SDK 实例 */
   const productSdk = watchCore.interactReceive.getProduct();
 
+  /** 热卖词数据  */
+  const productHotEffectTips = computed(() => {
+    return interactReceiveStore.interactSetting.productHotEffectTips;
+  });
+
+  /** 热卖特效开关 */
+  const productHotEffectEnabled = computed(() => {
+    return interactReceiveStore.interactSetting.productHotEffectEnabled;
+  });
+
   /** 招聘岗位开关 */
   const recruitmentEnabled = computed(() => {
     return interactReceiveStore.interactSetting.recruitmentEnabled;
@@ -38,6 +48,8 @@ export const useProduct = () => {
     productSdk,
     recruitmentEnabled,
     jobDescLabel,
+    productHotEffectTips,
+    productHotEffectEnabled,
   };
 };
 

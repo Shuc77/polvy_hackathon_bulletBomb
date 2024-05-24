@@ -26,7 +26,7 @@ export const usePlayerSubtitle = (options: { props: VueProps<typeof useSubtitleP
   const { getCurrentElem } = useVue();
 
   const { playerInited } = storeDefinitionToRefs(usePlayerStore);
-  const { isFullscreen } = storeDefinitionToRefs(useLayoutStore);
+  const { isFullscreen, mobilePlayerIsPageFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
   const fontsizeNumber = ref(10);
 
@@ -70,13 +70,19 @@ export const usePlayerSubtitle = (options: { props: VueProps<typeof useSubtitleP
   };
 
   const initEl = () => {
-    mountedEl(isFullscreen.value ? props.fullScreenSelector : props.selector);
+    mountedEl(
+      isFullscreen.value || mobilePlayerIsPageFullscreen.value
+        ? props.fullScreenSelector
+        : props.selector,
+    );
   };
 
   watch(
-    () => isFullscreen.value,
+    () => [isFullscreen.value, mobilePlayerIsPageFullscreen.value],
     val => {
-      if (val && props.fullScreenSelector) {
+      if (props.fullScreenSelector === props.selector) return;
+
+      if (val.some(i => i === true) && props.fullScreenSelector) {
         mountedEl(props.fullScreenSelector);
       } else {
         mountedEl(props.selector);

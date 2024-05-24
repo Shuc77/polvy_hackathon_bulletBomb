@@ -13,6 +13,7 @@
       <div
         ref="referenceRef"
         class="c-mobile-msg-container__content__inner"
+        @click="onClickReferenceRef"
       >
         <div
           v-if="bubbleModel"
@@ -23,25 +24,6 @@
         </div>
         <slot v-else></slot>
       </div>
-
-      <!-- 气泡提示 -->
-      <transition
-        v-if="!disabledTips"
-        name="fade"
-      >
-        <div
-          v-show="tipsVisible"
-          ref="popperRef"
-          class="c-mobile-msg-container__tips-bubble--popper"
-        >
-          <div
-            class="c-mobile-msg-container__tips-bubble"
-            @click.stop="onClickTips"
-          >
-            <slot name="tips-content"></slot>
-          </div>
-        </div>
-      </transition>
 
       <!-- 气泡后缀内容 -->
       <div class="c-mobile-msg-container__content__suffix">
@@ -73,9 +55,11 @@
 <script setup lang="ts">
 import MobileMsgUserInfo from '../_msg-user-info/mobile-msg-user-info.vue';
 import { msgContainerProps, useMsgContainer } from './use-msg-container';
-import { msgTipsControlProps, useMsgTipsControl } from './use-msg-tips-control';
+import { msgTipsControlProps } from './use-msg-tips-control';
 import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { ref } from 'vue';
 
 const props = defineProps({
   ...msgContainerProps(),
@@ -88,11 +72,22 @@ const { isSpecialUser } = useChatMsgUserInject();
 
 const { bubbleStyle } = useMsgContainer({ props });
 
-const { referenceRef, popperRef, tipsVisible, onClickTips } = useMsgTipsControl({
-  props,
-  mountEl: 'c-mobile-msg-container',
-  popperTrigger: 'click',
+const emit = defineEmits({
+  'click-msg-to-tips': emitFunc<{
+    target: HTMLDivElement;
+    mountEl: string;
+  }>(),
 });
+
+const referenceRef = ref(null);
+
+function onClickReferenceRef() {
+  if (!referenceRef.value) return;
+  emit('click-msg-to-tips', {
+    target: referenceRef.value,
+    mountEl: 'c-mobile-chat-msg-list__container',
+  });
+}
 </script>
 
 <style lang="scss">

@@ -1,8 +1,23 @@
 <template>
-  <div class="c-portrait-product-bubble">
-    <iar-product-bubble
-      animation-type="scale"
+  <div>
+    <div class="c-portrait-product-bubble">
+      <iar-product-bubble
+        animation-type="scale"
+        :product-sdk="productSdk"
+        :get-weixin-sdk="getWeixinSdk"
+        :get-link-params="getLinkParams"
+        :is-plv-webview="isPlvWebview"
+        :get-plv-webview-bridge="getPlvWebviewBridge"
+        :plv-webview-data-size="plvWebviewDataSize"
+        :recruitment-enabled="recruitmentEnabled"
+        :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+        @job-detail="onJobDetailEvent"
+      />
+    </div>
+    <iar-product-dialog
       :product-sdk="productSdk"
+      :hot-effect-tip-option="productHotEffectTips"
+      :hot-effect-enabled="productHotEffectEnabled"
       :get-weixin-sdk="getWeixinSdk"
       :get-link-params="getLinkParams"
       :is-plv-webview="isPlvWebview"
@@ -26,13 +41,15 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const IarProductBubble = getIarComponent('ProductBubble');
+const IarProductDialog = getIarComponent('ProductDialog');
 
 const { getWeixinSdk } = useWeixinSdk();
 
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
 
-const { productSdk, recruitmentEnabled } = useProduct();
+const { productSdk, recruitmentEnabled, productHotEffectEnabled, productHotEffectTips } =
+  useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

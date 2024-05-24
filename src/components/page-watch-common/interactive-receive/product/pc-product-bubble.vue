@@ -3,6 +3,15 @@
   <div class="c-pc-product-bubble">
     <iar-product-bubble
       :product-sdk="productSdk"
+      :hot-effect-tip-option="productHotEffectTips"
+      :hot-effect-enabled="productHotEffectEnabled"
+      :get-link-params="getLinkParams"
+      :recruitment-enabled="recruitmentEnabled"
+      :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+      @job-detail="onJobDetailEvent"
+    />
+    <iar-product-dialog
+      :product-sdk="productSdk"
       :get-link-params="getLinkParams"
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
@@ -20,8 +29,10 @@ import { onJobDetailEvent } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 
 const IarProductBubble = getIarComponent('ProductBubble');
+const IarProductDialog = getIarComponent('ProductDialog');
 
-const { productSdk, recruitmentEnabled } = useProduct();
+const { productSdk, recruitmentEnabled, productHotEffectTips, productHotEffectEnabled } =
+  useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

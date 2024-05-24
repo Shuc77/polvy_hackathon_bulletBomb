@@ -8,6 +8,8 @@ export const iframeRenderProps = () => ({
   src: PropUtils.looseString,
   /** 高度，默认：600 */
   height: PropUtils.oneOfType<string | number>([String, Number]).def(600),
+  /** 自动高度，为 true 时优先级高于传入的高度，默认 false */
+  autoHeight: PropUtils.bool.def(false),
 });
 
 export const useIframeRender = (options: { props: VueProps<typeof iframeRenderProps> }) => {
@@ -18,7 +20,7 @@ export const useIframeRender = (options: { props: VueProps<typeof iframeRenderPr
   const wrapStyle = computed(() => {
     const styles: CSSProperties = {};
 
-    if (props.height) {
+    if (!props.autoHeight && props.height) {
       styles.height = formatStyleSize(props.height);
     }
 

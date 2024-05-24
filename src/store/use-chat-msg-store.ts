@@ -22,6 +22,9 @@ export interface ChatMsgStoreState {
   showMoreMsg(): void;
   /** 隐藏更多消息 */
   hideMoreMsg(): void;
+
+  /** 聊天消息气泡是否显示中 */
+  isMsgTipsPopperVisible: Ref<boolean>;
 }
 
 export interface ChatMsgStoreAction {
@@ -104,6 +107,9 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
 
   /** 是否显示更多消息 */
   const moreMsgVisible = ref(false);
+
+  /** 聊天消息气泡是否显示中 */
+  const isMsgTipsPopperVisible = ref(false);
 
   /** 显示更多消息 */
   function showMoreMsg() {
@@ -438,5 +444,7 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
     isChatServiceMsg,
 
     resetChatMsgStore,
+
+    isMsgTipsPopperVisible,
   };
 });

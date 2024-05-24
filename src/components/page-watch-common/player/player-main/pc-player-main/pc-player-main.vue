@@ -14,6 +14,13 @@
       @click="toTogglePlayInLimit"
     ></div>
 
+    <div
+      v-if="playerSdkLoadError"
+      class="c-pc-player-main__player-sdk-load-error"
+    >
+      {{ $lang('player.error.sdkLoad') }}
+    </div>
+
     <!-- 播放器 logo -->
     <pc-player-logo v-if="isLowLatency && logoSetting.logoImage" />
 
@@ -48,8 +55,13 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { translate } from '@/assets/lang';
 
-const { isLowLatency, logoSetting, newPlayerPauseStyleEnabled } =
-  storeDefinitionToRefs(usePlayerStore);
+const {
+  playerSdkLoadError,
+
+  isLowLatency,
+  logoSetting,
+  newPlayerPauseStyleEnabled,
+} = storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
@@ -111,6 +123,25 @@ useConnectMicing();
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.c-pc-player-main__player-sdk-load-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  line-height: 16px;
+  color: #fff;
+  pointer-events: none;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
 }
 
 .c-pc-player-main--new-play-btn {
