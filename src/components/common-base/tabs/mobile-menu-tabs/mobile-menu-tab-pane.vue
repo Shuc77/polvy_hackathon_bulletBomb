@@ -4,6 +4,9 @@
     <div
       v-show="paneVisible"
       class="c-mobile-menu-tab-pane"
+      @touchstart="onTouchStart"
+      @touchmove="onTouchMove"
+      @touchend="onTouchEnd"
     >
       <template v-if="renderSlot">
         <slot></slot>
@@ -13,9 +16,12 @@
 </template>
 
 <script setup lang="ts">
+import { useWebviewFeedTouch } from '@/hooks/behaviors/use-webview-feed';
 import { tabPaneProps, useTabPane } from '../hooks/use-tab-pane';
 
 const props = defineProps(tabPaneProps());
+
+const { onTouchStart, onTouchMove, onTouchEnd } = useWebviewFeedTouch();
 
 const { paneVisible, renderSlot, tabPaneInstance, transitionName } = useTabPane({ props });
 

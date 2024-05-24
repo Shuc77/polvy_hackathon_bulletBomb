@@ -3,7 +3,7 @@ import { translate } from '@/assets/lang';
 import { getWatchCore } from '@/core/watch-sdk';
 import { toast } from '@/hooks/components/use-toast';
 import { usePlayerStore } from '@/store/use-player-store';
-import { PlayerEvents } from '@polyv/live-watch-sdk';
+import { PlayerErrorReason, PlayerEvents } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 
@@ -23,12 +23,25 @@ export function bindPlayerModuleEvents(): void {
 
   /** 无延迟错误，自动切回 CDN 播放器 */
   watchCore.player.eventEmitter.on(PlayerEvents.LowLatencyError, evt => {
-    toast.error(`${evt.errorCode || ''} ${translate('player.latency.error')}`);
+    const errorCode = evt.errorCode || '';
 
-    playerStore.$patch({
-      isLowLatency: false,
-    });
+    if (errorCode === '20004') {
+      toast.error(`${evt.errorCode} ${translate('player.latency.restrictError')} ${evt.message}`, {
+        duration: 10000,
+      });
+      return;
+    }
+
+    toast.error(`${errorCode} ${translate('player.latency.error')}`);
+
+    playerStore.$patch({ isLowLatency: false });
     eventBus.$emit(appEvents.player.ResetUpPlayer);
+  });
+
+  watchCore.player.eventEmitter.on(PlayerEvents.PlayerError, evt => {
+    if (evt.reason === PlayerErrorReason.SdkLoadError) {
+      playerStore.$patch({ playerSdkLoadError: true });
+    }
   });
 
   watchCore.player.eventEmitter.on(PlayerEvents.TimeUpdate, params => {

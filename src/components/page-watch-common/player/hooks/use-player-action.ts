@@ -60,6 +60,21 @@ export const usePlayerAction = () => {
     getWatchCore().player.stop();
   }
 
+  function forcePausePlay() {
+    // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
+    if (playerStore.isLowLatency) {
+      toStop();
+      toPause();
+    } else {
+      toPause();
+    }
+  }
+
+  /** 冻结视频的播放 */
+  function toFreezePlay(isFreeze: boolean) {
+    getWatchCore().player.freezePlay(isFreeze);
+  }
+
   /** 如果当前是暂停则调用播放 */
   function toTryPlay() {
     if (playerStore.playStatus === PlayStatus.Pause) {
@@ -311,6 +326,7 @@ export const usePlayerAction = () => {
     toPlay,
     toPause,
     toStop,
+    forcePausePlay,
     toTogglePlay,
     toRefresh,
     toChangeVolume,
@@ -337,5 +353,6 @@ export const usePlayerAction = () => {
     toPauseInLimit,
     toForwardVideoInLimit,
     toBackOffVideoInLimit,
+    toFreezePlay,
   };
 };

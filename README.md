@@ -70,6 +70,8 @@ npm run build-static
 
 ### 其他注意事项
 
+> 从 v1.1.0 开始，外部错误页将自动使用保利威 SaaS 域名进行跳转，如有需要可以自行修改错误页地址
+
 - 外部错误页
   - `src/hooks/core/use-error-verify` 文件跳转到的**外部错误页**，是保利威团队另外独立部署的页面。
   - 在本地调试时，由于 `webpack-dev-server` 做了一层代理转发，能够正常访问

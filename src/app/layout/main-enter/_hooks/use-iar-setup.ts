@@ -3,6 +3,8 @@ import { loadIarUI } from '@/components/page-watch-common/interactive-receive/lo
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { paramGetter } from '@/hooks/core/use-query-params';
+import { YN } from '@polyv/live-watch-sdk';
 
 /**
  * @hook 互动功能安装 hook
@@ -12,6 +14,10 @@ export const useIarSetup = () => {
 
   /** 加载互动功能 SDK */
   async function loadIarSDK() {
+    if (paramGetter.notNeedIar() === YN.Y) {
+      return;
+    }
+
     try {
       const watchCore = getWatchCore();
 

@@ -39,6 +39,8 @@ export interface ChannelInfoStoreState {
   channelTitle: ComputedRef<string>;
   /** 频道主持人（根据多语言返回） */
   channelPublisher: ComputedRef<string>;
+  /** 频道主持人头像 */
+  channelPublisherPic: ComputedRef<string | undefined>;
   /** 频道描述（根据多语言返回） */
   channelDescription: ComputedRef<string>;
   /** 频道描述是否为空 */
@@ -118,11 +120,24 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
     const channelPublisher = computed(() => {
       let publisher = unref(channelInfo).publisher;
 
+      if (channelStore.teacherInfo?.anchorEnabled) {
+        return channelStore.teacherInfo.nick;
+      }
+
       if (!publisher && channelStore.isSeminarChannel) {
         publisher = translate('seminar.host');
       }
 
       return publisher;
+    });
+
+    /** 频道主持人头像 */
+    const channelPublisherPic = computed<string | undefined>(() => {
+      if (channelStore.teacherInfo?.anchorEnabled) {
+        return channelStore.teacherInfo?.pic;
+      }
+
+      return undefined;
     });
 
     /** 频道描述（根据多语言返回） */
@@ -282,6 +297,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
 
       channelTitle,
       channelPublisher,
+      channelPublisherPic,
       channelDescription,
       channelDescriptionIsEmpty,
 

@@ -37,7 +37,15 @@
         <div
           class="c-pc-basic-info__main__bottom__data c-pc-basic-info__main__bottom__data--publisher"
         >
-          <pc-icon-people class="c-pc-basic-info__main__bottom__publisher-icon" />
+          <img
+            v-if="channelPublisherPic"
+            :src="channelPublisherPic"
+            class="c-pc-basic-info__main__bottom__publisher-icon"
+          />
+          <pc-icon-people
+            v-else
+            class="c-pc-basic-info__main__bottom__publisher-icon"
+          />
           <span
             ref="publisherReferenceRef"
             class="c-pc-basic-info__main__bottom__publisher g-singleline"
@@ -176,6 +184,7 @@ const {
 const {
   channelTitle,
   channelPublisher,
+  channelPublisherPic,
 
   pageViewCount,
   pvShowEnabled,
@@ -259,7 +268,7 @@ $--basic-logo-size: 50px;
 
 .c-pc-basic-info__main__bottom {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   font-size: 14px;
   color: $--color-white;
 }
@@ -284,8 +293,11 @@ $--basic-logo-size: 50px;
 }
 .c-pc-basic-info__main__bottom__publisher-icon {
   display: flex;
-  margin-right: 6px;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
   font-size: 20px !important;
+  border-radius: 50%;
 }
 .c-pc-basic-info__main__bottom__publisher__panel {
   box-sizing: border-box;

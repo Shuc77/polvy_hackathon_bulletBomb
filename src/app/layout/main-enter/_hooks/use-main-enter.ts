@@ -12,6 +12,7 @@ import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hoo
 import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
 import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /**
  * 页面尺寸初始化设置
@@ -61,6 +62,8 @@ export const useMainEnter = (options: {
   const watchAppStore = useWatchAppStore();
   const authStore = useAuthStore();
 
+  const webviewStore = useWebviewStore();
+
   watch(
     () => watchAppStore.shouldShowSplash,
     async newVal => {
@@ -101,15 +104,28 @@ export const useMainEnter = (options: {
     console.log('[render] main-enter mounted');
     emit('page-mounted');
 
+    // 初始化 webview 逻辑
+    if (webviewStore.isPlvWebview) {
+      await webviewStore.initWebviewBridge();
+    }
+
     // 页面组件 mounted 后需要再更新一遍分享配置，确保数据正确
     updateWeixinShareConfig();
 
     // 加载互动功能 SDK
     await loadIarSDK();
 
+    // 处理需要等观看页加载完后的逻辑
     if (watchAppStore.watchPageInited) {
+      if (webviewStore.isPlvWebview) {
+        // 进入观看页后再发送用户数据
+        webviewStore.sendUserInfo();
+      }
+
+      // 连接聊天室
       await watchAppStore.setupWatchCoreConnect();
-      // 可以延迟设置连麦功能
+
+      // 延迟设置连麦功能
       setTimeout(() => {
         setupConnectMic();
       }, 0);

@@ -7,5 +7,5 @@
 import { useCustomMsg } from './use-custom-msg';
 
 const { chatMsg } = useCustomMsg();
-console.info(chatMsg.value);
+console.log(chatMsg.value);
 </script>

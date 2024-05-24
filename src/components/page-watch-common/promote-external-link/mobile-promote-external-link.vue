@@ -4,6 +4,7 @@
   <mobile-iframe-render
     v-if="isOpenInMenu"
     :src="props.src"
+    :auto-height="true"
   />
   <div
     v-else

@@ -55,7 +55,7 @@ import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
-defineProps({
+const props = defineProps({
   /** 是否为纯净模式 */
   isPureness: PropUtils.bool.def(false),
   /** 是否处于激活状态 */
@@ -65,14 +65,22 @@ defineProps({
 const viewerStore = useViewerStore();
 const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
 
-const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput, chatInputInstance } =
-  useChatInputController();
+const {
+  onSubmitMessage,
+  onSendSystemMsg,
 
-defineExpose(chatInputInstance);
-
-useEventBusListener(appEvents.chat.FocusToChatInput, () => {
-  focusMsgInput();
+  msgInputWrapRef,
+  focusMsgInput,
+  chatInputInstance,
+} = useChatInputController({
+  autoListen: !props.isPureness,
 });
+
+if (!props.isPureness) {
+  useEventBusListener(appEvents.chat.FocusToChatInput, () => {
+    focusMsgInput();
+  });
+}
 
 const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
   storeDefinitionToRefs(useChatStore);
@@ -86,6 +94,8 @@ function showMore() {
 function showDonate() {
   eventBus.$emit(appEvents.donate.OpenDonatePopup, true);
 }
+
+defineExpose(chatInputInstance);
 </script>
 
 <style lang="scss">

@@ -6,7 +6,9 @@ import { ChannelWatchPageSkin, PlaybackOrigin, YN, ZoneType } from '@polyv/live-
 import { parse, appendToURL } from '@just4/querystring';
 
 /** 获取默认参数值 */
-const getDefaultQueryParams = (): UniversalParams<string | undefined> => ({});
+const getDefaultQueryParams = (): UniversalParams<string | undefined> => ({
+  watchPageInitStatus: 'active',
+});
 
 /** 获取地址栏上的参数 */
 export const getUrlQueryParams = (): UniversalParams<string | string[] | undefined> => {
@@ -54,6 +56,11 @@ const buildGetters = <T extends string = string>(key: string) => {
  * @desc 需要获取地址上的参数都必须通过该获取器获取
  */
 export const paramGetter = {
+  /** 不需要互动功能 */
+  notNeedIar: buildGetters<YN>('notNeedIar'),
+  /** 页面初始状态 */
+  watchPageInitStatus: buildGetters<'inactive' | 'active'>('watchPageInitStatus'),
+
   // ===========  polyv sdk 外链参数 ===========
 
   /** 互动功能 sdk 层 js 地址 */

@@ -100,6 +100,9 @@ export const useAuthCommon = () => {
     failMessage.value = undefined;
 
     switch (failResult.failReason) {
+      case AuthVerifyError.PhoneEmpty:
+        failMessage.value = translate('auth.error.phoneEmpty');
+        break;
       case AuthVerifyError.PhoneNotExist:
         failMessage.value = translate('auth.error.phoneNotExistent');
         break;
@@ -118,6 +121,12 @@ export const useAuthCommon = () => {
           window.location.href = redirectUrl;
           await wait(1000); // 延迟 1s 是为了页面跳转时不出现其他 toast，后续优化
         }
+        break;
+      case AuthVerifyError.SystemException:
+        failMessage.value = translate('auth.error.systemException');
+        break;
+      case AuthVerifyError.InvalidWatchAuth:
+        failMessage.value = translate('auth.error.invalidWatchAuth');
         break;
       case AuthVerifyError.Unknown:
       default:

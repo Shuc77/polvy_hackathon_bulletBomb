@@ -14,6 +14,7 @@ import {
   InviteRankCurrentViewer,
   InviteRankItem,
   InviteRankRequestFailReason,
+  InviteListSetting,
 } from '@polyv/live-watch-sdk';
 
 interface TopInviteRankItem extends InviteRankItem {
@@ -25,6 +26,10 @@ export const useInviteRankHook = () => {
   const page = ref(0);
   const isLoading = ref(false);
   const isNoMore = ref(false);
+  const inviteListSettingInfo = ref<InviteListSetting>({
+    inviteListDisplayType: 'full',
+    inviteListPartialDisplayNumber: 0,
+  });
   /** 接口获取的邀请榜列表 */
   const resRankList = ref<InviteRankItem[]>([]);
   /** 当前可见的邀请榜列表，除去前三名 */
@@ -47,6 +52,13 @@ export const useInviteRankHook = () => {
   /** 是否存在邀请榜数据 */
   const isExistInviteRankData = computed(() => {
     return realTopThreeRankItems.value.length > 0;
+  });
+
+  /** 榜单仅显示x人提示 */
+  const onlyTopLimitTips = computed(() => {
+    return translate('invite.rank.onlyShowBottom', {
+      number: inviteListSettingInfo.value.inviteListPartialDisplayNumber.toString(),
+    });
   });
 
   /** 接口获取的当前用户邀请数据 */
@@ -91,7 +103,12 @@ export const useInviteRankHook = () => {
     page.value = 0;
     isLoading.value = false;
     isNoMore.value = false;
+
     await getRankList(true);
+
+    const watchCore = getWatchCore();
+    inviteListSettingInfo.value = watchCore.invite.getInviteRankSettingInfo();
+
     if (isWeixin) {
       await getCurrentRankInfo();
     }
@@ -166,7 +183,6 @@ export const useInviteRankHook = () => {
       console.error('getRankList', err);
     }
   }
-
   /** 获取当前用户的排行信息 */
   async function getCurrentRankInfo() {
     try {
@@ -184,6 +200,7 @@ export const useInviteRankHook = () => {
 
   return {
     currentRankInfo,
+    inviteListSettingInfo,
     rankList,
     topThreeRankItems,
     realTopThreeRankItems,
@@ -191,6 +208,7 @@ export const useInviteRankHook = () => {
     isLoading,
     isNoMore,
     isLoadFailed,
+    onlyTopLimitTips,
 
     showBottomInfo,
     currentDes,

@@ -16,6 +16,7 @@ import {
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 import { useChatConnectError } from '../../../chat-connect-error/use-chat-connect-error';
 import { useSendMsg } from '../../hooks/send-msg-hook';
+import { ChatMsgItemCategory } from '../use-chat-msg-item';
 
 async function blobUrlToFile(blobUrl: string, fileName: string) {
   // 使用 fetch 方法获取 Blob 数据
@@ -33,14 +34,15 @@ async function blobUrlToFile(blobUrl: string, fileName: string) {
 function getChatMsgStatus(
   chatMsg: ChatMsgImageType | ChatMsgSpeakType | ChatMsgEmotionType,
   chatStore: ReturnType<typeof useChatStore>,
+  isShield: boolean,
 ) {
-  if (!chatMsg.isLocal) return ChatMsgItemSendStatus.Default;
+  if (!chatMsg.isLocal || isShield) return ChatMsgItemSendStatus.Default;
 
   if (chatStore.connectError) {
     return ChatMsgItemSendStatus.Fail;
   }
 
-  if (chatMsg.msgSource === ChatMsgSource.Image && chatMsg.isSendFailed) {
+  if (chatMsg.isSendFailed) {
     return ChatMsgItemSendStatus.Fail;
   }
 
@@ -104,9 +106,32 @@ async function resendImage(
   }
 }
 
+/**
+ * 提问图片重发不考虑oss重发失败的情况
+ */
+function resendAskImage(chatMsg: ChatMsgImageType) {
+  const imageId = uuidV4();
+  // oss上传失败时为本地图片，oss上传成功但聊天室失败的场景为imageUrl
+  const imageUrl = chatMsg.imageUrl;
+  const size = chatMsg.size;
+
+  const watchCore = getWatchCore();
+
+  if (imageUrl && size && imageUrl) {
+    watchCore.ask.removeAskMsg(chatMsg.id);
+    watchCore.ask.sendAskImage({
+      imageId,
+      imageUrl,
+      size,
+    });
+  } else {
+    toast.error(translate('chatStatus.resendImageError'));
+  }
+}
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export const useChatMsgStatus = () => {
-  const { chatMsg } = useChatMsgDataInject<
+  const { chatMsg, category } = useChatMsgDataInject<
     ChatMsgSpeakType | ChatMsgImageType | ChatMsgEmotionType
   >();
 
@@ -116,13 +141,21 @@ export const useChatMsgStatus = () => {
   const { sendSpeakMsg, insertLocalImageMsg, sendEmotionImageMsg } = useSendMsg();
 
   const watchCore = getWatchCore();
+  const chatInfo = watchCore.chat.getChatInfo();
 
-  const msgStatus = ref<ChatMsgItemSendStatus>(getChatMsgStatus(chatMsg.value, chatStore));
+  const msgStatus = ref<ChatMsgItemSendStatus>(
+    getChatMsgStatus(chatMsg.value, chatStore, chatInfo.isShield),
+  );
   /**
    * 显示状态，跟消息的实际状态有点不同， 默认default
    * default: 成功(无内容显示) loading: 加载中(显示loading icon) fail: 失败(显示失败icon)
+   * 若状态为Fail，则直接设置
    */
-  const iconShowStatus = ref<ChatMsgItemSendStatus>(ChatMsgItemSendStatus.Default);
+  const iconShowStatus = ref<ChatMsgItemSendStatus>(
+    msgStatus.value === ChatMsgItemSendStatus.Fail
+      ? ChatMsgItemSendStatus.Fail
+      : ChatMsgItemSendStatus.Default,
+  );
 
   if (chatMsg.value.isLocal) {
     /**
@@ -158,29 +191,36 @@ export const useChatMsgStatus = () => {
   }
 
   async function handleReSendMsg() {
-    const chatInfo = watchCore.chat.getChatInfo();
-
     // 禁言弹提示
-    if (chatInfo.isShield) {
-      toast.error(translate('base.reSendWhenIsShield'));
-      return;
-    }
+    if (category.value === ChatMsgItemCategory.Chat) {
+      if (chatMsg.value.msgSource === ChatMsgSource.Speak) {
+        sendSpeakMsg(chatMsg.value);
+        watchCore.chat.removeChatMsg(chatMsg.value.id);
+      }
 
-    if (chatMsg.value.msgSource === ChatMsgSource.Speak) {
-      sendSpeakMsg(chatMsg.value);
-      watchCore.chat.removeChatMsg(chatMsg.value.id);
-    }
+      if (chatMsg.value.msgSource === ChatMsgSource.Image && chatMsg.value.imageUrl) {
+        resendImage(chatMsg.value, insertLocalImageMsg);
+      }
 
-    if (chatMsg.value.msgSource === ChatMsgSource.Image && chatMsg.value.imageUrl) {
-      resendImage(chatMsg.value, insertLocalImageMsg);
-    }
+      if (chatMsg.value.msgSource === ChatMsgSource.Emotion) {
+        sendEmotionImageMsg({
+          ...chatMsg.value,
+          emotionId: chatMsg.value.emotionId || uuidV4(),
+        });
+        watchCore.chat.removeChatMsg(chatMsg.value.id);
+      }
+    } else {
+      if (chatMsg.value.msgSource === ChatMsgSource.Speak) {
+        watchCore.ask.removeAskMsg(chatMsg.value.id);
 
-    if (chatMsg.value.msgSource === ChatMsgSource.Emotion) {
-      sendEmotionImageMsg({
-        ...chatMsg.value,
-        emotionId: chatMsg.value.emotionId || uuidV4(),
-      });
-      watchCore.chat.removeChatMsg(chatMsg.value.id);
+        watchCore.ask.sendAskSpeak({
+          content: chatMsg.value.content,
+        });
+      }
+
+      if (chatMsg.value.msgSource === ChatMsgSource.Image) {
+        resendAskImage(chatMsg.value);
+      }
     }
   }
 

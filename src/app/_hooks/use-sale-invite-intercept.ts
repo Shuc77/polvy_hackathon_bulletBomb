@@ -61,7 +61,14 @@ export const useSaleInviteIntercept = () => {
 
       const canAutoVerify = watchCore.saleInvite.checkSaleInviteAutoVerify();
       if (canAutoVerify) {
-        await watchCore.saleInvite.verifySaleInviteAuth();
+        const verifyResult = await watchCore.saleInvite.verifySaleInviteAuth();
+        if (!verifyResult.success) {
+          watchAppStore.setPageError({
+            type: PageErrorType.UnknownError,
+            desc: verifyResult.failMessage || translate('base.error.unknown'),
+          });
+          return true;
+        }
         window.location.reload();
         return false;
       }

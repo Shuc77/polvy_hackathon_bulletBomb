@@ -6,11 +6,15 @@ import { isUndefined } from 'lodash-es';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, ref, unref } from 'vue';
-import codeList from './phone-code-data';
+import { useLangStore } from '@/store/use-lang-store';
+import zhCodeList from './phone-code-data';
+import enCodeList from './phone-code-data-en';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { LangType } from '@/assets/lang/lang-enum';
 
 export const PhoneCodeEmits = ['input'];
 
-export type PhoneCodeDataItem = typeof codeList[number];
+export type PhoneCodeDataItem = typeof zhCodeList[number];
 
 export const phoneCodeProps = () => ({
   value: PropUtils.string.def(''),
@@ -26,20 +30,28 @@ export const usePhoneCode = (options: {
 }) => {
   const { props, emit } = options;
 
+  const { currentLang } = storeDefinitionToRefs(useLangStore);
   /** 搜索的关键词 */
   const searchKey = ref('');
 
+  const codeList = computed(() => {
+    return currentLang.value === LangType.Chinese ? zhCodeList : enCodeList;
+  });
+
   /** 所有首字母列表 */
   const letterList = computed(() => {
-    return codeList.filter(item => item.letter);
+    return codeList.value.filter(item => item.letter);
   });
 
   const phoneCodeList = computed(() => {
+    // 英文codeList的letter值为'', 需过滤，不然列表会显示空白的item
     if (!unref(searchKey)) {
-      return codeList;
+      return codeList.value.filter(item => {
+        return item.letter !== '';
+      });
     }
 
-    return codeList.filter(item => {
+    return codeList.value.filter(item => {
       if (item.letter) {
         return false;
       }
@@ -86,5 +98,6 @@ export const usePhoneCode = (options: {
     codeListRef,
     scrollToLetter,
     onClickCountry,
+    currentLang,
   };
 };

@@ -216,7 +216,9 @@ export function useWatchApp() {
     initPageSkin();
 
     // 处理强制自动播放，pc不支持该逻辑
-    isMobile && loadForceAutoplay();
+    if (paramGetter.watchPageInitStatus() === 'active' && isMobile) {
+      loadForceAutoplay();
+    }
   }
 
   onBeforeMount(() => {

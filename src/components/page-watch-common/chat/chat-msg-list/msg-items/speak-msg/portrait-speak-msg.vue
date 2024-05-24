@@ -5,7 +5,7 @@
     :class="{
       'c-portrait-speak-msg--over-style': chatMsg.isOverLength,
     }"
-    :disabled-tips="!canQuoteReply"
+    @click-msg-to-tips="onBubbleChatMsgTips"
   >
     <!-- 消息内容 -->
     <span
@@ -72,10 +72,41 @@ import PortraitMsgQuoteContent from '../_msg-quote-content/portrait-msg-quote-co
 import { useSpeakMsg } from './use-speak-msg';
 import { useChatMsgQuote } from '../_hooks/chat-msg-quote-hook';
 import MsgStatusSuffix from '../msg-status-suffix/msg-status-suffix.vue';
+import { translate } from '@/assets/lang';
+import { useSingleChatMsgTips } from '@/hooks/components/use-single-chat-msg-tips/_hooks/use-single-chat-msg-tips';
+import { SingleChatMsgTipsOriginOptions } from '@/hooks/components/use-single-chat-msg-tips/_types';
 
 const { speakHtmlContent, chatMsg, msgQuote, copyMsg, showCompleteMsg } = useSpeakMsg();
 
 const { canQuoteReply, onClickQuote } = useChatMsgQuote(chatMsg);
+
+const { createChatMsgTips } = useSingleChatMsgTips();
+
+function onBubbleChatMsgTips(options: SingleChatMsgTipsOriginOptions) {
+  if (!canQuoteReply.value) {
+    return;
+  }
+
+  const { target, mountEl } = options;
+
+  if (!target || !mountEl) return;
+
+  createChatMsgTips({
+    target,
+    mountEl,
+    itemData: [
+      {
+        hidden: !canQuoteReply.value,
+        content: translate('chat.reply'),
+        onClick: onClickQuote,
+      },
+      {
+        content: translate('base.copy'),
+        onClick: copyMsg,
+      },
+    ],
+  });
+}
 </script>
 
 <style lang="scss">

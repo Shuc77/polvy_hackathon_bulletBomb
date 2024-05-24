@@ -8,6 +8,8 @@ import MobileToast from './_components/mobile-toast.vue';
 import { ToastPropsType } from './_hooks/use-toast-comp';
 import { ToastInstance, ToastType } from './_toast_type';
 
+type ToastPropPickOptions = Pick<ToastPropsType, 'duration'>;
+
 type ToastConstructorCtorType = ExtendedVue<
   Vue,
   Record<string, never>,
@@ -114,33 +116,33 @@ class ToastManager {
   }
 
   /** 信息类提示 */
-  public info(msg: string) {
-    this.__push({ msg, type: ToastType.Info });
+  public info(msg: string, opts: ToastPropPickOptions = {}) {
+    this.__push({ msg, type: ToastType.Info, ...opts });
   }
 
   /** 成功类提示 */
-  public success(msg: string) {
-    this.__push({ msg, type: ToastType.Success });
+  public success(msg: string, opts: ToastPropPickOptions = {}) {
+    this.__push({ msg, type: ToastType.Success, ...opts });
   }
 
   /** 警告类提示 */
-  public warning(msg: string) {
-    this.__push({ msg, type: ToastType.Warning });
+  public warning(msg: string, opts: ToastPropPickOptions = {}) {
+    this.__push({ msg, type: ToastType.Warning, ...opts });
   }
 
   /** 异常类提示 */
-  public error(msg: string) {
-    this.__push({ msg, type: ToastType.Error });
+  public error(msg: string, opts: ToastPropPickOptions = {}) {
+    this.__push({ msg, type: ToastType.Error, ...opts });
   }
 
   /** 帮助类提示 */
-  public help(msg: string) {
-    this.__push({ msg, type: ToastType.Help });
+  public help(msg: string, opts: ToastPropPickOptions = {}) {
+    this.__push({ msg, type: ToastType.Help, ...opts });
   }
 
   /** 加载中提示 */
-  public loading(msg: string) {
-    this.__push({ msg, type: ToastType.Loading });
+  public loading(msg: string, opts: ToastPropPickOptions = {}) {
+    this.__push({ msg, type: ToastType.Loading, ...opts });
   }
 }
 

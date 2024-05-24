@@ -18,6 +18,13 @@
       class="c-mobile-player-main__container"
     ></div>
 
+    <div
+      v-if="playerSdkLoadError"
+      class="c-mobile-player-main__player-sdk-load-error"
+    >
+      {{ $lang('player.error.sdkLoad') }}
+    </div>
+
     <!-- 播放器 logo -->
     <mobile-player-logo v-if="isLowLatency && logoSetting.logoImage" />
 
@@ -60,7 +67,7 @@
     />
 
     <!-- 播放器字幕区 -->
-    <mobile-player-subtitle />
+    <mobile-player-subtitle selector=".c-mobile-player-main" />
 
     <!-- ========= 弹出层类型组件 Start ========= -->
 
@@ -123,6 +130,7 @@ const lowLatencyPlayerIsPageFullscreen = computed(() => {
 const channelStore = useChannelStore();
 
 const {
+  playerSdkLoadError,
   isLowLatency,
   playerControlVisible,
   sdkPlayerUIControlVisible,
@@ -130,6 +138,7 @@ const {
   barrageMobileSettingVisible,
   supportTimeAxisMark,
   newPlayerPauseStyleEnabled,
+  isCdnWithNormalLayout,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
@@ -158,7 +167,8 @@ const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 function onClickContainer() {
   // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
-  if (bigPlayButtonVisible.value) {
+  // cdn播放器且处于横屏模板时不显示观看页大播放按钮，所以不需要调用toPlay()
+  if (bigPlayButtonVisible.value && !isCdnWithNormalLayout.value) {
     toPlay();
   }
   eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
@@ -186,6 +196,25 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
     pointer-events: none;
     visibility: hidden;
   }
+}
+
+.c-mobile-player-main__player-sdk-load-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 310;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  line-height: 16px;
+  color: #fff;
+  pointer-events: none;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
 }
 
 .c-mobile-player-main__play-btn {
