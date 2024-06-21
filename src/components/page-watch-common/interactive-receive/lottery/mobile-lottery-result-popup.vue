@@ -12,6 +12,7 @@
     <iar-mobile-lottery-end
       ref="lotteryResultInstance"
       :lottery-sdk="lotterySdk"
+      :privacy-content="privacyContent"
       @to-hide="setLotteryResultVisible(false)"
       @status-changed="onStatusChanged"
     />
@@ -26,6 +27,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 
 import { useLotteryResult } from './hooks/use-lottery-result';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useLotteryPrivacy } from './hooks/use-lottery-privacy';
 
 const IarMobileLotteryEnd = getIarComponent('MobileLotteryEnd');
 
@@ -41,4 +43,5 @@ const {
   backLotteryResult,
   onStatusChanged,
 } = useLotteryResult();
+const { privacyContent } = useLotteryPrivacy();
 </script>

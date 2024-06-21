@@ -2,7 +2,13 @@
  * @file 当前观看页地址上的参数
  */
 
-import { ChannelWatchPageSkin, PlaybackOrigin, YN, ZoneType } from '@polyv/live-watch-sdk';
+import {
+  ChannelWatchPageSkin,
+  MobileWatchLayout,
+  PlaybackOrigin,
+  YN,
+  ZoneType,
+} from '@polyv/live-watch-sdk';
 import { parse, appendToURL } from '@just4/querystring';
 
 /** 获取默认参数值 */
@@ -60,6 +66,8 @@ export const paramGetter = {
   notNeedIar: buildGetters<YN>('notNeedIar'),
   /** 页面初始状态 */
   watchPageInitStatus: buildGetters<'inactive' | 'active'>('watchPageInitStatus'),
+  /** 观看页布局 */
+  watchLayout: buildGetters<MobileWatchLayout>('watchLayout'),
 
   // ===========  polyv sdk 外链参数 ===========
 

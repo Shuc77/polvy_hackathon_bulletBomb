@@ -13,7 +13,7 @@ export const useCheckInEntrance = () => {
   // const { isOldEntrance } = useCheckIn();
   const interactReceiveStore = useInteractReceiveStore();
 
-  /** 问卷入口数据 */
+  /** 签到入口数据 */
   const checkInEntranceData: InteractiveEntranceData = {
     type: 'check-in',
     name: 'interact.checkIn.title',

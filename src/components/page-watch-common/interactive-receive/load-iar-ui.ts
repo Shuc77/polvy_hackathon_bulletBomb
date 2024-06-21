@@ -16,15 +16,15 @@ function getIarUIConfigByWatchSdkEnv() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20240516',
+      version: 'rc-20240620',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20240516',
+      version: 'rc-20240620',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20240516',
+      version: 'dev-20240620',
     },
   };
 
@@ -54,16 +54,20 @@ export function loadIarUI(): Promise<PolyvIRSceneType> {
 
     iarUILoader = new Promise((resolve, reject) => {
       (async () => {
-        await loadScript(url, {
-          backupURL: getIarUILoaderUrl(domain.replace('websdk', 'websdk2'), version),
-          props: {
-            crossOrigin: 'anonymous',
-          },
-        });
-        if (window.PolyvIRScene) {
-          resolve(window.PolyvIRScene);
-        } else {
-          reject(new Error('loadInteractiveReceiveUI fail, window.PolyvIRScene is undefined'));
+        try {
+          await loadScript(url, {
+            backupURL: getIarUILoaderUrl(domain.replace('websdk', 'websdk2'), version),
+            props: {
+              crossOrigin: 'anonymous',
+            },
+          });
+          if (window.PolyvIRScene) {
+            resolve(window.PolyvIRScene);
+          } else {
+            reject(new Error('loadInteractiveReceiveUI fail, window.PolyvIRScene is undefined'));
+          }
+        } catch (error) {
+          reject(error);
         }
       })();
     });

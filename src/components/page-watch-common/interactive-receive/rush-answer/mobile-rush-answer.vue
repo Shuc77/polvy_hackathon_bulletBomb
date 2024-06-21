@@ -8,6 +8,7 @@
     :is-full-screen="isIarFullScreen"
     :is-landscape="isIarFullScreen"
     @entry-visible-changed="handleEntryVisibleChanged"
+    @visible-changed="onRushAnswerVisibleChanged"
   />
 </template>
 
@@ -21,7 +22,7 @@ import { useRushAnswer } from './hooks/use-rush-answer';
 
 const IarMobileRushAnswer = getIarComponent('MobileRushAnswer');
 
-const { rushAnswerSdk, handleEntryVisibleChanged } = useRushAnswer();
+const { rushAnswerSdk, handleEntryVisibleChanged, onRushAnswerVisibleChanged } = useRushAnswer();
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);

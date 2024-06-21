@@ -71,6 +71,10 @@ export const usePlayerControl = () => {
    * 是否显示大的暂停播放按钮
    * */
   const bigPlayButtonVisible = computed<boolean>(() => {
+    if (playerStore.onceHiddenPlayButton) {
+      return false;
+    }
+
     return (
       playerStore.isPlayMode &&
       playerStore.playerInited &&

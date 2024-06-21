@@ -29,6 +29,12 @@ const { renderHtmlContent } = useRichTextRender({ props });
   word-break: break-word;
   white-space: pre-wrap;
 
+  &::after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+
   table,
   th,
   td {

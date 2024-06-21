@@ -296,13 +296,17 @@
     }
 
     .pws-mobile-subtitle__content-skin {
-      .c-mobile-subtitle__content-item {
+      .pws-mobile-subtitle__content-item {
         color: map.get($--skin-configs, 'subtitle:text-color') !important;
         background: map.get($--skin-configs, 'subtitle-item:bg-color') !important;
       }
-      .c-mobile-subtitle__content-item-line {
+      .pws-mobile-subtitle__content-item-line {
         border-color: map.get($--skin-configs, 'subtitle-item:line-color') !important;;
       }
+    }
+
+    .pws-mobile-subtitle__footer-tips {
+      color: rgba(map.get($--skin-configs, 'subtitle:text-color'), 0.6) !important;
     }
 
     .pws-subtitle__empty {

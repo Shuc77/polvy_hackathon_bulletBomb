@@ -3,6 +3,7 @@
   <iar-mobile-topic-pk
     class="c-mobile-topic-pk"
     :topic-sdk="topicPkSdk"
+    @visible-changed="onTopicPKVisibleChanged"
   />
 </template>
 
@@ -12,5 +13,5 @@ import { useTopicPk } from './hook/use-topic-pk';
 
 const IarMobileTopicPk = getIarComponent('MobileTopic');
 
-const { topicPkSdk } = useTopicPk();
+const { topicPkSdk, onTopicPKVisibleChanged } = useTopicPk();
 </script>

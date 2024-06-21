@@ -60,7 +60,11 @@ export const usePlayerAction = () => {
     getWatchCore().player.stop();
   }
 
-  function forcePausePlay() {
+  function forcePausePlay(
+    opts: { onceHiddenPlayButton: boolean } = { onceHiddenPlayButton: false },
+  ) {
+    playerStore.$patch({ onceHiddenPlayButton: opts.onceHiddenPlayButton });
+
     // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
     if (playerStore.isLowLatency) {
       toStop();

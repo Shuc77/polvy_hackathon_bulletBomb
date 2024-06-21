@@ -11,6 +11,7 @@
       :enroll-lottery-sdk="enrollLotterySdk"
       :btn-text="interactSetting.lotteryGiftButtonTextCH"
       :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
+      :privacy-content="privacyContent"
       @to-show="updateDialogVisible(true)"
       @to-hide="updateDialogVisible(false)"
     />
@@ -23,10 +24,12 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useEnrollLottery } from './hooks/use-enroll-lottery';
+import { useLotteryPrivacy } from '@/components/page-watch-common/interactive-receive/lottery/hooks/use-lottery-privacy';
 
 const IarPcEnrollLottery = getIarComponent('PcEnrollLottery');
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { enrollLotterySdk, dialogVisible, updateDialogVisible } = useEnrollLottery();
+const { privacyContent } = useLotteryPrivacy();
 </script>

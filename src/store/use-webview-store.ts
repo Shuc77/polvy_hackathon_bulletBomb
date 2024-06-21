@@ -5,7 +5,8 @@ import type { WebViewBridge } from '@polyv/web-view-bridge';
 import { isWebView } from '@polyv/web-view-bridge/is-webview';
 import { debounce } from 'lodash-es';
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { computed, ComputedRef, ref, Ref, unref, watch } from 'vue';
+import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlayerStore } from './use-player-store';
 import { useWatchAppStore } from './use-watch-app-store';
@@ -26,8 +27,8 @@ export interface WebviewStoreState {
   curWebviewPageIsActive: Ref<boolean>;
   /** 在 webview 中小窗化时，打开的小窗宽高 */
   plvWebviewDataSize: ComputedRef<{ width: number; height: number }>;
-  /** 是否允许当前 webview 解锁原生拖拽逻辑 */
-  allowWebviewPageUnlockDrag: ComputedRef<boolean>;
+  /** 当前 webview 页面禁止拖拽 */
+  webviewPageDragDisabled: ComputedRef<boolean>;
 }
 
 export interface WebviewStoreActions {
@@ -42,7 +43,7 @@ export interface WebviewStoreActions {
   /** 关闭当前 webview 页面 */
   closeWindow(): void;
   /** 锁定当前 webview 页面 */
-  toLockDrag(): void;
+  toLockDrag(trackKey: string): void;
   /** 解锁当前 webview 页面 */
   toUnlockDrag(): void;
   /** 移动到上一个 webview Feed 页面 */
@@ -59,6 +60,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   const watchAppStore = useWatchAppStore();
   const playerStore = usePlayerStore();
   const layoutStore = useLayoutStore();
+  const interactReceiveStore = useInteractReceiveStore();
 
   /** webview 桥接器 */
   let webviewBridge: WebViewBridge | undefined;
@@ -74,12 +76,31 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
   const curWebviewPageIsLockDrag = ref(false);
 
-  const allowWebviewPageUnlockDrag = computed(() => {
-    // 非全屏状态下才允许解锁拖拽
-    return !(
-      layoutStore.isPageFullscreenOrHorizontalScreen || layoutStore.mobileDocIsPageFullscreen
+  // 用来记录锁住拖拽的队列
+  const webviewLockDragQueue: string[] = [];
+
+  const webviewPageDragDisabled = computed(() => {
+    return (
+      layoutStore.mobilePlayerIsPageFullscreen ||
+      layoutStore.mobileDocIsPageFullscreen ||
+      interactReceiveStore.isGoOnRedpackRain
     );
   });
+
+  watch(
+    () => webviewPageDragDisabled.value,
+    () => {
+      if (!curWebviewPageIsActive.value) {
+        return;
+      }
+
+      if (webviewPageDragDisabled.value) {
+        toLockDrag('webviewPageDragDisabled');
+      } else {
+        toUnlockDrag();
+      }
+    },
+  );
 
   /** 在 webview 中小窗化时，打开的小窗宽高 */
   const plvWebviewDataSize = computed(() => ({
@@ -91,7 +112,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     console.warn('[webview-bridge-feed-flow] onWebviewIsActive');
     curWebviewPageIsActive.value = true;
 
-    toLockDrag();
+    // toLockDrag();
 
     if (!watchAppStore.isLiveWatchConnected) {
       console.warn('[webview-bridge-feed-flow] onWebviewIsActive recoverConnectLiveWatch');
@@ -108,10 +129,10 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     console.warn('[webview-bridge-feed-flow] onWebviewIsInactive');
     curWebviewPageIsActive.value = false;
 
-    toLockDrag();
+    // toLockDrag();
 
     // 注意，页面初始化时在这里写的方法基本是无效的，只能到对应回调的地方去处理，此处只是页面初始化完成后的一般性逻辑处理
-    forcePausePlay();
+    forcePausePlay({ onceHiddenPlayButton: true });
     getSocket()?.disconnect();
   };
 
@@ -259,25 +280,48 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   }
 
   /** 锁定当前 webview Feed 页面 */
-  function toLockDrag() {
-    console.warn('[webview-bridge-feed-flow][callAppEvent] toLockDrag');
+  function toLockDrag(trackKey: string) {
+    if (!isPlvWebview.value) return;
+
+    if (!curWebviewPageIsActive.value) {
+      // console.warn('[webview-bridge-feed-flow] try to toLockDrag but not activeWebview', trackKey);
+      return;
+    }
+
+    webviewLockDragQueue.push(trackKey);
+    // console.warn('[webview-bridge-feed-flow][callAppEvent] toLockDrag', trackKey);
     curWebviewPageIsLockDrag.value = true;
     webviewBridge?.sendData('callAppEvent', { event: 'toLockDrag' });
   }
 
   /** 解锁当前 webview Feed 页面 */
   function toUnlockDrag() {
-    if (!allowWebviewPageUnlockDrag.value) {
+    if (!isPlvWebview.value) return;
+
+    if (!curWebviewPageIsActive.value) {
+      // console.warn('[webview-bridge-feed-flow] try to toUnlockDrag but not activeWebview');
       return;
     }
 
-    console.warn('[webview-bridge-feed-flow][callAppEvent]  toUnlockDrag');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const popItem = webviewLockDragQueue.pop();
+    // console.warn('pop webviewLockDragQueue', popItem);
+    // console.warn('webviewLockDragQueue', webviewLockDragQueue);
+    if (webviewPageDragDisabled.value || webviewLockDragQueue.length > 0) {
+      return;
+    }
+
+    // console.warn('[webview-bridge-feed-flow][callAppEvent]  toUnlockDrag');
     curWebviewPageIsLockDrag.value = false;
     webviewBridge?.sendData('callAppEvent', { event: 'toUnlockDrag' });
   }
 
   /** 移动到下一个 webview Feed 页面 */
   const toNextWebview = debounce(() => {
+    if (webviewPageDragDisabled.value) {
+      return;
+    }
+
     console.warn('[webview-bridge-feed-flow][callAppEvent]  toNextWebview');
     curWebviewPageIsLockDrag.value = false;
     webviewBridge?.sendData('callAppEvent', { event: 'toNextWebview' });
@@ -285,7 +329,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
   /** 移动到上一个 webview Feed 页面 */
   const toPrevWebview = debounce(() => {
-    if (!allowWebviewPageUnlockDrag.value) {
+    if (webviewPageDragDisabled.value) {
       return;
     }
 
@@ -298,7 +342,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     isSmallWindow,
     curWebviewPageIsActive,
     plvWebviewDataSize,
-    allowWebviewPageUnlockDrag,
+    webviewPageDragDisabled,
     initWebviewBridge,
     getPlvWebviewBridge,
     sendUserInfo,

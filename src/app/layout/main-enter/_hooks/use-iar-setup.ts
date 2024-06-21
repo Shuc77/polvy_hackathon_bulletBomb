@@ -25,13 +25,13 @@ export const useIarSetup = () => {
         watchCore.interactReceive.setupIarCore(), // 安装互动功能逻辑层
         loadIarUI(), // 加载互动功能 UI 组件
       ]);
-    } catch (error) {
-      console.error(error);
-      toast.error(translate('base.error.iarSetup'));
-    } finally {
+
       interactReceiveStore.$patch({
         iarSdkLoaded: true,
       });
+    } catch (error) {
+      console.error(error);
+      toast.error(translate('base.error.iarSetup'));
     }
   }
 

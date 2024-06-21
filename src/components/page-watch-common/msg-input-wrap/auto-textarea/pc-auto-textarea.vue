@@ -6,6 +6,10 @@
       'is-disabled': disabled,
     }"
   >
+    <div
+      v-if="disabled"
+      class="c-pc-auto-textarea__disabled-mask"
+    ></div>
     <textarea
       ref="textareaRef"
       class="c-pc-auto-textarea__inner pws-pc-chat-msg-input-textarea"
@@ -65,6 +69,14 @@ $--textarea-min-height: 32px;
   width: 100%;
   min-height: $--textarea-min-height;
   background-color: #1a1b1f;
+}
+
+.c-pc-auto-textarea__disabled-mask {
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  cursor: not-allowed;
 }
 
 .c-pc-auto-textarea__inner {

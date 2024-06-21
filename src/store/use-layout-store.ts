@@ -4,6 +4,7 @@
 
 import { isMobile } from '@/assets/utils/browser';
 import { getWatchCore } from '@/core/watch-sdk';
+import { paramGetter } from '@/hooks/core/use-query-params';
 import { ScreenOrientationMode } from '@/hooks/core/use-screen-orient';
 import {
   MainScreenContent,
@@ -217,7 +218,9 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     const layoutSetting = watchCore.channel.getLayoutSetting();
     mainScreenLayoutMode.value = layoutSetting.mainScreenLayoutMode;
     mobileSplashLayout.value = layoutSetting.mobileSplashLayout;
-    mobileWatchLayout.value = layoutSetting.mobileWatchLayout;
+
+    const watchLayout = paramGetter.watchLayout();
+    mobileWatchLayout.value = watchLayout || layoutSetting.mobileWatchLayout;
 
     if (mobileWatchLayout.value === MobileWatchLayout.Portrait) {
       const playerSetting = watchCore.player.getPlayerSetting();

@@ -4,12 +4,15 @@ import { getWatchCore } from '@/core/watch-sdk';
 
 import { translate } from '@/assets/lang';
 import { useCheckInEntrance } from './use-check-in-entrance';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /**
  * @hook 互动-签到
  */
 export const useCheckIn = () => {
   const { setCheckInEntrance, removeCheckInEntrance } = useCheckInEntrance();
+
+  const webviewStore = useWebviewStore();
 
   const watchCore = getWatchCore();
   /** 签到 SDK 实例 */
@@ -32,16 +35,28 @@ export const useCheckIn = () => {
     } catch (e) {
       // 该方法报错时，说明时私有化聊天室，不支持获取签到列表
       isOldEntrance.value = true;
+      // 需要重置标志位
+      checkInVisible.value = false;
     }
     return data;
   };
 
   /** 设置签到是否显示 */
   const setCheckInVisible = async (visible = true, toGetInfo = true) => {
+    // to-show 的时候也会去触发这个方法，当标志位一致时就不进入流程
+    if (checkInVisible.value === visible && visible === true) return;
+
+    checkInVisible.value = visible;
+
+    if (checkInVisible.value) {
+      webviewStore.toLockDrag('portrait-checkIn');
+    } else {
+      webviewStore.toUnlockDrag();
+    }
+
     if (visible && toGetInfo) {
       await getCheckInInfo();
     }
-    checkInVisible.value = visible;
   };
 
   const showEntrance = (visible: boolean) => {

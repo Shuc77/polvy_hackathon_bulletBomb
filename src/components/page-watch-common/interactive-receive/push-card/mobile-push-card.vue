@@ -7,6 +7,7 @@
     :push-card-sdk="pushCardSdk"
     :is-full-screen="isIarFullScreen"
     :get-link-params="getLinkParams"
+    @visible-changed="onPushCardVisibleChanged"
     @entry-visible-changed="onEntryVisibleChanged"
   />
 </template>
@@ -21,7 +22,7 @@ const IarPushCard = getIarComponent('PushCard');
 
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { pushCardSdk, onEntryVisibleChanged } = usePushCard();
+const { pushCardSdk, onEntryVisibleChanged, onPushCardVisibleChanged } = usePushCard();
 
 const { getLinkParams } = usePushCardLinkParams();
 </script>

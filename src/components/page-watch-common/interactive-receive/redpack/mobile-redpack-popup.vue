@@ -11,6 +11,7 @@
     :unit="scoreUnit"
     :is-full-screen="isIarFullScreen"
     @copy-success="toastCopySuccess"
+    @to-show="onShowRedpack"
     @close="onCloseRedpack"
     @status-change="onStatusChange"
     @click-withdraw="onClickWithdraw"
@@ -47,6 +48,7 @@ const {
   redpackSdk,
   redpackData,
   customImgConfig,
+  onShowRedpack,
   onCloseRedpack,
   onStatusChange,
   onClickWithdraw,

@@ -9,6 +9,7 @@
     :before-join-lottery="beforeJoinLottery"
     :btn-text="interactSetting.lotteryGiftButtonTextCH"
     :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
+    :privacy-content="privacyContent"
     @comment-success="onCommentSuccess"
     @entry-visible-changed="onEntryVisibleChanged"
   />
@@ -21,6 +22,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useLotteryPrivacy } from '@/components/page-watch-common/interactive-receive/lottery/hooks/use-lottery-privacy';
 
 const IarPcWelfareLottery = getIarComponent('PcWelfareLottery');
 
@@ -36,4 +38,6 @@ const {
   onCommentSuccess,
   onEntryVisibleChanged,
 } = useWelfareLottery();
+
+const { privacyContent } = useLotteryPrivacy();
 </script>

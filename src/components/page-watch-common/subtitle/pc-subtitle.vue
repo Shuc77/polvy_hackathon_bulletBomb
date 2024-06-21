@@ -24,14 +24,14 @@
         <div
           v-for="(item, index) of subtitleList"
           :key="index"
-          class="c-pc-subtitle__content-item"
+          class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
         >
           <div v-if="subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source'">
             {{ item[liveSubtitleSourceLanguage] }}
           </div>
           <div
             v-if="subtitleTranslateSelected === 'all' && item[liveSubtitleSourceTranslateLanguage]"
-            class="c-pc-subtitle__content-item-line"
+            class="c-pc-subtitle__content-item-line pws-pc-subtitle__content-item-line"
           ></div>
           <div
             v-if="
@@ -52,10 +52,13 @@
             currentSubtitle &&
             (subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source')
           "
-          class="c-pc-subtitle__content-item"
+          class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
         >
           <div>{{ currentSubtitle }}</div>
         </div>
+      </div>
+      <div class="c-pc-subtitle__footer-tips pws-pc-subtitle__footer-tips">
+        <span>{{ $lang('subtitle.footer.tips') }}</span>
       </div>
       <div
         v-show="hasNewMessage"
@@ -179,6 +182,12 @@ const {
     opacity: 1 !important;
   }
 }
+
+.c-pc-subtitle__footer-tips {
+  font-size: 12px;
+  text-align: center;
+}
+
 .c-pc-subtitle__empty {
   display: flex;
   align-items: center;

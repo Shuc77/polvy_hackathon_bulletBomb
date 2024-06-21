@@ -11,7 +11,9 @@
     :before-join-lottery="beforeJoinLottery"
     :btn-text="interactSetting.lotteryGiftButtonTextCH"
     :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
+    :privacy-content="privacyContent"
     @comment-success="onCommentSuccess"
+    @visible-changed="onWelfareLotteryVisibleChanged"
     @entry-visible-changed="onEntryVisibleChanged"
   />
 </template>
@@ -24,6 +26,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useLotteryPrivacy } from '@/components/page-watch-common/interactive-receive/lottery/hooks/use-lottery-privacy';
 
 const IarMobileWelfareLottery = getIarComponent('MobileWelfareLottery');
 
@@ -39,8 +42,11 @@ const {
 
   beforeJoinLottery,
   onCommentSuccess,
+  onWelfareLotteryVisibleChanged,
   onEntryVisibleChanged,
 } = useWelfareLottery();
+
+const { privacyContent } = useLotteryPrivacy();
 </script>
 
 <style lang="scss">
