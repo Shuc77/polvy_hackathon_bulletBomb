@@ -734,6 +734,7 @@ export const englishLang: LangConfig = {
   'subtitle.empty': 'No subtitles for the time being',
   'subtitle.new': 'new',
   'subtitle.limit': 'The latest ${limit} records are displayed',
+  'subtitle.footer.tips': 'AI-generated content for reference',
 
   'identityInfo.bindMobile': 'Bind mobile',
 

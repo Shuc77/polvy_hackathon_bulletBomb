@@ -7,6 +7,7 @@ import { translate } from '@/assets/lang';
 import { IarAnswerQuestionTypes } from '@polyv/live-watch-sdk';
 import { QuestionData } from '../types/answer-card-types';
 import { useQuickAnswerCardEntrance } from './use-answer-card-entrance';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /**
  * @hook 互动-答题卡-快速问答
@@ -14,6 +15,8 @@ import { useQuickAnswerCardEntrance } from './use-answer-card-entrance';
 export const useQuickAnswerCard = () => {
   const { setQuickAnswerCardEntrance, removeQuickAnswerCardEntrance } =
     useQuickAnswerCardEntrance();
+
+  const webviewStore = useWebviewStore();
 
   const watchCore = getWatchCore();
   /** 答题卡 SDK 实例 */
@@ -36,7 +39,10 @@ export const useQuickAnswerCard = () => {
 
     // 显示答题中的状态，设置二次入口
     if (visible) {
+      webviewStore.toLockDrag('quick-answer-card');
       setQuickAnswerCardEntrance();
+    } else {
+      webviewStore.toUnlockDrag();
     }
 
     if (question && question.type) {

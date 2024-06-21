@@ -1,7 +1,7 @@
 /**
  * @file 弹幕设置弹窗 hook
  */
-import { computed } from 'vue';
+import { computed, ComputedRef } from 'vue';
 import { translate } from '@/assets/lang';
 import { usePlayerStore } from '@/store/use-player-store';
 import { isMobile } from '@/assets/utils/browser';
@@ -35,15 +35,15 @@ export const useBarrageSetting = () => {
   }
 
   /** 弹幕速度对应档位描述 */
-  const barrageSpeedMark: {
-    [key: number]: string;
-  } = {
-    1: translate('barrage.speed.verySlow'),
-    2: translate('barrage.speed.slow'),
-    3: translate('barrage.speed.normal'),
-    4: translate('barrage.speed.fast'),
-    5: translate('barrage.speed.veryFast'),
-  };
+  const barrageSpeedMark = computed(() => {
+    return {
+      1: translate('barrage.speed.verySlow'),
+      2: translate('barrage.speed.slow'),
+      3: translate('barrage.speed.normal'),
+      4: translate('barrage.speed.fast'),
+      5: translate('barrage.speed.veryFast'),
+    };
+  });
 
   const formattedBarrageSpeedToText = computed(() => {
     return {
@@ -65,19 +65,19 @@ export const useBarrageSetting = () => {
   });
 
   /** 弹幕字号对应档位描述 */
-  const barrageSizeMark: {
-    [key: number]: string;
-  } = {
-    1: translate('barrage.size.verySmall'),
-    2: translate('barrage.size.small'),
-    3: translate('barrage.size.normal'),
-    4: translate('barrage.size.big'),
-    5: translate('barrage.size.veryBig'),
-  };
+  const barrageSizeMark: ComputedRef<{ [key: number]: string }> = computed(() => {
+    return {
+      1: translate('barrage.size.verySmall'),
+      2: translate('barrage.size.small'),
+      3: translate('barrage.size.normal'),
+      4: translate('barrage.size.big'),
+      5: translate('barrage.size.veryBig'),
+    };
+  });
 
   const formattedBarrageSizeToText = computed(() => {
     const sizeMap = isMobile ? sizeMobileBitMap : sizeBitMap;
-    return barrageSizeMark[sizeMap.get(playerStore.barrageSize)];
+    return barrageSizeMark.value[sizeMap.get(playerStore.barrageSize)];
   });
 
   /**

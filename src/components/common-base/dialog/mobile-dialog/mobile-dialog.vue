@@ -63,6 +63,7 @@ import { ref, watch, computed } from 'vue';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 
 import { dialogMobileProps, dialogEmits } from '../use-dialog';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 const props = defineProps(dialogMobileProps());
 
@@ -80,6 +81,8 @@ const dialogMaskStyle = computed(() => {
   };
 });
 
+const webviewStore = useWebviewStore();
+
 watch(
   () => props.visible,
   () => {
@@ -96,6 +99,8 @@ watch(
 
 /** 打开弹窗 */
 function openDialog() {
+  webviewStore.toLockDrag('mobile-dialog');
+
   innerVisible.value = true;
   emit('open');
 
@@ -107,6 +112,8 @@ function openDialog() {
 
 /** 关闭弹窗 */
 function closeDialog() {
+  webviewStore.toUnlockDrag();
+
   innerVisible.value = false;
   emit('update:visible', false);
   emit('close');

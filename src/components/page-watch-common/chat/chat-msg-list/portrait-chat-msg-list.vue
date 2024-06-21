@@ -75,7 +75,7 @@ if (playbackStore.chatReplayEnabled) {
   max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
-  overscroll-behavior: contain; // 阻止滚动传播
+  overscroll-behavior: auto;
   @include hidden-scrollbar;
 }
 

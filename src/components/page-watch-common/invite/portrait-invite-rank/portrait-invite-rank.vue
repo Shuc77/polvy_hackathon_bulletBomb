@@ -244,8 +244,13 @@ const inviteTop3Theme = computed(() => {
       background-color: #fff;
       border-radius: 8px 8px 0 0;
     }
+    .c-portrait-invite-rank__top-three {
+      position: sticky;
+      background: rgb(255, 235, 212);
+    }
   }
 }
+
 .c-portrait-invite-rank__main {
   box-sizing: border-box;
   height: 100%;
@@ -264,14 +269,13 @@ const inviteTop3Theme = computed(() => {
 
 // 邀请榜前三
 .c-portrait-invite-rank__top-three {
-  position: sticky;
+  position: relative;
   top: 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding: 0 16px;
   padding-bottom: 10px;
-  background: rgb(255, 235, 212);
 }
 // 邀请列表
 .c-portrait-invite-rank__list__wrapper {

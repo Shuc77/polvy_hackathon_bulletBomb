@@ -3,7 +3,7 @@
   <div class="c-portrait-product-list">
     <mobile-popup
       :visible.sync="productListVisible"
-      :theme="PopupTheme.Portrait"
+      :theme="PopupTheme.PortraitLight"
       content-percent-height
     >
       <template v-slot:title>

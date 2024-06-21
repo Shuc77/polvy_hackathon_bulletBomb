@@ -23,6 +23,12 @@ const { renderHtmlContent } = useRichTextRender({ props });
   color: $--font-color-primary;
   white-space: pre-wrap;
 
+  &::after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+
   table,
   th,
   td {

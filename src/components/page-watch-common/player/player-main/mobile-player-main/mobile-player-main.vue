@@ -264,7 +264,7 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
   height: 100vw !important;
   margin-top: -50vw;
   margin-left: $--player-page-fullscreen-margin-left !important;
-  transform: rotate3d(0, 0, 1, 90deg) !important;
+  transform: rotate3d(0, 0, 1, 90deg);
   transform-origin: center center;
 
   // ios 兼容处理

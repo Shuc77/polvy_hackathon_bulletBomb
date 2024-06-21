@@ -67,7 +67,7 @@
   }
   .plv-iar-product-label-list {
     margin-bottom: 14px !important;
-    background: #262523 !important;
+    background: #fff !important;
   }
   .plv-iar-product-label-list__scroll {
     padding: 8px 0 !important;
@@ -76,7 +76,7 @@
     height: 48px !important;
   }
   .plv-iar-product-label-list__arrow__icon {
-    color: #fff !important;
+    color: #333A47 !important;
   }
   .plv-iar-product-label-list__shadow--left {
     background: linear-gradient(90deg, #262523 0, rgba(#262523, 0) 100%) !important;
@@ -85,28 +85,53 @@
     background: linear-gradient(90deg, rgba(#262523, 0) 0, #262523 100%) !important;
   }
   .plv-iar-product-label-list__item {
-    color: #fff !important;
-    background-color: rgba(#fff, 0.1) !important;
+    color: #333 !important;
+    background-color: #f5f5f5 !important;
 
     &.plv-iar-product-label-list__item--active {
       color: #f15d5d !important;
+      background-color: rgba(#f15d5d, 0.1) !important;
       border-color: #f15d5d !important;
     }
   }
+  .plv-iar-product__item__name {
+    margin-bottom: 7px;
+  }
+  .plv-iar-product__item__labels {
+    margin-bottom: 7px;
+  }
+  .plv-iar-product__item__desc {
+    margin-bottom: 7px;
+  }
+  .plv-iar-product-label-list__popper {
+    border-radius: 8px;
+    box-shadow: 0 6px 30px -5px rgba(51, 58, 71, 0.2);
+  }
+  .plv-iar-product-label-list__popper__item--active {
+    .plv-iar-product-label-list__popper__item__btn {
+      background-color: rgba(#f15d5d, 0.1) !important;
+    }
+  }
   .pws-iar-product-list-number {
-    border-radius: 6px;
+    min-width: unset;
+    padding: 0 4px;
+    line-height: 16px;
+    vertical-align: middle;
+    background-color: #f15d5d !important;
+    border-radius: 2px;
   }
   .pws-iar-product-list-cover {
     border-radius: 10px;
   }
   .pws-iar-product-list-cover-number {
+    background-color: #f15d5d !important;
     border-radius: 0 0 6px 0;
   }
   .pws-iar-product-list-button {
     min-width: 72px;
-    height: 28px;
+    height: 24px;
     font-size: 12px;
-    line-height: 28px;
+    line-height: 24px;
   }
   .plv-iar-product__buy-button.plv-iar-product__buy-button--disabled {
     .pws-iar-product-list-button {

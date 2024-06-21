@@ -322,6 +322,7 @@ function closeBarrageSetting() {
   width: 40px;
   padding-left: 8px;
   text-align: center;
+  white-space: nowrap;
 }
 .c-mobile-player-barrage-setting__desc--alpha {
   width: 50px;

@@ -4,6 +4,8 @@
 import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { ChatMsgRedpaperType } from '@polyv/live-watch-sdk';
 import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
 
 /**
@@ -28,6 +30,7 @@ export const useRedpackStatus = () => {
  */
 export const useRedpack = () => {
   const interactReceiveStore = useInteractReceiveStore();
+  const webviewStore = useWebviewStore();
 
   const watchCore = getWatchCore();
   /** 红包 SDK 实例 */
@@ -45,8 +48,7 @@ export const useRedpack = () => {
   const redpackData = ref<UniversalParams<any>>();
 
   /** 打开某个红包 */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function openRedpack(data: UniversalParams<any>) {
+  function openRedpack(data: ChatMsgRedpaperType) {
     if (data.type.includes('rain')) {
       // 类型是红包雨，则发送事件打开红包雨
       eventBus.$emit(appEvents.interaction.OpenRedpackRain, {
@@ -60,6 +62,10 @@ export const useRedpack = () => {
     } else {
       redpackData.value = data;
     }
+  }
+
+  function onShowRedpack() {
+    webviewStore.toLockDrag('redpack');
   }
 
   onBeforeMount(() => {
@@ -79,17 +85,18 @@ export const useRedpack = () => {
   /** 处理关闭红包 */
   function onCloseRedpack() {
     redpackData.value = undefined;
+    webviewStore.toUnlockDrag();
   }
 
   /** 处理点击提现按钮 */
   function onClickWithdraw() {
-    redpackData.value = undefined;
+    onCloseRedpack();
     eventBus.$emit(appEvents.withdraw.OpenWithdrawApply, true);
   }
 
   /** 处理点击积分记录 */
   function onClickScoreRecord() {
-    redpackData.value = undefined;
+    onCloseRedpack();
     eventBus.$emit(appEvents.interaction.OpenScoreRecord, true);
   }
 
@@ -105,6 +112,7 @@ export const useRedpack = () => {
     customImgConfig,
     openRedpack,
     onStatusChange,
+    onShowRedpack,
     onCloseRedpack,
     onClickWithdraw,
     onClickScoreRecord,

@@ -702,6 +702,7 @@ export const chinaLang = {
   'subtitle.empty': '暂无字幕',
   'subtitle.new': '查看最新',
   'subtitle.limit': '当前最多展示近${limit}条记录',
+  'subtitle.footer.tips': '内容为AI实时生成仅供参考',
 
   'identityInfo.bindMobile': '绑定手机号',
 

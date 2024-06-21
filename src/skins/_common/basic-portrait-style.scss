@@ -18,9 +18,15 @@
 
   // --------- 商品库 --------- //
   .pws-portrait-iar-product-title-number {
-    color: map.get($--skin-configs, 'primary-color') !important;
+    color: #F15D5D !important;
   }
   .pws-iar-product-list-button {
+    background-color: #F15D5D !important;
+  }
+  .pws-iar-product-list-cover-number {
+    background-color: map.get($--skin-configs, 'primary-color') !important;
+  }
+  .pws-iar-product-list-number {
     background-color: map.get($--skin-configs, 'primary-color') !important;
   }
   .pws-iar-product-job-detail {
@@ -30,8 +36,8 @@
   }
   .pws-iar-product__item__btn {
     .plv-iar-product__item__job__detail {
-      color: map.get($--skin-configs, 'primary-color') !important;
-      border-color: map.get($--skin-configs, 'primary-color') !important;
+      color: #F15D5D !important;
+      border-color: #F15D5D !important;
     }
   }
 
@@ -135,12 +141,12 @@
 
   // --------- 商品库 (以横屏黑色皮肤为基准)--------- //
   .pws-iar-product-list-wrap {
-    background-color: #262523 !important;
+    background-color: #fff !important;
   }
   .pws-iar-product-list-content {
-    background-color: #262523 !important;
+    background-color: #fff !important;
     &::-webkit-scrollbar-thumb {
-      background-color: #46464F !important;
+      background-color: #E5E6EB !important;
     }
   }
   .pws-iar-product-list-total {
@@ -149,40 +155,43 @@
   }
   .pws-iar-icon-product-list-icon {
     path {
-      fill: #fff;
+      fill: #858585;
     }
   }
   .pws-iar-icon-product-list-icon-recruitment {
     path {
-      fill: #fff;
+      fill: #858585;
     }
   }
   .pws-iar-product-list-total-highlight {
     color: #5394f6 !important;
   }
   .pws-iar-product-list-name {
-    color: #fff !important;
+    color: #333 !important;
   }
   .pws-iar-product-list-number {
     color: #fff !important;
   }
   .plv-iar-product__item {
-    color: #fff !important;
+    color: #333 !important;
   }
   .pws-iar-product-list-desc-label {
     color: #adadc0 !important;
     opacity: 0.8;
   }
   .pws-iar-product-list-desc {
-    color: #adadc0 !important;
+    color: #999 !important;
     opacity: 1;
   }
   .pws-iar-product-list-label {
-    color: #fff !important;
-    background-color: rgba(#fff, 0.1) !important;
-  }
-  .pws-iar-product-list-number {
-    background-color: rgba(#fff, 0.35) !important;
+    height: 14px !important;
+    padding: unset !important;
+    font-weight: 500;
+    line-height: 14px !important;
+    color: #F15D5D !important;
+    background-color: #fff !important;
+    border: 0.5px solid rgba(#FF6363, 0.6);
+    border-radius: 2px;
   }
   .pws-iar-product-list-empty-text {
     color: #adadc0 !important;

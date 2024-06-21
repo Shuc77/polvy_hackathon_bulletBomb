@@ -9,6 +9,7 @@ import {
   forceChangePlvPopperManagerZIndex,
   recoverPlvPopperManagerZIndex,
 } from '@/plugins/polyv-ui/helper';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /**
  * @hook 互动-抽奖-条件抽奖
@@ -16,6 +17,7 @@ import {
 export const useWelfareLottery = () => {
   const interactReceiveStore = useInteractReceiveStore();
   const enrollStore = useEnrollStore();
+  const webviewStore = useWebviewStore();
   const { sendSpeakMsg } = useSendMsg();
 
   const watchCore = getWatchCore();
@@ -63,11 +65,20 @@ export const useWelfareLottery = () => {
     interactReceiveStore.welfareLotteryPendantVisible = visible;
   };
 
+  function onWelfareLotteryVisibleChanged(visible: boolean) {
+    if (visible) {
+      webviewStore.toLockDrag('welfare-lottery');
+    } else {
+      webviewStore.toUnlockDrag();
+    }
+  }
+
   return {
     welfareLotterySdk,
     beforeJoinLottery,
     onCommentSuccess,
     checkLotteryComment,
+    onWelfareLotteryVisibleChanged,
     onEntryVisibleChanged,
   };
 };

@@ -238,13 +238,17 @@
     }
 
     .pws-pc-subtitle__content-skin {
-      .c-pc-subtitle__content-item {
+      .pws-pc-subtitle__content-item {
         color: map.get($--skin-configs, 'subtitle:text-color') !important;
         background: map.get($--skin-configs, 'subtitle-item:bg-color') !important;
       }
-      .c-pc-subtitle__content-item-line {
+      .pws-pc-subtitle__content-item-line {
         border-color: map.get($--skin-configs, 'subtitle-item:line-color') !important;;
       }
+    }
+
+    .pws-pc-subtitle__footer-tips {
+      color: rgba(map.get($--skin-configs, 'subtitle:text-color'), 0.6) !important;
     }
 
     .pws-subtitle__empty {

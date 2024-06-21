@@ -2,10 +2,12 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /** 卡片推送 hook */
 export const usePushCard = () => {
   const interactReceiveStore = useInteractReceiveStore();
+  const webviewStore = useWebviewStore();
 
   const watchCore = getWatchCore();
   /** 卡片推送 SDK 实例 */
@@ -16,9 +18,18 @@ export const usePushCard = () => {
     interactReceiveStore.pushCardPendantVisible = visible;
   };
 
+  function onPushCardVisibleChanged(visible: boolean) {
+    if (visible) {
+      webviewStore.toLockDrag('push-card');
+    } else {
+      webviewStore.toUnlockDrag();
+    }
+  }
+
   return {
     pushCardSdk,
     onEntryVisibleChanged,
+    onPushCardVisibleChanged,
   };
 };
 

@@ -39,6 +39,8 @@ export interface PlayerStoreState {
   isPlayStarted: Ref<boolean>;
   /** 当前播放状态 */
   playStatus: Ref<PlayStatus>;
+  /** 隐藏播放按钮一次 */
+  onceHiddenPlayButton: Ref<boolean>;
   /** 播放器暖场设置 */
   warmUpSetting: Ref<PlayerWarmUpSetting>;
   /** 是否显示播放器暖场图片 */
@@ -184,6 +186,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   /** 当前播放状态 */
   const playStatus = ref<PlayStatus>(PlayStatus.Pause);
+
+  /** 隐藏播放按钮一次 */
+  const onceHiddenPlayButton = ref(false);
 
   /** 是否支持无延迟观看 */
   const supportLowLatency = ref(__defaultPlayerInfo.supportLowLatency);
@@ -529,6 +534,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     playerInited,
     isPlayStarted,
     playStatus,
+    onceHiddenPlayButton,
     warmUpSetting,
     showWarmUpImg,
     showAudioLivePlaceholder,

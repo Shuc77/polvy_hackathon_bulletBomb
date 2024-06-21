@@ -10,6 +10,7 @@
     <iar-pc-lottery-end
       ref="lotteryResultInstance"
       :lottery-sdk="lotterySdk"
+      :privacy-content="privacyContent"
       @to-hide="setLotteryResultVisible(false)"
       @status-changed="onStatusChanged"
     />
@@ -20,6 +21,7 @@
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useLotteryResult } from './hooks/use-lottery-result';
+import { useLotteryPrivacy } from './hooks/use-lottery-privacy';
 
 const IarPcLotteryEnd = getIarComponent('PcLotteryEnd');
 
@@ -31,4 +33,6 @@ const {
   onStatusChanged,
   setLotteryResultVisible,
 } = useLotteryResult();
+
+const { privacyContent } = useLotteryPrivacy();
 </script>
