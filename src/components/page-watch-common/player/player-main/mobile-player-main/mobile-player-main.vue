@@ -33,7 +33,7 @@
 
     <!-- “立即观看”播放按钮，仅用来展示  -->
     <player-play-button
-      v-if="isLowLatency"
+      v-if="isLowLatency || existWarmUpVideo"
       :mode="PlayButtonMode.Text"
       class="c-mobile-player-main__play-btn"
     />
@@ -139,6 +139,7 @@ const {
   supportTimeAxisMark,
   newPlayerPauseStyleEnabled,
   isCdnWithNormalLayout,
+  existWarmUpVideo,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
@@ -168,7 +169,8 @@ const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 function onClickContainer() {
   // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
   // cdn播放器且处于横屏模板时不显示观看页大播放按钮，所以不需要调用toPlay()
-  if (bigPlayButtonVisible.value && !isCdnWithNormalLayout.value) {
+  // 存在暖场视频的情况下，需要触发 toPlay 方法
+  if (bigPlayButtonVisible.value && (!isCdnWithNormalLayout.value || existWarmUpVideo.value)) {
     toPlay();
   }
   eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
@@ -293,5 +295,13 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
     background-position: center;
     background-size: 70px;
   }
+}
+
+.c-mobile-player-main__player-tips {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  z-index: 3000;
+  transform: translateX(-50%);
 }
 </style>

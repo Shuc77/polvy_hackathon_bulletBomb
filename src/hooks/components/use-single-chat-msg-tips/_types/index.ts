@@ -8,13 +8,22 @@ export interface SingleChatMsgTipsData<ExtData = any> {
   ext?: ExtData;
 }
 
+export interface SingleChatMsgTipsOriginPosition {
+  x: number;
+  y: number;
+}
+
 export interface SingleChatMsgTipsOptions {
   target: HTMLDivElement;
+  originPosition: SingleChatMsgTipsOriginPosition;
   mountEl: string;
   itemData: SingleChatMsgTipsData[];
 }
 
-export type SingleChatMsgTipsOriginOptions = Pick<SingleChatMsgTipsOptions, 'target' | 'mountEl'>;
+export type SingleChatMsgTipsOriginOptions = Pick<
+  SingleChatMsgTipsOptions,
+  'target' | 'mountEl' | 'originPosition'
+>;
 
 export type singleChatMsgTipsVueInstanceType = CombinedVueInstance<
   Vue,

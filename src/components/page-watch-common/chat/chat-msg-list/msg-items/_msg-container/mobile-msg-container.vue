@@ -75,16 +75,25 @@ const { bubbleStyle } = useMsgContainer({ props });
 const emit = defineEmits({
   'click-msg-to-tips': emitFunc<{
     target: HTMLDivElement;
+    originPosition: {
+      x: number;
+      y: number;
+    };
     mountEl: string;
   }>(),
 });
 
 const referenceRef = ref(null);
 
-function onClickReferenceRef() {
+function onClickReferenceRef(e: MouseEvent) {
   if (!referenceRef.value) return;
+  const { x, y } = e;
   emit('click-msg-to-tips', {
     target: referenceRef.value,
+    originPosition: {
+      x,
+      y,
+    },
     mountEl: 'c-mobile-chat-msg-list__container',
   });
 }

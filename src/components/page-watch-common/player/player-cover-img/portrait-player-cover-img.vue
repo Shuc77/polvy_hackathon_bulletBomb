@@ -3,13 +3,13 @@
   <div class="c-portrait-player-cover-img">
     <!-- 暖场图/播放器封面图 -->
     <div
-      v-if="warmUpSetting.warmUpImg"
+      v-if="warmUpCover"
       v-show="showWarmUpImg"
       data-warmup-img
       class="c-portrait-player-cover-img__warm-up-img g-img-cover"
       :style="{
         ...playerContainerStyle,
-        backgroundImage: `url(${warmUpSetting.warmUpImg})`,
+        backgroundImage: `url(${warmUpCover})`,
       }"
     ></div>
     <!-- 音频直播下占位图-直播封面图 -->
@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref, watch } from 'vue';
 import { getImgSize } from '@/assets/utils/image';
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -57,7 +57,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 
 const {
   showWarmUpImg,
-  warmUpSetting,
+  warmUpCover,
 
   showAudioLivePlaceholder,
   isAudioPlayerMode,
@@ -71,21 +71,23 @@ const { playerContainerStyle } = usePortraitPlayerSize(imgSize);
 /**
  * 加载暖场图片
  */
-async function loadWarmUpImg() {
-  if (!warmUpSetting.value.warmUpImg) {
-    return;
-  }
-  const { width, height } = await getImgSize(warmUpSetting.value.warmUpImg);
+watch(
+  () => warmUpCover.value,
+  async () => {
+    if (!warmUpCover.value) {
+      return;
+    }
+    const { width, height } = await getImgSize(warmUpCover.value);
 
-  imgSize.value = {
-    width,
-    height,
-  };
-}
-
-onMounted(() => {
-  loadWarmUpImg();
-});
+    imgSize.value = {
+      width,
+      height,
+    };
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <style lang="scss">

@@ -5,11 +5,14 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 
 import { translate } from '@/assets/lang';
-import { isMobile } from '@/assets/utils/browser';
+import { isMobile, isWeixin } from '@/assets/utils/browser';
+import { toast } from '@/hooks/components/use-toast';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
+import { appEvents, eventBus } from '@/app/app-events';
+import type { ProductGoodData } from '../types/product-types';
 
 /**
  * @hook 互动-商品库
@@ -44,12 +47,42 @@ export const useProduct = () => {
     return translate('interact.product.jobDetail');
   });
 
+  /**
+   * @description: 检测是否允许购买
+   * @return {boolean}
+   */
+  const checkIfAllowBuy = () => {
+    return watchCore.order.checkPurchasable();
+  };
+
+  /**
+   * @description: 微信购买
+   * @param product 商品详情
+   * @return
+   */
+  const onWechatBuy = (product: ProductGoodData) => {
+    // 不支持购买
+    if (!checkIfAllowBuy()) {
+      toast.error(translate('order.nonSupportBuy'));
+      return;
+    }
+
+    // Pc引导到H5微信
+    if (!isMobile || !isWeixin) {
+      eventBus.$emit(appEvents.global.OpenQrCodeShareDialog);
+      return;
+    }
+
+    eventBus.$emit(appEvents.interaction.OpenOrderPopup, [product]);
+  };
+
   return {
     productSdk,
     recruitmentEnabled,
     jobDescLabel,
     productHotEffectTips,
     productHotEffectEnabled,
+    onWechatBuy,
   };
 };
 

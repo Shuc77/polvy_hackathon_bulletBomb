@@ -60,6 +60,10 @@ const emit = defineEmits({
   /** 点击聊天消息显示气泡 */
   'click-msg-to-tips': emitFunc<{
     target: HTMLDivElement;
+    originPosition: {
+      x: number;
+      y: number;
+    };
     mountEl: string;
   }>(),
 });
@@ -68,10 +72,15 @@ const { askMenuData } = useChannelMenuStore();
 
 const referenceRef = ref(null);
 
-function onClickReferenceRef() {
+function onClickReferenceRef(e: MouseEvent) {
   if (!referenceRef.value) return;
+  const { x, y } = e;
   emit('click-msg-to-tips', {
     target: referenceRef.value,
+    originPosition: {
+      x,
+      y,
+    },
     mountEl: 'c-portrait-chat-msg-list__container',
   });
 }

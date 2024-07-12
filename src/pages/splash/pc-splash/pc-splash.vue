@@ -254,6 +254,7 @@ $--splash-header-content-height: 406px;
   line-height: 1.5;
   color: $--color-white;
   word-break: break-word;
+  @include multiline-text(5);
 }
 
 .c-pc-splash__header__author {

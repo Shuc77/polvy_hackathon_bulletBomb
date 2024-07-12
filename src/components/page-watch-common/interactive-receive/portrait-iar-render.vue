@@ -20,7 +20,7 @@
     <!-- 中奖记录弹层 -->
     <mobile-lottery-record-popup />
     <!-- 商品库弹层 -->
-    <portrait-product-list-popup />
+    <portrait-product-list-popup v-if="interactSetting.productEnabled" />
     <!-- 问卷 -->
     <mobile-questionnaire-popup />
     <!-- 红包弹窗 -->
@@ -34,7 +34,13 @@
     <!-- 问答 -->
     <portrait-question-answer v-if="qaMenuData.visible" />
     <!-- 商品库职位详情弹层 -->
-    <portrait-product-job-detail-popup />
+    <portrait-product-job-detail-popup v-if="interactSetting.productEnabled" />
+    <!-- 下单弹窗 -->
+    <mobile-order-popup />
+    <!-- 二维码分弹窗 -->
+    <mobile-qr-code-share-dialog />
+    <!-- 订单中心弹窗 -->
+    <mobile-order-center-popup />
   </div>
 </template>
 
@@ -54,8 +60,11 @@ import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
 import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
+import MobileOrderPopup from './order/mobile-order-popup.vue';
+import MobileOrderCenterPopup from './order/mobile-order-center-popup.vue';
 import PortraitQuestionAnswer from './question-answer/portrait-question-answer.vue';
 import PortraitProductJobDetailPopup from './product/portrait-product-job-detail-popup.vue';
+import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';

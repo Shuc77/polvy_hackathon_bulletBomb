@@ -13,7 +13,7 @@
     >
       <div
         v-for="(item, index) in timeContents"
-        :key="index"
+        :key="`square-${index}`"
         class="c-count-down__square__item"
         :class="{
           'pws-pc-count-down-square-item': !isMobile,
@@ -26,6 +26,20 @@
         <div class="c-count-down__square__item__word pws-count-down-square-item-word">
           {{ item.title }}
         </div>
+      </div>
+    </div>
+
+    <!-- 自定义样式 -->
+    <div
+      v-if="theme === 'red-square'"
+      class="c-count-down__red-square"
+    >
+      <div
+        v-for="(item, index) in timeContents"
+        :key="`red-square-${index}`"
+        class="c-count-down__red-square__item"
+      >
+        {{ item.text }}
       </div>
     </div>
 
@@ -129,6 +143,53 @@ const { timeContents } = useCountDown({
   height: 23px;
   font-size: 12px;
   line-height: 23px;
+}
+
+// red-square
+.c-count-down__red-square {
+  display: flex;
+}
+.c-count-down__red-square__item {
+  @include alibaba-font();
+  position: relative;
+  box-sizing: border-box;
+  min-width: 17px;
+  height: 16px;
+  padding: 0 2px;
+  margin-right: 10px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #fe3f52;
+  text-align: center;
+  background: rgba(254, 63, 82, 0.2);
+  border-radius: 2px;
+
+  &:before,
+  &:after {
+    position: absolute;
+    right: -6px;
+    width: 2px;
+    height: 2px;
+    content: '';
+    background: #fe3f52;
+    border-radius: 50%;
+  }
+
+  &:before {
+    top: 4px;
+  }
+  &:after {
+    bottom: 4px;
+  }
+
+  &:last-child {
+    margin-right: 0 !important;
+
+    &:before,
+    &:after {
+      display: none !important;
+    }
+  }
 }
 
 // text

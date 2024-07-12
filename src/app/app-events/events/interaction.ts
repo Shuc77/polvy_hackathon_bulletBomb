@@ -113,4 +113,16 @@ export const interactionEvents = {
    * 刷新收藏列表
    */
   RefreshSeatTableFollowList: 'RefreshSeatTableFollowList',
+  /**
+   * 签到完成
+   */
+  CheckInFinish: 'CheckInFinish',
+  /**
+   * 打开下单弹窗
+   */
+  OpenOrderPopup: 'OpenOrderPopup',
+  /**
+   * 打开订单中心弹窗
+   */
+  OpenOrderCenterPopup: 'OpenOrderCenterPopup',
 };

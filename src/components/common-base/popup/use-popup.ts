@@ -42,6 +42,8 @@ export const popupProps = () => ({
   maskOpacity: PropUtils.number.def(0.6),
   /** 弹层主体样式 */
   contentStyle: PropUtils.objectType<CSSProperties>().def({}),
+  /** 弹层主题 class */
+  contentClass: PropUtils.string,
   /** 是否使用弹出层管理器，集中控制弹窗层级，默认：true */
   usePopperManager: PropUtils.bool.def(true),
   /** 窗口尺寸变化时是否重设样式，默认：false */
@@ -86,6 +88,8 @@ export const popupEmits = () => ({
   'after-leave': emitFunc<void>(),
   /** 点击返回 */
   'click-back': emitFunc<void>(),
+  /** 窗口关闭回调 */
+  close: emitFunc<void>(),
   /** 弹窗主体滚动 */
   'body-scroll': emitFunc<UIEvent>(),
   /** 弹窗主体滚动接近底部 */
@@ -197,6 +201,10 @@ export const usePopup = (options: {
       classList.push('pws-mobile-popup__content');
     }
 
+    if (props.contentClass) {
+      classList.push(props.contentClass);
+    }
+
     return classList;
   });
 
@@ -262,6 +270,7 @@ export const usePopup = (options: {
   function closePopup() {
     webviewStore.toUnlockDrag();
     contentVisible.value = false;
+    emit('close');
     emit('update:visible', false);
   }
 

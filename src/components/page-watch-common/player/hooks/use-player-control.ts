@@ -2,7 +2,7 @@
  * @file 播放器控制栏 hook
  */
 import { translate } from '@/assets/lang';
-import { isMobile } from '@/assets/utils/browser';
+import { isMobile, tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 import { numberAccuracy } from '@/assets/utils/number';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -72,6 +72,10 @@ export const usePlayerControl = () => {
    * */
   const bigPlayButtonVisible = computed<boolean>(() => {
     if (playerStore.onceHiddenPlayButton) {
+      return false;
+    }
+
+    if (tabletLoadDesktopTemplate && !playerStore.isLowLatency) {
       return false;
     }
 

@@ -106,6 +106,9 @@ export const useAuthCommon = () => {
       case AuthVerifyError.PhoneNotExist:
         failMessage.value = translate('auth.error.phoneNotExistent');
         break;
+      case AuthVerifyError.PhoneUsed:
+        failMessage.value = translate('auth.error.phoneUsed');
+        break;
       case AuthVerifyError.CodeError:
         failMessage.value = translate('auth.error.codeError');
         break;

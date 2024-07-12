@@ -8,11 +8,11 @@
   >
     <!-- 暖场图/播放器封面图 -->
     <div
-      v-if="warmUpSetting.warmUpImg"
+      v-if="warmUpCover"
       v-show="showWarmUpImg"
       class="c-pc-player-cover-img__warm-up-img g-img-cover"
       :style="{
-        backgroundImage: `url(${warmUpSetting.warmUpImg})`,
+        backgroundImage: `url(${warmUpCover})`,
       }"
     ></div>
     <!-- 音频直播下占位图-直播封面图 -->
@@ -46,7 +46,7 @@ import { MainScreenContent } from '@polyv/live-watch-sdk';
 
 const {
   showWarmUpImg,
-  warmUpSetting,
+  warmUpCover,
 
   showAudioLivePlaceholder,
 } = storeDefinitionToRefs(usePlayerStore);

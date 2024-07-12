@@ -43,12 +43,15 @@ import { storeToRefs } from 'pinia';
 const chatMsgStore = useChatMsgStore();
 const { isMsgTipsPopperVisible } = storeToRefs(chatMsgStore);
 
+/** 气泡实例 */
 const singleChatMsgTipsRef = ref<HTMLDivElement>();
-
+/** 气泡内容 */
 const singleTipsData = ref<SingleChatMsgTipsData[]>([]);
 
+/** 聊天内容框实例 */
 let referenceTarget: HTMLDivElement;
 
+/** 过滤可显示的气泡内容 */
 const displaySingleTipsData = computed(() => {
   return singleTipsData.value.filter(item => !item.hidden);
 });
@@ -97,15 +100,20 @@ function updatePopperLocation() {
   const { x, y, height } = referenceTarget.getBoundingClientRect();
   const { y: _mEY, height: _mEHeight } = getMountElRect();
 
+  // 聊天内容顶部位置 > 聊天可视区域顶部位置
   if (y < _mEY) {
     isPlacementBottom.value = true;
-    const _y = y + height;
+    let _y = y + height;
+    let _x = x;
     const _mEMaxY = _mEY + _mEHeight;
+
+    // 聊天内容底部位置 > 聊天可视区域底部位置
     if (_y > _mEMaxY) {
-      $hideTips();
+      _y = _mEY + _mEHeight / 2;
+      _x = x;
     }
     singleTipsPosition.value = {
-      x,
+      x: _x,
       y: _y,
     };
   } else {
@@ -131,6 +139,7 @@ function $updateItemData(options: SingleChatMsgTipsOptions) {
   updatePopperLocation();
 }
 
+/** 隐藏气泡 */
 function $hideTips() {
   chatMsgStore.$patch({
     isMsgTipsPopperVisible: false,
@@ -201,7 +210,7 @@ defineExpose<singleChatMsgTipsInstance>({
 }
 
 .c-mobile-single-msg-tips__item {
-  padding: 8px 16px;
+  padding: 12px 16px;
   color: #ffffff;
   background-color: rgba($color: #000000, $alpha: 0.9);
 

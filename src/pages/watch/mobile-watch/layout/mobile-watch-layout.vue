@@ -81,6 +81,12 @@
       "
     />
 
+    <!-- 评论上墙 -->
+    <speak-top-business
+      class="c-mobile-watch-layout__speak-to-top"
+      layout="mobile"
+    ></speak-top-business>
+
     <!-- 底部区域 -->
     <div
       ref="layoutBottomRef"
@@ -94,6 +100,12 @@
       <!-- 菜单栏 -->
       <mobile-watch-menu />
     </div>
+
+    <!-- 显示在顶部的播放器提示 -->
+    <player-tips
+      :is-normal-mobile-layout="true"
+      class="c-mobile-watch-layout__player-tips"
+    ></player-tips>
   </div>
 </template>
 
@@ -109,6 +121,8 @@ import MobileCountDownLayer from '@/components/page-watch-common/count-down-laye
 import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
 import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
 import MobilePlayerStreamTrack from '@/components/page-watch-common/player/player-stream-track/mobile-player-stream-track.vue';
+import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
+import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 // import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -345,5 +359,16 @@ onMounted(() => {
   z-index: 999;
   width: 100% !important;
   height: 100% !important;
+}
+
+.c-mobile-watch-layout__speak-to-top {
+  z-index: 2300;
+}
+.c-mobile-watch-layout__player-tips {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  z-index: 3000;
+  transform: translateX(-50%);
 }
 </style>

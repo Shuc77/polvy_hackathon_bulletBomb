@@ -5,11 +5,14 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { translate } from '@/assets/lang';
 import { useCheckInEntrance } from './use-check-in-entrance';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 /**
  * @hook 互动-签到
  */
 export const useCheckIn = () => {
+  const interactReceiveStore = useInteractReceiveStore();
+
   const { setCheckInEntrance, removeCheckInEntrance } = useCheckInEntrance();
 
   const webviewStore = useWebviewStore();
@@ -71,10 +74,25 @@ export const useCheckIn = () => {
     }
   };
 
+  function onSignIn() {
+    setCheckInEntrance();
+    interactReceiveStore.$patch({
+      hasCheckIn: true,
+    });
+  }
+
+  function onCheckInEnd() {
+    eventBus.$emit(appEvents.interaction.CheckInFinish);
+    beforeRemoveCheckInEntrance();
+    interactReceiveStore.$patch({
+      hasCheckIn: false,
+    });
+  }
+
   onBeforeMount(() => {
     eventBus.$on(appEvents.interaction.OpenCheckIn, setCheckInVisible);
-    checkInSdk.on(checkInSdk.events.SIGN_IN, setCheckInEntrance);
-    checkInSdk.on(checkInSdk.events.SIGN_IN_SUCCESS, beforeRemoveCheckInEntrance);
+    checkInSdk.on(checkInSdk.events.SIGN_IN, onSignIn);
+    checkInSdk.on(checkInSdk.events.SIGN_IN_SUCCESS, onCheckInEnd);
     checkInSdk.on(checkInSdk.events.SIGN_IN_FINISH, beforeRemoveCheckInEntrance);
     checkInSdk.on(checkInSdk.events.STOP_SIGN_IN, beforeRemoveCheckInEntrance);
     checkInSdk.on(checkInSdk.events.SIGN_IN_FAIL, beforeRemoveCheckInEntrance);
@@ -83,7 +101,7 @@ export const useCheckIn = () => {
   onBeforeUnmount(() => {
     eventBus.$off(appEvents.interaction.OpenCheckIn, setCheckInVisible);
     checkInSdk.off(checkInSdk.events.SIGN_IN, setCheckInEntrance);
-    checkInSdk.off(checkInSdk.events.SIGN_IN_SUCCESS, beforeRemoveCheckInEntrance);
+    checkInSdk.off(checkInSdk.events.SIGN_IN_SUCCESS, onCheckInEnd);
     checkInSdk.off(checkInSdk.events.SIGN_IN_FINISH, beforeRemoveCheckInEntrance);
     checkInSdk.off(checkInSdk.events.STOP_SIGN_IN, beforeRemoveCheckInEntrance);
     checkInSdk.off(checkInSdk.events.SIGN_IN_FAIL, beforeRemoveCheckInEntrance);

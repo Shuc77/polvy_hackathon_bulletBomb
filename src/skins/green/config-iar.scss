@@ -6,6 +6,15 @@ $--skin-iar-common-configs: (
   // 挂件字体色
   'iar-pendant:text-color': map.get($--skin-basic-configs, 'main-text-color'),
 
+  // 输入框背景色
+  'iar-input:bg-color': rgba(255, 255, 255, .3),
+  // 输入框字体色
+  'iar-input:text-color': #fff,
+  // 输入框前缀图标色
+  'iar-input-prefix-icon:icon-color': #fff,
+  // 输入框清空图标色
+  'iar-input-clear:icon-color': #fff,
+
   // 问答表情图标颜色
   'iar-icon-qa-ask-emotion:icon-color': #fff,
   // 商品库内容背景色
@@ -114,6 +123,9 @@ $--skin-iar-mobile-configs: (
   'iar-mobile-qa-ask-emotion:background-filter': grayscale(100%) brightness(200%),
   // 问答发送按钮字体色
   'iar-mobile-qa-ask-send-button:text-color': $--color-white,
+
+  // 订单中心入口按钮字体色
+  'iar-mobile-order-enter-button:text-color': #fff,
 
   // 图文直播头部字体色
   'iar-mobile-tuwen-live-header:text-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.8),

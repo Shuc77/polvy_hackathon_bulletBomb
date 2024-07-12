@@ -65,6 +65,9 @@
 
     <!-- 绑定用户身份信息弹层 -->
     <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
+
+    <!-- 任务奖励弹层 -->
+    <mobile-task-reward-popup />
   </div>
 </template>
 
@@ -88,6 +91,7 @@ import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invi
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
+import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

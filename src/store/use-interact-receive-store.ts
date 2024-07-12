@@ -87,6 +87,8 @@ export interface InteractReceiveStoreState {
   isMeetingSeatTableTemplate: ComputedRef<boolean>;
   /** 当前观众的座位位置 */
   seatPosition: ComputedRef<{ row: number; column: number } | undefined>;
+  /** 当前是否存在签到 */
+  hasCheckIn: Ref<boolean>;
 }
 
 export interface InteractReceiveStoreAction {
@@ -257,6 +259,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       };
     });
 
+    /** 是否存在签到 */
+    const hasCheckIn = ref(false);
+
     return {
       iarSdkLoaded,
 
@@ -285,6 +290,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       isMeetingSeatTableTemplate,
       seatPosition,
       hasBulletin,
+      hasCheckIn,
     };
   },
 );

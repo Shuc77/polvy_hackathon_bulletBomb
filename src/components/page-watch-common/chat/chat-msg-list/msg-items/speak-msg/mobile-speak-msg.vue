@@ -82,11 +82,12 @@ function onBubbleChatMsgTips(options: SingleChatMsgTipsOriginOptions) {
     return;
   }
 
-  const { target, mountEl } = options;
+  const { target, mountEl, originPosition } = options;
   if (!target || !mountEl) return;
 
   createChatMsgTips({
     target,
+    originPosition,
     mountEl,
     itemData: [
       {

@@ -143,6 +143,8 @@
             class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__motivation-like-animation"
             :enable-types="[MotivationLikeType.Mic]"
           />
+
+          <speak-top-business layout="pc"></speak-top-business>
         </div>
       </div>
     </div>
@@ -170,7 +172,7 @@
 
 <script setup lang="ts">
 import { $ } from '@just4/dom';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import PcBasicInfo from '@/components/common-business/basic-info/pc-basic-info.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
 import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
@@ -186,10 +188,11 @@ import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
 import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
 import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
+import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { usePlayerStore } from '@/store/use-player-store';
+import { SwitchTipsStatus, usePlayerStore } from '@/store/use-player-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
@@ -207,7 +210,8 @@ import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-conn
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
-const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
+const { canRenderPlayer, switchQualityTipStatus, showControl } =
+  storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
@@ -254,6 +258,22 @@ onMounted(() => {
       `url("${pcWatchBackgroundImage.value}")`,
       'important',
     );
+  }
+});
+
+// switchQualityTipStatus 状态改变时显示控制栏
+watch(switchQualityTipStatus, () => {
+  if (
+    [SwitchTipsStatus.Finish, SwitchTipsStatus.Switching].includes(switchQualityTipStatus.value)
+  ) {
+    showPlayerControlItem();
+  }
+});
+
+watch(showControl, val => {
+  if (val === true) {
+    showPlayerControlItem();
+    showControl.value = false;
   }
 });
 </script>

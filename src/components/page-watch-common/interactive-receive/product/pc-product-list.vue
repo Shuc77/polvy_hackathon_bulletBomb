@@ -2,7 +2,6 @@
 <template>
   <div class="c-pc-product-list">
     <iar-pc-product-list
-      v-if="renderProductList"
       ref="iarProductListRef"
       :product-sdk="productSdk"
       :get-link-params="getLinkParams"
@@ -12,6 +11,7 @@
       @click-good-desc="openGoodDetail"
       @total-change="onGoodTotalChange"
       @job-detail="onJobDetailEvent"
+      @buy="onWechatBuy"
     />
 
     <!-- 旧版职位详情 -->
@@ -66,11 +66,11 @@ const IarProductBtn = getIarComponent('ProductButton');
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { productSdk, recruitmentEnabled, jobDescLabel } = useProduct();
+const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 
-const { iarProductListRef, renderProductList, onGoodTotalChange } = useProductList();
+const { iarProductListRef, onGoodTotalChange } = useProductList();
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
 </script>

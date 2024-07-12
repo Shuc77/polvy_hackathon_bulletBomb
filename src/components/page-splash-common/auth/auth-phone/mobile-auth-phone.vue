@@ -23,7 +23,7 @@
         <form-item
           v-if="protocolContent"
           form-field="checkProtocol"
-          style="margin-bottom: 0"
+          style="margin-bottom: 12px"
         >
           <mobile-form-protocol
             v-model="formData.checkProtocol"

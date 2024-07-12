@@ -40,6 +40,8 @@ export interface InviteStoreState {
   inviteRankEnabled: Ref<boolean>;
   /** 邀请明细开关 */
   inviteDetailEnabled: Ref<boolean>;
+  /** 邀请明细下载开关 */
+  inviteDetailExportEnabled: Ref<boolean>;
   /** 邀请有礼活动信息 */
   inviteActivityInfo: Ref<InviteActivityInfo>;
   /** 邀请有礼活动即将结束提示 */
@@ -101,6 +103,9 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
   /** 邀请明细开关 */
   const inviteDetailEnabled = ref(false);
+
+  /** 邀请明细下载开关 */
+  const inviteDetailExportEnabled = ref(false);
 
   /** 邀请有礼活动信息 */
   const inviteActivityInfo = ref<InviteActivityInfo>(
@@ -193,6 +198,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     generatePosterUrl.value = watchCore.invite.getInviteGeneratePosterUrl();
 
     inviteDetailEnabled.value = watchCore.invite.getInviteDetailEnabled();
+    inviteDetailExportEnabled.value = watchCore.invite.getInviteDetailExportEnabled();
 
     if (invitePosterEnabled.value) {
       invitePosterId.value = watchCore.invite.getInvitePosterId();
@@ -220,6 +226,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     invitePosterEnabled,
     inviteRankEnabled,
     inviteDetailEnabled,
+    inviteDetailExportEnabled,
 
     inviteActivityInfo,
     inviteActivityWillEndTipVisible,
