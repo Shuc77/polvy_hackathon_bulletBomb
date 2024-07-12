@@ -31,6 +31,12 @@
     <mobile-seat-table-tips
       v-if="seatTableVisible && isMeetingSeatTableTemplate && seatTableMenuData.visible"
     />
+    <!-- 下单弹窗 -->
+    <mobile-order-popup />
+    <!-- 二维码分弹窗 -->
+    <mobile-qr-code-share-dialog />
+    <!-- 订单中心弹窗 -->
+    <mobile-order-center-popup />
   </div>
 </template>
 
@@ -53,6 +59,9 @@ import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
 import MobileProductJobDetailPopup from './product/mobile-product-job-detail-popup.vue';
 import MobileSeatTableTips from './seat-table/seat-table-tips/mobile-seat-table-tips.vue';
+import MobileOrderPopup from './order/mobile-order-popup.vue';
+import MobileOrderCenterPopup from './order/mobile-order-center-popup.vue';
+import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useRedpackStore } from '@/store/use-redpack-store';

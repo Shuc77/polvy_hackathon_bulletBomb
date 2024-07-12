@@ -107,6 +107,9 @@ const emit = defineEmits({
 .c-portrait-more-item__icon--set-nick {
   background-image: url(./images/icon-set-nick.png);
 }
+.c-portrait-more-item__icon--my-reward {
+  background-image: url(./images/icon-my-reward.svg);
+}
 .c-portrait-more-item__icon--send-image {
   // background-image: url(../images/icon-menu-img-mob.png);
   background: red;

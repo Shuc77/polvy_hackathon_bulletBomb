@@ -1,4 +1,5 @@
 import { getCurrentUAInfo } from '@just4/ua-info';
+import { PlvChannelModule } from '@polyv/live-watch-sdk';
 
 const ua = navigator.userAgent.toLowerCase();
 
@@ -32,8 +33,31 @@ function __isMobile() {
   }
 }
 
+function __isTablet() {
+  const ua = navigator.userAgent;
+  if (/(?:iPad|PlayBook)/.test(ua)) return true;
+  if ((uaInfo.os.isAndroid && !/(?:Mobile)/.test(ua)) || /(?:Tablet)/.test(ua)) return true;
+  return false;
+}
+
+const isMob = __isMobile();
+
+/**
+ * 是否是平板
+ */
+export const isTablet = isMob && __isTablet();
+
+/**
+ * 是否在移动端平板加载pc端模版
+ */
+export const tabletLoadDesktopTemplate =
+  isTablet && PlvChannelModule.getTabletLayoutSetting() === 'follow_pc';
+
 /** 是否移动端 */
-export const isMobile = __isMobile() || isPcMiniProgram; // uaInfo.isPortable || isPcMiniProgram;
+export const isMobile = (() => {
+  if (tabletLoadDesktopTemplate) return false;
+  return isMob || isPcMiniProgram; // uaInfo.isPortable || isPcMiniProgram;
+})();
 
 /** 是否为 QQ 浏览器 */
 export const isQQBrowser = uaInfo.client.isQQBrowser;

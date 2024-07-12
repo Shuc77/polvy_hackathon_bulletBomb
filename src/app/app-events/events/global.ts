@@ -42,4 +42,16 @@ export const globalEvents = {
    * 打开绑定用户信息弹窗
    */
   OpenBindIdentityInfoDialog: 'OpenBindIdentityInfoDialog',
+  /**
+   * 打开任务活动弹层
+   */
+  OpenTaskActivityDialog: 'OpenTaskActivityDialog',
+  /**
+   * 打开任务奖励弹层
+   */
+  OpenTaskRewardDialog: 'OpenTaskRewardDialog',
+  /**
+   * 打开二维码分享弹窗
+   */
+  OpenQrCodeShareDialog: 'OpenQrCodeShareDialog',
 };

@@ -34,6 +34,9 @@
     <!-- 抢答 -->
     <mobile-rush-answer class="c-portrait-chat-room-pendant__item" />
 
+    <!-- 任务活动 -->
+    <mobile-task-activity-pendant class="c-portrait-chat-room-pendant__item" />
+
     <!-- 点赞 -->
     <portrait-chat-like
       v-if="likeFeatureEnabled && !isPlaybacking"
@@ -61,6 +64,7 @@ import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-
 import PortraitMicroActivityPendant from '@/components/page-watch-common/micro-activity/portrait-micro-activity/portrait-micro-activity-pendant.vue';
 import PortraitLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
+import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
 import PortraitChatLike from '../chat-like/portrait-chat-like.vue';
 
 import { useChatStore } from '@/store/use-chat-store';

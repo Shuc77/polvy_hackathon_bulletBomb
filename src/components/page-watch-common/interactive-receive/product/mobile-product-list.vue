@@ -2,7 +2,6 @@
 <template>
   <div class="c-mobile-product-list">
     <iar-mobile-product-list
-      v-if="renderProductList"
       ref="iarProductListRef"
       :product-sdk="productSdk"
       :get-weixin-sdk="getWeixinSdk"
@@ -10,9 +9,12 @@
       :desc-label="jobDescLabel"
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+      :order-center-visible="isShowOrderCenter"
       @click-good-desc="openGoodDetail"
       @total-change="onGoodTotalChange"
       @job-detail="onJobDetailEvent"
+      @buy="onWechatBuy"
+      @enter-order-center="onEnterOrderCenter"
     />
 
     <!-- 旧版职位详情 -->
@@ -72,11 +74,12 @@ const { getWeixinSdk } = useWeixinSdk();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { productSdk, recruitmentEnabled, jobDescLabel } = useProduct();
+const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 
-const { iarProductListRef, renderProductList, onGoodTotalChange } = useProductList();
+const { iarProductListRef, onGoodTotalChange, isShowOrderCenter, onEnterOrderCenter } =
+  useProductList();
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
 </script>

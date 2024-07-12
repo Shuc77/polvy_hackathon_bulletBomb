@@ -16,6 +16,10 @@ export interface ProductGoodData {
   productDesc: string;
   /** 推送Id */
   logId?: string;
+  /** 购买方式 */
+  buyType?: string;
+  /** 履约方式 */
+  deliveryType?: string;
 }
 
 /**

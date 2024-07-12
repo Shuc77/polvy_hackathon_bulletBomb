@@ -5,8 +5,8 @@ import { appEvents, eventBus } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { usePlayerStore } from '@/store/use-player-store';
-import { PlayStatus } from '@polyv/live-watch-sdk';
+import { usePlayerStore, SwitchTipsStatus } from '@/store/use-player-store';
+import { PlayStatus, PlayerEvents } from '@polyv/live-watch-sdk';
 import debounce from 'lodash-es/debounce';
 import { usePlayerControl } from './use-player-control';
 
@@ -225,14 +225,79 @@ export const usePlayerAction = () => {
     getWatchCore().player.setBarrageLocation(index);
   }
 
+  let lineSwitchingTimer: NodeJS.Timeout;
+  let lineFinishTimer: NodeJS.Timeout;
+
+  function handleLineChange() {
+    clearTimeout(lineSwitchingTimer);
+    playerStore.switchLineTipStatus = SwitchTipsStatus.Finish;
+
+    lineFinishTimer = setTimeout(() => {
+      if (playerStore.switchLineTipStatus === SwitchTipsStatus.Finish) {
+        playerStore.switchLineTipStatus = SwitchTipsStatus.Hide;
+      }
+    }, 3000);
+  }
+
+  function listenLineChangeToShowTips(line: number) {
+    const playerModule = getWatchCore().player;
+
+    clearTimeout(lineSwitchingTimer);
+    clearTimeout(lineFinishTimer);
+    playerStore.switchLineTipStatus = SwitchTipsStatus.Switching;
+    playerStore.switchLineLevel = line;
+    playerModule.eventEmitter.off(PlayerEvents.LineChange, handleLineChange);
+    playerModule.eventEmitter.once(PlayerEvents.LineChange, handleLineChange);
+
+    lineSwitchingTimer = setTimeout(() => {
+      if (playerStore.switchLineTipStatus === SwitchTipsStatus.Switching) {
+        playerStore.switchLineTipStatus = SwitchTipsStatus.Hide;
+      }
+    }, 3000);
+  }
+
   /** 切换线路 */
   function toChangeLine(line: number): void {
+    listenLineChangeToShowTips(line);
     getWatchCore().player.changeLine(line);
     toTryPlay();
   }
 
-  /** 切换清晰度级别 */
-  function toChangeQualityLevel(level: number): void {
+  let levelSwitchingTimer: NodeJS.Timeout;
+  let levelFinishTimer: NodeJS.Timeout;
+
+  function handleQualityLevelChange() {
+    clearTimeout(levelSwitchingTimer);
+    playerStore.switchQualityTipStatus = SwitchTipsStatus.Finish;
+    playerStore.switchQualityLevel = getWatchCore().player.getCurrentQualityLevel();
+
+    levelFinishTimer = setTimeout(() => {
+      if (playerStore.switchQualityTipStatus === SwitchTipsStatus.Finish) {
+        playerStore.switchQualityTipStatus = SwitchTipsStatus.Hide;
+      }
+    }, 3000);
+  }
+
+  function listenLevelChangeToShowTips(level: number) {
+    const playerModule = getWatchCore().player;
+
+    clearTimeout(levelSwitchingTimer);
+    clearTimeout(levelFinishTimer);
+    playerStore.switchQualityTipStatus = SwitchTipsStatus.Switching;
+    playerStore.switchQualityLevel = level;
+    playerModule.eventEmitter.off(PlayerEvents.QualityLevelChange, handleQualityLevelChange);
+    playerModule.eventEmitter.once(PlayerEvents.QualityLevelChange, handleQualityLevelChange);
+
+    levelSwitchingTimer = setTimeout(() => {
+      if (playerStore.switchQualityTipStatus === SwitchTipsStatus.Switching) {
+        playerStore.switchQualityTipStatus = SwitchTipsStatus.Hide;
+      }
+    }, 3000);
+  }
+
+  function toChangeQualityLevel(level: number) {
+    listenLevelChangeToShowTips(level);
+
     getWatchCore().player.changeQualityLevel(level);
     toTryPlay();
   }
@@ -358,5 +423,6 @@ export const usePlayerAction = () => {
     toForwardVideoInLimit,
     toBackOffVideoInLimit,
     toFreezePlay,
+    listenLevelChangeToShowTips,
   };
 };

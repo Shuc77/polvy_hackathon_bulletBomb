@@ -25,6 +25,8 @@
     <pc-enroll-lottery-dialog />
     <!-- 商品库职位详情弹层 -->
     <pc-product-job-detail-dialog />
+    <!-- 二维码分弹窗 -->
+    <pc-qr-code-share-dialog />
   </div>
 </template>
 
@@ -42,6 +44,7 @@ import PcRedpackDialog from './redpack/pc-redpack-dialog.vue';
 import PcRedpackRain from './redpack-rain/pc-redpack-rain.vue';
 import PcEnrollLotteryDialog from './enroll-lottery/pc-enroll-lottery-dialog.vue';
 import PcProductJobDetailDialog from './product/pc-product-job-detail-dialog.vue';
+import PcQrCodeShareDialog from '../../common-business/qrcode-share-dialog/pc-qrcode-share-dialog.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 

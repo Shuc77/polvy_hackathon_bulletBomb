@@ -97,6 +97,9 @@ const emit = defineEmits({
 .c-mobile-more-item__icon--bind-mobile {
   background-image: url(./imgs/icon-menu-bind-mobile.png);
 }
+.c-mobile-more-item__icon--my-reward {
+  background-image: url(./imgs/icon-menu-my-reward-mob.png);
+}
 
 .c-mobile-more-item__text {
   width: 100%;

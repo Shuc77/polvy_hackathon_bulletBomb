@@ -73,6 +73,9 @@
 
     <!-- 绑定用户身份信息弹层 -->
     <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
+
+    <!-- 任务奖励弹层 -->
+    <mobile-task-reward-popup />
   </div>
 </template>
 
@@ -100,6 +103,7 @@ import PortraitPlayerStreamTrackPopup from '@/components/page-watch-common/playe
 import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/portrait-invite-detail-popup.vue';
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
+import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

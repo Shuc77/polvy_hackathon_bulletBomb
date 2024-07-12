@@ -11,6 +11,7 @@
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @job-detail="onJobDetailEvent"
+      @buy="onWechatBuy"
     />
     <iar-product-dialog
       :product-sdk="productSdk"
@@ -19,6 +20,7 @@
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @job-detail="onJobDetailEvent"
+      @buy="onWechatBuy"
     />
   </div>
 </template>
@@ -38,8 +40,13 @@ const { getWeixinSdk } = useWeixinSdk();
 
 const { getLinkParams } = useProductLinkParams();
 
-const { productSdk, recruitmentEnabled, productHotEffectTips, productHotEffectEnabled } =
-  useProduct();
+const {
+  productSdk,
+  recruitmentEnabled,
+  productHotEffectTips,
+  productHotEffectEnabled,
+  onWechatBuy,
+} = useProduct();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>

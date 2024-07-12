@@ -38,7 +38,8 @@ const { renderHtmlContent } = useRichTextRender({ props });
   table,
   th,
   td {
-    border: 1px solid;
+    border-style: solid;
+    border-width: 1px;
   }
 
   table {

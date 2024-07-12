@@ -12,6 +12,24 @@
     color: map.get($--skin-configs, 'interactive-entrance-arrow:text-color') !important;
   }
 
+  // --------- 输入框 --------- //
+  .pws-iar-input {
+    background-color: map.get($--skin-configs, 'iar-input:bg-color') !important;
+  }
+  .pws-iar-input-native {
+    color: map.get($--skin-configs, 'iar-input:text-color') !important;
+    &::placeholder {
+      color: map.get($--skin-configs, 'iar-input:text-color') !important;
+      opacity: 0.3;
+    }
+  }
+  .plv-iar-input__clear {
+    background: rgba(map.get($--skin-configs, 'iar-input-clear:icon-color'), 0.1) !important;
+  }
+  .plv-iar-input__clear__icon {
+    color: rgba(map.get($--skin-configs, 'iar-input-clear:icon-color'), 0.3) !important;
+  }
+
   // --------- 按钮 --------- //
   .pws-iar-primary-button {
     color: map.get($--skin-configs, 'primary-button:text-color') !important;
@@ -104,6 +122,19 @@
   }
   .plv-iar-product-label-list__shadow--right {
     background: linear-gradient(90deg, rgba(map.get($--skin-configs, 'iar-product-list-content:bg-color'), 0) 0, rgba(map.get($--skin-configs, 'iar-product-list-content:bg-color'), 1) 100%);
+  }
+  .plv-iar-product__list-loading,
+  .pws-iar-product-list-empty-icon {
+    color: map.get($--skin-configs, 'describe-text-color') !important;
+    opacity: 0.8;
+  }
+  .plv-iar-product__top__search__icon {
+    color: map.get($--skin-configs, 'iar-input-prefix-icon:icon-color') !important;
+  }
+
+  // ---------- 订单 --------- //
+  .pws-iar-order-enter {
+    color: map.get($--skin-configs, 'iar-mobile-order-enter-button:text-color') !important;
   }
 
   // ---------- 中奖记录 --------- //

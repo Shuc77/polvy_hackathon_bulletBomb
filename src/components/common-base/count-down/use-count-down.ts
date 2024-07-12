@@ -1,10 +1,9 @@
 import { translate } from '@/assets/lang';
-import { SimilarResponsive } from '@/assets/utils/vue-utils';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
 import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
-import { computed, Ref, unref, watch } from 'vue';
+import { computed, unref, watch } from 'vue';
 import { countDownSizes, countdownThemes } from './types';
 
 export const countDownCommonProps = () => ({
@@ -14,6 +13,8 @@ export const countDownCommonProps = () => ({
   endTimestamp: PropUtils.number.def(undefined),
   /** 只有 0 天时是否隐藏天数，默认：true */
   hideZeroDays: PropUtils.bool.def(true),
+  /** 只有 0 小时时是否隐藏小时，默认：false */
+  hideZeroHours: PropUtils.bool.def(false),
 });
 
 export const countDownProps = () => ({
@@ -56,16 +57,6 @@ export interface CountDownItem {
   unit: string;
 }
 
-export interface UseCountDownOptions {
-  /** 总秒数，单位秒 */
-  second?: SimilarResponsive<number | undefined>;
-  /** 结束的时间戳 */
-  endTimestamp?: SimilarResponsive<number | undefined>;
-  /** 当天数为 0 时隐藏天数，默认：true */
-  hideZeroDays?: boolean | Ref<boolean>;
-  emit?: VueEmit<typeof countDownEmits>;
-}
-
 /**
  * 倒计时 hook
  * @param {Object} options 选项
@@ -79,7 +70,7 @@ export const useCountDown = (options: {
   emit: VueEmit<typeof countDownEmits>;
 }) => {
   const { props, emit } = options;
-  const { hideZeroDays, second, endTimestamp } = useProps(props);
+  const { hideZeroDays, hideZeroHours, second, endTimestamp } = useProps(props);
 
   const { surplusTime, computedSecond, initCountDown, startCountDown, stopCountDown } =
     useSecondCountDown({
@@ -107,6 +98,11 @@ export const useCountDown = (options: {
 
       // 对于 0 天则不在显示列表中
       if (unref(hideZeroDays) && field === 'days' && count === 0) {
+        return;
+      }
+
+      // 对于 0 小时则不在显示列表中
+      if (unref(hideZeroHours) && field === 'hours' && count === 0) {
         return;
       }
 

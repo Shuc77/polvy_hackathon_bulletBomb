@@ -50,6 +50,15 @@
     >
       <portrait-watch-layout-carousel />
     </div>
+
+    <!-- 评论上墙 -->
+    <speak-top-business
+      class="c-portrait-watch-layout__speak-top"
+      layout="portrait"
+    ></speak-top-business>
+    
+    <!-- 播放器提示 -->
+    <player-tips class="c-portrait-watch-layout__player-tips"></player-tips>
   </div>
 </template>
 
@@ -65,6 +74,8 @@ import { useDocStore } from '@/store/use-doc-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
+import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 
 const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
   storeDefinitionToRefs(usePortraitLayoutStore);
@@ -171,5 +182,16 @@ watch(
 
 .c-portrait-watch-layout__carousel-wrap__fullscreen {
   @include force-page-fullscreen;
+}
+
+.c-portrait-watch-layout__speak-top {
+  z-index: 2300;
+}
+.c-portrait-watch-layout__player-tips {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  z-index: 2300;
+  transform: translateX(-50%);
 }
 </style>

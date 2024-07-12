@@ -51,6 +51,12 @@
       <!-- 抢答 -->
       <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
 
+      <!-- 任务活动 -->
+      <mobile-task-activity-pendant
+        v-if="!isPageFullscreenOrHorizontalScreen"
+        class="c-mobile-chat-room-pendant__item"
+      />
+
       <!-- 点赞 -->
       <mobile-chat-like
         v-if="likeFeatureEnabled"
@@ -82,6 +88,7 @@ import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
 import MobileChatLike from '../chat-like/mobile-chat-like.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
+import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

@@ -2,11 +2,13 @@
 <template>
   <div class="c-portrait-product-list">
     <mobile-popup
+      class="c-portrait-product-list__popup"
       :visible.sync="productListVisible"
       :theme="PopupTheme.PortraitLight"
-      content-percent-height
+      :content-percent-height="0.8"
+      :show-header="false"
     >
-      <template v-slot:title>
+      <!-- <template v-slot:title>
         <div class="c-portrait-product-list__title">
           <mobile-icon-product class="c-portrait-product-list__title__icon" />
           <span>
@@ -16,26 +18,28 @@
             </span>
           </span>
         </div>
-      </template>
+      </template> -->
 
       <div class="c-portrait-product-list__wrap">
         <iar-mobile-product-list
-          v-if="renderProductList"
+          v-if="productListVisible"
           ref="iarProductListRef"
           :product-sdk="productSdk"
           :get-weixin-sdk="getWeixinSdk"
           :get-link-params="getLinkParams"
-          :total-visible="false"
           :desc-label="jobDescLabel"
           :recruitment-enabled="recruitmentEnabled"
           :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
           :is-plv-webview="isPlvWebview"
           :get-plv-webview-bridge="getPlvWebviewBridge"
           :plv-webview-data-size="plvWebviewDataSize"
+          :order-center-visible="isShowOrderCenter"
           @total-change="onGoodTotalChange"
           @click-good-desc="openGoodDetail"
           @click-plv-webview-jump="setProductListVisible(false)"
           @job-detail="onJobDetailEvent"
+          @buy="onWechatBuy"
+          @enter-order-center="onEnterOrderCenter"
         />
       </div>
     </mobile-popup>
@@ -94,7 +98,6 @@ import NormalButton from '@/components/common-base/normal-button/normal-button.v
 import { appEvents, eventBus } from '@/app/app-events';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import { onJobDetailEvent } from './hooks/use-product-job-detail';
-import { MobileIconProduct } from '@/components/component-icons/mobile/map';
 import { YN } from '@polyv/live-watch-sdk';
 
 import { useProduct, useProductLinkParams } from './hooks/use-product';
@@ -115,12 +118,17 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
 
-const { productSdk, recruitmentEnabled, jobDescLabel } = useProduct();
+const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 
-const { iarProductListRef, renderProductList, goodTotal, onGoodTotalChange, initProductList } =
-  useProductList();
+const {
+  iarProductListRef,
+  onGoodTotalChange,
+  initProductList,
+  isShowOrderCenter,
+  onEnterOrderCenter,
+} = useProductList({ autoInit: false });
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
 
@@ -189,5 +197,10 @@ onBeforeUnmount(() => {
   width: 100%;
   padding: 0 24px 34px;
   text-align: center;
+}
+
+.c-portrait-product-list__popup .c-mobile-popup__content {
+  overflow: hidden;
+  border-radius: 16px 16px 0 0 !important;
 }
 </style>

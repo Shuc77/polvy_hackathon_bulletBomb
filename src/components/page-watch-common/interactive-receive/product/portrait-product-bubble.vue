@@ -12,6 +12,7 @@
         :recruitment-enabled="recruitmentEnabled"
         :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
         @job-detail="onJobDetailEvent"
+        @buy="onWechatBuy"
       />
     </div>
     <iar-product-dialog
@@ -26,6 +27,7 @@
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @job-detail="onJobDetailEvent"
+      @buy="onWechatBuy"
     />
   </div>
 </template>
@@ -48,8 +50,13 @@ const { getWeixinSdk } = useWeixinSdk();
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
 
-const { productSdk, recruitmentEnabled, productHotEffectEnabled, productHotEffectTips } =
-  useProduct();
+const {
+  productSdk,
+  recruitmentEnabled,
+  productHotEffectEnabled,
+  productHotEffectTips,
+  onWechatBuy,
+} = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

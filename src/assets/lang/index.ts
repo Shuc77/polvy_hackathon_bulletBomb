@@ -20,7 +20,7 @@ function formatLang(lang: string): LangType {
 }
 
 /** 转换多语言 */
-export function translate(key: LangKey, options: UniversalParams<string> = {}): string {
+export function translate(key: LangKey, options: UniversalParams<string | number> = {}): string {
   let lang: LangType = LangType.Chinese;
 
   if (typeof locale === 'function') {
@@ -35,7 +35,7 @@ export function translate(key: LangKey, options: UniversalParams<string> = {}): 
   if (options) {
     const keys = Object.keys(options);
     for (const key of keys) {
-      const value = options[key];
+      const value = options[key].toString();
       text = replace(key, value, text);
     }
   }

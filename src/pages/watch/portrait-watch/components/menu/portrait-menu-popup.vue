@@ -129,6 +129,13 @@
         @click="onClickBindMobile"
       />
 
+      <!-- 任务奖励 -->
+      <menu-item
+        icon="my-reward"
+        :text="$lang('taskActivity.myReward')"
+        @click="onClickMyReward"
+      />
+
       <!-- 发送图片 -->
       <!-- <menu-item
         v-if="chatSetting.viewerSendImgEnabled"
@@ -333,6 +340,12 @@ function onClickSwitchStream() {
 /** 点击绑定手机号 */
 function onClickBindMobile() {
   eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog, true);
+  closeMenu();
+}
+
+/** 点击我的奖励 */
+function onClickMyReward() {
+  eventBus.$emit(appEvents.global.OpenTaskRewardDialog, true);
   closeMenu();
 }
 </script>

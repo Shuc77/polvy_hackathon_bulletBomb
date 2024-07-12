@@ -21,6 +21,7 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
+import { useThemeStore } from './use-theme-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useWebviewStore } from './use-webview-store';
 
@@ -43,6 +44,10 @@ export interface PlayerStoreState {
   onceHiddenPlayButton: Ref<boolean>;
   /** 播放器暖场设置 */
   warmUpSetting: Ref<PlayerWarmUpSetting>;
+  /** 暖场封面 */
+  warmUpCover: ComputedRef<string>;
+  /** 是否存在暖场视频 */
+  existWarmUpVideo: ComputedRef<boolean>;
   /** 是否显示播放器暖场图片 */
   showWarmUpImg: ComputedRef<boolean>;
   /** 是否显示播放器在“音频直播”场景下的占位区域 */
@@ -141,6 +146,22 @@ export interface PlayerStoreState {
   playbackShowPlayButtonEnabled: Ref<boolean>;
   /** cdn播放器且处于横屏模板 */
   isCdnWithNormalLayout: Ref<boolean>;
+  /** 切换清晰度提示显示状态 */
+  switchQualityTipStatus: Ref<SwitchTipsStatus>;
+  /** 切换线路提示显示状态 */
+  switchLineTipStatus: Ref<SwitchTipsStatus>;
+  /** 要切换到的清晰度 */
+  switchQualityLevel: Ref<number | undefined>;
+  /** 要切换到的线路 */
+  switchLineLevel: Ref<number | undefined>;
+  /** 显示控制栏 */
+  showControl: Ref<boolean>;
+}
+
+export enum SwitchTipsStatus {
+  Hide = 'hide',
+  Switching = 'switching',
+  Finish = 'finish',
 }
 
 export interface PlayerStoreAction {
@@ -160,6 +181,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
   const webViewStore = useWebviewStore();
+  const themeStore = useThemeStore();
 
   const __defaultPlayerInfo = PlvPlayerModule.generateDefaultPlayerInfo();
 
@@ -204,6 +226,24 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     return !isLowLatency.value && layoutStore.mobileWatchLayout === MobileWatchLayout.Normal;
   });
 
+  /** 存在暖场视频 */
+  const existWarmUpVideo = computed(() => {
+    return warmUpSetting.value.warmUpType === WarmUpType.Video;
+  });
+
+  /** 暖场视频封面 */
+  const warmUpVideoCover = computed<string>(() => {
+    if (existWarmUpVideo.value && themeStore.splashImg) {
+      return themeStore.splashImg;
+    }
+    return '';
+  });
+
+  /** 暖场封面 */
+  const warmUpCover = computed(() => {
+    return warmUpSetting.value.warmUpImg || warmUpVideoCover.value;
+  });
+
   /** 是否显示播放器暖场图片 */
   const showWarmUpImg = computed<boolean>(() => {
     if (playbackStore.isPlaybacking) {
@@ -215,8 +255,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       return false;
     }
 
-    // 非无延迟移动端横屏不展示自定义暖场图
-    if (isCdnWithNormalLayout.value) {
+    // 没有暖场视频的前提下，非无延迟移动端横屏不展示自定义暖场图
+    if (isCdnWithNormalLayout.value && !existWarmUpVideo.value) {
       return false;
     }
 
@@ -224,8 +264,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     return (
       // 播放器已初始化
       unref(playerInited) &&
-      // 有暖场图
-      !!warmUpSetting.value.warmUpImg &&
+      // 有暖场封面
+      !!warmUpCover.value &&
       // 还没开始播放 || 不处于播放中状态
       (!unref(isPlayStarted) || isNotPlaying)
     );
@@ -431,6 +471,18 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 回放时是否显示左下角播放/暂停按钮，默认开 */
   const playbackShowPlayButtonEnabled = ref(__defaultPlayerInfo.playbackShowPlayButtonEnabled);
 
+  /** 切换清晰度提示显示状态 */
+  const switchQualityTipStatus = ref<SwitchTipsStatus>(SwitchTipsStatus.Hide);
+
+  /** 要切换到清晰度 */
+  const switchQualityLevel = ref<number | undefined>();
+  /** 要切换到的线路 */
+  const switchLineLevel = ref<number | undefined>();
+
+  const switchLineTipStatus = ref<SwitchTipsStatus>(SwitchTipsStatus.Hide);
+  /** 显示控制栏 */
+  const showControl = ref<boolean>(false);
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = getWatchCore();
@@ -536,6 +588,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     playStatus,
     onceHiddenPlayButton,
     warmUpSetting,
+    existWarmUpVideo,
+    warmUpCover,
     showWarmUpImg,
     showAudioLivePlaceholder,
     logoSetting,
@@ -598,5 +652,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     syncPlayerStore,
     syncWarmUpSetting,
     syncPlayerInfo,
+
+    switchQualityTipStatus,
+    switchLineTipStatus,
+    switchQualityLevel,
+    switchLineLevel,
+    showControl,
   };
 });

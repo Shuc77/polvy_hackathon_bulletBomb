@@ -97,6 +97,13 @@
       :text="$lang('identityInfo.bindMobile')"
       @click="onClickBindMobile"
     />
+
+    <!-- 任务奖励 -->
+    <more-item
+      icon="my-reward"
+      :text="$lang('taskActivity.myReward')"
+      @click="onClickMyReward"
+    />
   </ul>
 </template>
 
@@ -217,6 +224,12 @@ function onClickLotteryRecord() {
 /** 点击绑定手机号 */
 function onClickBindMobile() {
   eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog, true);
+  closeMore();
+}
+
+/** 点击任务奖励 */
+function onClickMyReward() {
+  eventBus.$emit(appEvents.global.OpenTaskRewardDialog, true);
   closeMore();
 }
 </script>

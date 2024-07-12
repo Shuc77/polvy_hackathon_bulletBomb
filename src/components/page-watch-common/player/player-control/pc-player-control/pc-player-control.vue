@@ -40,6 +40,8 @@
           @click="closeHistoryTips"
         />
       </div>
+
+      <player-tips></player-tips>
     </div>
 
     <div class="c-pc-player-control__main">
@@ -192,6 +194,7 @@ import PcBarrageSetting from './pc-barrage-setting.vue';
 import PcPlayerSetting from './pc-player-setting.vue';
 import PcRateSetting from './pc-rate-setting.vue';
 import PcVolumeSetting from './pc-volume-setting.vue';
+import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
@@ -565,5 +568,10 @@ $--player-control-button-icon-size: 24px !default;
   &:hover {
     background-image: url(./imgs/pc-player-ui-switch-screen-hover.png);
   }
+}
+
+.c-pc-player-control__tips__switch-btn {
+  padding: 0 3px;
+  color: #3f76fc;
 }
 </style>
