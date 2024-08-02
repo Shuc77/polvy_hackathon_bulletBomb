@@ -38,6 +38,11 @@
           class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--donate pws-mobile-donate-button"
           @click="showDonate"
         ></div>
+        <!-- 点赞 -->
+        <mobile-chat-like
+          v-if="likeFeatureEnabled"
+          class="c-mobile-chat-input-controller__btn"
+        />
       </template>
     </mobile-msg-input-wrap>
   </div>
@@ -46,6 +51,7 @@
 <script setup lang="ts">
 import MobileChatMsgQuote from '@/components/page-watch-common/chat/chat-msg-quote/mobile-chat-msg-quote.vue';
 import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mobile-msg-input-wrap/mobile-msg-input-wrap.vue';
+import MobileChatLike from '@/components/page-watch-common/chat/chat-like/mobile-chat-like.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useDonateStore } from '@/store/use-donate-store';
 
@@ -82,7 +88,7 @@ if (!props.isPureness) {
   });
 }
 
-const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
+const { chatInputPlaceholder, chatInputDisabled, chatSetting, likeFeatureEnabled } =
   storeDefinitionToRefs(useChatStore);
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
@@ -104,6 +110,7 @@ defineExpose(chatInputInstance);
   align-items: center;
   justify-content: center;
   width: 36px;
+  min-width: 36px;
   height: 36px;
   border-radius: 50%;
 

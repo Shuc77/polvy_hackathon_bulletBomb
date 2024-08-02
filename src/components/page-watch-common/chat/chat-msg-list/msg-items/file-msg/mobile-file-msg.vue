@@ -23,7 +23,7 @@
         </div>
         <div
           ref="textContentRef"
-          class="c-mobile-file-msg__content__name__text"
+          class="c-mobile-file-msg__content__name__text g-multiline"
         >
           {{ fileName }}
         </div>
@@ -71,6 +71,7 @@ $--file-icon-height: 38px;
 .c-mobile-file-msg__content {
   display: flex;
   align-items: center;
+  max-width: 151px;
   padding: 4px;
   cursor: pointer;
 }

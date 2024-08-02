@@ -81,8 +81,23 @@ export const useMessageCarousel = () => {
     });
   });
 
+  function onMessageCarouselSlidePrevEnd() {
+    portraitLayoutStore.$patch({
+      carouselActiveIndex: portraitLayoutStore.carouselActiveIndex - 1,
+    });
+  }
+
+  function onMessageCarouselSlideNextEnd() {
+    portraitLayoutStore.$patch({
+      carouselActiveIndex: portraitLayoutStore.carouselActiveIndex + 1,
+    });
+  }
+
   return {
     carouselRef,
     messageCarouselActiveIndex,
+
+    onMessageCarouselSlidePrevEnd,
+    onMessageCarouselSlideNextEnd,
   };
 };

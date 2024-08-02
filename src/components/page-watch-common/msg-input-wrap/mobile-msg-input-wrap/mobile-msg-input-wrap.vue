@@ -262,6 +262,10 @@ defineExpose(msgInputWrapInstance);
   height: 100%;
 }
 
+.c-mobile-msg-input-wrap__input__textarea {
+  min-width: 80px;
+}
+
 .c-mobile-msg-input-wrap__emotion-btn {
   flex-shrink: 0;
   width: 24px;

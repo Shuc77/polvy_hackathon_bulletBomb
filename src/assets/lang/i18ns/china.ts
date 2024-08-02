@@ -737,7 +737,6 @@ export const chinaLang = {
   'taskActivity.lockedBtn': '待解锁',
   'taskActivity.viewReward': '查看奖励',
   'taskActivity.finish': '已达成任务',
-  'taskActivity.noReward': '奖励名额已满',
   'taskActivity.notStartToast': '需完成上一个任务才可解锁',
   'taskActivity.rewardGeted': '已获得“${content}”',
   'taskActivity.rewardGetCondition': '达成条件：${content}',
@@ -745,7 +744,7 @@ export const chinaLang = {
   'taskActivity.rewardStatus.notIssued': '待发放',
   'taskActivity.rewardStatus.issued': '已发放',
   'taskActivity.rewardStatus.issuedFail': '发放失败',
-  'taskActivity.rewardStatus.limit': '奖励名额已满',
+  'taskActivity.rewardStatus.limit': '奖励名额已满，无法获得奖励',
   'taskActivity.rewardDesc': '预计10分钟后发放',
   'taskActivity.emptyReward': '暂无奖励',
 
@@ -759,6 +758,7 @@ export const chinaLang = {
   'order.nonSupportBuy': '暂不支持购买',
   'order.center': '订单中心',
   'order.confirmReceipt': '请确认已经收到包裹',
+  'order.pickArea': '请选择省市区',
 
   'qrCodeShareDialog.title': '请前往微信观看页购买',
   'qrCodeShareDialog.tip': '保存二维码去微信打开',

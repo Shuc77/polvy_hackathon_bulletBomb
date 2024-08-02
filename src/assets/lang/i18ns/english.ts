@@ -769,7 +769,6 @@ export const englishLang: LangConfig = {
   'taskActivity.lockedBtn': 'Locked',
   'taskActivity.viewReward': 'View prizes',
   'taskActivity.finish': 'Task achieved',
-  'taskActivity.noReward': 'The prize limit full',
   'taskActivity.notStartToast': 'Complete prior task to unlock',
   'taskActivity.rewardGeted': 'Received "${content}"',
   'taskActivity.rewardGetCondition': 'Achieve condition: ${content}',
@@ -777,7 +776,7 @@ export const englishLang: LangConfig = {
   'taskActivity.rewardStatus.notIssued': 'Pending',
   'taskActivity.rewardStatus.issued': 'Issued',
   'taskActivity.rewardStatus.issuedFail': 'Failed',
-  'taskActivity.rewardStatus.limit': 'Reward limited',
+  'taskActivity.rewardStatus.limit': 'Prize limit full, no prizes available',
   'taskActivity.rewardDesc': 'Prizes in 10 mins',
   'taskActivity.emptyReward': 'No prizes available',
 
@@ -791,6 +790,7 @@ export const englishLang: LangConfig = {
   'order.nonSupportBuy': 'Purchase not currently supported',
   'order.center': 'Order Center',
   'order.confirmReceipt': 'Please confirm receipt of the package',
+  'order.pickArea': 'Add address',
 
   'qrCodeShareDialog.title': 'Please go to the WeChat viewing page to purchase',
   'qrCodeShareDialog.tip': 'Save the QR code and open it on WeChat',

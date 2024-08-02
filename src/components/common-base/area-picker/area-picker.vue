@@ -12,7 +12,9 @@
         >
           {{ $lang('base.cancel') }}
         </div>
-        <div class="c-mobile-form-area-picker__header__placeholder">请选择省市区</div>
+        <div class="c-mobile-form-area-picker__header__placeholder">
+          {{ $lang('order.pickArea') }}
+        </div>
         <div
           class="c-mobile-form-area-picker__header__confirm"
           :class="{

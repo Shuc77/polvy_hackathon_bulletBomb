@@ -5,7 +5,7 @@
       class="c-portrait-product-list__popup"
       :visible.sync="productListVisible"
       :theme="PopupTheme.PortraitLight"
-      :content-percent-height="0.8"
+      :content-percent-height="popupHeight"
       :show-header="false"
     >
       <!-- <template v-slot:title>
@@ -107,6 +107,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { isAndroid } from '@/assets/utils/browser';
 
 const IarMobileProductList = getIarComponent('MobileProduct');
 const IarProductBtn = getIarComponent('ProductButton');
@@ -142,6 +143,29 @@ const setProductListVisible = (visible = true) => {
     initProductList();
   }
 };
+
+/**
+ * 设置弹窗高度，默认 | 商品搜索失焦 0.8 聚焦0.6
+ */
+const popupHeight = ref(0.8);
+
+/** 兼容商品订单输入框安卓下显示不全问题 */
+let originHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+window.addEventListener('resize', function () {
+  if (!isAndroid) return;
+
+  const resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+  if (originHeight < resizeHeight) {
+    // Android 键盘收起后操作
+    popupHeight.value = 0.8;
+  } else {
+    // Android 键盘弹起后操作
+    popupHeight.value = 0.6;
+  }
+
+  originHeight = resizeHeight;
+});
 
 onBeforeMount(() => {
   eventBus.$on(appEvents.interaction.OpenPortraitProductList, setProductListVisible);

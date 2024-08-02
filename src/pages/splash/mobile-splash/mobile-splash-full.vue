@@ -39,7 +39,6 @@ import { defineAsyncComponent } from 'vue';
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
 import MobileSplashBtn from './components/mobile-splash-btn.vue';
 
-import { usePvTrack } from '@/hooks/business/use-pv-track';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useThemeStore } from '@/store/use-theme-store';
 
@@ -55,8 +54,6 @@ const { mobileSplashLargeImg } = storeDefinitionToRefs(useThemeStore);
 
 const { trialEnabled, trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } =
   usePlayerTrialHook();
-
-usePvTrack('saas-web-splash-mobile');
 </script>
 
 <style lang="scss">

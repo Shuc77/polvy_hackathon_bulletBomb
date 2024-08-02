@@ -1,5 +1,11 @@
 <template>
-  <span class="c-msg-status-suffix">
+  <span
+    v-show="
+      iconShowStatus === ChatMsgItemSendStatus.Loading ||
+      iconShowStatus === ChatMsgItemSendStatus.Fail
+    "
+    class="c-msg-status-suffix"
+  >
     <template v-if="chatMsg.isLocal">
       <pc-icon-chat-loading
         v-if="iconShowStatus === ChatMsgItemSendStatus.Loading"

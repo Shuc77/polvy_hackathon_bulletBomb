@@ -34,7 +34,11 @@
     <!-- 聊天消息列表区域 -->
     <div class="c-mobile-chat-room__msg-list">
       <!-- 消息列表 -->
-      <mobile-chat-msg-list />
+      <mobile-chat-msg-list
+        :class="{
+          'c-mobile-chat-room__msg-list__bubble-visible': productBubbleVisible,
+        }"
+      />
 
       <!-- 右下角挂件 -->
       <mobile-chat-room-pendant v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
@@ -90,7 +94,7 @@ const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
-const { iarSdkLoaded, announcementFunctionVisible } =
+const { iarSdkLoaded, announcementFunctionVisible, productBubbleVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
@@ -134,6 +138,12 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
   position: relative;
   flex: 1;
   overflow: hidden;
+}
+
+.c-mobile-chat-room__msg-list__bubble-visible {
+  .c-mobile-chat-msg-list__container {
+    padding-right: 70px;
+  }
 }
 
 .c-mobile-chat-room__donate-animation {

@@ -150,7 +150,6 @@ import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
-import { usePvTrack } from '@/hooks/business/use-pv-track';
 import { useThemeStore } from '@/store/use-theme-store';
 import { resizeOSSImg } from '@/assets/utils/image';
 
@@ -183,8 +182,6 @@ const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
-
-usePvTrack('saas-web-splash-pc');
 </script>
 
 <style lang="scss">

@@ -79,7 +79,7 @@ function onClickPlaceholder() {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 165px;
+  max-width: 150px;
   height: 32px;
   padding: 0 8px;
   line-height: 32px;

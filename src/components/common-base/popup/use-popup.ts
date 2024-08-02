@@ -367,6 +367,13 @@ export const usePopup = (options: {
     emitBodyScrollNearBottom();
   }
 
+  watch(
+    () => props.fillBodySection,
+    () => {
+      updateHeight();
+    },
+  );
+
   function emitBodyScrollNearBottom() {
     const isNearBottom = isScrollNearBottom(popupContentBodyRef.value);
     emit('body-scroll-near-bottom', isNearBottom);

@@ -12,6 +12,8 @@
         speed: 0.012,
       }"
       :count="realtimeLikes"
+      count-position="top"
+      size="36px"
       :appear-mode="upperHasIcon ? 'bottom-right' : 'bottom-center'"
       @click-button="onClickLike"
       @press-hold="onClickLike"
@@ -22,7 +24,7 @@
       ></i>
       <template v-slot:like-count="scope">
         <div class="c-mobile-chat-like__count-wrap">
-          <p class="c-mobile-chat-like__count pws-like-count-number">
+          <p class="c-mobile-chat-like__count">
             {{ getScopeCount(scope) }}
           </p>
         </div>
@@ -71,22 +73,5 @@ function getScopeCount(scope: any) {
 }
 .c-mobile-chat-like__count-wrap {
   height: 16px;
-  margin-top: 4px;
-}
-.c-mobile-chat-like__count {
-  position: absolute;
-  left: 50%;
-  box-sizing: border-box;
-  display: inline-block;
-  min-width: 48px;
-  padding: 0 8px;
-  font-size: 14px;
-  line-height: 16px;
-  color: #adadc0;
-  text-align: center;
-  white-space: nowrap;
-  background: rgba(#202127, 0.8);
-  border-radius: 9px;
-  transform: translate(-50%, 0);
 }
 </style>

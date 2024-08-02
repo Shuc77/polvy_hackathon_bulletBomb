@@ -20,6 +20,8 @@ export interface ProductGoodData {
   buyType?: string;
   /** 履约方式 */
   deliveryType?: string;
+  /** 推送规则 */
+  productPushRule?: string;
 }
 
 /**

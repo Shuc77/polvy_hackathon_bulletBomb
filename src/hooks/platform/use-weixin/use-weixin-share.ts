@@ -30,6 +30,8 @@ interface WxShareUrlParams {
 export const useWeixinShare = () => {
   const { getWeixinSdk } = useWeixinSdk();
 
+  const watchCore = getWatchCore();
+
   const themeStore = useThemeStore();
   const shareStore = useShareStore();
   const weixinStore = useWeixinStore();
@@ -84,7 +86,7 @@ export const useWeixinShare = () => {
     const shareInfo = weixinStore.wxShareInfo;
 
     if (watchAppStore.isPlaybackWatchUrl) {
-      return window.location.href;
+      return watchCore.domain.processRandomHostname(window.location.href);
     }
 
     // 使用后台设置的自定义微信分享地址
@@ -92,9 +94,10 @@ export const useWeixinShare = () => {
       return shareInfo.wxShareUrl;
     }
 
-    return appendUrl<WxShareUrlParams>(window.location.href, unref(wxShareUrlParams), {
+    const url = appendUrl<WxShareUrlParams>(window.location.href, unref(wxShareUrlParams), {
       forbiddenFields: ['snapshotPage'],
     });
+    return watchCore.domain.processRandomHostname(url);
   });
 
   /** 隐藏微信分享 */

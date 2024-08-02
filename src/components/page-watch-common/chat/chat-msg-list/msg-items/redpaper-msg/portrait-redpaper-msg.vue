@@ -29,6 +29,7 @@ const { sendNick, redpackText, portraitRedpaperMsgRef, openRedpackDialog } = use
 
 <style lang="scss">
 .c-portrait-redpaper-msg {
+  width: 231px;
   font-size: 12px;
 }
 .c-portrait-redpaper-msg__content {

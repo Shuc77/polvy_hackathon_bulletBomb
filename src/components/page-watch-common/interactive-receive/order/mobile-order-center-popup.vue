@@ -50,7 +50,6 @@
 <script setup lang="ts">
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
-import { useOrder } from './hooks/use-order';
 import { useOrderCenter } from './hooks/user-order-center';
 
 const IarMobileOrderList = getIarComponent('MobileOrderList');
@@ -71,9 +70,8 @@ const {
   orderListRef,
   onPaySuccess,
   openDetailFromPaySuccess,
+  orderSdk,
 } = useOrderCenter();
-
-const { orderSdk } = useOrder();
 </script>
 
 <style lang="scss">
@@ -87,7 +85,7 @@ const { orderSdk } = useOrder();
   }
 
   .plv-iar-order-detail__bottom {
-    @include iphone-x-pb(24px);
+    @include iphone-x-pb(16px);
   }
 }
 

@@ -82,6 +82,7 @@ $--textarea-min-height: 36px;
 .c-mobile-auto-textarea__inner {
   box-sizing: border-box;
   flex: 1;
+  width: 100%;
   min-height: 17px;
   padding: 0 12px;
   margin: 8px 0;

@@ -76,6 +76,10 @@ export const useProduct = () => {
     eventBus.$emit(appEvents.interaction.OpenOrderPopup, [product]);
   };
 
+  const onChange = (visible: boolean) => {
+    interactReceiveStore.productBubbleVisible = visible;
+  };
+
   return {
     productSdk,
     recruitmentEnabled,
@@ -83,6 +87,7 @@ export const useProduct = () => {
     productHotEffectTips,
     productHotEffectEnabled,
     onWechatBuy,
+    onChange,
   };
 };
 
