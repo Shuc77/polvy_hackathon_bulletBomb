@@ -12,6 +12,8 @@
         speed: 0.012,
       }"
       :count="realtimeLikes"
+      count-position="top"
+      size="32px"
       :appear-mode="upperHasIcon ? 'bottom-right' : 'bottom-center'"
       @click-button="onClickLike"
       @press-hold="onClickLike"
@@ -59,6 +61,11 @@ function getScopeCount(scope: any) {
   z-index: 0;
   box-sizing: border-box;
   text-align: center;
+
+  .plv-like-button__content__btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
 }
 .c-portrait-chat-like__button {
   display: inline-block;
@@ -72,18 +79,5 @@ function getScopeCount(scope: any) {
 }
 .c-portrait-chat-like__count-wrap {
   height: 16px;
-  margin-top: 4px;
-}
-.c-portrait-chat-like__count {
-  position: absolute;
-  left: 50%;
-  box-sizing: border-box;
-  display: inline-block;
-  font-size: 12px;
-  line-height: 16px;
-  color: $--color-white;
-  text-align: center;
-  white-space: nowrap;
-  transform: translate(-50%, 0);
 }
 </style>

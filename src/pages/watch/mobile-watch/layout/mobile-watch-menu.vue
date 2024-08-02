@@ -16,7 +16,10 @@
       <mobile-follow-layer v-if="followEnabled" />
 
       <!-- 商品库推送气泡 -->
-      <mobile-product-bubble v-if="iarSdkLoaded" />
+      <mobile-product-bubble
+        v-if="iarSdkLoaded"
+        :product-bubble-enable="false"
+      />
 
       <!-- 课堂激励点赞动画 -->
       <motivation-like-animation

@@ -15,6 +15,8 @@ import { CreateOrderResponse } from '@polyv/live-watch-sdk';
 export function useOrderCenter() {
   const watchCore = getWatchCore();
 
+  /** 订单管理sdk */
+  const orderSdk = watchCore.interactReceive.getOrder();
   /** 订单中心是否显示 */
   const visible = ref(false);
   /** 当前查看详情的订单号 */
@@ -150,5 +152,6 @@ export function useOrderCenter() {
     orderListRef,
     onPaySuccess,
     openDetailFromPaySuccess,
+    orderSdk,
   };
 }

@@ -7,9 +7,11 @@
       @is-empty-callback="onIsEmptyCallback"
     >
       <!-- ========= 弹层类型组件 Start ========= -->
-
       <!-- 商品库推送气泡 -->
-      <pc-product-bubble v-if="iarSdkLoaded" />
+      <pc-product-bubble
+        v-if="iarSdkLoaded"
+        :product-bubble-enable="false"
+      />
 
       <!-- 课堂激励特效，跟随"屏蔽特效"开关 -->
       <motivation-like-animation

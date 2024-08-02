@@ -13,7 +13,7 @@
       @click="onClickEntrance"
     ></div>
 
-    <portrait-product-bubble />
+    <portrait-product-bubble :product-bubble-enable="false" />
   </div>
 </template>
 

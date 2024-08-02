@@ -153,6 +153,10 @@ export const useTaskActivity = () => {
   function showBtn(item: TaskActivityItem): boolean {
     // 已完成的任务但没有奖励时不显示按钮
     if (item.status === TaskActivityStatus.Finish) {
+      if (item.rewardStatus === TaskRewardStatus.IssuedLimit) {
+        return false;
+      }
+
       const rewardContent = getTaskRewardText(item.rewardSetting);
       return !!rewardContent;
     }

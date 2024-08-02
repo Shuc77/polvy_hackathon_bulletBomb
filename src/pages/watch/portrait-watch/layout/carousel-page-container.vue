@@ -8,7 +8,12 @@
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
   >
-    <slot></slot>
+    <slot>
+      <div
+        class="c-portrait-carousel-blank-screen"
+        @click.self="onClickContainer"
+      ></div>
+    </slot>
   </div>
 </template>
 
@@ -37,5 +42,13 @@ const { onTouchStart, onTouchMove, onTouchEnd } = useWebviewFeedTouch({ maxDelta
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.c-portrait-carousel-blank-screen {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
 }
 </style>

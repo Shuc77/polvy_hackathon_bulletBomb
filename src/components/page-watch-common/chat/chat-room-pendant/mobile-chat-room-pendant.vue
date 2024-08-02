@@ -57,16 +57,15 @@
         class="c-mobile-chat-room-pendant__item"
       />
 
-      <!-- 点赞 -->
-      <mobile-chat-like
-        v-if="likeFeatureEnabled"
-        v-show="!isPageFullscreenOrHorizontalScreen"
+      <mobile-product-bubble
+        v-if="iarSdkLoaded"
+        :product-dialog-enable="false"
         class="c-mobile-chat-room-pendant__item"
-        :upper-has-icon="hasOtherPendant"
       />
+
       <!-- 情绪反馈 -->
       <mobile-emotional-feedback
-        v-else-if="chatSetting.emotionalFeedbackEnabled"
+        v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
         v-show="!isPageFullscreenOrHorizontalScreen"
         class="c-mobile-chat-room-pendant__item"
       />
@@ -86,10 +85,10 @@ import MobileWelfareLottery from '@/components/page-watch-common/interactive-rec
 import MobileTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/mobile-topic-pk.vue';
 import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-answer.vue';
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
-import MobileChatLike from '../chat-like/mobile-chat-like.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
+import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -101,14 +100,7 @@ import { useFinanceStore } from '@/store/use-finance-store';
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
-const {
-  pushCardPendantVisible,
-  redpackPendantVisible,
-  enrollLotteryPendantVisible,
-  welfareLotteryPendantVisible,
-  lotteryPendantVisible,
-  rushAnswerPendantVisible,
-} = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
@@ -122,26 +114,13 @@ const {
 const renderParent = computed<string | HTMLElement>(() => {
   return unref(isPageFullscreenOrHorizontalScreen) ? document.body : '';
 });
-
-/** 点赞上方是否有其他挂件 */
-const hasOtherPendant = computed<boolean>(() => {
-  return (
-    unref(pushCardPendantVisible) ||
-    unref(redpackPendantVisible) ||
-    unref(enrollLotteryPendantVisible) ||
-    unref(welfareLotteryPendantVisible) ||
-    unref(lotteryPendantVisible) ||
-    unref(rushAnswerPendantVisible) ||
-    unref(mobileChatInvitePendantVisible)
-  );
-});
 </script>
 
 <style lang="scss">
 .c-mobile-chat-room-pendant {
   position: absolute;
   right: 16px;
-  bottom: 16px;
+  bottom: 5px;
   width: 40px;
 }
 

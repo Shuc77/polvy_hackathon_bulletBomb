@@ -1,21 +1,24 @@
-import { ref, nextTick, computed } from 'vue';
+import { ref, nextTick, computed, unref } from 'vue';
 import { isEmpty } from 'lodash-es';
 import { getWatchCore } from '@/core/watch-sdk';
 import { appEvents, useEventBusListener, eventBus } from '@/app/app-events';
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePopupRoute, OrderPopupRoute } from './use-popup-route';
 import { useAddress } from './use-address';
 import { usePay } from './use-pay';
 import type { AddressDetail, OrderInfo } from '../types/order-types';
 import type { ProductGoodData } from '../../product/types/product-types';
+import { isAndroid } from '@/assets/utils/browser';
 
 export function useOrder() {
   const watchCore = getWatchCore();
   const { visible, currentPopupRoute, pushPopupRoute } = usePopupRoute();
   const { address, addressManagementSdk } = useAddress();
   const { pay } = usePay();
+  const interactReceiveStore = useInteractReceiveStore();
 
   /** 订单管理sdk */
   const orderSdk = watchCore.interactReceive.getOrder();
@@ -51,12 +54,44 @@ export function useOrder() {
     }
   });
 
+  /** 商品埋点开关 */
+  const productTrackEnabled = computed(() => {
+    return interactReceiveStore.interactSetting.productTrackEnabled;
+  });
+
+  /**
+   * 弹窗高度是否填满除播放器外其余高度
+   */
+  const isFillBodySection = ref(true);
+
   /**
    * @description: 显示弹窗
    */
   function showPopup(values: ProductGoodData[]) {
     products.value = values;
     visible.value = true;
+    trackOrderPageVisit(values[0]);
+  }
+
+  /**
+   * @description: 订单访问页埋点
+   */
+  function trackOrderPageVisit(product: ProductGoodData) {
+    const watchEventTrackEnabled = watchCore.channel.getWatchEventTrackEnabled();
+    if (!watchEventTrackEnabled || !unref(productTrackEnabled) || !product) return;
+
+    watchCore.rtas.trackBehaviorEvent({
+      eventType: 'show',
+      eventId: 'order_page_visit',
+      data: {
+        buyType: product.buyType || '',
+        deliveryType: product.deliveryType || '',
+        name: product.name || '',
+        productId: product.productId || '',
+        productType: product.productType || '',
+        productPushRule: product.productPushRule || '',
+      },
+    });
   }
 
   /**
@@ -120,11 +155,19 @@ export function useOrder() {
    * @description: 保存地址回调
    */
   function saveAddressCb(info: AddressDetail) {
-    if (!address.value.id || info.id === address.value.id) {
+    // 编辑地址
+    if (info.id === address.value.id) {
       address.value = info;
     }
+
+    // 新建地址
+    if (addressSaveType.value === 'add') {
+      address.value = info;
+      pushPopupRoute(OrderPopupRoute.Order);
+      return;
+    }
+
     navigateToAddressList(info);
-    isEditOriginFromOrder = false;
   }
 
   /**
@@ -199,6 +242,24 @@ export function useOrder() {
     }
   }
 
+  /** 兼容商品订单输入框安卓下显示不全问题 */
+  let originHeight = document.documentElement.clientHeight || document.body.clientHeight;
+
+  window.addEventListener('resize', function () {
+    if (!isAndroid) return;
+
+    const resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    if (originHeight < resizeHeight) {
+      // Android 键盘收起后操作
+      isFillBodySection.value = true;
+    } else {
+      // Android 键盘弹起后操作
+      isFillBodySection.value = false;
+    }
+
+    originHeight = resizeHeight;
+  });
+
   return {
     submitting,
     visible,
@@ -219,5 +280,6 @@ export function useOrder() {
     saveAddressCb,
     onSubmitOrder,
     orderSdk,
+    isFillBodySection,
   };
 }

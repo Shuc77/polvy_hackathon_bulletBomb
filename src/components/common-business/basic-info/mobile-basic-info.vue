@@ -17,9 +17,9 @@
             class="c-mobile-basic-info__channel__inner__title pws-mobile-basic-info-channel-title"
           >
             {{ channelTitle }}
-          </div>
-          <div class="c-mobile-basic-info__channel__inner__status">
-            <mobile-status-tag :live-status="liveStatus" />
+            <span class="c-mobile-basic-info__channel__inner__status">
+              <mobile-status-tag :live-status="liveStatus" />
+            </span>
           </div>
         </div>
         <!-- 直播时间 + 浏览次数 + 无延迟标记 -->
@@ -213,17 +213,16 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
 
 .c-mobile-basic-info__channel__inner__top {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
 }
 .c-mobile-basic-info__channel__inner__title {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 20px;
   word-break: break-word;
 }
 
 .c-mobile-basic-info__channel__inner__status {
-  margin-left: 10px;
-  white-space: nowrap;
+  margin-left: 8px;
 }
 
 .c-mobile-basic-info__channel__inner__bottom {

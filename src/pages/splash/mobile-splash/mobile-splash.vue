@@ -60,7 +60,6 @@ import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
-import { usePvTrack } from '@/hooks/business/use-pv-track';
 import { useThemeStore } from '@/store/use-theme-store';
 import { resizeOSSImg } from '@/assets/utils/image';
 
@@ -77,8 +76,6 @@ const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
 const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
 
 const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTrialHook();
-
-usePvTrack('saas-web-splash-mobile');
 </script>
 
 <style lang="scss">

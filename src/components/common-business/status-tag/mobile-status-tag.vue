@@ -21,11 +21,12 @@ const { statusTagText, liveStatus } = useStatusTag({
 .c-mobile-status-tag {
   box-sizing: border-box;
   display: inline-block;
-  padding: 4px;
+  padding: 2px 3px;
   font-size: 12px;
   font-style: normal;
   line-height: 1;
   border: 1px solid;
   border-radius: 2px;
+  transform: scale(0.833);
 }
 </style>

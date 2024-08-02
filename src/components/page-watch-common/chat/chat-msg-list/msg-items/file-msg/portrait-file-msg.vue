@@ -11,7 +11,7 @@
     >
       <div
         ref="textContentRef"
-        class="c-portrait-file-msg__content-inner"
+        class="c-portrait-file-msg__content-inner g-multiline"
         :class="{
           'c-portrait-file-msg__content-inner--block': needBlock,
         }"
@@ -55,6 +55,7 @@ const { textWrapRef, textContentRef, needBlock } = useFileNameBlock();
 $--file-icon-height: 38px;
 
 .c-portrait-file-msg {
+  width: 231px;
   line-height: 18px;
 }
 

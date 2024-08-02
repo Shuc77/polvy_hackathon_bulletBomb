@@ -3,7 +3,7 @@
   <div>
     <mobile-popup
       class="c-mobile-order-popup"
-      fill-body-section
+      :fill-body-section="isFillBodySection"
       :title="orderPopupTitle"
       :visible.sync="visible"
       :update-on-resize="true"
@@ -15,10 +15,11 @@
     >
       <div class="c-mobile-order-container">
         <iar-mobile-order
-          v-if="currentPopupRoute === OrderPopupRoute.Order"
+          v-if="currentPopupRoute === OrderPopupRoute.Order && orderSdk"
           :products="products"
           :submit-disabled="submitting"
           :address="address"
+          :order-sdk="orderSdk"
           :address-management-sdk="addressManagementSdk"
           @click-address="navigateToAddressList"
           @submit="onSubmitOrder"
@@ -61,6 +62,7 @@ const IarMobileAddressList = getIarComponent('MobileAddressList');
 const IarMobileAddressEdit = getIarComponent('MobileAddressEdit');
 
 const {
+  orderSdk,
   addressManagementSdk,
 
   visible,
@@ -72,7 +74,7 @@ const {
   addressEditRef,
   addressSaveType,
   currentPopupRoute,
-
+  isFillBodySection,
   onPopupBack,
   navigateToAddressList,
   navigateToAddressEdit,
@@ -91,15 +93,15 @@ const {
   height: 100%;
 
   .plv-iar-order__bottom {
-    @include iphone-x-pb(24px);
+    @include iphone-x-pb(16px);
   }
 
   .plv-iar-address-list-bottom {
-    @include iphone-x-pb(24px);
+    @include iphone-x-pb(16px);
   }
 
   .plv-iar-address-edit-bottom {
-    @include iphone-x-pb(24px);
+    @include iphone-x-pb(16px);
   }
 }
 </style>

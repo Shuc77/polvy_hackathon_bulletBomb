@@ -85,11 +85,18 @@
       >
         <portrait-ask-tips v-if="portraitMessageTabCurrentName === PortraitChatTabName.Ask" />
 
-        <div class="c-portrait-carousel-main-screen__carousel__wrap">
+        <div
+          class="c-portrait-carousel-main-screen__carousel__wrap"
+          :class="{
+            'c-portrait-carousel-main-screen__carousel__wrap__bubble': productBubbleVisible,
+          }"
+        >
           <plv-carousel
             ref="carouselRef"
             class="c-portrait-carousel-main-screen__carousel"
             :slide-index.sync="messageCarouselActiveIndex"
+            @slide-prev-end="onMessageCarouselSlidePrevEnd"
+            @slide-next-end="onMessageCarouselSlideNextEnd"
           >
             <!-- 聊天消息区 -->
             <plv-carousel-item>
@@ -188,6 +195,11 @@
 
           <!-- 菜单入口 -->
           <portrait-menu-entrance class="c-portrait-carousel-main-screen__bottom__button" />
+          <!-- 点赞 -->
+          <portrait-chat-like
+            v-if="likeFeatureEnabled && !isPlaybacking"
+            class="c-portrait-carousel-main-screen__bottom__button"
+          />
         </div>
       </div>
 
@@ -249,6 +261,7 @@ import PortraitProductListEntrance from '@/components/page-watch-common/interact
 import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
 import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
 import PortraitPlayerFullscreenButton from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-fullscreen-button.vue';
+import PortraitChatLike from '@/components/page-watch-common/chat/chat-like/portrait-chat-like.vue';
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
 import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
@@ -284,12 +297,12 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { announcementFunctionVisible, interactSetting, hasBulletin } =
+const { announcementFunctionVisible, interactSetting, hasBulletin, productBubbleVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { showDonateFunction, donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { chatInputControllerEnable, chatRoomVisible, chatExited } =
+const { chatInputControllerEnable, chatRoomVisible, chatExited, likeFeatureEnabled } =
   storeDefinitionToRefs(useChatStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } =
@@ -343,7 +356,13 @@ const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
   appEvents.portrait.OpenPlaybackChapter,
 );
 
-const { carouselRef, messageCarouselActiveIndex } = useMessageCarousel();
+const {
+  carouselRef,
+  messageCarouselActiveIndex,
+
+  onMessageCarouselSlidePrevEnd,
+  onMessageCarouselSlideNextEnd,
+} = useMessageCarousel();
 
 const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait.ClickPlayerRegion);
 </script>
@@ -481,8 +500,18 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   height: 300px;
 }
 
+.c-portrait-carousel-main-screen__carousel__wrap {
+  box-sizing: border-box;
+  width: 100%;
+  padding-right: 54px;
+
+  &.c-portrait-carousel-main-screen__carousel__wrap__bubble {
+    padding-right: 118px;
+  }
+}
+
 .c-portrait-carousel-main-screen__carousel {
-  width: 248px;
+  width: 100%;
   height: 208px;
   pointer-events: initial;
 }
