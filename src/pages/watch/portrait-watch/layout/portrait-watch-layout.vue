@@ -56,7 +56,7 @@
       class="c-portrait-watch-layout__speak-top"
       layout="portrait"
     ></speak-top-business>
-    
+
     <!-- 播放器提示 -->
     <player-tips class="c-portrait-watch-layout__player-tips"></player-tips>
   </div>

@@ -25,13 +25,10 @@ import PlayerReplaySubtitle from './_components/player-replay-subtitle.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
 import {
   PC_PLAYER_FULL_SCREEN_SELECTOR,
   PC_MAIN_PLAYER_SELECTOR,
 } from '@/assets/constants/selector';
 
-const { liveSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
-
-const { replaySubtitleVisible } = storeDefinitionToRefs(usePlaybackStore);
+const { liveSubtitlesEnable, replaySubtitleVisible } = storeDefinitionToRefs(useSubtitleStore);
 </script>

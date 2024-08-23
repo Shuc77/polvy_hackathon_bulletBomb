@@ -1,11 +1,13 @@
 import { translate } from '@/assets/lang';
-import { isArray } from '@/assets/utils/array';
+import { isArray, tupleString } from '@/assets/utils/array';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, ref } from 'vue';
 import { SelectOptionItem, SelectValueType } from './types/select-types';
 
 export const selectProps = () => ({
+  /** 主题 */
+  theme: PropUtils.oneOf(tupleString('dark', 'light')).def('light'),
   /** 绑定值 */
   value: PropUtils.oneOfType<SelectValueType | SelectValueType[]>([
     String,
@@ -23,6 +25,8 @@ export const selectProps = () => ({
   multiple: PropUtils.bool.def(false),
   /** 搜索 */
   search: PropUtils.bool.def(false),
+  /** popper 选项 */
+  popperOptions: PropUtils.object().def({}),
 });
 
 export const selectEmits = () => ({

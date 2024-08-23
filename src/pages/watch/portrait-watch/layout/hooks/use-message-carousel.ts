@@ -1,5 +1,5 @@
 import AlloyFinger from 'alloyfinger';
-import { nextTick, onMounted, ref, unref, watch } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 
 import { useAskStore } from '@/store/use-ask-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
@@ -12,6 +12,19 @@ export const useMessageCarousel = () => {
   const askStore = useAskStore();
 
   const carouselRef = ref<{ $el: HTMLDivElement }>();
+
+  const carouselHeight = ref(getCarouselHeight());
+
+  /**
+   * 获取轮播区域高度
+   */
+  function getCarouselHeight() {
+    return document.documentElement.clientHeight * 0.24;
+  }
+
+  function onWindowResize() {
+    carouselHeight.value = getCarouselHeight();
+  }
 
   const messageCarouselActiveIndex = ref(0);
 
@@ -79,6 +92,12 @@ export const useMessageCarousel = () => {
         touchMove: handleTouchMove,
       });
     });
+
+    window.addEventListener('resize', onWindowResize);
+  });
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('resize', onWindowResize);
   });
 
   function onMessageCarouselSlidePrevEnd() {
@@ -95,6 +114,7 @@ export const useMessageCarousel = () => {
 
   return {
     carouselRef,
+    carouselHeight,
     messageCarouselActiveIndex,
 
     onMessageCarouselSlidePrevEnd,

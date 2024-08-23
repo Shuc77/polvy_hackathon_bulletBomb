@@ -24,37 +24,56 @@
       {{ $lang('player.replaySubtitle.text') }}
     </div>
 
-    <template v-for="item of replaySubtitleList">
+    <div
+      v-if="replaySubtitleSourceLanguageOptions.length"
+      class="c-player-subtitle-setting-section__item"
+    >
       <plv-checkbox
-        v-if="ynToBool(item.isOriginal)"
-        :key="item.id"
-        class="c-player-subtitle-setting-section-check"
+        class="c-player-subtitle-setting-section__item__check"
         :checked="mainReplaySubtitleShow"
         @change="changeMainReplaySubtitleShow"
       >
-        {{ item.name || $lang('subtitle.source') }}
+        <span>{{ $lang('subtitle.source') }}</span>
       </plv-checkbox>
+      <pc-select
+        theme="dark"
+        class="c-player-subtitle-setting-section__item__select"
+        :value="replaySubtitleSourceLanguageOptions[0].value"
+        :options="replaySubtitleSourceLanguageOptions"
+        :popper-options="{ placement: 'top-start' }"
+      />
+    </div>
+
+    <div
+      v-if="replaySubtitleSourceTranslateLanguageOptions.length"
+      class="c-player-subtitle-setting-section__item"
+    >
       <plv-checkbox
-        v-else
-        :key="item.id"
-        class="c-player-subtitle-setting-section-check"
+        class="c-player-subtitle-setting-section__item__check"
         :checked="subReplaySubtitleShow"
         @change="changeSubReplaySubtitleShow"
       >
-        {{ item.name || $lang('subtitle.translate') }}
+        <span>{{ $lang('subtitle.translate') }}</span>
       </plv-checkbox>
-    </template>
+      <pc-select
+        theme="dark"
+        class="c-player-subtitle-setting-section__item__select"
+        v-model="curSelectedReplaySubtitleItemId"
+        :options="replaySubtitleSourceTranslateLanguageOptions"
+        :popper-options="{ placement: 'top-start' }"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { PlvSwitch } from '@/plugins/polyv-ui/pc-import';
 import { PlvCheckbox } from '@/plugins/polyv-ui/admin-import';
-import { ynToBool } from '@polyv/utils/es/boolean';
+import PcSelect from '@/components/common-base/select/pc-select.vue';
+
 import { getWatchCore } from '@/core/watch-sdk';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { usePlaybackStore } from '@/store/use-playback-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 const {
@@ -63,9 +82,11 @@ const {
 
   mainReplaySubtitleShow,
   subReplaySubtitleShow,
+  replaySubtitleVisible,
+  curSelectedReplaySubtitleItemId,
+  replaySubtitleSourceLanguageOptions,
+  replaySubtitleSourceTranslateLanguageOptions,
 } = storeDefinitionToRefs(useSubtitleStore);
-
-const { replaySubtitleVisible, replaySubtitleList } = storeDefinitionToRefs(usePlaybackStore);
 
 const {
   changeLocalUerSubtitlesEnable,
@@ -97,20 +118,36 @@ function changeSubtitleSwitch() {
   font-size: 14px;
 }
 
-.c-player-subtitle-setting-section-check {
+.c-player-subtitle-setting-section__item {
   display: flex;
   align-items: center;
-  height: 24px;
-  .plv-admin-icon-check {
-    background: #1755ee;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  &:last-child {
+    margin-bottom: 0;
   }
-  .plv-checkbox__label {
-    display: inline-block;
-    max-width: 100%;
-    overflow: hidden;
-    color: #fff;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+
+  .c-player-subtitle-setting-section__item__check {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    margin-right: 10px;
+    .plv-admin-icon-check {
+      background: #1755ee;
+    }
+    .plv-checkbox__label {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      color: #fff;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .c-player-subtitle-setting-section__item__select {
+    width: 132px;
+    height: 32px;
   }
 }
 </style>

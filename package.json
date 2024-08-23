@@ -1,6 +1,6 @@
 {
   "name": "polyv-web-live-watch-sdk",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -36,7 +36,7 @@
     "@just4/virtual-list": "1.0.0",
     "@polyv/chat-sdk-ui-ask-question": "0.5.0-rc.1",
     "@polyv/icons-vue": "1.2.0",
-    "@polyv/live-watch-sdk": "1.6.0",
+    "@polyv/live-watch-sdk": "1.7.0",
     "@polyv/polyv-ui": "4.0.9",
     "@polyv/utils": "2.6.0",
     "@polyv/web-view-bridge": "0.1.0-rc.1",
@@ -66,6 +66,7 @@
     "@types/socket.io-client": "1.4.36",
     "@typescript-eslint/eslint-plugin": "5.59.1",
     "@typescript-eslint/parser": "5.59.1",
+    "@vue/babel-preset-jsx": "^1.4.0",
     "@vue/cli-plugin-babel": "4.5.18",
     "@vue/cli-service": "4.5.18",
     "@vue/eslint-config-standard": "8.0.1",

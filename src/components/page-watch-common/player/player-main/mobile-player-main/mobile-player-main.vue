@@ -77,12 +77,21 @@
     <!-- 精彩看点弹窗 -->
     <mobile-player-time-axis-mark-popup v-if="supportTimeAxisMark" />
 
+    <!-- 回放字幕切换popup -->
+    <mobile-subtitle-select
+      v-model="pbSubtitleTranslateLanguage"
+      :options="pbSubtitleOptions"
+      ref="pbSubtitleSelectRef"
+      class="c-mobile-player-playback-subtitle-select"
+      @input="handleSelectSubtitle"
+    ></mobile-subtitle-select>
+
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, unref } from 'vue';
+import { computed, unref, ref } from 'vue';
 
 import { appEvents, eventBus } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -94,6 +103,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
+import { useMobilePlaybackSubtitle } from '../../../subtitle/use-mobile-playback-subtitle';
 
 import PlayerPlayButton from '../../common/player-play-button/player-play-button.vue';
 import { PlayButtonMode } from '../../common/player-play-button/use-player-play-button';
@@ -105,6 +115,7 @@ import MobileBarrageSetting from '../../player-control/mobile-player-control/mob
 import MobilePlayerTimeAxisEntrance from '../../player-time-axis-mark/mobile-player-time-axis-entrance.vue';
 import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-player-time-axis-mark-popup.vue';
 import MobilePlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/mobile-player-subtitle.vue';
+import MobileSubtitleSelect from '@/components/page-watch-common/subtitle/mobile-subtitle-select/mobile-subtitle-select.vue';
 
 import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
@@ -112,6 +123,7 @@ import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { useChannelStore } from '@/store/use-channel-store';
 import { translate } from '@/assets/lang';
+import { ComponentInstance } from '@/hooks/core/use-vue';
 
 const {
   mobilePlayerIsPageFullscreen,
@@ -175,6 +187,17 @@ function onClickContainer() {
   }
   eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
 }
+
+const pbSubtitleSelectRef = ref<ComponentInstance<typeof MobileSubtitleSelect>>();
+
+const { pbSubtitleOptions, pbSubtitleTranslateLanguage, handleSelectSubtitle } =
+  useMobilePlaybackSubtitle({
+    openSelectAction: () => {
+      if (pbSubtitleSelectRef.value) {
+        pbSubtitleSelectRef.value.openOption();
+      }
+    },
+  });
 
 useConnectMicing();
 </script>
@@ -303,5 +326,9 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
   left: 50%;
   z-index: 3000;
   transform: translateX(-50%);
+}
+
+.c-mobile-player-playback-subtitle-select {
+  display: none;
 }
 </style>

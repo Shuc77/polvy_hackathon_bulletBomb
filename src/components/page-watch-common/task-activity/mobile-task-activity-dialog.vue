@@ -44,7 +44,9 @@
 
         <!-- 结束时间 -->
         <div class="c-mobile-task-activity-dialog__item__end">
-          {{ $lang('taskActivity.end', { endTime: formatDate(item.endTime, DATE_FORMAT_COMPLETE) }) }}
+          {{
+            $lang('taskActivity.end', { endTime: formatDate(item.endTime, DATE_FORMAT_COMPLETE) })
+          }}
         </div>
 
         <!-- 任务进度 -->

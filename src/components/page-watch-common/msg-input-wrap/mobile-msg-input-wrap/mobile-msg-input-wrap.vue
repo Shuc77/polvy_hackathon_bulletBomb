@@ -17,6 +17,9 @@
     <div
       ref="mainRef"
       class="c-mobile-msg-input-wrap__main pws-mobile-msg-input-wrap-main"
+      :class="{
+        'c-mobile-msg-input-wrap__main--multi-row': isMultiRow,
+      }"
     >
       <!-- 输入框 -->
       <div
@@ -36,6 +39,7 @@
           v-model="autoTextareaInputValue"
           :placeholder="placeholder"
           :is-overflow.sync="wordLimitVisible"
+          :is-multi-row.sync="isMultiRow"
           :maxlength="maxInputTextLength"
           :disabled="disabledInput"
           background="#d4d9df"
@@ -163,7 +167,6 @@ const {
 });
 
 function onClickInputWrap() {
-  console.log('onClickInputWrap');
   emit('click-input-wrap');
 }
 
@@ -198,6 +201,8 @@ const wrapStyle = computed(() => {
 
   return style;
 });
+
+const isMultiRow = ref(false);
 
 /** 是否显示发送按钮 */
 const showSendBtn = computed(() => {
@@ -242,9 +247,17 @@ defineExpose(msgInputWrapInstance);
   box-sizing: border-box;
   display: flex;
   flex-shrink: 0;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
   padding: 8px 15px 24px;
+
+  &.c-mobile-msg-input-wrap__main--multi-row {
+    align-items: flex-end;
+
+    .c-mobile-auto-textarea {
+      align-items: flex-end;
+    }
+  }
 }
 
 .c-mobile-msg-input-wrap__input {
@@ -270,6 +283,7 @@ defineExpose(msgInputWrapInstance);
   flex-shrink: 0;
   width: 24px;
   height: 24px;
+  margin-top: 7px;
   margin-right: 7px;
   margin-bottom: 7px;
   margin-left: -9px;
@@ -283,9 +297,12 @@ defineExpose(msgInputWrapInstance);
 }
 
 .c-mobile-msg-input-wrap__button {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
   min-width: 40px;
   height: $--mobile-msg-input-wrap-base-height;
-  line-height: $--mobile-msg-input-wrap-base-height;
   text-align: center;
 }
 

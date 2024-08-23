@@ -8,6 +8,7 @@
       :get-link-params="getLinkParams"
       :desc-label="jobDescLabel"
       :recruitment-enabled="recruitmentEnabled"
+      :hot-effect-enabled="productHotEffectEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       :order-center-visible="isShowOrderCenter"
       @click-good-desc="openGoodDetail"
@@ -74,7 +75,7 @@ const { getWeixinSdk } = useWeixinSdk();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy } = useProduct();
+const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy, productHotEffectEnabled } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

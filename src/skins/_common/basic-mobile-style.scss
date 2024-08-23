@@ -286,11 +286,11 @@
 
     //   -------------- 实时字幕 -------------  //
     .pws-mobile-subtitle__top-skin {
-      .c-mobile-select__body {
+      .pws-mobile-subtitle-select__body {
         background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
       }
 
-      .c-mobile-select__body__input, .c-mobile-select__body__icon {
+      .pws-mobile-subtitle-select__body__input, .pws-mobile-subtitle-select__body__icon {
         color: map.get($--skin-configs, 'subtitle:text-color') !important;
       }
     }

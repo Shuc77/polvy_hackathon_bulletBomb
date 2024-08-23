@@ -8,6 +8,7 @@ import {
   SubtitleEvents,
   SubtitlesListItem,
   SubtitleSliceType,
+  SubtitleSourceTranslateLanguage,
 } from '@polyv/live-watch-sdk';
 
 import { translate } from '@/assets/lang';
@@ -16,36 +17,53 @@ import { TAB_NAME_SUBTITLE } from '@/assets/constants/tab-name';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { SubtitleSelectOptionItem } from './mobile-subtitle-select/use-subtitle-select';
 
 /**
  * 实时字幕列表 hook
  * @hook
  */
 export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
+  const subtitleStore = useSubtitleStore();
   const {
     liveSubtitleSourceLanguage,
+    liveSubtitleSourceTranslateLanguage,
 
+    liveSubtitleSourceTranslateLanguageOptions,
+    liveSubtitleSourceLanguageOptions,
     subtitleDisplayNumber,
     subtitleDisplayNumberLimitEnabled,
   } = storeDefinitionToRefs(useSubtitleStore);
 
   /** 用户选择的翻译的类型 */
-  const subtitleTranslateSelected = ref<'all' | 'source' | 'translate'>('all');
+  const subtitleTranslateSelected = ref<
+    ['all' | 'source' | 'translate', SubtitleSourceTranslateLanguage | undefined]
+  >(['all', liveSubtitleSourceTranslateLanguage.value]);
+
+  watch(subtitleTranslateSelected, () => {
+    const [type, lang] = subtitleTranslateSelected.value;
+    if (type !== 'source' && lang && lang !== liveSubtitleSourceTranslateLanguage.value) {
+      subtitleStore.changeLiveSubtitleSourceTranslateLanguage(lang);
+    }
+  });
 
   /** 可以选择的翻译选项 */
-  const subtitleTranslateOptions = computed(() => {
+  const subtitleTranslateOptions = computed<SubtitleSelectOptionItem[]>(() => {
     return [
       {
         label: translate('subtitle.all'),
         value: 'all',
+        children: liveSubtitleSourceTranslateLanguageOptions.value,
       },
       {
         label: translate('subtitle.source'),
         value: 'source',
+        children: liveSubtitleSourceLanguageOptions.value,
       },
       {
         label: translate('subtitle.translate'),
         value: 'translate',
+        children: liveSubtitleSourceTranslateLanguageOptions.value,
       },
     ];
   });
@@ -136,11 +154,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     const watchCore = getWatchCore();
     subtitleList.value = cloneDeep(watchCore.subtitles.getSubtitlesList());
     spliceSubtitle();
-    nextTick(() => {
-      subtitleScroll.value?.scrollTo({
-        top: subtitleScroll.value.offsetHeight,
-      });
-    });
   }
 
   function onSubtitleRealTimeCC(data: SubtitleRealTimeCC) {
@@ -170,6 +183,12 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
   function onResetSubtitleList() {
     subtitleList.value = [];
+    isBottom.value = true;
+  }
+
+  function onSubtitleListForceSync() {
+    getSubtitleList();
+    scrollToBottom();
   }
 
   function bindSubtitleEvent() {
@@ -178,6 +197,10 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
     watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
+    watchCore.subtitles.eventEmitter.on(
+      SubtitleEvents.SubtitleListForceSync,
+      onSubtitleListForceSync,
+    );
   }
 
   function unbindSubtitleEvent() {
@@ -186,11 +209,24 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
     watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
+    watchCore.subtitles.eventEmitter.off(
+      SubtitleEvents.SubtitleListForceSync,
+      onSubtitleListForceSync,
+    );
   }
 
   onMounted(() => {
-    bindSubtitleEvent();
-    getSubtitleList();
+    const watchCore = getWatchCore();
+    // eslint-disable-next-line promise/prefer-await-to-then
+    watchCore.subtitles.initSubtitleList().finally(() => {
+      bindSubtitleEvent();
+      getSubtitleList();
+      nextTick(() => {
+        subtitleScroll.value?.scrollTo({
+          top: subtitleScroll.value.offsetHeight,
+        });
+      });
+    });
   });
 
   onBeforeUnmount(() => {

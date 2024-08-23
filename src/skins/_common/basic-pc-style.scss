@@ -228,12 +228,9 @@
 
     //   -------------- 实时字幕 -------------  //
     .pws-pc-subtitle__top-skin {
-      .c-pc-select__body {
-        background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
-      }
-
-      .c-pc-select__body__input, .c-pc-select__body__icon {
+      .plv-cascader__body {
         color: map.get($--skin-configs, 'subtitle:text-color') !important;
+        background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
       }
     }
 

@@ -94,6 +94,9 @@
           <plv-carousel
             ref="carouselRef"
             class="c-portrait-carousel-main-screen__carousel"
+            :style="{
+              height: `${carouselHeight}px`,
+            }"
             :slide-index.sync="messageCarouselActiveIndex"
             @slide-prev-end="onMessageCarouselSlidePrevEnd"
             @slide-next-end="onMessageCarouselSlideNextEnd"
@@ -358,6 +361,7 @@ const { emitEvent: onClickPlaybackEntrance } = useEventBusEmitter(
 
 const {
   carouselRef,
+  carouselHeight,
   messageCarouselActiveIndex,
 
   onMessageCarouselSlidePrevEnd,

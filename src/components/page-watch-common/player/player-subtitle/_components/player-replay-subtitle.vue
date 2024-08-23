@@ -26,20 +26,20 @@ import {
   PlayerEventsRelations,
   ReplaySubtitleItem,
   SubtitleParsedItem,
+  YN,
 } from '@polyv/live-watch-sdk';
 
 import { getWatchCore } from '@/core/watch-sdk';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
 import { ynToBool } from '@polyv/utils/es/boolean';
 import { useSubtitleProps, usePlayerSubtitle } from '../_hooks/_use-player-subtitle';
 
 const subtitleStore = useSubtitleStore();
 
-const { mainReplaySubtitleShow, subReplaySubtitleShow } = storeDefinitionToRefs(useSubtitleStore);
-const { replaySubtitleList } = storeDefinitionToRefs(usePlaybackStore);
+const { mainReplaySubtitleShow, subReplaySubtitleShow, replaySubtitleList } =
+  storeDefinitionToRefs(useSubtitleStore);
 
 const props = defineProps(useSubtitleProps());
 const {
@@ -53,7 +53,7 @@ const {
 const mainSrtList = ref<SubtitleParsedItem[]>([]);
 
 // 翻译字幕集合
-const translatedSrtList = ref<SubtitleParsedItem[]>([]);
+const translatedSrtListMap = ref<{ [langId: string]: SubtitleParsedItem[] }>({});
 
 // 主字幕-单行
 const mainText = ref('');
@@ -64,11 +64,13 @@ const translatedText = ref('');
 const timeBetween = 1000;
 
 /** 设置回放字幕集合 */
-const setReplaySrtList = async (isOriginal: 'Y' | 'N', url?: string) => {
-  if (!url) return;
+const setReplaySrtList = async (subtitleItem: ReplaySubtitleItem) => {
+  if (!subtitleItem.srtUrl) return;
 
   const watchCore = getWatchCore();
-  const originSubtitleContent = await watchCore.subtitles.getReplaySubtitleContent(url);
+  const originSubtitleContent = await watchCore.subtitles.getReplaySubtitleContent(
+    subtitleItem.srtUrl,
+  );
   const parsedSubtitleList = watchCore.subtitles.parseReplaySubtitleContent(originSubtitleContent);
 
   const tempSrtList = parsedSubtitleList.map(item => {
@@ -80,11 +82,11 @@ const setReplaySrtList = async (isOriginal: 'Y' | 'N', url?: string) => {
     };
   });
 
-  if (ynToBool(isOriginal)) {
+  if (ynToBool(subtitleItem.isOriginal)) {
     mainSrtList.value = tempSrtList;
     subtitleStore.changeMainReplaySubtitleShow(true);
   } else {
-    translatedSrtList.value = tempSrtList;
+    translatedSrtListMap.value[subtitleItem.id] = tempSrtList;
     subtitleStore.changeSubReplaySubtitleShow(true);
   }
 };
@@ -103,10 +105,16 @@ watch(
     if (!replaySubtitleList.value.length) return;
 
     setReplaySubtitleList(replaySubtitleList.value);
-
     replaySubtitleList.value.forEach(item => {
-      setReplaySrtList(item.isOriginal, item.srtUrl);
+      setReplaySrtList(item);
     });
+
+    const firstTranslateLang = replaySubtitleList.value.find(item => item.isOriginal !== YN.Y);
+    if (firstTranslateLang) {
+      subtitleStore.$patch({
+        curSelectedReplaySubtitleItemId: String(firstTranslateLang.id),
+      });
+    }
   },
   {
     immediate: true,
@@ -134,7 +142,12 @@ const onPlayerUIReplaySubtitleChecked = (
 /** 播放器时间更新 */
 const onPlayerTimeUpdate = (params: PlayerEventsRelations[PlayerEvents.TimeUpdate]) => {
   mainText.value = getDisplayTextByTime(mainSrtList.value, params.currentTime);
-  translatedText.value = getDisplayTextByTime(translatedSrtList.value, params.currentTime);
+
+  const curTranslateSrtList =
+    translatedSrtListMap.value[subtitleStore.curSelectedReplaySubtitleItemId];
+  if (curTranslateSrtList) {
+    translatedText.value = getDisplayTextByTime(curTranslateSrtList, params.currentTime);
+  }
 };
 
 const bindPlayerEvents = () => {

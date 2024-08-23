@@ -4,12 +4,12 @@
     ref="subtitleScroll"
     class="c-mobile-subtitle"
   >
-    <template v-if="liveSubtitlesEnable && subtitleList.length">
+    <template v-if="liveSubtitlesEnable">
       <div
         v-if="subtitleTranslateEnabled"
         class="c-mobile-subtitle__top pws-mobile-subtitle__top-skin"
       >
-        <mobile-select
+        <mobile-subtitle-select
           v-model="subtitleTranslateSelected"
           :options="subtitleTranslateOptions"
         />
@@ -26,22 +26,30 @@
           :key="index"
           class="c-mobile-subtitle__content-item pws-mobile-subtitle__content-item"
         >
-          <div v-if="subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source'">
+          <div
+            v-if="
+              subtitleTranslateSelected.includes('all') ||
+              subtitleTranslateSelected.includes('source')
+            "
+          >
             {{ item[liveSubtitleSourceLanguage] }}
           </div>
           <div
-            v-if="subtitleTranslateSelected === 'all' && item[liveSubtitleSourceTranslateLanguage]"
+            v-if="
+              subtitleTranslateSelected.includes('all') && item[liveSubtitleSourceTranslateLanguage]
+            "
             class="c-mobile-subtitle__content-item-line pws-mobile-subtitle__content-item-line"
           ></div>
           <div
             v-if="
-              (subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'translate') &&
+              (subtitleTranslateSelected.includes('all') ||
+                subtitleTranslateSelected.includes('translate')) &&
               item[liveSubtitleSourceTranslateLanguage]
             "
             class="c-mobile-subtitle__content-item-translate"
             :class="{
               'c-mobile-subtitle__content-item-translate--force':
-                subtitleTranslateSelected === 'translate',
+                subtitleTranslateSelected.includes('translate'),
             }"
           >
             {{ item[liveSubtitleSourceTranslateLanguage] }}
@@ -50,7 +58,8 @@
         <div
           v-show="
             currentSubtitle &&
-            (subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source')
+            (subtitleTranslateSelected.includes('all') ||
+              subtitleTranslateSelected.includes('source'))
           "
           class="c-mobile-subtitle__content-item pws-mobile-subtitle__content-item"
         >
@@ -77,7 +86,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import MobileSelect from '@/components/common-base/select/mobile-select.vue';
+import MobileSubtitleSelect from './mobile-subtitle-select/mobile-subtitle-select.vue';
+
 import { MobileIconArrowDown } from '@/components/component-icons/mobile/map';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -126,18 +136,6 @@ const {
   position: sticky;
   top: 0;
   z-index: 1;
-
-  .c-mobile-select__body {
-    border: unset;
-    border-radius: unset;
-  }
-
-  .c-mobile-select__body__input {
-    flex: unset;
-    width: 60px;
-    padding: 0;
-    font-size: 14px;
-  }
 }
 
 .c-mobile-subtitle__footer-tips {

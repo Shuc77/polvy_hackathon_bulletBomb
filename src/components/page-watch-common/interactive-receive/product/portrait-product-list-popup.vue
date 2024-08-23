@@ -29,6 +29,7 @@
           :get-link-params="getLinkParams"
           :desc-label="jobDescLabel"
           :recruitment-enabled="recruitmentEnabled"
+          :hot-effect-enabled="productHotEffectEnabled"
           :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
           :is-plv-webview="isPlvWebview"
           :get-plv-webview-bridge="getPlvWebviewBridge"
@@ -119,7 +120,7 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
 
-const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy } = useProduct();
+const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

@@ -124,6 +124,9 @@
             ref="PlayerControlWrapperRef"
             class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-control"
           >
+            <div class="c-pc-watch-layout__main__player-product-bubble">
+              <pc-product-bubble v-if="iarSdkLoaded" />
+            </div>
             <transition name="fade">
               <pc-player-control
                 v-if="canRenderPlayer"
@@ -189,6 +192,7 @@ import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
 import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
+import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -199,6 +203,7 @@ import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import {
   MainScreenContent,
@@ -223,6 +228,8 @@ const { masterMicItem, isDeviceRecoverFailed } = storeDefinitionToRefs(useConnec
 const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const PlayerControlWrapperRef = ref<HTMLDivElement>();
 
@@ -517,5 +524,13 @@ $--layout-sub-pack-up-height: 40px !default;
   .c-pc-watch-layout__menu-panel-content {
     padding: 0 24px;
   }
+}
+
+.c-pc-watch-layout__main__player-product-bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

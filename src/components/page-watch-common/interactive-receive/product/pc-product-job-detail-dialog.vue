@@ -9,6 +9,7 @@
       v-if="productSdk && jobDetail"
       :product-sdk="productSdk"
       :job-detail="jobDetail"
+      :hot-effect-enabled="productHotEffectEnabled"
       :get-link-params="getLinkParams"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
     />
@@ -26,7 +27,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const IarProductJobDetail = getIarComponent('ProductJob');
 
-const { productSdk } = useProduct();
+const { productSdk, productHotEffectEnabled } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

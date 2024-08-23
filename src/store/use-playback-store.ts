@@ -4,13 +4,7 @@
 
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import {
-  LiveStatus,
-  PlaybackMode,
-  PlaybackTarget,
-  PlaybackType,
-  ReplaySubtitleItem,
-} from '@polyv/live-watch-sdk';
+import { LiveStatus, PlaybackMode, PlaybackTarget } from '@polyv/live-watch-sdk';
 import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
@@ -46,10 +40,6 @@ export interface PlaybackStoreState {
   chatReplayEnabled: ComputedRef<boolean>;
   /** 是否能够商品库重放 */
   productReplayEnabled: ComputedRef<boolean>;
-  /** 回放字幕数据 */
-  replaySubtitleList: ComputedRef<ReplaySubtitleItem[]>;
-  /** 是否展示回放字幕 */
-  replaySubtitleVisible: ComputedRef<boolean>;
 }
 
 export interface PlaybackStoreActions {
@@ -132,24 +122,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     if (channelStore.liveStatus === LiveStatus.Live) return false;
 
     return currentPlaybackTarget.value.productReplayEnabled;
-  });
-
-  /** 回放字幕数据 */
-  const replaySubtitleList = computed(() => {
-    if (!currentPlaybackTarget.value) return [];
-    return currentPlaybackTarget.value.subtitleList;
-  });
-
-  /** 回放字幕是否展示 */
-  const replaySubtitleVisible = computed<boolean>(() => {
-    // 当前没有回放对象不展示
-    if (!currentPlaybackTarget.value) return false;
-    // 点播回放列表不展示
-    if (currentPlaybackTarget.value.playbackOptions.type === PlaybackType.Vod) return false;
-    // 直播中不展示
-    if (channelStore.liveStatus === LiveStatus.Live) return false;
-
-    return replaySubtitleList.value.length > 0;
   });
 
   const chapterEnabled = ref(false);
@@ -327,8 +299,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     playbackListVisible,
     chatReplayEnabled,
     productReplayEnabled,
-    replaySubtitleList,
-    replaySubtitleVisible,
 
     syncPlaybackStore,
     updateCurrentPlaybackTarget,

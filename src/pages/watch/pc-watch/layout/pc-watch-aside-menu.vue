@@ -6,13 +6,6 @@
       @input="trackWatchTabChange"
       @is-empty-callback="onIsEmptyCallback"
     >
-      <!-- ========= 弹层类型组件 Start ========= -->
-      <!-- 商品库推送气泡 -->
-      <pc-product-bubble
-        v-if="iarSdkLoaded"
-        :product-bubble-enable="false"
-      />
-
       <!-- 课堂激励特效，跟随"屏蔽特效"开关 -->
       <motivation-like-animation
         v-if="donateAnimationVisible"
@@ -128,7 +121,7 @@
           :label="menu.name"
           :name="TAB_NAME_SUBTITLE"
         >
-          <pc-subtitle v-if="subtitleModuleSetuped" />
+          <pc-subtitle />
         </pc-aside-tab-pane>
 
         <!-- AI助手答疑 -->
@@ -167,7 +160,6 @@ import PcProductList from '@/components/page-watch-common/interactive-receive/pr
 import PcVotePanel from '@/components/page-watch-common/interactive-receive/vote/pc-vote-panel.vue';
 import PcMemberList from '@/components/page-watch-common/member-list/member-list.vue';
 import PcQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/pc-question-answer.vue';
-import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
 import PcAsk from '@/components/page-watch-common/ask/pc-ask/pc-ask.vue';
 import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
 import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
@@ -200,7 +192,6 @@ import { ChannelMenuType, MotivationLikeType } from '@polyv/live-watch-sdk';
 
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
-import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
@@ -217,8 +208,6 @@ const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
-
-const { subtitleModuleSetuped } = storeDefinitionToRefs(useSubtitleStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,

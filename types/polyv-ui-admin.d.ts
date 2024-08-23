@@ -114,3 +114,12 @@ declare module '@polyv/polyv-ui/lib-admin/popper' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+/**
+ * 级联选择器
+ */
+declare module '@polyv/polyv-ui/lib-admin/cascader' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

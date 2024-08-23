@@ -28,11 +28,6 @@
     <!-- 抢答 -->
     <pc-rush-answer class="c-pc-chat-room-pendant__item" />
 
-    <pc-product-bubble
-      v-if="iarSdkLoaded"
-      :product-dialog-enable="false"
-    />
-
     <!-- 点赞 -->
     <pc-chat-like
       v-if="likeFeatureEnabled"
@@ -56,7 +51,6 @@ import PcRedpackPendant from '@/components/page-watch-common/interactive-receive
 import PcWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/pc-welfare-lottery.vue';
 import PcLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/pc-topic-pk.vue';
-import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
 import PcChatLike from '../chat-like/pc-chat-like.vue';
@@ -77,7 +71,6 @@ const {
   welfareLotteryPendantVisible,
   lotteryPendantVisible,
   rushAnswerPendantVisible,
-  iarSdkLoaded,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 点赞上方是否有其他挂件 */

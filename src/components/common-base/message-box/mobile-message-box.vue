@@ -31,10 +31,18 @@
           ></div>
         </div>
         <div class="c-mobile-message-box__footer">
-          <button @click="onCancel">
+          <button
+            class="c-mobile-message-box__footer__btn"
+            v-if="cancelButtonText"
+            @click="onCancel"
+          >
             {{ props.cancelButtonText }}
           </button>
-          <button @click="onConfirm">
+          <button
+            class="c-mobile-message-box__footer__btn"
+            v-if="confirmButtonText"
+            @click="onConfirm"
+          >
             {{ props.confirmButtonText }}
           </button>
         </div>
@@ -112,19 +120,20 @@ defineExpose(messageBoxInstance);
 }
 .c-mobile-message-box__footer {
   box-sizing: border-box;
+  display: flex;
   border-top: 1px solid #ededef;
-  button {
-    box-sizing: border-box;
-    display: inline-block;
-    width: 50%;
-    font-size: 16px;
-    line-height: 48px;
-    color: #3082fe;
-    vertical-align: middle;
-    background: #fff;
-    &:first-child {
-      border-right: 1px solid rgba(#000000, 0.1);
-    }
+}
+.c-mobile-message-box__footer__btn {
+  box-sizing: border-box;
+  display: inline-block;
+  flex: 1;
+  font-size: 16px;
+  line-height: 48px;
+  color: #3082fe;
+  vertical-align: middle;
+  background: #fff;
+  & + & {
+    border-left: 1px solid rgba(#000000, 0.1);
   }
 }
 .c-mobile-message-box__body {
