@@ -9,6 +9,7 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { LiveStatus, PlayStatus, QualityLevelType } from '@polyv/live-watch-sdk';
 import { formatSeconds } from '@utils-ts/date';
 import { computed, unref } from 'vue';
@@ -26,6 +27,7 @@ export const usePlayerControl = () => {
   const playbackStore = usePlaybackStore();
   const connectMicStore = useConnectMicStore();
   const docStore = useDocStore();
+  const subtitleStore = useSubtitleStore();
 
   /** 播放按钮提示文案 */
   const playButtonTips = computed<string>(() => {
@@ -252,7 +254,7 @@ export const usePlayerControl = () => {
       unref(lineSettingVisible) ||
       unref(qualitySettingVisible) ||
       unref(latencyModeSettingVisible) ||
-      unref(playbackStore.replaySubtitleVisible)
+      unref(subtitleStore.replaySubtitleVisible)
     );
   });
 

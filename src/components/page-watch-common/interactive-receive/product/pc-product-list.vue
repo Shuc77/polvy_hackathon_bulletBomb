@@ -7,6 +7,7 @@
       :get-link-params="getLinkParams"
       :desc-label="jobDescLabel"
       :recruitment-enabled="recruitmentEnabled"
+      :hot-effect-enabled="productHotEffectEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @click-good-desc="openGoodDetail"
       @total-change="onGoodTotalChange"
@@ -66,7 +67,7 @@ const IarProductBtn = getIarComponent('ProductButton');
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy } = useProduct();
+const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } = useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

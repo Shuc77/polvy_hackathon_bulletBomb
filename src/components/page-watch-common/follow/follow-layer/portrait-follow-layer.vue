@@ -13,11 +13,26 @@
     >
       <div class="c-portrait-follow-layer__main">
         <div class="c-portrait-follow-layer__main__tips">{{ followTips }}</div>
-        <img
-          class="c-portrait-follow-layer__main__img"
-          :src="followImage"
-          :alt="followTips"
-        />
+        <div class="c-portrait-follow-layer__main__img-wrapper">
+          <div
+            class="c-portrait-follow-layer__main__img-wrapper__border_corner c-portrait-follow-layer__main__img-wrapper__border_corner_left_top"
+          ></div>
+          <div
+            class="c-portrait-follow-layer__main__img-wrapper__border_corner c-portrait-follow-layer__main__img-wrapper__border_corner_right_top"
+          ></div>
+          <div
+            class="c-portrait-follow-layer__main__img-wrapper__border_corner c-portrait-follow-layer__main__img-wrapper__border_corner_left_bottom"
+          ></div>
+          <div
+            class="c-portrait-follow-layer__main__img-wrapper__border_corner c-portrait-follow-layer__main__img-wrapper__border_corner_right_bottom"
+          ></div>
+          <img
+            class="c-portrait-follow-layer__main__img"
+            :src="followImage"
+            :alt="followTips"
+          />
+        </div>
+
         <!-- 竖屏关闭按钮-->
         <div
           v-show="!mobilePlayerIsPageFullscreen && isVerticalScreenOrientation"
@@ -75,8 +90,8 @@ const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
 .c-portrait-follow-layer__main {
   position: relative;
-  width: 259px;
-  height: 264px;
+  width: 280px;
+  height: 280px;
   text-align: center;
   background: url(./imgs/promotion-background.png) no-repeat;
   background-size: contain;
@@ -97,16 +112,25 @@ const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
   text-align: center;
 }
 
-.c-portrait-follow-layer__main__img {
-  width: 99px;
-  height: 99px;
-  margin-top: 35px;
+.c-portrait-follow-layer__main__img-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
+  margin-top: 8px;
+
+  .c-portrait-follow-layer__main__img {
+    width: 168px;
+    height: 168px;
+  }
 }
 
 .c-portrait-follow-layer__main__close {
   position: absolute;
-  top: 264px;
-  left: 114px;
+  top: 280px;
+  left: 124px;
   width: 32px;
   height: 56px;
   background-image: url(./imgs/mobile-promotion-close.png);
@@ -121,5 +145,40 @@ const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
   height: 32px;
   background-image: url(./imgs/mobile-promotion-close-1.png);
   background-size: contain;
+}
+
+.c-portrait-follow-layer__main__img-wrapper__border_corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #dc5723;
+}
+.c-portrait-follow-layer__main__img-wrapper__border_corner_left_top {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+  // border-top-left-radius: 4px;
+}
+.c-portrait-follow-layer__main__img-wrapper__border_corner_right_top {
+  top: 0;
+  right: 0;
+  border-bottom: none;
+  border-left: none;
+  // border-top-right-radius: 4px;
+}
+.c-portrait-follow-layer__main__img-wrapper__border_corner_left_bottom {
+  bottom: 0;
+  left: 0;
+  border-top: none;
+  border-right: none;
+  // border-bottom-left-radius: 4px;
+}
+.c-portrait-follow-layer__main__img-wrapper__border_corner_right_bottom {
+  right: 0;
+  bottom: 0;
+  border-top: none;
+  border-left: none;
+  // border-bottom-right-radius: 4px;
 }
 </style>

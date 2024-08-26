@@ -19,12 +19,15 @@ export const autoTextareaProps = () => ({
   disabled: PropUtils.bool.def(false),
   /** 是否文字溢出，.sync */
   isOverflow: PropUtils.bool.def(false),
+  /** 输入框是否 2 行以上，.sync */
+  isMultiRow: PropUtils.bool.def(false),
   /** 背景 */
   background: PropUtils.string,
 });
 
 export const autoTextareaEmits = () => ({
   ...updateModelEmit<'isOverflow', boolean>('isOverflow'),
+  ...updateModelEmit<'isMultiRow', boolean>('isMultiRow'),
   /** 绑定值更改 */
   input: emitFunc<string>(),
   /** 失焦事件 */
@@ -62,8 +65,16 @@ export const useAutoTextarea = (options: {
   /** 是否聚焦中 */
   const isFocus = ref(false);
 
+  /** 输入框原始高度 */
+  const originHeight = ref(0);
+
   /** 当前高度 */
   const clientHeight = ref(0);
+
+  /** 输入框是否多行显示 */
+  const textAreaIsMultiRow = computed(() => {
+    return clientHeight.value > originHeight.value;
+  });
 
   const textareaPlaceholder = computed(() => {
     if (unref(isFocus)) {
@@ -104,11 +115,15 @@ export const useAutoTextarea = (options: {
     }
     clientHeight.value = textareaElem.clientHeight;
 
+    console.log('textAreaIsMultiRow', textAreaIsMultiRow.value, clientHeight.value);
+
     if (textareaElem.scrollHeight > textareaElem.clientHeight + 2) {
       emit('update:isOverflow', true);
     } else {
       emit('update:isOverflow', false);
     }
+
+    emit('update:isMultiRow', textAreaIsMultiRow.value);
   }
 
   watch(
@@ -204,6 +219,10 @@ export const useAutoTextarea = (options: {
         false,
       );
     }
+
+    setTimeout(() => {
+      originHeight.value = textareaRef.value?.clientHeight || 0;
+    }, 200);
   });
 
   onBeforeUnmount(() => {
@@ -230,6 +249,7 @@ export const useAutoTextarea = (options: {
     textareaMaxHeight,
     realValue,
     clientHeight,
+    textAreaIsMultiRow,
     onBlur,
     onFocus,
     onInput,

@@ -35,3 +35,6 @@ export { default as PlvCheckbox } from '@polyv/polyv-ui/lib-admin/checkbox';
 
 import '@polyv/polyv-ui/lib-admin/theme/popper.css';
 export { default as PlvPopper } from '@polyv/polyv-ui/lib-admin/popper';
+
+import '@polyv/polyv-ui/lib-admin/theme/cascader.css';
+export { default as PlvCascaderSelect } from '@polyv/polyv-ui/lib-admin/cascader';

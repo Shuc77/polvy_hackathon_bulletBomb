@@ -4,17 +4,21 @@
 import { getWatchCore } from '@/core/watch-sdk';
 import {
   LiveStatus,
+  PlaybackType,
   PlvSubtitleModule,
+  ReplaySubtitleItem,
   SubtitleSourceLanguage,
   SubtitleSourceTranslateLanguage,
+  SubtitleTranslateOption,
+  YN,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useChannelStore } from './use-channel-store';
+import { useLangStore } from './use-lang-store';
+import { usePlaybackStore } from './use-playback-store';
 
 export interface SubtitleStoreState {
-  /** 字幕模块安装完成 */
-  subtitleModuleSetuped: Ref<boolean>;
   /** 实时字幕开关 */
   subtitleRealTimeEnabled: Ref<boolean>;
   /** 实时字幕翻译开关 */
@@ -23,25 +27,48 @@ export interface SubtitleStoreState {
   subtitlesTeacherEnable: Ref<boolean>;
   /** 本地实时字幕是否开启 */
   localUerSubtitlesEnable: Ref<boolean>;
-  /** 回放字幕主字幕（原声字幕）是否显示 */
-  mainReplaySubtitleShow: Ref<boolean>;
-  /** 回放字幕副字幕（翻译字幕）是否显示 */
-  subReplaySubtitleShow: Ref<boolean>;
   /** 实时字幕是否可用 */
   liveSubtitlesEnable: ComputedRef<boolean>;
   /** 原声语言 */
   liveSubtitleSourceLanguage: Ref<SubtitleSourceLanguage>;
   /** 翻译语言 */
   liveSubtitleSourceTranslateLanguage: Ref<SubtitleSourceTranslateLanguage>;
+  /** 翻译语言（可选列表） */
+  liveSubtitleSourceTranslateLanguages: Ref<SubtitleSourceTranslateLanguage[]>;
+  /** 实时字幕翻译可选项 */
+  liveSubtitleSourceTranslateLanguageOptions: ComputedRef<SubtitleTranslateOption[]>;
+  /** 实时字幕原声语言可选项 */
+  liveSubtitleSourceLanguageOptions: ComputedRef<SubtitleTranslateOption[]>;
   /** 实时字幕显示数量限制开关 */
   subtitleDisplayNumberLimitEnabled: Ref<boolean>;
   /** 实时字幕最多显示多少条 */
   subtitleDisplayNumber: Ref<number>;
+
+  // ==== 回放字幕 ====
+
+  /** 回放字幕主字幕（原声字幕）是否显示 */
+  mainReplaySubtitleShow: Ref<boolean>;
+  /** 回放字幕副字幕（翻译字幕）是否显示 */
+  subReplaySubtitleShow: Ref<boolean>;
+  /** 当前选中的回放字幕Id */
+  curSelectedReplaySubtitleItemId: Ref<string>;
+  /** 回放字幕数据 */
+  replaySubtitleList: ComputedRef<ReplaySubtitleItem[]>;
+  /** 是否展示回放字幕 */
+  replaySubtitleVisible: ComputedRef<boolean>;
+  /** 回放字幕翻译可选项 */
+  replaySubtitleSourceTranslateLanguageOptions: ComputedRef<SubtitleTranslateOption[]>;
+  /** 回放字幕原声语言可选项 */
+  replaySubtitleSourceLanguageOptions: ComputedRef<SubtitleTranslateOption[]>;
 }
 
 export interface SubtitleStoreAction {
   /** 同步实时字幕和回放字幕配置 */
   syncSubtitleConfig: () => void;
+  /** 初始化实时字幕翻译 Map */
+  initSubtitleSourceTranslateLanguageOptionMap: () => Promise<void>;
+  /** 更改实时字幕翻译语言 */
+  changeLiveSubtitleSourceTranslateLanguage: (lang: SubtitleSourceTranslateLanguage) => void;
   /** 改变讲师实时字幕状态 */
   changeSubtitlesTeacherEnable: (enable: boolean) => void;
   /** 改变本地实时字幕开启状态 */
@@ -56,11 +83,14 @@ export interface SubtitleStore extends SubtitleStoreState, SubtitleStoreAction {
 
 export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle', () => {
   const channelStore = useChannelStore();
+  const langStore = useLangStore();
+  const playbackStore = usePlaybackStore();
 
   const __subtitleConfig = PlvSubtitleModule.generateDefaultSubtitleConfig();
 
-  /** 字幕模块安装完成 */
-  const subtitleModuleSetuped = ref(false);
+  const subtitleSourceTranslateLanguageOptionMap = ref<{
+    [key: string]: SubtitleTranslateOption | undefined;
+  }>({});
 
   /** 实时字幕开关 */
   const subtitleRealTimeEnabled = ref(__subtitleConfig.subtitleRealTimeEnabled);
@@ -74,11 +104,19 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
   /** 本地实时字幕是否开启 */
   const localUerSubtitlesEnable = ref(true);
 
-  /** 主字幕是否显示 */
-  const mainReplaySubtitleShow = ref(true);
+  /**
+   * 改变讲师实时字幕状态
+   */
+  function changeSubtitlesTeacherEnable(enable: boolean): void {
+    subtitlesTeacherEnable.value = enable;
+  }
 
-  /** 副字幕是否显示 */
-  const subReplaySubtitleShow = ref(true);
+  /**
+   * 改变本地实时字幕开启状态
+   */
+  function changeLocalUerSubtitlesEnable(enable: boolean): void {
+    localUerSubtitlesEnable.value = enable;
+  }
 
   /** 直播实时字幕是否可用 */
   const liveSubtitlesEnable = computed(() => {
@@ -99,41 +137,101 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
     __subtitleConfig.subtitleTranslateLanguage,
   );
 
+  /** 翻译语言（可选列表） */
+  const liveSubtitleSourceTranslateLanguages = ref<SubtitleSourceTranslateLanguage[]>(
+    __subtitleConfig.subtitleTranslateLanguages,
+  );
+
+  /** 实时字幕翻译可选项 */
+  const liveSubtitleSourceTranslateLanguageOptions = computed<SubtitleTranslateOption[]>(() => {
+    return liveSubtitleSourceTranslateLanguages.value.map(val => {
+      const item = subtitleSourceTranslateLanguageOptionMap.value[val];
+      const result: SubtitleTranslateOption = {
+        label: val,
+        value: val,
+      };
+      if (!langStore.isChineseLang) return result;
+      return item || result;
+    });
+  });
+
+  /** 实时字幕原声语言可选项 */
+  const liveSubtitleSourceLanguageOptions = computed<SubtitleTranslateOption[]>(() => {
+    const val = liveSubtitleSourceLanguage.value as string;
+    const item = subtitleSourceTranslateLanguageOptionMap.value[val];
+    const result: SubtitleTranslateOption = {
+      label: val,
+      value: val,
+    };
+    if (!langStore.isChineseLang) return [result];
+    return [item || result];
+  });
+
   /** 实时字幕显示数量限制开关 */
   const subtitleDisplayNumberLimitEnabled = ref(__subtitleConfig.subtitleDisplayNumberLimitEnabled);
 
   /** 实时字幕最多显示多少条 */
   const subtitleDisplayNumber = ref(__subtitleConfig.subtitleDisplayNumber);
 
-  /**
-   * 同步实时字幕配置
-   * */
-  function syncSubtitleConfig() {
-    const watchCore = getWatchCore();
-    const subTitleConfig = watchCore.subtitles.getSubtitleConfig();
+  /** 回放主字幕是否显示 */
+  const mainReplaySubtitleShow = ref(true);
 
-    subtitleRealTimeEnabled.value = subTitleConfig.subtitleRealTimeEnabled;
-    subtitleTranslateEnabled.value = subTitleConfig.subtitleTranslateEnabled;
+  /** 回放副字幕是否显示 */
+  const subReplaySubtitleShow = ref(true);
 
-    liveSubtitleSourceLanguage.value = subTitleConfig.subtitleSourceLanguage;
-    liveSubtitleSourceTranslateLanguage.value = subTitleConfig.subtitleTranslateLanguage;
-    subtitleDisplayNumberLimitEnabled.value = subTitleConfig.subtitleDisplayNumberLimitEnabled;
-    subtitleDisplayNumber.value = subTitleConfig.subtitleDisplayNumber;
-  }
+  /** 当前选中的回放字幕Id */
+  const curSelectedReplaySubtitleItemId = ref('');
 
-  /**
-   * 改变讲师实时字幕状态
-   */
-  function changeSubtitlesTeacherEnable(enable: boolean): void {
-    subtitlesTeacherEnable.value = enable;
-  }
+  /** 回放字幕数据 */
+  const replaySubtitleList = computed(() => {
+    if (!playbackStore.currentPlaybackTarget) return [];
+    return playbackStore.currentPlaybackTarget.subtitleList;
+  });
 
-  /**
-   * 改变本地实时字幕开启状态
-   */
-  function changeLocalUerSubtitlesEnable(enable: boolean): void {
-    localUerSubtitlesEnable.value = enable;
-  }
+  /** 回放字幕是否展示 */
+  const replaySubtitleVisible = computed<boolean>(() => {
+    // 当前没有回放对象不展示
+    if (!playbackStore.currentPlaybackTarget) return false;
+    // 点播回放列表不展示
+    if (playbackStore.currentPlaybackTarget.playbackOptions.type === PlaybackType.Vod) return false;
+    // 直播中不展示
+    if (channelStore.liveStatus === LiveStatus.Live) return false;
+
+    return replaySubtitleList.value.length > 0;
+  });
+
+  /** 回放字幕翻译可选项 */
+  const replaySubtitleSourceTranslateLanguageOptions = computed<SubtitleTranslateOption[]>(() => {
+    return replaySubtitleList.value
+      .filter(subtitleInfo => subtitleInfo.isOriginal !== YN.Y)
+      .map(subtitleInfo => {
+        const val = subtitleInfo.language;
+        const item = subtitleSourceTranslateLanguageOptionMap.value[val];
+        const defaultLabel = item && langStore.isChineseLang ? item.label : val;
+        const result: SubtitleTranslateOption = {
+          label: subtitleInfo.name || defaultLabel,
+          value: String(subtitleInfo.id),
+        };
+        return result;
+      });
+  });
+
+  /** 回放字幕原声语言可选项 */
+  const replaySubtitleSourceLanguageOptions = computed<SubtitleTranslateOption[]>(() => {
+    const subtitleInfo = replaySubtitleList.value.find(
+      subtitleInfo => subtitleInfo.isOriginal === YN.Y,
+    );
+    if (!subtitleInfo) return [];
+
+    const val = subtitleInfo.language as string;
+    const item = subtitleSourceTranslateLanguageOptionMap.value[val];
+    const defaultLabel = item && langStore.isChineseLang ? item.label : val;
+    const result: SubtitleTranslateOption = {
+      label: subtitleInfo.name || defaultLabel,
+      value: String(subtitleInfo.id),
+    };
+    return [result];
+  });
 
   /**
    * 改变回放主字幕（原声字幕）是否显示
@@ -149,28 +247,73 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
     subReplaySubtitleShow.value = show;
   }
 
-  return {
-    subtitleModuleSetuped,
+  /**
+   * 初始化所有翻译选项数据
+   */
+  async function initSubtitleSourceTranslateLanguageOptionMap() {
+    const watchCore = getWatchCore();
+    const options = await watchCore.subtitles.getSubtitleTranslateOptions();
+    subtitleSourceTranslateLanguageOptionMap.value = options.reduce((accu, cur) => {
+      if (!accu[cur.value]) {
+        accu[cur.value] = cur;
+      }
+      return accu;
+    }, {} as { [key: string]: SubtitleTranslateOption | undefined });
+  }
 
+  /**
+   * 同步实时字幕配置
+   * */
+  function syncSubtitleConfig() {
+    const watchCore = getWatchCore();
+    const subTitleConfig = watchCore.subtitles.getSubtitleConfig();
+
+    subtitleRealTimeEnabled.value = subTitleConfig.subtitleRealTimeEnabled;
+    subtitleTranslateEnabled.value = subTitleConfig.subtitleTranslateEnabled;
+
+    liveSubtitleSourceLanguage.value = subTitleConfig.subtitleSourceLanguage;
+    liveSubtitleSourceTranslateLanguage.value = subTitleConfig.subtitleTranslateLanguage;
+    liveSubtitleSourceTranslateLanguages.value = subTitleConfig.subtitleTranslateLanguages;
+    subtitleDisplayNumberLimitEnabled.value = subTitleConfig.subtitleDisplayNumberLimitEnabled;
+    subtitleDisplayNumber.value = subTitleConfig.subtitleDisplayNumber;
+  }
+
+  /** 更改实时字幕翻译语言 */
+  function changeLiveSubtitleSourceTranslateLanguage(lang: SubtitleSourceTranslateLanguage) {
+    const watchCore = getWatchCore();
+    watchCore.subtitles.updateLiveSubtitleTranslateLanguage(lang);
+    syncSubtitleConfig();
+  }
+
+  return {
     subtitleRealTimeEnabled,
     subtitleTranslateEnabled,
     subtitlesTeacherEnable,
     localUerSubtitlesEnable,
-    mainReplaySubtitleShow,
-    subReplaySubtitleShow,
+    changeSubtitlesTeacherEnable,
+    changeLocalUerSubtitlesEnable,
 
     liveSubtitlesEnable,
-
     liveSubtitleSourceLanguage,
     liveSubtitleSourceTranslateLanguage,
+    liveSubtitleSourceTranslateLanguages,
+    liveSubtitleSourceTranslateLanguageOptions,
+    liveSubtitleSourceLanguageOptions,
     subtitleDisplayNumberLimitEnabled,
     subtitleDisplayNumber,
 
-    syncSubtitleConfig,
-
-    changeSubtitlesTeacherEnable,
-    changeLocalUerSubtitlesEnable,
+    mainReplaySubtitleShow,
+    subReplaySubtitleShow,
+    curSelectedReplaySubtitleItemId,
+    replaySubtitleList,
+    replaySubtitleVisible,
+    replaySubtitleSourceTranslateLanguageOptions,
+    replaySubtitleSourceLanguageOptions,
     changeMainReplaySubtitleShow,
     changeSubReplaySubtitleShow,
+
+    syncSubtitleConfig,
+    initSubtitleSourceTranslateLanguageOptionMap,
+    changeLiveSubtitleSourceTranslateLanguage,
   };
 });

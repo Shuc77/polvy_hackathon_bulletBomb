@@ -12,6 +12,7 @@
       :job-detail="jobDetail"
       :get-weixin-sdk="getWeixinSdk"
       :get-link-params="getLinkParams"
+      :hot-effect-enabled="productHotEffectEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       use-mobile-class
     />
@@ -30,7 +31,7 @@ import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 
 const IarProductJobDetail = getIarComponent('ProductJob');
 
-const { productSdk } = useProduct();
+const { productSdk, productHotEffectEnabled } = useProduct();
 
 const { getWeixinSdk } = useWeixinSdk();
 

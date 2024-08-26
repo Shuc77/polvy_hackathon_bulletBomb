@@ -1,4 +1,21 @@
-import { getCurrentInstance, VNode } from 'vue';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { DefineComponent, getCurrentInstance, VNode } from 'vue';
+
+export type ConvertReadonly<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+
+export type ComponentInstance<T> = T extends new (...args: any[]) => infer R
+  ? R
+  : T extends (...args: any[]) => infer R
+  ? // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    R extends { __ctx?: infer K }
+    ? Exclude<K, void> extends { expose: (...args: infer K) => void }
+      ? K[0] & InstanceType<DefineComponent>
+      : any
+    : any
+  : any;
 
 /**
  * @hook 对 Vue 一些方法的简单封装

@@ -4,6 +4,45 @@
 
 ---
 
+## v1.7.0(2024-08-23)
+
+### Bug Fixes
+
+- 修复评论上墙组件错误使用生命周期钩子，无法正常解绑事件的问题
+
+### Features
+
+- 基础组件 `components/common-base` 相关功能更新
+  - 新增 `sidebar` 和 `sidebar-item` 组件
+  - 新增 `tree-select` 级联组件
+  - 更改 `select` 和 `message-box` 组件样式和布局
+- 新增任务奖励功能发放失败原因展示
+- 支持实时字幕功能多种翻译语言选择切换
+- 支持回放字幕功能多种翻译语言选择切换
+
+### Styles
+
+- 统一观看页横竖屏关注弹窗的图片大小
+
+### Code Refactoring
+
+- 回放字幕逻辑从 `store/use-playback-store` 更改至 `store/use-subtitle-store`，后续统一由 `store/use-subtitle-store` 来处理字幕逻辑
+- 根据 sdk 层对字幕模块的重构更新实时字幕功能的接入
+- `hooks/core/use-sync-store` 新增 `syncStoreAfterWatchPageInited` 钩子处理观看页初始化回调
+
+### Optimizes
+
+- 优化PC端观看页商品推送卡片位置显示，从聊天区移动到播放器右下角
+- 优化移动端观看页微信关怀模式下输入框控件和聊天区域展示
+- 一系列小的细节优化
+
+### Build System
+
+- 更新 babel 和 typescript 配置，支持 tsx + compositionApi 写法
+- `interactions-receive-sdk-ui-default` 更新至 `rc-20240815`
+
+---
+
 ## v1.6.0(2024-08-02)
 
 ### Deprecated

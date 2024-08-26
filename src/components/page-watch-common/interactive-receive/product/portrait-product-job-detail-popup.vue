@@ -10,6 +10,7 @@
       v-if="productSdk && jobDetail"
       :product-sdk="productSdk"
       :job-detail="jobDetail"
+      :hot-effect-enabled="productHotEffectEnabled"
       :get-weixin-sdk="getWeixinSdk"
       :get-link-params="getLinkParams"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
@@ -30,7 +31,7 @@ import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 
 const IarProductJobDetail = getIarComponent('ProductJob');
 
-const { productSdk } = useProduct();
+const { productSdk, productHotEffectEnabled } = useProduct();
 
 const { getWeixinSdk } = useWeixinSdk();
 

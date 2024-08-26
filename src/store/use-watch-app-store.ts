@@ -88,7 +88,8 @@ export interface WatchAppStoreActions {
 export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions {}
 
 export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp', () => {
-  const { syncStoreBeforeWatchPageInited } = useSyncStoreForWatchPage();
+  const { syncStoreBeforeWatchPageInited, syncStoreAfterWatchPageInited } =
+    useSyncStoreForWatchPage();
   const { checkRedirectSubChannel } = useMultiMeetingRedirect();
 
   const authStore = useAuthStore();
@@ -215,6 +216,9 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
     // 根据不同场景设置 watchPageInited 标识位
     __setWatchPageInited();
+
+    // 同步相关 store 的数据
+    syncStoreAfterWatchPageInited();
   }
 
   /** 根据不同场景设置 watchPageInited 标识位 */

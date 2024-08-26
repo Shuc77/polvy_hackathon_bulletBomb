@@ -3,22 +3,25 @@
   <div class="c-pc-product-bubble">
     <div
       v-if="productBubbleEnable"
-      class="pc-product-bubble-warp"
+      class="c-pc-product-bubble-warp"
     >
-      <iar-product-bubble
-        animation-type="normal"
-        :product-sdk="productSdk"
-        :hot-effect-tip-option="productHotEffectTips"
-        :hot-effect-enabled="productHotEffectEnabled"
-        :get-link-params="getLinkParams"
-        :recruitment-enabled="recruitmentEnabled"
-        :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
-        @job-detail="onJobDetailEvent"
-        @buy="onWechatBuy"
-        @change="onChange"
-      />
+      <div>
+        <iar-product-bubble
+          animation-type="normal"
+          :product-sdk="productSdk"
+          :hot-effect-tip-option="productHotEffectTips"
+          :hot-effect-enabled="productHotEffectEnabled"
+          :get-link-params="getLinkParams"
+          :recruitment-enabled="recruitmentEnabled"
+          :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+          @job-detail="onJobDetailEvent"
+          @buy="onWechatBuy"
+          @change="onChange"
+        />
+      </div>
     </div>
     <iar-product-dialog
+      class="c-pc-product-bubble-dialog"
       v-if="productDialogEnable"
       :product-sdk="productSdk"
       :get-link-params="getLinkParams"
@@ -68,19 +71,27 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">
-// .c-pc-product-bubble {
-//   position: absolute;
-//   top: 16px;
-//   right: 0;
-//   left: 0;
-//   z-index: 50;
-//   padding-left: 8px;
-//   overflow: hidden;
-// }
+.c-pc-product-bubble,
+.c-pc-product-bubble-warp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
-.pc-product-bubble-warp {
-  width: 104px;
-  margin-bottom: 12px;
-  transform: translateX(-64px);
+.c-pc-product-bubble-warp {
+  overflow: hidden;
+  > div {
+    position: absolute;
+    bottom: 70px;
+    left: 100%;
+    width: 104px;
+    transform: translateX(-120px);
+  }
+}
+
+.c-pc-product-bubble-dialog {
+  pointer-events: all;
 }
 </style>

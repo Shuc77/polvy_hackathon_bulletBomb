@@ -1,5 +1,5 @@
 import { getWatchCore } from '@/core/watch-sdk';
-import { ref, onMounted, onUnmounted, watch } from 'vue';
+import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
 import { ChatEvents, ChatMsgSpeakTopType, LiveStatus } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useChannelStore } from '@/store/use-channel-store';
@@ -63,7 +63,7 @@ export function useSpeakTop() {
     }
   });
 
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     watchCore.chat.eventEmitter.off(ChatEvents.SpeakToTop, handleSpeakToTop);
     watchCore.chat.eventEmitter.off(ChatEvents.SpeakCancelTop, handleSpeakCancelTop);
   });

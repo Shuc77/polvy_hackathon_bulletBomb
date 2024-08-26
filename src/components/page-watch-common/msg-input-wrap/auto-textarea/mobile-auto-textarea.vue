@@ -3,7 +3,7 @@
   <div
     class="c-mobile-auto-textarea pws-mobile-chat-msg-input"
     :class="{
-      'c-mobile-auto-textarea--multi-row': clientHeight > 22,
+      'c-mobile-auto-textarea--multi-row': textAreaIsMultiRow,
     }"
   >
     <textarea
@@ -46,7 +46,7 @@ const { maxlength, disabled, lineHeight, fontSize } = useProps(props);
 
 const {
   textareaRef,
-  clientHeight,
+  textAreaIsMultiRow,
   textareaPlaceholder,
   textareaMaxHeight,
   realValue,
@@ -69,7 +69,7 @@ $--textarea-min-height: 36px;
 
 .c-mobile-auto-textarea {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   width: 100%;
   min-height: $--textarea-min-height;
   border-radius: 18px;

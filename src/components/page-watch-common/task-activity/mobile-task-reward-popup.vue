@@ -59,11 +59,21 @@
           v-if="item.taskReward.type === TaskActivityRewardType.Cash"
           class="c-mobile-task-reward-popup__item__status"
           :class="['c-mobile-task-reward-popup__item__status--' + item.rewardStatus]"
+          @click="openErrorTips(item)"
         >
           {{ getRewardStatusText(item.rewardStatus) }}
+
+          <mobile-icon-question-round
+            v-if="item.outTradeErrCode"
+            class="c-mobile-task-reward-popup__item__status__icon"
+          />
         </div>
+
         <div
-          v-if="item.taskReward.type === TaskActivityRewardType.Cash && item.rewardStatus === TaskRewardStatus.NotIssued"
+          v-if="
+            item.taskReward.type === TaskActivityRewardType.Cash &&
+            item.rewardStatus === TaskRewardStatus.NotIssued
+          "
           class="c-mobile-task-reward-popup__item__reward-desc"
         >
           {{ $lang('taskActivity.rewardDesc') }}
@@ -84,17 +94,52 @@
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useTaskReward, getTaskRewardText, getTaskReachText } from './use-task-activity';
 import { formatDate } from '@polyv/utils/es/date';
-import { MobileIconArrowLeft, MobileIconClose } from '@/components/component-icons/mobile/map';
+import {
+  MobileIconArrowLeft,
+  MobileIconClose,
+  MobileIconQuestionRound,
+} from '@/components/component-icons/mobile/map';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import { LangType } from '@/assets/lang/lang-enum';
-import { TaskActivityRewardType, TaskRewardStatus } from '@polyv/live-watch-sdk';
+import { messageBox } from '@/components/common-base/message-box';
+import {
+  OutTradeErrorCode,
+  TaskActivityRewardType,
+  TaskRewardItem,
+  TaskRewardStatus,
+} from '@polyv/live-watch-sdk';
+import { translate } from '@/assets/lang';
 
 const { visible, rewardList, getRewardStatusText, close, scrollNearBottom, showClose } =
   useTaskReward();
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
+
+function openErrorTips(item: TaskRewardItem) {
+  if (!item.outTradeErrCode) {
+    return;
+  }
+  let text = translate('taskActivity.rewardError.msg');
+
+  switch (item.outTradeErrCode) {
+    case OutTradeErrorCode.NotWechatUser:
+      text = translate('taskActivity.rewardError.msg1');
+      break;
+    case OutTradeErrorCode.WxPayAccountError:
+      text = translate('taskActivity.rewardError.msg2');
+      break;
+    case OutTradeErrorCode.SystemError:
+      text = translate('taskActivity.rewardError.msg3');
+      break;
+  }
+
+  messageBox({
+    content: text,
+    confirmButtonText: translate('base.popup.understood'),
+  }).$confirm();
+}
 </script>
 
 <style lang="scss">
@@ -213,10 +258,12 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
 }
 .c-mobile-task-reward-popup__item__status {
   position: absolute;
-  top: 18px;
+  top: 13px;
   right: 18px;
+  display: flex;
+  align-items: center;
   font-size: 12px;
-  line-height: 17px;
+  line-height: 26px;
 
   &.c-mobile-task-reward-popup__item__status--0,
   &.c-mobile-task-reward-popup__item__status--2,
@@ -233,6 +280,13 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
     color: #fe3f52;
   }
 }
+
+.c-mobile-task-reward-popup__item__status__icon {
+  display: flex;
+  margin-left: 2px;
+  font-size: 12px;
+}
+
 .c-mobile-task-reward-popup__item__reward-desc {
   position: absolute;
   top: 37px;

@@ -1,5 +1,6 @@
 import { CombinedVueInstance } from 'vue/types/vue';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface SingleChatMsgTipsData<ExtData = any> {
   hidden?: boolean;
   content: string;

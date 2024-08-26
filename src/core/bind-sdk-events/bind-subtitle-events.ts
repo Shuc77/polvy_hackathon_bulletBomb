@@ -9,13 +9,6 @@ export function bindSubtitleEvents() {
   const subtitleStore = useSubtitleStore();
   const playerStore = usePlayerStore();
 
-  watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleSetuped, () => {
-    subtitleStore.$patch({
-      subtitleModuleSetuped: true,
-    });
-    subtitleStore.syncSubtitleConfig();
-  });
-
   watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleEnableToggle, ({ enable }) => {
     subtitleStore.changeSubtitlesTeacherEnable(enable);
   });

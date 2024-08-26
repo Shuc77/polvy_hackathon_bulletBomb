@@ -709,6 +709,7 @@ export const chinaLang = {
   'wxAuth.btn.text': '微信快捷登录',
   'wxAuth.protocol.tips': '请阅读并同意协议',
 
+  'subtitle.change': '切换字幕',
   'subtitle.all': '双语字幕',
   'subtitle.source': '原声字幕',
   'subtitle.translate': '翻译字幕',
@@ -745,6 +746,10 @@ export const chinaLang = {
   'taskActivity.rewardStatus.issued': '已发放',
   'taskActivity.rewardStatus.issuedFail': '发放失败',
   'taskActivity.rewardStatus.limit': '奖励名额已满，无法获得奖励',
+  'taskActivity.rewardError.msg': '未知',
+  'taskActivity.rewardError.msg1': '未在微信内参与活动',
+  'taskActivity.rewardError.msg2': '企业或用户账户异常',
+  'taskActivity.rewardError.msg3': '系统异常',
   'taskActivity.rewardDesc': '预计10分钟后发放',
   'taskActivity.emptyReward': '暂无奖励',
 

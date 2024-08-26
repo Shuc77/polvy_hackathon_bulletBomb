@@ -741,6 +741,7 @@ export const englishLang: LangConfig = {
   'wxAuth.btn.text': 'WeChat Quick Login',
   'wxAuth.protocol.tips': 'Read and agree',
 
+  'subtitle.change': 'Change Subtitle',
   'subtitle.all': 'Bilingual',
   'subtitle.source': 'Original',
   'subtitle.translate': 'Translated',
@@ -777,6 +778,10 @@ export const englishLang: LangConfig = {
   'taskActivity.rewardStatus.issued': 'Issued',
   'taskActivity.rewardStatus.issuedFail': 'Failed',
   'taskActivity.rewardStatus.limit': 'Prize limit full, no prizes available',
+  'taskActivity.rewardError.msg': 'Unknown',
+  'taskActivity.rewardError.msg1': 'Not in WeChat event',
+  'taskActivity.rewardError.msg2': 'Account exception, restricted collection',
+  'taskActivity.rewardError.msg3': 'System error',
   'taskActivity.rewardDesc': 'Prizes in 10 mins',
   'taskActivity.emptyReward': 'No prizes available',
 

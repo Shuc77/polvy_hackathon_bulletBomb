@@ -24,6 +24,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useShareStore } from '@/store/use-share-store';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -118,6 +119,7 @@ export const useSyncStoreForWatchPage = () => {
   const polyvAIStore = usePolyvAIStore();
 
   const viewerStore = useViewerStore();
+  const subtitleStore = useSubtitleStore();
 
   /**
    * 进入到观看页前同步 Store
@@ -144,9 +146,19 @@ export const useSyncStoreForWatchPage = () => {
      * @description 不影响页面进入流程，无需 await
      */
     viewerStore.syncNeedRealNameAuth();
+
+    subtitleStore.syncSubtitleConfig();
+  }
+
+  function syncStoreAfterWatchPageInited() {
+    // 直播实时字幕 || 存在回放字幕
+    if (subtitleStore.subtitleRealTimeEnabled || subtitleStore.replaySubtitleList.length) {
+      subtitleStore.initSubtitleSourceTranslateLanguageOptionMap();
+    }
   }
 
   return {
     syncStoreBeforeWatchPageInited,
+    syncStoreAfterWatchPageInited,
   };
 };

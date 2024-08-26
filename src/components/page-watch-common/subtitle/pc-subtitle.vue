@@ -4,14 +4,16 @@
     ref="subtitleScroll"
     class="c-pc-subtitle pws-main-tab-body-scrollbar"
   >
-    <template v-if="liveSubtitlesEnable && subtitleList.length">
+    <template v-if="liveSubtitlesEnable">
       <div
         v-if="subtitleTranslateEnabled"
         class="c-pc-subtitle__top pws-pc-subtitle__top-skin"
       >
-        <pc-select
+        <plv-cascader-select
+          class="c-subtitle-custom__cascader-select"
           v-model="subtitleTranslateSelected"
           :options="subtitleTranslateOptions"
+          :placeholder="$lang('subtitle.change')"
         />
       </div>
       <div
@@ -26,22 +28,30 @@
           :key="index"
           class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
         >
-          <div v-if="subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source'">
+          <div
+            v-if="
+              subtitleTranslateSelected.includes('all') ||
+              subtitleTranslateSelected.includes('source')
+            "
+          >
             {{ item[liveSubtitleSourceLanguage] }}
           </div>
           <div
-            v-if="subtitleTranslateSelected === 'all' && item[liveSubtitleSourceTranslateLanguage]"
+            v-if="
+              subtitleTranslateSelected.includes('all') && item[liveSubtitleSourceTranslateLanguage]
+            "
             class="c-pc-subtitle__content-item-line pws-pc-subtitle__content-item-line"
           ></div>
           <div
             v-if="
-              (subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'translate') &&
+              (subtitleTranslateSelected.includes('all') ||
+                subtitleTranslateSelected.includes('translate')) &&
               item[liveSubtitleSourceTranslateLanguage]
             "
             class="c-pc-subtitle__content-item-translate"
             :class="{
               'c-pc-subtitle__content-item-translate--force':
-                subtitleTranslateSelected === 'translate',
+                subtitleTranslateSelected.includes('translate'),
             }"
           >
             {{ item[liveSubtitleSourceTranslateLanguage] }}
@@ -50,7 +60,8 @@
         <div
           v-show="
             currentSubtitle &&
-            (subtitleTranslateSelected === 'all' || subtitleTranslateSelected === 'source')
+            (subtitleTranslateSelected.includes('all') ||
+              subtitleTranslateSelected.includes('source'))
           "
           class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
         >
@@ -76,8 +87,8 @@
 </template>
 
 <script setup lang="ts">
+import { PlvCascaderSelect } from '@/plugins/polyv-ui/admin-import';
 import { ref } from 'vue';
-import PcSelect from '@/components/common-base/select/pc-select.vue';
 import { PcIconArrowDown } from '@/components/component-icons/pc/map';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -129,17 +140,6 @@ const {
   position: sticky;
   top: 0;
   z-index: 1;
-
-  .c-pc-select__body {
-    border: unset;
-    border-radius: unset;
-  }
-
-  .c-pc-select__body__input {
-    flex: unset;
-    width: 60px;
-    padding: 0;
-  }
 }
 
 .c-pc-subtitle__new {
@@ -193,5 +193,23 @@ const {
   align-items: center;
   justify-content: center;
   height: 100%;
+}
+
+.c-subtitle-custom__cascader-select {
+  .plv-cascader__body {
+    background: none;
+    border: none;
+  }
+
+  .plv-cascader__body__suffix {
+    background: none;
+  }
+
+  .plv-cascader__body__input {
+    color: inherit;
+  }
+  .plv-cascader__body__suffix .plv-icon {
+    color: inherit;
+  }
 }
 </style>

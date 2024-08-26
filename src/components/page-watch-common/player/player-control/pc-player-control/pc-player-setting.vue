@@ -109,9 +109,9 @@ const { toChangeLine, toChangeQualityLevel, toSetLowLowLatency } = usePlayerActi
 .c-pc-player-control__setting__panel {
   position: absolute;
   bottom: 100%;
-  left: 50%;
+  left: 0;
   box-sizing: border-box;
-  width: 240px;
+  width: 280px;
   padding: 24px;
   color: $--color-white;
   pointer-events: none;
