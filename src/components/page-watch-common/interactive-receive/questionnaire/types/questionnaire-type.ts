@@ -20,4 +20,6 @@ export interface IarQuestionnaireInstance {
   status: AllQuestionnaireStatus | null;
   /** 显示问卷列表 */
   showList: () => void;
+  /** 显示单个问卷 */
+  showOneQuestionnaire: (questionnaireId: string) => void;
 }

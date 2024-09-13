@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { getWatchCore } from '@/core/watch-sdk';
 
@@ -6,12 +6,15 @@ import { translate } from '@/assets/lang';
 import { useQuestionnaireEntrance } from './use-questionnaire-entrance';
 import { AllQuestionnaireStatus, IarQuestionnaireInstance } from '../types/questionnaire-type';
 
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+
 /**
  * @hook 互动-问卷
  */
 export const useQuestionnaire = () => {
   const { setQuestionnaireEntrance, removeQuestionnaireEntrance } = useQuestionnaireEntrance();
   const watchCore = getWatchCore();
+  const interactReceiveStore = useInteractReceiveStore();
 
   /** 问卷组件节点 */
   const questionnaireRef = ref<IarQuestionnaireInstance>();
@@ -21,6 +24,8 @@ export const useQuestionnaire = () => {
   const questionnaireVisible = ref(false);
   /** 问卷状态 */
   const questionnaireStatus = ref<AllQuestionnaireStatus>(AllQuestionnaireStatus.isShowQuestion);
+  /** 当前抽奖问卷ID */
+  const lotteryQuestionnaireId = ref('');
 
   /** 问卷标题 */
   const questionnaireTitle = computed(() => {
@@ -41,6 +46,23 @@ export const useQuestionnaire = () => {
     }
     return title;
   });
+
+  /** 问卷返回按钮  */
+  const questionnaireBackBtnVisible = computed(() => {
+    return interactReceiveStore.questionnaireBackBtnVisible;
+  });
+
+  watch(
+    () => questionnaireVisible.value,
+    val => {
+      if (!val) {
+        interactReceiveStore.$patch({
+          questionnaireBackBtnVisible: true,
+        });
+        lotteryQuestionnaireId.value = '';
+      }
+    },
+  );
 
   /**
    * 处理问卷状态修改
@@ -66,8 +88,9 @@ export const useQuestionnaire = () => {
     }
 
     if (
-      status === AllQuestionnaireStatus.isShowQuestion ||
-      status === AllQuestionnaireStatus.isShowQuestionnaireList
+      (status === AllQuestionnaireStatus.isShowQuestion ||
+        status === AllQuestionnaireStatus.isShowQuestionnaireList) &&
+      !lotteryQuestionnaireId.value
     ) {
       // 设置互动二次入口
       setQuestionnaireEntrance();
@@ -94,7 +117,27 @@ export const useQuestionnaire = () => {
     }
   }
 
-  useEventBusListener(appEvents.interaction.OpenQuestionnaire, setQuestionnaireVisible);
+  /**
+   * 根据问卷ID显示对应问卷弹窗
+   */
+  function showQuestionnaireById(questionnaireId: string) {
+    lotteryQuestionnaireId.value = questionnaireId;
+
+    if (!questionnaireRef.value) {
+      console.warn('questionnaireRef value is undefined');
+      return;
+    }
+
+    questionnaireRef.value.showOneQuestionnaire(questionnaireId);
+  }
+
+  useEventBusListener(appEvents.interaction.OpenQuestionnaire, (questionnaireId?: string) => {
+    if (typeof questionnaireId === 'string') {
+      showQuestionnaireById(questionnaireId);
+      return;
+    }
+    setQuestionnaireVisible();
+  });
 
   return {
     questionnaireRef,
@@ -105,5 +148,7 @@ export const useQuestionnaire = () => {
     setQuestionnaireVisible,
     onStatusChanged,
     onHasQuestionnaire,
+    showQuestionnaireById,
+    questionnaireBackBtnVisible,
   };
 };

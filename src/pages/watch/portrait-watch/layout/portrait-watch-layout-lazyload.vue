@@ -44,8 +44,8 @@
     <!-- 播放器设置弹层 -->
     <portrait-player-control-popup />
 
-    <!-- 双语流切换 -->
-    <portrait-player-stream-track-popup v-if="supportLanguageStream" />
+    <!-- 流多轨切换 -->
+    <portrait-player-stream-track-popup v-if="supportMultiStreamTrack" />
 
     <!-- 直播开始提示 -->
     <mobile-live-start-tips />
@@ -76,6 +76,12 @@
 
     <!-- 任务奖励弹层 -->
     <mobile-task-reward-popup />
+
+    <!-- 在线用户列表弹层 -->
+    <portrait-member-list-popup />
+
+    <!-- 在线用户列表规则弹层 -->
+    <mobile-member-list-rule-popup />
   </div>
 </template>
 
@@ -104,6 +110,8 @@ import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mob
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
+import PortraitMemberListPopup from '@/components/page-watch-common/member-list/portrait-member-list.vue';
+import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -116,9 +124,9 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChatStore } from '@/store/use-chat-store';
-import { usePlayerStore } from '@/store/use-player-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIdentityStore } from '@/store/use-identity-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -143,7 +151,7 @@ const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
 const { isPlaybacking, playbackListVisible, chapterVisible } =
   storeDefinitionToRefs(usePlaybackStore);
 
-const { supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
+const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 

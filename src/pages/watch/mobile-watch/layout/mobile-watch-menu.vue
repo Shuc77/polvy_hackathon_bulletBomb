@@ -203,6 +203,7 @@
           :name="TAB_NAME_MEMBERS"
           lazy-load
         >
+          <mobile-member-desc />
           <mobile-member-list />
         </mobile-menu-tab-pane>
 
@@ -291,6 +292,7 @@ import MobileSubtitle from '@/components/page-watch-common/subtitle/mobile-subti
 import MobileSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/mobile-seat-table.vue';
 import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/mobile-ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
+import MobileMemberDesc from '@/components/page-watch-common/member-list/mobile-member-desc.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';

@@ -33,6 +33,8 @@ export interface ViewerStoreState {
   unionId: Ref<string | undefined>;
   /** 当前用户的授权方式 */
   authType: Ref<AuthType>;
+  /** 用户头衔 */
+  actor: Ref<string | undefined>;
   /** 当前能否设置昵称 */
   canSetNick: ComputedRef<boolean>;
   /** 当前是否已设置昵称 */
@@ -73,6 +75,8 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
   const unionId = ref<string>();
   /** 授权方式 */
   const authType = ref<AuthType>(AuthType.None);
+  /** 用户头衔 */
+  const actor = ref<string>();
 
   /** 当前能否设置昵称 */
   const canSetNick = computed<boolean>(() => {
@@ -138,6 +142,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     openId.value = watchCore.user.getUserOpenId();
     unionId.value = watchCore.user.getUserUnionId();
     authType.value = watchCore.user.getUserAuthType();
+    actor.value = watchCore.user.getUserActor();
 
     seatInfo.value = watchCore.user.getUserSeatInfo();
     needHideUserActor.value = watchCore.user.needHideUserActor();
@@ -178,6 +183,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     openId,
     unionId,
     authType,
+    actor,
     canSetNick,
     hasNickname,
     syncViewerInfo,

@@ -11,6 +11,7 @@
     :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
     :privacy-content="privacyContent"
     @comment-success="onCommentSuccess"
+    @to-fill-questionnaire="onToFillQuestionnaire"
     @entry-visible-changed="onEntryVisibleChanged"
   />
 </template>
@@ -37,6 +38,8 @@ const {
   beforeJoinLottery,
   onCommentSuccess,
   onEntryVisibleChanged,
+
+  onToFillQuestionnaire,
 } = useWelfareLottery();
 
 const { privacyContent } = useLotteryPrivacy();

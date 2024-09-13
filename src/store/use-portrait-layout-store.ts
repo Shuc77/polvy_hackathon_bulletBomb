@@ -41,6 +41,8 @@ export interface PortraitLayoutStoreState {
   portraitMessageInputPlaceholder: ComputedRef<string>;
   /** 竖屏消息输入框是否显示 */
   portraitMessageInputVisible: Ref<boolean>;
+  /** 竖屏在线用户列表入口是否显示 */
+  portraitOnlineListEntranceVisible: ComputedRef<boolean>;
 }
 
 export interface PortraitStore extends PortraitLayoutStoreState {}
@@ -151,6 +153,8 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       return 1;
     });
 
+    const portraitOnlineListEntranceVisible = computed(() => channelStore.onlineListEnabled);
+
     return {
       portraitPlayerFullscreenEnabled,
       portraitPlayerFullscreenBtnVisible,
@@ -162,6 +166,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       channelInfoSeat,
       portraitMessageInputPlaceholder,
       portraitMessageInputVisible,
+      portraitOnlineListEntranceVisible,
     };
   },
 );

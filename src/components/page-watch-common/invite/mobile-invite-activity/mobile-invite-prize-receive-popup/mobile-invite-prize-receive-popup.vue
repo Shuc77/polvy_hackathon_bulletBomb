@@ -8,6 +8,7 @@
     :visible.sync="popupVisible"
     fill-body-section
     :content-height="popupContentHeight"
+    :content-percent-height="isKeyboardPulledUp"
     append-to-body
   >
     <mobile-invite-prize-receive-form
@@ -32,6 +33,9 @@ import MobileInvitePrizeReceiveQrcode from './mobile-invite-prize-receive-qrcode
 
 import { useInvitePrizeReceive } from '../_hooks/use-invite-prize-receive';
 import { usePageStore } from '@/store/use-page-store';
+import { useKeyboardPulledUp } from '@/hooks/behaviors/use-keyboard-pulled-up';
+
+const { isKeyboardPulledUp } = useKeyboardPulledUp();
 
 const pageStore = usePageStore();
 

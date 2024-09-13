@@ -14,6 +14,7 @@
       ref="questionnaireRef"
       :questionnaire-sdk="questionnaireSdk"
       :visible="questionnaireVisible"
+      :is-hide-back-btn="!questionnaireBackBtnVisible"
       @status-changed="onStatusChanged"
       @to-show="setQuestionnaireVisible(true)"
       @to-hide="setQuestionnaireVisible(false)"
@@ -46,10 +47,14 @@ const {
   setQuestionnaireVisible,
   onStatusChanged,
   onHasQuestionnaire,
+  questionnaireBackBtnVisible,
 } = useQuestionnaire();
 
 const popupBackable = computed(() => {
-  return questionnaireStatus.value === AllQuestionnaireStatus.isShowQuestion;
+  return (
+    questionnaireStatus.value === AllQuestionnaireStatus.isShowQuestion &&
+    questionnaireBackBtnVisible.value
+  );
 });
 
 function backToQuestionnaireList() {

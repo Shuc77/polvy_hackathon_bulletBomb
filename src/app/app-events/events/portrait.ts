@@ -50,4 +50,12 @@ export const portraitEvents = {
    * 竖屏移动端播放器系统全屏
    */
   PlayerSystemFullscreen: 'PlayerSystemFullscreen',
+  /**
+   * 打开在线用户列表弹层
+   */
+  OpenPortraitOnlineUserListPopup: 'OpenPortraitOnlineUserListPopup',
+  /**
+   * 打开在线用户列表规则弹窗
+   */
+  OpenPortraitOnlineUserListRulePopup: 'OpenPortraitOnlineUserListRulePopup',
 };

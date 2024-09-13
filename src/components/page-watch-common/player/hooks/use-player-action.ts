@@ -382,6 +382,7 @@ export const usePlayerAction = () => {
   function toSetLowLowLatency(isLowLatency = true) {
     playerStore.$patch({
       isLowLatency,
+      isAudioPlayerMode: false,
     });
     layoutStore.$patch({
       mobilePlayerIsPageFullscreen: false,

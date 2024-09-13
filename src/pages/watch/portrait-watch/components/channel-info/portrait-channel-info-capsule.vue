@@ -15,7 +15,7 @@
       <div class="c-portrait-channel-info-capsule__info__publisher g-singleline">
         {{ channelPublisher }}
       </div>
-      <!-- 在线人数 or 页面浏览数 -->
+      <!-- 页面浏览数 -->
       <div
         v-if="!isUndefined(channelVisibleCount)"
         class="c-portrait-channel-info-capsule__info__count"
@@ -38,13 +38,10 @@ import { shortNumber } from '@/assets/utils/number';
 import { isUndefined } from 'lodash-es';
 import PortraitFollowBtn from '@/components/page-watch-common/follow/follow-btn/portrait-follow-btn.vue';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { computed, unref } from 'vue';
 import { useThemeStore } from '@/store/use-theme-store';
-
-const { onlineUserCount, chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const { channelPublisher, pvShowEnabled, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);
@@ -55,10 +52,6 @@ const { followEnabled } = useFollowSetting();
 
 /** 页面显示的数量 */
 const channelVisibleCount = computed<number | undefined>(() => {
-  if (unref(chatSetting).chatOnlineNumberEnable) {
-    return unref(onlineUserCount);
-  }
-
   if (unref(pvShowEnabled)) {
     return unref(pageViewCount);
   }

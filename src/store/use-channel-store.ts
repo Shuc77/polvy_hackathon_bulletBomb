@@ -5,6 +5,8 @@ import { getWatchCore } from '@/core/watch-sdk';
 import {
   ChannelAudioMode,
   ChannelScene,
+  ChannelStreamTrackConfig,
+  ChannelStreamTrackType,
   LiveStatus,
   SmsConfig,
   StreamType,
@@ -44,8 +46,14 @@ export interface ChannelStoreState {
   teacherInfo: Ref<TeacherInfoType | undefined>;
   /** 当前直播推流类型 */
   currentStreamType: Ref<StreamType | undefined>;
+  /** 流多轨配置 */
+  streamTrackConfig: Ref<ChannelStreamTrackConfig | undefined>;
+  /** 是否支持流多轨 */
+  supportMultiStreamTrack: ComputedRef<boolean>;
   /** 短信功能全局配置 */
   smsConfig: Ref<SmsConfig>;
+  /** 在线列表开关 */
+  onlineListEnabled: Ref<boolean>;
 }
 
 export interface ChannelStoreActions {
@@ -108,6 +116,16 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 当前直播推流类型 */
   const currentStreamType = ref<StreamType>();
 
+  /** 流多轨配置 */
+  const streamTrackConfig = ref<ChannelStreamTrackConfig>();
+
+  /** 是否支持流多轨 */
+  const supportMultiStreamTrack = computed(() => {
+    if (!streamTrackConfig.value) return false;
+
+    return streamTrackConfig.value.type !== ChannelStreamTrackType.Single;
+  });
+
   /** 讲师信息 */
   const teacherInfo = ref<TeacherInfoType>();
 
@@ -115,6 +133,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   const smsConfig = ref<SmsConfig>({
     smsImageCaptchaEnabled: true,
   });
+
+  /** 在线列表开关 */
+  const onlineListEnabled = ref(false);
 
   /** 同步频道 Store 数据 */
   function syncChannelStore(): void {
@@ -126,7 +147,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     promoteId.value = watchCore.channel.getPromoteId();
     watchUrl.value = watchCore.channel.getChannelWatchUrl();
     teacherInfo.value = watchCore.channel.getTeacherInfo();
+    onlineListEnabled.value = watchCore.channel.getOnlineListEnabled();
 
+    streamTrackConfig.value = watchCore.channel.getChannelStreamTrackConfig();
     audioMode.value = watchCore.channel.getAudioMode();
     audioModeSwitchEnabled.value = watchCore.channel.getAudioModeSwitchEnabled();
 
@@ -149,6 +172,10 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isCustomLiveAudioMode,
     teacherInfo,
     currentStreamType,
+    onlineListEnabled,
+
+    streamTrackConfig,
+    supportMultiStreamTrack,
 
     smsConfig,
 

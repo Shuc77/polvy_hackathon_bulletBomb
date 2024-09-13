@@ -77,6 +77,8 @@
           :name="TAB_NAME_MEMBERS"
           lazy-load
         >
+          <!-- 在线成员列表信息栏 -->
+          <pc-member-desc />
           <pc-member-list />
         </pc-aside-tab-pane>
 
@@ -165,6 +167,7 @@ import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
 import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
 import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/pc-ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
+import PcMemberDesc from '@/components/page-watch-common/member-list/pc-member-desc.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

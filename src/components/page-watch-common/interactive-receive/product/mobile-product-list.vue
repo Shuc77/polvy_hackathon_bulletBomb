@@ -75,7 +75,8 @@ const { getWeixinSdk } = useWeixinSdk();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy, productHotEffectEnabled } = useProduct();
+const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy, productHotEffectEnabled } =
+  useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

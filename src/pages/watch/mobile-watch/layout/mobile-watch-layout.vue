@@ -66,8 +66,8 @@
       <mobile-connect-mic-user-list />
     </div>
 
-    <!-- 双语流切换 -->
-    <mobile-player-stream-track v-if="supportLanguageStream" />
+    <!-- 流多轨切换 -->
+    <mobile-player-stream-track v-if="supportMultiStreamTrack" />
 
     <!-- 页面广告 -->
     <mobile-page-advert v-if="!isPlaybackWatchUrl" />
@@ -139,12 +139,15 @@ import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
 );
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
 const { multiMeetingEnabled, multiMeetingListLayout } = storeDefinitionToRefs(useMultiMeetingStore);
 
@@ -164,7 +167,7 @@ const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { filterConnectMicList, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 
-const { canRenderPlayer, supportLanguageStream } = storeDefinitionToRefs(usePlayerStore);
+const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 

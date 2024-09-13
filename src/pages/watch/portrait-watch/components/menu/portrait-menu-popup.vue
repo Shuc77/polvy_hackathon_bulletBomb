@@ -105,11 +105,13 @@
         @click="onClickLanguageSwitch"
       />
 
-      <!-- 切换双语流 -->
+      <!-- 切换双流/切换流多轨 -->
       <menu-item
-        v-if="supportLanguageStream"
-        icon="stream-track"
-        :text="$lang('player.streamTrack')"
+        v-if="supportMultiStreamTrack"
+        :icon="isMultiLanguageTrack ? 'stream-track' : 'stream-track-normal'"
+        :text="
+          isMultiLanguageTrack ? $lang('player.streamTrack') : $lang('player.streamTrack.normal')
+        "
         @click="onClickSwitchStream"
       />
 
@@ -162,9 +164,11 @@ import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { useStreamTrack } from '@/components/page-watch-common/player/player-stream-track/use-stream-track';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useChannelStore } from '@/store/use-channel-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useIdentityStore } from '@/store/use-identity-store';
@@ -205,6 +209,9 @@ useEventBusListener(
   },
 );
 
+const { supportMultiStreamTrack } = storeToRefs(useChannelStore());
+const { isMultiLanguageTrack } = useStreamTrack();
+
 const donateStore = useDonateStore();
 const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
 const { toggleDonateAnimationVisible } = donateStore;
@@ -214,7 +221,7 @@ const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 const { toggleOnlySpecialMsg } = chatStore;
 
 const playerStore = usePlayerStore();
-const { isAudioPlayerMode, supportLanguageStream } = storeToRefs(playerStore);
+const { isAudioPlayerMode } = storeToRefs(playerStore);
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
