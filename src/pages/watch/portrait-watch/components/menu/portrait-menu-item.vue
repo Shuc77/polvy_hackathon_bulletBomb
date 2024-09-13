@@ -100,6 +100,9 @@ const emit = defineEmits({
 .c-portrait-more-item__icon--stream-track {
   background-image: url(./images/icon-track.png);
 }
+.c-portrait-more-item__icon--stream-track-normal {
+  background-image: url(./images/icon-track-normal.svg);
+}
 
 .c-portrait-more-item__icon--language {
   background-image: url(./images/icon-language.svg);

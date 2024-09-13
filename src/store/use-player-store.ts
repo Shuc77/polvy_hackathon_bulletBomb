@@ -46,6 +46,10 @@ export interface PlayerStoreState {
   warmUpSetting: Ref<PlayerWarmUpSetting>;
   /** 暖场封面 */
   warmUpCover: ComputedRef<string>;
+  /** 暖场大封面 */
+  warmUpLargeCover: ComputedRef<string | undefined>;
+  /** 暖场渲染图片 */
+  warmUpRenderCover: ComputedRef<string>;
   /** 是否存在暖场视频 */
   existWarmUpVideo: ComputedRef<boolean>;
   /** 是否显示播放器暖场图片 */
@@ -132,8 +136,6 @@ export interface PlayerStoreState {
   supportTimeAxisMark: Ref<boolean>;
   /** 是否支持直播时移 */
   supportLiveTimeShift: Ref<boolean>;
-  /** 是否支持双语流 */
-  supportLanguageStream: Ref<boolean>;
   /** 直播时是否显示播放按钮， 默认开 */
   stopLivePlayEnabled: Ref<boolean>;
   /** 播放器新版暂停样式开关 */
@@ -156,6 +158,8 @@ export interface PlayerStoreState {
   switchLineLevel: Ref<number | undefined>;
   /** 显示控制栏 */
   showControl: Ref<boolean>;
+  /** 流多轨 Key 值 */
+  streamTrackKey: Ref<string>;
 }
 
 export enum SwitchTipsStatus {
@@ -218,6 +222,22 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否无延迟观看 */
   const isLowLatency = ref(__defaultPlayerInfo.isLowLatency);
 
+  /** 视频流宽度，仅用作比例计算 */
+  const resolutionWidth = ref<number>();
+
+  /** 视频流高度，仅用作比例计算 */
+  const resolutionHeight = ref<number>();
+
+  /** 视频流是否为竖状比例 */
+  const isPortraitResolutionRate = computed<boolean>(() => {
+    const width = unref(resolutionWidth);
+    const height = unref(resolutionHeight);
+    if (!width || !height) {
+      return false;
+    }
+    return height > width;
+  });
+
   /** 播放器暖场设置 */
   const warmUpSetting = ref<PlayerWarmUpSetting>({});
 
@@ -244,6 +264,30 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     return warmUpSetting.value.warmUpImg || warmUpVideoCover.value;
   });
 
+  /** 暖场大封面 */
+  const warmUpLargeCover = computed(() => {
+    return warmUpSetting.value.warmUpLargeImg;
+  });
+
+  /** 暖场渲染图片 */
+  const warmUpRenderCover = computed(() => {
+    if (
+      isMobile &&
+      layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait &&
+      warmUpLargeCover.value
+    ) {
+      // 如果当前视频流为竖状
+      if (isPortraitResolutionRate.value) {
+        return warmUpLargeCover.value;
+      }
+      // 如果未直播中且没上传横屏暖场图
+      if (channelStore.liveStatus !== LiveStatus.Live && !warmUpCover.value) {
+        return warmUpLargeCover.value;
+      }
+    }
+    return warmUpCover.value;
+  });
+
   /** 是否显示播放器暖场图片 */
   const showWarmUpImg = computed<boolean>(() => {
     if (playbackStore.isPlaybacking) {
@@ -265,7 +309,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       // 播放器已初始化
       unref(playerInited) &&
       // 有暖场封面
-      !!warmUpCover.value &&
+      !!warmUpRenderCover.value &&
       // 还没开始播放 || 不处于播放中状态
       (!unref(isPlayStarted) || isNotPlaying)
     );
@@ -397,22 +441,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 当前播放总时长 */
   const durationTime = ref(__defaultPlayerInfo.durationTime);
 
-  /** 视频流宽度，仅用作比例计算 */
-  const resolutionWidth = ref<number>();
-
-  /** 视频流高度，仅用作比例计算 */
-  const resolutionHeight = ref<number>();
-
-  /** 视频流是否为竖状比例 */
-  const isPortraitResolutionRate = computed<boolean>(() => {
-    const width = unref(resolutionWidth);
-    const height = unref(resolutionHeight);
-    if (!width || !height) {
-      return false;
-    }
-    return height > width;
-  });
-
   /** 暂无直播是否显示 */
   const noneLiveVisible = computed<boolean>(() => {
     // 直播中
@@ -453,9 +481,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否支持直播时移 */
   const supportLiveTimeShift = ref(__defaultPlayerInfo.supportLiveTimeShift);
 
-  /** 是否支持双语流 */
-  const supportLanguageStream = ref(__defaultPlayerInfo.supportLanguageStream);
-
   /** 直播时是否显示播放按钮， 默认开 */
   const stopLivePlayEnabled = ref(__defaultPlayerInfo.stopLivePlayEnabled);
 
@@ -482,6 +507,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const switchLineTipStatus = ref<SwitchTipsStatus>(SwitchTipsStatus.Hide);
   /** 显示控制栏 */
   const showControl = ref<boolean>(false);
+
+  /** 流多轨 Key 值 */
+  const streamTrackKey = ref<string>('');
 
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
@@ -553,8 +581,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       : playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
 
-    supportLanguageStream.value = playerInfo.supportLanguageStream;
-
     stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
 
     newPlayerPauseStyleEnabled.value = playerInfo.newPlayerPauseStyleEnabled;
@@ -590,6 +616,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     warmUpSetting,
     existWarmUpVideo,
     warmUpCover,
+    warmUpLargeCover,
+    warmUpRenderCover,
     showWarmUpImg,
     showAudioLivePlaceholder,
     logoSetting,
@@ -641,8 +669,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     supportTimeAxisMark,
     supportLiveTimeShift,
 
-    supportLanguageStream,
-
     stopLivePlayEnabled,
     newPlayerPauseStyleEnabled,
     playbackMultiplierEnabled,
@@ -658,5 +684,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     switchQualityLevel,
     switchLineLevel,
     showControl,
+
+    streamTrackKey,
   };
 });

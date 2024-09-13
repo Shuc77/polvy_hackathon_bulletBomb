@@ -119,7 +119,7 @@
 
         <!-- 语言切换 -->
         <div
-          v-if="langSwitchEnabled && !supportLanguageStream"
+          v-if="langSwitchEnabled && !supportMultiStreamTrack"
           class="c-pc-basic-info__main__bottom__lang-switch"
         >
           <pc-lang-switch theme="dark" />
@@ -127,7 +127,7 @@
 
         <!-- 双语流切换 -->
         <div
-          v-if="supportLanguageStream"
+          v-if="supportMultiStreamTrack"
           class="c-pc-basic-info__main__bottom__stream-track"
         >
           <pc-stream-track />
@@ -162,6 +162,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { eventBus, appEvents } from '@/app/app-events';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 const {
   referenceRef: publisherReferenceRef,
@@ -193,10 +194,11 @@ const {
   viewerWatchDuration,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
+const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
+
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 
-const { isLowLatency, supportLowLatency, supportLanguageStream } =
-  storeDefinitionToRefs(usePlayerStore);
+const { isLowLatency, supportLowLatency } = storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 

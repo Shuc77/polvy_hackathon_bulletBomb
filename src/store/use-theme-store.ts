@@ -72,9 +72,12 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
       return;
     }
 
-    return ambiguityVal
-      ? `${imageVal}?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`
-      : imageVal;
+    let blurParams = `?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
+    if (imageVal.includes('?x-oss-process=')) {
+      blurParams = blurParams.replace('?x-oss-process=', ',');
+    }
+
+    return ambiguityVal ? `${imageVal}${blurParams}` : imageVal;
   });
 
   /** 竖屏背景图 */
@@ -92,9 +95,12 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
       return;
     }
 
-    return ambiguityVal
-      ? `${imageVal}?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`
-      : imageVal;
+    let blurParams = `?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
+    if (imageVal.includes('?x-oss-process=')) {
+      blurParams = blurParams.replace('?x-oss-process=', ',');
+    }
+
+    return ambiguityVal ? `${imageVal}${blurParams}` : imageVal;
   });
 
   function syncThemeStore() {

@@ -60,6 +60,18 @@ export const useWelfareLottery = () => {
 
   useEventBusListener(appEvents.interaction.CheckCommentLotteryComment, checkLotteryComment);
 
+  /**
+   * 处理问卷抽奖，问卷弹窗填写
+   * @param questionnaireId 问卷ID
+   */
+  const onToFillQuestionnaire = (questionnaireId: string) => {
+    console.log('>>>> 显示抽奖问卷 set questionnaireBackBtnVisible:', false);
+    interactReceiveStore.$patch({
+      questionnaireBackBtnVisible: false,
+    });
+    eventBus.$emit(appEvents.interaction.OpenQuestionnaire, questionnaireId);
+  };
+
   /** 处理条件抽奖入口显示状态改变 */
   const onEntryVisibleChanged = (visible = true) => {
     interactReceiveStore.welfareLotteryPendantVisible = visible;
@@ -80,5 +92,6 @@ export const useWelfareLottery = () => {
     checkLotteryComment,
     onWelfareLotteryVisibleChanged,
     onEntryVisibleChanged,
+    onToFillQuestionnaire,
   };
 };

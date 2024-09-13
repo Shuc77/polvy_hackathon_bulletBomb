@@ -75,25 +75,13 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
   return false;
 };
 
-/**
- * @hook 观看页应用 hook
- */
-export function useWatchApp() {
-  // 设置浏览器标题和logo
-  useBrowserTitle();
-  useBrowserIcon();
-
-  const { setupGlobalStyle, removeSkeleton } = useGlobalStyle();
+export function createWatchApp() {
   const { initPageSkin } = usePageSkin();
 
   const { syncStoreBeforeWatchAppInited } = useSyncStoreForWatchApp();
 
   const channelStore = useChannelStore();
   const watchAppStore = useWatchAppStore();
-
-  function onLayoutMounted() {
-    removeSkeleton();
-  }
 
   /** 获取地址上的频道号 */
   function getChannelIdByUrl(): string | undefined {
@@ -221,6 +209,27 @@ export function useWatchApp() {
     }
   }
 
+  return {
+    setupWatchApp,
+  };
+}
+
+/**
+ * @hook 观看页应用 hook
+ */
+export function useWatchApp() {
+  // 设置浏览器标题和logo
+  useBrowserTitle();
+  useBrowserIcon();
+
+  const { setupWatchApp } = createWatchApp();
+
+  const { setupGlobalStyle, removeSkeleton } = useGlobalStyle();
+
+  function onLayoutMounted() {
+    removeSkeleton();
+  }
+
   onBeforeMount(() => {
     setupGlobalStyle();
     setupWatchApp();
@@ -230,6 +239,5 @@ export function useWatchApp() {
 
   return {
     onLayoutMounted,
-    getChannelIdByUrl,
   };
 }

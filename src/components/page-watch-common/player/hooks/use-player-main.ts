@@ -159,6 +159,7 @@ export const usePlayerMain = ({
       container,
       lowLatency: playerStore.isLowLatency,
       language: langStore.currentLang === LangType.Chinese ? 0 : 1,
+      streamTrackKey: playerStore.streamTrackKey,
       languageStreamEnabled: true,
       autoChangePlayback: false, // @PLV-WARN 默认不要更改该选项配置，如果业务上需要直播结束后自动切换回放，请先咨询保利威工作人员
     };

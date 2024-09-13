@@ -68,6 +68,9 @@
 
     <!-- 任务奖励弹层 -->
     <mobile-task-reward-popup />
+
+    <!-- 在线用户列表规则弹层 -->
+    <mobile-member-list-rule-popup />
   </div>
 </template>
 
@@ -92,6 +95,7 @@ import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
 import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
+import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

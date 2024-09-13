@@ -1,6 +1,7 @@
 <template>
   <div class="c-mobile-player-stream-track">
     <div
+      v-show="streamTrackType === ChannelStreamTrackType.MultiLanguageTrack"
       class="c-mobile-player-stream-track__ico"
       :class="{
         'c-mobile-player-stream-track__ico--cn': currentLang === LangType.Chinese,
@@ -10,7 +11,10 @@
       }"
     ></div>
 
-    <div class="c-mobile-player-stream-track__desc">
+    <div
+      v-show="streamTrackType === ChannelStreamTrackType.MultiLanguageTrack"
+      class="c-mobile-player-stream-track__desc"
+    >
       <template v-if="currentLang === LangType.Chinese">
         <span>中文音频</span>
         <span>Chinese Track</span>
@@ -29,22 +33,15 @@
 
     <div class="c-mobile-player-stream-track__radio">
       <div
+        v-for="(trackItem, idx) in streamTrackList"
+        :key="idx"
         class="c-mobile-player-stream-track__radio__item"
         :class="{
-          'c-mobile-player-stream-track__radio__item--active': currentLang === LangType.Chinese,
+          'c-mobile-player-stream-track__radio__item--active': isActiveStreamTrack(trackItem),
         }"
-        @click="switchLanguage(LangType.Chinese)"
+        @click="switchStreamTrack(trackItem)"
       >
-        <span>中文</span>
-      </div>
-      <div
-        class="c-mobile-player-stream-track__radio__item"
-        :class="{
-          'c-mobile-player-stream-track__radio__item--active': currentLang !== LangType.Chinese,
-        }"
-        @click="switchLanguage(LangType.English)"
-      >
-        <span>{{ japLangEnabled ? 'Jpn' : 'Eng' }}</span>
+        <span>{{ getTrackItemName(trackItem) }}</span>
       </div>
     </div>
   </div>
@@ -54,11 +51,28 @@
 import { LangType } from '@/assets/lang/lang-enum';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
+import { ChannelStreamTrackItem, ChannelStreamTrackType } from '@polyv/live-watch-sdk';
 import { useStreamTrack } from './use-stream-track';
 
 const { currentLang, japLangEnabled } = storeDefinitionToRefs(useLangStore);
 
-const { switchLanguage } = useStreamTrack();
+const {
+  streamTrackType,
+  streamTrackList,
+
+  isActiveStreamTrack,
+  switchStreamTrack,
+} = useStreamTrack();
+
+function getTrackItemName(trackItem: ChannelStreamTrackItem) {
+  if (streamTrackType.value === ChannelStreamTrackType.Normal) return trackItem.name;
+
+  if (trackItem.key === 'en') {
+    return japLangEnabled.value ? 'Jpn' : 'Eng';
+  }
+
+  return '中文';
+}
 </script>
 
 <style lang="scss">

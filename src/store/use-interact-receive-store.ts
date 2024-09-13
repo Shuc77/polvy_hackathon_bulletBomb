@@ -89,8 +89,10 @@ export interface InteractReceiveStoreState {
   seatPosition: ComputedRef<{ row: number; column: number } | undefined>;
   /** 当前是否存在签到 */
   hasCheckIn: Ref<boolean>;
-  // 商品库气泡是否显示
+  /** 商品库气泡是否显示 */
   productBubbleVisible: Ref<boolean>;
+  /** 问卷是否显示返回按钮 */
+  questionnaireBackBtnVisible: Ref<boolean>;
 }
 
 export interface InteractReceiveStoreAction {
@@ -266,6 +268,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     const productBubbleVisible = ref(false);
 
+    /** 问卷是否显示返回按钮 */
+    const questionnaireBackBtnVisible = ref(true);
+
     return {
       iarSdkLoaded,
 
@@ -296,6 +301,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       hasBulletin,
       hasCheckIn,
       productBubbleVisible,
+      questionnaireBackBtnVisible,
     };
   },
 );

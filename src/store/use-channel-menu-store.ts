@@ -232,6 +232,10 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         label = translateText;
       }
 
+      if (menuType === ChannelMenuType.Invite && label === '邀请榜') {
+        label = translate('menu.tabName.invite');
+      }
+
       return label;
     }
 

@@ -2,35 +2,44 @@
 <template>
   <div class="c-pc-player-stream-track">
     <div
+      v-for="(trackItem, idx) in streamTrackList"
+      :key="idx"
       class="c-pc-player-stream-track__item"
       :class="{
-        'c-pc-player-stream-track__item--active': currentLang === LangType.Chinese,
+        'c-pc-player-stream-track__item--active': isActiveStreamTrack(trackItem),
       }"
-      @click="switchLanguage(LangType.Chinese)"
+      @click="switchStreamTrack(trackItem)"
     >
-      <span>中文音轨</span>
-    </div>
-    <div
-      class="c-pc-player-stream-track__item"
-      :class="{
-        'c-pc-player-stream-track__item--active': currentLang !== LangType.Chinese,
-      }"
-      @click="switchLanguage(LangType.English)"
-    >
-      <span>{{ japLangEnabled ? 'Jpn track' : 'Eng track' }}</span>
+      <span>{{ getTrackItemName(trackItem) }}</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { LangType } from '@/assets/lang/lang-enum';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
+import { ChannelStreamTrackItem, ChannelStreamTrackType } from '@polyv/live-watch-sdk';
 import { useStreamTrack } from './use-stream-track';
 
-const { currentLang, japLangEnabled } = storeDefinitionToRefs(useLangStore);
+const { japLangEnabled } = storeDefinitionToRefs(useLangStore);
 
-const { switchLanguage } = useStreamTrack();
+const {
+  streamTrackType,
+  streamTrackList,
+
+  isActiveStreamTrack,
+  switchStreamTrack,
+} = useStreamTrack();
+
+function getTrackItemName(trackItem: ChannelStreamTrackItem) {
+  if (streamTrackType.value === ChannelStreamTrackType.Normal) return trackItem.name;
+
+  if (trackItem.key === 'en') {
+    return japLangEnabled.value ? 'Jpn track' : 'Eng track';
+  }
+
+  return '中文音轨';
+}
 </script>
 
 <style lang="scss">

@@ -67,7 +67,8 @@ const IarProductBtn = getIarComponent('ProductButton');
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } = useProduct();
+const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } =
+  useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

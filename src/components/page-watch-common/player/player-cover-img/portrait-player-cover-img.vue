@@ -3,13 +3,13 @@
   <div class="c-portrait-player-cover-img">
     <!-- 暖场图/播放器封面图 -->
     <div
-      v-if="warmUpCover"
+      v-if="warmUpRenderCover"
       v-show="showWarmUpImg"
       data-warmup-img
       class="c-portrait-player-cover-img__warm-up-img g-img-cover"
       :style="{
         ...playerContainerStyle,
-        backgroundImage: `url(${warmUpCover})`,
+        backgroundImage: `url(${warmUpRenderCover})`,
       }"
     ></div>
     <!-- 音频直播下占位图-直播封面图 -->
@@ -57,7 +57,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 
 const {
   showWarmUpImg,
-  warmUpCover,
+  warmUpRenderCover,
 
   showAudioLivePlaceholder,
   isAudioPlayerMode,
@@ -72,12 +72,13 @@ const { playerContainerStyle } = usePortraitPlayerSize(imgSize);
  * 加载暖场图片
  */
 watch(
-  () => warmUpCover.value,
+  () => warmUpRenderCover.value,
   async () => {
-    if (!warmUpCover.value) {
+    if (!warmUpRenderCover.value) {
       return;
     }
-    const { width, height } = await getImgSize(warmUpCover.value);
+
+    const { width, height } = await getImgSize(warmUpRenderCover.value);
 
     imgSize.value = {
       width,

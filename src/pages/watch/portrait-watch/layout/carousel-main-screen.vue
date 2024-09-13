@@ -38,6 +38,11 @@
     <!-- 右上角定位的内容 -->
     <boundary-wrap seat="right">
       <div class="c-portrait-carousel-main-screen__top-right">
+        <!-- 在线列表入口 -->
+        <portrait-online-user-capsule
+          v-if="portraitOnlineListEntranceVisible"
+          class="c-portrait-carousel-main-screen__top-right__item"
+        />
         <!-- 置顶公告 -->
         <portrait-announcement-entrance
           v-if="announcementFunctionVisible && iarSdkLoaded"
@@ -240,6 +245,12 @@
     >
       <portrait-enroll />
     </div>
+
+    <!-- 评论上墙 -->
+    <speak-top-business
+      class="c-portrait-carousel-main-screen__speak-top"
+      layout="portrait"
+    ></speak-top-business>
   </div>
 </template>
 
@@ -269,6 +280,8 @@ import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
 import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
+import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
+import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-online-user-capsule.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -321,6 +334,7 @@ const {
   portraitPlayerFullscreenBtnVisible,
   portraitPlayerIsPageFullscreen,
   portraitMessageInputVisible,
+  portraitOnlineListEntranceVisible,
 } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 /**
@@ -537,5 +551,9 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   &.c-portrait-carousel-main-screen__indicator__item--active {
     background-color: #fff;
   }
+}
+
+.c-portrait-carousel-main-screen__speak-top {
+  z-index: 2300;
 }
 </style>

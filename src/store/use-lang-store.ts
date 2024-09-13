@@ -6,6 +6,8 @@ import { local } from '@just4/storage';
 import { LanguageType, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useChannelStore } from './use-channel-store';
+import { usePlayerStore } from './use-player-store';
 
 /** local 记录中的 key */
 const LOCAL_STORAGE_KEY = 'language';
@@ -125,6 +127,9 @@ export function convert2CurrentLang(lang: LanguageType): LangType {
 }
 
 export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
+  const channelStore = useChannelStore();
+  const playerStore = usePlayerStore();
+
   /** 英语设置开关 */
   const englishSettingEnabled = ref(false);
 
@@ -231,6 +236,16 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     watchCore.updateAppConfig({
       language: convert2WatchSdkLang(lang),
     });
+
+    // 兼容旧逻辑，更改语言时支持同时更改音轨
+    const steamTrackItem = channelStore.streamTrackConfig?.trackList.find(
+      i => i.lang === convert2WatchSdkLang(lang),
+    );
+    if (steamTrackItem) {
+      playerStore.$patch({
+        streamTrackKey: steamTrackItem.key,
+      });
+    }
 
     eventBus.$emit(appEvents.player.ResetUpPlayer);
   }

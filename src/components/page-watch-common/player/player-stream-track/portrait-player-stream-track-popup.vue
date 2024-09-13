@@ -4,7 +4,7 @@
     :visible.sync="trackVisible"
     :theme="PopupTheme.Portrait"
     :use-transition.sync="useTransition"
-    :title="$lang('player.streamTrack')"
+    :title="isMultiLanguageTrack ? $lang('player.streamTrack') : $lang('player.streamTrack.normal')"
     backable
     @click-back="onClickBack"
   >
@@ -12,24 +12,15 @@
       class="c-portrait-player-control__select-list c-portrait-player-control__select-list--large"
     >
       <li
+        v-for="(trackItem, idx) in streamTrackList"
+        :key="idx"
         class="c-portrait-player-control__select-item"
         :class="{
-          'c-portrait-player-control__select-item--active': currentLang === LangType.Chinese,
+          'c-portrait-player-control__select-item--active': isActiveStreamTrack(trackItem),
         }"
-        @click="onClickItem(LangType.Chinese)"
+        @click="onClickItem(trackItem)"
       >
-        <span>中文音频</span>
-      </li>
-
-      <li
-        class="c-portrait-player-control__select-item"
-        :class="{
-          'c-portrait-player-control__select-item--active': currentLang !== LangType.Chinese,
-        }"
-        @click="onClickItem(LangType.English)"
-      >
-        <span v-if="!japLangEnabled">英文音频</span>
-        <span v-else>日语音频</span>
+        <span>{{ getTrackItemName(trackItem) }}</span>
       </li>
     </ul>
   </mobile-popup>
@@ -42,8 +33,8 @@ import { appEvents } from '@/app/app-events';
 import { usePortraitSettingPopup } from '../player-control/portrait-player-control/use-portrait-setting-popup';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
-import { LangType } from '@/assets/lang/lang-enum';
 import { useStreamTrack } from './use-stream-track';
+import { ChannelStreamTrackItem, ChannelStreamTrackType } from '@polyv/live-watch-sdk';
 
 const {
   visible: trackVisible,
@@ -52,12 +43,29 @@ const {
   closePopup,
 } = usePortraitSettingPopup(appEvents.portrait.OpenLangStreamPopup);
 
-const { currentLang, japLangEnabled } = storeDefinitionToRefs(useLangStore);
+const { japLangEnabled } = storeDefinitionToRefs(useLangStore);
 
-const { switchLanguage } = useStreamTrack();
+const {
+  isMultiLanguageTrack,
+  streamTrackType,
+  streamTrackList,
 
-function onClickItem(lang: LangType) {
-  switchLanguage(lang);
+  isActiveStreamTrack,
+  switchStreamTrack,
+} = useStreamTrack();
+
+function getTrackItemName(trackItem: ChannelStreamTrackItem) {
+  if (streamTrackType.value === ChannelStreamTrackType.Normal) return trackItem.name;
+
+  if (trackItem.key === 'en') {
+    return japLangEnabled.value ? 'Jpn track' : 'Eng track';
+  }
+
+  return '中文音频';
+}
+
+function onClickItem(trackItem: ChannelStreamTrackItem) {
+  switchStreamTrack(trackItem);
   closePopup();
 }
 </script>

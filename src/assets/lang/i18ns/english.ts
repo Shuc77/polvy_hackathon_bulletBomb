@@ -414,6 +414,7 @@ export const englishLang: LangConfig = {
     'The link is wrong or no longer works, please contact the administrator to get a new link!',
   'pageError.NotAllowDomain.title':
     'Illegal source of request, Please to configure the secure domain',
+  'pageError.kicked': 'You are not allowed to access this page',
 
   'player.error.sdkLoad': 'Failed to load player. Please refresh.',
   'player.play.button.text': 'Click to enter',
@@ -461,6 +462,7 @@ export const englishLang: LangConfig = {
   'player.subtitle.text': 'Subtitles',
   'player.replaySubtitle.text': 'Replay subtitles',
   'player.streamTrack': 'Switch Track',
+  'player.streamTrack.normal': 'Switch Scene',
   'player.tips.switching': 'Switching to',
   'player.tips.switching2': 'Please wait patiently~',
   'player.tips.switchTo': 'Successfully switched to',
@@ -618,7 +620,7 @@ export const englishLang: LangConfig = {
   'menu.tabName.tuwen': 'Tuwen Live',
   'menu.tabName.qa': 'Q & A',
   'menu.tabName.buy': 'Buy',
-  'menu.tabName.invite': 'Ranking List',
+  'menu.tabName.invite': 'Invitation Ranking',
   'menu.tabName.members': 'Members',
   'menu.tabName.vote': 'Vote',
   'menu.tabName.microActivity': 'MicroActivity',
@@ -637,16 +639,28 @@ export const englishLang: LangConfig = {
   'member.self': 'me',
   'member.failTips': 'Network error, members load failed,',
   'member.failTips.retry': 'click here to retry',
+  'member.list.rule.one': '1. List Rules',
+  'member.list.rule.text1':
+    'Sorted by special roles > audiences, with earlier entry time prioritized.',
+  'member.list.rule.two': '2. Special Reminder',
+  'member.list.rule.text2':
+    'Short caching may cause delayed updates of entry/exit. Normal behavior.',
+  'member.list.noMore.tips': 'Support for viewing up to 200 people',
+  'member.list.viewer.info': 'Member Information',
+  'member.list.rule': 'Rules',
+  'member.popup.title': 'Rule Explanation',
+  'member.list.onlineUser': 'Online List',
+  'member.online.userCount': 'viewers online',
 
   'microActivity.wechatScan': 'Scan the code to participate',
 
   'invite.rank': 'Ranking',
-  'invite.rank.people.number': 'Number of people',
+  'invite.rank.people.number': 'Headcount',
   'invite.rank.people': ' people',
   'invite.rank.me': 'me',
   'invite.rank.no.more': 'No more',
   'invite.rank.loaded.failed': 'The list is being updated, please wait a moment~',
-  'invite.rank.invite.btn': 'Invite',
+  'invite.rank.invite.btn': 'Get Poster',
   'invite.rank.click.btn.desc': 'Click the button on the right to invite your WeChat friends',
   'invite.rank.invited': 'You have invited ${number} people',
   'invite.rank.onlyShow': '(Only the top ${number} are shown)',
@@ -662,7 +676,7 @@ export const englishLang: LangConfig = {
 
   'invite.poster.num.text': 'invitees',
   'invite.poster.not.on.the.list': 'Not listed',
-  'invite.poster.go.invite': 'Invite',
+  'invite.poster.go.invite': 'Get Poster',
   'invite.poster.no.data': 'No invitation at the moment. Jump at the chance to on the list.',
 
   'invite.detail.popup.title': 'Invitation List',

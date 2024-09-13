@@ -59,6 +59,8 @@ export interface PlaybackStoreActions {
   getPlaybackSessionId(): string;
   /** 生成用于分享回放的 Vid */
   getPlaybackShareId(): string | undefined;
+  /** 重置回放 Store 数据 */
+  resetPlaybackStoreData(): void;
 }
 
 export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions {}
@@ -152,8 +154,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
    * 根据回放列表获取当前回放对象
    */
   function __getCurrentPlaybackTargetByList(): PlaybackTarget | undefined {
-    if (!playbackList.value.length) return undefined;
-
     let result = playbackList.value[0];
 
     const playBackVid = paramGetter.playBackVid();
@@ -281,6 +281,19 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     return currentPlaybackTarget.value.playbackId;
   }
 
+  /**
+   * 重置回放 Store 数据
+   */
+  function resetPlaybackStoreData() {
+    isPlaybacking.value = false;
+    playbackMode.value = undefined;
+
+    playbackListMap.value = { 0: [] };
+    playbackList.value = [];
+
+    currentPlaybackTarget.value = undefined;
+  }
+
   return {
     isPlaybacking,
     playbackMode,
@@ -309,5 +322,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
     getPlaybackSessionId,
     getPlaybackShareId,
+    resetPlaybackStoreData,
   };
 });
