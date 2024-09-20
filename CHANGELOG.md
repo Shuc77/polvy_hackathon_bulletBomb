@@ -4,6 +4,13 @@
 
 ---
 
+## v1.8.2(2024-09-20)
+
+### Build System
+
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20240919`
+- 更新 `@polyv/live-watch-sdk` 版本至 `1.8.2`
+
 ## v1.8.0(2024-09-13)
 
 ### Bug Fixes
