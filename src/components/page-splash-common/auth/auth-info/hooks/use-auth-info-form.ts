@@ -10,7 +10,7 @@ import {
 import { ValidatorRules } from '@/plugins/async-validator';
 
 import { translate } from '@/assets/lang';
-import { validateUserName, validatePhoneNumber } from '@/assets/utils/validate';
+import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 
 import { useAuthStore } from '@/store/use-auth-store';
@@ -163,21 +163,6 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
 
       switch (type) {
         case AuthInfoType.Name:
-          rules[field] = [
-            { type: 'string', message: translate('auth.error.improveInfo'), required: true },
-            {
-              validator: () => {
-                const name = formData[field];
-
-                if (validateUserName(name)) {
-                  return [];
-                }
-
-                return [translate('form.error.onlyCnAnEn')];
-              },
-            },
-          ];
-          break;
         case AuthInfoType.Text:
         case AuthInfoType.Option:
           rules[field] = [

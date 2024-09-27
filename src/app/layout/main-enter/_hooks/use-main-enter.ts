@@ -13,12 +13,14 @@ import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
 import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 /**
  * 页面尺寸初始化设置
  */
 const usePageSizeSetup = () => {
   const pageStore = usePageStore();
+  const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
   function savePageSize() {
     pageStore.resetUpPageSize();
@@ -31,6 +33,12 @@ const usePageSizeSetup = () => {
       `${pageStore.pageClientHeight}px`,
     );
   }
+
+  watch(isSmallWindow, () => {
+    setTimeout(() => {
+      savePageSize();
+    }, 300);
+  });
 
   onMounted(() => {
     savePageSize();
@@ -119,7 +127,7 @@ export const useMainEnter = (options: {
     if (watchAppStore.watchPageInited) {
       if (webviewStore.isPlvWebview) {
         // 进入观看页后再发送用户数据
-        webviewStore.sendUserInfo();
+        webviewStore.sendUserInfo(webviewStore.autoPictureInPicture);
       }
 
       // 连接聊天室

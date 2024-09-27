@@ -130,16 +130,25 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   /** 积分打赏礼物单位 */
   const donatePointUnit = ref('');
 
+  const __donateItemAll = ref<DonateGoodInfo[]>([]);
+
   /** 所有打赏道具列表 */
-  const donateItemAll = ref<DonateGoodInfo[]>([]);
+  const donateItemAll = computed<DonateGoodInfo[]>(() => {
+    return __donateItemAll.value.map(good => {
+      return {
+        ...good,
+        goodTranslateName: translateGoodName(good.goodName),
+        goodPriceText: getGoodPriceText(good.goodPrice),
+      };
+    });
+  });
 
   /**
    * 可以显示的打赏道具列表
    * @desc PC 端打赏列表
    * */
   const donateItemList = computed<DonateGoodInfo[]>(() => {
-    const goods = unref(donateItemAll);
-    return goods.filter(good => ynToBool(good.goodEnabled, YN.N));
+    return donateItemAll.value.filter(good => ynToBool(good.goodEnabled, YN.N));
   });
 
   /**
@@ -216,7 +225,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
    */
   function findDonateGoodByImg(targetGoodImg: string): DonateGoodInfo | undefined {
     let goodInfo: DonateGoodInfo | undefined;
-    const list = unref(donateItemAll);
+    const list = donateItemAll.value;
 
     for (let i = 0; i < list.length; i++) {
       const good = list[i];
@@ -263,7 +272,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     const watchCore = getWatchCore();
     const { goods } = watchCore.donate.getDonateGoods();
 
-    donateItemAll.value = goods.map<DonateGoodInfo>(good => {
+    __donateItemAll.value = goods.map<DonateGoodInfo>(good => {
       return {
         ...good,
         goodTranslateName: translateGoodName(good.goodName),

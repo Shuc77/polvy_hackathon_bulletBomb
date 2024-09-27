@@ -3,7 +3,7 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useCommonStore } from '@/store/use-common-store';
 import { InvitePosterData, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@polyv/utils/es/boolean';
+import { ynToBool } from '@utils-ts/boolean';
 import { formatDate } from '@utils-ts/date';
 import { computed, onMounted, ref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';

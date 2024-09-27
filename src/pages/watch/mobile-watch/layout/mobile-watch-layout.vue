@@ -16,9 +16,12 @@
       class="c-mobile-watch-layout__player"
       :class="{
         'c-mobile-watch-layout__player--hide': !(
-          mainScreen === MainScreenContent.Player || mobileMenuCurrentName === TAB_NAME_DOC_OR_VIDEO
+          mainScreen === MainScreenContent.Player ||
+          mobileMenuCurrentName === TAB_NAME_DOC_OR_VIDEO ||
+          isSmallWindow
         ),
         'c-mobile-watch-layout__player--sub-screen': mainScreen !== MainScreenContent.Player,
+        'c-mobile-watch-layout__pip': isSmallWindow,
       }"
       :style="getScreenStyles(MainScreenContent.Player)"
     >
@@ -32,6 +35,8 @@
           <mobile-player-main />
         </div>
       </div>
+      <!-- webview 小窗下的控制栏 -->
+      <small-window-control v-if="isSmallWindow" />
     </div>
 
     <!-- 文档 -->
@@ -133,13 +138,16 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 
-import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
+import { MainScreenContent, MultiMeetingListLayout, PlayStatus } from '@polyv/live-watch-sdk';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { usePlayerStore } from '@/store/use-player-store';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useWebviewStore } from '@/store/use-webview-store';
+import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
@@ -167,9 +175,13 @@ const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { filterConnectMicList, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 
-const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
+const { canRenderPlayer, isPlayMode, playStatus } = storeDefinitionToRefs(usePlayerStore);
+const { toPlayInLimit } = usePlayerAction();
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
+
+const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
+const layoutStore = useLayoutStore();
 
 const layoutWrapRef = ref<HTMLDivElement>();
 const layoutTopRef = ref<HTMLDivElement>();
@@ -225,6 +237,13 @@ async function computedLayoutSize() {
   mobileLayoutBottomTop.value = wrapHeight - mobileLayoutBottomHeight.value;
 }
 
+function onClickPlayerRegion() {
+  // 当前处于暂停状态，触发播放
+  if (isPlayMode.value && playStatus.value === PlayStatus.Pause) {
+    toPlayInLimit();
+  }
+}
+
 watch(
   () => [unref(filterConnectMicList).length],
   () => {
@@ -232,18 +251,28 @@ watch(
   },
 );
 
-useEventBusListener(appEvents.global.MobileLayoutComputedSize, computedLayoutSize);
-
-useWindowResizeListener(() => {
-  computedLayoutSize();
-}, true);
-
-useScreenOrientHook({
+const { updateScreenOrientationModeManually, screenOrientationMode } = useScreenOrientHook({
   autoListen: true,
   autoListenCb: () => {
     computedLayoutSize();
   },
 });
+
+watch(isSmallWindow, () => {
+  setTimeout(() => {
+    updateScreenOrientationModeManually();
+    layoutStore.$patch({ screenOrientationMode: screenOrientationMode.value });
+    computedLayoutSize();
+  }, 300);
+});
+
+useEventBusListener(appEvents.global.MobileLayoutComputedSize, computedLayoutSize);
+
+useEventBusListener(appEvents.portrait.ClickPlayerRegion, onClickPlayerRegion);
+
+useWindowResizeListener(() => {
+  computedLayoutSize();
+}, true);
 
 onMounted(() => {
   computedLayoutSize();
@@ -373,5 +402,29 @@ onMounted(() => {
   left: 50%;
   z-index: 3000;
   transform: translateX(-50%);
+}
+
+.c-mobile-watch-layout__pip {
+  top: 0 !important;
+  z-index: 4001;
+  height: 100% !important;
+  .c-mobile-watch-layout__player__content {
+    height: 100% !important;
+  }
+  .plwrap {
+    > div:not(.plvideo, .plv-live-watermark) {
+      display: none !important;
+    }
+  }
+
+  .plv-player-container {
+    > div:not(.plv-player-video__wrap, .plv-player-cover) {
+      display: none !important;
+    }
+  }
+
+  .c-mobile-player-main__play-btn {
+    display: none;
+  }
 }
 </style>

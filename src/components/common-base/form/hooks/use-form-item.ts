@@ -48,7 +48,7 @@ export const FORM_ITEM_PROVIDE_KEY: InjectionKey<FormItemInstance> =
   Symbol('FORM_ITEM_PROVIDE_KEY');
 
 export const useFormItemInject = (): FormItemInstance | undefined => {
-  return inject(FORM_ITEM_PROVIDE_KEY);
+  return inject(FORM_ITEM_PROVIDE_KEY, undefined);
 };
 
 export const useFormItem = (options: { props: VueProps<typeof formItemProps> }) => {

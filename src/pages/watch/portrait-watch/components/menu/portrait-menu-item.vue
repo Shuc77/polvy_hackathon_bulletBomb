@@ -122,6 +122,13 @@ const emit = defineEmits({
   background: red;
 }
 
+.c-portrait-more-item__icon--pip {
+  background-image: url(./images/icon-pip.png);
+}
+
+.c-portrait-more-item__icon--playback-setting {
+  background-image: url(./images/icon-playback-setting.png);
+}
 .c-portrait-more-item__text {
   width: 100%;
   font-size: 12px;

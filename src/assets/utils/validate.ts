@@ -45,12 +45,3 @@ export function validateSpecialString(text: string): boolean {
 export function validateCnAndEn(text: string): boolean {
   return /^[\u4e00-\u9fa5a-zA-Z ]+$/.test(text);
 }
-
-/**
- * 检测文本是否符合"用户名称"规则
- * @param userName 用户名称
- * @returns 如果存在其他字符则返回 false
- */
-export function validateUserName(userName: string): boolean {
-  return /^[\u4e00-\u9fa5a-zA-Z·'" \-_]+$/.test(userName);
-}

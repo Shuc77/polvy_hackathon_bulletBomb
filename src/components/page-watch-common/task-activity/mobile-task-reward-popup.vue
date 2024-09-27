@@ -78,6 +78,19 @@
         >
           {{ $lang('taskActivity.rewardDesc') }}
         </div>
+
+        <!-- 领取按钮 -->
+        <div
+          v-if="item.acceptInfo?.activeAcceptEnabled === 'Y'"
+          class="c-mobile-task-reward-popup__item__receive"
+          @click="openReceive(item)"
+        >
+          {{
+            item.acceptInfo.received === 'N'
+              ? $lang('taskActivity.rewardReceive.receive')
+              : $lang('taskActivity.rewardReceive.look')
+          }}
+        </div>
       </div>
 
       <div
@@ -93,7 +106,7 @@
 <script setup lang="ts">
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useTaskReward, getTaskRewardText, getTaskReachText } from './use-task-activity';
-import { formatDate } from '@polyv/utils/es/date';
+import { formatDate } from '@utils-ts/date';
 import {
   MobileIconArrowLeft,
   MobileIconClose,
@@ -112,8 +125,15 @@ import {
 } from '@polyv/live-watch-sdk';
 import { translate } from '@/assets/lang';
 
-const { visible, rewardList, getRewardStatusText, close, scrollNearBottom, showClose } =
-  useTaskReward();
+const {
+  visible,
+  rewardList,
+  getRewardStatusText,
+  close,
+  scrollNearBottom,
+  showClose,
+  openReceive,
+} = useTaskReward();
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 
@@ -294,6 +314,24 @@ function openErrorTips(item: TaskRewardItem) {
   font-size: 12px;
   line-height: 17px;
   color: #9aa4b3;
+}
+.c-mobile-task-reward-popup__item__receive {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  height: 28px;
+  padding: 0 15px;
+  font-size: 12px;
+  color: #fe3f52;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #fe3f52;
+  border-radius: 14px;
 }
 .c-mobile-task-reward-popup__empty {
   position: absolute;

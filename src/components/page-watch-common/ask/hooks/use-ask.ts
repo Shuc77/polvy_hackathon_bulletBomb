@@ -151,6 +151,16 @@ export const useAsk = (options: UseAskOptions) => {
     }
   }
 
+  /** 滚动显示最新消息 */
+  function scrollToNew() {
+    const askMsgListInstance = unref(askMsgListRef);
+    askMsgListInstance?.scrollToBottom();
+  }
+
+  function hideMoreMsg() {
+    askStore.hideMoreMsg();
+  }
+
   onMounted(() => {
     getAskMsgList();
     const watchCore = getWatchCore();
@@ -162,7 +172,10 @@ export const useAsk = (options: UseAskOptions) => {
   function onAskEvent(evt: { askMsg: AskMsgType }) {
     askMsgList.value.push(evt.askMsg);
     const askMsgListInstance = unref(askMsgListRef);
-    askMsgListInstance?.checkScrollToBottom();
+    const isNearBottom = askMsgListInstance?.checkScrollToBottom();
+    if (!isNearBottom && !evt.askMsg.isLocal) {
+      askStore.showMoreMsg();
+    }
   }
 
   function onSendBadWord() {
@@ -218,6 +231,9 @@ export const useAsk = (options: UseAskOptions) => {
     inputDisabled,
     askInputPlaceholder,
     questionImageEnabled,
+
+    scrollToNew,
+    hideMoreMsg,
   };
 };
 

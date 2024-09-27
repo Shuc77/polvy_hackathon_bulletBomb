@@ -6,6 +6,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 import { MessageBoxInstance } from '@/components/common-base/message-box';
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
@@ -19,6 +20,7 @@ export const useDoc = (
   const channelStore = useChannelStore();
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
+  const webviewStore = useWebviewStore();
 
   /** 创建文档的外层节点 */
   const wrapRef = ref<HTMLDivElement>();
@@ -89,11 +91,19 @@ export const useDoc = (
   });
 
   watch(
-    () => [layoutStore.mainScreen, layoutStore.mobileDocIsPageFullscreen],
-    async () => {
+    () => [
+      layoutStore.mainScreen,
+      layoutStore.mobileDocIsPageFullscreen,
+      webviewStore.isSmallWindow,
+    ],
+    async (next, prev) => {
       await nextTick();
       const watchCore = getWatchCore();
-      watchCore.doc.resize();
+      // 小窗事件结束不一定这么快
+      const timeout = next[2] !== prev[2] ? 300 : 0;
+      setTimeout(() => {
+        watchCore.doc.resize();
+      }, timeout);
     },
   );
 

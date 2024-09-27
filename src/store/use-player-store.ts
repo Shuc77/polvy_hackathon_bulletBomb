@@ -160,6 +160,8 @@ export interface PlayerStoreState {
   showControl: Ref<boolean>;
   /** 流多轨 Key 值 */
   streamTrackKey: Ref<string>;
+  /** 是否支持快进快退 */
+  fastForwardBackwardEnabled: Ref<boolean>;
 }
 
 export enum SwitchTipsStatus {
@@ -511,6 +513,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 流多轨 Key 值 */
   const streamTrackKey = ref<string>('');
 
+  const fastForwardBackwardEnabled = ref(false);
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = getWatchCore();
@@ -530,12 +534,18 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageLocationSetting.value = watchCore.barrage.getBarrageLocationSetting();
 
     syncWarmUpSetting();
+    syncFastForwardBackwardEnabled();
   }
 
   /** 同步暖场设置 */
   function syncWarmUpSetting() {
     const watchCore = getWatchCore();
     warmUpSetting.value = watchCore.player.getPlayerWarmUpSetting();
+  }
+
+  function syncFastForwardBackwardEnabled() {
+    const watchCore = getWatchCore();
+    fastForwardBackwardEnabled.value = watchCore.playback.getFastForwardBackwardEnabled();
   }
 
   /** 同步播放器信息 */
@@ -686,5 +696,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     showControl,
 
     streamTrackKey,
+    fastForwardBackwardEnabled,
   };
 });

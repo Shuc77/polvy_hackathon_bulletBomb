@@ -7,6 +7,8 @@
         ref="askMsgListRef"
         :ask-msg-list="askMsgRenderList"
         @near-top="getAskMsgList"
+        @near-bottom="hideMoreMsg"
+        @scroll-to-new="scrollToNew"
       />
     </div>
 
@@ -55,11 +57,17 @@ const {
 
   inputDisabled,
   askInputPlaceholder,
+
+  scrollToNew,
+  hideMoreMsg,
 } = useAsk({
   askMsgListRef,
 });
 
-const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = useAskSend();
+const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = useAskSend({
+  scrollToNew,
+  hideMoreMsg,
+});
 </script>
 
 <style lang="scss">

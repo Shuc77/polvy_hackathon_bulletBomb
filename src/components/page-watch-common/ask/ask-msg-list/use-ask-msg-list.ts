@@ -16,6 +16,8 @@ export const askMsgListProps = () => ({
 
 export const askMsgListEmits = () => ({
   'near-top': emitFunc<void>(),
+  'near-bottom': emitFunc<void>(),
+  'scroll-to-new': emitFunc<void>(),
 });
 
 export const useAskMsgList = (options: { emit: VueEmit<typeof askMsgListEmits> }) => {
@@ -26,6 +28,9 @@ export const useAskMsgList = (options: { emit: VueEmit<typeof askMsgListEmits> }
     firstElemIndex: 1,
     nearTopCallback: () => {
       emit('near-top');
+    },
+    nearBottomCallback: () => {
+      emit('near-bottom');
     },
   });
 
@@ -44,9 +49,14 @@ export const useAskMsgList = (options: { emit: VueEmit<typeof askMsgListEmits> }
 
   const askMsgListInstance: AskMsgListInstance = scrollListInstance;
 
+  function scrollToNew() {
+    emit('scroll-to-new');
+  }
+
   return {
     scrollRef,
     askMsgListInstance,
     onScrollEvent,
+    scrollToNew,
   };
 };

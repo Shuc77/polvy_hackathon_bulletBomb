@@ -221,11 +221,13 @@ export const useWeixinShare = () => {
 
     const shareInfo = weixinStore.wxShareInfo;
 
+    const imgUrl = shareInfo.weixinShareCoverImg || themeStore.channelCoverImg;
+
     const shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption = {
       title: unref(wxShareTitle),
       desc: shareInfo.shareDesc || '',
       link: unref(wxShareUrl),
-      imgUrl: fitProtocol(themeStore.channelCoverImg),
+      imgUrl: fitProtocol(imgUrl),
     };
 
     console.info('weixin shareOptions', JSON.parse(JSON.stringify(shareOptions)));

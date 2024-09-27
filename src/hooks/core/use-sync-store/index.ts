@@ -30,6 +30,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 export const useSyncStoreForWatchApp = () => {
   const commonStore = useCommonStore();
@@ -120,6 +121,7 @@ export const useSyncStoreForWatchPage = () => {
 
   const viewerStore = useViewerStore();
   const subtitleStore = useSubtitleStore();
+  const webviewStore = useWebviewStore();
 
   /**
    * 进入到观看页前同步 Store
@@ -140,6 +142,7 @@ export const useSyncStoreForWatchPage = () => {
     microActivityStore.syncMicroActivityStore();
     pageAdvertStore.syncPageAdvertStore();
     polyvAIStore.syncPolyvAIStore();
+    webviewStore.syncWebviewInfo();
 
     /**
      * 检查是否需要实名认证

@@ -9,6 +9,13 @@ export interface AskStore {
   askWelcomeText: ComputedRef<string>;
   /** 提问红点是否显示 */
   askReminderVisible: Ref<boolean>;
+
+  /** 是否显示更多消息 */
+  moreMsgVisible: Ref<boolean>;
+  /** 显示更多消息 */
+  showMoreMsg(): void;
+  /** 隐藏更多消息 */
+  hideMoreMsg(): void;
 }
 
 export const useAskStore = defineStore<'ask', AskStore>('ask', () => {
@@ -24,8 +31,24 @@ export const useAskStore = defineStore<'ask', AskStore>('ask', () => {
   /** 提问消息红点提示是否可见 */
   const askReminderVisible = ref(false);
 
+  /** 是否显示更多消息 */
+  const moreMsgVisible = ref(false);
+
+  /** 显示更多消息 */
+  function showMoreMsg() {
+    moreMsgVisible.value = true;
+  }
+
+  /** 隐藏更多消息 */
+  function hideMoreMsg() {
+    moreMsgVisible.value = false;
+  }
+
   return {
     askWelcomeText,
     askReminderVisible,
+    moreMsgVisible,
+    showMoreMsg,
+    hideMoreMsg,
   };
 });

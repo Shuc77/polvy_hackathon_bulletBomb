@@ -41,6 +41,14 @@ export const usePlayerControl = () => {
     return text;
   });
 
+  const forwardButtonTips = computed<string>(() => {
+    return translate('player.fastForwardBackward.forward');
+  });
+
+  const backwardButtonTips = computed<string>(() => {
+    return translate('player.fastForwardBackward.back');
+  });
+
   /**
    * 直播时隐藏播放按钮，不允许暂停
    */
@@ -139,6 +147,10 @@ export const usePlayerControl = () => {
     return (
       playbackStore.isPlaybacking && playerStore.rateList.length > 0 && rateButtonVisible.value
     );
+  });
+
+  const fastForwardBackwardVisible = computed(() => {
+    return playerStore.fastForwardBackwardEnabled && playbackStore.isPlaybacking;
   });
 
   /** 可选的倍速列表 */
@@ -418,6 +430,9 @@ export const usePlayerControl = () => {
     timeShiftReturnLiveButtonVisible,
 
     noPauseWhenLive,
+    fastForwardBackwardVisible,
+    forwardButtonTips,
+    backwardButtonTips,
   };
 };
 

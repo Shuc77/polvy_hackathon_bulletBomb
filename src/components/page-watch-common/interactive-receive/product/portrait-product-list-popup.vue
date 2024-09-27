@@ -120,7 +120,8 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
 
-const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } = useProduct();
+const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } =
+  useProduct();
 
 const { getLinkParams } = useProductLinkParams();
 

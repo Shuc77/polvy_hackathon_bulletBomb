@@ -23,6 +23,7 @@
     <mobile-popup
       :visible.sync="pickerVisible"
       fill-body-section
+      @close="onHiddenPicker"
     >
       <template #header>
         <div class="c-mobile-form-area-picker__header">
@@ -76,6 +77,7 @@ const {
   onClickConfirm,
   innerIsFinish,
   refreshKey,
+  onHiddenPicker,
 } = useFormAreaPicker({
   props,
   emit,
