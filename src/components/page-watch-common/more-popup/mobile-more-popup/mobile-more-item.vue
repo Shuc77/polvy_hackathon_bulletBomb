@@ -101,6 +101,14 @@ const emit = defineEmits({
   background-image: url(./imgs/icon-menu-my-reward-mob.png);
 }
 
+.c-mobile-more-item__icon--pip {
+  background-image: url(./imgs/icon-pip.png);
+}
+
+.c-mobile-more-item__icon--playback-setting {
+  background-image: url(./imgs/icon-playback-setting.png);
+}
+
 .c-mobile-more-item__text {
   width: 100%;
   font-size: 12px;

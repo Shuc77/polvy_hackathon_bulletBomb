@@ -6,7 +6,7 @@ export interface ScrollListInstance {
   /** 滚动到最底部 */
   scrollToBottom(): void;
   /** 检查当前滚动条是否靠近底部，靠近则滚到底部 */
-  checkScrollToBottom(): void;
+  checkScrollToBottom(): boolean;
   /** 记录当前的第一个节点 */
   recordFirstElem(): void;
   /** 滚动到记录到首个节点 */
@@ -18,6 +18,8 @@ export interface UseScrollListOptions {
   firstElemIndex?: number;
   /** 靠近顶部回调 */
   nearTopCallback?: () => void;
+  /** 靠近底部回调 */
+  nearBottomCallback?: () => void;
 }
 
 /**
@@ -58,10 +60,12 @@ export const useScrollList = (options: UseScrollListOptions = {}) => {
   }
 
   /** 检查当前滚动条是否靠近底部，靠近则滚到底部 */
-  function checkScrollToBottom() {
-    if (isNearBottom()) {
+  function checkScrollToBottom(): boolean {
+    const isNear = isNearBottom();
+    if (isNear) {
       scrollToBottom();
     }
+    return !!isNear;
   }
 
   /** 处理滚动事件 */
@@ -74,6 +78,13 @@ export const useScrollList = (options: UseScrollListOptions = {}) => {
     const top = scrollElem.scrollTop;
     if (top === 0 && options.nearTopCallback) {
       options.nearTopCallback();
+    }
+
+    if (
+      scrollElem.scrollHeight - scrollElem.clientHeight - scrollElem.scrollTop < 10 &&
+      options.nearBottomCallback
+    ) {
+      options.nearBottomCallback();
     }
   }
 

@@ -9,7 +9,7 @@ import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { toast } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 
-export const useAskSend = () => {
+export const useAskSend = (options: { scrollToNew: () => void; hideMoreMsg: () => void }) => {
   /** 消息输入框 */
   const msgInputWrapRef = ref<MsgInputWrapInstance>();
 
@@ -21,6 +21,9 @@ export const useAskSend = () => {
     msgInputWrapRef.value.resetStatus();
 
     await submitMessageQueue(contentList);
+
+    options.scrollToNew();
+    options.hideMoreMsg();
   }
 
   /** 提交消息队列 */

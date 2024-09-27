@@ -111,6 +111,31 @@ export const usePlayerAction = () => {
   }
 
   /**
+   * 快进
+   * @param time 快进时间，默认：15
+   */
+  function fastForward(time = 15) {
+    let currentTime = playerStore.currentTime + time;
+    if (currentTime > playerStore.durationTime) {
+      currentTime = playerStore.durationTime - 1;
+    }
+
+    getWatchCore().player.seekVideo(currentTime);
+  }
+
+  /**
+   * 快退
+   * @param time 快退时间，默认：15
+   */
+  function fastBackward(time = 15) {
+    let currentTime = playerStore.currentTime - time;
+    if (currentTime < 0) {
+      currentTime = 0;
+    }
+    getWatchCore().player.seekVideo(currentTime);
+  }
+
+  /**
    * 不显示大播放按钮，并且不显示左下角播放暂停按钮，播放操作失效
    * */
   function toPlayInLimit(): void {
@@ -326,7 +351,10 @@ export const usePlayerAction = () => {
    * @param second 秒数，默认：15
    */
   function toForwardVideo(second = 15) {
-    const currentTime = playerStore.currentTime + second;
+    let currentTime = playerStore.currentTime + second;
+    if (currentTime > playerStore.durationTime) {
+      currentTime = playerStore.durationTime - 1;
+    }
     toSeekVideo(currentTime);
     playerStore.$patch({
       currentTime,
@@ -348,7 +376,10 @@ export const usePlayerAction = () => {
    * @param second 秒数，默认：15
    */
   function toBackOffVideo(second = 15) {
-    const currentTime = playerStore.currentTime - second;
+    let currentTime = playerStore.currentTime - second;
+    if (currentTime < 0) {
+      currentTime = 0;
+    }
     toSeekVideo(currentTime);
     playerStore.$patch({
       currentTime,
@@ -425,5 +456,7 @@ export const usePlayerAction = () => {
     toBackOffVideoInLimit,
     toFreezePlay,
     listenLevelChangeToShowTips,
+    fastForward,
+    fastBackward,
   };
 };

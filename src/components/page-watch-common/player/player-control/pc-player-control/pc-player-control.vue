@@ -54,6 +54,13 @@
 
         <!-- 左侧按钮 -->
         <div class="c-pc-player-control__content__left">
+          <mobile-icon-player-back
+            v-if="fastForwardBackwardVisible"
+            class="c-pc-player-control__button c-pc-player-control__button--fastForward"
+            :data-tips="backwardButtonTips"
+            @click="toBackOffVideo(15)"
+          />
+
           <!-- 暂停播放按钮 -->
           <div
             v-if="playButtonVisible"
@@ -65,6 +72,13 @@
             :data-tips="playButtonTips"
             @click="toTogglePlay"
           ></div>
+
+          <mobile-icon-player-forward
+            v-if="fastForwardBackwardVisible"
+            class="c-pc-player-control__button c-pc-player-control__button--fastForward"
+            :data-tips="forwardButtonTips"
+            @click="toForwardVideo(15)"
+          />
 
           <!-- 刷新按钮 -->
           <div
@@ -189,6 +203,11 @@ import {
   PcOriginIconBarrageOff,
   PcOriginIconBarrageOn,
 } from '@/components/component-icons/pc-origin/map';
+import {
+  MobileIconPlayerForward,
+  MobileIconPlayerBack,
+} from '@/components/component-icons/mobile/map';
+
 import PcConnectMicSetting from './pc-connect-mic-setting.vue';
 import PcBarrageSetting from './pc-barrage-setting.vue';
 import PcPlayerSetting from './pc-player-setting.vue';
@@ -222,7 +241,15 @@ const { toggleMainScreen } = layoutStore;
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
-const { toTogglePlay, toRefresh, toToggleBarrageShow, toRestart, toReturnLive } = usePlayerAction();
+const {
+  toTogglePlay,
+  toRefresh,
+  toToggleBarrageShow,
+  toRestart,
+  toReturnLive,
+  toBackOffVideo,
+  toForwardVideo,
+} = usePlayerAction();
 
 const {
   playbackTimeVisible,
@@ -239,6 +266,9 @@ const {
   durationTimeText,
   barrageSettingEnabled,
   timeShiftReturnLiveButtonVisible,
+  fastForwardBackwardVisible,
+  forwardButtonTips,
+  backwardButtonTips,
 } = usePlayerControl();
 
 const { visible: manualTipsVisible, close: closeManualTips } = useSimpleVisible(true);
@@ -573,5 +603,9 @@ $--player-control-button-icon-size: 24px !default;
 .c-pc-player-control__tips__switch-btn {
   padding: 0 3px;
   color: #3f76fc;
+}
+
+.c-pc-player-control__button--fastForward {
+  font-size: 28px;
 }
 </style>

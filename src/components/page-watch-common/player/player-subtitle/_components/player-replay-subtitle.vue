@@ -33,7 +33,7 @@ import { getWatchCore } from '@/core/watch-sdk';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
-import { ynToBool } from '@polyv/utils/es/boolean';
+import { ynToBool } from '@utils-ts/boolean';
 import { useSubtitleProps, usePlayerSubtitle } from '../_hooks/_use-player-subtitle';
 
 const subtitleStore = useSubtitleStore();

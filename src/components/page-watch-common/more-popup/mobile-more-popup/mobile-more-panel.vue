@@ -104,6 +104,22 @@
       :text="$lang('taskActivity.myReward')"
       @click="onClickMyReward"
     />
+
+    <!-- 小窗播放 -->
+    <more-item
+      v-if="pictureInPictureEnabled"
+      icon="pip"
+      :text="$lang('taskActivity.pictureInPicture')"
+      @click="onClickPIP"
+    />
+
+    <!-- 播放设置 -->
+    <more-item
+      v-if="pictureInPictureEnabled"
+      icon="playback-setting"
+      :text="$lang('taskActivity.playbackSetting')"
+      @click="onClickPlaybackSetting"
+    />
   </ul>
 </template>
 
@@ -122,6 +138,8 @@ import { useRedpackStore } from '@/store/use-redpack-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useIdentityStore } from '@/store/use-identity-store';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { watch } from 'vue';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -149,6 +167,10 @@ const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+
+const { toSmallWindow } = useWebviewStore();
+
+const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
 
 /** 关闭更多 */
 function closeMore() {
@@ -232,6 +254,23 @@ function onClickMyReward() {
   eventBus.$emit(appEvents.global.OpenTaskRewardDialog, true);
   closeMore();
 }
+
+/** 点击小窗播放 */
+function onClickPIP() {
+  toSmallWindow();
+}
+
+/** 点击播放设置 */
+function onClickPlaybackSetting() {
+  eventBus.$emit(appEvents.global.PlaybackSettingPopup, {
+    _visible: true,
+    _useTransition: false,
+  });
+}
+
+watch(isSmallWindow, pip => {
+  if (pip) closeMore();
+});
 </script>
 
 <style lang="scss">

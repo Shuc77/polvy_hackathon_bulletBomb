@@ -76,12 +76,17 @@
 
     <!-- 任务奖励弹层 -->
     <mobile-task-reward-popup />
+    <!-- 任务奖励领取弹层 -->
+    <mobile-task-reward-receive-popup />
 
     <!-- 在线用户列表弹层 -->
     <portrait-member-list-popup />
 
     <!-- 在线用户列表规则弹层 -->
     <mobile-member-list-rule-popup />
+
+    <!-- 播放设置弹层 -->
+    <portrait-player-playback-setting />
   </div>
 </template>
 
@@ -110,8 +115,10 @@ import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mob
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
+import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 import PortraitMemberListPopup from '@/components/page-watch-common/member-list/portrait-member-list.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
+import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-playback-setting.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

@@ -51,7 +51,19 @@ export const globalEvents = {
    */
   OpenTaskRewardDialog: 'OpenTaskRewardDialog',
   /**
+   * 刷新任务奖励列表
+   */
+  RefreshTaskRewardList: 'RefreshTaskRewardList',
+  /**
+   * 打开任务奖励领取弹层
+   */
+  OpenTaskRewardReceiveDialog: 'OpenTaskRewardReceiveDialog',
+  /**
    * 打开二维码分享弹窗
    */
   OpenQrCodeShareDialog: 'OpenQrCodeShareDialog',
+  /**
+   * 播放设置弹窗
+   */
+  PlaybackSettingPopup: 'PlaybackSettingPopup',
 };

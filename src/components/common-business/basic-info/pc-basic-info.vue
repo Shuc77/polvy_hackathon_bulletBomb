@@ -63,6 +63,13 @@
           </transition>
         </div>
 
+        <div
+          v-if="liveStartTime"
+          class="c-pc-basic-info__main__bottom__data g-text-nowrap"
+        >
+          {{ liveStartTimeText }} {{ $lang('base.start.live') }}
+        </div>
+
         <!-- 页面浏览次数 -->
         <div
           v-if="pvShowEnabled"
@@ -186,6 +193,8 @@ const {
   channelTitle,
   channelPublisher,
   channelPublisherPic,
+  liveStartTime,
+  liveStartTimeText,
 
   pageViewCount,
   pvShowEnabled,
@@ -271,6 +280,7 @@ $--basic-logo-size: 50px;
 .c-pc-basic-info__main__bottom {
   display: flex;
   align-items: center;
+  overflow-x: hidden;
   font-size: 14px;
   color: $--color-white;
 }
@@ -291,6 +301,7 @@ $--basic-logo-size: 50px;
 }
 .c-pc-basic-info__main__bottom__data--publisher {
   flex-shrink: 1;
+  min-width: 40px;
   overflow: hidden;
 }
 .c-pc-basic-info__main__bottom__publisher-icon {

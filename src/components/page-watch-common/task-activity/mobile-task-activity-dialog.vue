@@ -106,7 +106,7 @@ import { TaskActivityType, TaskActivityStatus, TaskRewardStatus } from '@polyv/l
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useTaskActivity } from './use-task-activity';
 import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
-import { formatDate } from '@polyv/utils/es/date';
+import { formatDate } from '@utils-ts/date';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';

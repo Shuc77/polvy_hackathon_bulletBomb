@@ -54,6 +54,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   const wxShareInfo = ref<WxShareInfo>({
     isUseWxShareUrl: YN.N,
     wxShareUrl: '',
+    weixinShareCoverImg: '',
     shareTitle: '',
     shareDesc: '',
   });

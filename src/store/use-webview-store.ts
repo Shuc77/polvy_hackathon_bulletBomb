@@ -1,6 +1,6 @@
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { getWatchCore, getSocket } from '@/core/watch-sdk';
-import { UserEvents } from '@polyv/live-watch-sdk';
+import { UserEvents, YN, LiveStatus } from '@polyv/live-watch-sdk';
 import type { WebViewBridge } from '@polyv/web-view-bridge';
 import { isWebView } from '@polyv/web-view-bridge/is-webview';
 import { debounce } from 'lodash-es';
@@ -10,13 +10,9 @@ import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlayerStore } from './use-player-store';
 import { useWatchAppStore } from './use-watch-app-store';
+import { getLocalStorage, setLocalStorage } from '@/assets/utils/storage';
 
-/**
- * 原生 Webview-Feed 的逻辑是
- * 1、进入页面后，主动触发页面锁定处理 【原生端默认不锁定】
- * 2、监听可滚动的元素，如果滚动到一定程度再通知原生解锁页面滚动
- * 3、页面解锁滚动有前提条件，比如当前不能处于全屏状态
- */
+const PIP_STORAGE_KEY = 'AutoPIP';
 
 export interface WebviewStoreState {
   /** 是否基于保利威 webview 协议嵌入的观看页 */
@@ -29,6 +25,12 @@ export interface WebviewStoreState {
   plvWebviewDataSize: ComputedRef<{ width: number; height: number }>;
   /** 当前 webview 页面禁止拖拽 */
   webviewPageDragDisabled: ComputedRef<boolean>;
+  /** Webview 后台小窗是否开启 */
+  pictureInPictureEnabled: Ref<boolean>;
+  /** Webview 退出应用IOS后台小窗是否开启 */
+  pictureInPictureIOSEnabled: Ref<boolean>;
+  /** 是否自动进入小窗播放 */
+  autoPictureInPicture: Ref<boolean>;
 }
 
 export interface WebviewStoreActions {
@@ -37,9 +39,15 @@ export interface WebviewStoreActions {
   /** 获取桥接器对象 */
   getPlvWebviewBridge(): WebViewBridge | undefined;
   /** 发送用户信息 */
-  sendUserInfo(): void;
+  sendUserInfo(enabled: boolean): void;
   /** 恢复到正常窗口 */
   toNormalWindow(): void;
+  /** 进入小窗 */
+  toSmallWindow(): void;
+  /** 同步webview相关信息 */
+  syncWebviewInfo(): void;
+  /** 设置是否自动进入小窗播放 */
+  setAutoPictureInPicture(val: boolean): void;
   /** 关闭当前 webview 页面 */
   closeWindow(): void;
   /** 锁定当前 webview 页面 */
@@ -55,7 +63,7 @@ export interface WebviewStoreActions {
 export interface WebviewStore extends WebviewStoreState, WebviewStoreActions {}
 
 export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', () => {
-  const { forcePausePlay, toPlay, toFreezePlay } = usePlayerAction();
+  const { forcePausePlay, toPlay, toPause, toSeekVideo, toFreezePlay } = usePlayerAction();
 
   const watchAppStore = useWatchAppStore();
   const playerStore = usePlayerStore();
@@ -67,6 +75,11 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
   /** 是否基于保利威 webview 协议嵌入的观看页 */
   const isPlvWebview = ref(isWebView());
+
+  const pictureInPictureEnabled = ref(false);
+  const pictureInPictureIOSEnabled = ref(false);
+  const autoPictureInPictureStorage = getLocalStorage(PIP_STORAGE_KEY);
+  const autoPictureInPicture = ref(autoPictureInPictureStorage !== YN.N);
 
   /** 是否 webview 内嵌小窗状态 */
   const isSmallWindow = ref(false);
@@ -136,6 +149,19 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     getSocket()?.disconnect();
   };
 
+  /** 获取暂存/回放/点播视频url */
+  const getPlaybackUrl = () => {
+    const watchCore = getWatchCore();
+    const options = watchCore.player.getCurrentPlaybackOptions();
+    return options?.url;
+  };
+
+  function syncWebviewInfo() {
+    const watchCore = getWatchCore();
+    pictureInPictureEnabled.value = watchCore.player.getPIPEnabled() && isPlvWebview.value;
+    pictureInPictureIOSEnabled.value = watchCore.player.getPIPForIOSEnabled() && isPlvWebview.value;
+  }
+
   /** 初始化桥接器 */
   async function initWebviewBridge() {
     if (webviewBridge || !isPlvWebview.value) {
@@ -178,6 +204,49 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     });
   }
 
+  function __onCallWebViewEvent(evt: { event?: string; value: Record<string, number> }) {
+    const { event, value } = evt;
+
+    console.warn(`[webview-bridge][callWebViewEvent] ${event || 'unknown'}`);
+    if (event === 'isActive') {
+      onWebviewIsActive();
+      return;
+    }
+
+    if (event === 'isInactive') {
+      onWebviewIsInactive();
+      return;
+    }
+
+    if (event === 'startPlay') {
+      toPlay();
+      return;
+    }
+
+    if (event === 'pausePlay') {
+      toPause();
+      return;
+    }
+
+    // 当从系统小窗返回页面时，收到此事件，更改页面播放进度
+    if (event === 'setCurrentPlaybackTime') {
+      const { playbackTime } = value as Record<string, number>;
+      toSeekVideo(playbackTime);
+      return;
+    }
+
+    // 收到iOS回到系统小窗的事件后，发送进度给iOS
+    if (event === 'getCurrentPlaybackTime') {
+      const params = {
+        event: 'setCurrentPlaybackTime',
+        value: {
+          playbackTime: getWatchCore().player.getCurrentTime(),
+        },
+      };
+      webviewBridge?.sendData('callAppEvent', { ...params });
+    }
+  }
+
   function __listenBridgeEvents() {
     if (!webviewBridge) {
       return;
@@ -190,6 +259,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       if (event?.isPIP) {
         forcePausePlay();
       }
+      setLiveChannelInfo();
     });
 
     // webview 取消小窗化
@@ -200,19 +270,10 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       if (event?.isPIP) {
         toPlay();
       }
+      setLiveChannelInfo(autoPictureInPicture.value);
     });
 
-    webviewBridge.on('callWebViewEvent', ({ event }: { event?: string }) => {
-      console.warn(`[webview-bridge][callWebViewEvent] ${event || 'unknown'}`);
-      if (event === 'isActive') {
-        onWebviewIsActive();
-        return;
-      }
-
-      if (event === 'isInactive') {
-        onWebviewIsInactive();
-      }
-    });
+    webviewBridge.on('callWebViewEvent', __onCallWebViewEvent);
   }
 
   function __listenWindowEvents() {
@@ -235,17 +296,35 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   /**
    * 传参给 webview。主要是 iOS 系统级小窗需要下列信息
    */
-  function sendUserInfo() {
+  function sendUserInfo(enabled = true) {
     if (!webviewBridge) {
       return;
     }
+    setTimeout(() => {
+      // 初始化一下小窗配置，以防打开页面后直接退后台功能无法正常使用
+      if (pictureInPictureEnabled.value) {
+        setLiveChannelInfo();
+      }
+    });
+    webviewBridge.sendData('callAppEvent', {
+      event: 'setEnableBackgroundPictureInPicture',
+      value: { enable: enabled },
+    });
+
+    if (!enabled) {
+      webviewBridge.sendData('getLiveUserInfo', {
+        userId: '',
+        channelId: '',
+      });
+      return;
+    }
+
     const watchCore = getWatchCore();
     const accountId = watchCore.getAccountId();
     const channelId = watchCore.channel.getChannelId();
     const userId = watchCore.user.requiredUserId();
     const nickname = watchCore.user.requiredUserNick();
     const params = watchCore.user.getStatisticsParams();
-
     webviewBridge.sendData('getLiveUserInfo', {
       userId: accountId,
       channelId,
@@ -274,9 +353,56 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     webviewBridge?.sendData('changeToNormal', {});
   }
 
+  function setLiveChannelInfo(enabled = true): boolean {
+    const watchCore = getWatchCore();
+
+    const liveStatus = watchCore.channel.getLiveStatus();
+    let vodUrl: undefined | string;
+    let videoType = LiveStatus.Playback;
+    if (liveStatus === LiveStatus.Live) {
+      videoType = LiveStatus.Live;
+    } else {
+      vodUrl = enabled ? getPlaybackUrl() : undefined;
+    }
+
+    const ability = YN.Y;
+    const payload = {
+      videoType,
+      enableWindowAbility: ability,
+      enableWindowPermissionToast: ability,
+      vodUrl: vodUrl || null,
+      videoSize: plvWebviewDataSize.value,
+    };
+    webviewBridge?.sendData('getLiveChannelInfo', payload);
+
+    console.info('getLiveChannelInfo', payload);
+    return true;
+  }
+
+  /** 申请进入小窗 */
+  function toSmallWindow() {
+    // 当前已经小窗
+    if (unref(isSmallWindow)) {
+      return;
+    }
+    setLiveChannelInfo(autoPictureInPicture.value);
+    webviewBridge?.sendData('clickProduct', {
+      newPage: false,
+      ...plvWebviewDataSize.value,
+    });
+  }
+
   /** 关闭当前 webview 页面 */
   function closeWindow() {
     webviewBridge?.sendData('closeWindow', {});
+  }
+
+  /** 设置是否自动进入小窗播放 */
+  function setAutoPictureInPicture(val: boolean) {
+    sendUserInfo(val);
+    setLiveChannelInfo(val);
+    autoPictureInPicture.value = val;
+    setLocalStorage(PIP_STORAGE_KEY, val ? YN.Y : YN.N);
   }
 
   /** 锁定当前 webview Feed 页面 */
@@ -340,6 +466,10 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   return {
     isPlvWebview,
     isSmallWindow,
+    pictureInPictureEnabled,
+    pictureInPictureIOSEnabled,
+    autoPictureInPicture,
+    syncWebviewInfo,
     curWebviewPageIsActive,
     plvWebviewDataSize,
     webviewPageDragDisabled,
@@ -347,7 +477,9 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     getPlvWebviewBridge,
     sendUserInfo,
     toNormalWindow,
+    toSmallWindow,
     closeWindow,
+    setAutoPictureInPicture,
     toLockDrag,
     toUnlockDrag,
     toNextWebview,

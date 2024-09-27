@@ -7,6 +7,7 @@
     :push-card-sdk="pushCardSdk"
     :is-full-screen="isIarFullScreen"
     :get-link-params="getLinkParams"
+    :get-weixin-sdk="getWeixinSdk"
     @visible-changed="onPushCardVisibleChanged"
     @entry-visible-changed="onEntryVisibleChanged"
   />
@@ -17,6 +18,9 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { usePushCard, usePushCardLinkParams } from './hooks/use-push-card';
+import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
+
+const { getWeixinSdk } = useWeixinSdk();
 
 const IarPushCard = getIarComponent('PushCard');
 

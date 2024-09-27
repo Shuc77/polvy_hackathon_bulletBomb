@@ -23,6 +23,7 @@ function createWxInstance() {
           weixinStore.saveWxShareInfo({
             isUseWxShareUrl: signRes.isUseWxShareUrl,
             wxShareUrl: signRes.wxShareUrl,
+            weixinShareCoverImg: signRes.weixinShareCoverImg,
             shareTitle: signRes.shareTitle,
             shareDesc: signRes.shareDesc,
           });

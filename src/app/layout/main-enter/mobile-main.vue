@@ -2,6 +2,10 @@
 <template>
   <div
     class="c-mobile-main"
+    :class="{
+      'c-mobile-main__portrait-pip':
+        isSmallWindow && mobileWatchLayout === MobileWatchLayout.Portrait,
+    }"
     @touchstart="onTouchStart"
     @touchmove="onTouchMove"
     @touchend="onTouchEnd"
@@ -63,6 +67,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useWebviewFeedTouch } from '@/hooks/behaviors/use-webview-feed';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 const MobileWeixinSnapshotTips = defineAsyncComponent(() => {
   return import(
@@ -107,6 +112,7 @@ const { mobileSplashLayout, mobileWatchLayout, isPortraitWatchLayout } =
   storeDefinitionToRefs(useLayoutStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
 const { onPageMounted } = useMainEnter({
   emit,
@@ -126,5 +132,10 @@ const { onPageMounted } = useMainEnter({
 .c-mobile-main {
   width: 100%;
   height: 100%;
+}
+
+.c-mobile-main__portrait-pip {
+  position: relative;
+  z-index: $--zIndex-max-top;
 }
 </style>

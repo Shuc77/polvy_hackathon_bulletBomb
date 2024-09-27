@@ -215,6 +215,17 @@
     background: map.get($--skin-configs, 'chat-motivation-like-msg:bg') !important;
   }
 
+  // --------- 提问 ---------- //
+  // 提问更多消息
+  .pws-ask-msg-more-button {
+    color: map.get($--skin-configs, 'chat-msg-more-button:text-color');
+    background-color: map.get($--skin-configs, 'chat-msg-more-button:bg-color');
+    &:hover {
+      color: map.get($--skin-configs, 'chat-msg-more-button--hover:text-color');
+      background-color: map.get($--skin-configs, 'chat-msg-more-button--hover:bg-color');
+    }
+  }
+
   // -------- 章节 -------- //
   .pws-chapter-item {
     color: map.get($--skin-configs, 'chapter-item:text-color') !important;

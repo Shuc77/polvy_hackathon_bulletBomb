@@ -66,7 +66,7 @@ export const usePlayerMain = ({
    * 获取播放器的回放参数
    * @warn 副作用：修改回放视频尺寸，非回放状态清空 currentPlaybackTarget
    */
-  async function getPlayerPaybackOptions(): Promise<SetupPlayerPlaybackOptions | undefined> {
+  async function getPlayerPlaybackOptions(): Promise<SetupPlayerPlaybackOptions | undefined> {
     if (channelStore.liveStatus !== LiveStatus.Playback) {
       playbackStore.updateCurrentPlaybackTarget(undefined);
       return;
@@ -88,7 +88,7 @@ export const usePlayerMain = ({
           eventBus.$emit(appEvents.chat.ResetUpChatMsgList);
         }
         __hadForceChangePlayback = true;
-        return getPlayerPaybackOptions();
+        return getPlayerPlaybackOptions();
       }
 
       console.error('处于回放状态，但不存在回放对象');
@@ -178,7 +178,7 @@ export const usePlayerMain = ({
     }
 
     // 获取回放参数
-    const playbackOptions = await getPlayerPaybackOptions();
+    const playbackOptions = await getPlayerPlaybackOptions();
     if (playbackOptions) {
       playerOptions.playbackOptions = playbackOptions;
     } else {

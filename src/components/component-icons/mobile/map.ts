@@ -32,6 +32,8 @@ export { default as MobileIconPackUp } from './icons/pack-up';
 export { default as MobileIconPageView } from './icons/page-view';
 export { default as MobileIconPeople } from './icons/people';
 export { default as MobileIconPlayRound } from './icons/play-round';
+export { default as MobileIconPlayerBack } from './icons/player-back';
+export { default as MobileIconPlayerForward } from './icons/player-forward';
 export { default as MobileIconProduct } from './icons/product';
 export { default as MobileIconQuestionRound } from './icons/question-round';
 export { default as MobileIconSearch } from './icons/search';

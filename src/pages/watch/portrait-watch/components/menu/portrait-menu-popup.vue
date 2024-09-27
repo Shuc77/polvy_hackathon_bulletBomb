@@ -138,6 +138,22 @@
         @click="onClickMyReward"
       />
 
+      <!-- 小窗播放 -->
+      <menu-item
+        v-if="pictureInPictureEnabled"
+        icon="pip"
+        :text="$lang('taskActivity.pictureInPicture')"
+        @click="onClickPIP"
+      />
+
+      <!-- 播放设置 -->
+      <menu-item
+        v-if="pictureInPictureEnabled"
+        icon="playback-setting"
+        :text="$lang('taskActivity.playbackSetting')"
+        @click="onClickPlaybackSetting"
+      />
+
       <!-- 发送图片 -->
       <!-- <menu-item
         v-if="chatSetting.viewerSendImgEnabled"
@@ -179,7 +195,9 @@ import { useRedpackStore } from '@/store/use-redpack-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { ChannelStreamTrackType } from '@polyv/live-watch-sdk';
+import { computed, ref, watch } from 'vue';
 import MenuItem from './portrait-menu-item.vue';
 
 const { visible: menuVisible, setVisible: setMenuVisible } = useSimpleVisible();
@@ -236,6 +254,10 @@ const { scoreRedpackEnabled, sendRedpackVisible } = storeDefinitionToRefs(useRed
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+
+const { toSmallWindow } = useWebviewStore();
+
+const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
 
 /** 点击线路切换 */
 function onClickLineSetting() {
@@ -355,6 +377,24 @@ function onClickMyReward() {
   eventBus.$emit(appEvents.global.OpenTaskRewardDialog, true);
   closeMenu();
 }
+
+/** 点击小窗播放 */
+function onClickPIP() {
+  toSmallWindow();
+}
+
+/** 点击播放设置 */
+function onClickPlaybackSetting() {
+  closeMenu(false);
+  eventBus.$emit(appEvents.global.PlaybackSettingPopup, {
+    _visible: true,
+    _useTransition: false,
+  });
+}
+
+watch(isSmallWindow, (pip: boolean) => {
+  if (pip) closeMenu();
+});
 </script>
 
 <style lang="scss">

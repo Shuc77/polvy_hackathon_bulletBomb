@@ -87,15 +87,17 @@ export const useFormAreaPicker = (options: {
   }
 
   function closePicker() {
-    if (!innerIsFinish.value) {
-      innerValue.value = props.value;
-    }
     pickerVisible.value = false;
     onHiddenPicker();
   }
 
   /** 处理隐藏弹层 */
   function onHiddenPicker() {
+    if (!innerIsFinish.value) {
+      innerValue.value = props.value;
+    } else {
+      emit('input', unref(innerValue));
+    }
     blurToValidateItem();
   }
 

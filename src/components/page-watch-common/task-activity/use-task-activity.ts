@@ -7,6 +7,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useTaskActivityStore } from '@/store/use-task-activity-store';
 import {
+  RewardAcceptType,
   TaskActivityItem,
   TaskActivityReachCondition,
   TaskActivityRewardSetting,
@@ -261,13 +262,17 @@ export const useTaskReward = () => {
     getRewardList();
   }
 
-  function open(_showClose = false) {
-    showClose.value = _showClose;
-    visible.value = true;
+  function refresh() {
     pageNumber.value = 1;
     isNoMore = false;
     loading = false;
     getRewardList();
+  }
+
+  function open(_showClose = false) {
+    showClose.value = _showClose;
+    visible.value = true;
+    refresh();
   }
 
   function close() {
@@ -291,7 +296,21 @@ export const useTaskReward = () => {
     return txt;
   }
 
+  function openReceive(item: TaskRewardItem) {
+    switch (item.acceptInfo?.acceptType) {
+      case RewardAcceptType.Form:
+      case RewardAcceptType.QrCode:
+        eventBus.$emit(appEvents.global.OpenTaskRewardReceiveDialog, item);
+        break;
+      case RewardAcceptType.Link:
+        item.acceptInfo.prizeUrl && window.open(item.acceptInfo.prizeUrl, '_blank');
+        break;
+    }
+  }
+
   useEventBusListener(appEvents.global.OpenTaskRewardDialog, open);
+
+  useEventBusListener(appEvents.global.RefreshTaskRewardList, refresh);
 
   return {
     visible,
@@ -300,5 +319,6 @@ export const useTaskReward = () => {
     getRewardStatusText,
     scrollNearBottom,
     showClose,
+    openReceive,
   };
 };
