@@ -59,6 +59,30 @@ export const useTaskRewardReceive = () => {
     ].includes(type);
   }
 
+  function getItemText(item: RewardAcceptFormItem) {
+    const res = {
+      label: item.field,
+      placeholder: item.tips,
+    };
+
+    switch (item.type) {
+      case RewardAcceptFormType.UserName:
+        res.label = translate('taskActivity.rewardReceive.nameLabel');
+        res.placeholder = translate('taskActivity.rewardReceive.namePlaceholder');
+        break;
+      case RewardAcceptFormType.UserPhone:
+        res.label = translate('taskActivity.rewardReceive.phoneLabel');
+        res.placeholder = translate('taskActivity.rewardReceive.phonePlaceholder');
+        break;
+      case RewardAcceptFormType.Address:
+        res.label = translate('taskActivity.rewardReceive.addressLabel');
+        res.placeholder = translate('taskActivity.rewardReceive.addressPlaceholder2');
+        break;
+    }
+
+    return res;
+  }
+
   async function submitForm() {
     if (!currentRewardItem.value) {
       return;
@@ -128,5 +152,6 @@ export const useTaskRewardReceive = () => {
     qrCodeTips,
     isSimpleFormType,
     submitForm,
+    getItemText,
   };
 };

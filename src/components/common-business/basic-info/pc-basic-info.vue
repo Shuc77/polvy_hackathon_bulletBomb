@@ -146,7 +146,6 @@
 
 <script setup lang="ts">
 import { resizeOSSImg } from '@/assets/utils/image';
-import { shortNumber } from '@/assets/utils/number';
 
 import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
 import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
@@ -170,6 +169,9 @@ import { eventBus, appEvents } from '@/app/app-events';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useShortNumber } from '@/hooks/business/use-short-number';
+
+const { shortNumber } = useShortNumber();
 
 const {
   referenceRef: publisherReferenceRef,

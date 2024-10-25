@@ -76,7 +76,8 @@ export const usePlayerEvent = () => {
     if (
       playbackStore.playbackMode === PlaybackMode.Single &&
       playbackStore.currentPlaybackTarget &&
-      !playbackStore.chatReplayEnabled // 单个回放结束后，如果处于聊天重放，就不再重复播放了
+      !playbackStore.chatReplayEnabled && // 单个回放结束后，如果处于聊天重放，就不再重复播放了
+      playbackStore.loopPlayEnabled
     ) {
       await toPlayTarget(playbackStore.currentPlaybackTarget);
       return;
@@ -97,7 +98,9 @@ export const usePlayerEvent = () => {
       // 当前播放的是列表的最后一个
       if (playbackStore.isNoMore) {
         // 已经拿完了回放列表，则播放第一个
-        playbackTarget = playbackStore.playbackList[0];
+        if (playbackStore.loopPlayEnabled) {
+          playbackTarget = playbackStore.playbackList[0];
+        }
       } else {
         // 加载下一页
         await playbackStore.loadNextPlaybackList();

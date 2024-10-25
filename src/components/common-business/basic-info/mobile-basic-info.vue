@@ -109,7 +109,6 @@
 
 <script setup lang="ts">
 import { resizeOSSImg } from '@/assets/utils/image';
-import { shortNumber } from '@/assets/utils/number';
 
 import {
   MobileIconPeople,
@@ -133,6 +132,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
+import { useShortNumber } from '@/hooks/business/use-short-number';
 
 const props = defineProps({
   /** 是否显示页面浏览次数，默认：true */
@@ -146,6 +146,8 @@ const props = defineProps({
 });
 
 const { showPageView, showLikeCount, showDesc } = useProps(props);
+
+const { shortNumber } = useShortNumber();
 
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 

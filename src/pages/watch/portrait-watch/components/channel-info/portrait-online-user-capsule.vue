@@ -9,10 +9,12 @@
 </template>
 
 <script setup lang="ts">
-import { shortNumber } from '@/assets/utils/number';
 import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { eventBus, appEvents } from '@/app/app-events';
+import { useShortNumber } from '@/hooks/business/use-short-number';
+
+const { shortNumber } = useShortNumber();
 
 const { onlineUserCount } = storeDefinitionToRefs(useChatStore);
 

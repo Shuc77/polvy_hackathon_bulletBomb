@@ -22,14 +22,16 @@
               'c-mobile-task-reward-receive__form-item--required': item.required && !isReadonly,
             }"
           >
-            <div class="c-mobile-task-reward-receive__form-item__label">{{ item.field }}</div>
+            <div class="c-mobile-task-reward-receive__form-item__label">
+              {{ getItemText(item).label }}
+            </div>
             <div class="c-mobile-task-reward-receive__form-item__content">
               <input
                 v-if="!isReadonly"
                 class="c-mobile-task-reward-receive__form-item__input"
                 v-model="formList[index].value"
                 :readonly="isReadonly"
-                :placeholder="item.tips"
+                :placeholder="getItemText(item).placeholder"
               />
               <div v-else>{{ formList[index].value }}</div>
             </div>
@@ -44,7 +46,7 @@
             }"
           >
             <div class="c-mobile-task-reward-receive__form-item__label">
-              {{ item.field }}
+              {{ getItemText(item).label }}
             </div>
             <div class="c-mobile-task-reward-receive__form-item__content">
               <mobile-form-area-picker
@@ -74,7 +76,7 @@
                 v-if="!isReadonly"
                 class="c-mobile-task-reward-receive__form-item__textarea"
                 v-model="formList[index].value"
-                :placeholder="item.tips"
+                :placeholder="getItemText(item).placeholder"
                 :readonly="isReadonly"
                 rows="4"
               ></textarea>
@@ -127,6 +129,7 @@ const {
   formList,
   isSimpleFormType,
   submitForm,
+  getItemText,
 } = useTaskRewardReceive();
 </script>
 

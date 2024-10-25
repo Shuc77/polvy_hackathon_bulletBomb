@@ -11,7 +11,7 @@ import { removeQueryParam } from '@/hooks/core/use-query-params';
 import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hooks/use-auth-special';
 import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
-import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
+import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
@@ -66,6 +66,8 @@ export const useMainEnter = (options: {
   const { loadIarSDK } = useIarSetup();
 
   const { setupConnectMic } = useConnectMicSetup();
+
+  const { updateWeixinShareConfig } = useWeixinShareConfigUpdate();
 
   const watchAppStore = useWatchAppStore();
   const authStore = useAuthStore();

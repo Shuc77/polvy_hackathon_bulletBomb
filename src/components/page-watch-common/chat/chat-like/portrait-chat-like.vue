@@ -15,6 +15,7 @@
       count-position="top"
       size="32px"
       :appear-mode="upperHasIcon ? 'bottom-right' : 'bottom-center'"
+      :count-formatter="shortNumber"
       @click-button="onClickLike"
       @press-hold="onClickLike"
     >
@@ -40,10 +41,13 @@ import { chatLikeProps, useChatLike } from './_hooks/use-chat-like';
 import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useShortNumber } from '@/hooks/business/use-short-number';
 
 const props = defineProps(chatLikeProps());
 
 const { upperHasIcon } = useProps(props);
+
+const { shortNumber } = useShortNumber();
 
 const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
 

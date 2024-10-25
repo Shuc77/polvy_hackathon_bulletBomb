@@ -9,8 +9,8 @@
     }"
   >
     <div
+      ref="langReferenceRef"
       class="c-pc-lang-switch__content"
-      @click="togglePopper"
     >
       <pc-icon-lang class="c-pc-lang-switch__content__prefix-icon" />
       <span>{{ currentLangText }}</span>
@@ -23,6 +23,10 @@
       <div
         v-show="visible"
         class="c-pc-lang-switch__popper"
+        :class="{
+          'c-pc-lang-switch__popper--dark': theme === 'dark',
+        }"
+        ref="langPopperRef"
       >
         <div
           v-for="(item, index) in langSwitchList"
@@ -49,6 +53,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
 import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
+import { usePopper } from '@/hooks/components/use-popper';
 
 const props = defineProps({
   /** 主题 */
@@ -60,11 +65,15 @@ const { theme } = useProps(props);
 const langStore = useLangStore();
 const { currentLang, currentLangText, langSwitchList } = storeDefinitionToRefs(useLangStore);
 
-const visible = ref(false);
-
-function togglePopper() {
-  visible.value = !visible.value;
-}
+const {
+  referenceRef: langReferenceRef,
+  popperRef: langPopperRef,
+  popperVisible: visible,
+} = usePopper({
+  trigger: 'click',
+  arrow: false,
+  popperOffset: [0, 10],
+});
 
 function onClickLangItem(item: LangSwitchItem) {
   langStore.switchLang(item.lang);
@@ -164,7 +173,10 @@ $--light-font-active-color: #3082fe !default;
   .c-pc-lang-switch__content__icon {
     color: $--color-white;
   }
-  .c-pc-lang-switch__popper {
+}
+
+.c-pc-lang-switch__popper--dark {
+  &.c-pc-lang-switch__popper {
     background: #2b2c35;
   }
 

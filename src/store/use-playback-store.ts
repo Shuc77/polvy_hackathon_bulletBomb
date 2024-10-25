@@ -9,7 +9,7 @@ import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
 import { appendQueryParam, paramGetter } from '@/hooks/core/use-query-params';
-import { updateWeixinShareConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
+import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
 
 export interface PlaybackStoreState {
   /** 当前是否正在播放回放 */
@@ -28,6 +28,8 @@ export interface PlaybackStoreState {
   isNoMore: Ref<boolean>;
   /** 已加载的列表 */
   playbackList: Ref<PlaybackTarget[]>;
+  /** 是否开启循环播放 */
+  loopPlayEnabled: Ref<boolean>;
   /** 当前页的回放列表 */
   currentPagePlaybackList: ComputedRef<PlaybackTarget[]>;
   /** 当前播放的回放对象 */
@@ -68,6 +70,8 @@ export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions 
 export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
+
+  const { updateWeixinShareConfig } = useWeixinShareConfigUpdate();
 
   /** 当前是否正在播放回放 */
   const isPlaybacking = ref(false);
@@ -126,6 +130,9 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     return currentPlaybackTarget.value.productReplayEnabled;
   });
 
+  /** 是否开启循环播放 */
+  const loopPlayEnabled = ref(true);
+
   const chapterEnabled = ref(false);
 
   /** 章节是否显示 */
@@ -148,6 +155,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
     playbackMode.value = watchCore.playback.getCurrentPlaybackMode();
     chapterEnabled.value = watchCore.playback.getChapterEnabled();
+    loopPlayEnabled.value = watchCore.playback.getLoopPlayEnabled();
   }
 
   /**
@@ -312,6 +320,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     playbackListVisible,
     chatReplayEnabled,
     productReplayEnabled,
+    loopPlayEnabled,
 
     syncPlaybackStore,
     updateCurrentPlaybackTarget,
