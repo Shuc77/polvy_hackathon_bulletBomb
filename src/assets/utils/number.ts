@@ -7,18 +7,6 @@ export function isNumber(target: unknown): target is number {
 }
 
 /**
- * 缩短万以上的数值
- * @param num 数值
- */
-export function shortNumber(num: number): string {
-  if (num >= 10000) {
-    return (num / 10000).toFixed(1) + 'w';
-  } else {
-    return num.toString();
-  }
-}
-
-/**
  * 保留小数位
  * @param number
  * @param accuracy 精度，选传，默认为 2

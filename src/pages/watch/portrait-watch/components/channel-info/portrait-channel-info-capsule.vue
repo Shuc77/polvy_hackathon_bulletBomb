@@ -34,7 +34,6 @@
 
 <script setup lang="ts">
 import { resizeOSSImg } from '@/assets/utils/image';
-import { shortNumber } from '@/assets/utils/number';
 import { isUndefined } from 'lodash-es';
 import PortraitFollowBtn from '@/components/page-watch-common/follow/follow-btn/portrait-follow-btn.vue';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -42,6 +41,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { computed, unref } from 'vue';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useShortNumber } from '@/hooks/business/use-short-number';
+
+const { shortNumber } = useShortNumber();
 
 const { channelPublisher, pvShowEnabled, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);

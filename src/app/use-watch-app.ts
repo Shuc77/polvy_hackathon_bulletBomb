@@ -83,6 +83,8 @@ export function createWatchApp() {
   const channelStore = useChannelStore();
   const watchAppStore = useWatchAppStore();
 
+  const { toConfigWeixinFeature } = useWeixinConfig();
+
   /** 获取地址上的频道号 */
   function getChannelIdByUrl(): string | undefined {
     let channelId: string | undefined;
@@ -112,7 +114,7 @@ export function createWatchApp() {
     channelStore.$patch({ channelId });
 
     // 初始化观看页 SDK
-    initWatchSdk({
+    const watchCore = initWatchSdk({
       channelId,
       env: WATCH_SDK_ENV,
       language: convert2WatchSdkLang(getDefaultLang()),
@@ -164,7 +166,7 @@ export function createWatchApp() {
     await watchAppStore.resetUpWatchCore();
 
     // 配置微信 SDK
-    useWeixinConfig();
+    toConfigWeixinFeature(watchCore);
 
     // 同步相关 store 数据
     syncStoreBeforeWatchAppInited();

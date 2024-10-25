@@ -44,3 +44,9 @@
     display: none !important;
   }
 }
+
+.g-page--pc-mini-program {
+  .plv-live-player-cutOff {
+    z-index: initial;
+  }
+}

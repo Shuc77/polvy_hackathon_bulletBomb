@@ -31,7 +31,7 @@
     <!-- 播放器暖场/封面图  -->
     <mobile-player-cover-img />
 
-    <!-- “立即观看”播放按钮，仅用来展示  -->
+    <!-- “点击播放”播放按钮，仅用来展示  -->
     <player-play-button
       v-if="isLowLatency || existWarmUpVideo"
       :mode="PlayButtonMode.Text"
@@ -117,13 +117,15 @@ import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-pl
 import MobilePlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/mobile-player-subtitle.vue';
 import MobileSubtitleSelect from '@/components/page-watch-common/subtitle/mobile-subtitle-select/mobile-subtitle-select.vue';
 
-import { shortNumber } from '@/assets/utils/number';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { useChannelStore } from '@/store/use-channel-store';
 import { translate } from '@/assets/lang';
 import { ComponentInstance } from '@/hooks/core/use-vue';
+import { useShortNumber } from '@/hooks/business/use-short-number';
+
+const { shortNumber } = useShortNumber();
 
 const {
   mobilePlayerIsPageFullscreen,

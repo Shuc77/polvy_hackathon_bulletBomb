@@ -113,6 +113,9 @@ const emit = defineEmits({
 .c-portrait-more-item__icon--my-reward {
   background-image: url(./images/icon-my-reward.svg);
 }
+.c-portrait-more-item__icon--bind-mobile {
+  background-image: url(./images/icon-bind-mobile.svg);
+}
 .c-portrait-more-item__icon--send-image {
   // background-image: url(../images/icon-menu-img-mob.png);
   background: red;
