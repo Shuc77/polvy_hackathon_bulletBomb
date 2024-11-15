@@ -13,6 +13,7 @@
       @total-change="onGoodTotalChange"
       @job-detail="onJobDetailEvent"
       @buy="onWechatBuy"
+      @click-product="openProductDetail"
     />
 
     <!-- 旧版职位详情 -->
@@ -61,6 +62,7 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { YN } from '@polyv/live-watch-sdk';
+import { useNewProductDetail } from './hooks/use-new-product-detail';
 
 const IarPcProductList = getIarComponent('PcProduct');
 const IarProductBtn = getIarComponent('ProductButton');
@@ -75,6 +77,8 @@ const { getLinkParams } = useProductLinkParams();
 const { iarProductListRef, onGoodTotalChange } = useProductList();
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
+
+const { openProductDetail } = useNewProductDetail();
 </script>
 
 <style lang="scss">

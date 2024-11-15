@@ -1,6 +1,14 @@
 <!-- @file 移动端更多面板 -->
 <template>
   <ul class="c-mobile-more-panel pws-mobile-more-panel">
+    <!-- 个人中心 -->
+    <more-item
+      v-if="identitySetting.profileEnabled"
+      icon="profile"
+      :text="$lang('identitySetting.profile')"
+      @click="onClickProfile"
+    />
+
     <!-- 只看主持人 -->
     <more-item
       v-if="onlySpecialMsgWidgetVisible && chatMenuData.visible"
@@ -109,7 +117,7 @@
     <more-item
       v-if="pictureInPictureEnabled"
       icon="pip"
-      :text="$lang('taskActivity.pictureInPicture')"
+      :text="$lang('player.pictureInPicture.title')"
       @click="onClickPIP"
     />
 
@@ -117,7 +125,7 @@
     <more-item
       v-if="pictureInPictureEnabled"
       icon="playback-setting"
-      :text="$lang('taskActivity.playbackSetting')"
+      :text="$lang('player.pictureInPicture.playbackSetting')"
       @click="onClickPlaybackSetting"
     />
   </ul>
@@ -140,6 +148,7 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { watch } from 'vue';
+import { getWatchCore } from '@/core/watch-sdk';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -166,15 +175,27 @@ const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+const { identitySetting, bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
 const { toSmallWindow } = useWebviewStore();
 
 const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
 
+const watchCore = getWatchCore();
+
 /** 关闭更多 */
 function closeMore() {
   emit('close');
+}
+
+/** 点击"个人中心" */
+function onClickProfile() {
+  const url = watchCore.utils.generateProfilePageUrl();
+  if (url) {
+    window.open(url, '_blank');
+  }
+
+  closeMore();
 }
 
 /** 点击只看主持人 */

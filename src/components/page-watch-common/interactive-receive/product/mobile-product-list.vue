@@ -11,11 +11,15 @@
       :hot-effect-enabled="productHotEffectEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       :order-center-visible="isShowOrderCenter"
+      :is-plv-webview="isPlvWebview"
+      :get-plv-webview-bridge="getPlvWebviewBridge"
+      :plv-webview-data-size="plvWebviewDataSize"
       @click-good-desc="openGoodDetail"
       @total-change="onGoodTotalChange"
       @job-detail="onJobDetailEvent"
       @buy="onWechatBuy"
       @enter-order-center="onEnterOrderCenter"
+      @click-product="openProductDetail"
     />
 
     <!-- 旧版职位详情 -->
@@ -51,13 +55,47 @@
         </div>
       </div>
     </mobile-popup>
+
+    <mobile-popup
+      :visible.sync="productDetailVisible"
+      :show-header="false"
+      :content-percent-height="0.8"
+      :fill-body-section="true"
+      :ignore-content-max-height="true"
+      class="c-mobile-product-list__detail__popup"
+    >
+      <mobile-product-detail></mobile-product-detail>
+
+      <template #footer>
+        <div class="c-mobile-product-list__normal-detail-btn">
+          <iar-product-btn
+            v-if="currentProduct"
+            :product-sdk="productSdk"
+            :good="currentProduct"
+            :get-weixin-sdk="getWeixinSdk"
+            :get-link-params="getLinkParams"
+            @buy="onWechatBuy"
+          >
+            <template #default="{ buttonText, disabled }">
+              <normal-button
+                :size="ButtonSize.Medium"
+                :type="ButtonType.Aggravate"
+                block
+                :text="buttonText"
+                :disabled="disabled"
+              />
+            </template>
+          </iar-product-btn>
+        </div>
+      </template>
+    </mobile-popup>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { ButtonSize } from '@/components/common-base/normal-button/types';
+import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useProduct, useProductLinkParams } from './hooks/use-product';
 import { useProductDetail } from './hooks/use-product-detail';
@@ -67,13 +105,19 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { YN } from '@polyv/live-watch-sdk';
+import MobileProductDetail from '@/components/page-watch-common/product-detail/mobile-product-detail.vue';
+import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
+import { useWebviewStore } from '@/store/use-webview-store';
+
+const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
+const { getPlvWebviewBridge } = useWebviewStore();
 
 const IarMobileProductList = getIarComponent('MobileProduct');
 const IarProductBtn = getIarComponent('ProductButton');
 
 const { getWeixinSdk } = useWeixinSdk();
 
-const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { interactSetting, productDetailVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy, productHotEffectEnabled } =
   useProduct();
@@ -84,6 +128,8 @@ const { iarProductListRef, onGoodTotalChange, isShowOrderCenter, onEnterOrderCen
   useProductList();
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
+
+const { openProductDetail, currentProduct } = useNewProductDetail();
 </script>
 
 <style lang="scss">
@@ -118,5 +164,14 @@ const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = usePr
   width: 100%;
   padding: 0 24px 34px;
   text-align: center;
+}
+
+.c-mobile-product-list__detail__popup .c-mobile-popup__content {
+  overflow: hidden;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.c-mobile-product-list__normal-detail-btn {
+  padding: 8px 24px 34px;
 }
 </style>

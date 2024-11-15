@@ -472,6 +472,11 @@ export const englishLang: LangConfig = {
   'player.fastForwardBackward.back': 'Fast Backward',
   'player.fastForwardBackward.forward': 'Fast Forward',
 
+  'player.pictureInPicture.title': 'Picture-in-Picture',
+  'player.pictureInPicture.playbackSetting': 'Playback setting',
+  'player.pictureInPicture.tips': 'Automatically open picture-in-picture on exit.',
+  'player.pictureInPicture.tips2': 'Enable picture-in-picture on app exit',
+
   'playback.list': 'Playback',
   'playback.playing': 'Playing',
   'playback.startTime': 'start time：',
@@ -602,7 +607,7 @@ export const englishLang: LangConfig = {
   'withdraw.error.noUser': 'The WeChat user is not found',
   'withdraw.error.getCashExceed': 'The amount exceeds the user balance',
   'withdraw.error.getCashMoreThan1': 'The amount must be more than ¥ 1',
-  'withdraw.error.getCashFailed': 'Failure of application record',
+  'withdraw.error.getCashFailed': 'Failure of application for withdrawals',
 
   'withdraw.detail.popup.title': 'Balance',
   'withdraw.detail.btn.text': 'Withdrawal',
@@ -766,6 +771,7 @@ export const englishLang: LangConfig = {
   'subtitle.limit': 'The latest ${limit} records are displayed',
   'subtitle.footer.tips': 'AI-generated content for reference',
 
+  'identitySetting.profile': 'Profile',
   'identityInfo.bindMobile': 'Bind mobile',
 
   'watch.duration.learnTime': 'Cumulative learning: ${duration} minutes',
@@ -782,6 +788,7 @@ export const englishLang: LangConfig = {
   'taskActivity.onlineSurplus': 'Countdown: ',
   'taskActivity.reward1': ', Will receive prize: ${content}',
   'taskActivity.redpackReward': 'cash red envelope of ${amount} yuan',
+  'taskActivity.pointReward': ' ${amount} point',
   'taskActivity.end': 'End time: ${endTime}',
   'taskActivity.lockedBtn': 'Locked',
   'taskActivity.viewReward': 'View prizes',
@@ -814,9 +821,6 @@ export const englishLang: LangConfig = {
   'taskActivity.rewardReceive.error2': 'Please enter the correct phone number',
   'taskActivity.rewardReceive.receive': 'Receive',
   'taskActivity.rewardReceive.look': 'Look',
-  'taskActivity.pictureInPicture': 'Picture-in-Picture',
-  'taskActivity.playbackSetting': 'Playback setting',
-  'taskActivity.pictureInPictureTips': 'Automatically open picture-in-picture on exit.',
 
   'order.paySuccess': 'Payment successful',
   'order.payCancel': 'Cancel Payment',

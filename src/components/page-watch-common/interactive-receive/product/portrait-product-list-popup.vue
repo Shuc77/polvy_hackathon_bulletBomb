@@ -41,6 +41,7 @@
           @job-detail="onJobDetailEvent"
           @buy="onWechatBuy"
           @enter-order-center="onEnterOrderCenter"
+          @click-product="openProductDetail"
         />
       </div>
     </mobile-popup>
@@ -87,11 +88,45 @@
         </div>
       </div>
     </mobile-popup>
+
+    <mobile-popup
+      class="c-portrait-product-list__detail__popup"
+      :visible.sync="productDetailVisible"
+      :show-header="false"
+      :content-percent-height="0.8"
+      :fill-body-section="true"
+      :ignore-content-max-height="true"
+    >
+      <mobile-product-detail></mobile-product-detail>
+
+      <template #footer>
+        <div class="c-portrait-product-list__detail__popup__product-detail-btn">
+          <iar-product-btn
+            v-if="currentProduct"
+            :product-sdk="productSdk"
+            :good="currentProduct"
+            :get-weixin-sdk="getWeixinSdk"
+            :get-link-params="getLinkParams"
+            @buy="onWechatBuy"
+          >
+            <template #default="{ buttonText, disabled }">
+              <normal-button
+                :size="ButtonSize.Medium"
+                :type="ButtonType.Aggravate"
+                block
+                :text="buttonText"
+                :disabled="disabled"
+              />
+            </template>
+          </iar-product-btn>
+        </div>
+      </template>
+    </mobile-popup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ButtonSize } from '@/components/common-base/normal-button/types';
+import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import { ref, onBeforeMount, onBeforeUnmount } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
@@ -109,13 +144,15 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { isAndroid } from '@/assets/utils/browser';
+import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
+import MobileProductDetail from '@/components/page-watch-common/product-detail/mobile-product-detail.vue';
 
 const IarMobileProductList = getIarComponent('MobileProduct');
 const IarProductBtn = getIarComponent('ProductButton');
 
 const { getWeixinSdk } = useWeixinSdk();
 
-const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { interactSetting, productDetailVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
@@ -134,6 +171,8 @@ const {
 } = useProductList({ autoInit: false });
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
+
+const { openProductDetail, currentProduct } = useNewProductDetail();
 
 /** 商品列表弹窗是否显示 */
 const productListVisible = ref(false);
@@ -228,5 +267,15 @@ onBeforeUnmount(() => {
 .c-portrait-product-list__popup .c-mobile-popup__content {
   overflow: hidden;
   border-radius: 16px 16px 0 0 !important;
+}
+
+.c-portrait-product-list__detail__popup {
+  .c-mobile-popup__content {
+    border-radius: 16px 16px 0 0 !important;
+  }
+}
+
+.c-portrait-product-list__detail__popup__product-detail-btn {
+  padding: 12px 24px 34px;
 }
 </style>

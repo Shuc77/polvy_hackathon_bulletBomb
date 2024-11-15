@@ -62,7 +62,7 @@
         />
         <mobile-icon-people
           v-else
-          class="c-mobile-basic-info__author__publisher__icon"
+          class="c-mobile-basic-info__author__publisher__icon c-mobile-basic-info__author__publisher__icon-people"
         />
         <span
           :class="{
@@ -298,6 +298,12 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   margin-right: 8px;
   font-size: 16px !important;
   border-radius: 50%;
+
+  &.c-mobile-basic-info__author__publisher__icon-people {
+    width: auto;
+    height: auto;
+    margin-right: 4px;
+  }
 }
 
 .c-mobile-basic-info__author__like-count__icon,

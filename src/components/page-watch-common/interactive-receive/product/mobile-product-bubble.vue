@@ -15,6 +15,10 @@
         :hot-effect-enabled="productHotEffectEnabled"
         :recruitment-enabled="recruitmentEnabled"
         :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+        @click-detail="openProductDetail"
+        :is-plv-webview="isPlvWebview"
+        :get-plv-webview-bridge="getPlvWebviewBridge"
+        :plv-webview-data-size="plvWebviewDataSize"
         @job-detail="onJobDetailEvent"
         @buy="onWechatBuy"
         @change="onChange"
@@ -29,6 +33,7 @@
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @job-detail="onJobDetailEvent"
       @buy="onWechatBuy"
+      @click-detail="openProductDetail"
     />
   </div>
 </template>
@@ -42,6 +47,11 @@ import { YN } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
+import { useWebviewStore } from '@/store/use-webview-store';
+
+const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
+const { getPlvWebviewBridge } = useWebviewStore();
 
 const props = defineProps({
   productBubbleEnable: {
@@ -71,6 +81,7 @@ const {
 } = useProduct();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { openProductDetail } = useNewProductDetail();
 </script>
 
 <style lang="scss">

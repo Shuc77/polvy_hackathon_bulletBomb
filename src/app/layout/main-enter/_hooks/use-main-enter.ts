@@ -128,8 +128,8 @@ export const useMainEnter = (options: {
     // 处理需要等观看页加载完后的逻辑
     if (watchAppStore.watchPageInited) {
       if (webviewStore.isPlvWebview) {
-        // 进入观看页后再发送用户数据
-        webviewStore.sendUserInfo(webviewStore.autoPictureInPicture);
+        // 进入观看页后初始化webview
+        webviewStore.initWebview();
       }
 
       // 连接聊天室

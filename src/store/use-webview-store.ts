@@ -11,8 +11,12 @@ import { useLayoutStore } from './use-layout-store';
 import { usePlayerStore } from './use-player-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { getLocalStorage, setLocalStorage } from '@/assets/utils/storage';
+import { isIOS } from '@/assets/utils/browser';
 
 const PIP_STORAGE_KEY = 'AutoPIP';
+const PIP_OUTSIDE_STORAGE_KEY = 'AutoOutsidePIP';
+
+// const isIOS = false;
 
 export interface WebviewStoreState {
   /** 是否基于保利威 webview 协议嵌入的观看页 */
@@ -31,11 +35,17 @@ export interface WebviewStoreState {
   pictureInPictureIOSEnabled: Ref<boolean>;
   /** 是否自动进入小窗播放 */
   autoPictureInPicture: Ref<boolean>;
+  /** 是否自动进入系统小窗播放 */
+  autoOutsidePictureInPicture: Ref<boolean>;
+  /** 系统小窗设置是否可见 */
+  autoOutsidePictureInPictureVisible: ComputedRef<boolean>;
 }
 
 export interface WebviewStoreActions {
   /** 初始化桥接器 */
   initWebviewBridge(): Promise<void>;
+  // 初始化webview相关设置
+  initWebview(): void;
   /** 获取桥接器对象 */
   getPlvWebviewBridge(): WebViewBridge | undefined;
   /** 发送用户信息 */
@@ -48,6 +58,8 @@ export interface WebviewStoreActions {
   syncWebviewInfo(): void;
   /** 设置是否自动进入小窗播放 */
   setAutoPictureInPicture(val: boolean): void;
+  /** 设置是否自动进入系统小窗播放 */
+  setAutoOutsidePictureInPicture(val: boolean): void;
   /** 关闭当前 webview 页面 */
   closeWindow(): void;
   /** 锁定当前 webview 页面 */
@@ -79,7 +91,9 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   const pictureInPictureEnabled = ref(false);
   const pictureInPictureIOSEnabled = ref(false);
   const autoPictureInPictureStorage = getLocalStorage(PIP_STORAGE_KEY);
+  const autoOutsidePictureInPictureStorage = getLocalStorage(PIP_OUTSIDE_STORAGE_KEY);
   const autoPictureInPicture = ref(autoPictureInPictureStorage !== YN.N);
+  const autoOutsidePictureInPicture = ref(autoOutsidePictureInPictureStorage === YN.Y);
 
   /** 是否 webview 内嵌小窗状态 */
   const isSmallWindow = ref(false);
@@ -98,6 +112,10 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       layoutStore.mobileDocIsPageFullscreen ||
       interactReceiveStore.isGoOnRedpackRain
     );
+  });
+
+  const autoOutsidePictureInPictureVisible = computed(() => {
+    return isIOS && pictureInPictureIOSEnabled.value && autoPictureInPicture.value;
   });
 
   watch(
@@ -160,6 +178,13 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     const watchCore = getWatchCore();
     pictureInPictureEnabled.value = watchCore.player.getPIPEnabled() && isPlvWebview.value;
     pictureInPictureIOSEnabled.value = watchCore.player.getPIPForIOSEnabled() && isPlvWebview.value;
+    if (!pictureInPictureEnabled.value) {
+      autoPictureInPicture.value = false;
+    }
+
+    if (isIOS && !pictureInPictureIOSEnabled.value) {
+      autoOutsidePictureInPicture.value = false;
+    }
   }
 
   /** 初始化桥接器 */
@@ -179,6 +204,17 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       __listenEvents();
     } catch (e) {
       console.warn('initWebviewBridge', e);
+    }
+  }
+
+  /**
+   * 初始化配置权限
+   */
+  function initWebview() {
+    console.info('initWebview', pictureInPictureEnabled.value);
+    if (pictureInPictureEnabled.value) {
+      sendUserInfo(autoPictureInPicture.value);
+      setLiveChannelInfo(autoOutsidePictureInPicture.value);
     }
   }
 
@@ -259,7 +295,6 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       if (event?.isPIP) {
         forcePausePlay();
       }
-      setLiveChannelInfo();
     });
 
     // webview 取消小窗化
@@ -270,7 +305,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       if (event?.isPIP) {
         toPlay();
       }
-      setLiveChannelInfo(autoPictureInPicture.value);
+      sendUserInfo(autoPictureInPicture.value);
     });
 
     webviewBridge.on('callWebViewEvent', __onCallWebViewEvent);
@@ -300,22 +335,25 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     if (!webviewBridge) {
       return;
     }
-    setTimeout(() => {
-      // 初始化一下小窗配置，以防打开页面后直接退后台功能无法正常使用
-      if (pictureInPictureEnabled.value) {
-        setLiveChannelInfo();
-      }
-    });
+
+    /** 小窗开启关闭设置 */
     webviewBridge.sendData('callAppEvent', {
       event: 'setEnableBackgroundPictureInPicture',
       value: { enable: enabled },
     });
+    console.info('setEnableBackgroundPictureInPicture', { enabled });
 
+    if (!autoOutsidePictureInPictureVisible.value || !autoOutsidePictureInPicture.value) {
+      enabled = false;
+    }
+
+    /** ios 系统小窗设置 */
     if (!enabled) {
       webviewBridge.sendData('getLiveUserInfo', {
         userId: '',
         channelId: '',
       });
+      console.info('getLiveUserInfo', {});
       return;
     }
 
@@ -325,7 +363,8 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     const userId = watchCore.user.requiredUserId();
     const nickname = watchCore.user.requiredUserNick();
     const params = watchCore.user.getStatisticsParams();
-    webviewBridge.sendData('getLiveUserInfo', {
+
+    const data = {
       userId: accountId,
       channelId,
       customParam: {
@@ -335,7 +374,11 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
         liveParam4: params.param4,
         liveParam5: params.param5,
       },
-    });
+    };
+
+    /** ios 系统小窗设置 */
+    webviewBridge.sendData('getLiveUserInfo', data);
+    console.info('getLiveUserInfo', data);
   }
 
   /** 获取桥接器对象 */
@@ -385,7 +428,6 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     if (unref(isSmallWindow)) {
       return;
     }
-    setLiveChannelInfo(autoPictureInPicture.value);
     webviewBridge?.sendData('clickProduct', {
       newPage: false,
       ...plvWebviewDataSize.value,
@@ -399,10 +441,21 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
   /** 设置是否自动进入小窗播放 */
   function setAutoPictureInPicture(val: boolean) {
-    sendUserInfo(val);
-    setLiveChannelInfo(val);
     autoPictureInPicture.value = val;
+    sendUserInfo(val);
     setLocalStorage(PIP_STORAGE_KEY, val ? YN.Y : YN.N);
+  }
+
+  /** 设置是否自动进入系统小窗播放 */
+  function setAutoOutsidePictureInPicture(val: boolean) {
+    autoOutsidePictureInPicture.value = val;
+    const watchCore = getWatchCore();
+    const liveStatus = watchCore.channel.getLiveStatus();
+    if (liveStatus === LiveStatus.Live) {
+      sendUserInfo(val);
+    }
+    setLiveChannelInfo(val);
+    setLocalStorage(PIP_OUTSIDE_STORAGE_KEY, val ? YN.Y : YN.N);
   }
 
   /** 锁定当前 webview Feed 页面 */
@@ -469,17 +522,21 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     pictureInPictureEnabled,
     pictureInPictureIOSEnabled,
     autoPictureInPicture,
+    autoOutsidePictureInPicture,
+    autoOutsidePictureInPictureVisible,
     syncWebviewInfo,
     curWebviewPageIsActive,
     plvWebviewDataSize,
     webviewPageDragDisabled,
     initWebviewBridge,
+    initWebview,
     getPlvWebviewBridge,
     sendUserInfo,
     toNormalWindow,
     toSmallWindow,
     closeWindow,
     setAutoPictureInPicture,
+    setAutoOutsidePictureInPicture,
     toLockDrag,
     toUnlockDrag,
     toNextWebview,

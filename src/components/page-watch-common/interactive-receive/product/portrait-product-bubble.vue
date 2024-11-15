@@ -35,6 +35,7 @@
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
       @job-detail="onJobDetailEvent"
       @buy="onWechatBuy"
+      @click-detail="openProductDetail"
     />
   </div>
 </template>
@@ -49,6 +50,7 @@ import { onJobDetailEvent } from './hooks/use-product-job-detail';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
 
 const props = defineProps({
   productBubbleEnable: {
@@ -82,6 +84,7 @@ const {
 const { getLinkParams } = useProductLinkParams();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { openProductDetail } = useNewProductDetail();
 </script>
 
 <style lang="scss">
