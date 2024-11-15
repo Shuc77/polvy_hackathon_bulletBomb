@@ -2,7 +2,7 @@
 <template>
   <mobile-popup
     class="c-portrait-playback-setting"
-    :title="$lang('taskActivity.playbackSetting')"
+    :title="$lang('player.pictureInPicture.playbackSetting')"
     :visible.sync="playbackSettingVisible"
     :theme="PopupTheme.Portrait"
     :use-transition.sync="useTransition"
@@ -10,11 +10,20 @@
     @click-back="onClickBack"
   >
     <div class="c-portrait-playback-setting__content">
-      <span>{{ $lang('taskActivity.pictureInPictureTips') }}</span>
-      <plv-switch
-        :value="autoPictureInPicture"
-        @change="setAutoPictureInPicture"
-      />
+      <div>
+        <span>{{ $lang('player.pictureInPicture.tips') }}</span>
+        <plv-switch
+          :value="autoPictureInPicture"
+          @change="setAutoPictureInPicture"
+        />
+      </div>
+      <div v-if="autoOutsidePictureInPictureVisible">
+        <span>{{ $lang('player.pictureInPicture.tips') }}</span>
+        <plv-switch
+          :value="autoOutsidePictureInPicture && autoPictureInPicture"
+          @change="setAutoOutsidePictureInPicture"
+        />
+      </div>
     </div>
   </mobile-popup>
 </template>
@@ -34,16 +43,20 @@ const {
   onClickBack,
 } = usePortraitSettingPopup(appEvents.global.PlaybackSettingPopup);
 
-const { setAutoPictureInPicture } = useWebviewStore();
+const { setAutoPictureInPicture, setAutoOutsidePictureInPicture } = useWebviewStore();
 
-const { autoPictureInPicture } = storeDefinitionToRefs(useWebviewStore);
+const { autoPictureInPicture, autoOutsidePictureInPicture, autoOutsidePictureInPictureVisible } =
+  storeDefinitionToRefs(useWebviewStore);
 </script>
 
 <style lang="scss">
 .c-portrait-playback-setting__content {
-  display: flex;
-  justify-content: space-between;
   padding: 35px 24px;
-  color: #fff;
+  > div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: #fff;
+  }
 }
 </style>

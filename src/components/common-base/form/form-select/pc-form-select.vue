@@ -196,10 +196,10 @@ watch(
   position: relative;
   display: flex;
   align-items: center;
-  height: 40px;
+  min-height: 40px;
   padding: 0 16px;
   font-size: 14px;
-  line-height: 40px;
+  line-height: 24px;
   cursor: pointer;
   user-select: none;
 }
@@ -208,6 +208,5 @@ watch(
 }
 .c-pc-form-select__options__item__text {
   flex: 1;
-  @include singleline-text;
 }
 </style>

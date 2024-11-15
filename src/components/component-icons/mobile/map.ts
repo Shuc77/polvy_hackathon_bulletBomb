@@ -15,6 +15,7 @@ export { default as MobileIconCheck } from './icons/check';
 export { default as MobileIconCheckRoundFill } from './icons/check-round-fill';
 export { default as MobileIconClose } from './icons/close';
 export { default as MobileIconCloseRound } from './icons/close-round';
+export { default as MobileIconCloseRoundBgGrey } from './icons/close-round-bg-grey';
 export { default as MobileIconCloseRoundFill } from './icons/close-round-fill';
 export { default as MobileIconDanmuSwitch } from './icons/danmu-switch';
 export { default as MobileIconDelete } from './icons/delete';

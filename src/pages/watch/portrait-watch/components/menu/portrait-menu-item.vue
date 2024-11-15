@@ -55,6 +55,9 @@ const emit = defineEmits({
   background-repeat: no-repeat;
   background-size: 100%;
 }
+.c-portrait-more-item__icon--profile {
+  background-image: url(./images/icon-profile.png);
+}
 .c-portrait-more-item__icon--only-special {
   background-image: url(./images/icon-only-host.png);
 }

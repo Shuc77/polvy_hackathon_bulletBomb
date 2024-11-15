@@ -1,3 +1,21 @@
+.plv-area-picker__tab {
+  overflow-x: auto;
+  overflow-y: hidden;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    cursor: pointer;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #CFD8DC;
+    border-radius: 8px;
+  }
+  &::-webkit-scrollbar-track-piece {
+    background: #EDF1F7;
+    border-radius: 8px;
+  }
+}
+
 .plv-area-picker__tab__item {
   white-space: nowrap;
 }

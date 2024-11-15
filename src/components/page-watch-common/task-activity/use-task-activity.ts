@@ -59,6 +59,11 @@ export function getTaskRewardText(rewardSetting: TaskActivityRewardSetting): str
     case TaskActivityRewardType.Custom:
       txt = rewardSetting.customReward;
       break;
+    case TaskActivityRewardType.Point:
+      txt = translate('taskActivity.pointReward', {
+        amount: Math.trunc(rewardSetting.amount),
+      });
+      break;
   }
 
   return txt;

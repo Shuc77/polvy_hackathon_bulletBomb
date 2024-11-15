@@ -15,10 +15,15 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import { useAskStore } from '@/store/use-ask-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import AskCompPortrait from '@polyv/chat-sdk-ui-ask-question/lib/MobileAskPortrait';
 
 import { useAskReminder, useAskSdk } from '../hooks/use-ask';
 import { useHideChatMsgActorHook } from '../../chat/chat-msg-list/hooks/hide-chat-msg-hook';
+
+import { useChatSDKAskQuestionUILoader } from '@/plugins/external-lib-loaders/load-chat-sdk-ui-ask-question';
+
+const { asyncImportChatSDKAskQuestionComponent } = useChatSDKAskQuestionUILoader();
+
+const AskCompPortrait = () => asyncImportChatSDKAskQuestionComponent();
 
 const { askSdk } = useAskSdk();
 

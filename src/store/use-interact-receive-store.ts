@@ -26,6 +26,8 @@ import { useWatchAppStore } from './use-watch-app-store';
 import { useViewerStore } from './use-viewer-store';
 import { useThemeStore } from './use-theme-store';
 
+import { ProductGoodData } from '@/components/page-watch-common/interactive-receive/product/types/product-types';
+
 /**
  * 互动功能二次入口数据
  */
@@ -93,6 +95,10 @@ export interface InteractReceiveStoreState {
   productBubbleVisible: Ref<boolean>;
   /** 问卷是否显示返回按钮 */
   questionnaireBackBtnVisible: Ref<boolean>;
+  /** 当前商品选择的商品数据 */
+  currentProduct: Ref<ProductGoodData | undefined>;
+  /** 商品详情弹层是否可见 */
+  productDetailVisible: Ref<boolean>;
 }
 
 export interface InteractReceiveStoreAction {
@@ -271,6 +277,11 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 问卷是否显示返回按钮 */
     const questionnaireBackBtnVisible = ref(true);
 
+    /** 当前商品选择的商品数据 */
+    const currentProduct = ref<ProductGoodData>();
+    /** 商品详情弹层是否可见 */
+    const productDetailVisible = ref(false);
+
     return {
       iarSdkLoaded,
 
@@ -302,6 +313,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       hasCheckIn,
       productBubbleVisible,
       questionnaireBackBtnVisible,
+
+      currentProduct,
+      productDetailVisible,
     };
   },
 );

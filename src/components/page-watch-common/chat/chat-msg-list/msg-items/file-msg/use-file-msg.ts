@@ -40,6 +40,7 @@ export const useFileMsg = () => {
       const msg = {
         name: 'file',
         path: unref(fileUrl),
+        fileName: unref(fileName),
       };
 
       window.parent.postMessage(msg, '*');

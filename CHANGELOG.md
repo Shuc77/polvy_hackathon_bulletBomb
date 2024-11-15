@@ -4,6 +4,26 @@
 
 ---
 
+## v1.11.0(2024-11-15)
+
+### Features
+
+- 观看页响应后台设置"iOS端自动启用小窗"功能（配合 Webview-SDK）
+- 观看页接入"互动-商品详情页"功能，支持各端显示并响应后台配置
+- 观看页支持展示"个人中心"入口
+- 观看页支持领取任务奖励积分
+
+### Optimizes
+
+- 一系列小的细节优化（文案、样式等）
+
+### Build System
+
+- 移除 `@polyv/chat-sdk-ui-ask-question`，改用外链方式加载
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20241114`
+
+---
+
 ## v1.10.1(2024-10-25)
 
 ### Bug Fixes

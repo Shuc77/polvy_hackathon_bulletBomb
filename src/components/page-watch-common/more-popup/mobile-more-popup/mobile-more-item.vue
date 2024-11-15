@@ -55,6 +55,9 @@ const emit = defineEmits({
   background-repeat: no-repeat;
   background-size: 100%;
 }
+.c-mobile-more-item__icon--profile {
+  background-image: url(./imgs/icon-menu-profile.png);
+}
 .c-mobile-more-item__icon--only-special {
   background-image: url(./imgs/icon-menu-only-sp-mob.png);
 }

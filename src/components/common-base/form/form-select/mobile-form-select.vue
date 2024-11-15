@@ -200,10 +200,13 @@ watch(
 }
 
 .c-mobile-form-select__options__item {
-  height: 40px;
-  padding: 0 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 16px;
   margin-bottom: 20px;
-  line-height: 40px;
+  line-height: 24px;
   color: #333;
   background: #f6f6f6;
   border-radius: 20px;

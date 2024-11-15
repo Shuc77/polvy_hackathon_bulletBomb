@@ -48,9 +48,12 @@
         </div>
 
         <p class="c-pc-playback-list__item__title g-singleline">{{ item.title }}</p>
-        <p class="c-pc-playback-list__item__start-time">
+        <p
+          v-if="item.startTime"
+          class="c-pc-playback-list__item__start-time"
+        >
           {{ $lang('playback.startTime') }}
-          <span v-if="item.startTime">{{ formatDate(item.startTime, DATE_FORMAT_COMPLETE) }}</span>
+          <span>{{ formatDate(item.startTime, DATE_FORMAT_COMPLETE) }}</span>
         </p>
       </plv-col>
     </plv-row>

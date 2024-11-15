@@ -119,6 +119,18 @@
             <pc-barrage />
           </div>
 
+          <transition name="fade">
+            <div
+              ref="ProductDetailDialogRef"
+              class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__product-detail-dialog"
+              v-if="iarSdkLoaded && productDetailVisible"
+            >
+              <div class="c-pc-watch-layout__main__product-detail-dialog__inner">
+                <pc-product-detail />
+              </div>
+            </div>
+          </transition>
+
           <!-- 播放器控制栏层 -->
           <div
             ref="PlayerControlWrapperRef"
@@ -193,6 +205,7 @@ import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
+import PcProductDetail from '@/components/page-watch-common/product-detail/pc-product-detail.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -229,9 +242,10 @@ const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(us
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, productDetailVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const PlayerControlWrapperRef = ref<HTMLDivElement>();
+const ProductDetailDialogRef = ref<HTMLDivElement>();
 
 const {
   hoverItemVisible: playerControlVisible,
@@ -532,5 +546,19 @@ $--layout-sub-pack-up-height: 40px !default;
   left: 0;
   width: 100%;
   height: 100%;
+}
+
+.c-pc-watch-layout__main__product-detail-dialog {
+  z-index: 3001;
+
+  .c-pc-watch-layout__main__product-detail-dialog__inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    min-width: 300px;
+    height: 100%;
+    pointer-events: initial;
+  }
 }
 </style>

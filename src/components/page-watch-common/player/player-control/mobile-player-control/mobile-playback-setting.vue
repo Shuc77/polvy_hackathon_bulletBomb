@@ -2,15 +2,24 @@
 <template>
   <mobile-popup
     class="c-mobile-playback-setting"
-    :title="$lang('taskActivity.playbackSetting')"
+    :title="$lang('player.pictureInPicture.playbackSetting')"
     :visible.sync="visible"
   >
     <div class="c-mobile-playback-setting__content">
-      <span>{{ $lang('taskActivity.pictureInPictureTips') }}</span>
-      <plv-switch
-        :value="autoPictureInPicture"
-        @change="setAutoPictureInPicture"
-      />
+      <div>
+        <span>{{ $lang('player.pictureInPicture.tips') }}</span>
+        <plv-switch
+          :value="autoPictureInPicture"
+          @change="setAutoPictureInPicture"
+        />
+      </div>
+      <div v-if="autoOutsidePictureInPictureVisible">
+        <span>{{ $lang('player.pictureInPicture.tips2') }}</span>
+        <plv-switch
+          :value="autoOutsidePictureInPicture && autoPictureInPicture"
+          @change="setAutoOutsidePictureInPicture"
+        />
+      </div>
     </div>
   </mobile-popup>
 </template>
@@ -23,9 +32,10 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { ref } from 'vue';
 
-const { setAutoPictureInPicture } = useWebviewStore();
+const { setAutoPictureInPicture, setAutoOutsidePictureInPicture } = useWebviewStore();
 
-const { autoPictureInPicture } = storeDefinitionToRefs(useWebviewStore);
+const { autoPictureInPicture, autoOutsidePictureInPicture, autoOutsidePictureInPictureVisible } =
+  storeDefinitionToRefs(useWebviewStore);
 
 const visible = ref(false);
 
@@ -36,9 +46,13 @@ useEventBusListener(appEvents.global.PlaybackSettingPopup, () => {
 
 <style lang="scss">
 .c-mobile-playback-setting__content {
-  display: flex;
-  justify-content: space-between;
   padding: 16px 24px 170px;
   color: #333;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
 }
 </style>

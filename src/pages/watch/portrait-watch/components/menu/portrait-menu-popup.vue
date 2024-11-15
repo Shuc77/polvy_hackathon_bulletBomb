@@ -7,6 +7,14 @@
     :use-transition.sync="useTransition"
   >
     <ul class="c-portrait-menu-popup__content">
+      <!-- 个人中心 -->
+      <menu-item
+        v-if="identitySetting.profileEnabled"
+        icon="profile"
+        :text="$lang('identitySetting.profile')"
+        @click="onClickProfile"
+      />
+
       <!-- 音视频切换 -->
       <menu-item
         v-if="playerModeSwitcherVisible"
@@ -142,7 +150,7 @@
       <menu-item
         v-if="pictureInPictureEnabled"
         icon="pip"
-        :text="$lang('taskActivity.pictureInPicture')"
+        :text="$lang('player.pictureInPicture.title')"
         @click="onClickPIP"
       />
 
@@ -150,7 +158,7 @@
       <menu-item
         v-if="pictureInPictureEnabled"
         icon="playback-setting"
-        :text="$lang('taskActivity.playbackSetting')"
+        :text="$lang('player.pictureInPicture.playbackSetting')"
         @click="onClickPlaybackSetting"
       />
 
@@ -199,6 +207,7 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { ChannelStreamTrackType } from '@polyv/live-watch-sdk';
 import { computed, ref, watch } from 'vue';
 import MenuItem from './portrait-menu-item.vue';
+import { getWatchCore } from '@/core/watch-sdk';
 
 const { visible: menuVisible, setVisible: setMenuVisible } = useSimpleVisible();
 
@@ -253,11 +262,22 @@ const { scoreRedpackEnabled, sendRedpackVisible } = storeDefinitionToRefs(useRed
 
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
-const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+const { identitySetting, bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
 const { toSmallWindow } = useWebviewStore();
 
 const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
+
+const watchCore = getWatchCore();
+
+function onClickProfile() {
+  const url = watchCore.utils.generateProfilePageUrl();
+  if (url) {
+    window.open(url, '_blank');
+  }
+
+  closeMenu();
+}
 
 /** 点击线路切换 */
 function onClickLineSetting() {

@@ -446,6 +446,11 @@ export const chinaLang = {
   'player.fastForwardBackward.back': '快退',
   'player.fastForwardBackward.forward': '快进',
 
+  'player.pictureInPicture.title': '小窗播放',
+  'player.pictureInPicture.playbackSetting': '播放设置',
+  'player.pictureInPicture.tips': '退出页面自动开启小窗',
+  'player.pictureInPicture.tips2': '退出应用后台自动启用小窗',
+
   'playback.list': '回放列表',
   'playback.playing': '播放中',
   'playback.startTime': '开始时间：',
@@ -570,7 +575,7 @@ export const chinaLang = {
   'withdraw.error.noUser': '找不到该微信用户',
   'withdraw.error.getCashExceed': '提取金额超过用户余额',
   'withdraw.error.getCashMoreThan1': '提取金额必须大于1元',
-  'withdraw.error.getCashFailed': '申请记录失败',
+  'withdraw.error.getCashFailed': '申请提现失败',
 
   'withdraw.detail.popup.title': '我的红包余额',
   'withdraw.detail.btn.text': '提现',
@@ -734,6 +739,7 @@ export const chinaLang = {
   'subtitle.limit': '当前最多展示近${limit}条记录',
   'subtitle.footer.tips': '内容为AI实时生成仅供参考',
 
+  'identitySetting.profile': '个人中心',
   'identityInfo.bindMobile': '绑定手机号',
 
   'watch.duration.learnTime': '累计学习 ${duration} 分钟',
@@ -750,6 +756,7 @@ export const chinaLang = {
   'taskActivity.onlineSurplus': '还剩 ',
   'taskActivity.reward1': '，可获得“${content}”',
   'taskActivity.redpackReward': '现金红包${amount}元',
+  'taskActivity.pointReward': ' ${amount} 积分',
   'taskActivity.end': '${endTime}结束',
   'taskActivity.lockedBtn': '待解锁',
   'taskActivity.viewReward': '查看奖励',
@@ -782,9 +789,6 @@ export const chinaLang = {
   'taskActivity.rewardReceive.error2': '请输入正确的手机号码',
   'taskActivity.rewardReceive.receive': '领取',
   'taskActivity.rewardReceive.look': '查看',
-  'taskActivity.pictureInPicture': '小窗播放',
-  'taskActivity.playbackSetting': '播放设置',
-  'taskActivity.pictureInPictureTips': '退出页面自动开启小窗',
 
   'order.paySuccess': '支付成功',
   'order.payCancel': '取消支付',
