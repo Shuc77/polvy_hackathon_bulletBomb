@@ -1,8 +1,7 @@
 import { ref, nextTick, computed, unref } from 'vue';
 import { isEmpty } from 'lodash-es';
-import { getWatchCore } from '@/core/watch-sdk';
-import { appEvents, useEventBusListener, eventBus } from '@/app/app-events';
-import { toast } from '@/hooks/components/use-toast';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -12,9 +11,15 @@ import { usePay } from './use-pay';
 import type { AddressDetail, OrderInfo } from '../types/order-types';
 import type { ProductGoodData } from '../../product/types/product-types';
 import { isAndroid } from '@/assets/utils/browser';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export function useOrder() {
+  const { getWatchCore, getEmitter } = useGlobalInject();
+
   const watchCore = getWatchCore();
+
+  const { toast } = useToastManager();
+
   const { visible, currentPopupRoute, pushPopupRoute } = usePopupRoute();
   const { address, addressManagementSdk } = useAddress();
   const { pay } = usePay();
@@ -205,7 +210,7 @@ export function useOrder() {
 
       const showOrderDetail = () => {
         nextTick(() => {
-          eventBus.$emit(appEvents.interaction.OpenOrderCenterPopup, res.payId);
+          getEmitter().emit(appEvents.interaction.OpenOrderCenterPopup, res.payId);
         });
       };
 

@@ -4,10 +4,10 @@
 import { ChannelTrialInfo, SetupPlayerOptions } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref } from 'vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { usePlayerStore } from '@/store/use-player-store';
 
 import { usePlayerTrialEvent } from './use-player-trial-event';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export type InitPlayerOptions = Omit<SetupPlayerOptions, 'container'>;
 
@@ -17,6 +17,8 @@ export const usePlayerTrialMain = (
     trialInfo?: ChannelTrialInfo | null;
   } = {},
 ) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { trialInfo = null } = hookOptions;
 
   const { bindPlayerEvents, unbindPlayerEvents } = usePlayerTrialEvent({ trialInfo });

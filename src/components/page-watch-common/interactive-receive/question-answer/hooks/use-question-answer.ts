@@ -1,11 +1,11 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
-import { computed, onBeforeUnmount, onMounted } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { computed } from 'vue';
 
 import { TAB_NAME_QA } from '@/assets/constants/tab-name';
 import { previewImage } from '@/hooks/components/use-image-preview';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动-问答
@@ -13,6 +13,8 @@ import { useViewerStore } from '@/store/use-viewer-store';
 export const useQuestionAnswer = () => {
   const interactReceiveStore = useInteractReceiveStore();
   const viewerStore = useViewerStore();
+
+  const { getEmitter, getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
   const questionAnswerSdk = watchCore.interactReceive.getQuestionAnswer();
@@ -25,7 +27,7 @@ export const useQuestionAnswer = () => {
     if (checkResult) {
       return;
     }
-    eventBus.$emit(appEvents.chat.OpenSetNick, true);
+    getEmitter().emit(appEvents.chat.OpenSetNick, true);
   }
 
   const innerHasNickname = computed(() => {
@@ -53,15 +55,9 @@ export const useQuestionAnswer = () => {
     }
   }
 
-  onMounted(() => {
-    eventBus.$on(appEvents.global.PcAsideMenuSwitch, onTabSwitch);
-    eventBus.$on(appEvents.global.MobileBottomMenuSwitch, onTabSwitch);
-  });
+  useEventBusListener(appEvents.global.PcAsideMenuSwitch, onTabSwitch);
 
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.global.PcAsideMenuSwitch, onTabSwitch);
-    eventBus.$off(appEvents.global.MobileBottomMenuSwitch, onTabSwitch);
-  });
+  useEventBusListener(appEvents.global.MobileBottomMenuSwitch, onTabSwitch);
 
   return {
     questionAnswerSdk,

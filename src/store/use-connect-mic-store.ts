@@ -1,5 +1,4 @@
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   PlvConnectMicModule,
   ConnectMicItem,
@@ -12,6 +11,7 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useLayoutStore } from './use-layout-store';
 import { useWebviewStore } from './use-webview-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface ConnectMicStoreState {
   /** 配置是否使用连麦 */
@@ -93,6 +93,7 @@ export interface ConnectMicStore extends ConnectMicStoreState, ConnectMicStoreAc
  * 连麦 store
  */
 export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('connectMic', () => {
+  const watchAppStore = useWatchAppStore();
   const layoutStore = useLayoutStore();
   const webviewStore = useWebviewStore();
 
@@ -141,7 +142,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
       return true;
     }
 
-    if (!webviewStore.curWebviewPageIsActive) {
+    if (!webviewStore.curWebviewPageIsActive || !watchAppStore.isPageActive) {
       return false;
     }
 
@@ -168,7 +169,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     const streamList = micList.filter(micItem => {
       return !micItem.isMaster;
     });
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     return streamList.sort((prevMicItem, nextMicItem) => {
       if (nextMicItem.isLocal) {
         return 2;
@@ -258,7 +259,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 同步屏幕共享信息 */
   function syncScreenShareInfo(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const info = watchCore.connectMic.getScreenShareInfo();
     screenShareInfo.value = info;
   }
@@ -268,7 +269,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 同步连麦网络信息 */
   function syncNetworkInfo(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const info = watchCore.connectMic.getNetworkInfo();
     networkInfo.value = info;
   }
@@ -287,7 +288,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   });
 
   function syncConnectMicInfo(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const connectMicInfo = watchCore.connectMic.getConnectMicInfo();
 
     supportConnectMic.value = connectMicInfo.supportConnectMic;
@@ -301,7 +302,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   }
 
   function syncConnectMicList(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     connectMicList.value = watchCore.connectMic.getConnectMicList();
   }
 

@@ -46,10 +46,12 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import PcFormCheckbox from '@/components/common-base/form/form-checkbox/pc-form-checkbox.vue';
 import { PcIconSetNick, PcIconBindMobile } from '@/components/component-icons/pc/map';
+import { useDonateAnimationVisible } from '@/components/page-watch-common/donate/donate-animation/use-donate-animation';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
@@ -62,8 +64,11 @@ const emit = defineEmits({
   close: emitFunc<void>(),
 });
 
+const { getEmitter } = useGlobalInject();
+
 const donateStore = useDonateStore();
 const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
+const { toggleDonateAnimationVisible } = useDonateAnimationVisible();
 
 const chatStore = useChatStore();
 const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
@@ -77,16 +82,16 @@ function onClickSpecialMsg() {
 }
 
 function onClickDonateAnimation() {
-  donateStore.toggleDonateAnimationVisible();
+  toggleDonateAnimationVisible();
 }
 
 function onClickSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  getEmitter().emit(appEvents.chat.OpenSetNick, true);
   emit('close');
 }
 
 function onClickBindMobile() {
-  eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog);
+  getEmitter().emit(appEvents.global.OpenBindIdentityInfoDialog);
   emit('close');
 }
 </script>

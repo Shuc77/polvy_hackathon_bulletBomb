@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { toastCopySuccess } from '@/assets/utils/copy';
+import { useCopyText } from '@/assets/utils/copy';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useRedpack } from './hooks/use-redpack';
 
@@ -31,6 +31,8 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
+
+const { toastCopySuccess } = useCopyText();
 
 const IarMobileRedEnvelope = getIarComponent('MobileRedEnvelope');
 

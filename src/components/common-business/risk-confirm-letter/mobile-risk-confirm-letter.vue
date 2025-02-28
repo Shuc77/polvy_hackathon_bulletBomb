@@ -10,7 +10,7 @@
     :closable="false"
   >
     <!-- 预览协议 -->
-    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.PREVIEW_AGREEMENT">
+    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.PreviewAgreement">
       <section
         class="c-mobile-risk-confirm-letter__content__preview-agreement"
         :style="contentWrapperStyle"
@@ -34,7 +34,7 @@
         </div>
       </div>
     </section>
-    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.DISAGREE_TIPS">
+    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.DisagreeTips">
       <!-- "不同意"的提示 -->
       <section
         class="c-mobile-risk-confirm-letter__content__disagree-tips"
@@ -64,7 +64,7 @@
       </div>
     </section>
     <!-- 默认展示 -->
-    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.DEFAULT">
+    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.Default">
       <section class="c-mobile-risk-confirm-letter__content-wrapper">
         <div
           v-if="viewerRiskConfirmInfo"
@@ -144,11 +144,11 @@ const dialogContentStyle = computed(() => {
 });
 
 const dialogTitle = computed(() => {
-  if (riskConfirmLetterRenderMode.value === RiskConfirmLetterRenderMode.PREVIEW_AGREEMENT) {
+  if (riskConfirmLetterRenderMode.value === RiskConfirmLetterRenderMode.PreviewAgreement) {
     return curPreviewAgreement.title;
   }
 
-  if (riskConfirmLetterRenderMode.value === RiskConfirmLetterRenderMode.DISAGREE_TIPS) {
+  if (riskConfirmLetterRenderMode.value === RiskConfirmLetterRenderMode.DisagreeTips) {
     return '';
   }
 
@@ -156,7 +156,7 @@ const dialogTitle = computed(() => {
 });
 
 const isShowDialogHeader = computed(() => {
-  return riskConfirmLetterRenderMode.value !== RiskConfirmLetterRenderMode.DISAGREE_TIPS;
+  return riskConfirmLetterRenderMode.value !== RiskConfirmLetterRenderMode.DisagreeTips;
 });
 </script>
 

@@ -1,6 +1,9 @@
 <!-- @file 移动端表情选择 -->
 <template>
-  <div class="c-mobile-emotion-picker pws-mobile-emotion-picker">
+  <div
+    class="c-mobile-emotion-picker pws-mobile-emotion-picker"
+    v-if="emotionResourceLoaded"
+  >
     <div
       class="c-mobile-emotion-picker__panel-wrap"
       :class="{
@@ -12,7 +15,10 @@
         v-if="faceEmotionEnabled"
         class="c-mobile-emotion-picker__panel"
       >
-        <mobile-emotion-face-picker @click-face="onClickFace" />
+        <mobile-emotion-face-picker
+          :key="langStore.currentLang"
+          @click-face="onClickFace"
+        />
       </div>
 
       <!-- image 表情 -->
@@ -85,6 +91,7 @@ import {
   MobileIconHeart,
   MobileIconSmilingFace,
 } from '@/components/component-icons/mobile/map';
+import { useLangStore } from '@/store/use-lang-store';
 import {
   emotionPickerEmits,
   emotionPickerProps,
@@ -92,10 +99,16 @@ import {
 } from '../hooks/use-emotion-picker';
 import MobileEmotionFacePicker from './mobile-emotion-face-picker.vue';
 import MobileEmotionImagePicker from './mobile-emotion-image-picker.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChatStore } from '@/store/use-chat-store';
 
 const props = defineProps(emotionPickerProps());
 
 const emit = defineEmits(emotionPickerEmits());
+
+const langStore = useLangStore();
+
+const { emotionResourceLoaded } = storeDefinitionToRefs(useChatStore);
 
 const { faceEmotionEnabled, imageEmotionEnabled } = useProps(props);
 

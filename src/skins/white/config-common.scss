@@ -259,4 +259,12 @@ $--skin-page-common-configs: (
   // AI 助手答疑
   'pws-ai-assistant-msg-dot:bg-color': $--color-white,
   'pws-ai-assistant-chat-not-config:filter': brightness(0.3),
+
+  // AI 看 回放大纲
+  'pws-ai-outline-bg:bg-color': rgba($--color-white, 0.6),
+  'pws-ai-outline-text:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  'pws-ai-outline-desc:desc-color': map.get($--skin-basic-configs, 'describe-text-color'),
+  'pws-ai-outline-tag-bg:bg-color': rgba($--color-white, 0.6),
+  'pws-ai-outline-label-text:text-color': #498CF1,
+  'pws-ai-outline-label-bg:bg-color': #FBFBFB,
 );

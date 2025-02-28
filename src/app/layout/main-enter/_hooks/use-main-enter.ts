@@ -7,13 +7,14 @@ import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener
 import { usePageStore } from '@/store/use-page-store';
 import { useAuthStore } from '@/store/use-auth-store';
 
-import { removeQueryParam } from '@/hooks/core/use-query-params';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hooks/use-auth-special';
 import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
 import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useEmotionSetup } from './use-emotion-setup';
 
 /**
  * 页面尺寸初始化设置
@@ -62,8 +63,11 @@ export const useMainEnter = (options: {
   watchLoader?: () => Promise<unknown>;
 }) => {
   const { emit, watchLoader } = options;
+  const { removeQueryParam } = useQueryParams();
 
   const { loadIarSDK } = useIarSetup();
+
+  const { setupEmotionParser } = useEmotionSetup();
 
   const { setupConnectMic } = useConnectMicSetup();
 
@@ -107,6 +111,9 @@ export const useMainEnter = (options: {
 
   onBeforeMount(() => {
     removeUrlAuthQueryParams();
+
+    // 设置表情解析器
+    setupEmotionParser();
   });
 
   // 在 onMounted 之后触发

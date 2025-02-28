@@ -1,4 +1,4 @@
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import Clipboard from 'clipboard';
 import { translate } from '../lang';
 
@@ -37,7 +37,16 @@ export function copyText(text: string) {
   });
 }
 
-/** 提示复制成功 */
-export const toastCopySuccess = () => {
-  toast.success(translate('copy.success'));
+export const useCopyText = () => {
+  const { toast } = useToastManager();
+
+  /** 提示复制成功 */
+  function toastCopySuccess() {
+    toast.success(translate('copy.success'));
+  }
+
+  return {
+    copyText,
+    toastCopySuccess,
+  };
 };

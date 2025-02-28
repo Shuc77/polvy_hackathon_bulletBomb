@@ -35,5 +35,20 @@
     "source.fixAll.eslint": "explicit",
     "source.fixAll.stylelint": "explicit"
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // I18n
+  "i18n-ally.enabledFrameworks": [
+    "custom",
+    "vue",
+  ],
+  "i18n-ally.keystyle": "flat",
+  "i18n-ally.displayLanguage": "zh-CN",
+  "i18n-ally.enabledParsers": [
+    "ts",
+  ],
+  "i18n-ally.localesPaths": [
+    "src/assets/lang/i18ns",
+    "src/assets/lang",
+    "src/components/component-icons/pc/icons/lang"
+  ],
 }

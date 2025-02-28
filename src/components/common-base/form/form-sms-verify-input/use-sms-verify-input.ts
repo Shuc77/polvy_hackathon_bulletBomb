@@ -6,8 +6,7 @@ import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-ut
 import { translate } from '@/assets/lang';
 import { validateImageCaptcha, validatePhoneNumber } from '@/assets/utils/validate';
 import { computed, ref, unref, watchEffect } from 'vue';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import {
@@ -20,6 +19,7 @@ import {
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { ImageVerifyInputInstance } from '../form-image-verify-input/type';
 import { isArray } from '@/assets/utils/array';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 验证类型，imageCode - 图片验证码，sliderCode - 滑块验证码 */
 export type VerifyType = 'imageCaptcha' | 'sliderCode';
@@ -60,6 +60,10 @@ export const useSmsVerifyInput = (options: {
   props: VueProps<typeof formSmsVerifyInputProps>;
   emit: VueEmit<typeof formSmsVerifyInputEmits>;
 }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { props, emit } = options;
   const { areaCode, phoneNumber, smsScene, imageCaptcha, imageId, validType } = useProps(props);
   const { surplusTime, initCountDown } = useSecondCountDown({

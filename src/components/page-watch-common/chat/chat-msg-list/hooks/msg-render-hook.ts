@@ -3,7 +3,6 @@
  */
 import { translate } from '@/assets/lang';
 import { isUndefined } from 'lodash-es';
-import { pinia } from '@/plugins/pinia';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -12,6 +11,7 @@ import { ChatMsgType } from '@polyv/live-watch-sdk';
 import Vue, { ComponentOptions } from 'vue';
 import { ChatMsgItemPropsType } from '../msg-items/use-chat-msg-item';
 import { ChatMsgListHookOptions } from './types';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export type ChatMsgItemComponentOptions = ComponentOptions<Vue>;
 
@@ -22,6 +22,8 @@ export const useMsgRender = (
   const watchAppStore = useWatchAppStore();
   const chatMsgStore = useChatMsgStore();
   const layoutStore = useLayoutStore();
+
+  const { uniqueId, getPinia } = useGlobalInject();
 
   /**
    * 渲染消息列表
@@ -61,7 +63,10 @@ export const useMsgRender = (
             props: propsData,
           });
         },
-        pinia,
+        provide: {
+          uniqueId,
+        },
+        pinia: getPinia(),
       });
 
       instance.$mount();
@@ -79,7 +84,6 @@ export const useMsgRender = (
    * @param position 位置
    */
   function renderBoundary(position: RenderPosition) {
-    console.log('>>>renderBoundary:', position);
     const virtualList = hookOptions.getVirtualList();
 
     // 渲染没有更多

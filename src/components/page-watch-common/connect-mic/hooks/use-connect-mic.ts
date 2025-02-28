@@ -1,15 +1,18 @@
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { ConnectMicError, ConnectMicEvents } from '@polyv/live-watch-sdk';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { onBeforeUnmount, onMounted } from 'vue';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /**
  * 连麦设备设置 hook
  */
 export const useConnectMicDevice = () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   /** 开启设备设置 */
   function openDeviceSetting() {
     const watchCore = getWatchCore();
@@ -32,6 +35,10 @@ export const useConnectMicDevice = () => {
  * 连麦申请 hook
  */
 export const useConnectMicApply = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const watchCore = getWatchCore();
 
   /** 申请连麦 */
@@ -58,6 +65,8 @@ export const useConnectMicApply = () => {
  * 连麦控制 hook
  */
 export const useConnectMicControl = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const connectMicStore = useConnectMicStore();
 
@@ -120,6 +129,10 @@ export const useConnectMicControl = () => {
  * @description 各端仅限注册一次
  */
 export const useConnectMic = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const connectMicStore = useConnectMicStore();
 
   const { openDeviceSetting } = useConnectMicDevice();
@@ -142,29 +155,15 @@ export const useConnectMic = () => {
   function onHandUpMic() {
     toast.info(translate('connectMic.teacherHangUp'));
   }
-  onMounted(() => {
-    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
-    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.TeacherHangUp, onHandUpMic);
-    // 当前是被邀请的状态，需要弹出邀请面板
-    if (connectMicStore.inviteStatus) {
-      onInviteConnectMic();
-    }
-  });
-  onBeforeUnmount(() => {
-    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
-    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.TeacherHangUp, onHandUpMic);
-  });
+
+  function onApplyTimeOut() {
+    toast.info(translate('connectMic.applyTimeOut'));
+  }
 
   // 连麦人数达到限制
   function onOverLimit() {
     toast.error(translate('connectMic.error.overLimit'));
   }
-  onMounted(() => {
-    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
-  });
-  onBeforeUnmount(() => {
-    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
-  });
 
   // 设备采集失败
   function onDeviceRecoverFail() {
@@ -173,12 +172,6 @@ export const useConnectMic = () => {
       isDeviceRecoverFailed: true,
     });
   }
-  onMounted(() => {
-    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
-  });
-  onBeforeUnmount(() => {
-    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
-  });
 
   // 主讲设置
   function onSpeaker() {
@@ -188,10 +181,28 @@ export const useConnectMic = () => {
       toast.info(translate('connectMic.speaker.remove'));
     }
   }
+
   onMounted(() => {
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.TeacherHangUp, onHandUpMic);
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ApplyTimeOut, onApplyTimeOut);
+    // 当前是被邀请的状态，需要弹出邀请面板
+    if (connectMicStore.inviteStatus) {
+      onInviteConnectMic();
+    }
+
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
   });
+
   onBeforeUnmount(() => {
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.TeacherHangUp, onHandUpMic);
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.ApplyTimeOut, onApplyTimeOut);
+
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
   });
 };

@@ -88,9 +88,9 @@
 <script setup lang="ts">
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
 import { TAB_NAME_MULTI_MEETING } from '@/assets/constants/tab-name';
-import { resizeOSSImg } from '@/assets/utils/image';
 import MiniStatusTag from '@/components/common-business/status-tag/mini-status-tag.vue';
 import { PcIconPageView } from '@/components/component-icons/pc/map';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PlvCol, PlvPagination, PlvRow } from '@/plugins/polyv-ui/admin-import';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -98,6 +98,8 @@ import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { formatDate } from '@utils-ts/date';
 import { watch } from 'vue';
 import { useMultiMeeting, useMultiMeetingPage } from '../hooks/use-multi-meeting';
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const { pcBottomTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 

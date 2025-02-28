@@ -11,6 +11,8 @@ export interface TabPaneDataItem {
   subLabel: string;
   /** 是否显示红点 */
   showReminder: boolean;
+  /** 红点显示改为 "新消息" */
+  showNewMessage: boolean;
 }
 
 export interface TabsInstance {

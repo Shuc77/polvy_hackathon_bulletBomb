@@ -33,7 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { resizeOSSImg } from '@/assets/utils/image';
 import { isUndefined } from 'lodash-es';
 import PortraitFollowBtn from '@/components/page-watch-common/follow/follow-btn/portrait-follow-btn.vue';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -41,7 +40,10 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { computed, unref } from 'vue';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useShortNumber } from '@/hooks/business/use-short-number';
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const { shortNumber } = useShortNumber();
 

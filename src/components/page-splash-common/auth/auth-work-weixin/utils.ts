@@ -1,7 +1,7 @@
 /**
  * 企微二维码样式转换base64
  */
-import { Base64 } from 'js-base64/base64';
+import { Base64 } from 'js-base64';
 
 export const getWwLoginStyle = () => {
   const style = `

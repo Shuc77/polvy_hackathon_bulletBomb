@@ -24,7 +24,7 @@
       <div
         v-if="isWeixin && invitePosterEnabled"
         class="c-mobile-seat-table-pendant__item"
-        @click="onClickInvite"
+        @click="onClickInvitePosterEntry"
       >
         <mobile-icon-share class="c-mobile-seat-table-pendant__item__icon" />
         <span class="c-mobile-seat-table-pendant__item__text">{{ $lang('seatTable.invite') }}</span>
@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { isWeixin } from '@/assets/utils/browser';
 import {
   MobileIconChat,
@@ -63,8 +63,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChatStore } from '@/store/use-chat-store';
-import { redirectToPosterPage } from '@/components/page-watch-common/invite/hooks/use-invite-poster-entry';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useInvitePosterEntry } from '@/components/page-watch-common/invite/hooks/use-invite-poster-entry';
 
 const { chatInputControllerEnable, mobileChatInputFixedVisible } =
   storeDefinitionToRefs(useChatStore);
@@ -77,16 +78,16 @@ const { isMeetingSeatTableTemplate } = storeDefinitionToRefs(useInteractReceiveS
 
 const { visible, toggle } = useSimpleVisible(true);
 
-function onClickMe() {
-  eventBus.$emit(appEvents.interaction.OpenSeatTableFollowerPopup, true);
-}
+const { getEmitter } = useGlobalInject();
 
-function onClickInvite() {
-  redirectToPosterPage();
+const { onClickInvitePosterEntry } = useInvitePosterEntry();
+
+function onClickMe() {
+  getEmitter().emit(appEvents.interaction.OpenSeatTableFollowerPopup, true);
 }
 
 function onClickChat() {
-  eventBus.$emit(appEvents.chat.ShowMobileFixedChatInput);
+  getEmitter().emit(appEvents.chat.ShowMobileFixedChatInput);
 }
 </script>
 

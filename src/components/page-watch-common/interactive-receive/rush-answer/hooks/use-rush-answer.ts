@@ -1,11 +1,14 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useWebviewStore } from '@/store/use-webview-store';
 
 export const useRushAnswer = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
+
   const watchCore = getWatchCore();
   const interactReceiveStore = useInteractReceiveStore();
-  const webviewStore = useWebviewStore();
 
   const rushAnswerSdk = watchCore.interactReceive.getRushAnswer();
 
@@ -17,9 +20,9 @@ export const useRushAnswer = () => {
 
   function onRushAnswerVisibleChanged(visible: boolean) {
     if (visible) {
-      webviewStore.toLockDrag('rush-answer');
+      toLockFeedDrag('rush-answer');
     } else {
-      webviewStore.toUnlockDrag();
+      toUnlockFeedDrag();
     }
   }
 

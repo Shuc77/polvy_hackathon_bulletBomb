@@ -6,6 +6,15 @@
       class="c-mobile-doc__wrap"
     ></div>
 
+    <mobile-doc-subtitle
+      v-if="!isPortraitWatchLayout && docSetupFinished"
+      v-show="mainScreen === MainScreenContent.Doc"
+      class="c-mobile-doc__subtitle"
+      :class="{
+        'c-mobile-doc__subtitle--fullscreen': mobileDocIsPageFullscreen,
+      }"
+    />
+
     <mobile-message-box
       class="c-mobile-doc__message-box"
       ref="confirmRef"
@@ -19,9 +28,17 @@
 
 <script setup lang="ts">
 import { MobileMessageBox } from '@/components/common-base/message-box';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { MainScreenContent } from '@polyv/live-watch-sdk';
+import MobileDocSubtitle from '../player/player-subtitle/mobile-doc-subtitle.vue';
+
 import { useDoc } from './use-doc';
 
-const { wrapRef, confirmRef } = useDoc();
+const { docSetupFinished, wrapRef, confirmRef } = useDoc();
+
+const { isPortraitWatchLayout, mainScreen, mobileDocIsPageFullscreen } =
+  storeDefinitionToRefs(useLayoutStore);
 </script>
 
 <style lang="scss">
@@ -37,6 +54,21 @@ const { wrapRef, confirmRef } = useDoc();
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.c-mobile-doc__subtitle {
+  z-index: 0;
+  &--fullscreen {
+    bottom: 100px !important;
+  }
+}
+
+@media screen and (min-aspect-ratio: 4/3) {
+  .c-mobile-doc__subtitle {
+    &--fullscreen {
+      bottom: 16px !important;
+    }
+  }
 }
 
 .c-mobile-doc__message-box {

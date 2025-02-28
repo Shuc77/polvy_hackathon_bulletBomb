@@ -3,11 +3,11 @@
  */
 export enum AllLotteryResultStatus {
   /** 显示中奖结果 */
-  isShowLotteryEnd = 'isShowLotteryEnd',
+  IsShowLotteryEnd = 'isShowLotteryEnd',
   /** 显示中奖名单 */
-  isShowWinnerList = 'isShowWinnerList',
+  IsShowWinnerList = 'isShowWinnerList',
   /** 填写中奖信息 */
-  isShowSubmitInfo = 'isShowSubmitInfo',
+  IsShowSubmitInfo = 'isShowSubmitInfo',
 }
 
 /**

@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { isWeixin } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
 import { PlvWithdrawModule } from '@polyv/live-watch-sdk';
@@ -9,6 +8,8 @@ import { PlvWithdrawModule } from '@polyv/live-watch-sdk';
 export interface WithdrawStoreState {
   /** 是否展示“提现”功能 */
   withdrawVisible: ComputedRef<boolean>;
+  /** 最小提现额度 */
+  withdrawMinAmount: Ref<number>;
   /** 最大提现额度 */
   withdrawMaxAmount: Ref<number>;
 }
@@ -40,19 +41,24 @@ export const useWithdrawStore = defineStore<'withdraw', WithdrawStore>('withdraw
   /** 最大提现额度 */
   const withdrawMaxAmount = ref(__withdrawConfig.withdrawMaxAmount);
 
+  /** 最小提现额度 */
+  const withdrawMinAmount = ref(__withdrawConfig.withdrawMinAmount);
+
   /** 同步提现 Store */
   function syncWithdrawStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     const withdrawConfig = watchCore.withdraw.getWithdrawConfig();
 
     withdrawEnabled.value = withdrawConfig.withdrawEnabled;
     withdrawMaxAmount.value = withdrawConfig.withdrawMaxAmount;
+    withdrawMinAmount.value = withdrawConfig.withdrawMinAmount;
   }
 
   return {
     withdrawVisible,
     withdrawMaxAmount,
+    withdrawMinAmount,
     syncWithdrawStore,
   };
 });

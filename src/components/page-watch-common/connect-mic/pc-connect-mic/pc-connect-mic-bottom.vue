@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import PcConnectMicButton from './pc-connect-mic-button.vue';
@@ -41,11 +41,14 @@ import PcConnectMicSceenshareButton from './pc-connect-mic-sceenshare-button.vue
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PcIconDeviceSetting } from '@/components/component-icons/pc/map';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
 
 const { supportConnectMic, currentIsSpeaker } = storeDefinitionToRefs(useConnectMicStore);
 
 function onClickDeviceSetting() {
-  eventBus.$emit(appEvents.connectMic.TriggerOpenDeviceSetting);
+  getEmitter().emit(appEvents.connectMic.TriggerOpenDeviceSetting);
 }
 </script>
 

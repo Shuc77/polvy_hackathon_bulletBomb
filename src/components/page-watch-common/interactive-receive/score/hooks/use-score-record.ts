@@ -1,13 +1,15 @@
-import { ref, onBeforeMount, onBeforeUnmount, computed } from 'vue';
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { ref, computed } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动-红包-积分记录弹层
  * */
 export const useScoreRecord = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   /** 红包 SDK 实例 */
   const redpackSdk = watchCore.interactReceive.getRedpack();
@@ -32,13 +34,7 @@ export const useScoreRecord = () => {
   /** 积分领取记录标题 */
   const scoreRecordTitle = computed(() => translate('interact.scoreRecord.title'));
 
-  onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenScoreRecord, setScoreRecordVisible);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenScoreRecord, setScoreRecordVisible);
-  });
+  useEventBusListener(appEvents.interaction.OpenScoreRecord, setScoreRecordVisible);
 
   return {
     redpackSdk,

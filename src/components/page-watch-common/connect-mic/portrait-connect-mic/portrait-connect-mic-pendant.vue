@@ -180,6 +180,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMic, useConnectMicApply, useConnectMicControl } from '../hooks/use-connect-mic';
 import { useAsideDrag } from '@/hooks/behaviors/use-aside-drag';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getAppBodyElement } = useGlobalInject();
 
 /** 外层节点 */
 const wrapRef = ref<HTMLDivElement>();
@@ -187,7 +190,7 @@ const wrapRef = ref<HTMLDivElement>();
 const contentRef = ref<HTMLDivElement>();
 let closeTimer: number;
 
-useAppendTo(wrapRef);
+useAppendTo(wrapRef, getAppBodyElement());
 
 const {
   connectMicStatus,
@@ -235,8 +238,8 @@ const pendantOpened = ref(true);
 
 /** 展开挂件 */
 function openPendant() {
+  if (closeTimer) clearTimeout(closeTimer);
   pendantOpened.value = true;
-  autoClosePendant();
 }
 
 function autoClosePendant() {
@@ -280,6 +283,13 @@ watch(
   () => computePendantWidth(),
 );
 
+watch(
+  () => unref(connectMicStatus),
+  status => {
+    if (status === ConnectMicStatus.NotConnect) autoClosePendant();
+  },
+);
+
 onMounted(() => {
   computePendantWidth();
 });
@@ -294,7 +304,7 @@ const { top } = useAsideDrag({
 
 <style lang="scss">
 .c-portrait-connect-mic-pendant {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   z-index: $--zIndex-pendant;

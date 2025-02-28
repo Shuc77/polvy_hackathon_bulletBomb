@@ -1,16 +1,23 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { LangType } from '@/assets/lang/lang-enum';
-import { getWatchCore } from '@/core/watch-sdk';
-import { paramGetter } from '@/hooks/core/use-query-params';
-import { local } from '@just4/storage';
-import { LanguageType, PlvChannelModule } from '@polyv/live-watch-sdk';
-import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { defineStore } from 'pinia';
+
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+import { LangType } from '@/assets/lang/lang-enum';
+import { updateI18nLocale } from '@/assets/lang';
+import {
+  convert2CurrentLang,
+  convert2WatchSdkLang,
+  getBrowserLang,
+  getCacheLang,
+  getDefaultLang,
+  setCacheLang,
+} from '@/assets/lang/util';
+
+import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
 import { usePlayerStore } from './use-player-store';
-
-/** local 记录中的 key */
-const LOCAL_STORAGE_KEY = 'language';
 
 /** 多语言选择节点类型 */
 export interface LangSwitchItem {
@@ -52,81 +59,11 @@ export interface LangStoreAction {
 /** 多语言 store */
 export interface LangStore extends LangStoreState, LangStoreAction {}
 
-/** 获取当前页面加载后的默认多语言 */
-export function getDefaultLang(): LangType {
-  return getWatchSdkRecommendLang() || getCacheLang() || getBrowserLang();
-}
-
-/** 获取 sdk 推荐的多语言 */
-function getWatchSdkRecommendLang(): LangType | undefined {
-  const setting = PlvChannelModule.getRecommendLangSetting();
-  if (!setting.preferRecommendSetting) {
-    return undefined;
-  }
-
-  if (setting.isFollowBrowserLang) {
-    return getBrowserLang();
-  }
-
-  return convert2CurrentLang(setting.defaultLangType);
-}
-
-/** 获取浏览器缓存中的多语言 */
-function getCacheLang(): LangType | undefined {
-  /** 判断目标是否为一个多语言 */
-  const isAllowLang = (target: unknown): target is LangType => {
-    return Object.values(LangType).includes(target as LangType);
-  };
-
-  // 地址上的 lang 参数
-  const queryLang = paramGetter.lang();
-  if (isAllowLang(queryLang)) {
-    return queryLang;
-  }
-
-  // localStorage 中记录的
-  const localLang = local.get(LOCAL_STORAGE_KEY);
-  if (isAllowLang(localLang)) {
-    return localLang;
-  }
-
-  return undefined;
-}
-
-/** 获取浏览器当前的语言配置 */
-function getBrowserLang(): LangType {
-  // 系统浏览器的多语言;
-  const browserLang = (navigator.language || navigator.browserLanguage).toLowerCase();
-  if (browserLang) {
-    // 中文以外的语言均判定为英文（逐一枚举工作量较大）
-    if (['zh', 'zh-cn'].includes(browserLang)) {
-      return LangType.Chinese;
-    } else {
-      return LangType.English;
-    }
-  }
-  return LangType.Chinese;
-}
-
-/**
- * 转换当前语言为成 SDK 需要的语言
- * @warn 目前 SDK 仅支持中英文
- */
-export function convert2WatchSdkLang(lang?: LangType): LanguageType {
-  return lang === LangType.Chinese ? 'zh_CN' : 'en';
-}
-
-/**
- * 转换 SDK 的语言为当前语言
- * @warn 目前 SDK 仅支持中英文
- */
-export function convert2CurrentLang(lang: LanguageType): LangType {
-  if (lang === 'zh_CN') return LangType.Chinese;
-  if (lang === 'en') return LangType.English;
-  return LangType.Chinese;
-}
-
 export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
+  const { getEmitter } = useGlobalInject();
+
+  const watchAppStore = useWatchAppStore();
+
   const channelStore = useChannelStore();
   const playerStore = usePlayerStore();
 
@@ -150,7 +87,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     }
 
     return [
-      { text: '简体中文-ZH', lang: LangType.Chinese },
+      { text: '简体中文-ZH', lang: LangType.ZH_CN },
       { text: englishText, lang: LangType.English },
       { text: 'Русский', lang: LangType.Russian },
       { text: 'Português', lang: LangType.Portuguese },
@@ -164,10 +101,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
   const langSwitchList = computed<LangSwitchItem[]>(() => {
     return unref(allLangSwitchList).filter(item => {
       // 没有开启七国语言，则只显示中文、英文语言
-      if (
-        !unref(isShowSevenLanguage) &&
-        ![LangType.Chinese, LangType.English].includes(item.lang)
-      ) {
+      if (!unref(isShowSevenLanguage) && ![LangType.ZH_CN, LangType.English].includes(item.lang)) {
         return false;
       }
 
@@ -186,11 +120,11 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
   });
 
   /** 当前是否为中文语言 */
-  const isChineseLang = computed<boolean>(() => unref(currentLang) === LangType.Chinese);
+  const isChineseLang = computed<boolean>(() => unref(currentLang) === LangType.ZH_CN);
 
   /** 同步多语言 store */
   function syncLangStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const langSetting = watchCore.channel.getLangSetting();
 
     englishSettingEnabled.value = langSetting.englishSettingEnabled;
@@ -198,7 +132,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     isShowSevenLanguage.value = langSetting.isShowSevenLanguage;
     japLangEnabled.value = langSetting.japLangEnabled;
 
-    const cacheLang = getWatchSdkRecommendLang() || getCacheLang();
+    const cacheLang = getCacheLang();
     // 缓存中不存在多语言时，需要响应后台配置
     if (!cacheLang) {
       currentLang.value = langSetting.isFollowBrowserLang
@@ -215,8 +149,14 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
    * @param lang 多语言
    */
   function switchLang(lang: LangType) {
+    const watchCore = watchAppStore.getWatchCore();
+    watchCore.updateAppConfig({
+      language: convert2WatchSdkLang(lang),
+    });
+
+    setCacheLang(lang);
+    updateI18nLocale(lang);
     currentLang.value = lang;
-    local.set(LOCAL_STORAGE_KEY, lang);
 
     /**
      * URL 带有 lang 参数，且参数值与保存的语言不一致时，
@@ -232,11 +172,6 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
       }
     }
 
-    const watchCore = getWatchCore();
-    watchCore.updateAppConfig({
-      language: convert2WatchSdkLang(lang),
-    });
-
     // 兼容旧逻辑，更改语言时支持同时更改音轨
     const steamTrackItem = channelStore.streamTrackConfig?.trackList.find(
       i => i.lang === convert2WatchSdkLang(lang),
@@ -247,7 +182,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
       });
     }
 
-    eventBus.$emit(appEvents.player.ResetUpPlayer);
+    getEmitter().emit(appEvents.player.ResetUpPlayer);
   }
 
   /** 根据当前语言转换游客名称 */
@@ -255,7 +190,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     let transNick = nick;
     const nickPrefix = '观众';
     const nickPattern = new RegExp(nickPrefix + '/[0-9]+$');
-    if (unref(currentLang) !== LangType.Chinese && nickPattern.test(nick)) {
+    if (unref(currentLang) !== LangType.ZH_CN && nickPattern.test(nick)) {
       transNick = `Guest/${nick.split('/')[1]}`;
     }
     return transNick;

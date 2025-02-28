@@ -2,14 +2,14 @@ import { DEFAULT_PHONE_NUMBER_AREA_CODE } from '@/assets/constants/defaults';
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { EnrollAuthType } from '@polyv/live-watch-sdk';
 import { computed, reactive } from 'vue';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useEnrollSms } from './use-enroll-sms';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const enrollLoginEmits = () => ({
   /** 点击取消 */
@@ -22,6 +22,10 @@ export const enrollLoginEmits = () => ({
  * 报名观看登录 hook
  */
 export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits> }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { emit } = options;
 
   const watchAppStore = useWatchAppStore();

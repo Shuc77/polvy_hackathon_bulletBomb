@@ -4,7 +4,8 @@ const {
   devServerHost,
   devServerProxy,
   publicPath,
-  transpileDependencies,
+  devMode,
+  // transpileDependencies,
   outputDir,
 } = require('./build/build-config');
 const path = require('path');
@@ -15,7 +16,10 @@ module.exports = {
 
   pages: {
     index: {
-      entry: path.resolve(__dirname, './src/main.ts'),
+      entry:
+        process.env.VUE_APP_MAIN_MODE === 'Feed'
+          ? path.resolve(__dirname, './src/feed-main.ts')
+          : path.resolve(__dirname, './src/main.ts'),
       template: path.resolve(__dirname, './public/index.html'),
       filename: 'index.html',
     },
@@ -41,22 +45,30 @@ module.exports = {
     });
   },
 
-  transpileDependencies,
+  // 只有在本地调试 IE 和构建模式下，才设置为 true
+  transpileDependencies: !devMode,
 
   devServer: {
     host: devServerHost,
     port: devServerPort,
-    disableHostCheck: true,
     hot: true,
-    // https: true,
-    overlay: {
-      warnings: false,
-      errors: true,
+    allowedHosts: 'all',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
     },
-    stats: 'minimal',
-
+    // https: true,
+    client: {
+      overlay: {
+        runtimeErrors: false,
+        warnings: false,
+        errors: true,
+      },
+    },
     proxy: devServerProxy,
-    contentBase: path.resolve(__dirname, './map-file/'),
+    static: {
+      publicPath: '/',
+      directory: path.resolve(__dirname, './external/'),
+    },
   },
 
   productionSourceMap: false,

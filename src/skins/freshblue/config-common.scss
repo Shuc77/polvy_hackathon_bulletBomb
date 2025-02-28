@@ -249,4 +249,9 @@ $--skin-page-common-configs: (
 
   // AI 助手答疑
   'pws-ai-assistant-msg-dot:bg-color':  $--color-white,
+
+  // AI 看 回放大纲
+  'pws-ai-outline-text:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  'pws-ai-outline-label-text:text-color': #fae035,
+  'pws-ai-outline-label-bg:bg-color': #3983E0,
 );

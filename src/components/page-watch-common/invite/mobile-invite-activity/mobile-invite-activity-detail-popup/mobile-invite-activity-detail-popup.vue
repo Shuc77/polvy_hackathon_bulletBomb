@@ -103,7 +103,6 @@
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
 import { InvitePrizeItem } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -115,6 +114,9 @@ import MobileInviteActivityTitleWidget from '../mobile-invite-activity-title-wid
 import { MobileIconArrowDown, MobileIconArrowUp } from '@/components/component-icons/mobile/map';
 import { useFoldToggleBehavior, FoldToggleState } from '@/hooks/behaviors/use-fold-toggle';
 import { defaultPrizeImage } from '../_hooks/use-invite-prize-receive';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const { inviteActivityInfo } = storeDefinitionToRefs(useInviteStore);
 

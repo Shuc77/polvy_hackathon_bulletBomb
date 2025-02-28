@@ -1,9 +1,8 @@
 import { onBeforeMount } from 'vue';
 
-import { getWatchCore, initWatchSdk } from '@/core/watch-sdk';
+import { initWatchSdk } from '@/core/watch-sdk';
 
 import { useAuthSpecial } from '@/components/page-splash-common/auth/hooks/use-auth-special';
-import { paramGetter } from '@/hooks/core/use-query-params';
 import { usePageSkin } from '@/skins/use-page-skin';
 import { useGlobalEventsEffect } from './_hooks/use-global-events-effect';
 import { useBrowserIcon, useBrowserTitle, useGlobalStyle } from './_hooks/use-global-style';
@@ -16,13 +15,19 @@ import { translate } from '@/assets/lang';
 import { isMobile, isMockPc } from '@/assets/utils/browser';
 import { loadForceAutoplay } from '@/assets/utils/video/force-autoplay';
 
-import { PageErrorType } from '@/app/layout/page-error/page-error-type';
+import { PageErrorType } from '@/app/layout/direct-business-page/type';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
-import { getDefaultLang, convert2WatchSdkLang } from '@/store/use-lang-store';
+import { getDefaultLang, convert2WatchSdkLang } from '@/assets/lang/util';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useWeixinConfig } from '@/hooks/platform/use-weixin/use-weixin-config';
 import { useSaleInviteIntercept } from './_hooks/use-sale-invite-intercept';
 import { useUserIdentityIntercept } from './_hooks/use-user-identity-intercept';
+import { useGlobalInject } from './use-global-inject';
+import { useExternalContainerEffect } from './_hooks/use-external-container-effect';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { DEFAULT_APP_UNIQUE_ID } from '@/assets/constants/defaults';
+import { isBuildForFeedMainMode, isInjectByExternalApp } from '@/assets/utils/utils';
+import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/auth/hooks/use-auth-invite-watch-intercept';
 
 /**
  * 拦截观看页应用初始化
@@ -30,15 +35,8 @@ import { useUserIdentityIntercept } from './_hooks/use-user-identity-intercept';
  * @returns 是否需要拦截
  * */
 const useInterceptWatchAppInit = async (): Promise<boolean> => {
-  const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
-
-  // 一客一码验证拦截
-  const { checkSaleInvite } = useSaleInviteIntercept();
-  const checkSaleInviteResult = await checkSaleInvite();
-  if (checkSaleInviteResult) {
-    return true;
-  }
+  const watchCore = watchAppStore.getWatchCore();
 
   const { checkRedirectMainChannelAuth, checkRedirectSubChannel } = useMultiMeetingRedirect();
   // 当前处于分会场，是否需要跳转到主会场进行观看条件授权
@@ -75,23 +73,36 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
   return false;
 };
 
+/**
+ * 观看页应用主流程
+ * @hook
+ */
 export function createWatchApp() {
+  const { uniqueId } = useGlobalInject();
   const { initPageSkin } = usePageSkin();
 
   const { syncStoreBeforeWatchAppInited } = useSyncStoreForWatchApp();
+  const { paramGetter } = useQueryParams();
 
   const channelStore = useChannelStore();
   const watchAppStore = useWatchAppStore();
 
   const { toConfigWeixinFeature } = useWeixinConfig();
 
+  const { checkInviteWatch } = useAuthInviteWatchIntercept();
+
   /** 获取地址上的频道号 */
   function getChannelIdByUrl(): string | undefined {
+    if (isBuildForFeedMainMode() && paramGetter().channelId()) {
+      return paramGetter().channelId();
+    }
+
     let channelId: string | undefined;
+
     if (/\d+$/.test(window.location.pathname)) {
       channelId = RegExp.lastMatch;
-    } else if (paramGetter.channelId()) {
-      channelId = paramGetter.channelId();
+    } else if (paramGetter().channelId()) {
+      channelId = paramGetter().channelId();
     }
     return channelId;
   }
@@ -113,52 +124,58 @@ export function createWatchApp() {
     // 保存频道号到 store
     channelStore.$patch({ channelId });
 
+    const existExternalUniqueId = isInjectByExternalApp() && uniqueId !== DEFAULT_APP_UNIQUE_ID;
+    // 不是外部注入构建模式 ||  feed 流主页面
+    const useShareAuthToken = !existExternalUniqueId || isBuildForFeedMainMode();
+
     // 初始化观看页 SDK
     const watchCore = initWatchSdk({
+      uniqueId: existExternalUniqueId ? uniqueId : undefined,
+      useShareAuthToken,
       channelId,
       env: WATCH_SDK_ENV,
       language: convert2WatchSdkLang(getDefaultLang()),
-      promoteId: paramGetter.promoteId(),
-      testModeToken: paramGetter.testModeToken(),
-      zone: paramGetter.zone(),
-      vid: paramGetter.vid(),
-      playbackOrigin: paramGetter.playbackType(),
-      ipPlay: paramGetter.ipPlay() === '1',
+      promoteId: paramGetter().promoteId(),
+      testModeToken: paramGetter().testModeToken(),
+      zone: paramGetter().zone(),
+      vid: paramGetter().vid(),
+      playbackOrigin: paramGetter().playbackType(),
+      ipPlay: paramGetter().ipPlay() === '1',
       userInfo: {
-        userId: paramGetter.viewerid(),
-        nick: paramGetter.nickname() || paramGetter.name(),
-        pic: paramGetter.avatar(),
-        actor: paramGetter.actor(),
+        userId: paramGetter().viewerid(),
+        nick: paramGetter().nickname() || paramGetter().name(),
+        pic: paramGetter().avatar(),
+        actor: paramGetter().actor(),
       },
       inviteInfo: {
-        invitePosterId: paramGetter.invitePosterId(),
-        wxInviteId: paramGetter.wxInviteId(),
-        invitee: paramGetter.invitee(),
+        invitePosterId: paramGetter().invitePosterId(),
+        wxInviteId: paramGetter().wxInviteId(),
+        invitee: paramGetter().invitee(),
       },
       domainInfo: {
         // @PLV-WARN
         // 此处可以传入相关的域名配置，非必要无需修改，使用 SDK 内部默认值即可，需要注意保利威的业务页面会依赖 watchPageDomain 参数去拼接域名跳转，具体业务可以咨询保利威团队
       },
       autoAuthParams: {
-        code: paramGetter.password(),
-        ignoreWxAuth: paramGetter.ignoreWxAuth(),
-        wxSnapshotPageMode: paramGetter.snapshotPage(),
+        code: paramGetter().password(),
+        ignoreWxAuth: paramGetter().ignoreWxAuth(),
+        wxSnapshotPageMode: paramGetter().snapshotPage(),
       },
       saleInviteParams: {
-        saleCode: paramGetter.saleCode(),
-        inviteCustomerId: paramGetter.inviteCustomerId(),
+        saleCode: paramGetter().saleCode(),
+        inviteCustomerId: paramGetter().inviteCustomerId(),
       },
       statisticsParams: {
-        param4: paramGetter.param4(),
-        param5: paramGetter.param5(),
+        param4: paramGetter().param4(),
+        param5: paramGetter().param5(),
       },
       sdkIntegration: {
-        interactionSdkScriptUrl: paramGetter.interactionSdkScriptUrl(),
-        livePlayerScriptUrl: paramGetter.livePlayerScriptUrl(),
-        liveLowLatencyPlayerScriptUrl: paramGetter.liveLowLatencyPlayerScriptUrl(),
-        vodPlayerScriptUrl: paramGetter.vodPlayerScriptUrl(),
-        rtcWebScriptUrl: paramGetter.rtcWebScriptUrl(),
-        chatSdkScriptUrl: paramGetter.chatSdkScriptUrl(),
+        interactionSdkScriptUrl: paramGetter().interactionSdkScriptUrl(),
+        livePlayerScriptUrl: paramGetter().livePlayerScriptUrl(),
+        liveLowLatencyPlayerScriptUrl: paramGetter().liveLowLatencyPlayerScriptUrl(),
+        vodPlayerScriptUrl: paramGetter().vodPlayerScriptUrl(),
+        rtcWebScriptUrl: paramGetter().rtcWebScriptUrl(),
+        chatSdkScriptUrl: paramGetter().chatSdkScriptUrl(),
       },
     });
 
@@ -184,16 +201,31 @@ export function createWatchApp() {
       return;
     }
 
-    // 处理微信流程
-    const weixinResult = await useWeixinSetup();
-    if (weixinResult) {
-      return;
-    }
-
-    // 用户系统手机号拦截
+    // 用户系统拦截
     const { checkIdentityInfoLogin } = useUserIdentityIntercept();
     const checkIdentityInfoLoginResult = checkIdentityInfoLogin();
     if (checkIdentityInfoLoginResult) {
+      return;
+    }
+
+    // 一客一码验证拦截
+    const { checkSaleInvite } = useSaleInviteIntercept();
+    const checkSaleInviteResult = await checkSaleInvite();
+    if (checkSaleInviteResult) {
+      return;
+    }
+
+    // 邀请观看拦截
+    const checkInviteWatchResult = await checkInviteWatch(watchCore, {
+      saleId: paramGetter().inviteWatchSaleId(),
+    });
+    if (checkInviteWatchResult) {
+      return;
+    }
+
+    // 处理微信流程
+    const weixinResult = await useWeixinSetup();
+    if (weixinResult) {
       return;
     }
 
@@ -205,8 +237,18 @@ export function createWatchApp() {
     // 初始化多皮肤
     initPageSkin();
 
-    // 处理强制自动播放，pc不支持该逻辑
-    if (paramGetter.watchPageInitStatus() === 'active' && isMobile) {
+    /**
+     * 处理强制自动播放
+     * 1、页面激活
+     * 2、页面不被 web-feed 嵌套
+     * 3、当前为移动端
+     */
+    //  web-feed 嵌套pc不支持该逻辑
+    if (
+      paramGetter().watchPageInitStatus() === 'active' &&
+      paramGetter().combinedBy() !== 'web-feed' &&
+      isMobile
+    ) {
       loadForceAutoplay();
     }
   }
@@ -217,19 +259,23 @@ export function createWatchApp() {
 }
 
 /**
- * @hook 观看页应用 hook
+ * 观看页应用初始化
+ * @hook
  */
 export function useWatchApp() {
+  const { setupGlobalStyle, removeSkeleton } = useGlobalStyle();
+  const { setupWatchApp } = createWatchApp();
+
   // 设置浏览器标题和logo
   useBrowserTitle();
   useBrowserIcon();
 
-  const { setupWatchApp } = createWatchApp();
+  // 全局副作用
+  useGlobalEventsEffect();
 
-  const { setupGlobalStyle, removeSkeleton } = useGlobalStyle();
-
-  function onLayoutMounted() {
-    removeSkeleton();
+  // 绑定外部容器触发的事件
+  if (isInjectByExternalApp()) {
+    useExternalContainerEffect();
   }
 
   onBeforeMount(() => {
@@ -237,9 +283,12 @@ export function useWatchApp() {
     setupWatchApp();
   });
 
-  useGlobalEventsEffect();
+  function onLayoutMounted() {
+    removeSkeleton();
+  }
 
   return {
+    setupWatchApp,
     onLayoutMounted,
   };
 }

@@ -1,6 +1,11 @@
 <!-- @file PC 端页面固定挂件 -->
 <template>
-  <div class="c-page-fixed-widgets">
+  <div
+    class="c-page-fixed-widgets"
+    :class="{
+      'c-page-fixed-widgets--absolute': isInjectByExternalApp(),
+    }"
+  >
     <!-- 回到顶部 -->
     <fixed-back-top />
 
@@ -15,6 +20,7 @@ import FixedWebShare from './fixed-web-share.vue';
 import FixedBackTop from './fixed-back-top.vue';
 import { useShareStore } from '@/store/use-share-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { isInjectByExternalApp } from '@/assets/utils/utils';
 
 const props = defineProps({
   /** 是否隐藏分享 */
@@ -32,6 +38,10 @@ const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
   right: 40px;
   bottom: 40px;
   z-index: 200;
+
+  &--absolute {
+    position: absolute;
+  }
 }
 
 .c-fixed-widget-button {

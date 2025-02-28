@@ -1,5 +1,5 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useCommonStore } from '@/store/use-common-store';
 import { InvitePosterData, YN } from '@polyv/live-watch-sdk';
@@ -14,6 +14,8 @@ export const invitePosterProps = () => ({
 });
 
 export const useInvitePoster = (options: { props: VueProps<typeof invitePosterProps> }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const channelInfoStore = useChannelInfoStore();
   const commonStore = useCommonStore();
   const { props } = options;

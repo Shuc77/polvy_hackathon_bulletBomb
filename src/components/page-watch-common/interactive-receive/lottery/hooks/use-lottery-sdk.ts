@@ -1,8 +1,9 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { IarLotteryStatus } from '@polyv/live-watch-sdk';
 
 export const useLotterySdk = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
   const watchCore = getWatchCore();
 
   /** 抽奖 SDK 实例 */
@@ -15,15 +16,15 @@ export const useLotterySdk = () => {
   function openLotteryByStatus(status: IarLotteryStatus) {
     switch (status) {
       case IarLotteryStatus.running:
-        eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: true });
-        eventBus.$emit(appEvents.interaction.OpenLotteryResult, { visible: false });
+        getEmitter().emit(appEvents.interaction.OpenLotteryAnimation, { visible: true });
+        getEmitter().emit(appEvents.interaction.OpenLotteryResult, { visible: false });
         break;
       case IarLotteryStatus.over:
-        eventBus.$emit(appEvents.interaction.OpenLotteryResult, { visible: true });
-        eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
+        getEmitter().emit(appEvents.interaction.OpenLotteryResult, { visible: true });
+        getEmitter().emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
         break;
       case IarLotteryStatus.end:
-        eventBus.$emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
+        getEmitter().emit(appEvents.interaction.OpenLotteryAnimation, { visible: false });
         break;
     }
   }

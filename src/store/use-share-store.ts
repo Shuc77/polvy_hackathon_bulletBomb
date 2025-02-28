@@ -8,15 +8,14 @@ import {
   DEFAULT_SHARE_WEIBO_ICON,
 } from '@/assets/constants/defaults';
 import { translate } from '@/assets/lang';
-import { copyText, toastCopySuccess } from '@/assets/utils/copy';
-import { getWatchCore } from '@/core/watch-sdk';
 import { appendToURL } from '@just4/querystring';
 import { changeProtocol } from '@utils-ts/net';
 import { defineStore } from 'pinia';
 import { useChannelInfoStore } from './use-channel-info-store';
 import { useThemeStore } from './use-theme-store';
 import { usePlaybackStore } from './use-playback-store';
-import { appendQueryParam } from '@/hooks/core/use-query-params';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useWatchAppStore } from './use-watch-app-store';
 
 /** Web 分享平台枚举 */
 enum WebShareType {
@@ -85,6 +84,8 @@ export interface ShareStoreState {
   webShareList: ComputedRef<WebShareData[]>;
   /** 一客一码--销售邀请的客户id */
   saleInviteCustomerId: Ref<string | null>;
+  /** 邀请观看--分销员/邀请人id */
+  inviteWatchSaleId: Ref<string | null>;
 }
 
 export interface ShareStoreAction {
@@ -95,17 +96,18 @@ export interface ShareStoreAction {
     webShareType: T,
     provideParams: WebShareProvideParams[T],
   ) => string;
-  /** 复制分享的观看页地址 */
-  copyShareWatchUrl: () => Promise<void>;
 }
 
 /** 分享 store */
 export interface ShareStore extends ShareStoreState, ShareStoreAction {}
 
 export const useShareStore = defineStore<'share', ShareStore>('share', () => {
+  const watchAppStore = useWatchAppStore();
   const channelInfoStore = useChannelInfoStore();
   const themeStore = useThemeStore();
   const playbackStore = usePlaybackStore();
+
+  const { appendQueryParam } = useQueryParams();
 
   /** 分享按钮开关 */
   const shareBtnEnabled = ref(false);
@@ -118,6 +120,9 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
   /** 一客一码--销售邀请的客户id */
   const saleInviteCustomerId = ref<string | null>(null);
 
+  /** 邀请观看--分销员/邀请人id */
+  const inviteWatchSaleId = ref<string | null>(null);
+
   /** PC web 分享的观看地址 */
   const shareWatchUrl = computed(() => {
     const playbackShareVid = playbackStore.getPlaybackShareId();
@@ -126,6 +131,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
       shareBaseWatchUrl.value,
       {
         playBackVid: playbackShareVid,
+        inviteWatchSaleId: inviteWatchSaleId.value,
       },
       {
         ignoreEmpty: true,
@@ -135,7 +141,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
   /** PC web 分享的观看地址二维码地址 */
   const shareQrCodeUrl = computed<string>(() => {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     return watchCore.utils.generateQrcodeUrl(unref(shareWatchUrl));
   });
 
@@ -220,23 +226,21 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     return appendToURL(baseUrl, provideParams);
   }
 
-  /** 复制分享的观看地址 */
-  async function copyShareWatchUrl(): Promise<void> {
-    await copyText(unref(shareWatchUrl));
-    toastCopySuccess();
-  }
-
   function syncShareStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     shareBtnEnabled.value = watchCore.share.getShareEnabled();
     playbackShareTitleEnabled.value = watchCore.share.getPlaybackShareTitleEnabled();
     shareBaseWatchUrl.value = watchCore.share.getShareWatchUrl();
 
     saleInviteCustomerId.value = watchCore.saleInvite.getSaleInviteCustomerId();
-
     if (saleInviteCustomerId.value) {
       appendQueryParam({ inviteCustomerId: saleInviteCustomerId.value });
+    }
+
+    inviteWatchSaleId.value = watchCore.user.getInviteWatchSaleId();
+    if (inviteWatchSaleId.value) {
+      appendQueryParam({ inviteWatchSaleId: inviteWatchSaleId.value });
     }
   }
 
@@ -244,6 +248,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     shareBtnEnabled,
     playbackShareTitleEnabled,
     saleInviteCustomerId,
+    inviteWatchSaleId,
     shareWatchUrl,
     shareQrCodeUrl,
     qqShareUrl,
@@ -255,6 +260,5 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
     syncShareStore,
     composeShareUrl,
-    copyShareWatchUrl,
   };
 });

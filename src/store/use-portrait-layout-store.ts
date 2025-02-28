@@ -1,4 +1,5 @@
 import { translate } from '@/assets/lang';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -33,6 +34,8 @@ export interface PortraitLayoutStoreState {
   portraitDocContentHeight: ComputedRef<number>;
   /** 竖屏文档容器渲染高度 */
   portraitDocWrapHeight: ComputedRef<number>;
+  /** 竖屏观看布局高度 */
+  portraitWatchLayoutHeight: Ref<number>;
   /** 频道信息位置 */
   channelInfoSeat: ComputedRef<0 | 1>;
   /** 竖屏消息区激活的 Tab 栏 */
@@ -142,8 +145,14 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       return portraitDocContentHeight.value;
     });
 
+    const portraitWatchLayoutHeight = ref(0);
+
     /** 频道信息位置 */
     const channelInfoSeat = computed<0 | 1>(() => {
+      if (isBuildForFeedMainMode()) {
+        return 1;
+      }
+
       if (
         channelStore.isPptChannel &&
         (channelStore.liveStatus === LiveStatus.Live || playbackStore.isPlaybacking)
@@ -167,6 +176,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       portraitMessageInputPlaceholder,
       portraitMessageInputVisible,
       portraitOnlineListEntranceVisible,
+      portraitWatchLayoutHeight,
     };
   },
 );

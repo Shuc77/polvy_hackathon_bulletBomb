@@ -7,8 +7,7 @@ import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-autho
 import { useWeixinPay } from '@/hooks/platform/use-weixin/use-weixin-pay';
 import { translate } from '@/assets/lang';
 import { isMobile, isWeixin } from '@/assets/utils/browser';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import {
@@ -19,6 +18,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, unref, watch } from 'vue';
 import { useDonateRewardMsgInsertHook } from './use-donate-reward-msg-insert';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 支付打赏选项 */
 export interface DonatePayOptions {
@@ -34,6 +34,10 @@ export interface DonatePayOptions {
  * 打赏支付状态检查 hook
  */
 const useDonatePayCheck = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { insertRewardMsgForPayDonate } = useDonateRewardMsgInsertHook();
   const { waitPayDonateData } = storeDefinitionToRefs(useDonateStore);
 
@@ -104,6 +108,10 @@ const useDonatePayCheck = () => {
 
 /** PC 端支付逻辑 */
 const useDonatePayPc = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { insertRewardMsgForPayDonate } = useDonateRewardMsgInsertHook();
   const { waitPayDonateData } = storeDefinitionToRefs(useDonateStore);
 
@@ -168,6 +176,9 @@ const useDonatePayPc = () => {
 
 /** 移动端支付逻辑 */
 const useDonatePayMobile = () => {
+  const { getWatchCore } = useGlobalInject();
+  const { toast } = useToastManager();
+
   const { insertRewardMsgForPayDonate } = useDonateRewardMsgInsertHook();
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
   const { chooseWXPay } = useWeixinPay();

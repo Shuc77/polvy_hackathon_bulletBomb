@@ -72,4 +72,6 @@ export interface PlvInputImagePasteInstance {
   getContentList: () => PlvInputContent[];
   /** 清除输入框内容 */
   clear: () => void;
+  /** 组件实例的 HTML 元素 */
+  $el: HTMLElement;
 }

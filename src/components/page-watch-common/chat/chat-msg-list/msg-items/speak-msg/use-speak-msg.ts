@@ -1,9 +1,10 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { copyText } from '@/assets/utils/copy';
 import { isString } from '@/assets/utils/string';
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useChatStore } from '@/store/use-chat-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatMsgSpeakType } from '@polyv/live-watch-sdk';
@@ -13,20 +14,30 @@ import { ChatMsgItemCategory } from '../use-chat-msg-item';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
 
-/** 转换引用的 speak 内容 */
-export function parseQuoteSpeakContent(content: string) {
-  const watchCore = getWatchCore();
+export const useQuoteSpeakContentParse = () => {
+  const { getWatchCore } = useGlobalInject();
 
-  return watchCore.chat.parseSpeakContent(content, {
-    parseEmotion: true,
-  });
-}
+  /** 转换引用的 speak 内容 */
+  function parseQuoteSpeakContent(content: string) {
+    const watchCore = getWatchCore();
+
+    return watchCore.chat.parseSpeakContent(content, {
+      parseEmotion: true,
+    });
+  }
+
+  return {
+    parseQuoteSpeakContent,
+  };
+};
 
 /**
  * 发言消息内容 hook
  * @param chatMsgRef speak 聊天消息响应式
  */
 export const useSpeakMsgContent = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const watchCore = getWatchCore();
 
   const { isSpecialUser } = useChatMsgUserBasic(chatMsgRef);
@@ -67,6 +78,8 @@ export const useSpeakMsgContent = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) 
  * @param chatMsgRef
  */
 export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>) => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const chatStore = useChatStore();
   const { isSelfMsg } = useChatMsgUserBasic(chatMsgRef);
@@ -153,7 +166,13 @@ export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>
 
 export const useSpeakMsg = () => {
   const watchAppStore = useWatchAppStore();
+
+  const { getEmitter, getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
+
   const { chatMsg, msgQuote } = useChatMsgDataInject<ChatMsgSpeakType>();
+
+  const { toast } = useToastManager();
 
   const { speakContent, speakHtmlContent } = useSpeakMsgContent(chatMsg);
 
@@ -165,7 +184,6 @@ export const useSpeakMsg = () => {
       return unref(chatMsg).content;
     }
     const id = unref(chatMsg).id;
-    const watchCore = getWatchCore();
 
     return watchCore.chat.getFullMessage(id, unref(chatMsg));
   }
@@ -178,8 +196,7 @@ export const useSpeakMsg = () => {
     if (unref(chatMsg).isOverLength) {
       copyContent = await getFullSpeakContent();
     }
-
-    await copyText(copyContent);
+    await copyText(watchCore.emotion.translateEmotions(copyContent));
     toast.success(translate('copy.success'));
   }
 
@@ -190,7 +207,7 @@ export const useSpeakMsg = () => {
       fullContent,
       chatMsg: chatMsg.value,
     };
-    eventBus.$emit(appEvents.chat.ShowFullMessage, data);
+    getEmitter().emit(appEvents.chat.ShowFullMessage, data);
   }
 
   return {

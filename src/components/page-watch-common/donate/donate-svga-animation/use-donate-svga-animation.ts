@@ -2,7 +2,6 @@
  * @file 打赏 svga 特效 hook
  */
 import { useSvgaPlayer } from '@/hooks/animation/use-svga-player';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -14,8 +13,11 @@ import {
   DonateType,
 } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useDonateSvgaAnimation = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const donateStore = useDonateStore();
   const watchCore = getWatchCore();
   const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);

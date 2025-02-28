@@ -30,18 +30,6 @@
           <pc-donate-panel @donate-finish="hideDonatePanel" />
         </div>
 
-        <!-- 抽奖面板 -->
-        <div
-          v-show="lotteryRecordVisible"
-          ref="lotteryRecordPanelRef"
-          class="c-pc-chat-input-controller__lottery-record-panel"
-        >
-          <pc-lottery-record
-            v-if="iarSdkLoaded"
-            :visible.sync="lotteryRecordVisible"
-          />
-        </div>
-
         <!-- 更多面板 -->
         <div
           v-show="moreVisible"
@@ -54,14 +42,6 @@
 
       <!-- 图标区插槽 -->
       <template #icon-suffix>
-        <!-- 打赏 -->
-        <div
-          v-if="showDonateFunction"
-          class="c-pc-msg-input-wrap__icons__item c-pc-chat-input-controller__donate-button pws-pc-msg-bottom-input-wrap-item"
-          data-donate
-          @click="onClickDonateEnter"
-        ></div>
-
         <!-- 公告 -->
         <div
           v-if="announcementFunctionVisible"
@@ -71,18 +51,21 @@
           <pc-icon-bulletin class="c-pc-msg-input-wrap__icons__item__icon" />
         </div>
 
-        <!-- 中奖记录 -->
+        <div style="margin-left: auto"></div>
+
+        <!-- 我的奖励 -->
         <div
-          v-if="lotteryWinRecords.length"
-          class="c-pc-msg-input-wrap__icons__item pws-pc-msg-bottom-input-wrap-item"
-          :class="{
-            'c-pc-msg-input-wrap__icons__item--dotted': hasNotReceivedLottery,
-          }"
-          data-lottery-record
-          @click="toggleLotteryRecordPanel"
-        >
-          <pc-icon-tips class="c-pc-msg-input-wrap__icons__item__icon" />
-        </div>
+          class="c-pc-msg-input-wrap__icons__item c-pc-chat-input-controller__personal-reward-button"
+          @click="onClickPersonalReward"
+        ></div>
+
+        <!-- 打赏 -->
+        <div
+          v-if="showDonateFunction"
+          class="c-pc-msg-input-wrap__icons__item c-pc-chat-input-controller__donate-button pws-pc-msg-bottom-input-wrap-item"
+          data-donate
+          @click="onClickDonateEnter"
+        ></div>
 
         <!-- 更多 -->
         <div
@@ -101,24 +84,26 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { isIE } from '@/assets/utils/browser';
 
-import { PcIconBulletin, PcIconTips } from '@/components/component-icons/pc/map';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { PcIconBulletin } from '@/components/component-icons/pc/map';
+import PcDonatePanel from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-panel.vue';
+import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import PcDonatePanel from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-panel.vue';
-import PcLotteryRecord from '@/components/page-watch-common/interactive-receive/lottery/pc-lottery-record.vue';
-import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
+import { useViewerStore } from '@/store/use-viewer-store';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import PcMorePanel from './input-more-panel.vue';
-import { useViewerStore } from '@/store/use-viewer-store';
 
 const viewerStore = useViewerStore();
 const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
+
+const { getEmitter } = useGlobalInject();
 
 const {
   msgInputWrapRef,
@@ -135,8 +120,6 @@ useEventBusListener(appEvents.chat.FocusToChatInput, () => {
 
 const { chatInputPlaceholder, chatInputDisabled, chatSetting } =
   storeDefinitionToRefs(useChatStore);
-
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {
@@ -163,12 +146,10 @@ function onClickDonateEnter() {
   toggleDonatePanel();
 }
 
-// 中奖记录面板显示交互
-const lotteryRecordPanelRef = ref<HTMLDivElement>();
-const { visible: lotteryRecordVisible, togglePanel: toggleLotteryRecordPanel } = usePanelVisible([
-  lotteryRecordPanelRef,
-  '[data-lottery-record]',
-]);
+// 点击我的奖励
+function onClickPersonalReward() {
+  getEmitter().emit(appEvents.global.OpenPersonalRewardDialog);
+}
 
 // 更多面板显示交互
 const morePanelRef = ref<HTMLDivElement>();
@@ -178,12 +159,11 @@ const {
   hidePanel: hideMorePanel,
 } = usePanelVisible([morePanelRef, '[data-more]']);
 
-const { announcementFunctionVisible, lotteryWinRecords, hasNotReceivedLottery } =
-  storeDefinitionToRefs(useInteractReceiveStore);
+const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 // 公告交互
 function onClickAnnouncement() {
-  eventBus.$emit(appEvents.interaction.OpenAnnouncementList, true);
+  getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
 }
 </script>
 
@@ -221,6 +201,32 @@ function onClickAnnouncement() {
   }
 }
 
+.c-pc-chat-input-controller__personal-reward-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+
+  &::after {
+    display: block;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    content: '';
+    background-image: url(../imgs/icon-task-activity.svg);
+    background-size: 100% 100%;
+  }
+
+  &:hover::after {
+    animation: scale-animation 0.35s ease-in;
+  }
+  &:active::after {
+    transition: all 0.05s ease-in;
+    transform: scale(1.2);
+  }
+}
+
 @media screen and (max-width: 1680px) {
   .c-pc-chat-input-controller__donate-button {
     margin-right: 12px;
@@ -230,7 +236,6 @@ function onClickAnnouncement() {
 
 .c-pc-chat-input-controller__more {
   margin-right: -10px;
-  margin-left: auto;
   user-select: none;
 
   span {

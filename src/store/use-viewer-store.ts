@@ -2,14 +2,15 @@
  * @file 观众信息 store
  */
 import { AuthType, ViewerSeatInfo } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useEnrollStore } from './use-enroll-store';
 import { isWeixin } from '@/assets/utils/browser';
 import { useWeixinStore } from './use-weixin-store';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useCommonStore } from './use-common-store';
+import { useWatchAppStore } from './use-watch-app-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * 检测是否为默认用户名 [内网、外网、xx]观众/[数字]
@@ -59,6 +60,9 @@ export interface ViewerStoreAction {
 export interface ViewerStore extends ViewerStoreState, ViewerStoreAction {}
 
 export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () => {
+  const { getEmitter } = useGlobalInject();
+
+  const watchAppStore = useWatchAppStore();
   const enrollStore = useEnrollStore();
   const weixinStore = useWeixinStore();
   const commonStore = useCommonStore();
@@ -133,7 +137,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
 
   /** 同步观众信息 */
   function syncViewerInfo(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     viewerId.value = watchCore.user.getUserId();
     nickname.value = watchCore.user.getUserNick() || '';
@@ -161,7 +165,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
    * 检查是否需要实名认证
    */
   async function syncNeedRealNameAuth() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     needRealNameAuth.value = await watchCore.user.needRealNameAuth();
   }
 
@@ -170,7 +174,7 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
    */
   function checkNeedRealNameAuth(): boolean {
     if (unref(needRealNameAuth)) {
-      eventBus.$emit(appEvents.global.OpenRealNameDialog, true);
+      getEmitter().emit(appEvents.global.OpenRealNameDialog, true);
     }
 
     return unref(needRealNameAuth);

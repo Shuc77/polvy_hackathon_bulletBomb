@@ -4,10 +4,9 @@
       v-show="streamTrackType === ChannelStreamTrackType.MultiLanguageTrack"
       class="c-mobile-player-stream-track__ico"
       :class="{
-        'c-mobile-player-stream-track__ico--cn': currentLang === LangType.Chinese,
-        'c-mobile-player-stream-track__ico--en':
-          currentLang !== LangType.Chinese && !japLangEnabled,
-        'c-mobile-player-stream-track__ico--jp': currentLang !== LangType.Chinese && japLangEnabled,
+        'c-mobile-player-stream-track__ico--cn': currentLang === LangType.ZH_CN,
+        'c-mobile-player-stream-track__ico--en': currentLang !== LangType.ZH_CN && !japLangEnabled,
+        'c-mobile-player-stream-track__ico--jp': currentLang !== LangType.ZH_CN && japLangEnabled,
       }"
     ></div>
 
@@ -15,17 +14,17 @@
       v-show="streamTrackType === ChannelStreamTrackType.MultiLanguageTrack"
       class="c-mobile-player-stream-track__desc"
     >
-      <template v-if="currentLang === LangType.Chinese">
+      <template v-if="currentLang === LangType.ZH_CN">
         <span>中文音频</span>
-        <span>Chinese Track</span>
+        <span>ZH_CN Track</span>
       </template>
 
-      <template v-if="currentLang !== LangType.Chinese && !japLangEnabled">
+      <template v-if="currentLang !== LangType.ZH_CN && !japLangEnabled">
         <span>英文音频</span>
         <span>English Track</span>
       </template>
 
-      <template v-if="currentLang !== LangType.Chinese && japLangEnabled">
+      <template v-if="currentLang !== LangType.ZH_CN && japLangEnabled">
         <span>日文音频</span>
         <span>Japanese Track</span>
       </template>

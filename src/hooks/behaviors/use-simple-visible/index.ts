@@ -31,7 +31,9 @@ export const useSimpleVisible = (defaultVisible = false, options: SimpleVisibleO
    * @param _visible 显示状态，默认：true
    */
   function setVisible(_visible = true) {
-    visible.value = !!_visible;
+    if (visible.value === _visible) return;
+
+    visible.value = _visible;
     if (_visible) {
       options.showCallback && options.showCallback();
     } else {

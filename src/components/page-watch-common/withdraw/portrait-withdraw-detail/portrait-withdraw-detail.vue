@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { ref } from 'vue';
 
 import { PopupTheme } from '@/components/common-base/popup/types';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
@@ -70,8 +70,9 @@ import PortraitNormalTabs from '@/components/common-base/tabs/portrait-normal-ta
 import PortraitCashReceiveRecord from './portrait-cash-receive-record.vue';
 import PortraitRedpackReceiveRecord from './portrait-redpack-receive-record.vue';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { WithdrawDetailTab, useWithdrawDetailHook } from '../_hooks/use-withdraw-detail';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const {
   totalAmount,
@@ -90,13 +91,7 @@ const {
 
 const popupVisible = ref(false);
 
-onMounted(() => {
-  eventBus.$on(appEvents.withdraw.OpenWithdrawDetail, handleWithdrawDetailPopupVisible);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.withdraw.OpenWithdrawDetail, handleWithdrawDetailPopupVisible);
-});
+useEventBusListener(appEvents.withdraw.OpenWithdrawDetail, handleWithdrawDetailPopupVisible);
 
 /** "提现详情" OpenWithdrawDetail 事件钩子 */
 function handleWithdrawDetailPopupVisible(visible: boolean) {
@@ -108,9 +103,11 @@ function handleWithdrawDetailPopupVisible(visible: boolean) {
   popupVisible.value = visible;
 }
 
+const { getEmitter } = useGlobalInject();
+
 /** 展示提现申请 */
 function handleShowWithdrawApply() {
-  eventBus.$emit(appEvents.withdraw.OpenWithdrawApply, true);
+  getEmitter().emit(appEvents.withdraw.OpenWithdrawApply, true);
 }
 </script>
 

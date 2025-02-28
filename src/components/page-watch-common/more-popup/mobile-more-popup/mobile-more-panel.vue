@@ -65,21 +65,11 @@
       @click="onClickSetNick"
     />
 
-    <!-- 中奖记录 -->
+    <!-- 任务奖励 -->
     <more-item
-      v-if="lotteryWinRecords.length && chatMenuData.visible"
-      icon="message"
-      :text="$lang('base.message')"
-      :dotted="hasNotReceivedLottery"
-      @click="onClickLotteryRecord"
-    />
-
-    <!-- 打赏特效开关 -->
-    <more-item
-      v-if="showDonateGifts && chatMenuData.visible"
-      :icon="donateAnimationVisible ? 'show-donate' : 'hide-donate'"
-      :text="donateAnimationVisible ? $lang('donate.hideAnimation') : $lang('donate.showAnimation')"
-      @click="toggleDonateAnimationVisible"
+      icon="my-reward"
+      :text="$lang('taskActivity.myReward')"
+      @click="onClickMyReward"
     />
 
     <!-- 积分记录 -->
@@ -88,6 +78,14 @@
       icon="score"
       :text="$lang('interact.scoreRecord.title')"
       @click="onClickScoreRecord"
+    />
+
+    <!-- 打赏特效开关 -->
+    <more-item
+      v-if="showDonateGifts && chatMenuData.visible"
+      :icon="donateAnimationVisible ? 'show-donate' : 'hide-donate'"
+      :text="donateAnimationVisible ? $lang('donate.hideAnimation') : $lang('donate.showAnimation')"
+      @click="toggleDonateAnimationVisible"
     />
 
     <!-- 投诉反馈 -->
@@ -104,13 +102,6 @@
       icon="bind-mobile"
       :text="$lang('identityInfo.bindMobile')"
       @click="onClickBindMobile"
-    />
-
-    <!-- 任务奖励 -->
-    <more-item
-      icon="my-reward"
-      :text="$lang('taskActivity.myReward')"
-      @click="onClickMyReward"
     />
 
     <!-- 小窗播放 -->
@@ -137,7 +128,7 @@ import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { storeToRefs } from 'pinia';
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useViewerStore } from '@/store/use-viewer-store';
@@ -146,22 +137,25 @@ import { useRedpackStore } from '@/store/use-redpack-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useIdentityStore } from '@/store/use-identity-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useDonateAnimationVisible } from '@/components/page-watch-common/donate/donate-animation/use-donate-animation';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { watch } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
 });
 
-const { announcementFunctionVisible, interactSetting, lotteryWinRecords, hasNotReceivedLottery } =
+const { getEmitter, getWatchCore } = useGlobalInject();
+
+const { announcementFunctionVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
 const donateStore = useDonateStore();
 const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
-const { toggleDonateAnimationVisible } = donateStore;
+const { toggleDonateAnimationVisible } = useDonateAnimationVisible();
 
 const chatStore = useChatStore();
 const { onlySpecialMsg, chatSetting, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
@@ -206,37 +200,37 @@ function onClickOnlySpecialMsg() {
 
 /** 点击公告 */
 function onClickAnnouncement() {
-  eventBus.$emit(appEvents.interaction.OpenAnnouncementList, true);
+  getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
   closeMore();
 }
 
 /** 点击投诉反馈 */
 function onClickFeedback() {
-  eventBus.$emit(appEvents.interaction.OpenFeedBack, true);
+  getEmitter().emit(appEvents.interaction.OpenFeedBack, true);
   closeMore();
 }
 
 /** 点击积分记录 */
 function onClickScoreRecord() {
-  eventBus.$emit(appEvents.interaction.OpenScoreRecord, true);
+  getEmitter().emit(appEvents.interaction.OpenScoreRecord, true);
   closeMore();
 }
 
 /** 点击修改昵称 */
 function onClickSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  getEmitter().emit(appEvents.chat.OpenSetNick, true);
   closeMore();
 }
 
 /** 点击语言切换 */
 function onClickLanguageSwitch() {
-  eventBus.$emit(appEvents.global.OpenLanguageSwitch);
+  getEmitter().emit(appEvents.global.OpenLanguageSwitch);
   closeMore();
 }
 
 /** 点击发红包 */
 function onClickSendRedpack() {
-  eventBus.$emit(appEvents.interaction.OpenSendRedpack, true);
+  getEmitter().emit(appEvents.interaction.OpenSendRedpack, true);
   closeMore();
 }
 
@@ -248,31 +242,25 @@ function onClickSendImage() {
     return;
   }
 
-  eventBus.$emit(appEvents.chat.ToSendImage);
+  getEmitter().emit(appEvents.chat.ToSendImage);
   closeMore();
 }
 
 /** 点击提现 */
 function onClickWithdraw() {
-  eventBus.$emit(appEvents.withdraw.OpenWithdrawDetail, true);
-  closeMore();
-}
-
-/** 点击中奖记录 */
-function onClickLotteryRecord() {
-  eventBus.$emit(appEvents.interaction.OpenLotteryRecord, true);
+  getEmitter().emit(appEvents.withdraw.OpenWithdrawDetail, true);
   closeMore();
 }
 
 /** 点击绑定手机号 */
 function onClickBindMobile() {
-  eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog, true);
+  getEmitter().emit(appEvents.global.OpenBindIdentityInfoDialog, true);
   closeMore();
 }
 
 /** 点击任务奖励 */
 function onClickMyReward() {
-  eventBus.$emit(appEvents.global.OpenTaskRewardDialog, true);
+  getEmitter().emit(appEvents.global.OpenPersonalRewardDialog);
   closeMore();
 }
 
@@ -283,7 +271,7 @@ function onClickPIP() {
 
 /** 点击播放设置 */
 function onClickPlaybackSetting() {
-  eventBus.$emit(appEvents.global.PlaybackSettingPopup, {
+  getEmitter().emit(appEvents.global.PlaybackSettingPopup, {
     _visible: true,
     _useTransition: false,
   });

@@ -1,12 +1,12 @@
 /**
  * @file 观看页轮询相关的 hook
  */
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { onBeforeUnmount, watchEffect } from 'vue';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * 根据 liveStatus 设置 pv 轮询
@@ -14,6 +14,8 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 export const usePageViewPolling = () => {
   const channelStore = useChannelStore();
   const channelInfoStore = useChannelInfoStore();
+
+  const { getWatchCore } = useGlobalInject();
 
   watchEffect(() => {
     const watchCore = getWatchCore();
@@ -49,6 +51,8 @@ export const usePageViewPolling = () => {
  * @desc 由于会议模式下不需要用到播放器，需要手动开启直播状态轮询
  */
 export const usePolyvMeetingPolling = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchAppStore = useWatchAppStore();
 
   watchEffect(() => {

@@ -3,8 +3,7 @@
  */
 
 import { isMobile } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { ScreenOrientationMode } from '@/hooks/core/use-screen-orient';
 import {
   MainScreenContent,
@@ -15,8 +14,9 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useDocStore } from './use-doc-store';
-import { usePageAdvertStore } from './use-page-advert-store';
+import { useAdvertStore } from './use-advert-store';
 import { usePortraitLayoutStore } from './use-portrait-layout-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface LayoutStoreState {
   // ---------- 公用 ---------- //
@@ -62,6 +62,8 @@ export interface LayoutStoreState {
   mobileLayoutBottomHeight: Ref<number>;
   /** 移动端布局底部区域到顶部的距离 */
   mobileLayoutBottomTop: Ref<number>;
+  /** 移动端横屏观看布局高度 */
+  mobileWatchLayoutHeight: Ref<number>;
   /** 移动端下播放器是否正在页面全屏 */
   mobilePlayerIsPageFullscreen: Ref<boolean>;
   /** 移动端下的常规延迟直播播放器是否处于全屏状态 */
@@ -84,9 +86,12 @@ export interface LayoutStoreActions {
 export interface LayoutStore extends LayoutStoreState, LayoutStoreActions {}
 
 export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () => {
+  const watchAppStore = useWatchAppStore();
   const docStore = useDocStore();
-  const pageAdvertStore = usePageAdvertStore();
+  const pageAdvertStore = useAdvertStore();
   const portraitLayoutStore = usePortraitLayoutStore();
+
+  const { paramGetter } = useQueryParams();
 
   // ---------- 公用 ---------- //
   /** 三分屏主屏模式 */
@@ -125,7 +130,7 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     }
 
     // 有页面广告
-    if (pageAdvertStore.advertVisible) {
+    if (pageAdvertStore.pageAdvertVisible) {
       return false;
     }
 
@@ -195,6 +200,9 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
   /** 移动端布局底部区域到顶部的距离 */
   const mobileLayoutBottomTop = ref(0);
 
+  /** 移动端横屏观看布局高度 */
+  const mobileWatchLayoutHeight = ref(0);
+
   /** 当前是页面全屏或者横屏 */
   const isPageFullscreenOrHorizontalScreen = computed(() => {
     return unref(mobilePlayerIsPageFullscreen) || unref(isHorizontalScreenOrientation);
@@ -214,12 +222,12 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
   }
 
   function syncLayoutStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const layoutSetting = watchCore.channel.getLayoutSetting();
     mainScreenLayoutMode.value = layoutSetting.mainScreenLayoutMode;
     mobileSplashLayout.value = layoutSetting.mobileSplashLayout;
 
-    const watchLayout = paramGetter.watchLayout();
+    const watchLayout = paramGetter().watchLayout();
     mobileWatchLayout.value = watchLayout || layoutSetting.mobileWatchLayout;
 
     if (mobileWatchLayout.value === MobileWatchLayout.Portrait) {
@@ -253,6 +261,7 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     mobileLayoutTopHeight,
     mobileLayoutBottomHeight,
     mobileLayoutBottomTop,
+    mobileWatchLayoutHeight,
     mobilePlayerIsPageFullscreen,
     mobileNormalLatencyPlayerIsFullscreen,
     mobileDocIsPageFullscreen,

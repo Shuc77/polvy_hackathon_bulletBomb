@@ -8,15 +8,13 @@ module.exports = {
     [
       '@vue/cli-plugin-babel/preset',
       {
+        useBuiltIns: 'usage',
+        corejs: 3,
+        modules: false,
         jsx: false,
       },
     ],
     ['@vue/babel-preset-jsx', { compositionAPI: true }],
   ],
-  plugins: [
-    ['@babel/plugin-transform-typescript', { isTSX: true }],
-    '@babel/plugin-proposal-nullish-coalescing-operator',
-    '@babel/plugin-proposal-optional-chaining',
-    ...ProdPlugins,
-  ],
+  plugins: [['@babel/plugin-transform-typescript', { isTSX: true }], ...ProdPlugins],
 };

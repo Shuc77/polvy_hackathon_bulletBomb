@@ -1,4 +1,3 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { computed, unref } from 'vue';
 
 import { useChannelStore } from '@/store/use-channel-store';
@@ -6,12 +5,14 @@ import { useViewerStore } from '@/store/use-viewer-store';
 
 import { translate } from '@/assets/lang';
 import { isMobile, isWeixin } from '@/assets/utils/browser';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
-import { appEvents, eventBus } from '@/app/app-events';
+
+import { useGlobalInject } from '@/app/use-global-inject';
+import { appEvents } from '@/app/app-events';
 import type { ProductGoodData } from '../types/product-types';
 
 /**
@@ -19,6 +20,10 @@ import type { ProductGoodData } from '../types/product-types';
  * */
 export const useProduct = () => {
   const interactReceiveStore = useInteractReceiveStore();
+
+  const { getWatchCore, getEmitter } = useGlobalInject();
+
+  const { toast } = useToastManager();
 
   const watchCore = getWatchCore();
   /** 商品库 SDK 实例 */
@@ -69,11 +74,11 @@ export const useProduct = () => {
 
     // Pc引导到H5微信
     if (!isMobile || !isWeixin) {
-      eventBus.$emit(appEvents.global.OpenQrCodeShareDialog);
+      getEmitter().emit(appEvents.global.OpenQrCodeShareDialog);
       return;
     }
 
-    eventBus.$emit(appEvents.interaction.OpenOrderPopup, [product]);
+    getEmitter().emit(appEvents.interaction.OpenOrderPopup, [product]);
   };
 
   const onChange = (visible: boolean) => {
@@ -93,6 +98,8 @@ export const useProduct = () => {
 
 /** 商品库跳转参数 hook */
 export const useProductLinkParams = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const channelStore = useChannelStore();
   const viewerStore = useViewerStore();
@@ -130,6 +137,8 @@ export const useProductLinkParams = () => {
 export const useProductTrack = () => {
   const channelStore = useChannelStore();
   const interactReceiveStore = useInteractReceiveStore();
+
+  const { getWatchCore } = useGlobalInject();
 
   /** 上报打开商品列表数据 */
   const trackOpenProductList = () => {

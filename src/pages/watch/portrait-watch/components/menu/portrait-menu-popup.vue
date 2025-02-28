@@ -163,12 +163,12 @@
       />
 
       <!-- 发送图片 -->
-      <!-- <menu-item
+      <menu-item
         v-if="chatSetting.viewerSendImgEnabled"
         icon="send-image"
         :text="$lang('chat.sendImage')"
         @click="onClickSendImage"
-      /> -->
+      />
 
       <!-- 发红包 -->
       <!-- <menu-item
@@ -184,9 +184,11 @@
 <script setup lang="ts">
 /* eslint-disable no-unused-vars */
 
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
+import { useDonateAnimationVisible } from '@/components/page-watch-common/donate/donate-animation/use-donate-animation';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { useStreamTrack } from '@/components/page-watch-common/player/player-stream-track/use-stream-track';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
@@ -204,12 +206,12 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { storeToRefs } from 'pinia';
 import { useWebviewStore } from '@/store/use-webview-store';
-import { ChannelStreamTrackType } from '@polyv/live-watch-sdk';
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import MenuItem from './portrait-menu-item.vue';
-import { getWatchCore } from '@/core/watch-sdk';
 
 const { visible: menuVisible, setVisible: setMenuVisible } = useSimpleVisible();
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const {
   lineSettingVisible,
@@ -241,7 +243,7 @@ const { isMultiLanguageTrack } = useStreamTrack();
 
 const donateStore = useDonateStore();
 const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
-const { toggleDonateAnimationVisible } = donateStore;
+const { toggleDonateAnimationVisible } = useDonateAnimationVisible();
 
 const chatStore = useChatStore();
 const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
@@ -264,6 +266,8 @@ const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { identitySetting, bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
+const { getEmitter, getWatchCore } = useGlobalInject();
+
 const { toSmallWindow } = useWebviewStore();
 
 const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
@@ -282,7 +286,7 @@ function onClickProfile() {
 /** 点击线路切换 */
 function onClickLineSetting() {
   closeMenu(false);
-  eventBus.$emit(appEvents.portrait.OpenLineSettingPopup, {
+  getEmitter().emit(appEvents.portrait.OpenLineSettingPopup, {
     _visible: true,
     _useTransition: false,
   });
@@ -291,7 +295,7 @@ function onClickLineSetting() {
 /** 点击清晰度切换 */
 function onClickQualitySetting() {
   closeMenu(false);
-  eventBus.$emit(appEvents.portrait.OpenQualitySettingPopup, {
+  getEmitter().emit(appEvents.portrait.OpenQualitySettingPopup, {
     _visible: true,
     _useTransition: false,
   });
@@ -300,7 +304,7 @@ function onClickQualitySetting() {
 /** 点击倍速设置 */
 function onClickRateSetting() {
   closeMenu(false);
-  eventBus.$emit(appEvents.portrait.OpenRateSettingPopup, {
+  getEmitter().emit(appEvents.portrait.OpenRateSettingPopup, {
     _visible: true,
     _useTransition: false,
   });
@@ -314,31 +318,31 @@ function onClickOnlySpecialMsg() {
 
 /** 点击发送图片 */
 function onClickSendImage() {
-  eventBus.$emit(appEvents.chat.ToSendImage);
+  getEmitter().emit(appEvents.chat.ToSendImage);
   closeMenu();
 }
 
 /** 点击发红包 */
 function onClickSendRedpack() {
-  eventBus.$emit(appEvents.interaction.OpenSendRedpack, true);
+  getEmitter().emit(appEvents.interaction.OpenSendRedpack, true);
   closeMenu();
 }
 
 /** 点击积分记录 */
 function onClickScoreRecord() {
-  eventBus.$emit(appEvents.interaction.OpenScoreRecord, true);
+  getEmitter().emit(appEvents.interaction.OpenScoreRecord, true);
   closeMenu();
 }
 
 /** 点击投诉反馈 */
 function onClickFeedback() {
-  eventBus.$emit(appEvents.interaction.OpenFeedBack, true);
+  getEmitter().emit(appEvents.interaction.OpenFeedBack, true);
   closeMenu();
 }
 
 /** 点击提现 */
 function onClickWithdraw() {
-  eventBus.$emit(appEvents.withdraw.OpenWithdrawDetail, true);
+  getEmitter().emit(appEvents.withdraw.OpenWithdrawDetail, true);
   closeMenu();
 }
 
@@ -350,25 +354,25 @@ function onClickQuestionAnswer() {
     return;
   }
 
-  eventBus.$emit(appEvents.interaction.OpenQuestionAnswer, true);
+  getEmitter().emit(appEvents.interaction.OpenQuestionAnswer, true);
   closeMenu();
 }
 
 /** 点击语言切换 */
 function onClickLanguageSwitch() {
-  eventBus.$emit(appEvents.global.OpenLanguageSwitch);
+  getEmitter().emit(appEvents.global.OpenLanguageSwitch);
   closeMenu();
 }
 
 /** 点击修改昵称 */
 function onClickSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  getEmitter().emit(appEvents.chat.OpenSetNick, true);
   closeMenu();
 }
 
 /** 点击延迟模式 */
 function onClickLatencySwitch() {
-  eventBus.$emit(appEvents.portrait.OpenLatencySwitchPopup, true);
+  getEmitter().emit(appEvents.portrait.OpenLatencySwitchPopup, true);
   closeMenu();
 }
 
@@ -382,19 +386,19 @@ function onClickPlayMode() {
 
 /** 点击切换语言流 */
 function onClickSwitchStream() {
-  eventBus.$emit(appEvents.portrait.OpenLangStreamPopup, true);
+  getEmitter().emit(appEvents.portrait.OpenLangStreamPopup, true);
   closeMenu();
 }
 
 /** 点击绑定手机号 */
 function onClickBindMobile() {
-  eventBus.$emit(appEvents.global.OpenBindIdentityInfoDialog, true);
+  getEmitter().emit(appEvents.global.OpenBindIdentityInfoDialog, true);
   closeMenu();
 }
 
 /** 点击我的奖励 */
 function onClickMyReward() {
-  eventBus.$emit(appEvents.global.OpenTaskRewardDialog, true);
+  getEmitter().emit(appEvents.global.OpenPersonalRewardDialog);
   closeMenu();
 }
 
@@ -406,7 +410,7 @@ function onClickPIP() {
 /** 点击播放设置 */
 function onClickPlaybackSetting() {
   closeMenu(false);
-  eventBus.$emit(appEvents.global.PlaybackSettingPopup, {
+  getEmitter().emit(appEvents.global.PlaybackSettingPopup, {
     _visible: true,
     _useTransition: false,
   });

@@ -89,6 +89,7 @@
           :label="menu.name"
           :name="TAB_NAME_ASK"
           :show-reminder="askReminderVisible"
+          :show-new-message="true"
           lazy-load
         >
           <pc-ask />
@@ -136,6 +137,17 @@
         >
           <pc-ai-assistant-chat />
         </pc-aside-tab-pane>
+
+        <!-- AI 看 -->
+        <pc-aside-tab-pane
+          v-if="menu.menuType === ChannelMenuType.AISummary"
+          :key="`AISummary-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_AI_SUMMARY"
+          lazy-load
+        >
+          <pc-playback-outline />
+        </pc-aside-tab-pane>
       </template>
 
       <!-- 章节 tab -->
@@ -168,6 +180,7 @@ import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue'
 import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/pc-ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PcMemberDesc from '@/components/page-watch-common/member-list/pc-member-desc.vue';
+import PcPlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/pc-playback-outline.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -185,6 +198,7 @@ import {
   TAB_NAME_MICRO_ACTIVITY,
   TAB_NAME_SUBTITLE,
   TAB_NAME_AI_ASSISTANT,
+  TAB_NAME_AI_SUMMARY,
 } from '@/assets/constants/tab-name';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -195,6 +209,8 @@ import { ChannelMenuType, MotivationLikeType } from '@polyv/live-watch-sdk';
 
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+
+const layoutStore = useLayoutStore();
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
@@ -219,7 +235,6 @@ const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHoo
 const { trackWatchTabChange } = useWatchEventTrack();
 
 function onIsEmptyCallback(isEmpty: boolean) {
-  const layoutStore = useLayoutStore();
   layoutStore.$patch({
     pcAsideTabIsEmpty: isEmpty,
   });

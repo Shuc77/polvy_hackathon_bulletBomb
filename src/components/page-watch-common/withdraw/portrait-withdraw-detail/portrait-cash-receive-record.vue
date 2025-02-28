@@ -12,7 +12,7 @@
       class="c-portrait-withdraw-detail__contents__item"
     >
       <p class="c-portrait-withdraw-detail__contents__item__title">
-        {{ $lang('withdraw.cash.receive.record.listName') }}
+        {{ getWithdrawStatusText(record.status) }}
       </p>
       <p class="c-portrait-withdraw-detail__contents__item__date">
         {{ convertReceiveDate(record.applyTime) }}
@@ -27,9 +27,11 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
-import { useReceiveRecordHook } from '../_hooks/use-receive-record';
+import { useReceiveRecordHook, getWithdrawStatusText } from '../_hooks/use-receive-record';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 

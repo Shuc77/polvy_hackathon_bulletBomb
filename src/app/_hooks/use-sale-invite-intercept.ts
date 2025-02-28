@@ -1,20 +1,21 @@
 import { isWeixin } from '@/assets/utils/browser';
 import { translate } from '@/assets/lang';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-authorize';
-import { PageErrorType } from '../layout/page-error/page-error-type';
+import { DirectBusinessPageType, PageErrorType } from '../layout/direct-business-page/type';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /**
  * 一客一码拦截
  * @hook
  */
 export const useSaleInviteIntercept = () => {
-  const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
   const weixinStore = useWeixinStore();
+
+  const { getWatchCore } = useMultiPolyvWatchApp();
 
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
 
@@ -24,6 +25,8 @@ export const useSaleInviteIntercept = () => {
    */
   async function checkSaleInvite(): Promise<boolean> {
     try {
+      const watchCore = getWatchCore();
+
       const isNeedSaleInviteVerify = watchCore.saleInvite.needSaleInviteVerify();
       if (!isNeedSaleInviteVerify) {
         return false;
@@ -73,11 +76,9 @@ export const useSaleInviteIntercept = () => {
         return false;
       }
 
-      //
-
       // 进入一客一码校验页面
-      watchAppStore.setPageError({
-        type: PageErrorType.VerifySaleInvite,
+      watchAppStore.setDirectBusinessPage({
+        pageType: DirectBusinessPageType.VerifySaleInvite,
       });
       return true;
     } catch (error) {

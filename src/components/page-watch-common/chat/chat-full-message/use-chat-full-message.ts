@@ -1,15 +1,19 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { copyText } from '@/assets/utils/copy';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ChatMsgSpeakType } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
 import { useChatMsgUser } from '../chat-msg-list/msg-items/_hooks/chat-msg-user-hook';
 import { FullMsgData } from './type';
 
 export const useChatFullMessage = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { visible, setVisible } = useSimpleVisible();
 
   const fullContent = ref('');

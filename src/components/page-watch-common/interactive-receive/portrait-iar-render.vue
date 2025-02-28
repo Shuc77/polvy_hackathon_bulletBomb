@@ -17,8 +17,6 @@
     <mobile-lottery-animation />
     <!-- 抽奖结果弹层 -->
     <mobile-lottery-result-popup />
-    <!-- 中奖记录弹层 -->
-    <mobile-lottery-record-popup />
     <!-- 商品库弹层 -->
     <portrait-product-list-popup v-if="interactSetting.productEnabled" />
     <!-- 问卷 -->
@@ -49,11 +47,10 @@ import { onMounted } from 'vue';
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
 import MobileAnswerCardPopup from './answer-card/mobile-answer-card-popup.vue';
 import MobileQuickAnswerCard from './answer-card/mobile-quick-answer-card.vue';
-import PortraitCheckInPopup from './check-in/portrait-check-in-popup.vue';
+import PortraitCheckInPopup from '../interactive-receive-v2/check-in-v2/portrait-check-in-popup.vue';
 import MobileFeedBackPopup from './feed-back/mobile-feed-back-popup.vue';
 import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
 import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
-import MobileLotteryRecordPopup from './lottery/mobile-lottery-record-popup.vue';
 import PortraitProductListPopup from './product/portrait-product-list-popup.vue';
 import MobileQuestionnairePopup from './questionnaire/mobile-questionnaire-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
@@ -79,7 +76,7 @@ const { qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 onMounted(() => {
   import(
-    '@/components/page-watch-common/interactive-receive/_style/cover-portrait-interact-receive.scss'
+    /* webpackChunkName: "cover-portrait-interact-receive" */ '@/components/page-watch-common/interactive-receive/_style/cover-portrait-interact-receive.scss'
   );
 });
 </script>

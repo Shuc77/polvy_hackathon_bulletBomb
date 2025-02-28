@@ -1,11 +1,13 @@
 import { computed, reactive } from 'vue';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * 关注设置 hook
  */
 export const useFollowSetting = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchAppStore = useWatchAppStore();
   const watchCore = getWatchCore();
 

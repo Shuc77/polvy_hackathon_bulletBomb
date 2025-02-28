@@ -7,7 +7,7 @@
  */
 export enum LangType {
   /** 中文 */
-  Chinese = 'zh_CN',
+  ZH_CN = 'zh_CN',
   /** 英文 */
   English = 'en',
   /** 俄语 */

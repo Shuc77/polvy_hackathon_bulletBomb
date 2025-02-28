@@ -12,10 +12,14 @@
     :btn-text="interactSetting.lotteryGiftButtonTextCH"
     :btn-en-text="interactSetting.lotteryGiftButtonTextEN"
     :privacy-content="privacyContent"
+    custom-record
+    custom-receive
     @comment-success="onCommentSuccess"
     @to-fill-questionnaire="onToFillQuestionnaire"
     @visible-changed="onWelfareLotteryVisibleChanged"
     @entry-visible-changed="onEntryVisibleChanged"
+    @open-record="onOpenRecord"
+    @open-receive="onOpenReceive"
   />
 </template>
 
@@ -47,6 +51,8 @@ const {
   onEntryVisibleChanged,
 
   onToFillQuestionnaire,
+  onOpenRecord,
+  onOpenReceive,
 } = useWelfareLottery();
 
 const { privacyContent } = useLotteryPrivacy();

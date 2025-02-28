@@ -7,7 +7,7 @@
     :force-horizontal-screen="mobilePlayerIsPageFullscreen"
     :title="answerCardTitle"
     :visible.sync="answerCardVisible"
-    :backable="answerCardStatus === AllAnswerCardStatus.isShowAnswer"
+    :backable="answerCardStatus === AllAnswerCardStatus.IsShowAnswer"
     @click-back="onClickBack"
   >
     <iar-mobile-answer-card

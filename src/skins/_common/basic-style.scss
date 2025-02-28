@@ -279,4 +279,27 @@
   .pws-slide-bar__inner-track {
     background-color: map.get($--skin-configs, 'primary-color') !important;
   }
+
+  // -------- AI看 回放大纲 -------- //
+  .pws-ai-outline-text {
+    color: map.get($--skin-configs, 'pws-ai-outline-text:text-color') !important;
+  }
+  .pws-ai-outline-desc {
+    color: map.get($--skin-configs, 'pws-ai-outline-desc:desc-color') !important;
+  }
+  .pws-ai-outline-tag {
+    color: map.get($--skin-configs, 'pws-ai-outline-tag:text-color') !important;
+  }
+  .pws-ai-outline-tag-bg {
+    background-color: map.get($--skin-configs, 'pws-ai-outline-tag-bg:bg-color') !important;
+  }
+  .pws-ai-outline-bg {
+    background-color: map.get($--skin-configs, 'pws-ai-outline-bg:bg-color') !important;
+  }
+  .pws-ai-outline-label-bg {
+    background-color: map.get($--skin-configs, 'pws-ai-outline-label-bg:bg-color') !important;
+  }
+  .pws-ai-outline-label-text {
+    color: map.get($--skin-configs, 'pws-ai-outline-label-text:text-color') !important;
+  }
 }

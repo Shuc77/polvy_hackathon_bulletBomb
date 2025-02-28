@@ -96,9 +96,8 @@ import {
   InvitePrizeReceiveFormFieldType,
   InvitePrizeWinnerForm,
 } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ButtonSize } from '@/components/common-base/normal-button';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
@@ -108,6 +107,11 @@ import FormSubmitButton from '@/components/common-base/form/form-submit-button.v
 
 import { useInvitePrizeReceive } from '../_hooks/use-invite-prize-receive';
 import { useInviteStore } from '@/store/use-invite-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
+
+const { toast } = useToastManager();
 
 const inviteStore = useInviteStore();
 const { invitePrizeWinnerInfo, hasReceived } = useInvitePrizeReceive<InvitePrizeWinnerForm>();

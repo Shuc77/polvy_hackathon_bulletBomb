@@ -67,7 +67,10 @@
     />
 
     <!-- 播放器字幕区 -->
-    <mobile-player-subtitle selector=".c-mobile-player-main" />
+    <mobile-player-subtitle
+      v-show="mainScreen === MainScreenContent.Player"
+      selector=".c-mobile-player-main"
+    />
 
     <!-- ========= 弹出层类型组件 Start ========= -->
 
@@ -91,9 +94,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, unref, ref } from 'vue';
+import { computed, unref, ref, onBeforeUnmount } from 'vue';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -117,17 +120,19 @@ import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-pl
 import MobilePlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/mobile-player-subtitle.vue';
 import MobileSubtitleSelect from '@/components/page-watch-common/subtitle/mobile-subtitle-select/mobile-subtitle-select.vue';
 
-import { PageViewShowLocation } from '@polyv/live-watch-sdk';
+import { MainScreenContent, PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { useChannelStore } from '@/store/use-channel-store';
 import { translate } from '@/assets/lang';
 import { ComponentInstance } from '@/hooks/core/use-vue';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useShortNumber } from '@/hooks/business/use-short-number';
 
 const { shortNumber } = useShortNumber();
 
 const {
+  mainScreen,
   mobilePlayerIsPageFullscreen,
   mobileNormalLatencyPlayerIsFullscreen,
   isHorizontalScreenOrientation,
@@ -176,9 +181,18 @@ const { playerContainer } = usePlayerMain({
   },
 });
 
-const { latencyModeSettingVisible, bigPlayButtonVisible } = usePlayerControl();
+const { latencyModeSettingVisible, bigPlayButtonVisible, addHistoryTipsListener } =
+  usePlayerControl();
 const { toPlay } = usePlayerAction();
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
+
+const { getEmitter } = useGlobalInject();
+
+const { dispose: disposeHistoryTipsListener } = addHistoryTipsListener();
+
+onBeforeUnmount(() => {
+  disposeHistoryTipsListener();
+});
 
 function onClickContainer() {
   // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
@@ -187,7 +201,7 @@ function onClickContainer() {
   if (bigPlayButtonVisible.value && (!isCdnWithNormalLayout.value || existWarmUpVideo.value)) {
     toPlay();
   }
-  eventBus.$emit(appEvents.player.ClickMobilePlayerContainer);
+  getEmitter().emit(appEvents.player.ClickMobilePlayerContainer);
 }
 
 const pbSubtitleSelectRef = ref<ComponentInstance<typeof MobileSubtitleSelect>>();
@@ -207,8 +221,13 @@ useConnectMicing();
 <style lang="scss">
 @import './_styles/cover-mobile-player.scss';
 
-$--player-page-fullscreen-width: $--plv-mobile-watch-full-screen-vh !default;
-$--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh / 2) * -1) !default;
+$--player-page-fullscreen-width-half: calc($--plv-mobile-watch-full-screen-vw / 2) !default;
+$--player-page-fullscreen-height-half: calc($--plv-mobile-watch-full-screen-vh / 2) !default;
+
+// prettier-ignore
+$--player-page-fullscreen-width-half__reverse: calc($--player-page-fullscreen-width-half * -1) !default;
+// prettier-ignore
+$--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-height-half * -1) !default;
 
 .c-mobile-player-main {
   position: absolute;
@@ -283,17 +302,19 @@ $--player-page-fullscreen-margin-left: calc(($--plv-mobile-watch-full-screen-vh 
 
 // 无延迟播放器页面全屏
 .c-mobile-player-main--page-fullscreen {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 2000;
-  width: $--player-page-fullscreen-width !important;
-  height: 100vw !important;
-  margin-top: -50vw;
-  margin-left: $--player-page-fullscreen-margin-left !important;
-  transform: rotate3d(0, 0, 1, 90deg);
-  transform-origin: center center;
+  position: absolute;
+  top: $--player-page-fullscreen-height-half;
+  bottom: 0 !important;
+  left: $--player-page-fullscreen-width-half;
 
+  z-index: 2000;
+  width: calc($--plv-mobile-watch-full-screen-vh);
+  height: calc($--plv-mobile-watch-full-screen-vw);
+  // prettier-ignore
+  transform: translate($--player-page-fullscreen-height-half__reverse, $--player-page-fullscreen-width-half__reverse) rotate(90deg);
+  transform-origin: center;
+
+  // @include force-page-fullscreen;
   // ios 兼容处理
   .c-mobile-player-main__container {
     z-index: -1;

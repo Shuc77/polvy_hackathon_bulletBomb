@@ -15,8 +15,10 @@
         :plv-webview-data-size="plvWebviewDataSize"
         :recruitment-enabled="recruitmentEnabled"
         :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+        :redirect-directly-enabled="interactSetting.outLinkProductRedirectEnabled"
         :hot-effect-enabled="productHotEffectEnabled"
         @job-detail="onJobDetailEvent"
+        @click-cover="openProductDetail"
         @buy="onWechatBuy"
         @change="onChange"
       />
@@ -33,6 +35,7 @@
       :plv-webview-data-size="plvWebviewDataSize"
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+      :redirect-directly-enabled="interactSetting.outLinkProductRedirectEnabled"
       @job-detail="onJobDetailEvent"
       @buy="onWechatBuy"
       @click-detail="openProductDetail"
@@ -46,7 +49,7 @@ import { useProduct, useProductLinkParams } from './hooks/use-product';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { YN } from '@polyv/live-watch-sdk';
-import { onJobDetailEvent } from './hooks/use-product-job-detail';
+import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
@@ -63,6 +66,8 @@ const props = defineProps({
   },
 });
 const { productBubbleEnable, productDialogEnable } = useProps(props);
+
+const { onJobDetailEvent } = useProductJobDetailEvent();
 
 const IarProductBubble = getIarComponent('ProductBubble');
 const IarProductDialog = getIarComponent('ProductDialog');
@@ -91,6 +96,10 @@ const { openProductDetail } = useNewProductDetail();
 .c-portrait-product-bubble-wrap {
   width: 104px;
   margin-bottom: 16px;
+
+  .plv-iar-product-bubble__link__content-cover {
+    margin-top: 8px;
+  }
 }
 
 .c-portrait-product-bubble {

@@ -1,5 +1,5 @@
 import { isMobile } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -17,6 +17,8 @@ import { onBeforeUnmount, onMounted, watch } from 'vue';
  * 主副屏切换响应逻辑
  */
 export const useMainScreen = () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const channelStore = useChannelStore();
   const docStore = useDocStore();
   const layoutStore = useLayoutStore();

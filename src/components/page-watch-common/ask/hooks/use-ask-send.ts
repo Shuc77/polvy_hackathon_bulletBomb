@@ -1,15 +1,19 @@
 import { ref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 
 import { changeProtocol } from '@utils-ts/net';
 import { wait } from '@/assets/utils/utils';
 
 import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useAskSend = (options: { scrollToNew: () => void; hideMoreMsg: () => void }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   /** 消息输入框 */
   const msgInputWrapRef = ref<MsgInputWrapInstance>();
 

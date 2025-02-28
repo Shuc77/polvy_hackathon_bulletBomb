@@ -15,6 +15,10 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { PcIconArrowUp } from '@/components/component-icons/pc/map';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { isFunction } from 'lodash-es';
+
+const { scrollIntoView } = useMultiPolyvWatchApp();
 
 /** 回到顶部显示状态 */
 const backTopVisible = ref(false);
@@ -30,8 +34,8 @@ function checkBackTop() {
 
 /** 将页面置顶 */
 function toBackTopPage() {
-  if (document.documentElement.scrollIntoView) {
-    document.documentElement.scrollIntoView({ behavior: 'smooth' });
+  if (isFunction(document.documentElement.scrollIntoView)) {
+    scrollIntoView(document.documentElement, { behavior: 'smooth' });
   } else {
     document.documentElement.scrollTop = 0;
   }

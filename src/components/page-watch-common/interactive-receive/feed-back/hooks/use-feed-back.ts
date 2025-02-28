@@ -1,14 +1,17 @@
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { computed, ref } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动-反馈
  * */
 export const useFeedBack = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
+
   /** 反馈 SDK 实例 */
   const feedBackSdk = watchCore.interactReceive.getFeedBack();
 
@@ -23,13 +26,7 @@ export const useFeedBack = () => {
     feedBackVisible.value = visible;
   };
 
-  onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenFeedBack, setFeedBackVisible);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenFeedBack, setFeedBackVisible);
-  });
+  useEventBusListener(appEvents.interaction.OpenFeedBack, setFeedBackVisible);
 
   return {
     feedBackSdk,

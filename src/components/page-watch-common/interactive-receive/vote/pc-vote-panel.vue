@@ -11,9 +11,11 @@
 import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const IarPcVote = getIarComponent('PcVote');
+
+const { getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 /** 投票 SDK 实例 */

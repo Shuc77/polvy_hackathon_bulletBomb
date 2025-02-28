@@ -6,8 +6,14 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { isMobile, isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { useChannelInfoStore } from './use-channel-info-store';
-import { getWatchCore } from '@/core/watch-sdk';
-import { PlvLiveBookingModule } from '@polyv/live-watch-sdk';
+import { useChannelStore } from './use-channel-store';
+import {
+  OtherChannelBookingConfig,
+  OtherChannelBookingConfigItem,
+  PlvLiveBookingModule,
+  LiveStatus,
+} from '@polyv/live-watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface LiveBookingStoreState {
   /** 是否使用微信预约 */
@@ -32,6 +38,18 @@ export interface LiveBookingStoreState {
   wxBookingCount: Ref<number>;
   /** 微信公众号图片 */
   wxMpImageUrl: Ref<string>;
+  /** 下一场直播预约配置 */
+  otherChannelBookingConfig: Ref<OtherChannelBookingConfig>;
+  /** 是否允许其他直播预约 */
+  otherChannelBookingEnabled: ComputedRef<boolean>;
+  /** 获取当前下一场其他直播配置(单个直播情况) */
+  singleOtherChannelBookingConfig: Ref<OtherChannelBookingConfigItem | null>;
+  /** 是否是其他直播预约 */
+  isOtherLiveBooking: ComputedRef<boolean>;
+  /** 当前下一场其他直播是否已短信预约(单个直播情况) */
+  singleOtherChannelSmsLiveBooking: ComputedRef<boolean>;
+  /** 单场其他直播预约是否使用微信预约 */
+  useSingleWxBooking: ComputedRef<boolean>;
 }
 
 export interface LiveBookingStoreAction {
@@ -44,7 +62,9 @@ export interface LiveBookingStore extends LiveBookingStoreState, LiveBookingStor
 export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
   'liveBooking',
   () => {
+    const watchAppStore = useWatchAppStore();
     const channelInfoStore = useChannelInfoStore();
+    const channelStore = useChannelStore();
 
     const __liveBookingConfig = PlvLiveBookingModule.generateDefaultLiveBookingConfig();
 
@@ -54,13 +74,71 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
     /** 是否开启了微信预约 */
     const wxBookingEnabled = ref(__liveBookingConfig.wxBookingEnabled);
 
+    /** 强制隐藏直播预约按钮 */
+    const forceHideLiveBookingButton = ref(false);
+
+    /** 是否已短信预约 */
+    const isSmsLiveBooking = ref(__liveBookingConfig.isSmsLiveBooking);
+
+    /** 是否已微信预约 */
+    const isWxLiveBooking = ref(__liveBookingConfig.isWxLiveBooking);
+
+    /** 是否已关注了微信公众号 */
+    const isWxSubscribed = ref(__liveBookingConfig.isWxSubscribed);
+
+    /** 微信预约弹层提示文案 */
+    const wxBookingTips = ref(__liveBookingConfig.wxBookingTips);
+
+    /** 是否展示微信预约人数 */
+    const wxBookingCountVisible = ref(__liveBookingConfig.wxBookingCountVisible);
+
+    /** 微信预约人数 */
+    const wxBookingCount = ref(__liveBookingConfig.wxBookingCount);
+
+    /** 微信公众号图片 */
+    const wxMpImageUrl = ref(__liveBookingConfig.wxMpImageUrl);
+
+    /** 其他直播预约配置 */
+    const otherChannelBookingConfig = ref<OtherChannelBookingConfig>([]);
+
+    /** 当前下一场其他直播配置(目前只有单个直播配置) */
+    const singleOtherChannelBookingConfig = ref<OtherChannelBookingConfigItem | null>(null);
+
+    /** 当前下一场其他直播是否已短信预约 */
+    const singleOtherChannelSmsLiveBooking = computed<boolean>(() => {
+      return singleOtherChannelBookingConfig.value?.isSmsLiveBooking || false;
+    });
+
     /** 是否使用微信预约 */
     const useWxBooking = computed<boolean>(() => {
       return isMobile && isWeixin && !isWorkWeixin && unref(wxBookingEnabled);
     });
 
-    /** 强制隐藏直播预约按钮 */
-    const forceHideLiveBookingButton = ref(false);
+    /** 其他直播预约是否使用微信预约 */
+    const useSingleWxBooking = computed<boolean>(() => {
+      return (
+        isMobile &&
+        isWeixin &&
+        !isWorkWeixin &&
+        (unref(singleOtherChannelBookingConfig.value?.wxBookingEnabled) || false)
+      );
+    });
+
+    /** 是否是其他直播预约 */
+    const isOtherLiveBooking = computed<boolean>(() => {
+      if (!singleOtherChannelBookingConfig.value) {
+        return false;
+      }
+
+      return unref(useSingleWxBooking)
+        ? unref(singleOtherChannelBookingConfig.value.isWxLiveBooking)
+        : unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking);
+    });
+
+    /** 是否已预约直播 */
+    const isLiveBooking = computed<boolean>(() => {
+      return unref(useWxBooking) ? unref(isWxLiveBooking) : unref(isSmsLiveBooking);
+    });
 
     /** 是否显示直播预约按钮 */
     const showLiveBookingButton = computed<boolean>(() => {
@@ -81,35 +159,33 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
       return unref(useWxBooking) || unref(smsBookingEnabled);
     });
 
-    /** 是否已短信预约 */
-    const isSmsLiveBooking = ref(__liveBookingConfig.isSmsLiveBooking);
+    /** 是否允许预约下一场其他直播 */
+    const otherChannelBookingEnabled = computed<boolean>(() => {
+      const config = singleOtherChannelBookingConfig.value;
 
-    /** 是否已微信预约 */
-    const isWxLiveBooking = ref(__liveBookingConfig.isWxLiveBooking);
+      if (forceHideLiveBookingButton.value) {
+        return false;
+      }
 
-    /** 是否已预约直播 */
-    const isLiveBooking = computed<boolean>(() => {
-      return unref(useWxBooking) ? unref(isWxLiveBooking) : unref(isSmsLiveBooking);
+      if (channelStore.liveStatus !== LiveStatus.Live) {
+        return false;
+      }
+
+      if (!config || !config.startTime) {
+        return false;
+      }
+
+      // 下一场直播开始时间需要晚于当前时间25分钟以上
+      if (Number(config.startTime) < Date.now() + 1000 * 60 * 25) {
+        return false;
+      }
+
+      return unref(useSingleWxBooking) || unref(config.smsBookingEnabled);
     });
-
-    /** 是否已关注了微信公众号 */
-    const isWxSubscribed = ref(__liveBookingConfig.isWxSubscribed);
-
-    /** 微信预约弹层提示文案 */
-    const wxBookingTips = ref(__liveBookingConfig.wxBookingTips);
-
-    /** 是否展示微信预约人数 */
-    const wxBookingCountVisible = ref(__liveBookingConfig.wxBookingCountVisible);
-
-    /** 微信预约人数 */
-    const wxBookingCount = ref(__liveBookingConfig.wxBookingCount);
-
-    /** 微信公众号图片 */
-    const wxMpImageUrl = ref(__liveBookingConfig.wxMpImageUrl);
 
     /** 同步直播预约 Store 数据 */
     function syncLiveBookingStore(): void {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const liveBookingConfig = watchCore.liveBooking.getLiveBookingConfig();
 
       smsBookingEnabled.value = liveBookingConfig.smsBookingEnabled;
@@ -122,6 +198,14 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
       wxBookingCountVisible.value = liveBookingConfig.wxBookingCountVisible;
       wxBookingCount.value = liveBookingConfig.wxBookingCount;
       wxMpImageUrl.value = liveBookingConfig.wxMpImageUrl;
+
+      otherChannelBookingConfig.value = watchCore.liveBooking.getOtherLiveBookingConfig();
+
+      if (otherChannelBookingConfig.value.length > 0) {
+        singleOtherChannelBookingConfig.value = otherChannelBookingConfig.value[0] || null;
+      } else {
+        singleOtherChannelBookingConfig.value = null;
+      }
     }
 
     return {
@@ -137,6 +221,12 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
       wxBookingCount,
       wxMpImageUrl,
       syncLiveBookingStore,
+      otherChannelBookingConfig,
+      otherChannelBookingEnabled,
+      singleOtherChannelBookingConfig,
+      isOtherLiveBooking,
+      singleOtherChannelSmsLiveBooking,
+      useSingleWxBooking,
     };
   },
 );

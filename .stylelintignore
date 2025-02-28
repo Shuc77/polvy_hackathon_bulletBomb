@@ -36,5 +36,7 @@ logs
 **/.dist/
 **/dist/
 **/dist-saas/
+**/dist-static/
+**/dist-sdk-inject/
 **/map-file/**
 **/component-icons/**

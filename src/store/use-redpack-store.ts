@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { isWeixin } from '@/assets/utils/browser';
 import { PlvRedpackModule, SendRedpackConfig } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
 
@@ -51,7 +50,7 @@ export const useRedpackStore = defineStore<'redpack', RedpackStore>('redpack', (
 
   /** 同步发送红包 Store */
   function syncRedpackStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     sendRedpackConfig.value = watchCore.redpack.getSendRedpackConfig();
 

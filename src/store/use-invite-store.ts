@@ -5,7 +5,6 @@
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 import {
@@ -15,8 +14,7 @@ import {
   TAB_NAME_SEAT,
 } from '@/assets/constants/tab-name';
 import { isWeixin } from '@/assets/utils/browser';
-import { appendQueryParam, paramGetter } from '@/hooks/core/use-query-params';
-import { useInteractReceiveStore } from './use-interact-receive-store';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useLayoutStore } from './use-layout-store';
 import {
   InviteActivityInfo,
@@ -24,6 +22,7 @@ import {
   InvitePrizeWinnerInfo,
   PlvInviteModule,
 } from '@polyv/live-watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface InviteStoreState {
   /** 企业微信分享海报的企微员工 ID */
@@ -61,8 +60,6 @@ export interface InviteStoreState {
 }
 
 export interface InviteStoreAction {
-  /** 获取云席邀请海报选择页地址 */
-  getGenerateSeatPosterUrl: () => string;
   /** 同步邀请信息 */
   syncInviteInfo: () => void;
   /** 同步邀请有礼活动信息 */
@@ -74,15 +71,17 @@ export interface InviteStoreAction {
 export interface InviteStore extends InviteStoreState, InviteStoreAction {}
 
 export const useInviteStore = defineStore<'invite', InviteStore>('invite', () => {
+  const watchAppStore = useWatchAppStore();
   const channelMenuStore = useChannelMenuStore();
   const layoutStore = useLayoutStore();
-  const interactReceiveStore = useInteractReceiveStore();
+
+  const { appendQueryParam, paramGetter } = useQueryParams();
 
   /** 企业微信分享海报的企微员工 ID */
-  const wxInviteId = ref(paramGetter.wxInviteId());
+  const wxInviteId = ref(paramGetter().wxInviteId());
 
   /** 邀请海报唯一ID */
-  const invitePosterId = ref(paramGetter.invitePosterId());
+  const invitePosterId = ref(paramGetter().invitePosterId());
 
   /** 邀请者 openId */
   const inviteUserOpenId = ref<string>();
@@ -173,19 +172,9 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   /** 邀请海报选择页地址 */
   const generatePosterUrl = ref<string>('');
 
-  /** 获取云席邀请海报选择页地址 */
-  function getGenerateSeatPosterUrl() {
-    const watchCore = getWatchCore();
-    return watchCore.invite.getInviteGeneratePosterUrl({
-      setSeatTable: true,
-      seatTableRow: interactReceiveStore.seatPosition?.row,
-      seatTableColumn: interactReceiveStore.seatPosition?.column,
-    });
-  }
-
   /** 同步邀请信息 */
   function syncInviteInfo() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     invitePosterEnabled.value = watchCore.invite.getInvitePosterEnabled();
     inviteRankConfigEnabled.value = watchCore.invite.getInviteRankEnabled();
@@ -208,13 +197,13 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
   /** 同步邀请有礼活动信息 */
   function syncInviteActivityInfo() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     inviteActivityInfo.value = watchCore.invite.getInviteActivityInfo();
   }
 
   /** 同步邀请有礼中奖信息 */
   async function syncInvitePrizeWinnerInfo() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     invitePrizeWinnerInfo.value = await watchCore.invite.getInvitePrizeWinnerInfo();
   }
 
@@ -238,7 +227,6 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     mobileWatchInvitePendantVisible,
     generatePosterUrl,
 
-    getGenerateSeatPosterUrl,
     syncInviteInfo,
     syncInviteActivityInfo,
     syncInvitePrizeWinnerInfo,

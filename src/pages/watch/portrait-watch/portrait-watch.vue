@@ -4,6 +4,9 @@
     class="c-portrait-watch"
     :style="wrapStyle"
   >
+    <!-- 顶部引导条 -->
+    <mobile-top-guide />
+
     <!-- 观看页主体布局 -->
     <portrait-watch-layout />
 
@@ -16,6 +19,7 @@
 import { computed, defineAsyncComponent, unref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 
+import MobileTopGuide from '@/components/page-watch-common/top-guide/mobile-top-guide.vue';
 import PortraitWatchLayout from './layout/portrait-watch-layout.vue';
 
 import { usePvTrack } from '@/hooks/business/use-pv-track';
@@ -53,10 +57,17 @@ const { layoutLoaded } = useLayoutLoad('portrait-watch');
 </script>
 
 <style lang="scss">
+html,
+body {
+  background-image: url(~@/pages/watch/portrait-watch/layout/images/portrait-bg.png);
+}
+
 .c-portrait-watch {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   overflow: hidden;

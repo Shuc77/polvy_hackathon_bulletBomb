@@ -2,8 +2,8 @@
  * @file 聊天室点赞 hook
  */
 
+import { useGlobalInject } from '@/app/use-global-inject';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useChatStore } from '@/store/use-chat-store';
 import { useViewerStore } from '@/store/use-viewer-store';
@@ -33,6 +33,8 @@ export const chatLikeProps = () => ({
 });
 
 export const useChatLike = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const chatStore = useChatStore();
   const viewerStore = useViewerStore();
 

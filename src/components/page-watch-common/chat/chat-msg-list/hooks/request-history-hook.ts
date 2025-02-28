@@ -3,8 +3,8 @@
  */
 
 import { isString } from '@/assets/utils/string';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
@@ -13,10 +13,17 @@ import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
 
 export const useRequestHistory = (
   hookOptions: ChatMsgListHookOptions,
+  getStore: () => {
+    chatMsgStore: ReturnType<typeof useChatMsgStore>;
+    watchAppStore: ReturnType<typeof useWatchAppStore>;
+  },
 ): RequestHistoryCommonResult => {
-  const chatMsgStore = useChatMsgStore();
+  const chatMsgStore = getStore().chatMsgStore;
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { filterSpecialMsgList } = useFilterSpecialMsgHook();
+
+  const watchAppStore = getStore().watchAppStore;
+  const getWatchCore = watchAppStore.getWatchCore;
 
   /**
    * 请求聊天室历史消息

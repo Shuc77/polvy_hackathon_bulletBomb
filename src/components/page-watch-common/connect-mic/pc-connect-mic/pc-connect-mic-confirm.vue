@@ -30,15 +30,18 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 
 const { visible: confirmVisible, show: showConfirm, close: closeConfirm } = useSimpleVisible(false);
 
 useEventBusListener(appEvents.connectMic.TriggerEndConnectConfirm, showConfirm);
 
+const { getEmitter } = useGlobalInject();
+
 function onClickConfirm() {
-  eventBus.$emit(appEvents.connectMic.TriggerEndConnectMic);
+  getEmitter().emit(appEvents.connectMic.TriggerEndConnectMic);
   closeConfirm();
 }
 

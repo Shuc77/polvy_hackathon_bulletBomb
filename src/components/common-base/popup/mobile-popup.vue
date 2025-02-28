@@ -176,7 +176,7 @@ defineExpose(popupInstance);
 
 <style lang="scss">
 .c-mobile-popup {
-  position: fixed;
+  position: absolute;
   z-index: $--zIndex-top;
   box-sizing: border-box;
 }

@@ -1,22 +1,16 @@
 import { isFunction } from '@/assets/utils/function';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWeixinSdk } from './use-weixin-sdk';
 import { LoggerName } from '@polyv/live-watch-sdk';
-
-/** 微信的回调方法 */
-type WeixinGeneralCallback = (res?: WechatJsSdk.GeneralCallbackResult) => void;
-
-export interface WxPayCallback {
-  /** 成功的回调 */
-  successCb?: WeixinGeneralCallback;
-  /** 取消的回调 */
-  cancelCb?: WeixinGeneralCallback;
-}
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { WeixinGeneralCallback, WxCallback } from './types';
 
 /**
  * @hook 微信支付
  */
 export function useWeixinPay() {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+  const watchCore = getWatchCore();
+
   const { getWeixinSdk } = useWeixinSdk();
 
   /**
@@ -24,7 +18,7 @@ export function useWeixinPay() {
    * @param payInfo 微信支付相关信息
    * @param callback 支付相关回调
    */
-  async function chooseWXPay(payInfo: WechatJsSdk.ChooseWXPayOption, callback: WxPayCallback = {}) {
+  async function chooseWXPay(payInfo: WechatJsSdk.ChooseWXPayOption, callback: WxCallback = {}) {
     const { successCb, cancelCb } = callback;
     const wx = await getWeixinSdk();
 
@@ -46,7 +40,6 @@ export function useWeixinPay() {
           }
         },
         fail: res => {
-          const watchCore = getWatchCore();
           watchCore.logger.error(LoggerName.Weixin, 'choose-wx-pay-fail', JSON.stringify(res));
         },
       });

@@ -6,7 +6,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useSubtitleProps = () => ({
   /** 挂载选择器，初始化时会自动挂载到对应的 DOM 节点 */
@@ -22,6 +22,8 @@ export const useSubtitleProps = () => ({
 });
 
 export const usePlayerSubtitle = (options: { props: VueProps<typeof useSubtitleProps> }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { props } = options;
   const { getCurrentElem } = useVue();
 

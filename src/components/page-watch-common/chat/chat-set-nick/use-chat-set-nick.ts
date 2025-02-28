@@ -1,16 +1,20 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { translate } from '@/assets/lang';
 import { validateSpecialString } from '@/assets/utils/validate';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { UserEvents } from '@polyv/live-watch-sdk';
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { computed, onBeforeUnmount, reactive, ref } from 'vue';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * 设置昵称 hook
  */
 export const useChatSetNick = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   /** 显示状态 */
   const dialogVisible = ref(false);
 
@@ -78,12 +82,9 @@ export const useChatSetNick = () => {
     watchCore.user.eventEmitter.off(UserEvents.SetNickError, onSetNickError);
   }
 
-  onMounted(() => {
-    eventBus.$on(appEvents.chat.OpenSetNick, setDialogVisible);
-  });
+  useEventBusListener(appEvents.chat.OpenSetNick, setDialogVisible);
 
   onBeforeUnmount(() => {
-    eventBus.$off(appEvents.chat.OpenSetNick, setDialogVisible);
     unlistenSetNickEvent();
   });
 

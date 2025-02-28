@@ -9,7 +9,7 @@ import { useLangStore } from '@/store/use-lang-store';
 import { LangType } from '@/assets/lang/lang-enum';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export interface SlideVerifyData {
   sessionId: string;
@@ -37,6 +37,8 @@ export const useSlideVerify = (options: {
   const { emit } = options;
   const langStore = useLangStore();
 
+  const { getWatchCore } = useGlobalInject();
+
   const id = randomStr(8);
   const scene = 'nc_register_h5';
 
@@ -62,7 +64,7 @@ export const useSlideVerify = (options: {
         // 声明滑动验证需要渲染的目标ID。
         renderTo: `#${id}`,
         // 配置语言
-        language: langStore.currentLang === LangType.Chinese ? 'cn' : 'en',
+        language: langStore.currentLang === LangType.ZH_CN ? 'cn' : 'en',
         // 更新多语言配置
         upLang: langConfig,
         // 前端滑动验证通过时会触发该回调参数。您可以在该回调参数中将会话ID（sessionId）、签名串（sig）、请求唯一标识（token）字段记录下来，随业务请求一同发送至您的服务端调用验签。

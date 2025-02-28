@@ -1,17 +1,25 @@
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
-import { PageErrorType } from '@/app/layout/page-error/page-error-type';
+import { PageErrorType } from '@/app/layout/direct-business-page/type';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { AuthSettingItemExternal, ExternalAuthSignParams } from '@polyv/live-watch-sdk';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
-import { paramGetter, queryParams } from '@/hooks/core/use-query-params';
-import { toast } from '@/hooks/components/use-toast';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /**
  * 外部授权操作 hook
  */
 export const useAuthExternalAction = () => {
+  const { getWatchCore, getPolyvWatchApp } = useMultiPolyvWatchApp();
+
+  const { toast } = useToastManager();
+
+  const { getQueryParams, paramGetter } = useQueryParams({
+    getPolyvWatchAppLoader: () => () => getPolyvWatchApp(),
+  });
+
   const watchAppStore = useWatchAppStore();
   const { failMessage, getDefaultFailMessage, handleAuthVerifySuccess, handleAuthVerifyFail } =
     useAuthCommon();
@@ -21,9 +29,9 @@ export const useAuthExternalAction = () => {
    */
   function getExternalAuthSignParams(): ExternalAuthSignParams {
     return {
-      userid: paramGetter.userid() || '',
-      ts: paramGetter.ts() || '',
-      sign: paramGetter.sign() || '',
+      userid: paramGetter().userid() || '',
+      ts: paramGetter().ts() || '',
+      sign: paramGetter().sign() || '',
     };
   }
 
@@ -42,7 +50,7 @@ export const useAuthExternalAction = () => {
     const watchCore = getWatchCore();
     const result = await watchCore.auth.verifyExternalAuth(
       getExternalAuthSignParams(),
-      queryParams,
+      getQueryParams(),
     );
     if (result.success) {
       await handleAuthVerifySuccess(result);

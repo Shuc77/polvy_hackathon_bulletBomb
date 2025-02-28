@@ -1,9 +1,11 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { PlvEmotionalFeedbackInstance } from '@/plugins/polyv-ui/types';
 import { ChatEvents, ChatEventsRelations, EmotionalFeedbackType } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref } from 'vue';
 
 export const useEmotionalFeedback = () => {
+  const { getWatchCore } = useGlobalInject();
+
   /** 明白了实例 */
   const yesRef = ref<PlvEmotionalFeedbackInstance>();
   /** 没听懂实例 */

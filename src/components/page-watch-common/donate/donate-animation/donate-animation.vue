@@ -9,6 +9,7 @@
       <donate-animation-item
         :animation-id="item.animationId"
         :nick="item.nick"
+        :pic="item.pic"
         :gimg="item.gimg"
         :count="item.count"
         :reward-content="item.rewardContent"

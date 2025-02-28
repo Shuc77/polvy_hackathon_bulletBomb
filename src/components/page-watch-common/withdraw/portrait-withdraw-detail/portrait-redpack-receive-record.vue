@@ -28,9 +28,11 @@
 import { onMounted } from 'vue';
 
 import { RedpackPayType } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useReceiveRecordHook } from '../_hooks/use-receive-record';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 

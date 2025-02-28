@@ -9,24 +9,33 @@
       <div
         v-show="itemShow"
         class="c-donate-animation-item__content"
+        :style="{
+          background: itemBgColor,
+        }"
       >
+        <!-- 头像 -->
+        <div
+          class="c-donate-animation-item__pic g-img-cover"
+          :style="{
+            backgroundImage: `url(${pic})`,
+          }"
+        ></div>
+
         <!-- 信息 -->
         <p class="c-donate-animation-item__nick g-singleline">{{ translateNick(nick) }}</p>
-        <p class="c-donate-animation-item__bottom">
-          {{ $lang('donate.goodAction') }} {{ content }}
-        </p>
+        <p class="c-donate-animation-item__bottom">{{ $lang('donate.goodAction') }}{{ content }}</p>
 
         <!-- 图片 -->
         <div
           v-if="donateType === DonateType.Good"
-          class="c-donate-animation-item__pic g-img-cover"
+          class="c-donate-animation-item__good-image g-img-cover"
           :style="{
             backgroundImage: `url(${gimg})`,
           }"
         ></div>
         <div
           v-else
-          class="c-donate-animation-item__pic c-donate-animation-item__pic--redpaper g-img-cover"
+          class="c-donate-animation-item__good-image c-donate-animation-item__good-image--redpaper g-img-cover"
         ></div>
 
         <!-- 数量 -->
@@ -38,7 +47,7 @@
             'c-donate-animation-item__count--animation': countAnimation,
           }"
         >
-          <span>&times; </span>
+          <span>x</span>
           <span>{{ count }}</span>
         </div>
       </div>
@@ -47,6 +56,7 @@
 </template>
 
 <script setup lang="ts">
+import { generateRandomInteger, numberToFixed } from '@/assets/utils/number';
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
 import { useDonateStore } from '@/store/use-donate-store';
@@ -59,6 +69,8 @@ const props = defineProps({
   animationId: PropUtils.string.isRequired,
   /** 昵称 */
   nick: PropUtils.string,
+  /** 头像 */
+  pic: PropUtils.string,
   /** 打赏道具图片 */
   gimg: PropUtils.string,
   /** 礼物数量 */
@@ -86,10 +98,26 @@ const content = computed(() => {
   return translateGoodName(props.rewardContent);
 });
 
+const bgColors = [
+  'linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.1) 85%)',
+  'linear-gradient(90deg, rgba(91, 70, 255, 0.6) 0%, rgba(91, 70, 255, 0.1) 85%)',
+  'linear-gradient(90deg, rgba(87, 173, 255, 0.7) 9%, rgba(87, 173, 255, 0.1) 83%)',
+  'linear-gradient(90deg, rgba(45, 208, 192, 0.6) 2%, rgba(45, 208, 192, 0.1) 85%)',
+  'linear-gradient(90deg, rgba(40, 222, 122, 0.6) 0%, rgba(40, 222, 122, 0.1) 85%)',
+  'linear-gradient(90deg, rgba(255, 193, 69, 0.7) 9%, rgba(255, 193, 69, 0.1) 83%)',
+  'linear-gradient(90deg, rgba(255, 103, 194, 0.6) 4%, rgba(255, 103, 194, 0.1) 85%)',
+  'linear-gradient(90deg, rgba(255, 70, 70, 0.6) 0%, rgba(255, 70, 70, 0.1) 85%)',
+];
+
+const itemBgColor = ref(bgColors[0]);
+
 const itemShow = ref(false);
 
 /** 显示动画节点 */
 function showItem() {
+  const bgIndex = numberToFixed(generateRandomInteger(0, bgColors.length - 1), 0);
+  itemBgColor.value = bgColors[bgIndex];
+
   itemShow.value = true;
   resetHideTimer();
 }
@@ -146,6 +174,7 @@ function onAfterLeave() {
   width: $--donate-animation-item-width;
   height: $--donate-animation-item-height;
   margin-bottom: $--donate-animation-item-margin;
+  margin-left: 12px;
 }
 
 .c-donate-animation-item__content {
@@ -153,56 +182,68 @@ function onAfterLeave() {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 0 122px 0 12px;
-  background-image: url(./imgs/donate-float-tips-bg.png);
-  background-size: 100%;
+  padding: 6px 48px 0 40px;
+  background: linear-gradient(90deg, rgba(91, 70, 255, 0.6) 0%, rgba(91, 70, 255, 0.1) 85%);
+  border-radius: 18px;
+}
+
+.c-donate-animation-item__pic {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
 }
 
 .c-donate-animation-item__nick {
-  font-size: 14px;
-  color: #fcf2a6;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
 }
 
 .c-donate-animation-item__bottom {
   margin-top: 4px;
   font-size: 12px;
-  color: $--color-white;
+  color: rgba(#ffffff, 0.6);
+  white-space: nowrap;
+  transform: scale(0.83);
+  transform-origin: top left;
 }
 
-.c-donate-animation-item__pic {
+.c-donate-animation-item__good-image {
   position: absolute;
-  right: 54px;
+  right: 4px;
   bottom: 0;
-  width: 56px;
-  height: 56px;
+  width: 36px;
+  height: 36px;
+}
+.c-donate-animation-item__good-image--redpaper {
   background-image: url(./imgs/donate-float-tips-redpaper.png);
 }
 
 .c-donate-animation-item__count {
   position: absolute;
   top: 8px;
-  left: #{$--donate-animation-item-width - 50px};
-  font-style: italic;
-  font-weight: 800;
-  color: #f57c00;
-  text-shadow: #fff 1px 0 0, #fff 0 1px 0, #fff -1px 0 0, #fff 0 -1px 0;
+  left: 100%;
+  padding-left: 8px;
+  color: #fff;
+  white-space: nowrap;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
 
   span {
-    margin-right: 2px;
     &:first-child {
-      font-size: 20px;
+      margin-right: 2px;
+      font-size: 14px;
     }
     &:last-child {
-      font-size: 28px;
+      @include alibaba-font(20px, 800);
     }
   }
 }
-.c-donate-animation-item__count--long span:last-child {
-  font-size: 22px;
-}
+
 .c-donate-animation-item__count--animation {
   animation: rewardNumber 0.3s linear;
 }

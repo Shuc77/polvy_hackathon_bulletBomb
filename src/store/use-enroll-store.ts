@@ -1,5 +1,4 @@
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   EnrollAuthType,
   EnrollFieldItem,
@@ -11,6 +10,7 @@ import {
 import { defineStore } from 'pinia';
 import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { useIdentityStore } from './use-identity-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface EnrollStoreState {
   /** 报名观看开关 */
@@ -64,6 +64,7 @@ export interface EnrollStore extends EnrollStoreState, EnrollStoreAction {}
  * 报名观看 store
  */
 export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () => {
+  const watchAppStore = useWatchAppStore();
   const identityStore = useIdentityStore();
 
   const __enrollInfo = PlvEnrollModule.generateDefaultEnrollInfo();
@@ -174,7 +175,7 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
 
   /** 同步信息 */
   function syncEnrollInfo() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const enrollInfo = watchCore.enroll.getEnrollInfo();
 
     enrollEnabled.value = enrollInfo.enrollEnabled;

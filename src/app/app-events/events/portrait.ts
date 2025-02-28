@@ -58,4 +58,8 @@ export const portraitEvents = {
    * 打开在线用户列表规则弹窗
    */
   OpenPortraitOnlineUserListRulePopup: 'OpenPortraitOnlineUserListRulePopup',
+  /**
+   * 打开多会场弹窗
+   */
+  OpenPortraitMultiMeeting: 'OpenPortraitMultiMeeting',
 };

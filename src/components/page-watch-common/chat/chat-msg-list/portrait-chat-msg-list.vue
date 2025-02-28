@@ -18,7 +18,7 @@
 
 <script setup lang="ts">
 import { useChatMsgReplayTips } from '@/components/page-watch-common/chat/chat-msg-replay-tips/use-chat-msg-replay-tips';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -33,9 +33,11 @@ const { containerRef, scrollToNew } = useChatMsgList({
   ChatMsgItemComponent: PortraitChatMsgItem as ChatMsgItemComponentOptions,
 });
 
+const { toast } = useToastManager();
+
 const playbackStore = usePlaybackStore();
 
-if (playbackStore.chatReplayEnabled) {
+if (playbackStore.chatMsgReplayEnabled) {
   const { content: chatMsgReplayTips } = useChatMsgReplayTips();
   watch(
     () => chatMsgReplayTips.value,
@@ -67,7 +69,7 @@ if (playbackStore.chatReplayEnabled) {
     color-stop(0, transparent),
     color-stop(0.2, #000)
   );
-  mask-image: none;
+  // mask-image: none;
 }
 
 .c-portrait-chat-msg-list__container {

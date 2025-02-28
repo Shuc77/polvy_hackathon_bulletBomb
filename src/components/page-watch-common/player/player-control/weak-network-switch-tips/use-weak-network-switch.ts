@@ -1,9 +1,12 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { ref, computed } from 'vue';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export function useWeakNetworkSwitch() {
+  const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
+
   const isLowestQuality = ref(false);
   const isMultiLine = ref(false);
   const isMultiQuality = ref(false);
@@ -48,10 +51,9 @@ export function useWeakNetworkSwitch() {
   };
 
   function updateValue() {
-    const playerModule = getWatchCore().player;
-    const currLevel = playerModule.getCurrentQualityLevel();
-    const lineCount = playerModule.getLineCount();
-    const qualityLevels = playerModule.getQualityLevels();
+    const currLevel = watchCore.player.getCurrentQualityLevel();
+    const lineCount = watchCore.player.getLineCount();
+    const qualityLevels = watchCore.player.getQualityLevels();
 
     const lowestQuality =
       qualityLevels.find(item => {
@@ -66,19 +68,17 @@ export function useWeakNetworkSwitch() {
   }
 
   const updateWeakNetworkTips = () => {
-    const playerModule = getWatchCore().player;
     updateValue();
 
-    playerModule.eventEmitter.off(PlayerEvents.LineChange, handleLineChange);
-    playerModule.eventEmitter.off(PlayerEvents.QualityLevelChange, handleQualityChange);
-    playerModule.eventEmitter.on(PlayerEvents.LineChange, handleLineChange);
-    playerModule.eventEmitter.on(PlayerEvents.QualityLevelChange, handleQualityChange);
+    watchCore.player.eventEmitter.off(PlayerEvents.LineChange, handleLineChange);
+    watchCore.player.eventEmitter.off(PlayerEvents.QualityLevelChange, handleQualityChange);
+    watchCore.player.eventEmitter.on(PlayerEvents.LineChange, handleLineChange);
+    watchCore.player.eventEmitter.on(PlayerEvents.QualityLevelChange, handleQualityChange);
   };
 
   const switchNextQuality = () => {
-    const playerModule = getWatchCore().player;
-    const currentQualityLevel = playerModule.getCurrentQualityLevel();
-    const qualityLevels = playerModule.getQualityLevels();
+    const currentQualityLevel = watchCore.player.getCurrentQualityLevel();
+    const qualityLevels = watchCore.player.getQualityLevels();
 
     const lowestQuality =
       qualityLevels.find(item => {
@@ -93,9 +93,8 @@ export function useWeakNetworkSwitch() {
   };
 
   const switchNextLine = () => {
-    const playerModule = getWatchCore().player;
-    const lineCount = playerModule.getLineCount();
-    const currentLine = playerModule.getCurrentLine();
+    const lineCount = watchCore.player.getLineCount();
+    const currentLine = watchCore.player.getCurrentLine();
 
     if (lineCount > 1) {
       const nextLine = currentLine > 0 ? currentLine - 1 : lineCount - 1;

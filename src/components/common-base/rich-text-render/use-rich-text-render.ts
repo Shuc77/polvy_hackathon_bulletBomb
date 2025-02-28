@@ -1,5 +1,5 @@
-import { resizeHtmlContentImg } from '@/assets/utils/string';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { computed } from 'vue';
 
 /**
@@ -14,6 +14,8 @@ export const richTextRenderProps = () => ({
 
 export const useRichTextRender = (options: { props: VueProps<typeof richTextRenderProps> }) => {
   const { props } = options;
+
+  const { resizeHtmlContentImg } = useResizeOssImage();
 
   /** 用于渲染的富文本内容 */
   const renderHtmlContent = computed<string>(() => {

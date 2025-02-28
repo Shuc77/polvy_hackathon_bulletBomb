@@ -75,6 +75,10 @@
   .pws-iar-product-list-name {
     color: map.get($--skin-configs, 'iar-product-list-good-name:text-color') !important;
   }
+  .pws-iar-product-list-not-explained {
+    color: map.get($--skin-configs, 'iar-product-list-not-explained:text-color') !important;
+    border-color: map.get($--skin-configs, 'iar-product-list-not-explained:border-color') !important;
+  }
   .pws-iar-product-list-number {
     color: #fff !important;
   }

@@ -1,17 +1,20 @@
-import { getWatchCore } from '@/core/watch-sdk';
-import { useWebviewStore } from '@/store/use-webview-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
 export const useTopicPk = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
+
   const watchCore = getWatchCore();
-  const webviewStore = useWebviewStore();
 
   const topicPkSdk = watchCore.interactReceive.getTopicPK();
 
   function onTopicPKVisibleChanged(visible: boolean) {
     if (visible) {
-      webviewStore.toLockDrag('topic-pk');
+      toLockFeedDrag('topic-pk');
     } else {
-      webviewStore.toUnlockDrag();
+      toUnlockFeedDrag();
     }
   }
 

@@ -1,6 +1,7 @@
 <!-- @file 回放字幕 -->
 <template>
   <div
+    v-if="mainText || translatedText"
     class="c-player-replay-subtitle"
     :style="`bottom: ${bottom}px`"
   >
@@ -29,12 +30,15 @@ import {
   YN,
 } from '@polyv/live-watch-sdk';
 
-import { getWatchCore } from '@/core/watch-sdk';
-
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { ynToBool } from '@utils-ts/boolean';
 import { useSubtitleProps, usePlayerSubtitle } from '../_hooks/_use-player-subtitle';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
+
+const watchCore = getWatchCore();
 
 const subtitleStore = useSubtitleStore();
 
@@ -67,11 +71,10 @@ const timeBetween = 1000;
 const setReplaySrtList = async (subtitleItem: ReplaySubtitleItem) => {
   if (!subtitleItem.srtUrl) return;
 
-  const watchCore = getWatchCore();
-  const originSubtitleContent = await watchCore.subtitles.getReplaySubtitleContent(
+  const originSubtitleContent = await watchCore.subtitle.getReplaySubtitleContent(
     subtitleItem.srtUrl,
   );
-  const parsedSubtitleList = watchCore.subtitles.parseReplaySubtitleContent(originSubtitleContent);
+  const parsedSubtitleList = watchCore.subtitle.parseReplaySubtitleContent(originSubtitleContent);
 
   const tempSrtList = parsedSubtitleList.map(item => {
     return {
@@ -92,8 +95,7 @@ const setReplaySrtList = async (subtitleItem: ReplaySubtitleItem) => {
 };
 
 const setReplaySubtitleList = (list: ReplaySubtitleItem[]) => {
-  const watchCore = getWatchCore();
-  watchCore.subtitles.setReplaySubtitleList(list);
+  watchCore.subtitle.setReplaySubtitleList(list);
 };
 
 watch(
@@ -151,7 +153,6 @@ const onPlayerTimeUpdate = (params: PlayerEventsRelations[PlayerEvents.TimeUpdat
 };
 
 const bindPlayerEvents = () => {
-  const watchCore = getWatchCore();
   watchCore.player.eventEmitter.on(
     PlayerEvents.PlayerUIReplaySubtitleChecked,
     onPlayerUIReplaySubtitleChecked,
@@ -160,7 +161,6 @@ const bindPlayerEvents = () => {
 };
 
 const unbindPlayerEvent = () => {
-  const watchCore = getWatchCore();
   watchCore.player.eventEmitter.off(
     PlayerEvents.PlayerUIReplaySubtitleChecked,
     onPlayerUIReplaySubtitleChecked,
@@ -184,18 +184,19 @@ onBeforeUnmount(() => {
 .c-player-replay-subtitle {
   position: absolute;
   bottom: 150px;
-  left: 10%;
+  left: 50%;
   z-index: 7;
-  width: 80%;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 90%;
+  padding: 8px 20px;
   font-size: v-bind(fontsize);
   line-height: 1.5;
   color: #fff;
   text-align: left;
-  // prettier-ignore
-  text-shadow: rgb(0, 0, 0) 1px 0 1px,
-    rgb(0, 0, 0) 0 1px 1px,
-    rgb(0, 0, 0) 0 -1px 1px,
-    rgb(0, 0, 0) -1px 0 1px;
+  background-color: rgba(29, 33, 41, 0.8);
+  border-radius: 12px;
+  transform: translateX(-50%);
 
   .c-player-replay-subtitle-line {
     text-align: center;

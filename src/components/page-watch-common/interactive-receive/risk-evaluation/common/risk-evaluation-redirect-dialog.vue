@@ -29,7 +29,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import MobileDialog from '@/components/common-base/dialog/mobile-dialog/mobile-dialog.vue';
-import { eventBus, appEvents, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 默认倒计时时长 */
 const DEFAULT_COUNT_DOWN_TIME = 5;
@@ -68,9 +69,11 @@ function handleCountDown() {
   timerFunc();
 }
 
+const { getEmitter } = useGlobalInject();
+
 // 展示跳转弹窗
 useEventBusListener(appEvents.finance.RiskEvaluationRedirectDialogShow, () => {
-  eventBus.$emit(appEvents.finance.RiskEvaluationMainDialogHidden);
+  getEmitter().emit(appEvents.finance.RiskEvaluationMainDialogHidden);
 
   dialogVisible.value = true;
   handleCountDown();

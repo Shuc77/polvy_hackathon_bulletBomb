@@ -1,4 +1,4 @@
-import { computed, ComputedRef, ref, Ref } from 'vue';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 import { defineStore } from 'pinia';
 
 import {
@@ -9,7 +9,7 @@ import {
 } from '@polyv/live-watch-sdk';
 
 import { ynToBool } from '@utils-ts/boolean';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface FinanceStoreState {
   /** 风险确认函数据 */
@@ -23,7 +23,7 @@ export interface FinanceStoreState {
   /** 风险测评开关 */
   riskEvaluationEnabled: ComputedRef<boolean>;
   /** 风险测评-是否展示挂件入口 */
-  riskEvaluationEntranceEnabled: ComputedRef<boolean>;
+  riskEvaluationEntranceEnabled: Ref<boolean>;
 }
 
 export interface FinanceStoreAction {
@@ -39,6 +39,8 @@ export interface FinanceStore extends FinanceStoreState, FinanceStoreAction {}
 
 /** @store 金融模块 */
 export const useFinanceStore = defineStore<'finance', FinanceStore>('finance', () => {
+  const watchAppStore = useWatchAppStore();
+
   // ----------- 风险确认函 ----------- //
 
   /** 风险确认函数据 */
@@ -61,7 +63,7 @@ export const useFinanceStore = defineStore<'finance', FinanceStore>('finance', (
 
   /** 初始化风险确认函数据 */
   function initRiskConfirm() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const data = watchCore.financeRiskConfirm.getRiskConfirmSetting();
 
     riskConfirm.value = data;
@@ -81,12 +83,18 @@ export const useFinanceStore = defineStore<'finance', FinanceStore>('finance', (
   });
 
   /** 风险测评-是否展示挂件入口 */
-  const riskEvaluationEntranceEnabled = computed(() => {
-    const watchCore = getWatchCore();
+  const riskEvaluationEntranceEnabled = ref(false);
 
-    // 风险测评启用，且为后置条件时，需要展示挂件
-    return watchCore.financeRiskEvaluation.judgeNeedShowRiskEvaluationInAfter(riskEvaluation.value);
-  });
+  watch(
+    () => riskEvaluation.value,
+    () => {
+      const watchCore = watchAppStore.getWatchCore();
+
+      // 风险测评启用，且为后置条件时，需要展示挂件
+      riskEvaluationEntranceEnabled.value =
+        watchCore.financeRiskEvaluation.judgeNeedShowRiskEvaluationInAfter(riskEvaluation.value);
+    },
+  );
 
   /** 更新风险测评数据 */
   function updateRiskEvaluation(data: Partial<FinanceRiskEvaluation>) {
@@ -99,7 +107,7 @@ export const useFinanceStore = defineStore<'finance', FinanceStore>('finance', (
 
   /** 初始化风险测评数据 */
   function initRiskEvaluation() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     const data = watchCore.financeRiskEvaluation.getRiskEvaluationSetting();
 

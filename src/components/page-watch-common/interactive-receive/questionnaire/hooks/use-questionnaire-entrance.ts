@@ -1,4 +1,5 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import {
   InteractiveEntranceData,
   useInteractReceiveStore,
@@ -8,6 +9,8 @@ import {
  * @hook 问卷入口
  */
 export const useQuestionnaireEntrance = () => {
+  const { getEmitter } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
 
   /** 问卷入口数据 */
@@ -16,7 +19,7 @@ export const useQuestionnaireEntrance = () => {
     name: 'interact.questionnaire.title',
     icon: require('./imgs/icon-questionnaire.png'),
     icon2: require('./imgs/icon-questionnaire_p.png'),
-    onClick: () => eventBus.$emit(appEvents.interaction.OpenQuestionnaire, true),
+    onClick: () => getEmitter().emit(appEvents.interaction.OpenQuestionnaire, true),
   };
 
   /** 设置问卷二次入口 */

@@ -1,7 +1,7 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { TaskActivityData, TaskActivityItem } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface TaskActivityStore {
   /**
@@ -19,6 +19,7 @@ export interface TaskActivityStore {
 export const useTaskActivityStore = defineStore<'taskActivity', TaskActivityStore>(
   'taskActivity',
   () => {
+    const watchAppStore = useWatchAppStore();
     const currentActivityData = ref<TaskActivityData>();
 
     const taskList = computed<TaskActivityItem[]>(() => {
@@ -26,7 +27,7 @@ export const useTaskActivityStore = defineStore<'taskActivity', TaskActivityStor
     });
 
     function syncTaskActivityStore() {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
 
       const activityData = watchCore.taskActivity.getActivityData();
       currentActivityData.value = activityData;

@@ -1,9 +1,7 @@
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { InteractReceiveEvents } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
+import { InteractReceiveEvents, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
-export function bindInteractReceiveEvents() {
-  const watchCore = getWatchCore();
+export function bindInteractReceiveEvents(watchCore: PolyvWatchCore) {
   const interactReceiveStore = useInteractReceiveStore();
 
   // 互动设置信息更新事件

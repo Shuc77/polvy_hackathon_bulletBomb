@@ -9,9 +9,6 @@
         class="c-pc-chat-room__topic__announcement"
       />
 
-      <!-- 欢迎语 -->
-      <pc-chat-welcome-tips />
-
       <!-- 发起转播频道被踢出提示 -->
       <pc-chat-error-tips
         v-if="chatExited"
@@ -21,8 +18,17 @@
 
       <!-- 聊天重放消息提示 -->
       <pc-chat-msg-replay-tips
-        v-if="chatReplayEnabled"
+        v-if="chatMsgReplayEnabled"
         class="c-pc-chat-room__topic__replay"
+      />
+
+      <!-- 跑道消息 -->
+      <pc-runway-effect />
+
+      <!-- 打赏动画 -->
+      <pc-donate-animation
+        v-if="donateAnimationVisible"
+        class="c-pc-chat-room__donate-animation"
       />
     </div>
 
@@ -32,16 +38,10 @@
       <pc-chat-msg-list />
 
       <!-- 右下角挂件 -->
-      <pc-chat-room-pendant v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+      <pc-chat-room-pendant v-if="!isPlaybackWatchUrl" />
 
       <!-- 打赏 svga 特效 -->
       <pc-donate-svga-animation v-if="donateAnimationVisible" />
-
-      <!-- 打赏动画 -->
-      <pc-donate-animation
-        v-if="donateAnimationVisible"
-        class="c-pc-chat-room__donate-animation"
-      />
     </div>
 
     <!-- 互动二次入口 -->
@@ -69,7 +69,7 @@ import PcChatErrorTips from '../chat-error-tips/pc-chat-error-tips.vue';
 import PcChatInputController from '../chat-input-controller/pc-chat-input-controller/pc-chat-input-controller.vue';
 import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
 import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
-import PcChatWelcomeTips from '../chat-welcome/chat-welcome-tips.vue';
+import PcRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
 import PcChatMsgReplayTips from '../chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 
@@ -85,7 +85,7 @@ const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
 const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
-const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
+const { chatMsgReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -109,26 +109,28 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
   left: 0;
   z-index: 10;
   width: 100%;
-}
+  pointer-events: none;
 
-.c-pc-chat-room__topic__announcement {
-  margin-bottom: 8px;
-}
+  .c-pc-chat-room__topic__announcement {
+    margin-bottom: 8px;
+    pointer-events: initial;
+  }
 
-.c-pc-chat-room__topic__error,
-.c-pc-chat-room__topic__replay {
-  margin: 8px 8px 0;
+  .c-pc-chat-room__topic__error,
+  .c-pc-chat-room__topic__replay {
+    margin: 8px 8px 0;
+    pointer-events: initial;
+  }
+
+  .c-pc-chat-room__donate-animation {
+    position: relative;
+    left: 0;
+  }
 }
 
 .c-pc-chat-room__msg-list {
   position: relative;
   flex: 1;
   overflow: hidden;
-}
-
-.c-pc-chat-room__donate-animation {
-  position: absolute;
-  top: 45px;
-  left: 0;
 }
 </style>

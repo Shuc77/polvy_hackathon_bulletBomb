@@ -25,13 +25,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useMicroActivityHook } from '../hooks/use-micro-activity';
 
 const { microActivityTitle } = storeDefinitionToRefs(useMicroActivityStore);
@@ -48,20 +48,14 @@ const {
   updateIframeUrl,
 } = useMicroActivityHook({});
 
+useEventBusListener(
+  appEvents.microActivity.OpenPortraitMicroActivity,
+  handlePortraitMicroActivityVisible,
+);
+
 onMounted(() => {
   updateIframeUrl();
   displayIframeHeight.value = getDefaultDisplayIframeHeight();
-  eventBus.$on(
-    appEvents.microActivity.OpenPortraitMicroActivity,
-    handlePortraitMicroActivityVisible,
-  );
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(
-    appEvents.microActivity.OpenPortraitMicroActivity,
-    handlePortraitMicroActivityVisible,
-  );
 });
 
 /** 微活动主体显示/隐藏钩子 */

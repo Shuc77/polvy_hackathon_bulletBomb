@@ -1,9 +1,7 @@
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { ConnectMicEvents } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '../watch-sdk';
+import { ConnectMicEvents, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
-export function bindConnectMicModuleEvents(): void {
-  const watchCore = getWatchCore();
+export function bindConnectMicModuleEvents(watchCore: PolyvWatchCore): void {
   const connectMicStore = useConnectMicStore();
 
   watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicInfoChange, () => {

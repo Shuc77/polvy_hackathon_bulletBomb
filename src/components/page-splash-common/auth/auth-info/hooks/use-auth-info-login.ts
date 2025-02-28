@@ -1,12 +1,12 @@
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { AuthInfoType } from '@polyv/live-watch-sdk';
 import { computed, reactive } from 'vue';
 import { useAuthCommon } from '../../hooks/use-auth-common';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const authInfoLoginEmits = () => ({
   /** 关闭窗口 */
@@ -21,6 +21,10 @@ interface AuthInfoLoginFormData {
 }
 
 export const useAuthInfoLogin = (options: { emit: VueEmit<typeof authInfoLoginEmits> }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { emit } = options;
 
   function generateFromData(): AuthInfoLoginFormData {

@@ -3,19 +3,38 @@
 module.exports = {
   root: true,
   extends: [
-    './node_modules/@polyv/eslint-config/lib/for-vue',
+    './node_modules/@polyv/eslint-config/lib/for-vue2-js',
     './node_modules/@polyv/eslint-config/lib/for-ts',
     'plugin:prettier/recommended',
   ],
   parserOptions: {
     parser: '@typescript-eslint/parser',
     extraFileExtensions: ['.vue'],
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
   globals: {
     PROJECT_BUILD_TIME: 'readonly',
     PROJECT_VERSION: 'readonly',
+    WATCH_SDK_ENV: 'readonly',
+    IN_SDK_INJECT_MODE: 'readonly',
+    ENABLE_RUNTIME_PUBLIC_PATH: 'readonly',
+    BUILD_ENV: 'readonly',
   },
   rules: {
+    'import/named': 'off',
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
+    '@typescript-eslint/no-for-in-array': 'off',
+
+    '@typescript-eslint/naming-convention': [
+      'error',
+      {
+        selector: 'enumMember',
+        format: ['PascalCase', 'UPPER_CASE'],
+      },
+    ],
     'prettier/prettier': 'warn',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',

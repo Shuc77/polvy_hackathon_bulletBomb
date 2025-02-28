@@ -42,15 +42,18 @@
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import PcFormCheckbox from '@/components/common-base/form/form-checkbox/pc-form-checkbox.vue';
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { ref } from 'vue';
 import { setTipsOnce } from '../hooks/use-connect-mic-screen-share';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { visible, show: showTips, close: closeTips } = useSimpleVisible(false);
 
 useEventBusListener(appEvents.connectMic.OpenScreenShareTips, showTips);
+
+const { getEmitter } = useGlobalInject();
 
 const notVisible = ref(false);
 
@@ -61,7 +64,7 @@ function onClickConfirm() {
 
   closeTips();
 
-  eventBus.$emit(appEvents.connectMic.TriggerStartScreenShare);
+  getEmitter().emit(appEvents.connectMic.TriggerStartScreenShare);
 }
 </script>
 

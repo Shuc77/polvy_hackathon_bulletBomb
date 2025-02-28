@@ -1,14 +1,16 @@
 import { onMounted, ref } from 'vue';
-import { IarProductListInstance } from '../types/product-types';
+import { IarProductListInstance, ProductGoodData } from '../types/product-types';
 import { useProductTrack } from './use-product';
 import { isMobile, isWeixin } from '@/assets/utils/browser';
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 商品列表
  * */
 export const useProductList = (opts?: { autoInit: boolean }) => {
+  const { getWatchCore, getEmitter } = useGlobalInject();
+
   const watchCore = getWatchCore();
 
   const { autoInit = true } = opts || {};
@@ -39,7 +41,17 @@ export const useProductList = (opts?: { autoInit: boolean }) => {
 
   /** 进入订单中心 */
   const onEnterOrderCenter = () => {
-    eventBus.$emit(appEvents.interaction.OpenOrderCenterPopup);
+    getEmitter().emit(appEvents.interaction.OpenOrderCenterPopup);
+  };
+
+  /** 打开商品讲解回放页 */
+  const openProductExplain = (good: ProductGoodData) => {
+    const url = watchCore.utils.generateProductExplainPageUrl({
+      productId: good.productId,
+    });
+    if (url) {
+      window.open(url, '_blank');
+    }
   };
 
   onMounted(() => {
@@ -55,5 +67,6 @@ export const useProductList = (opts?: { autoInit: boolean }) => {
     initProductList,
     isShowOrderCenter,
     onEnterOrderCenter,
+    openProductExplain,
   };
 };

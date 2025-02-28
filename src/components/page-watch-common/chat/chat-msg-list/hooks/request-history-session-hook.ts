@@ -1,18 +1,27 @@
 import { ref } from 'vue';
 import { isString } from '@/assets/utils/string';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { RequestHistoryCommonResult } from './types';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 /**
  * @hook 请求场次历史消息
  */
-export const useRequestHistorySession = (): RequestHistoryCommonResult => {
-  const playbackStore = usePlaybackStore();
-  const chatMsgStore = useChatMsgStore();
+export const useRequestHistorySession = (
+  getStore: () => {
+    playbackStore: ReturnType<typeof usePlaybackStore>;
+    chatMsgStore: ReturnType<typeof useChatMsgStore>;
+    watchAppStore: ReturnType<typeof useWatchAppStore>;
+  },
+): RequestHistoryCommonResult => {
+  const playbackStore = getStore().playbackStore;
+  const chatMsgStore = getStore().chatMsgStore;
+  const watchAppStore = getStore().watchAppStore;
+
+  const getWatchCore = watchAppStore.getWatchCore;
 
   /** 当前页码，默认为 1 */
   const curPageNumber = ref(1);

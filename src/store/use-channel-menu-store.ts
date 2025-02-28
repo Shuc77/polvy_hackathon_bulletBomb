@@ -4,7 +4,6 @@
 import { computed, ComputedRef, Ref, ref, unref } from 'vue';
 import { defineStore } from 'pinia';
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   ChannelMenuItem,
   ChannelMenuType,
@@ -130,6 +129,11 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         menus = menus.filter(menu => menu.menuType !== ChannelMenuType.AIAssistant);
       }
 
+      // 直播状态下不显示AI 回放大纲
+      if (channelStore.liveStatus === LiveStatus.Live) {
+        menus = menus.filter(menu => menu.menuType !== ChannelMenuType.AISummary);
+      }
+
       // 处理 displayEnabled 字段
       menus = menus.filter(menu => ynToBool(menu.displayEnabled, YN.Y));
 
@@ -143,7 +147,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
 
     /** 同步频道菜单 */
     function syncChannelMenus(): void {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       cnChannelMenus.value = cloneDeep(watchCore.menu.getChannelMenus('zh_CN'));
       enChannelMenus.value = cloneDeep(watchCore.menu.getChannelMenus('en'));
     }
@@ -220,6 +224,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         [ChannelMenuType.MultiMeeting]: [translate('menu.tabName.multiMeeting'), '分会场'],
         [ChannelMenuType.Subtitle]: [translate('menu.tabName.subtitle'), '实时字幕'],
         [ChannelMenuType.AIAssistant]: [translate('menu.tabName.AIAssistant'), 'AI助手答疑'],
+        [ChannelMenuType.AISummary]: [translate('menu.tabName.AISummary'), 'AI看'],
       };
 
       if (!translateOptions[menuType]) {

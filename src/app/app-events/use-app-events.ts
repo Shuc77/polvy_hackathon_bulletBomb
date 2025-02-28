@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { onBeforeUnmount, onMounted, readonly } from 'vue';
-import mitt from 'mitt';
-import events from './events/';
+import mitt, { Emitter } from 'mitt';
+import { events } from './events/index';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 // 消息模块
 export const appEvents = readonly(events);
@@ -10,13 +11,11 @@ type AppMittEvents = {
   [key: string]: any;
 };
 
-const emitter = mitt<AppMittEvents>();
-// 应用消息总线
-export const eventBus = {
-  $on: emitter.on,
-  $emit: emitter.emit,
-  $off: emitter.off,
-};
+export type WatchAppEmitterType = Emitter<AppMittEvents>;
+
+export function createEmitter() {
+  return mitt<AppMittEvents>();
+}
 
 /**
  * 设置 eventBus 监听
@@ -24,12 +23,14 @@ export const eventBus = {
  * @param callback 回调
  */
 export const useEventBusListener = (event: string, callback: (...arg: any[]) => unknown) => {
+  const { getEmitter } = useMultiPolyvWatchApp();
+
   onMounted(() => {
-    eventBus.$on(event, callback);
+    getEmitter().on(event, callback);
   });
 
   onBeforeUnmount(() => {
-    eventBus.$off(event, callback);
+    getEmitter().off(event, callback);
   });
 };
 
@@ -38,8 +39,10 @@ export const useEventBusListener = (event: string, callback: (...arg: any[]) => 
  * @param event appEvents 中的事件
  */
 export const useEventBusEmitter = (event: string) => {
+  const { getEmitter } = useMultiPolyvWatchApp();
+
   function emitEvent(params?: any) {
-    eventBus.$emit(event, params);
+    getEmitter().emit(event, params);
   }
 
   return {

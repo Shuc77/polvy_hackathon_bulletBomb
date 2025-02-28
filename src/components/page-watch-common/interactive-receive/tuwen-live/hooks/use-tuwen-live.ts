@@ -1,10 +1,10 @@
 import { ref, computed, unref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 
 import { translate } from '@/assets/lang';
 import { previewImage } from '@/hooks/components/use-image-preview';
 
 import { AllTuwenMode, IarTuwenLiveInstance } from '../types/tuwen-live-types';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 interface PreviewTuwenImageData {
   /** 图片地址列表 */
@@ -17,6 +17,8 @@ interface PreviewTuwenImageData {
  * @hook 互动-图文直播
  * */
 export const useTuwenLive = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   /** 图文直播 SDK 实例 */
   const tuwenSdk = watchCore.interactReceive.getTuwen();

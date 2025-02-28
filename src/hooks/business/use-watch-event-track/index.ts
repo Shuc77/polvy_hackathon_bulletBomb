@@ -1,6 +1,6 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { TAB_NAME_PRODUCT } from '@/assets/constants/tab-name';
 import { TabNameType } from '@/components/common-base/tabs/hooks/types';
-import { getWatchCore } from '@/core/watch-sdk';
 import { RedpackType } from '@polyv/live-watch-sdk';
 
 /**
@@ -47,6 +47,8 @@ export const obverseTrackShowBehavior = async <T extends Element>({
  * 点击上报埋点日志时，不需要等待业务接口
  */
 export const useWatchEventTrack = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
 
   /** 获取是否需要进行业务埋点 */

@@ -18,13 +18,15 @@
 </template>
 
 <script setup lang="ts">
-import { getWatchCore } from '@/core/watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PlvPopper } from '@/plugins/polyv-ui/admin-import';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { unref } from 'vue';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const { paintMode, hasPaintAuth } = storeDefinitionToRefs(useDocStore);
 

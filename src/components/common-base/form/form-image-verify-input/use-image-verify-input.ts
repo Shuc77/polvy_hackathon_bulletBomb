@@ -1,7 +1,7 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { computed, onMounted, ref, watch } from 'vue';
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { ImageVerifyInputInstance } from './type';
@@ -22,6 +22,10 @@ export const useImageVerifyInput = (options: {
   props: VueProps<typeof formImageVerifyInputProps>;
   emit: VueEmit<typeof formImageVerifyInputEmits>;
 }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const watchCore = getWatchCore();
+
   const { props, emit } = options;
 
   const inputPlaceholder = computed(() => {
@@ -33,7 +37,6 @@ export const useImageVerifyInput = (options: {
 
   /** 刷新验证码图片 */
   async function refreshVerifyImage(resetVal = false) {
-    const watchCore = getWatchCore();
     const data = await watchCore.sms.generateImageVerifyCode();
     imageUrl.value = data.url;
     emit('update:imageId', data.imageId);

@@ -14,11 +14,20 @@
           :class="{
             'is-active': paneData.name === currentTabName,
             'c-pc-aside-tab-header__item--reminder pws-main-tab-header-item-reminder':
-              paneData.showReminder,
+              paneData.showReminder && !paneData.showNewMessage,
           }"
           @click="onClickHeaderItem(paneData)"
         >
-          <span>{{ paneData.label }}</span>
+          <span
+            v-if="paneData.showNewMessage"
+            :class="{ 'c-pc-aside-tab-header__item--news': paneData.showReminder }"
+          >
+            {{ paneData.label }}
+            <span v-if="paneData.showReminder">
+              {{ $lang('ask.news') }}
+            </span>
+          </span>
+          <span v-else>{{ paneData.label }}</span>
           <span v-if="paneData.subLabel">{{ paneData.subLabel }}</span>
         </div>
 
@@ -124,6 +133,25 @@ const { leftArrowVisible, rightArrowVisible } = useTabHeaderArrow({
   margin-left: 3px;
   content: '';
   border-radius: 50%;
+}
+
+.c-pc-aside-tab-header__item--news {
+  position: relative;
+
+  > span {
+    position: absolute;
+    bottom: 100%;
+    left: 100%;
+    padding: 0 6px;
+    margin: 0 0 -7px -17px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #fff;
+    white-space: nowrap;
+    background: #ff5252;
+    border-radius: 8px 8px 8px 0;
+    transform: scale(0.78);
+  }
 }
 
 .c-pc-aside-tab-header__current-line {

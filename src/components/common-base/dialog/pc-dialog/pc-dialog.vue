@@ -2,6 +2,9 @@
 <template>
   <div
     class="c-pc-dialog"
+    :class="{
+      [getSkinClassName()]: true,
+    }"
     ref="dialogRef"
   >
     <transition
@@ -74,6 +77,12 @@ import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types';
 
 import { dialogPcProps, dialogEmits } from '../use-dialog';
+import { usePageSkin } from '@/skins/use-page-skin';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getAppRootElement, getAppBodyElement, getAppElement } = useGlobalInject();
+
+const { getSkinClassName } = usePageSkin();
 
 const props = defineProps(dialogPcProps());
 
@@ -142,7 +151,7 @@ watch(
   () => props.mountEl,
   newValue => {
     if (!newValue) {
-      document.body.appendChild(dialogRef.value!);
+      getAppBodyElement().appendChild(dialogRef.value!);
     }
   },
 );
@@ -209,10 +218,10 @@ function afterLeave() {
 
 function setMountEl() {
   if (props.mountEl) {
-    const mountElNode = document.querySelector(props.mountEl);
+    const mountElNode = getAppRootElement().querySelector(props.mountEl);
     mountElNode && mountElNode.appendChild(dialogRef.value!);
   } else if (props.appendToBody) {
-    document.body.appendChild(dialogRef.value!);
+    getAppBodyElement().appendChild(dialogRef.value!);
   }
 }
 
@@ -315,21 +324,21 @@ function resetPosition() {
   const $dialogContent = dialogContentRef.value;
   if (!$dialogContent) return;
 
-  let $wrapElem = document.documentElement as Element;
+  let $wrapElem = getAppRootElement() as Element;
 
   // 窗口滚动数据
-  const scrollTop = document.documentElement.scrollTop;
-  const scrollLeft = document.documentElement.scrollLeft;
+  const scrollTop = getAppRootElement().scrollTop;
+  const scrollLeft = getAppRootElement().scrollLeft;
 
   // 如果有传入位置计算元素则使用对应的节点作为外层计算
   if (props.positionComputedElem) {
-    const elem = document.querySelector(props.positionComputedElem);
+    const elem = getAppRootElement().querySelector(props.positionComputedElem);
     if (elem) {
       $wrapElem = elem;
     }
   }
 
-  const isDocumentElement = $wrapElem === document.documentElement;
+  const isDocumentElement = $wrapElem === getAppRootElement();
   const bound = $wrapElem.getBoundingClientRect();
   const boundY = bound.y || bound.top;
   const boundX = bound.x || bound.left;
@@ -353,7 +362,7 @@ function resetPosition() {
 
 // 检查弹层位置，禁止在页面之外
 function checkPosition() {
-  const $appElem = document.querySelector('#app');
+  const $appElem = getAppElement();
   if (!$appElem) return;
 
   const $dialogContent = dialogContentRef.value;

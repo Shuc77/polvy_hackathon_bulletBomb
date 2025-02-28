@@ -1,4 +1,3 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   PolyvAIAssistantChatStatus,
   PolyvAIAssistantConfig,
@@ -6,6 +5,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, Ref, ref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface PolyvAIStore {
   /** AI 助手相关配置 */
@@ -26,6 +26,8 @@ export interface PolyvAIStore {
  * 保利威 AI Store
  */
 export const usePolyvAIStore = defineStore<'polyvAI', PolyvAIStore>('polyvAI', () => {
+  const watchAppStore = useWatchAppStore();
+
   /** 是否支持 AI 助手聊天 */
   const supportAIAssistantChat = ref(false);
 
@@ -56,7 +58,7 @@ export const usePolyvAIStore = defineStore<'polyvAI', PolyvAIStore>('polyvAI', (
    * 同步 PolyvAI 存储数据
    */
   function syncPolyvAIStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     const config = watchCore.polyvAI.getAIAssistantConfig();
     AIAssistantConfig.value = config;

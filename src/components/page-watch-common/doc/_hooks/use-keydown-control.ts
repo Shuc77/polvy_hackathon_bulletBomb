@@ -1,5 +1,5 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { KeyCodeMap } from '@/assets/constants/key-code';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -10,6 +10,8 @@ import { onBeforeUnmount, watchEffect } from 'vue';
  * 文档键盘控制 hook
  */
 export const useDocKeydownControl = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
   const docStore = useDocStore();

@@ -3,7 +3,6 @@
 import debounce from 'lodash-es/debounce';
 import { computed, ref, unref } from 'vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 
@@ -16,6 +15,7 @@ import {
   InviteRankRequestFailReason,
   InviteListSetting,
 } from '@polyv/live-watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 interface TopInviteRankItem extends InviteRankItem {
   /** 是否是造出来的数据 */
@@ -23,6 +23,8 @@ interface TopInviteRankItem extends InviteRankItem {
 }
 
 export const useInviteRankHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const page = ref(0);
   const isLoading = ref(false);
   const isNoMore = ref(false);
@@ -158,7 +160,14 @@ export const useInviteRankHook = () => {
       }
 
       page.value = data.pageNumber;
-      resRankList.value = data.contents;
+      resRankList.value = data.contents.map(item => {
+        if (isCurrentViewer(item)) return item;
+
+        return {
+          ...item,
+          nickname: watchCore.utils.processForceHiddenNickname(item.nickname),
+        };
+      });
       if (data.totalPages <= page.value) {
         isNoMore.value = true;
       }

@@ -7,10 +7,13 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
 
 function showRulePopup() {
-  eventBus.$emit(appEvents.portrait.OpenPortraitOnlineUserListRulePopup);
+  getEmitter().emit(appEvents.portrait.OpenPortraitOnlineUserListRulePopup);
 }
 </script>
 

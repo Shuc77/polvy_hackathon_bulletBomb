@@ -1,20 +1,31 @@
-import { getWatchCore } from '@/core/watch-sdk';
-
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useEventBusListener, appEvents } from '@/app/app-events';
 import { isIE } from '@/assets/utils/browser';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { isBuildForFeedMainMode, isInjectByExternalApp } from '@/assets/utils/utils';
+import { useChannelStore } from '@/store/use-channel-store';
+import { LiveStatus } from '@polyv/live-watch-sdk';
 
 /**
  * 连麦 hook
  */
 export const useConnectMicSetup = () => {
   const connectMicStore = useConnectMicStore();
+  const channelStore = useChannelStore();
+  const { getWatchCore } = useMultiPolyvWatchApp();
 
   /**
    * 初始化连麦
    */
   async function initConnectCall() {
     if (!connectMicStore.connectMicEnabled) return;
+
+    // feed 流不使用连麦 或 非直播状态不使用连麦
+    if (
+      (isBuildForFeedMainMode() && isInjectByExternalApp()) ||
+      channelStore.liveStatus !== LiveStatus.Live
+    )
+      return;
 
     const watchCore = getWatchCore();
     if (isIE) {

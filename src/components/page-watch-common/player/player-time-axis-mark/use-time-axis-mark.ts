@@ -1,9 +1,9 @@
 import { onBeforeMount, onMounted, ref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import { PlayerEvents, PlayerEventsRelations, TimeAxisMarkInfo } from '@polyv/live-watch-sdk';
 
 import { usePlayerAction } from '../hooks/use-player-action';
 import cloneDeep from 'lodash-es/cloneDeep';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 打点信息合并列表项 */
 export interface TimeAxisMarkMergedListItem {
@@ -12,6 +12,8 @@ export interface TimeAxisMarkMergedListItem {
 }
 
 export const useTimeAxisMarkHook = (hookOptions?: { getContainerWidth: () => number }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { getContainerWidth = () => 0 } = hookOptions || {};
 
   const timeAxisMarkList = ref<TimeAxisMarkInfo[]>([]);

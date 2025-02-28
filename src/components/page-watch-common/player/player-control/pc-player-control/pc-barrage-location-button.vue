@@ -15,10 +15,15 @@ import {
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { tupleString } from '@/assets/utils/array';
 
-defineProps({
-  /** 位置按钮类型 */
-  buttonType: PropUtils.oneOf(tupleString('top', 'bottom', 'half', 'full')).def('top'),
-});
+defineProps(
+  (() => {
+    const buttonTypeList = tupleString('top', 'bottom', 'half', 'full');
+    return {
+      /** 位置按钮类型 */
+      buttonType: PropUtils.oneOf(buttonTypeList).def('top'),
+    };
+  })(),
+);
 
 /**
  * 位置按钮名称对应使用的组件

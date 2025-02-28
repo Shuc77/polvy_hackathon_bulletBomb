@@ -10,7 +10,9 @@
 
 <script setup lang="ts">
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { onClickInvitePosterEntry } from '../hooks/use-invite-poster-entry';
+import { useInvitePosterEntry } from '../hooks/use-invite-poster-entry';
+
+const { onClickInvitePosterEntry } = useInvitePosterEntry();
 </script>
 
 <style lang="scss">

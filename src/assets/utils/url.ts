@@ -49,3 +49,11 @@ export function appendUrl<T extends object>(
 
   return appendToURL(host, payload, options);
 }
+
+/**
+ * 打开链接
+ */
+export function openLink(href?: string) {
+  if (!href) return;
+  window.open(href, '_blank');
+}

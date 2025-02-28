@@ -1,5 +1,5 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { computed, onBeforeMount, onBeforeUnmount, ref, unref } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { computed, ref, unref } from 'vue';
 
 import { translate } from '@/assets/lang';
 
@@ -55,19 +55,13 @@ export const useLotteryResult = () => {
       });
     }
 
-    lotteryResultStatus.value = AllLotteryResultStatus.isShowLotteryEnd;
+    lotteryResultStatus.value = AllLotteryResultStatus.IsShowLotteryEnd;
     backLotteryResult();
 
     setLotteryResultVisible(visible);
   }
 
-  onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenLotteryResult, onOpenLotteryResult);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenLotteryResult, onOpenLotteryResult);
-  });
+  useEventBusListener(appEvents.interaction.OpenLotteryResult, onOpenLotteryResult);
 
   /** 抽奖标题 */
   const lotteryResultTitle = computed(() => {
@@ -76,14 +70,14 @@ export const useLotteryResult = () => {
       isShowWinnerList: translate('interact.lottery.checkList'),
       isShowSubmitInfo: translate('interact.lottery.submitInfo'),
     };
-    const status = unref(lotteryResultStatus) ?? AllLotteryResultStatus.isShowLotteryEnd;
+    const status = unref(lotteryResultStatus) ?? AllLotteryResultStatus.IsShowLotteryEnd;
     return titles[status];
   });
 
   const showBackable = computed(() => {
     return (
       lotteryResultStatus.value &&
-      lotteryResultStatus.value !== AllLotteryResultStatus.isShowLotteryEnd
+      lotteryResultStatus.value !== AllLotteryResultStatus.IsShowLotteryEnd
     );
   });
 

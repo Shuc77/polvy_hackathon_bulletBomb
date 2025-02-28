@@ -3,8 +3,7 @@ import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { useDialogTipsUtils } from '@/components/common-base/dialog/use-dialog-tips';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { getAreaSelectNames, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
 import { useEnrollStore } from '@/store/use-enroll-store';
@@ -20,6 +19,7 @@ import { useCommonStore } from '@/store/use-common-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { useEnrollSms } from './use-enroll-sms';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 interface EnrollBasicFormData {
   /** 验证的手机号 */
@@ -56,6 +56,10 @@ export const enrollFormEmits = () => ({
  * 报名观看表单填写 hook
  */
 export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { emit } = options;
 
   const { imageVerifyInputRef, imageVerifyInputEnabled, smsValidType } = useEnrollSms();
@@ -333,6 +337,7 @@ export const useEnrollCheckMobile = (options: {
   /** 获取手机区号 */
   getAreaCode: () => string;
 }) => {
+  const { getWatchCore } = useGlobalInject();
   const { showDialogTips } = useDialogTipsUtils();
 
   /** 失焦检查报名状态 */

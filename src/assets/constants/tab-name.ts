@@ -82,3 +82,8 @@ export const TAB_NAME_MULTI_MEETING = 'multiMeeting';
  * AI助手答疑 tab 名
  */
 export const TAB_NAME_AI_ASSISTANT = 'aiAssistant';
+
+/**
+ * (AI 看) AI 智能大纲 tab 名
+ */
+export const TAB_NAME_AI_SUMMARY = 'aiSummary';

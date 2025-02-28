@@ -8,24 +8,46 @@
           v-if="channelInfoSeat === 1"
           class="c-portrait-carousel-main-screen__top-left__item"
         >
+          <mobile-feed-layout-back-btn
+            v-if="isBuildForFeedMainMode()"
+            class="c-portrait-carousel-main-screen__top-left__item__children"
+          />
           <!-- 频道信息 -->
           <portrait-channel-info-capsule />
         </div>
 
         <div
-          class="c-portrait-carousel-main-screen__top-left__item"
+          class="c-portrait-carousel-main-screen__top-left__item c-portrait-carousel-main-screen__top-left__item--scroll"
           v-show="!portraitPlayerIsPageFullscreen"
         >
-          <!-- 邀请榜入口 -->
-          <portrait-invite-rank-entrance
-            v-if="inviteRankEnabled"
-            class="c-portrait-carousel-main-screen__top-left__item__children"
-          />
-          <!-- 互动二次入口 -->
-          <portrait-interactive-entrance
-            v-if="!isPlaybackWatchUrl && iarSdkLoaded"
-            class="c-portrait-carousel-main-screen__top-left__item__children"
-          />
+          <div
+            class="c-portrait-carousel-main-screen__top-left__item__container"
+            @touchstart="handleTouchStart"
+            @touchend="handleTouchEnd"
+            @touchmove="handleTouchMove"
+          >
+            <!-- 直播状态标签 -->
+            <portrait-status-tag
+              class="c-portrait-carousel-main-screen__top-left__item__children"
+            />
+
+            <!-- 竖屏分会场 -->
+            <portrait-multi-meeting-entrance
+              v-if="multiMeetingEnabled"
+              class="c-portrait-carousel-main-screen__top-left__item__children"
+            />
+
+            <!-- 邀请榜入口 -->
+            <portrait-invite-rank-entrance
+              v-if="inviteRankEnabled"
+              class="c-portrait-carousel-main-screen__top-left__item__children"
+            />
+            <!-- 互动二次入口 -->
+            <portrait-interactive-entrance
+              v-if="!isPlaybackWatchUrl && iarSdkLoaded"
+              class="c-portrait-carousel-main-screen__top-left__item__children"
+            />
+          </div>
         </div>
 
         <div class="c-portrait-carousel-main-screen__top-left__item">
@@ -40,7 +62,7 @@
       <div class="c-portrait-carousel-main-screen__top-right">
         <!-- 在线列表入口 -->
         <portrait-online-user-capsule
-          v-if="portraitOnlineListEntranceVisible"
+          v-if="portraitOnlineListEntranceVisible || chatOnlineNumberEnable"
           class="c-portrait-carousel-main-screen__top-right__item"
         />
         <!-- 置顶公告 -->
@@ -71,15 +93,15 @@
         v-show="!portraitPlayerIsPageFullscreen && donateAnimationVisible"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
-        <portrait-donate-animation :track-count="2" />
+        <portrait-donate-animation />
       </div>
 
-      <!-- 欢迎语 -->
+      <!-- 跑道消息 -->
       <div
         v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
-        <portrait-chat-welcome-tips />
+        <portrait-runway-effect :left="16" />
       </div>
 
       <!-- 消息区 -->
@@ -138,7 +160,7 @@
       <!-- 右侧挂件 -->
       <div class="c-portrait-carousel-main-screen__bottom__pendant">
         <portrait-chat-room-pendant
-          v-if="!isPlaybackWatchUrl && iarSdkLoaded"
+          v-if="!isPlaybackWatchUrl"
           v-show="!portraitPlayerIsPageFullscreen"
         />
       </div>
@@ -190,7 +212,7 @@
         <div class="c-portrait-carousel-main-screen__bottom__right-auto">
           <!-- 商品库入口 -->
           <portrait-product-list-entrance
-            v-if="interactSetting.productEnabled && !isPlaybackWatchUrl && iarSdkLoaded"
+            v-if="!isPlaybackWatchUrl && iarSdkLoaded"
             class="c-portrait-carousel-main-screen__bottom__button"
           />
 
@@ -251,12 +273,18 @@
       class="c-portrait-carousel-main-screen__speak-top"
       layout="portrait"
     ></speak-top-business>
+
+    <!-- 其他直播预约 -->
+    <common-other-live-booking class="c-portrait-carousel-main-screen__other-live-booking" />
   </div>
 </template>
 
 <script setup lang="ts">
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { computed, defineAsyncComponent } from 'vue';
 
+import MobileFeedLayoutBackBtn from '@/components/page-feed-common/feed-layout-back-btn/mobile-feed-layout-back-btn.vue';
+import PortraitStatusTag from '@/components/common-business/status-tag/portrait-status-tag.vue';
 import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
 import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
@@ -264,7 +292,6 @@ import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-clos
 import PortraitChatErrorTips from '@/components/page-watch-common/chat/chat-error-tips/portrait-chat-error-tips.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
-import PortraitChatWelcomeTips from '@/components/page-watch-common/chat/chat-welcome/portrait-chat-welcome-tips.vue';
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
 import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
 import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
@@ -282,6 +309,9 @@ import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/p
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-online-user-capsule.vue';
+import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
+import PortraitRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
+import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -300,6 +330,7 @@ import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrai
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
+import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 
 const PortraitAsk = defineAsyncComponent(() => {
   return import(
@@ -313,15 +344,20 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { announcementFunctionVisible, interactSetting, hasBulletin, productBubbleVisible } =
+const { announcementFunctionVisible, hasBulletin, productBubbleVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { showDonateFunction, donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { chatInputControllerEnable, chatRoomVisible, chatExited, likeFeatureEnabled } =
-  storeDefinitionToRefs(useChatStore);
+const {
+  chatInputControllerEnable,
+  chatRoomVisible,
+  chatExited,
+  likeFeatureEnabled,
+  chatOnlineNumberEnable,
+} = storeDefinitionToRefs(useChatStore);
 
-const { isPlaybacking, playbackListVisible, chapterVisible, chatReplayEnabled } =
+const { isPlaybacking, playbackListVisible, chapterVisible, chatMsgReplayEnabled } =
   storeDefinitionToRefs(usePlaybackStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
@@ -348,7 +384,7 @@ const portraitChatInputVisible = computed(() => {
     return true;
   }
 
-  if (chatReplayEnabled.value) return false;
+  if (chatMsgReplayEnabled.value) return false;
   if (!chatInputControllerEnable.value) return false;
 
   return chatRoomVisible.value;
@@ -383,6 +419,20 @@ const {
 } = useMessageCarousel();
 
 const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait.ClickPlayerRegion);
+
+const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
+
+const handleTouchStart = (event: TouchEvent) => {
+  event.stopPropagation();
+};
+
+const handleTouchMove = (event: TouchEvent) => {
+  event.stopPropagation();
+};
+
+const handleTouchEnd = (event: TouchEvent) => {
+  event.stopPropagation();
+};
 </script>
 
 <style lang="scss">
@@ -395,6 +445,22 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   margin-bottom: 10px;
 
   &:empty {
+    display: none;
+  }
+}
+.c-portrait-carousel-main-screen__top-left__item--scroll {
+  width: calc(var(--plv-watch-full-screen-vw) - 16px);
+}
+.c-portrait-carousel-main-screen__top-left__item__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: calc(var(--plv-watch-full-screen-vw) - 36px);
+  margin-right: 10px;
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
     display: none;
   }
 }
@@ -555,5 +621,12 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 
 .c-portrait-carousel-main-screen__speak-top {
   z-index: 2300;
+}
+
+.c-portrait-carousel-main-screen__other-live-booking {
+  position: absolute;
+  top: 105px;
+  left: 20px;
+  z-index: 2200;
 }
 </style>

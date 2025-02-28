@@ -122,7 +122,8 @@ import { CSSProperties } from 'vue/types/jsx';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const props = defineProps({
   ...msgInputWrapProps(),
@@ -224,8 +225,10 @@ const showSendBtn = computed(() => {
   return isInputFocus.value;
 });
 
+const { getEmitter } = useGlobalInject();
+
 function openSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  getEmitter().emit(appEvents.chat.OpenSetNick, true);
 }
 
 defineExpose(msgInputWrapInstance);

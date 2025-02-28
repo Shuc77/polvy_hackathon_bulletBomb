@@ -1,7 +1,6 @@
 /**
  * @file 实时字幕 store
  */
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   LiveStatus,
   PlaybackType,
@@ -15,6 +14,7 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useChannelStore } from './use-channel-store';
+import { useWatchAppStore } from './use-watch-app-store';
 import { useLangStore } from './use-lang-store';
 import { usePlaybackStore } from './use-playback-store';
 
@@ -82,6 +82,7 @@ export interface SubtitleStoreAction {
 export interface SubtitleStore extends SubtitleStoreState, SubtitleStoreAction {}
 
 export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle', () => {
+  const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const langStore = useLangStore();
   const playbackStore = usePlaybackStore();
@@ -251,8 +252,8 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
    * 初始化所有翻译选项数据
    */
   async function initSubtitleSourceTranslateLanguageOptionMap() {
-    const watchCore = getWatchCore();
-    const options = await watchCore.subtitles.getSubtitleTranslateOptions();
+    const watchCore = watchAppStore.getWatchCore();
+    const options = await watchCore.subtitle.getSubtitleTranslateOptions();
     subtitleSourceTranslateLanguageOptionMap.value = options.reduce((accu, cur) => {
       if (!accu[cur.value]) {
         accu[cur.value] = cur;
@@ -265,8 +266,8 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
    * 同步实时字幕配置
    * */
   function syncSubtitleConfig() {
-    const watchCore = getWatchCore();
-    const subTitleConfig = watchCore.subtitles.getSubtitleConfig();
+    const watchCore = watchAppStore.getWatchCore();
+    const subTitleConfig = watchCore.subtitle.getSubtitleConfig();
 
     subtitleRealTimeEnabled.value = subTitleConfig.subtitleRealTimeEnabled;
     subtitleTranslateEnabled.value = subTitleConfig.subtitleTranslateEnabled;
@@ -280,8 +281,8 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
 
   /** 更改实时字幕翻译语言 */
   function changeLiveSubtitleSourceTranslateLanguage(lang: SubtitleSourceTranslateLanguage) {
-    const watchCore = getWatchCore();
-    watchCore.subtitles.updateLiveSubtitleTranslateLanguage(lang);
+    const watchCore = watchAppStore.getWatchCore();
+    watchCore.subtitle.updateLiveSubtitleTranslateLanguage(lang);
     syncSubtitleConfig();
   }
 

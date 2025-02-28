@@ -44,15 +44,18 @@ import { useAIAssistantMsgInjectInfo } from '../_hooks/use-ai-assistant-msg-inje
 
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { msgUserNick, msgUserAvatar, isSelfMsg, isAIUser, msgPosition } =
   useAIAssistantMsgInjectInfo();
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
+const { getEmitter } = useGlobalInject();
+
 function onClickSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  getEmitter().emit(appEvents.chat.OpenSetNick, true);
 }
 </script>
 

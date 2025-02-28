@@ -1,8 +1,8 @@
 /**
  * @file 播放器操作 hook
  */
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents } from '@/app/app-events';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore, SwitchTipsStatus } from '@/store/use-player-store';
@@ -17,6 +17,8 @@ export const usePlayerAction = () => {
   const playerStore = usePlayerStore();
   const layoutStore = useLayoutStore();
   const connectMicStore = useConnectMicStore();
+
+  const { getWatchCore, getEmitter } = useMultiPolyvWatchApp();
 
   const { playButtonVisible, bigPlayButtonVisible } = usePlayerControl();
 
@@ -63,6 +65,10 @@ export const usePlayerAction = () => {
   function forcePausePlay(
     opts: { onceHiddenPlayButton: boolean } = { onceHiddenPlayButton: false },
   ) {
+    if (isNotAllowAction()) {
+      return;
+    }
+
     playerStore.$patch({ onceHiddenPlayButton: opts.onceHiddenPlayButton });
 
     // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
@@ -419,7 +425,7 @@ export const usePlayerAction = () => {
       mobilePlayerIsPageFullscreen: false,
     });
     setTimeout(() => {
-      eventBus.$emit(appEvents.player.ResetUpPlayer);
+      getEmitter().emit(appEvents.player.ResetUpPlayer);
     }, 0);
   }
 

@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
-    <page-error-entry
-      v-if="pageError"
+  <div :id="uniqueId">
+    <direct-business-page-entry
+      v-if="directBusinessPageType"
       @hook:mounted="onLayoutMounted"
     />
-    <template v-if="!pageError && watchAppInited">
+    <template v-if="!directBusinessPageType && watchAppInited">
       <pc-main
         v-if="!isMobile"
         @page-mounted="onLayoutMounted"
@@ -27,8 +27,12 @@ import { isMobile } from '@/assets/utils/browser';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-import PageErrorEntry from './layout/page-error/page-error-entry.vue';
+import DirectBusinessPageEntry from './layout/direct-business-page/direct-business-page-entry.vue';
+import { useGlobalInject } from './use-global-inject';
+// import { useCurrentWatchAppEffect } from '@/hooks/core/use-error-verify';
 // import SkinSelect from '../skins/_debug/skin-select.vue';
+
+const { uniqueId } = useGlobalInject();
 
 const PcMain = defineAsyncComponent(
   () => import(/* webpackChunkName: "pc-main" */ './layout/main-enter/pc-main.vue'),
@@ -37,9 +41,11 @@ const MobileMain = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-main" */ './layout/main-enter/mobile-main.vue'),
 );
 
-const { onLayoutMounted } = useWatchApp();
+// eslint-disable-next-line no-unused-vars
+const { onLayoutMounted, setupWatchApp } = useWatchApp();
+// useCurrentWatchAppEffect(setupWatchApp);
 
-const { pageError, watchAppInited } = storeDefinitionToRefs(useWatchAppStore);
+const { directBusinessPageType, watchAppInited } = storeDefinitionToRefs(useWatchAppStore);
 </script>
 
 <style lang="scss" src="@/assets/styles/global.scss"></style>

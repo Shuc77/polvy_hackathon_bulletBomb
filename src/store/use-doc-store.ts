@@ -4,8 +4,9 @@ import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from './use-playback-store';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { useFeedInjectStore } from './use-feed-inject-store';
 
 export interface DocStoreState {
   /** 配置是否使用文档 */
@@ -40,6 +41,7 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
+  const feedInjectStore = useFeedInjectStore();
 
   /** 配置是否使用文档 */
   const docEnabled = ref(true);
@@ -53,6 +55,10 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
 
     // 会议模式下不支持创建文档
     if (watchAppStore.meetingMode) {
+      return false;
+    }
+
+    if (isBuildForFeedMainMode() && feedInjectStore.inFirstFeedLayout) {
       return false;
     }
 
@@ -80,7 +86,7 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
   const viewerPptTurningEnabled = ref(true);
 
   function syncDocStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const docInfo = watchCore.doc.getDocInfo();
     hasPaintAuth.value = docInfo.hasPaintAuth;
     paintMode.value = docInfo.paintMode;

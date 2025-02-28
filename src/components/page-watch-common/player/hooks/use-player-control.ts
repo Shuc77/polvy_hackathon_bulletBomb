@@ -4,15 +4,19 @@
 import { translate } from '@/assets/lang';
 import { isMobile, tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 import { numberAccuracy } from '@/assets/utils/number';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
+import { useFeedInjectStore } from '@/store/use-feed-inject-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { LiveStatus, PlayStatus, QualityLevelType } from '@polyv/live-watch-sdk';
 import { formatSeconds } from '@utils-ts/date';
 import { computed, unref } from 'vue';
+import { appEvents } from '@/app/app-events';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /** 播放器设置节点 */
 type PlayerSettingItem<V = string> = {
@@ -28,6 +32,9 @@ export const usePlayerControl = () => {
   const connectMicStore = useConnectMicStore();
   const docStore = useDocStore();
   const subtitleStore = useSubtitleStore();
+  const feedInjectStore = useFeedInjectStore();
+
+  const { getEmitter } = useMultiPolyvWatchApp();
 
   /** 播放按钮提示文案 */
   const playButtonTips = computed<string>(() => {
@@ -82,6 +89,10 @@ export const usePlayerControl = () => {
    * */
   const bigPlayButtonVisible = computed<boolean>(() => {
     if (playerStore.onceHiddenPlayButton) {
+      return false;
+    }
+
+    if (isBuildForFeedMainMode() && feedInjectStore.inFirstFeedLayout) {
       return false;
     }
 
@@ -389,6 +400,24 @@ export const usePlayerControl = () => {
     );
   });
 
+  /** 添加历史播放进度提示监听 */
+  const addHistoryTipsListener = () => {
+    const showHistoryTips = (duration: number) => {
+      playerStore.$patch({
+        historyDuration: duration || 0,
+      });
+    };
+
+    // 历史播放进度提示
+    getEmitter().on(appEvents.player.ShowHistoryTips, showHistoryTips);
+
+    return {
+      dispose: () => {
+        getEmitter().off(appEvents.player.ShowHistoryTips, showHistoryTips);
+      },
+    };
+  };
+
   return {
     playButtonTips,
     playButtonVisible,
@@ -433,6 +462,8 @@ export const usePlayerControl = () => {
     fastForwardBackwardVisible,
     forwardButtonTips,
     backwardButtonTips,
+
+    addHistoryTipsListener,
   };
 };
 

@@ -28,17 +28,21 @@
 
 <script setup lang="ts">
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { toast } = useToastManager();
 
 const { screenShareInfo } = storeDefinitionToRefs(useConnectMicStore);
 
+const { getEmitter, getWatchCore } = useGlobalInject();
+
 function onClickStop() {
-  eventBus.$emit(appEvents.connectMic.TriggerStopScreenShare);
+  getEmitter().emit(appEvents.connectMic.TriggerStopScreenShare);
 }
 
 function onClickPip() {

@@ -60,9 +60,9 @@ const { translateGoodName } = useDonateStore();
 }
 .c-mobile-reward-msg__pic {
   display: inline-block;
-  width: 48px;
-  height: 48px;
-  margin: 0 4px 0 8px;
+  width: 24px;
+  height: 24px;
+  margin: 0 4px;
   vertical-align: middle;
 }
 .c-mobile-reward-msg__pic--redpaper {

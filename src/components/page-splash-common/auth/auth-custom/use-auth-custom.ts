@@ -1,6 +1,6 @@
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
-import { paramGetter, queryParams } from '@/hooks/core/use-query-params';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { AuthSettingItemCustom, CustomAuthSignParams } from '@polyv/live-watch-sdk';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
@@ -9,6 +9,14 @@ import { useAuthCommon } from '../hooks/use-auth-common';
  * 自定义授权操作 hook
  */
 export const useAuthCustomAction = () => {
+  const { getWatchCore, getPolyvWatchApp } = useMultiPolyvWatchApp();
+
+  const { getQueryParams, paramGetter } = useQueryParams({
+    getPolyvWatchAppLoader: () => () => getPolyvWatchApp(),
+  });
+
+  const { toast } = useToastManager();
+
   const { failMessage, getDefaultFailMessage, handleAuthVerifySuccess, handleAuthVerifyFail } =
     useAuthCommon();
 
@@ -17,9 +25,9 @@ export const useAuthCustomAction = () => {
    */
   function getCustomAuthSignParams(): CustomAuthSignParams {
     return {
-      userid: paramGetter.userid() || '',
-      ts: paramGetter.ts() || '',
-      sign: paramGetter.sign() || '',
+      userid: paramGetter().userid() || '',
+      ts: paramGetter().ts() || '',
+      sign: paramGetter().sign() || '',
     };
   }
 
@@ -32,7 +40,10 @@ export const useAuthCustomAction = () => {
   /** 验证自定义授权 */
   async function verifyCustomAuth() {
     const watchCore = getWatchCore();
-    const result = await watchCore.auth.verifyCustomAuth(getCustomAuthSignParams(), queryParams);
+    const result = await watchCore.auth.verifyCustomAuth(
+      getCustomAuthSignParams(),
+      getQueryParams(),
+    );
     if (result.success) {
       await handleAuthVerifySuccess(result);
     } else {

@@ -1,5 +1,4 @@
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
@@ -9,15 +8,19 @@ import {
   forceChangePlvPopperManagerZIndex,
   recoverPlvPopperManagerZIndex,
 } from '@/plugins/polyv-ui/helper';
-import { useWebviewStore } from '@/store/use-webview-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
 /**
  * @hook 互动-抽奖-条件抽奖
  * */
 export const useWelfareLottery = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
+
   const interactReceiveStore = useInteractReceiveStore();
   const enrollStore = useEnrollStore();
-  const webviewStore = useWebviewStore();
   const { sendSpeakMsg } = useSendMsg();
 
   const watchCore = getWatchCore();
@@ -27,7 +30,7 @@ export const useWelfareLottery = () => {
   /** 参与评论、答题抽奖的拦截器 */
   const beforeJoinLottery = async (): Promise<boolean> => {
     if (enrollStore.needEnrollByChat) {
-      eventBus.$emit(appEvents.global.OpenEnrollDialog);
+      getEmitter().emit(appEvents.global.OpenEnrollDialog);
       forceChangePlvPopperManagerZIndex(11000); // 需要大于 $--zIndex-top，11000 是互动抽奖功能里的层级
       return false;
     }
@@ -69,7 +72,7 @@ export const useWelfareLottery = () => {
     interactReceiveStore.$patch({
       questionnaireBackBtnVisible: false,
     });
-    eventBus.$emit(appEvents.interaction.OpenQuestionnaire, questionnaireId);
+    getEmitter().emit(appEvents.interaction.OpenQuestionnaire, questionnaireId);
   };
 
   /** 处理条件抽奖入口显示状态改变 */
@@ -79,10 +82,18 @@ export const useWelfareLottery = () => {
 
   function onWelfareLotteryVisibleChanged(visible: boolean) {
     if (visible) {
-      webviewStore.toLockDrag('welfare-lottery');
+      toLockFeedDrag('welfare-lottery');
     } else {
-      webviewStore.toUnlockDrag();
+      toUnlockFeedDrag();
     }
+  }
+
+  function onOpenRecord() {
+    getEmitter().emit(appEvents.iar.OpenLotteryRecordDialog);
+  }
+
+  function onOpenReceive(data: { lotteryId: string }) {
+    getEmitter().emit(appEvents.iar.OpenLotteryReceiveDialog, data.lotteryId);
   }
 
   return {
@@ -93,5 +104,7 @@ export const useWelfareLottery = () => {
     onWelfareLotteryVisibleChanged,
     onEntryVisibleChanged,
     onToFillQuestionnaire,
+    onOpenRecord,
+    onOpenReceive,
   };
 };

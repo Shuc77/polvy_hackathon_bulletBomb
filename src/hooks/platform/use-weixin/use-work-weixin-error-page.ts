@@ -1,7 +1,7 @@
-import { PageErrorType } from '@/app/layout/page-error/page-error-type';
+import { DirectBusinessPageType, PageErrorType } from '@/app/layout/direct-business-page/type';
 import { translate } from '@/assets/lang';
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 /**
@@ -9,6 +9,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
  */
 export const useWorkWeixinErrorPage = () => {
   const watchAppStore = useWatchAppStore();
+  const { getWatchCore } = useMultiPolyvWatchApp();
   const watchCore = getWatchCore();
 
   function isNeedErrorPageRedirect() {
@@ -24,11 +25,13 @@ export const useWorkWeixinErrorPage = () => {
     // 需要先添加为企微好友
     if (watchCore.weixin.needAsWorkFriend()) {
       const config = watchCore.weixin.getWorkWeixinFriendConfig();
-      watchAppStore.setPageError({
-        type: PageErrorType.WorkWechatFriend,
-        title: config.qrCodeTitle,
-        desc: config.qrCodeDescription,
-        href: config.qrCodeHref,
+      watchAppStore.setDirectBusinessPage({
+        pageType: DirectBusinessPageType.WorkWechatFriend,
+        data: {
+          title: config.qrCodeTitle,
+          desc: config.qrCodeDescription,
+          href: config.qrCodeHref,
+        },
       });
       return true;
     }

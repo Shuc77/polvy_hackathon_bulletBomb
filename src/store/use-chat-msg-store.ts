@@ -1,10 +1,10 @@
 import { isUndefined } from 'lodash-es';
-import { getWatchCore } from '@/core/watch-sdk';
 import { ChatMessageUser, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { ref, Ref, unref } from 'vue';
 import { useChatStore } from './use-chat-store';
 import { useViewerStore } from './use-viewer-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export type HistoryDataPosition = 'header' | 'tail';
 
@@ -93,6 +93,7 @@ export interface ChatMsgStore extends ChatMsgStoreState, ChatMsgStoreAction {}
  * 聊天消息 store
  */
 export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', () => {
+  const watchAppStore = useWatchAppStore();
   const chatStore = useChatStore();
   const viewerStore = useViewerStore();
 
@@ -338,7 +339,7 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
     const userType = user?.userType;
     const actor = user?.actor;
     if (!userType) return false;
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     return watchCore.user.isSpecialUserType(userType, actor);
   }
 
@@ -376,6 +377,7 @@ export const useChatMsgStore = defineStore<'chatMsg', ChatMsgStore>('chatMsg', (
       ChatMsgSource.System,
       ChatMsgSource.RedpaperReceive,
       ChatMsgSource.MotivationLike,
+      ChatMsgSource.Effect,
     ];
     if (otherSource.includes(msgSource)) {
       isServiceMsg = false;

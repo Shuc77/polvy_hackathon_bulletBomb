@@ -85,6 +85,7 @@
           :label="menu.name"
           :name="TAB_NAME_ASK"
           :show-reminder="askReminderVisible"
+          :show-new-message="true"
           lazy-load
         >
           <mobile-ask />
@@ -116,7 +117,7 @@
         </mobile-menu-tab-pane>
 
         <!-- 商品库 -->
-        <mobile-menu-tab-pane
+        <!-- <mobile-menu-tab-pane
           v-else-if="menu.menuType === ChannelMenuType.Buy"
           :key="`buy-${index}`"
           :label="menu.name"
@@ -124,7 +125,7 @@
           switch-to-refresh
         >
           <mobile-product-list v-if="iarSdkLoaded" />
-        </mobile-menu-tab-pane>
+        </mobile-menu-tab-pane> -->
 
         <!-- 图文直播 -->
         <mobile-menu-tab-pane
@@ -237,6 +238,17 @@
         >
           <mobile-ai-assistant-chat />
         </mobile-menu-tab-pane>
+
+        <!-- AI 看 -->
+        <mobile-menu-tab-pane
+          v-if="menu.menuType === ChannelMenuType.AISummary"
+          :key="`AISummary-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_AI_SUMMARY"
+          lazy-load
+        >
+          <mobile-playback-outline />
+        </mobile-menu-tab-pane>
       </template>
 
       <!-- 回放章节 -->
@@ -278,7 +290,7 @@ import MobileDocSideSwitch from '@/components/page-watch-common/doc/doc-side-swi
 import MobileFollowBtn from '@/components/page-watch-common/follow/follow-btn/mobile-follow-btn.vue';
 import MobileFollowLayer from '@/components/page-watch-common/follow/follow-layer/mobile-follow-layer.vue';
 import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
-import MobileProductList from '@/components/page-watch-common/interactive-receive/product/mobile-product-list.vue';
+// import MobileProductList from '@/components/page-watch-common/interactive-receive/product/mobile-product-list.vue';
 import MobileQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/mobile-question-answer.vue';
 import MobileTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/mobile-tuwen-live.vue';
 import MobilePromoteExternalLink from '@/components/page-watch-common/promote-external-link/mobile-promote-external-link.vue';
@@ -293,6 +305,7 @@ import MobileSeatTable from '@/components/page-watch-common/interactive-receive/
 import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/mobile-ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import MobileMemberDesc from '@/components/page-watch-common/member-list/mobile-member-desc.vue';
+import MobilePlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/mobile-playback-outline.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -318,20 +331,23 @@ import {
   TAB_NAME_MICRO_ACTIVITY,
   TAB_NAME_MULTI_MEETING,
   TAB_NAME_PLAYBACK,
-  TAB_NAME_PRODUCT,
+  // TAB_NAME_PRODUCT,
   TAB_NAME_QA,
   TAB_NAME_SEAT,
   TAB_NAME_SUBTITLE,
   TAB_NAME_TUWEN_LIVE,
   TAB_NAME_VOTE,
   TAB_NAME_AI_ASSISTANT,
+  TAB_NAME_AI_SUMMARY,
 } from '@/assets/constants/tab-name';
 import { translate } from '@/assets/lang';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
-import { paramGetter } from '@/hooks/core/use-query-params';
 import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+
+const { paramGetter } = useQueryParams();
 
 const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -369,7 +385,7 @@ const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHoo
 const mobileMenuTabsRef = ref<TabsInstance>();
 onMounted(async () => {
   await nextTick();
-  const playBackVid = paramGetter.playBackVid();
+  const playBackVid = paramGetter().playBackVid();
   if (playBackVid) {
     const hasPlayBack = channelMenus.value.findIndex(
       item => item.menuType === ChannelMenuType.Previous,

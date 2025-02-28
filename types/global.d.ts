@@ -38,6 +38,18 @@ declare global {
   /** 观看页 SDK 加载的环境 */
   const WATCH_SDK_ENV: SdkLoaderEnv;
 
+  /** 处于 sdk-inject 构建模式下 */
+  const IN_SDK_INJECT_MODE: boolean;
+
+  /** 是否启用运行时公共路径 */
+  const ENABLE_RUNTIME_PUBLIC_PATH: boolean;
+
+  /** 构建环境 */
+  const BUILD_ENV: string;
+
+  // eslint-disable-next-line
+  var __webpack_public_path__: string | undefined;
+
   interface NavigatorLanguage {
     readonly browserLanguage: string;
   }

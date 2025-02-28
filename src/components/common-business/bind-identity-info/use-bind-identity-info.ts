@@ -1,10 +1,12 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ref } from 'vue';
 import { useIdentityInfoInput, IdentityInfoScene } from './use-identity-info-input';
 
 export const useBindIdentityInfo = () => {
+  const { toast } = useToastManager();
+
   const { formData, formRules, channelAgreementConfig, protocolContent, submitForm } =
     useIdentityInfoInput({
       scene: IdentityInfoScene.Bind,

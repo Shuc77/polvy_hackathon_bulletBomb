@@ -33,3 +33,9 @@
   word-break: keep-all;
 }
 
+.plv-image-preview__close-btn {
+  .plv-icon {
+    width: initial !important;
+    height: initial !important;
+  }
+}

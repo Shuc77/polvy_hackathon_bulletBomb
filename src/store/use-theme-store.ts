@@ -1,10 +1,10 @@
 /**
  * @file 皮肤主题 store
  */
-import { getWatchCore } from '@/core/watch-sdk';
 import { ChannelWatchPageSkin, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface ThemeStore {
   /** 观看页皮肤 */
@@ -15,6 +15,10 @@ export interface ThemeStore {
   channelCoverImg: Ref<string>;
   /** 频道引导页封面图 */
   splashImg: Ref<string>;
+  /** 引导页封面图背景 id */
+  splashImgBackgroundId: Ref<number | undefined>;
+  /** 是否存在引导页封面 */
+  hasSplash: ComputedRef<boolean>;
   /** 移动端引导页大图 */
   mobileSplashLargeImg: Ref<string>;
   /** PC 端观看页背景图 */
@@ -37,6 +41,7 @@ export interface ThemeStore {
 
 /** 皮肤主题 store */
 export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
+  const watchAppStore = useWatchAppStore();
   const __themeSetting = PlvChannelModule.generateDefaultThemeSetting();
 
   /** 观看页皮肤 */
@@ -50,6 +55,13 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
   /** 频道引导页封面图 */
   const splashImg = ref(__themeSetting.splashImg);
+
+  /** 引导页封面图背景 id */
+  const splashImgBackgroundId = ref(__themeSetting.splashImgBackgroundId);
+
+  const hasSplash = computed(() => {
+    return !!(splashImg.value || splashImgBackgroundId.value);
+  });
 
   /** 移动端引导页大图 */
   const mobileSplashLargeImg = ref(__themeSetting.mobileSplashLargeImg);
@@ -104,7 +116,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   });
 
   function syncThemeStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const themeSetting = watchCore.channel.getThemeSetting();
 
     pageSkin.value = themeSetting.pageSkin;
@@ -112,6 +124,8 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     browserFavIcon.value = themeSetting.browserFavIcon;
     channelCoverImg.value = themeSetting.channelCoverImg;
     splashImg.value = themeSetting.splashImg;
+    splashImgBackgroundId.value = themeSetting.splashImgBackgroundId;
+
     mobileSplashLargeImg.value = themeSetting.mobileSplashLargeImg;
 
     pcWatchBackgroundImage.value = themeSetting.pcWatchBackgroundImage;
@@ -126,6 +140,8 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     browserFavIcon,
     channelCoverImg,
     splashImg,
+    splashImgBackgroundId,
+    hasSplash,
     mobileSplashLargeImg,
     pcWatchBackgroundImage,
     mobileChatBackgroundImage,

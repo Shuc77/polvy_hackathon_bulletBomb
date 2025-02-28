@@ -5,10 +5,9 @@
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { LiveStatus, PlaybackMode, PlaybackTarget } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
-import { appendQueryParam, paramGetter } from '@/hooks/core/use-query-params';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
 
 export interface PlaybackStoreState {
@@ -40,6 +39,8 @@ export interface PlaybackStoreState {
   playbackListVisible: ComputedRef<boolean>;
   /** 是否能够聊天重放 */
   chatReplayEnabled: ComputedRef<boolean>;
+  /** 是否能够聊天消息重放 */
+  chatMsgReplayEnabled: ComputedRef<boolean>;
   /** 是否能够商品库重放 */
   productReplayEnabled: ComputedRef<boolean>;
 }
@@ -70,6 +71,8 @@ export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions 
 export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
+
+  const { appendQueryParam, paramGetter } = useQueryParams();
 
   const { updateWeixinShareConfig } = useWeixinShareConfigUpdate();
 
@@ -112,20 +115,39 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   /** 当前播放的回放对象 */
   const currentPlaybackTarget = ref<PlaybackTarget>();
 
-  /** 是否可以聊天重放 */
-  const chatReplayEnabled = computed(() => {
+  /**
+   * 是否支持重放场景
+   */
+  const __supportReplay = computed(() => {
     if (watchAppStore.isPlaybackWatchUrl) return false;
-    if (!currentPlaybackTarget.value) return false;
     if (channelStore.liveStatus === LiveStatus.Live) return false;
+
+    return true;
+  });
+
+  /**
+   * 是否可以聊天重放
+   * @warn 在 v2.0.0 之前的版本 chatMsgReplayEnabled 其实和 chatReplayEnabled 等同
+   */
+  const chatReplayEnabled = computed(() => {
+    if (!__supportReplay.value) return false;
+    if (!currentPlaybackTarget.value) return false;
 
     return currentPlaybackTarget.value.chatReplayEnabled;
   });
 
+  /** 是否可以聊天消息重放 */
+  const chatMsgReplayEnabled = computed(() => {
+    if (!__supportReplay.value) return false;
+    if (!currentPlaybackTarget.value) return false;
+
+    return currentPlaybackTarget.value.chatMsgReplayEnabled;
+  });
+
   /** 是否可以商品库重放 */
   const productReplayEnabled = computed(() => {
-    if (watchAppStore.isPlaybackWatchUrl) return false;
+    if (!__supportReplay.value) return false;
     if (!currentPlaybackTarget.value) return false;
-    if (channelStore.liveStatus === LiveStatus.Live) return false;
 
     return currentPlaybackTarget.value.productReplayEnabled;
   });
@@ -151,7 +173,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
    * 同步 Store 数据
    */
   function syncPlaybackStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     playbackMode.value = watchCore.playback.getCurrentPlaybackMode();
     chapterEnabled.value = watchCore.playback.getChapterEnabled();
@@ -161,15 +183,28 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   /**
    * 根据回放列表获取当前回放对象
    */
-  function __getCurrentPlaybackTargetByList(): PlaybackTarget | undefined {
+  async function __getCurrentPlaybackTargetByList(): Promise<PlaybackTarget> {
     let result = playbackList.value[0];
 
-    const playBackVid = paramGetter.playBackVid();
-    if (playBackVid) {
-      const sharedPlaybackTarget = playbackList.value.find(
-        playbackTarget => playbackTarget.playbackId === playBackVid,
-      );
-      result = sharedPlaybackTarget || result;
+    try {
+      const playBackVid = paramGetter().playBackVid();
+      if (playBackVid) {
+        const sharedPlaybackTarget = playbackList.value.find(
+          playbackTarget => playbackTarget.playbackId === playBackVid,
+        );
+
+        if (!sharedPlaybackTarget) {
+          const watchCore = watchAppStore.getWatchCore();
+
+          result = await watchCore.playback.getPlaybackTargetById({
+            playbackId: playBackVid,
+          });
+        } else {
+          result = sharedPlaybackTarget;
+        }
+      }
+    } catch (error) {
+      console.error('__getCurrentPlaybackTargetByList error', error);
     }
 
     return result;
@@ -180,7 +215,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
    * @warn 副作用：如果为列表回放，会初始化一次回放列表数据
    * */
   async function initCurrentPlaybackTarget() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const liveStatus = watchCore.channel.getLiveStatus();
 
     if (liveStatus !== LiveStatus.Playback) {
@@ -191,14 +226,14 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     // 列表回放时，则先获取一次回放列表并设置回放对象
     if (playbackMode.value === PlaybackMode.List) {
       await initPlaybackList();
-      const playbackTarget = __getCurrentPlaybackTargetByList();
+      const playbackTarget = await __getCurrentPlaybackTargetByList();
       updateCurrentPlaybackTarget(playbackTarget);
       return;
     }
 
     // 单个回放时使用的回放数据
     if (playbackMode.value === PlaybackMode.Single) {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const playbackTarget = watchCore.playback.getSinglePlaybackTarget();
       updateCurrentPlaybackTarget(playbackTarget);
     }
@@ -211,7 +246,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     appendQueryParam({ playBackVid: getPlaybackShareId() });
     updateWeixinShareConfig();
 
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     watchCore.playback.setCurrentPlaybackTarget(target);
   }
 
@@ -241,7 +276,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
     isLoading.value = true;
     try {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const data = await watchCore.playback.getPlaybackList({
         pageNumber: pageNo,
         pageSize: unref(pageSize),
@@ -319,6 +354,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     chapterVisible,
     playbackListVisible,
     chatReplayEnabled,
+    chatMsgReplayEnabled,
     productReplayEnabled,
     loopPlayEnabled,
 

@@ -1,5 +1,5 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { usePageList } from '@/hooks/tools/use-page';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { LiveStatus, MultiMeetingItem } from '@polyv/live-watch-sdk';
@@ -111,6 +111,8 @@ export const useMultiMeeting = (autoInit = true) => {
 
   useMultiMeetingStatusPolling();
 
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
   /** 初始化分会场，获取分会场列表 */
   async function initMultiMeeting() {
     const watchCore = getWatchCore();
@@ -124,7 +126,7 @@ export const useMultiMeeting = (autoInit = true) => {
       multiMeetingList: result.contents,
     });
 
-    eventBus.$emit(appEvents.global.MobileLayoutComputedSize);
+    getEmitter().emit(appEvents.global.MobileLayoutComputedSize);
   }
 
   /** 是否显示直播图标 */

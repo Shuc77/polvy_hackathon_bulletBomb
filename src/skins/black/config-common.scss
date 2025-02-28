@@ -6,6 +6,7 @@ $--skin-primary-color: #3082FE;
 $--skin-main-highlight-text-color: #5394f6;
 
 @if map-has-key($--skin-portrait, 'skin-type') {
+  $--skin-type: map-get($--skin-portrait, 'skin-type');
   $--skin-primary-color: map-get($--skin-portrait, 'primary-color');
   $--skin-main-highlight-text-color: map-get($--skin-portrait, 'main-highlight-text-color');
 }
@@ -265,4 +266,7 @@ $--skin-page-common-configs: (
 
   // AI 助手答疑
   'pws-ai-assistant-msg-dot:bg-color': $--color-white,
+
+  // AI 看 回放大纲
+  'pws-ai-outline-text:text-color': $--color-white,
 );

@@ -228,6 +228,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const playerControlUI = ref<HTMLDivElement>();
 collectPlayerKeyboardEffectElements(playerControlUI);
@@ -250,6 +251,8 @@ const {
   toBackOffVideo,
   toForwardVideo,
 } = usePlayerAction();
+
+const { getAppRootElement } = useGlobalInject();
 
 const {
   playbackTimeVisible,
@@ -296,7 +299,7 @@ function onClickRestart() {
 }
 
 const { isFullscreen, toggleFullscreen } = useFullscreen(() => {
-  return document.querySelector(PC_PLAYER_FULL_SCREEN_SELECTOR) as FullscreenElement;
+  return getAppRootElement().querySelector(PC_PLAYER_FULL_SCREEN_SELECTOR) as FullscreenElement;
 });
 </script>
 

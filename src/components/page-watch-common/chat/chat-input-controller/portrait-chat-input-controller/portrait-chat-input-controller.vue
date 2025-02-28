@@ -43,9 +43,16 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
 import { PlvInputContent, PlvInputContentText } from '@/plugins/polyv-ui/types';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
 const inputWrapRef = ref<HTMLDivElement>();
+
+const portraitLayoutStore = usePortraitLayoutStore();
+
+const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
+
+const { getWatchCore } = useGlobalInject();
 
 const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } = useChatInputController(
   {
@@ -75,10 +82,15 @@ const {
   setVisible: setInputVisible,
 } = useSimpleVisible(false, {
   changeCallback: _visible => {
-    const portraitLayoutStore = usePortraitLayoutStore();
     portraitLayoutStore.$patch({
       portraitMessageInputVisible: _visible,
     });
+
+    if (_visible) {
+      toLockFeedDrag('portrait-message-input');
+    } else {
+      toUnlockFeedDrag();
+    }
   },
 });
 
@@ -114,10 +126,10 @@ function onSubmit(params: { contentList: PlvInputContent[] }) {
 
 <style lang="scss">
 .c-portrait-chat-input-controller {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
-  z-index: $--zIndex-top -2;
+  z-index: $--zIndex-top - 2;
   width: 100%;
 }
 

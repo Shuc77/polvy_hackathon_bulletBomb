@@ -21,13 +21,19 @@
         :content="$lang('chat.transformTip')"
       />
 
-      <!-- 欢迎语 -->
-      <mobile-chat-welcome-tips />
-
       <!-- 聊天消息重放提示 -->
       <mobile-chat-msg-replay-tips
-        v-if="chatReplayEnabled"
+        v-if="chatMsgReplayEnabled"
         class="c-mobile-chat-room__topic__replay"
+      />
+
+      <!-- 跑道消息 -->
+      <mobile-runway-effect />
+
+      <!-- 打赏动画 -->
+      <mobile-donate-animation
+        v-if="donateAnimationVisible"
+        class="c-mobile-chat-room__donate-animation"
       />
     </div>
 
@@ -41,16 +47,10 @@
       />
 
       <!-- 右下角挂件 -->
-      <mobile-chat-room-pendant v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+      <mobile-chat-room-pendant v-if="!isPlaybackWatchUrl" />
 
       <!-- 打赏 svga 特效 -->
       <mobile-donate-svga-animation v-if="donateAnimationVisible" />
-
-      <!-- 打赏动画 -->
-      <mobile-donate-animation
-        v-if="donateAnimationVisible"
-        class="c-mobile-chat-room__donate-animation"
-      />
     </div>
 
     <!-- 互动二次入口 -->
@@ -75,7 +75,7 @@ import MobileChatErrorTips from '../chat-error-tips/mobile-chat-error-tips.vue';
 import MobileChatMsgList from '../chat-msg-list/mobile-chat-msg-list.vue';
 import MobileChatMsgReplayTips from '../chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant.vue';
-import MobileChatWelcomeTips from '../chat-welcome/chat-welcome-tips.vue';
+import MobileRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -90,7 +90,7 @@ const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
 const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
-const { chatReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
+const { chatMsgReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -120,18 +120,27 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
   left: 0;
   z-index: 10;
   width: 100%;
-}
+  pointer-events: none;
 
-.c-mobile-chat-room__topic__replay {
-  margin: 16px 8px 0;
-}
+  .c-mobile-chat-room__topic__replay {
+    margin: 16px 8px 0;
+    pointer-events: initial;
+  }
 
-.c-mobile-chat-room__topic__announcement {
-  margin-bottom: 8px;
-}
+  .c-mobile-chat-room__topic__announcement {
+    margin-bottom: 8px;
+    pointer-events: initial;
+  }
 
-.c-mobile-chat-room__topic__error {
-  margin: 16px 8px 0;
+  .c-mobile-chat-room__topic__error {
+    margin: 16px 8px 0;
+    pointer-events: initial;
+  }
+
+  .c-mobile-chat-room__donate-animation {
+    position: relative;
+    left: 0;
+  }
 }
 
 .c-mobile-chat-room__msg-list {
@@ -144,11 +153,5 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
   .c-mobile-chat-msg-list__container {
     padding-right: 70px;
   }
-}
-
-.c-mobile-chat-room__donate-animation {
-  position: absolute;
-  top: 45px;
-  left: 0;
 }
 </style>

@@ -1,17 +1,20 @@
 <!-- @file 竖屏商品库入口 -->
 <template>
   <div class="c-portrait-product-list-entrance">
-    <div
-      v-if="!recruitmentEnabled"
-      ref="containerRef"
-      class="c-portrait-product-list-entrance__svga"
-      @click="onClickEntrance"
-    ></div>
-    <div
-      v-else
-      class="c-portrait-product-list-entrance__btn"
-      @click="onClickEntrance"
-    ></div>
+    <!-- 原先的 if 条件是写在组件外层，但这会导致商品库关闭后，下面的 portrait-product-bubble 大卡片组件无法显示出来 -->
+    <template v-if="interactSetting.productEnabled">
+      <div
+        v-if="!recruitmentEnabled"
+        ref="containerRef"
+        class="c-portrait-product-list-entrance__svga"
+        @click="onClickEntrance"
+      ></div>
+      <div
+        v-else
+        class="c-portrait-product-list-entrance__btn"
+        @click="onClickEntrance"
+      ></div>
+    </template>
 
     <portrait-product-bubble :product-bubble-enable="false" />
   </div>
@@ -23,9 +26,13 @@ import { useSvgaAnimation } from '@/hooks/animation/use-svga-animation';
 import shopIconUrl from './imgs/icon-shop-car.svga';
 import { ref, unref } from 'vue';
 import { useProduct } from './hooks/use-product';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
+const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { trackUserClickProductList } = useWatchEventTrack();
 
 const containerRef = ref<HTMLDivElement>();
@@ -39,9 +46,11 @@ if (!unref(recruitmentEnabled)) {
   });
 }
 
+const { getEmitter } = useGlobalInject();
+
 function onClickEntrance() {
   trackUserClickProductList();
-  eventBus.$emit(appEvents.interaction.OpenPortraitProductList, true);
+  getEmitter().emit(appEvents.interaction.OpenPortraitProductList, true);
 }
 </script>
 

@@ -1,136 +1,20 @@
 <template>
-  <mobile-popup
-    class="c-mobile-task-reward-receive"
-    :visible.sync="visible"
-    fill-body-section
-    :title="$lang('taskActivity.rewardReceive.title')"
-  >
-    <div
-      v-if="acceptType === RewardAcceptType.Form"
-      class="c-mobile-task-reward-receive__body"
-      :class="{
-        'c-mobile-task-reward-receive__body--readonly': isReadonly,
-      }"
-    >
-      <div class="c-mobile-task-reward-receive__content">
-        <template v-for="(item, index) in formList">
-          <div
-            v-if="isSimpleFormType(item.type)"
-            :key="`normal-${index}`"
-            class="c-mobile-task-reward-receive__form-item"
-            :class="{
-              'c-mobile-task-reward-receive__form-item--required': item.required && !isReadonly,
-            }"
-          >
-            <div class="c-mobile-task-reward-receive__form-item__label">
-              {{ getItemText(item).label }}
-            </div>
-            <div class="c-mobile-task-reward-receive__form-item__content">
-              <input
-                v-if="!isReadonly"
-                class="c-mobile-task-reward-receive__form-item__input"
-                v-model="formList[index].value"
-                :readonly="isReadonly"
-                :placeholder="getItemText(item).placeholder"
-              />
-              <div v-else>{{ formList[index].value }}</div>
-            </div>
-          </div>
-
-          <div
-            :key="`address-picker-${index}`"
-            v-if="item.type === RewardAcceptFormType.Address && !isReadonly"
-            class="c-mobile-task-reward-receive__form-item"
-            :class="{
-              'c-mobile-task-reward-receive__form-item--required': item.required,
-            }"
-          >
-            <div class="c-mobile-task-reward-receive__form-item__label">
-              {{ getItemText(item).label }}
-            </div>
-            <div class="c-mobile-task-reward-receive__form-item__content">
-              <mobile-form-area-picker
-                v-model="areaPickerValue"
-                :placeholder="$lang('taskActivity.rewardReceive.addressPlaceholder')"
-              />
-            </div>
-          </div>
-
-          <div
-            :key="`address-detail-${index}`"
-            v-if="item.type === RewardAcceptFormType.Address"
-            class="c-mobile-task-reward-receive__form-item"
-            :class="{
-              'c-mobile-task-reward-receive__form-item--required': item.required && !isReadonly,
-            }"
-          >
-            <div class="c-mobile-task-reward-receive__form-item__label">
-              {{
-                isReadonly
-                  ? $lang('taskActivity.rewardReceive.addressDetail2')
-                  : $lang('taskActivity.rewardReceive.addressDetail')
-              }}
-            </div>
-            <div class="c-mobile-task-reward-receive__form-item__content">
-              <textarea
-                v-if="!isReadonly"
-                class="c-mobile-task-reward-receive__form-item__textarea"
-                v-model="formList[index].value"
-                :placeholder="getItemText(item).placeholder"
-                :readonly="isReadonly"
-                rows="4"
-              ></textarea>
-              <div v-else>
-                {{ formList[index].value }}
-              </div>
-            </div>
-          </div>
-        </template>
-      </div>
-
-      <div
-        v-if="!isReadonly"
-        class="c-mobile-task-reward-receive__submit"
-      >
-        <normal-button
-          block
-          @click="submitForm"
-          >{{ $lang('base.submit') }}</normal-button
-        >
-      </div>
-    </div>
-
-    <!-- 二维码 -->
-    <div
-      v-if="acceptType === RewardAcceptType.QrCode"
-      class="c-mobile-task-reward-receive__qrcode"
-    >
-      <img :src="qrCode" />
-
-      <div class="c-mobile-task-reward-receive__qrcode__tips">{{ qrCodeTips }}</div>
-    </div>
-  </mobile-popup>
+  <iar-mobile-reward-receive
+    :receive-data="receiveData"
+    :submit-action="submitTaskReceive"
+  />
 </template>
 
 <script setup lang="ts">
-import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import MobileFormAreaPicker from '@/components/common-base/form/form-area-picker/mobile-form-area-picker.vue';
+import { defineAsyncComponent } from 'vue';
 import { useTaskRewardReceive } from './hooks/use-task-reward-receive';
-import { RewardAcceptFormType, RewardAcceptType } from '@polyv/live-watch-sdk';
-import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
+import { useIarUILoader } from '../interactive-receive-v2/_load-iar-ui-v2';
 
-const {
-  visible,
-  isReadonly,
-  acceptType,
-  qrCode,
-  qrCodeTips,
-  areaPickerValue,
-  formList,
-  isSimpleFormType,
-  submitForm,
-  getItemText,
-} = useTaskRewardReceive();
+const { loadIarUI } = useIarUILoader('iar-reward-receive-ui');
+
+const IarMobileRewardReceive = defineAsyncComponent(() => loadIarUI('mobile-reward-receive'));
+
+const { receiveData, submitTaskReceive } = useTaskRewardReceive();
 </script>
 
 <style lang="scss">

@@ -13,8 +13,6 @@
     <mobile-lottery-animation />
     <!-- 抽奖结果弹层 -->
     <mobile-lottery-result-popup />
-    <!-- 中奖记录弹层 -->
-    <mobile-lottery-record-popup />
     <!-- 问卷 -->
     <mobile-questionnaire-popup />
     <!-- 红包弹窗 -->
@@ -25,6 +23,8 @@
     <mobile-score-record-popup v-if="scoreRedpackEnabled" />
     <!-- 报名抽奖 -->
     <mobile-enroll-lottery-popup />
+    <!-- 商品库弹层 -->
+    <portrait-product-list-popup v-if="interactSetting.productEnabled" />
     <!-- 商品库职位详情弹层 -->
     <mobile-product-job-detail-popup />
     <!-- 云席相关提示弹窗 -->
@@ -47,11 +47,10 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
 import MobileAnswerCardPopup from './answer-card/mobile-answer-card-popup.vue';
-import MobileCheckInPopup from './check-in/mobile-check-in-popup.vue';
+import MobileCheckInPopup from '../interactive-receive-v2/check-in-v2/mobile-check-in-popup.vue';
 import MobileFeedBackPopup from './feed-back/mobile-feed-back-popup.vue';
 import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
 import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
-import MobileLotteryRecordPopup from './lottery/mobile-lottery-record-popup.vue';
 import MobileQuestionnairePopup from './questionnaire/mobile-questionnaire-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
@@ -62,11 +61,11 @@ import MobileSeatTableTips from './seat-table/seat-table-tips/mobile-seat-table-
 import MobileOrderPopup from './order/mobile-order-popup.vue';
 import MobileOrderCenterPopup from './order/mobile-order-center-popup.vue';
 import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
+import PortraitProductListPopup from './product/portrait-product-list-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-
 const {
   isIarFullScreen,
 
@@ -93,7 +92,7 @@ watch(
 
 onMounted(() => {
   import(
-    '@/components/page-watch-common/interactive-receive/_style/cover-mobile-interact-receive.scss'
+    /* webpackChunkName: "cover-mobile-interact-receive" */ '@/components/page-watch-common/interactive-receive/_style/cover-mobile-interact-receive.scss'
   );
 });
 </script>

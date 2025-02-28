@@ -1,6 +1,6 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { isFormItemInstance } from '@/components/common-base/form/hooks/use-form-item';
-import { getWatchCore } from '@/core/watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { AuthSettingItemPhone } from '@polyv/live-watch-sdk';
 import { computed, reactive, ref, unref } from 'vue';
@@ -12,6 +12,8 @@ import { isWeixin } from '@/assets/utils/browser';
 
 /** 观看条件：白名单 hook */
 export const useAuthPhone = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const viewerStore = useViewerStore();
   const { authItem } = useAuthButtonInject<AuthSettingItemPhone>(onClickAuthButton);
   const { getVisitorId } = useFingerPrint();

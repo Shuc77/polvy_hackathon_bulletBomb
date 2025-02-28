@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { onMounted, ref, onBeforeUnmount, watch } from 'vue';
 import { SubtitleRealTimeCC } from '@polyv/live-watch-sdk';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { usePlayerSubtitle, useSubtitleProps } from '../_hooks/_use-player-subtitle';
@@ -60,13 +60,13 @@ watch(
   },
 );
 
+useEventBusListener(appEvents.player.SubtitleRealTimeCC, onSubtitleRealTimeCC);
+
 onMounted(() => {
   init();
-  eventBus.$on(appEvents.player.SubtitleRealTimeCC, onSubtitleRealTimeCC);
 });
 
 onBeforeUnmount(() => {
-  eventBus.$off(appEvents.player.SubtitleRealTimeCC, onSubtitleRealTimeCC);
   destroy();
 });
 </script>

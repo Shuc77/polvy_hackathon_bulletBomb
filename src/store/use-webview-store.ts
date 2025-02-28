@@ -1,15 +1,16 @@
-import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
-import { getWatchCore, getSocket } from '@/core/watch-sdk';
 import { UserEvents, YN, LiveStatus } from '@polyv/live-watch-sdk';
 import type { WebViewBridge } from '@polyv/web-view-bridge';
 import { isWebView } from '@polyv/web-view-bridge/is-webview';
 import { debounce } from 'lodash-es';
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, ref, Ref, unref, watch } from 'vue';
+import { computed, ComputedRef, ref, Ref, unref, watch, nextTick } from 'vue';
 import { useInteractReceiveStore } from './use-interact-receive-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlayerStore } from './use-player-store';
 import { useWatchAppStore } from './use-watch-app-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { getLocalStorage, setLocalStorage } from '@/assets/utils/storage';
 import { isIOS } from '@/assets/utils/browser';
 
@@ -23,7 +24,7 @@ export interface WebviewStoreState {
   isPlvWebview: Ref<boolean>;
   /** 是否 webview 内嵌小窗状态 */
   isSmallWindow: Ref<boolean>;
-  /** 当前 Webview 页面是否激活 */
+  /** 当前 Webview 页面是否激活，仅用于 webview-feed */
   curWebviewPageIsActive: Ref<boolean>;
   /** 在 webview 中小窗化时，打开的小窗宽高 */
   plvWebviewDataSize: ComputedRef<{ width: number; height: number }>;
@@ -75,12 +76,15 @@ export interface WebviewStoreActions {
 export interface WebviewStore extends WebviewStoreState, WebviewStoreActions {}
 
 export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', () => {
+  const watchAppStore = useWatchAppStore();
   const { forcePausePlay, toPlay, toPause, toSeekVideo, toFreezePlay } = usePlayerAction();
 
-  const watchAppStore = useWatchAppStore();
+  const { paramGetter } = useQueryParams();
+
   const playerStore = usePlayerStore();
   const layoutStore = useLayoutStore();
   const interactReceiveStore = useInteractReceiveStore();
+  const playbackStore = usePlaybackStore();
 
   /** webview 桥接器 */
   let webviewBridge: WebViewBridge | undefined;
@@ -99,7 +103,11 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   const isSmallWindow = ref(false);
   // const isSmallWindow = ref(true);
 
-  const curWebviewPageIsActive = ref(true);
+  const __getPageIsActive = () => {
+    return isWebView() ? paramGetter().watchPageInitStatus() !== 'inactive' : true;
+  };
+
+  const curWebviewPageIsActive = ref(__getPageIsActive());
 
   const curWebviewPageIsLockDrag = ref(false);
 
@@ -133,6 +141,19 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
     },
   );
 
+  watch(
+    () => playbackStore.currentPlaybackTarget,
+    val => {
+      if (val) {
+        nextTick(() => {
+          if (pictureInPictureEnabled.value && getPlaybackUrl()) {
+            setLiveChannelInfo(autoOutsidePictureInPicture.value);
+          }
+        });
+      }
+    },
+  );
+
   /** 在 webview 中小窗化时，打开的小窗宽高 */
   const plvWebviewDataSize = computed(() => ({
     width: playerStore.isPortraitResolutionRate ? 90 : 160,
@@ -142,40 +163,48 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   const onWebviewIsActive = () => {
     console.warn('[webview-bridge-feed-flow] onWebviewIsActive');
     curWebviewPageIsActive.value = true;
+    watchAppStore.getWatchCore().unFreeze();
+
+    setTimeout(() => {
+      toFreezePlay(false);
+      toPlay();
+    }, 100);
 
     // toLockDrag();
-
     if (!watchAppStore.isLiveWatchConnected) {
-      console.warn('[webview-bridge-feed-flow] onWebviewIsActive recoverConnectLiveWatch');
-      watchAppStore.recoverConnectLiveWatch();
+      console.warn('[webview-bridge-feed-flow] onWebviewIsActive recoverActivePageConnect');
+      watchAppStore.recoverActivePageConnect();
       return;
     }
 
-    toFreezePlay(false);
-    toPlay();
-    getSocket()?.connect();
+    watchAppStore.getSocket()?.connect();
   };
 
   const onWebviewIsInactive = () => {
     console.warn('[webview-bridge-feed-flow] onWebviewIsInactive');
     curWebviewPageIsActive.value = false;
+    watchAppStore.getWatchCore().freeze();
+
+    if (playerStore.playerInited) {
+      toFreezePlay(true);
+    }
 
     // toLockDrag();
 
     // 注意，页面初始化时在这里写的方法基本是无效的，只能到对应回调的地方去处理，此处只是页面初始化完成后的一般性逻辑处理
     forcePausePlay({ onceHiddenPlayButton: true });
-    getSocket()?.disconnect();
+    watchAppStore.getSocket()?.disconnect();
   };
 
   /** 获取暂存/回放/点播视频url */
-  const getPlaybackUrl = () => {
-    const watchCore = getWatchCore();
+  function getPlaybackUrl() {
+    const watchCore = watchAppStore.getWatchCore();
     const options = watchCore.player.getCurrentPlaybackOptions();
     return options?.url;
-  };
+  }
 
   function syncWebviewInfo() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     pictureInPictureEnabled.value = watchCore.player.getPIPEnabled() && isPlvWebview.value;
     pictureInPictureIOSEnabled.value = watchCore.player.getPIPForIOSEnabled() && isPlvWebview.value;
     if (!pictureInPictureEnabled.value) {
@@ -231,7 +260,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   }
 
   function __listenWatchCoreEvents() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     // 踢出当前用户时恢复正常窗口
     watchCore.user.eventEmitter.on(UserEvents.CurrentUserKicked, () => {
       if (unref(isSmallWindow)) {
@@ -276,7 +305,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       const params = {
         event: 'setCurrentPlaybackTime',
         value: {
-          playbackTime: getWatchCore().player.getCurrentTime(),
+          playbackTime: watchAppStore.getWatchCore().player.getCurrentTime(),
         },
       };
       webviewBridge?.sendData('callAppEvent', { ...params });
@@ -357,7 +386,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       return;
     }
 
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const accountId = watchCore.getAccountId();
     const channelId = watchCore.channel.getChannelId();
     const userId = watchCore.user.requiredUserId();
@@ -397,7 +426,10 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   }
 
   function setLiveChannelInfo(enabled = true): boolean {
-    const watchCore = getWatchCore();
+    if (!webviewBridge) {
+      return false;
+    }
+    const watchCore = watchAppStore.getWatchCore();
 
     const liveStatus = watchCore.channel.getLiveStatus();
     let vodUrl: undefined | string;
@@ -416,8 +448,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
       vodUrl: vodUrl || null,
       videoSize: plvWebviewDataSize.value,
     };
-    webviewBridge?.sendData('getLiveChannelInfo', payload);
-
+    webviewBridge.sendData('getLiveChannelInfo', payload);
     console.info('getLiveChannelInfo', payload);
     return true;
   }
@@ -449,7 +480,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
   /** 设置是否自动进入系统小窗播放 */
   function setAutoOutsidePictureInPicture(val: boolean) {
     autoOutsidePictureInPicture.value = val;
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const liveStatus = watchCore.channel.getLiveStatus();
     if (liveStatus === LiveStatus.Live) {
       sendUserInfo(val);

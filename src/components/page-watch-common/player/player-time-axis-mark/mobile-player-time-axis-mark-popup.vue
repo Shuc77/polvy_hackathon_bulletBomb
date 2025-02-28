@@ -46,12 +46,14 @@
 import { onMounted, ref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { formatSeconds } from '@utils-ts/date';
-import { getWatchCore } from '@/core/watch-sdk';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useTimeAxisMarkHook } from './use-time-axis-mark';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const { isPageFullscreenOrHorizontalScreen } = storeDefinitionToRefs(useLayoutStore);
 

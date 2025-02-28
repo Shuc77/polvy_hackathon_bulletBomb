@@ -120,8 +120,7 @@ const emit = defineEmits({
   background-image: url(./images/icon-bind-mobile.svg);
 }
 .c-portrait-more-item__icon--send-image {
-  // background-image: url(../images/icon-menu-img-mob.png);
-  background: red;
+  background-image: url(./images/icon-send-image.png);
 }
 .c-portrait-more-item__icon--send-redpack {
   // background-image: url(../images/icon-menu-redenvelope-mob.png);

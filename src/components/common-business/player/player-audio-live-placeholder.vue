@@ -6,11 +6,10 @@
   >
     <div
       v-if="useSplashImg"
-      class="c-player-audio-live-placeholder__splash g-img-cover"
-      :style="{
-        backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
-      }"
-    ></div>
+      class="c-player-audio-live-placeholder__splash"
+    >
+      <channel-splash-img />
+    </div>
 
     <div
       v-else
@@ -28,22 +27,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
-import { useLayoutStore } from '@/store/use-layout-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { resizeOSSImg } from '@/assets/utils/image';
+import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
 
 const props = defineProps({
   /** 是否使用引导页封面图作为占位图 */
   useSplashImg: PropUtils.bool.def(false),
 });
 
-const { splashImg } = storeDefinitionToRefs(useThemeStore);
+const { hasSplash } = storeDefinitionToRefs(useThemeStore);
 
 const useSplashImg = computed(() => {
-  if (props.useSplashImg && unref(splashImg)) {
+  if (props.useSplashImg && unref(hasSplash)) {
     return true;
   }
   return false;

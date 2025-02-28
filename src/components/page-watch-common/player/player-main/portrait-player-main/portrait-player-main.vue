@@ -69,7 +69,7 @@ import { useResolutionSize } from '../../hooks/use-resolution-size';
 import { usePortraitClickPlayer } from './_hooks/use-portrait-click-player';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { usePortraitPlayerSize } from './use-portrait-player-size';
-import { computed, unref } from 'vue';
+import { computed, unref, onBeforeUnmount } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { useChannelStore } from '@/store/use-channel-store';
 import { LiveStatus, StreamType } from '@polyv/live-watch-sdk';
@@ -101,7 +101,7 @@ const {
 
 const { portraitDocWrapHeight } = storeDefinitionToRefs(usePortraitLayoutStore);
 
-const { normalPlayButtonVisible, noPauseWhenLive } = usePlayerControl();
+const { normalPlayButtonVisible, noPauseWhenLive, addHistoryTipsListener } = usePlayerControl();
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
@@ -111,6 +111,13 @@ usePortraitClickPlayer();
 
 useResolutionSize({
   playerContainer,
+});
+
+/** 绑定历史播放进度提示事件 */
+const { dispose: disposeHistoryTipsListener } = addHistoryTipsListener();
+
+onBeforeUnmount(() => {
+  disposeHistoryTipsListener();
 });
 
 const { playerContainerStyle } = usePortraitPlayerSize();

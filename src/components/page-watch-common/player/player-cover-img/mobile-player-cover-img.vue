@@ -10,11 +10,10 @@
     <div
       v-if="warmUpCover"
       v-show="showWarmUpImg"
-      class="c-mobile-player-cover-img__warm-up-img g-img-cover"
-      :style="{
-        backgroundImage: `url(${warmUpCover})`,
-      }"
-    ></div>
+      class="c-mobile-player-cover-img__warm-up-img"
+    >
+      <channel-splash-img :cover-img="warmUpCover" />
+    </div>
     <!-- 音频直播下占位图-直播封面图 -->
     <player-audio-live-placeholder
       v-show="showAudioLivePlaceholder"
@@ -33,6 +32,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 
 import { usePlayerStore } from '@/store/use-player-store';

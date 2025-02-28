@@ -1,6 +1,5 @@
 import { computed, reactive, unref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   AuthInfoPropValKey,
   AuthInfoPropValType,
@@ -17,7 +16,7 @@ import { useAuthStore } from '@/store/use-auth-store';
 
 import { SelectOptionItem } from '@/components/common-base/form/form-select/types/form-select-types';
 
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useAuthButtonInject } from '@/components/page-splash-common/auth/hooks/use-auth-button';
 import {
@@ -27,6 +26,7 @@ import {
 import { useAuthInfoSetting } from './use-auth-info-setting';
 import { useAuthInfoSms } from './use-auth-info-sms';
 import { useIdentityStore } from '@/store/use-identity-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const authInfoFormEmits = () => ({
   /** 关闭窗口 */
@@ -55,6 +55,10 @@ export interface AuthInfoFormInstance {
 }
 
 export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmits> }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { emit } = options;
 
   const identityStore = useIdentityStore();

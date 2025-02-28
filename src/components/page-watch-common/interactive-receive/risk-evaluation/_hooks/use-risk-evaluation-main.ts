@@ -1,6 +1,5 @@
 import { ref, computed, watchEffect } from 'vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useFinanceStore } from '@/store/use-finance-store';
@@ -12,6 +11,7 @@ import {
   QuestionnaireEvaluationResult,
   RiskEvaluationMainDialogOpenMode,
 } from '../types/risk-evaluation-types';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 风险测评-副作用处理 */
 const useRiskEvaluationMainEffect = ({
@@ -38,6 +38,8 @@ const useRiskEvaluationMainEffect = ({
  * @hook 风险测评-主要弹窗
  */
 export const useRiskEvaluationMainHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
 

@@ -1,43 +1,48 @@
 <!-- @file PC 端聊天室右下角挂件 -->
 <template>
   <div class="c-pc-chat-room-pendant">
-    <!-- 风险测评 -->
-    <risk-evaluation-entrance
-      v-if="riskEvaluationEntranceEnabled"
-      class="c-pc-chat-room-pendant__item"
-    />
+    <template v-if="iarSdkLoaded">
+      <!-- 风险测评 -->
+      <risk-evaluation-entrance
+        v-if="riskEvaluationEntranceEnabled"
+        class="c-pc-chat-room-pendant__item"
+      />
 
-    <!-- 卡片推送 -->
-    <pc-push-card class="c-pc-chat-room-pendant__item" />
+      <!-- 卡片推送 -->
+      <pc-push-card class="c-pc-chat-room-pendant__item" />
 
-    <!-- 红包 -->
-    <pc-redpack-pendant class="c-pc-chat-room-pendant__item" />
+      <!-- 红包 -->
+      <pc-redpack-pendant class="c-pc-chat-room-pendant__item" />
 
-    <!-- 报名抽奖 -->
-    <pc-enroll-lottery-pendant class="c-pc-chat-room-pendant__item" />
+      <!-- 报名抽奖 -->
+      <pc-enroll-lottery-pendant class="c-pc-chat-room-pendant__item" />
 
-    <!-- 话题 PK -->
-    <pc-topic-pk class="c-pc-chat-room-pendant__item" />
+      <!-- 话题 PK -->
+      <pc-topic-pk class="c-pc-chat-room-pendant__item" />
 
-    <!-- 抽奖 -->
-    <pc-lottery-pendant class="c-pc-chat-room-pendant__item" />
+      <!-- 抽奖 -->
+      <pc-lottery-pendant class="c-pc-chat-room-pendant__item" />
 
-    <!-- 条件抽奖 -->
-    <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
+      <!-- 条件抽奖 -->
+      <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
 
-    <!-- 抢答 -->
-    <pc-rush-answer class="c-pc-chat-room-pendant__item" />
+      <!-- 抢答 -->
+      <pc-rush-answer class="c-pc-chat-room-pendant__item" />
+
+      <!-- 情绪反馈 -->
+      <pc-emotional-feedback
+        v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
+        class="c-pc-chat-room-pendant__item"
+      />
+    </template>
+    <!-- 图标广告 -->
+    <pc-img-advert class="c-pc-chat-room-pendant__item" />
 
     <!-- 点赞 -->
     <pc-chat-like
       v-if="likeFeatureEnabled"
       class="c-pc-chat-room-pendant__item"
       :upper-has-icon="hasOtherPendant"
-    />
-    <!-- 情绪反馈 -->
-    <pc-emotional-feedback
-      v-else-if="chatSetting.emotionalFeedbackEnabled"
-      class="c-pc-chat-room-pendant__item"
     />
   </div>
 </template>
@@ -54,6 +59,7 @@ import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
 import PcChatLike from '../chat-like/pc-chat-like.vue';
+import PcImgAdvert from '@/components/page-watch-common/icon-advert/pc-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -65,6 +71,8 @@ const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
 const {
+  iarSdkLoaded,
+
   pushCardPendantVisible,
   redpackPendantVisible,
   enrollLotteryPendantVisible,

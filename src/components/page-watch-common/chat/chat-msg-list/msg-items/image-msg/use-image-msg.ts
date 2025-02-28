@@ -1,6 +1,6 @@
 import { isMobile } from '@/assets/utils/browser';
-import { resizeOSSImg } from '@/assets/utils/image';
 import { fitProtocol } from '@/assets/utils/url';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { previewImage } from '@/hooks/components/use-image-preview';
 import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, ref, unref } from 'vue';
@@ -31,6 +31,8 @@ const landscapeLongPicRatio = 0.14;
 export const useImageMsg = () => {
   const { chatMsg } = useChatMsgDataInject<ChatMsgImageType>();
   const { containerRef, getVirtualList } = useChatMsgComputedInject();
+
+  const { resizeOSSImg } = useResizeOssImage();
 
   const imageRef = ref<HTMLImageElement>();
 

@@ -1,7 +1,6 @@
 import cloneDeep from 'lodash-es/cloneDeep';
 import { onBeforeUnmount, onMounted, ref, set, nextTick, Ref, computed, watch } from 'vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   SubtitleRealTimeCC,
   SubtitleTranslate,
@@ -17,6 +16,7 @@ import { TAB_NAME_SUBTITLE } from '@/assets/constants/tab-name';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { SubtitleSelectOptionItem } from './mobile-subtitle-select/use-subtitle-select';
 
 /**
@@ -24,6 +24,8 @@ import { SubtitleSelectOptionItem } from './mobile-subtitle-select/use-subtitle-
  * @hook
  */
 export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
+  const { getWatchCore } = useGlobalInject();
+
   const subtitleStore = useSubtitleStore();
   const {
     liveSubtitleSourceLanguage,
@@ -152,7 +154,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
   function getSubtitleList() {
     const watchCore = getWatchCore();
-    subtitleList.value = cloneDeep(watchCore.subtitles.getSubtitlesList());
+    subtitleList.value = cloneDeep(watchCore.subtitle.getSubtitlesList());
     spliceSubtitle();
   }
 
@@ -194,10 +196,10 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   function bindSubtitleEvent() {
     const watchCore = getWatchCore();
 
-    watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
-    watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
-    watchCore.subtitles.eventEmitter.on(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
-    watchCore.subtitles.eventEmitter.on(
+    watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
+    watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
+    watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
+    watchCore.subtitle.eventEmitter.on(
       SubtitleEvents.SubtitleListForceSync,
       onSubtitleListForceSync,
     );
@@ -206,10 +208,10 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   function unbindSubtitleEvent() {
     const watchCore = getWatchCore();
 
-    watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
-    watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
-    watchCore.subtitles.eventEmitter.off(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
-    watchCore.subtitles.eventEmitter.off(
+    watchCore.subtitle.eventEmitter.off(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
+    watchCore.subtitle.eventEmitter.off(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
+    watchCore.subtitle.eventEmitter.off(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
+    watchCore.subtitle.eventEmitter.off(
       SubtitleEvents.SubtitleListForceSync,
       onSubtitleListForceSync,
     );
@@ -218,7 +220,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   onMounted(() => {
     const watchCore = getWatchCore();
     // eslint-disable-next-line promise/prefer-await-to-then
-    watchCore.subtitles.initSubtitleList().finally(() => {
+    watchCore.subtitle.initSubtitleList().finally(() => {
       bindSubtitleEvent();
       getSubtitleList();
       nextTick(() => {

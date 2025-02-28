@@ -1,5 +1,5 @@
 import { isMobile } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { loadScript } from '@just4/load-script';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 import { PolyvIRSceneComponentOption, PolyvIRSceneKey, PolyvIRSceneType } from './_types';
@@ -9,22 +9,24 @@ const interactAppEntrance = isMobile ? 'entranceMobile' : 'entrancePc';
 
 /** 根据观看页 SDK 环境获取互动 UI 层对应环境的配置 */
 function getIarUIConfigByWatchSdkEnv() {
+  const { getWatchCore } = useMultiPolyvWatchApp();
   const watchCore = getWatchCore();
+
   const env = WATCH_SDK_ENV;
   const domainInfo = watchCore.domain.getDomainInfo();
 
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20241114',
+      version: 'rc-20250227',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20241114',
+      version: 'rc-20250227',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20241114',
+      version: 'dev-20250227',
     },
   };
 

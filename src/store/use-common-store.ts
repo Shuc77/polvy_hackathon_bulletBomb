@@ -1,8 +1,8 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { AreaDataJson } from '@/plugins/polyv-ui/types';
 import { PlvDefaultResource, PlvUtilsModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { ref, Ref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface CommonStoreType {
   /** 中国地区数据 */
@@ -14,6 +14,8 @@ export interface CommonStoreType {
 }
 
 export const useCommonStore = defineStore<'common', CommonStoreType>('common', () => {
+  const watchAppStore = useWatchAppStore();
+
   /** 中国地区数据 */
   const areaData = ref<AreaDataJson>([]);
 
@@ -22,7 +24,7 @@ export const useCommonStore = defineStore<'common', CommonStoreType>('common', (
 
   /** 同步数据 */
   function syncCommonStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     plvDefaultResource.value = watchCore.utils.getDefaultResource();
   }
 

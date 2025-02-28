@@ -18,7 +18,7 @@
         />
       </div>
       <div v-if="autoOutsidePictureInPictureVisible">
-        <span>{{ $lang('player.pictureInPicture.tips') }}</span>
+        <span>{{ $lang('player.pictureInPicture.tips2') }}</span>
         <plv-switch
           :value="autoOutsidePictureInPicture && autoPictureInPicture"
           @change="setAutoOutsidePictureInPicture"

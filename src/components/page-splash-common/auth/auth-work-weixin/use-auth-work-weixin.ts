@@ -1,14 +1,13 @@
 import { onBeforeMount, onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { AuthSettingItemEnterpriseWeChat } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 
 import {
   loadWorkWeixinLoginSdk,
   WwLoginInstance,
 } from '@/plugins/external-lib-loaders/load-work-weixin-login';
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 
 import { useAuthStore } from '@/store/use-auth-store';
 
@@ -21,8 +20,14 @@ import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { getWwLoginStyle } from './utils';
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { useWorkWeixinErrorPage } from '@/hooks/platform/use-weixin/use-work-weixin-error-page';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 const useAuthWorkWeixinCommon = () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
+  const { toast } = useToastManager();
+
   const watchCore = getWatchCore();
 
   const { redirectWorkWeixinAuthorize } = useWorkWeixinAuthorize();
@@ -71,6 +76,10 @@ const useAuthWorkWeixinCommon = () => {
  * @hook PC 端企微观看条件
  */
 export const useAuthWorkWeixinPc = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const watchCore = getWatchCore();
   const authStore = useAuthStore();
 
@@ -155,6 +164,10 @@ export const useAuthWorkWeixinPc = () => {
  */
 export const useAuthWorkWeixinMobile = () => {
   const authStore = useAuthStore();
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const watchCore = getWatchCore();
 
   useAuthButtonInject<AuthSettingItemEnterpriseWeChat>(onClickAuthButton);

@@ -40,7 +40,9 @@ import { fitProtocol } from '@/assets/utils/url';
 import { clickImgToPreview } from '@/hooks/components/use-image-preview';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
 import { msgQuoteContentProps, useMsgQuoteContent } from './use-msg-quote-content';
-import { parseQuoteSpeakContent } from '../speak-msg/use-speak-msg';
+import { useQuoteSpeakContentParse } from '../speak-msg/use-speak-msg';
+
+const { parseQuoteSpeakContent } = useQuoteSpeakContentParse();
 
 const props = defineProps(msgQuoteContentProps());
 

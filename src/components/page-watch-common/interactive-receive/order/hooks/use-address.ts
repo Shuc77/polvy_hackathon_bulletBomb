@@ -3,10 +3,12 @@
  * @Description: 地址处理
  */
 import { ref, onMounted } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import type { AddressDetail } from '../types/order-types';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 export function useAddress() {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const watchCore = getWatchCore();
   /** 地址管理sdk */
   const addressManagementSdk = watchCore.interactReceive.getAddressManagement();

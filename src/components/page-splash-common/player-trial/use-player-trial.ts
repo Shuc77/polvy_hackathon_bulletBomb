@@ -12,15 +12,19 @@ import { useAuthStore } from '@/store/use-auth-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { ynToBool } from '@utils-ts/boolean';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 试看-引导页业务逻辑
  * */
 export const usePlayerTrialHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const channelStore = useChannelStore();
   const authStore = useAuthStore();
 

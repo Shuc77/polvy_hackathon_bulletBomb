@@ -1,6 +1,5 @@
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   ChatEvents,
   ChatMsgMotivationLikeType,
@@ -14,6 +13,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { useSvgaPlayer } from '@/hooks/animation/use-svga-player';
 import { useMotivationLike } from '../motivation-like/use-motivation-like';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const MotivationLikeAnimationProps = () => ({
   enableTypes: PropUtils.array<MotivationLikeType>().def([
@@ -25,6 +25,8 @@ export const MotivationLikeAnimationProps = () => ({
 export const useMotivationLikeAnimation = (options: {
   props: VueProps<typeof MotivationLikeAnimationProps>;
 }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { props } = options;
 
   const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);

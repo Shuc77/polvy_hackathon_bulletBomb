@@ -36,4 +36,12 @@ export const chatEvents = {
    * 显示移动端固定输入框
    */
   ShowMobileFixedChatInput: 'ShowMobileFixedChatInput',
+  /**
+   * 替换聊天消息
+   */
+  ReplaceChatMessage: 'ReplaceChatMessage',
+  /**
+   * 插入到聊天消息队列
+   */
+  JoinMsgQueue: 'JoinMsgQueue',
 };

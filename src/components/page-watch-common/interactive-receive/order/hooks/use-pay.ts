@@ -2,15 +2,18 @@
  * @Author: kim
  * @Description: 微信支付
  */
-import { useWeixinPay, WxPayCallback } from '@/hooks/platform/use-weixin/use-weixin-pay';
+import { useWeixinPay } from '@/hooks/platform/use-weixin/use-weixin-pay';
 import { isWeixin } from '@/assets/utils/browser';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { WxCallback } from '@/hooks/platform/use-weixin/types';
 
 export function usePay() {
+  const { toast } = useToastManager();
+
   const { chooseWXPay } = useWeixinPay();
 
-  const pay = (payload: WechatJsSdk.ChooseWXPayOption, callback: WxPayCallback = {}) => {
+  const pay = (payload: WechatJsSdk.ChooseWXPayOption, callback: WxCallback = {}) => {
     // 非微信中打开
     if (!isWeixin) {
       toast.error(translate('weixin.error.toWechatPay'));

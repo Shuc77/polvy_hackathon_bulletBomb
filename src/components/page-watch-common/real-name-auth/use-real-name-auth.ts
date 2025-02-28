@@ -1,11 +1,11 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { LangType } from '@/assets/lang/lang-enum';
 import { isMobile } from '@/assets/utils/browser';
 import { validatePhoneNumber } from '@/assets/utils/validate';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useLangStore } from '@/store/use-lang-store';
 import { useViewerStore } from '@/store/use-viewer-store';
@@ -13,6 +13,10 @@ import { RealNameFail } from '@polyv/live-watch-sdk';
 import { computed, reactive, unref } from 'vue';
 
 export const useRealNameAuth = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const langStore = useLangStore();
   const viewerStore = useViewerStore();
   const watchCore = getWatchCore();
@@ -31,7 +35,7 @@ export const useRealNameAuth = () => {
     /** 用户协议（英文版） */
     const userAgreementEn = 'https://doc-oss.polyv.net/basic/User%20Agreement.pdf';
 
-    const url = langStore.currentLang === LangType.Chinese ? userAgreementCn : userAgreementEn;
+    const url = langStore.currentLang === LangType.ZH_CN ? userAgreementCn : userAgreementEn;
 
     if (isMobile) {
       return watchCore.utils.generatePdfPreviewUrl(url);
@@ -48,7 +52,7 @@ export const useRealNameAuth = () => {
     /** 隐私协议（英文版） */
     const policyAgreementEn = 'https://doc-oss.polyv.net/basic/Privacy%20Policy.pdf';
 
-    const url = langStore.currentLang === LangType.Chinese ? policyAgreementCn : policyAgreementEn;
+    const url = langStore.currentLang === LangType.ZH_CN ? policyAgreementCn : policyAgreementEn;
 
     if (isMobile) {
       return watchCore.utils.generatePdfPreviewUrl(url);

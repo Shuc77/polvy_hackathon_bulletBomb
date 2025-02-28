@@ -1,15 +1,15 @@
-import { FinanceRiskEvaluationSocketData } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
+import { FinanceRiskEvaluationSocketData, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
 import { useFinanceStore } from '@/store/use-finance-store';
 import { ynToBool } from '@utils-ts/boolean';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /**
  * @hooks 风险测评-测评重置
  */
-export const useRiskEvaluationResetHook = () => {
-  const watchCore = getWatchCore();
+export const useRiskEvaluationResetHook = (watchCore: PolyvWatchCore) => {
+  const { getEmitter } = useMultiPolyvWatchApp();
 
   const financeStore = useFinanceStore();
 
@@ -42,7 +42,7 @@ export const useRiskEvaluationResetHook = () => {
       }
       const isPreLimitType = watchCore.financeRiskEvaluation.judgeIsPreLimitType(socketData);
       if (isPreLimitType) {
-        eventBus.$emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
+        getEmitter().emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
       }
     } else {
       // 开 -> 关
@@ -83,8 +83,8 @@ export const useRiskEvaluationResetHook = () => {
     // 后置 -> 前置
     const isAfter2Pre = judgeIsAfterLimitType(riskEvaluation) && judgeIsPreLimitType(socketData);
     if (isAfter2Pre) {
-      eventBus.$emit(appEvents.finance.RiskEvaluationPendantTimeoutCacheClear);
-      eventBus.$emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
+      getEmitter().emit(appEvents.finance.RiskEvaluationPendantTimeoutCacheClear);
+      getEmitter().emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
       return;
     }
 
@@ -101,7 +101,7 @@ export const useRiskEvaluationResetHook = () => {
     // 前置 -> 前置
     const isPre2Pre = judgeIsPreLimitType(riskEvaluation) && judgeIsPreLimitType(socketData);
     if (isPre2Pre) {
-      eventBus.$emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
+      getEmitter().emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
       return;
     }
 
@@ -121,7 +121,7 @@ export const useRiskEvaluationResetHook = () => {
 
     const isPass = watchCore.financeRiskEvaluation.judgeIsPassRiskEvaluation(riskEvaluation);
     if (!isPass) {
-      eventBus.$emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
+      getEmitter().emit(appEvents.finance.RiskEvaluationRedirectDialogShow);
     }
   }
 
@@ -133,7 +133,7 @@ export const useRiskEvaluationResetHook = () => {
 
     const isPass = watchCore.financeRiskEvaluation.judgeIsPassRiskEvaluation(riskEvaluation);
     if (!isPass) {
-      eventBus.$emit(appEvents.finance.RiskEvaluationMainDialogShow);
+      getEmitter().emit(appEvents.finance.RiskEvaluationMainDialogShow);
     }
   }
 

@@ -1,7 +1,10 @@
-import { getWatchCore } from '@/core/watch-sdk';
-import { convert2WatchSdkLang, useLangStore } from '@/store/use-lang-store';
-import { ChannelAgreementConfig, LanguageType } from '@polyv/live-watch-sdk';
 import { ref, computed, onMounted } from 'vue';
+import { ChannelAgreementConfig, LanguageType } from '@polyv/live-watch-sdk';
+
+import { useLangStore } from '@/store/use-lang-store';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+
+import { convert2WatchSdkLang } from '@/assets/lang/util';
 
 const generateDefaultChannelAgreementConfigItem = (): ChannelAgreementConfig[LanguageType] => {
   return {
@@ -16,6 +19,8 @@ const generateDefaultChannelAgreementConfigItem = (): ChannelAgreementConfig[Lan
  * @param autoGet 是否自动获取
  */
 export const useChannelAgreement = (autoGet = false) => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const langStore = useLangStore();
 
   const channelAgreementConfig = ref<ChannelAgreementConfig>();

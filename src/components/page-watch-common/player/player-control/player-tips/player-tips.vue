@@ -7,6 +7,7 @@
     }"
     v-if="!mobileDocIsPageFullscreen"
   >
+    <!-- 清晰度切换提示 -->
     <div
       class="c-player-tips__item c-player-tips__quality-switch-tips"
       v-if="switchQualityTipStatus !== SwitchTipsStatus.Hide"
@@ -25,6 +26,7 @@
       </span>
     </div>
 
+    <!-- 弱网切换提示 -->
     <div
       class="c-player-tips__item c-player-tips__weak-network-switch"
       v-if="showWeakNetworkTip"
@@ -32,6 +34,7 @@
       <weak-network-switch-tips></weak-network-switch-tips>
     </div>
 
+    <!-- 线路切换提示 -->
     <div
       class="c-player-tips__item c-player-tips__quality-switch-tips"
       v-if="switchLineTipStatus !== SwitchTipsStatus.Hide && !isMobile"
@@ -48,11 +51,25 @@
         }}<span class="c-player-tips__switch-btn">"{{ switchLineText }}"</span>
       </span>
     </div>
+
+    <!-- 历史播放进度提示 -->
+    <div
+      class="c-player-tips__item c-player-tips__history-tips"
+      v-if="historyTipsVisible"
+    >
+      <span>{{ $lang('player.historyTips') }}</span>
+      <span> {{ formatSeconds(historyTipsDuration, { segments: 3 }) }} </span>
+      <span
+        class="c-player-tips__history-tips-restart"
+        @click="toRestart"
+        >{{ $lang('player.restart') }}</span
+      >
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, watch, onMounted, onUnmounted } from 'vue';
+import { computed, watch, onMounted, onUnmounted, ref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerStore, SwitchTipsStatus } from '@/store/use-player-store';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
@@ -60,11 +77,17 @@ import { useNetworkStatus } from '@/components/page-watch-common/player/hooks/us
 import { useWeakNetworkSwitch } from '@/components/page-watch-common/player/player-control/weak-network-switch-tips/use-weak-network-switch';
 import WeakNetworkSwitchTips from '../weak-network-switch-tips/weak-network-switch-tips.vue';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { isMobile } from '@/assets/utils/browser';
 import { useWebPageFullscreen } from '@/components/page-watch-common/player/hooks/use-web-page-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { formatSeconds } from '@utils-ts/date';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+
+const { getWatchCore } = useGlobalInject();
+
+const watchCore = getWatchCore();
 
 const props = defineProps({
   isNormalMobileLayout: PropUtils.bool.def(false),
@@ -77,12 +100,24 @@ const {
   playerInited,
   switchLineLevel,
   switchLineTipStatus,
+  historyDuration,
 } = storeDefinitionToRefs(usePlayerStore);
 
+const { toRestart } = usePlayerAction();
 const { mobileDocIsPageFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
 const { qualitySettingList, lineSettingList } = usePlayerControl();
 const { isMobileWebPageFullscreen } = useWebPageFullscreen();
+
+/**
+ * 历史播放进度提示是否显示
+ */
+const historyTipsVisible = ref(false);
+
+/**
+ * 历史播放进度提示时长
+ */
+const historyTipsDuration = ref(0);
 
 const switchLevelText = computed(() => {
   const getLevelText = (level?: number) => {
@@ -116,7 +151,7 @@ const handleQualityLevelChange = () => {
   // 移动端播放器延迟出现提示，可能效果好点？移动端播放器只要切换清晰度，视频未加载完就触发事件
   setTimeout(() => {
     switchQualityTipStatus.value = SwitchTipsStatus.Finish;
-    switchQualityLevel.value = getWatchCore().player.getCurrentQualityLevel();
+    switchQualityLevel.value = watchCore.player.getCurrentQualityLevel();
   }, 600);
 
   finishTimer = setTimeout(() => {
@@ -124,21 +159,26 @@ const handleQualityLevelChange = () => {
   }, 3000);
 };
 
+/**
+ * 显示历史播放进度提示
+ */
+const showHistoryTipsInSeconds = (seconds: number) => {
+  historyTipsVisible.value = true;
+  setTimeout(() => {
+    historyTipsVisible.value = false;
+    historyTipsDuration.value = 0;
+  }, seconds);
+};
+
 onMounted(() => {
   if (props.isNormalMobileLayout) {
-    getWatchCore().player.eventEmitter.on(
-      PlayerEvents.QualityLevelChange,
-      handleQualityLevelChange,
-    );
+    watchCore.player.eventEmitter.on(PlayerEvents.QualityLevelChange, handleQualityLevelChange);
   }
 });
 
 onUnmounted(() => {
   if (props.isNormalMobileLayout) {
-    getWatchCore().player.eventEmitter.off(
-      PlayerEvents.QualityLevelChange,
-      handleQualityLevelChange,
-    );
+    watchCore.player.eventEmitter.off(PlayerEvents.QualityLevelChange, handleQualityLevelChange);
   }
 });
 
@@ -152,6 +192,14 @@ watch(isWeakNetwork, newVal => {
 watch(showWeakNetworkTip, val => {
   if (val) {
     showControl.value = true;
+  }
+});
+
+watch(historyDuration, val => {
+  if (val) {
+    historyTipsDuration.value = val;
+    // 对齐pc端，pc端是5秒
+    showHistoryTipsInSeconds(5000);
   }
 });
 </script>
@@ -169,7 +217,7 @@ watch(showWeakNetworkTip, val => {
   align-items: center;
 
   .c-player-tips__item {
-    max-width: 70%;
+    max-width: 81%;
     overflow: hidden;
   }
 }
@@ -200,6 +248,16 @@ watch(showWeakNetworkTip, val => {
 .c-player-tips__switch-btn {
   padding: 0 3px;
   color: #85a6f7;
+}
+
+.c-player-tips__history-tips {
+  display: inline;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.c-player-tips__history-tips-restart {
+  @extend .c-player-tips__switch-btn;
 }
 
 .c-player-tips--mobile-web-page-fullscreen {

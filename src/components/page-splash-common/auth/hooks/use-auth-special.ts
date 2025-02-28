@@ -43,7 +43,7 @@ export const useAuthSpecial = () => {
       await doCustomAuth();
     }
 
-    if (watchAppStore.pageError) {
+    if (watchAppStore.directBusinessPageType) {
       return true;
     }
   }

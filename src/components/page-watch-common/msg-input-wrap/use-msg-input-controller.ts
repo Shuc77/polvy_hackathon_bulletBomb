@@ -1,17 +1,23 @@
-import { computed, ref, unref } from 'vue';
+import { computed, ref, unref, watch } from 'vue';
+import { useLangStore } from '@/store/use-lang-store';
 import { AutoTextareaInstance } from './auto-textarea/use-auto-textarea';
 import {
   PlvInputContent,
   PlvInputContentText,
   PlvInputImagePasteInstance,
 } from '@/plugins/polyv-ui/types';
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 对消息输入框的封装，统一提供给到组件外部使用的的方法
  * @desc 内部优先级: imagePasteInputRef > autoTextareaRef > inputElemRef
  */
 export const useMsgInputController = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
+  const watchCore = getWatchCore();
+
   /** 图片粘贴输入框组件实例 */
   const imagePasteInputRef = ref<PlvInputImagePasteInstance>();
 
@@ -28,9 +34,35 @@ export const useMsgInputController = () => {
   /** 当前输入框是否聚焦 */
   const isInputFocus = ref(false);
 
+  const langStore = useLangStore();
+  watch(
+    () => langStore.currentLang,
+    () => {
+      if (imagePasteInputRef.value) {
+        // 因组件库没有提供覆盖内容的方法，只能先覆盖 innerHTML 去实现
+        const editor = imagePasteInputRef.value.$el.firstElementChild;
+        if (editor) {
+          editor.innerHTML = watchCore.emotion.translateEmotions(editor.innerHTML);
+        }
+        return;
+      }
+
+      if (autoTextareaRef.value) {
+        autoTextareaInputValue.value = watchCore.emotion.translateEmotions(
+          autoTextareaInputValue.value,
+        );
+        return;
+      }
+
+      if (inputElemRef.value) {
+        inputElmValue.value = watchCore.emotion.translateEmotions(inputElmValue.value);
+      }
+    },
+  );
+
   function onInputFocus() {
     isInputFocus.value = true;
-    eventBus.$emit(appEvents.global.MsgInputFocus);
+    getEmitter().emit(appEvents.global.MsgInputFocus);
   }
 
   function onInputBlur() {
@@ -88,7 +120,9 @@ export const useMsgInputController = () => {
 
   /** 监听图片粘贴输入框输入变更 */
   function onImagePasteInputChange(contents: PlvInputContent[]) {
-    isEmptyImagePasteInput.value = contents.length === 0;
+    isEmptyImagePasteInput.value = contents.every(item => {
+      return item.type === 'text' ? !item.content.trim() : false;
+    });
     curImagePasteInputTextLength.value = (
       contents.filter(i => i.type === 'text') as PlvInputContentText[]
     ).reduce((accu, cur) => {

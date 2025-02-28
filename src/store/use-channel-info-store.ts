@@ -14,7 +14,6 @@ import {
   isWorkWeixin,
 } from '@/assets/utils/browser';
 import { htmlStr2Text } from '@/assets/utils/string';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   ChannelBasicInfo,
   ChannelCountdownSetting,
@@ -101,7 +100,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
     const channelInfo = computed(() => {
       let info: ChannelBasicInfo = unref(cnChannelBasicInfo);
 
-      if (langStore.englishSettingEnabled && langStore.currentLang !== LangType.Chinese) {
+      if (langStore.englishSettingEnabled && langStore.currentLang !== LangType.ZH_CN) {
         info = unref(enChannelBasicInfo);
       }
 
@@ -263,7 +262,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
 
     /** 刷新频道信息 */
     function syncChannelInfo(): void {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const channelBasicInfo = watchCore.channel.getChannelBasicInfo('zh_CN');
 
       cnChannelBasicInfo.value = {

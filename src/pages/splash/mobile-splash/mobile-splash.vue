@@ -9,11 +9,9 @@
         />
         <div
           v-else
-          class="c-mobile-splash__header__content__cover g-img-cover"
-          :style="{
-            backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
-          }"
+          class="c-mobile-splash__header__content__cover"
         >
+          <channel-splash-img />
           <div
             v-if="trialPlayFinishTipVisible"
             class="c-mobile-splash__header__content__trial-play-finish-tip"
@@ -24,7 +22,12 @@
       </div>
     </header>
 
-    <div class="c-mobile-splash__main">
+    <div
+      class="c-mobile-splash__main"
+      :class="{
+        'c-mobile-splash__main__padding': showLiveCountDown,
+      }"
+    >
       <!-- 倒计时 + 预约 -->
       <div
         v-if="showLiveCountDown"
@@ -50,6 +53,7 @@
 import { defineAsyncComponent } from 'vue';
 
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
+import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
 import MobileLiveBookingButton from '@/components/common-business/live-booking/mobile-live-booking-button.vue';
 import MobileLiveCountDown from '@/components/common-business/live-count-down/mobile-live-count-down.vue';
 import MobileSplashBtn from './components/mobile-splash-btn.vue';
@@ -60,8 +64,6 @@ import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
-import { useThemeStore } from '@/store/use-theme-store';
-import { resizeOSSImg } from '@/assets/utils/image';
 
 const MobilePlayerTrial = defineAsyncComponent(
   () =>
@@ -71,7 +73,6 @@ const MobilePlayerTrial = defineAsyncComponent(
     ),
 );
 
-const { splashImg } = storeDefinitionToRefs(useThemeStore);
 const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
 const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
 
@@ -84,6 +85,8 @@ const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTr
   top: 0;
   left: 0;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
   overflow-y: auto;
@@ -104,11 +107,15 @@ const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTr
 }
 
 .c-mobile-splash__header__content__cover {
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
 .c-mobile-splash__header__content__trial-play-finish-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,7 +127,11 @@ const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTr
 }
 
 .c-mobile-splash__main {
-  padding-bottom: 64px;
+  flex: 1;
+
+  &.c-mobile-splash__main__padding {
+    padding-bottom: 64px;
+  }
 }
 
 .c-mobile-splash__main__header {
@@ -138,7 +149,7 @@ const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTr
 }
 
 .c-mobile-splash__bottom-btn {
-  position: fixed;
+  position: sticky;
   bottom: 0;
   z-index: 1;
   width: 100%;

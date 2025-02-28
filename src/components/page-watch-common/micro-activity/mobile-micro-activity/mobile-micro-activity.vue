@@ -13,9 +13,18 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick, ref, unref, watch, onMounted } from 'vue';
+import { $ } from '@just4/dom';
+import { storeToRefs } from 'pinia';
+
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { nextTick, onMounted, ref, unref, watch } from 'vue';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useMicroActivityHook } from '../hooks/use-micro-activity';
+
+const { mobileWatchLayoutHeight } = storeToRefs(useLayoutStore());
+
+const { scrollIntoView, getAppRootElement, getAppBodyElement } = useMultiPolyvWatchApp();
 
 let $watchContainer: HTMLElement | null = null;
 /**
@@ -24,10 +33,17 @@ let $watchContainer: HTMLElement | null = null;
  * */
 const updateWatchContainerHeight = (displayHeight: string, overflowHidden?: boolean) => {
   if (!$watchContainer) {
-    $watchContainer = document.querySelector('.c-mobile-watch-layout');
+    $watchContainer = getAppRootElement().querySelector('.c-mobile-watch-layout');
   }
   if ($watchContainer) {
     $watchContainer.style.setProperty('height', displayHeight);
+    if ($watchContainer.parentElement) {
+      if (!overflowHidden) {
+        $($watchContainer.parentElement).addClass('c-mobile-watch--no-flex');
+      } else {
+        $($watchContainer.parentElement).removeClass('c-mobile-watch--no-flex');
+      }
+    }
     $watchContainer.style.setProperty('overflow-y', overflowHidden ? 'hidden' : 'scroll');
   }
 };
@@ -71,7 +87,10 @@ watch(
               return;
             }
             originIframeHeight.value = $iframe.clientHeight || 0;
-            originBodyHeight.value = document.body.clientHeight;
+            // originBodyHeight.value = document.body.clientHeight;
+            originBodyHeight.value = mobileWatchLayoutHeight.value;
+
+            fullScreenMessageHandler(); // 默认要全屏展示
           } else {
             updateScreenDomHeight(lastIframeHeight.value);
           }
@@ -94,8 +113,8 @@ onMounted(() => {
 
 /** 还原 DOM 原本状态 */
 function recoverScreenDomHeight() {
-  document.body.style.removeProperty('overflow');
-  document.documentElement.style.removeProperty('overflow');
+  getAppBodyElement().style.removeProperty('overflow');
+  getAppRootElement().style.removeProperty('overflow');
 
   updateWatchContainerHeight('100%', true);
   displayIframeHeight.value = '100%';
@@ -109,30 +128,42 @@ function updateScreenDomHeight(height: number) {
   if (height < originIframeHeight.value) {
     recoverScreenDomHeight();
   } else {
+    // console.warn({
+    //   height,
+    //   originIframeHeight: originIframeHeight.value,
+    //   originBodyHeight: originBodyHeight.value,
+    // });
+
     const offset = height - originIframeHeight.value;
     const displayBodyHeight = originBodyHeight.value + offset + 'px';
 
     displayIframeHeight.value = height + 'px';
     updateWatchContainerHeight(displayBodyHeight);
 
-    document.body.style.setProperty('overflow', 'scroll');
-    document.documentElement.style.setProperty('overflow', 'scroll');
+    getAppBodyElement().style.setProperty('overflow', 'scroll');
+    getAppRootElement().style.setProperty('overflow', 'scroll');
   }
 
   lastIframeHeight.value = height;
 }
 
 function fullScreenMessageHandler() {
+  if (!props.isActive) return;
+
   const height = window.innerHeight;
   updateScreenDomHeight(height);
 }
 
 function backHomeMessageHandler() {
+  if (!props.isActive) return;
+
   recoverScreenDomHeight();
   lastIframeHeight.value = 0;
 }
 
 function forceFullScreenMessageHandler() {
+  if (!props.isActive) return;
+
   fullScreenMessageHandler();
 
   const $iframe = unref(microActivityIframeRef);
@@ -141,7 +172,7 @@ function forceFullScreenMessageHandler() {
     return;
   }
 
-  $iframe.scrollIntoView({ block: 'end' });
+  scrollIntoView($iframe, { block: 'end' });
 
   // 保证滚动到底部
   document.documentElement.scrollTo({ top: window.innerHeight });

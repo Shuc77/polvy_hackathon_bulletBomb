@@ -5,10 +5,10 @@ import { ref } from 'vue';
 import { ChannelTrialInfo, PlayerEvents } from '@polyv/live-watch-sdk';
 import { local } from '@just4/storage';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { usePlayerStore } from '@/store/use-player-store';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { getStorageKey } from '@/assets/utils/storage';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /** 获取本地存储的"试看剩余时长" key 值 */
 const mergeStorageKey = (sessionId: string) => {
@@ -17,6 +17,8 @@ const mergeStorageKey = (sessionId: string) => {
 
 /** @hook 试看播放器事件 hook */
 export const usePlayerTrialEvent = ({ trialInfo }: { trialInfo: ChannelTrialInfo | null }) => {
+  const { getEmitter, getWatchCore } = useMultiPolyvWatchApp();
+
   const playerStore = usePlayerStore();
 
   /** 试看剩余时长，秒级别 */
@@ -46,7 +48,7 @@ export const usePlayerTrialEvent = ({ trialInfo }: { trialInfo: ChannelTrialInfo
     trialWatchTimer.value = window.setInterval(() => {
       if (trialRemainingTime.value <= 0) {
         clearTrialWatchTimer();
-        eventBus.$emit(appEvents.player.TrialPlayEnd);
+        getEmitter().emit(appEvents.player.TrialPlayEnd);
         return;
       }
       trialRemainingTime.value -= 1;
@@ -74,10 +76,10 @@ export const usePlayerTrialEvent = ({ trialInfo }: { trialInfo: ChannelTrialInfo
     if (localTrialRemainingTime === 0) {
       // 无本地缓存 || 剩余时长确实为 0 的情况
       clearTrialWatchTimer();
-      eventBus.$emit(appEvents.player.TrialPlayEnd);
+      getEmitter().emit(appEvents.player.TrialPlayEnd);
       return;
     } else {
-      eventBus.$emit(appEvents.player.TrialPlayStart, {
+      getEmitter().emit(appEvents.player.TrialPlayStart, {
         trialRemainingTime: localTrialRemainingTime,
       });
     }
