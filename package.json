@@ -40,7 +40,7 @@
     "@just4/ua-info": "^3.0.0",
     "@just4/virtual-list": "1.0.0",
     "@polyv/icons-vue": "1.2.0",
-    "@polyv/live-watch-sdk": "2.0.0-rc-20250227.2",
+    "@polyv/live-watch-sdk": "2.0.0",
     "@polyv/polyv-ui": "^4.0.25",
     "@polyv/utils": "2.6.0",
     "@polyv/web-view-bridge": "0.1.0-rc.1",
