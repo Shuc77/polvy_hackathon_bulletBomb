@@ -6,9 +6,6 @@
       'c-mobile-main__portrait-pip':
         isSmallWindow && mobileWatchLayout === MobileWatchLayout.Portrait,
     }"
-    @touchstart="onTouchStart"
-    @touchmove="onTouchMove"
-    @touchend="onTouchEnd"
   >
     <template v-if="shouldShowForceAuth">
       <mobile-force-auth @hook:mounted="onPageMounted" />
@@ -66,7 +63,6 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useWebviewFeedTouch } from '@/hooks/behaviors/use-webview-feed';
 import { useWebviewStore } from '@/store/use-webview-store';
 
 const MobileWeixinSnapshotTips = defineAsyncComponent(() => {
@@ -94,8 +90,6 @@ const PortraitWatchLoader = () => {
   );
 };
 const PortraitWatch = defineAsyncComponent(PortraitWatchLoader);
-
-const { onTouchStart, onTouchEnd, onTouchMove } = useWebviewFeedTouch();
 
 const emit = defineEmits(mainEnterEmits());
 

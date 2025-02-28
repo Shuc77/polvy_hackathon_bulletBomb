@@ -119,6 +119,15 @@
             <pc-barrage />
           </div>
 
+          <!-- 播放器-公告跑马灯层 -->
+          <div
+            v-if="managerBulletinMarqueeRenderEnabled"
+            v-show="managerBulletinMarqueeEnabled"
+            class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-bulletin-marquee"
+          >
+            <pc-bulletin-marquee />
+          </div>
+
           <transition name="fade">
             <div
               ref="ProductDetailDialogRef"
@@ -160,6 +169,9 @@
           />
 
           <speak-top-business layout="pc"></speak-top-business>
+
+          <!-- 其他直播预约 -->
+          <common-other-live-booking class="c-pc-watch-layout__main__other-live-booking" />
         </div>
       </div>
     </div>
@@ -206,6 +218,8 @@ import MotivationLikeAnimation from '@/components/page-watch-common/motivation/m
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
 import PcProductDetail from '@/components/page-watch-common/product-detail/pc-product-detail.vue';
+import PcBulletinMarquee from '@/components/page-watch-common/bulletin-marquee/pc-bulletin-marquee.vue';
+import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -217,6 +231,7 @@ import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 import {
   MainScreenContent,
@@ -225,11 +240,15 @@ import {
 } from '@polyv/live-watch-sdk';
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { canRenderPlayer, switchQualityTipStatus, showControl } =
   storeDefinitionToRefs(usePlayerStore);
+
+const { managerBulletinMarqueeEnabled, managerBulletinMarqueeRenderEnabled } =
+  storeDefinitionToRefs(useChannelStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
@@ -270,11 +289,13 @@ function showPlayerControl(e: MouseEvent) {
 
 const { pcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
 
+const { getAppBodyElement } = useGlobalInject();
+
 onMounted(() => {
   // 需要在 body 设置全局背景
-  $(document.body).addClass(['plv-pc-watch-bg', 'pws-pc-watch-bg']);
+  $(getAppBodyElement()).addClass(['plv-pc-watch-bg', 'pws-pc-watch-bg']);
   if (pcWatchBackgroundImage.value) {
-    document.body.style.setProperty(
+    getAppBodyElement().style.setProperty(
       'background-image',
       `url("${pcWatchBackgroundImage.value}")`,
       'important',
@@ -437,6 +458,12 @@ $--layout-sub-pack-up-height: 40px !default;
   pointer-events: none;
 }
 
+.c-pc-watch-layout__main__player-bulletin-marquee {
+  z-index: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
 .c-pc-watch-layout__main__player-control {
   bottom: 0;
   display: flex;
@@ -560,5 +587,13 @@ $--layout-sub-pack-up-height: 40px !default;
     height: 100%;
     pointer-events: initial;
   }
+}
+
+.c-pc-watch-layout__main__other-live-booking {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: $--layer-zIndex-count-down;
+  pointer-events: initial;
 }
 </style>

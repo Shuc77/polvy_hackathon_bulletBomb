@@ -1,9 +1,7 @@
 import { useTaskActivityStore } from '@/store/use-task-activity-store';
-import { TaskActivityEvents } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '../watch-sdk';
+import { PolyvWatchCore, TaskActivityEvents } from '@polyv/live-watch-sdk';
 
-export function bindTaskActivityEvents() {
-  const watchCore = getWatchCore();
+export function bindTaskActivityEvents(watchCore: PolyvWatchCore) {
   const taskActivityStore = useTaskActivityStore();
 
   watchCore.taskActivity.eventEmitter.on(TaskActivityEvents.StartTask, () => {

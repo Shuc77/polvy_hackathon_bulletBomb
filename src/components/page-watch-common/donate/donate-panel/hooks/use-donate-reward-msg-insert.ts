@@ -1,16 +1,18 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { DonateGoodInfo, useDonateStore } from '@/store/use-donate-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { DonateType } from '@polyv/live-watch-sdk';
 import type { DonatePayOptions } from './use-donate-pay';
 
 export const useDonateRewardMsgInsertHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const donateStore = useDonateStore();
   const playbackStore = usePlaybackStore();
   const watchCore = getWatchCore();
 
   function __enableInsertLocalRewardMsg() {
-    if (playbackStore.chatReplayEnabled) {
+    if (playbackStore.chatMsgReplayEnabled) {
       return false;
     }
 

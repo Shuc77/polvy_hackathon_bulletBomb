@@ -1,7 +1,6 @@
 /**
  * @file 频道 store
  */
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   ChannelAudioMode,
   ChannelScene,
@@ -14,6 +13,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface ChannelStoreState {
   /** 频道号 */
@@ -54,6 +54,10 @@ export interface ChannelStoreState {
   smsConfig: Ref<SmsConfig>;
   /** 在线列表开关 */
   onlineListEnabled: Ref<boolean>;
+  /** 管理员公告跑马灯开关 */
+  managerBulletinMarqueeEnabled: Ref<boolean>;
+  /** 是否支持渲染管理员公告跑马灯 */
+  managerBulletinMarqueeRenderEnabled: ComputedRef<boolean>;
 }
 
 export interface ChannelStoreActions {
@@ -65,6 +69,8 @@ export interface ChannelStoreActions {
 export interface ChannelStore extends ChannelStoreState, ChannelStoreActions {}
 
 export const useChannelStore = defineStore<'channel', ChannelStore>('channel', () => {
+  const watchAppStore = useWatchAppStore();
+
   /** 频道号 */
   const channelId = ref('');
 
@@ -137,9 +143,21 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 在线列表开关 */
   const onlineListEnabled = ref(false);
 
+  /** 管理员公告跑马灯开关 */
+  const managerBulletinMarqueeEnabled = ref(true);
+
+  /** 是否支持渲染管理员公告跑马灯 */
+  const managerBulletinMarqueeRenderEnabled = computed(() => {
+    if (isPptChannel.value || isSeminarChannel.value) return false;
+
+    if (liveStatus.value !== LiveStatus.Live) return false;
+
+    return true;
+  });
+
   /** 同步频道 Store 数据 */
   function syncChannelStore(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     channelScene.value = watchCore.channel.getChannelScene();
     liveStatus.value = watchCore.channel.getLiveStatus();
@@ -148,6 +166,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     watchUrl.value = watchCore.channel.getChannelWatchUrl();
     teacherInfo.value = watchCore.channel.getTeacherInfo();
     onlineListEnabled.value = watchCore.channel.getOnlineListEnabled();
+    managerBulletinMarqueeEnabled.value = watchCore.channel.getManagerBulletinMarqueeEnabled();
 
     streamTrackConfig.value = watchCore.channel.getChannelStreamTrackConfig();
     audioMode.value = watchCore.channel.getAudioMode();
@@ -173,6 +192,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     teacherInfo,
     currentStreamType,
     onlineListEnabled,
+    managerBulletinMarqueeEnabled,
+    managerBulletinMarqueeRenderEnabled,
 
     streamTrackConfig,
     supportMultiStreamTrack,

@@ -7,6 +7,13 @@ export function isNumber(target: unknown): target is number {
 }
 
 /**
+ * 获取在指定范围的随机整数
+ */
+export function generateRandomInteger(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
  * 保留小数位
  * @param number
  * @param accuracy 精度，选传，默认为 2

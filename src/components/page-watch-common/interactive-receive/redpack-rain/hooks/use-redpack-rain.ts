@@ -1,7 +1,7 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRedpackStatus } from '../../redpack/hooks/use-redpack';
 import { RedpackStatusData } from '../types/redpack-rain-types';
 
@@ -9,6 +9,8 @@ import { RedpackStatusData } from '../types/redpack-rain-types';
  * @hook 互动-红包雨
  * */
 export const useRedpackRain = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
 
   const watchCore = getWatchCore();
@@ -44,13 +46,7 @@ export const useRedpackRain = () => {
     });
   };
 
-  onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenRedpackRain, openRedpackRain);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenRedpackRain, openRedpackRain);
-  });
+  useEventBusListener(appEvents.interaction.OpenRedpackRain, openRedpackRain);
 
   const { setRedpackStatus } = useRedpackStatus();
 
@@ -67,12 +63,12 @@ export const useRedpackRain = () => {
 
   /** 处理点击提现按钮 */
   const onClickWithdraw = () => {
-    eventBus.$emit(appEvents.withdraw.OpenWithdrawApply, true);
+    getEmitter().emit(appEvents.withdraw.OpenWithdrawApply, true);
   };
 
   /** 处理点击积分记录 */
   const onClickScoreRecord = () => {
-    eventBus.$emit(appEvents.interaction.OpenScoreRecord, true);
+    getEmitter().emit(appEvents.interaction.OpenScoreRecord, true);
   };
 
   return {

@@ -1,6 +1,9 @@
 <!-- @file 竖屏端页面布局 -->
 <template>
-  <div class="c-portrait-watch-layout">
+  <div
+    ref="portraitLayout"
+    class="c-portrait-watch-layout"
+  >
     <!-- 播放器 -->
     <div
       class="c-portrait-watch-layout__player-wrap"
@@ -43,9 +46,7 @@
       :class="{
         'c-portrait-watch-layout__carousel-wrap__fullscreen': portraitPlayerIsPageFullscreen,
       }"
-      :style="{
-        paddingTop: `${portraitDocWrapHeight}px`,
-      }"
+      :style="carouselStyle"
       ref="portraitWrap"
     >
       <portrait-watch-layout-carousel />
@@ -57,19 +58,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
 import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue';
 import PortraitWatchLayoutCarousel from './portrait-watch-layout-carousel.vue';
 import PortraitConnectMicContainer from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-container.vue';
+import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
+
 import { useDocStore } from '@/store/use-doc-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePlayerStore } from '@/store/use-player-store';
-import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
+import { useLayoutStore } from '@/store/use-layout-store';
 
+import { CSSProperties } from 'vue/types/jsx';
+import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
+
+const { isVerticalScreenOrientation } = storeDefinitionToRefs(useLayoutStore);
+
+const portraitLayoutStore = usePortraitLayoutStore();
 const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
   storeDefinitionToRefs(usePortraitLayoutStore);
 
@@ -81,8 +90,15 @@ const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
+const portraitLayout = ref<HTMLElement>();
 const portraitWrap = ref<HTMLElement>();
 const portraitMicContainer = ref();
+
+useResizeObserver(portraitLayout, () => {
+  portraitLayoutStore.$patch({
+    portraitWatchLayoutHeight: portraitLayout.value?.clientHeight || 0,
+  });
+});
 
 const micTouchStart = (e: TouchEvent) => {
   const ev = e.target as HTMLElement;
@@ -104,6 +120,16 @@ const micTouchEnd = (e: TouchEvent) => {
     portraitMicContainer.value.onTouchEnd(e.changedTouches[0].pageY);
   }
 };
+
+const carouselStyle = computed<CSSProperties>(() => {
+  if (isVerticalScreenOrientation.value) {
+    return {
+      paddingTop: `${portraitDocWrapHeight.value}px`,
+    };
+  } else {
+    return {};
+  }
+});
 
 watch(
   () => masterMicItem.value,
@@ -128,8 +154,8 @@ watch(
 <style lang="scss">
 .c-portrait-watch-layout {
   position: relative;
-  width: 100%;
-  height: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 .c-portrait-watch-layout__player-wrap {
   position: absolute;

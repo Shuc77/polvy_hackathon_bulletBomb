@@ -16,14 +16,26 @@
 </template>
 
 <script setup lang="ts">
-import { useWebviewFeedTouch } from '@/hooks/behaviors/use-webview-feed';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { tabPaneProps, useTabPane } from '../hooks/use-tab-pane';
 
 const props = defineProps(tabPaneProps());
 
-const { onTouchStart, onTouchMove, onTouchEnd } = useWebviewFeedTouch();
-
 const { paneVisible, renderSlot, tabPaneInstance, transitionName } = useTabPane({ props });
+
+const onMultiPolyvWatchTouch = useMultiPolyvWatchApp();
+
+const onTouchStart = (evt: TouchEvent) => {
+  onMultiPolyvWatchTouch.onTouchStart(evt);
+};
+
+const onTouchMove = (evt: TouchEvent) => {
+  onMultiPolyvWatchTouch.onTouchMove(evt);
+};
+
+const onTouchEnd = (evt: TouchEvent) => {
+  onMultiPolyvWatchTouch.onTouchEnd(evt);
+};
 
 defineExpose(tabPaneInstance);
 </script>
@@ -37,5 +49,6 @@ defineExpose(tabPaneInstance);
   left: 0;
   z-index: 10;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 </style>

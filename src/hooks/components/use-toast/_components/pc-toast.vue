@@ -46,7 +46,7 @@ $--toast-height: 48px !default;
 $--toast-shadow: 0 6px 30px 5px rgba(0, 0, 0, 0.05) !default;
 
 .c-pc-toast {
-  position: fixed;
+  position: absolute;
   left: 50%;
   box-sizing: border-box;
   display: flex;

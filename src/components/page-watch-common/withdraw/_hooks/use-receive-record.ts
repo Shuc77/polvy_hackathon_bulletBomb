@@ -1,8 +1,26 @@
 import { DefineComponent, ref, shallowRef } from 'vue';
 import { formatDate } from '@utils-ts/date';
-import { PageContent } from '@polyv/live-watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { PageContent, WithdrawStatus } from '@polyv/live-watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
+import { translate } from '@/assets/lang';
+
+export function getWithdrawStatusText(status: WithdrawStatus) {
+  switch (status) {
+    case WithdrawStatus.WaitPay:
+      return translate('withdraw.cash.receive.record.processing');
+    case WithdrawStatus.Finish:
+      return translate('withdraw.cash.receive.record.success');
+    case WithdrawStatus.Fail:
+      return translate('withdraw.cash.receive.record.fail');
+    case WithdrawStatus.InPay:
+      return translate('withdraw.cash.receive.record.inPay');
+    case WithdrawStatus.WaitUserConfirm:
+      return translate('withdraw.cash.receive.record.confirm');
+    default:
+      return '';
+  }
+}
 
 export const useReceiveRecordHook = <T>(hookOption: {
   fetchMethod: ({
@@ -14,6 +32,8 @@ export const useReceiveRecordHook = <T>(hookOption: {
   fetchMethodParams?: UniversalParams;
   errMsg: string;
 }) => {
+  const { toast } = useToastManager();
+
   const { fetchMethod, fetchMethodParams = {}, errMsg = 'ReceiveRecordError' } = hookOption;
 
   const loadingVisible = ref(false);
@@ -85,6 +105,21 @@ export const useReceiveRecordHook = <T>(hookOption: {
     }
   }
 
+  /**
+   * 刷新列表
+   */
+  async function refreshList() {
+    if (receiveRecordList.value.length === 0) {
+      return;
+    }
+    const pageResult = await fetchMethod({
+      pageNumber: 1,
+      pageSize: receiveRecordList.value.length,
+      ...fetchMethodParams,
+    });
+    receiveRecordList.value = pageResult.contents;
+  }
+
   return {
     loadingVisible,
     isNotMore,
@@ -94,6 +129,7 @@ export const useReceiveRecordHook = <T>(hookOption: {
     convertAmount,
     /** 组件会在 setup 阶段 expose 该方法 */
     getReceiveRecordList,
+    refreshList,
   };
 };
 

@@ -71,7 +71,10 @@ import { useMsgUserInfo } from './use-msg-user-info';
 
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
 
 const {
   msgUserNick,
@@ -88,7 +91,7 @@ const {
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 function onClickSetNick() {
-  eventBus.$emit(appEvents.chat.OpenSetNick, true);
+  getEmitter().emit(appEvents.chat.OpenSetNick, true);
 }
 </script>
 

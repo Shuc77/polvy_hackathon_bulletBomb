@@ -83,13 +83,15 @@
 </template>
 
 <script setup lang="ts">
-import { resizeOSSImg } from '@/assets/utils/image';
 import MiniStatusTag from '@/components/common-business/status-tag/mini-status-tag.vue';
 import { PcIconArrowLeft, PcIconArrowRight } from '@/components/component-icons/pc/map';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { computed, unref } from 'vue';
 import { useMultiMeeting, useMultiMeetingPage } from '../hooks/use-multi-meeting';
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const { multiMeetingList, currentMultiMeetingSeat } = storeDefinitionToRefs(useMultiMeetingStore);
 

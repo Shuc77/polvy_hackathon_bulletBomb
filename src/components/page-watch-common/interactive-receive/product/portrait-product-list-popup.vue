@@ -31,6 +31,7 @@
           :recruitment-enabled="recruitmentEnabled"
           :hot-effect-enabled="productHotEffectEnabled"
           :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+          :redirect-directly-enabled="interactSetting.outLinkProductRedirectEnabled"
           :is-plv-webview="isPlvWebview"
           :get-plv-webview-bridge="getPlvWebviewBridge"
           :plv-webview-data-size="plvWebviewDataSize"
@@ -42,6 +43,7 @@
           @buy="onWechatBuy"
           @enter-order-center="onEnterOrderCenter"
           @click-product="openProductDetail"
+          @click-explain="openProductExplain"
         />
       </div>
     </mobile-popup>
@@ -89,13 +91,15 @@
       </div>
     </mobile-popup>
 
-    <mobile-popup
+    <dynamic-popup
       class="c-portrait-product-list__detail__popup"
       :visible.sync="productDetailVisible"
       :show-header="false"
       :content-percent-height="0.8"
       :fill-body-section="true"
       :ignore-content-max-height="true"
+      :max-height="0.95"
+      :init-height="0.75"
     >
       <mobile-product-detail></mobile-product-detail>
 
@@ -121,19 +125,20 @@
           </iar-product-btn>
         </div>
       </template>
-    </mobile-popup>
+    </dynamic-popup>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
-import { ref, onBeforeMount, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
+import DynamicPopup from '@/components/common-base/dynamic-popup/index.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
-import { onJobDetailEvent } from './hooks/use-product-job-detail';
+import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 
 import { useProduct, useProductLinkParams } from './hooks/use-product';
@@ -144,8 +149,11 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { isAndroid } from '@/assets/utils/browser';
+
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
 import MobileProductDetail from '@/components/page-watch-common/product-detail/mobile-product-detail.vue';
+
+const { onJobDetailEvent } = useProductJobDetailEvent();
 
 const IarMobileProductList = getIarComponent('MobileProduct');
 const IarProductBtn = getIarComponent('ProductButton');
@@ -168,6 +176,7 @@ const {
   initProductList,
   isShowOrderCenter,
   onEnterOrderCenter,
+  openProductExplain,
 } = useProductList({ autoInit: false });
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
@@ -208,13 +217,7 @@ window.addEventListener('resize', function () {
   originHeight = resizeHeight;
 });
 
-onBeforeMount(() => {
-  eventBus.$on(appEvents.interaction.OpenPortraitProductList, setProductListVisible);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.interaction.OpenPortraitProductList, setProductListVisible);
-});
+useEventBusListener(appEvents.interaction.OpenPortraitProductList, setProductListVisible);
 </script>
 
 <style lang="scss">

@@ -1,6 +1,6 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { LangType } from '@/assets/lang/lang-enum';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { usePlayerStore } from '@/store/use-player-store';
@@ -12,6 +12,8 @@ import {
 import { computed, watch } from 'vue';
 
 export const useStreamTrack = () => {
+  const { getWatchCore, getEmitter } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const langStore = useLangStore();
   const channelStore = useChannelStore();
@@ -51,13 +53,12 @@ export const useStreamTrack = () => {
     playerStore.$patch({ streamTrackKey: trackItem.key });
 
     if (channelStore.streamTrackConfig.type === ChannelStreamTrackType.Normal) {
-      eventBus.$emit(appEvents.player.ResetUpPlayer);
+      getEmitter().emit(appEvents.player.ResetUpPlayer);
       return;
     }
 
     if (channelStore.streamTrackConfig.type === ChannelStreamTrackType.MultiLanguageTrack) {
-      const lang =
-        trackItem.lang === WatchSdkLangEnum.English ? LangType.English : LangType.Chinese;
+      const lang = trackItem.lang === WatchSdkLangEnum.English ? LangType.English : LangType.ZH_CN;
       // 切换语言时也会自动重置播放器
       switchLanguage(lang);
     }

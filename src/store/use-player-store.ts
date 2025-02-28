@@ -2,7 +2,6 @@
  * @file 播放器 store
  */
 import { isMobile } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   BarrageSetting,
   BarrageLocationInfo,
@@ -162,6 +161,8 @@ export interface PlayerStoreState {
   streamTrackKey: Ref<string>;
   /** 是否支持快进快退 */
   fastForwardBackwardEnabled: Ref<boolean>;
+  /** 历史播放进度 */
+  historyDuration: Ref<number>;
 }
 
 export enum SwitchTipsStatus {
@@ -513,11 +514,15 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 流多轨 Key 值 */
   const streamTrackKey = ref<string>('');
 
+  /** 是否支持快进快退 */
   const fastForwardBackwardEnabled = ref(false);
+
+  /** 历史播放进度 */
+  const historyDuration = ref(0);
 
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     // 播放器配置无延迟
     if (watchCore.player.supportLowLatency().support) {
@@ -539,18 +544,18 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   /** 同步暖场设置 */
   function syncWarmUpSetting() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     warmUpSetting.value = watchCore.player.getPlayerWarmUpSetting();
   }
 
   function syncFastForwardBackwardEnabled() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     fastForwardBackwardEnabled.value = watchCore.playback.getFastForwardBackwardEnabled();
   }
 
   /** 同步播放器信息 */
   function syncPlayerInfo(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     const playerInfo = watchCore.player.getPlayerInfo();
 
@@ -586,9 +591,10 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageLocationDefaultId.value = playerInfo.barrageLocationDefaultId;
 
     delayTime.value = playerInfo.delayTime;
-    playStatus.value = !webViewStore.curWebviewPageIsActive
-      ? PlayStatus.Pause
-      : playerInfo.playStatus;
+    playStatus.value =
+      !webViewStore.curWebviewPageIsActive || !watchAppStore.isPageActive
+        ? PlayStatus.Pause
+        : playerInfo.playStatus;
     isLowLatency.value = playerInfo.isLowLatency;
 
     stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
@@ -697,5 +703,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     streamTrackKey,
     fastForwardBackwardEnabled,
+    historyDuration,
   };
 });

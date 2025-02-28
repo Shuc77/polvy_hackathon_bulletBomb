@@ -1,4 +1,5 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -10,6 +11,8 @@ import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-m
 import { ChatMsgListHookOptions } from './types';
 
 export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
+  const { getWatchCore } = useGlobalInject();
+
   const chatStore = useChatStore();
   const chatMsgStore = useChatMsgStore();
   const playbackStore = usePlaybackStore();
@@ -138,7 +141,7 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
 
     // 非聊天重放状态下，自己的打赏只接收本地插入的
     if (
-      !playbackStore.chatReplayEnabled &&
+      !playbackStore.chatMsgReplayEnabled &&
       chatMsg.msgSource === ChatMsgSource.Reward &&
       chatMsg.isSelf &&
       !chatMsg.isLocal
@@ -171,4 +174,6 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
     removeJoinTimer();
     unlistenChatMsg();
   });
+
+  useEventBusListener(appEvents.chat.JoinMsgQueue, onChatMsg);
 };

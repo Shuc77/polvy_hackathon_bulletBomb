@@ -2,15 +2,19 @@
  * @file 礼物打赏（积分）hook
  */
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { DonateGoodInfo, useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { onMounted, ref, unref } from 'vue';
 import { useDonateRewardMsgInsertHook } from './use-donate-reward-msg-insert';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 礼物打赏（积分）hook */
 export const useDonateGoodPoint = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { insertRewardMsgForDonateGoodPoint } = useDonateRewardMsgInsertHook();
   const { showDonatePointGood } = storeDefinitionToRefs(useDonateStore);
 

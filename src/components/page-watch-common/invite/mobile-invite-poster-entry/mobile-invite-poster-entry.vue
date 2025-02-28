@@ -7,7 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import { onClickInvitePosterEntry } from '../hooks/use-invite-poster-entry';
+import { useInvitePosterEntry } from '../hooks/use-invite-poster-entry';
+
+const { onClickInvitePosterEntry } = useInvitePosterEntry();
 </script>
 
 <style lang="scss">

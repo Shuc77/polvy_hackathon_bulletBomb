@@ -1,13 +1,16 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { useWebviewStore } from '@/store/use-webview-store';
 
 /** 卡片推送 hook */
 export const usePushCard = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
-  const webviewStore = useWebviewStore();
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
   const watchCore = getWatchCore();
   /** 卡片推送 SDK 实例 */
@@ -20,9 +23,9 @@ export const usePushCard = () => {
 
   function onPushCardVisibleChanged(visible: boolean) {
     if (visible) {
-      webviewStore.toLockDrag('push-card');
+      toLockFeedDrag('push-card');
     } else {
-      webviewStore.toUnlockDrag();
+      toUnlockFeedDrag();
     }
   }
 
@@ -34,6 +37,8 @@ export const usePushCard = () => {
 };
 
 export const usePushCardLinkParams = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const channelStore = useChannelStore();
   const viewerStore = useViewerStore();

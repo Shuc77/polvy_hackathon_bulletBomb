@@ -87,6 +87,8 @@ export const useAuthButton = (options: { props: VueProps<typeof authButtonProps>
       [AuthType.EnterpriseWeChat]: translate('auth.button.workWx'),
       /** @warn 实际上一客一码并不会作为观看条件，而是作为一种单独的授权方式 */
       [AuthType.SaleShare]: translate('auth.button.none'),
+      /** @warn 邀请观看实际并无入口，而是直接跟随观看页主流程 */
+      [AuthType.InviteWatch]: translate('auth.button.none'),
     };
 
     return defaultTexts[unref(currentAuthType)];

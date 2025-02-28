@@ -2,13 +2,22 @@ const path = require('path');
 const webpack = require('webpack');
 
 const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
+const { ExtractIndexWebpackAssetPlugin } = require('./extract-index-asset-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+// const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const { sassResources, alias, tsConfigFile, defineConstants, devMode } = require('./build-config');
+const {
+  sassResources,
+  alias,
+  tsConfigFile,
+  defineConstants,
+  devMode,
+  inSdkInjectMode,
+  outputDir,
+} = require('./build-config');
 const { externalConfigs, tagConfigs } = require('./tag-config');
 
 const srcPath = path.resolve(__dirname, '../src');
@@ -35,6 +44,7 @@ let webpackVueConfig = {
               transpileOnly: true,
               appendTsSuffixTo: ['\\.vue$'],
               configFile: tsConfigFile,
+              happyPackMode: true,
             },
           },
         ],
@@ -49,14 +59,7 @@ let webpackVueConfig = {
       },
       {
         test: /\.ico$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: false,
-            },
-          },
-        ],
+        type: 'assets/resource',
         exclude: /node_modules/,
       },
       {
@@ -75,15 +78,10 @@ let webpackVueConfig = {
       },
       {
         test: /\.svga$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: false,
-              name: 'assets/svga/[name][hash:8].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/svga/[name][hash:8].[ext]',
+        },
         exclude: /node_modules/,
       },
     ],
@@ -98,20 +96,20 @@ let webpackVueConfig = {
       tags: tagConfigs,
     }),
 
-    new ForkTsCheckerWebpackPlugin({
-      typescript: {
-        configFile: tsConfigFile,
-        extensions: {
-          vue: {
-            enabled: true,
-            compiler: require.resolve('vue/compiler-sfc'),
-          },
-          diagnosticOptions: {
-            semantic: true,
-          },
-        },
-      },
-    }),
+    // new ForkTsCheckerWebpackPlugin({
+    //   typescript: {
+    //     configFile: tsConfigFile,
+    //     extensions: {
+    //       vue: {
+    //         enabled: true,
+    //         compiler: require.resolve('vue/compiler-sfc'),
+    //       },
+    //       diagnosticOptions: {
+    //         semantic: true,
+    //       },
+    //     },
+    //   },
+    // }),
 
     new ESLintPlugin({
       lintDirtyModulesOnly: devMode,
@@ -122,6 +120,20 @@ let webpackVueConfig = {
       lintDirtyModulesOnly: devMode,
       files: ['**/*.{vue,css,scss}'],
     }),
+
+    inSdkInjectMode
+      ? new ExtractIndexWebpackAssetPlugin({
+          outputPath: path.resolve(__dirname, '../external/sdk-inject-project/lib'),
+          fileName: 'inject-assets.js',
+          buildModule: 'esm',
+          indexAssetVarKey: 'injectAssets',
+        })
+      : new ExtractIndexWebpackAssetPlugin({
+          outputPath: path.resolve(__dirname, `../${outputDir}`),
+          fileName: 'index-assets.js',
+          buildModule: 'umd',
+          indexAssetVarKey: 'indexAssets',
+        }),
   ],
 
   optimization: {

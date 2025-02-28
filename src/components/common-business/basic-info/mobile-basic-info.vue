@@ -108,8 +108,6 @@
 </template>
 
 <script setup lang="ts">
-import { resizeOSSImg } from '@/assets/utils/image';
-
 import {
   MobileIconPeople,
   MobileIconLike,
@@ -132,6 +130,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useShortNumber } from '@/hooks/business/use-short-number';
 
 const props = defineProps({
@@ -144,6 +143,8 @@ const props = defineProps({
   /** 是否渲染页脚，默认：true */
   showPageFooter: PropUtils.bool.def(true),
 });
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const { showPageView, showLikeCount, showDesc } = useProps(props);
 

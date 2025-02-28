@@ -145,8 +145,6 @@
 </template>
 
 <script setup lang="ts">
-import { resizeOSSImg } from '@/assets/utils/image';
-
 import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
 import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
@@ -165,11 +163,15 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useShareStore } from '@/store/use-share-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useShortNumber } from '@/hooks/business/use-short-number';
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const { shortNumber } = useShortNumber();
 
@@ -219,8 +221,10 @@ const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
+const { getEmitter } = useGlobalInject();
+
 function onClickFeedback() {
-  eventBus.$emit(appEvents.interaction.OpenFeedBack, true);
+  getEmitter().emit(appEvents.interaction.OpenFeedBack, true);
 }
 </script>
 

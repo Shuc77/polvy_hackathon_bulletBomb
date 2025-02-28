@@ -17,6 +17,10 @@ export interface ProductGoodData {
   price: string;
   /** 商品类型 */
   productType: IarProductType;
+  /** 自定义价格 */
+  customPrice: string;
+  /** 价格类型 */
+  priceType: string;
   /** 商品提示 */
   productDesc: string;
   /** 推送Id */

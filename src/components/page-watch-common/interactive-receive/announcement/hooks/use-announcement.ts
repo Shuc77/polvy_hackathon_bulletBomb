@@ -1,11 +1,11 @@
-import { computed, onBeforeMount, onBeforeUnmount, ref, unref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
-import { appEvents, eventBus } from '@/app/app-events';
+import { computed, ref, unref } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { translate } from '@/assets/lang';
 import { IarAnnouncementInstance } from '../types/announcement-types';
 import { useAnnouncementTips } from './use-announcement-tips';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动-公告
@@ -13,6 +13,8 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 export const useAnnouncement = () => {
   const { openAnnouncementTips } = useAnnouncementTips();
   const interactReceiveStore = useInteractReceiveStore();
+
+  const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
 
@@ -99,15 +101,9 @@ export const useAnnouncement = () => {
     });
   }
 
-  onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenAnnouncementList, openAnnouncementList);
-    eventBus.$on(appEvents.interaction.OpenAnnouncementDetail, openAnnouncementDetail);
-  });
+  useEventBusListener(appEvents.interaction.OpenAnnouncementList, openAnnouncementList);
 
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenAnnouncementList, openAnnouncementList);
-    eventBus.$off(appEvents.interaction.OpenAnnouncementDetail, openAnnouncementDetail);
-  });
+  useEventBusListener(appEvents.interaction.OpenAnnouncementDetail, openAnnouncementDetail);
 
   return {
     listBtnVisible,

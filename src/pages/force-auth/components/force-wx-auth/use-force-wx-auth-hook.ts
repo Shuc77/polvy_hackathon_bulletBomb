@@ -1,8 +1,7 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { computed, onMounted, ref } from 'vue';
 
 import { isWeixin } from '@/assets/utils/browser';
-import { copyText, toastCopySuccess } from '@/assets/utils/copy';
+import { copyText, useCopyText } from '@/assets/utils/copy';
 import { wait } from '@/assets/utils/utils';
 import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-authorize';
 
@@ -11,17 +10,18 @@ import { MessageBoxInstance } from '@/components/common-base/message-box';
 import { useChannelAgreement } from '@/hooks/business/use-channel-agreement';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { useIdentityStore } from '@/store/use-identity-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useForceWxAuthHook = () => {
+  const { toastCopySuccess } = useCopyText();
+
+  const { getWatchCore } = useGlobalInject();
+
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
 
   const watchCore = getWatchCore();
   const themeStore = useThemeStore();
   const channelInfoStore = useChannelInfoStore();
-  const identityStore = useIdentityStore();
-  const watchAppStore = useWatchAppStore();
 
   const { channelAgreementConfig, protocolContent, protocolConfirmInfo, initChanelAgreement } =
     useChannelAgreement();
@@ -47,25 +47,11 @@ export const useForceWxAuthHook = () => {
   const protocolChecked = ref(false);
 
   const imageUrl = computed(() => {
-    let res = themeStore.channelCoverImg;
-
-    const identitySetting = identityStore.identitySetting;
-    if (identitySetting.watchUserSystemEnabled && watchAppStore.accountInfo.companyLogo) {
-      res = watchAppStore.accountInfo.companyLogo;
-    }
-
-    return res;
+    return themeStore.channelCoverImg;
   });
 
   const titleText = computed(() => {
-    let res = channelInfoStore.channelTitle;
-
-    const identitySetting = identityStore.identitySetting;
-    if (identitySetting.watchUserSystemEnabled && watchAppStore.accountInfo.companyName) {
-      res = watchAppStore.accountInfo.companyName;
-    }
-
-    return res;
+    return channelInfoStore.channelTitle;
   });
 
   const protocolConfirmRef = ref<MessageBoxInstance>();

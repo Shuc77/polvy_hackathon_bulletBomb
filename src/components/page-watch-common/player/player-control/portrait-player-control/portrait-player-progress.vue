@@ -1,6 +1,9 @@
 <!-- @file 竖屏端播放器进度条 -->
 <template>
-  <div class="c-portrait-player-progress">
+  <div
+    class="c-portrait-player-progress"
+    :class="{ 'c-portrait-player-progress--capsule': isHorizontalScreenOrientation }"
+  >
     <!-- 播放暂停按钮 -->
     <div
       v-if="playButtonVisible"
@@ -62,6 +65,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { useLayoutStore } from '@/store/use-layout-store';
+
+const { isHorizontalScreenOrientation } = storeDefinitionToRefs(useLayoutStore);
 
 const { playStatus, currentTime, durationTime } = storeDefinitionToRefs(usePlayerStore);
 
@@ -78,6 +84,13 @@ const { playbackTimeVisible, playerProgressVisible, playButtonVisible } = usePla
   align-items: center;
   height: 32px;
 }
+
+.c-portrait-player-progress--capsule {
+  padding: 0 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 32px;
+}
+
 .c-portrait-player-progress__button {
   flex-shrink: 0;
   width: 18px;

@@ -1,10 +1,10 @@
 import { computed, ref, watch } from 'vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
 
 import { translate } from '@/assets/lang';
 import { useQuestionnaireEntrance } from './use-questionnaire-entrance';
 import { AllQuestionnaireStatus, IarQuestionnaireInstance } from '../types/questionnaire-type';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
@@ -13,6 +13,9 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
  */
 export const useQuestionnaire = () => {
   const { setQuestionnaireEntrance, removeQuestionnaireEntrance } = useQuestionnaireEntrance();
+
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const interactReceiveStore = useInteractReceiveStore();
 
@@ -23,7 +26,7 @@ export const useQuestionnaire = () => {
   /** 问卷是否显示 */
   const questionnaireVisible = ref(false);
   /** 问卷状态 */
-  const questionnaireStatus = ref<AllQuestionnaireStatus>(AllQuestionnaireStatus.isShowQuestion);
+  const questionnaireStatus = ref<AllQuestionnaireStatus>(AllQuestionnaireStatus.IsShowQuestion);
   /** 当前抽奖问卷ID */
   const lotteryQuestionnaireId = ref('');
 
@@ -31,17 +34,17 @@ export const useQuestionnaire = () => {
   const questionnaireTitle = computed(() => {
     let title = '';
     switch (questionnaireStatus.value) {
-      case AllQuestionnaireStatus.isShowQuestion:
+      case AllQuestionnaireStatus.IsShowQuestion:
         title = translate('interact.questionnaire.title');
         break;
-      case AllQuestionnaireStatus.isShowResult:
-      case AllQuestionnaireStatus.isShowAnswer:
+      case AllQuestionnaireStatus.IsShowResult:
+      case AllQuestionnaireStatus.IsShowAnswer:
         title = translate('interact.questionnaire.result');
         break;
-      case AllQuestionnaireStatus.isShowResultRank:
+      case AllQuestionnaireStatus.IsShowResultRank:
         title = ' ';
         break;
-      case AllQuestionnaireStatus.isShowQuestionnaireList:
+      case AllQuestionnaireStatus.IsShowQuestionnaireList:
         title = translate('interact.questionnaire.result.list');
     }
     return title;
@@ -88,8 +91,8 @@ export const useQuestionnaire = () => {
     }
 
     if (
-      (status === AllQuestionnaireStatus.isShowQuestion ||
-        status === AllQuestionnaireStatus.isShowQuestionnaireList) &&
+      (status === AllQuestionnaireStatus.IsShowQuestion ||
+        status === AllQuestionnaireStatus.IsShowQuestionnaireList) &&
       !lotteryQuestionnaireId.value
     ) {
       // 设置互动二次入口

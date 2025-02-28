@@ -258,4 +258,9 @@ $--skin-page-common-configs: (
 
   // AI 助手答疑
   'pws-ai-assistant-msg-dot:bg-color': #830b0b,
+
+  // AI 看 回放大纲
+  'pws-ai-outline-tag:text-color': rgba($--color-white, 0.5),
+  'pws-ai-outline-label-text:text-color': #ffd595,
+  'pws-ai-outline-label-bg:bg-color': #AB2336,
 )

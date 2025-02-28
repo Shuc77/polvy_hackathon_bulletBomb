@@ -1,4 +1,4 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
@@ -7,6 +7,8 @@ import { computed, ref, unref, watch } from 'vue';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { useMsgInputController } from './use-msg-input-controller';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { WatchSdkLangEnum } from '@polyv/live-watch-sdk';
 
 export const msgInputWrapProps = () => ({
   /** 占位符 */
@@ -69,6 +71,10 @@ export const useMsgInputWrap = (options: {
   props: VueProps<typeof msgInputWrapProps>;
   emit: VueEmit<typeof msgInputWrapEmits>;
 }) => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
+  const watchCore = getWatchCore();
+
   const viewerStore = useViewerStore();
   /** 消息输入框控制器 */
   const msgInputController = useMsgInputController();
@@ -116,7 +122,7 @@ export const useMsgInputWrap = (options: {
       return;
     }
     if (!viewerStore.hasNickname) {
-      eventBus.$emit(appEvents.chat.OpenSetNick, true);
+      getEmitter().emit(appEvents.chat.OpenSetNick, true);
       return;
     }
     toggleEmotionPanel();
@@ -143,7 +149,7 @@ export const useMsgInputWrap = (options: {
       return;
     }
     if (!viewerStore.hasNickname) {
-      eventBus.$emit(appEvents.chat.OpenSetNick, true);
+      getEmitter().emit(appEvents.chat.OpenSetNick, true);
       return;
     }
     emit('click-send-image');
@@ -173,9 +179,14 @@ export const useMsgInputWrap = (options: {
     }
     lastSendTime = now;
 
-    emit('submit', {
-      contentList: msgInputController.getInputContentList(),
+    const contentList = msgInputController.getInputContentList();
+    contentList.forEach(item => {
+      if (item.type === 'text') {
+        item.content = watchCore.emotion.translateEmotions(item.content, WatchSdkLangEnum.ZH_CN);
+      }
     });
+
+    emit('submit', { contentList });
   }
 
   /** 重置组件状态 */

@@ -1,4 +1,4 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { AuthSettingItemCode } from '@polyv/live-watch-sdk';
 import { onMounted } from 'vue';
@@ -6,6 +6,8 @@ import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
 
 export const useAuthNone = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const enrollStore = useEnrollStore();
   useAuthButtonInject<AuthSettingItemCode>(onClickAuthButton);
   const { handleAuthVerifySuccess, handleAuthVerifyFail } = useAuthCommon();

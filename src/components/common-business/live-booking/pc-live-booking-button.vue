@@ -13,7 +13,14 @@
       class="c-pc-live-booking-button__text"
       @click="onClickButton"
     >
-      <pc-icon-booking class="c-pc-live-booking-button__text__icon" />
+      <pc-icon-booking
+        v-if="!isOtherLive"
+        class="c-pc-live-booking-button__text__icon"
+      />
+      <mobile-icon-bell
+        v-else
+        class="c-pc-live-booking-button__text__icon"
+      />
       <span class="c-pc-live-booking-button__text__text">{{ buttonText }}</span>
     </div>
 
@@ -32,7 +39,10 @@
       <span>{{ buttonText }}</span>
     </normal-button>
 
-    <live-booking-form-dialog ref="bookingFormRef" />
+    <live-booking-form-dialog
+      ref="bookingFormRef"
+      :channel-id="channelId"
+    />
   </div>
 </template>
 
@@ -48,6 +58,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { LiveBookingFormInstance } from './types';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { MobileIconBell } from '@/components/component-icons/mobile/map';
 
 const { trackUserReservationLive } = useWatchEventTrack();
 
@@ -56,15 +67,27 @@ const props = defineProps({
   buttonStyle: PropUtils.oneOfType<'text' | 'button'>([String]).def('text'),
   /** 按钮大小，默认：ButtonSize.Large */
   buttonSize: PropUtils.enum<ButtonSize>().def(ButtonSize.Large),
+  /** 其他频道预约的 channelId */
+  channelId: PropUtils.string.def(''),
+  /** 是否是其他频道预约 */
+  isOtherLive: PropUtils.bool.def(false),
 });
 
 const { buttonStyle, buttonSize } = useProps(props);
 
-const { isSmsLiveBooking } = storeDefinitionToRefs(useLiveBookingStore);
+const { isSmsLiveBooking, singleOtherChannelSmsLiveBooking } =
+  storeDefinitionToRefs(useLiveBookingStore);
+
+const isBooking = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(singleOtherChannelSmsLiveBooking);
+  }
+  return unref(isSmsLiveBooking);
+});
 
 /** 按钮文本 */
 const buttonText = computed(() => {
-  if (unref(isSmsLiveBooking)) {
+  if (unref(isBooking)) {
     return translate('liveBooking.booked');
   }
 
@@ -84,7 +107,7 @@ function onClickButton() {
 
   trackUserReservationLive({ reservationType: 'code' });
 
-  if (unref(isSmsLiveBooking)) {
+  if (unref(isBooking)) {
     instance?.cancelLiveBooking();
   } else {
     instance?.openBookingForm();

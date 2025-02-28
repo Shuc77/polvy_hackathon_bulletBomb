@@ -1,10 +1,10 @@
 import debounce from 'lodash-es/debounce';
-import { ref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
+import { computed, ref } from 'vue';
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { handleStatisticsErr } from './use-withdraw-apply';
 import { ReceiveRecordInstance } from './use-receive-record';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export enum WithdrawDetailTab {
   /** 红包领取记录/历史红包领取  */
@@ -14,6 +14,10 @@ export enum WithdrawDetailTab {
 }
 
 export const useWithdrawDetailHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   /**  个人领取总金额 */
   const totalReceive = ref(0);
 
@@ -27,16 +31,18 @@ export const useWithdrawDetailHook = () => {
   const curTab = ref<WithdrawDetailTab | string>('');
 
   /** 详情页 Tab 数据 */
-  const detailTabs = ref([
-    {
-      label: translate('withdraw.redpack.receive.record'),
-      value: WithdrawDetailTab.RedpackReceiveRecord,
-    },
-    {
-      label: translate('withdraw.cash.receive.record'),
-      value: WithdrawDetailTab.CashReceiveRecord,
-    },
-  ]);
+  const detailTabs = computed(() => {
+    return [
+      {
+        label: translate('withdraw.redpack.receive.record'),
+        value: WithdrawDetailTab.RedpackReceiveRecord,
+      },
+      {
+        label: translate('withdraw.cash.receive.record'),
+        value: WithdrawDetailTab.CashReceiveRecord,
+      },
+    ];
+  });
 
   /** 获取历史提现统计 */
   async function getWithdrawStatistics() {

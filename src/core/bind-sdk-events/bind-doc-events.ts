@@ -1,15 +1,15 @@
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { DocEvents, MobileWatchLayout } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '../watch-sdk';
+import { DocEvents, MobileWatchLayout, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
-export function bindDocEvents(): void {
-  const watchCore = getWatchCore();
+export function bindDocEvents(watchCore: PolyvWatchCore): void {
   const docStore = useDocStore();
   const layoutStore = useLayoutStore();
+
+  const { toast } = useToastManager();
 
   watchCore.doc.eventEmitter.on(DocEvents.DocInfoChange, () => {
     docStore.syncDocStore();

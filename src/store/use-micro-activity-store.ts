@@ -1,9 +1,9 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 
 import { useChannelMenuStore } from './use-channel-menu-store';
 import { useCommonStore } from './use-common-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface MicroActivityStoreState {
   /** 微活动开关 */
@@ -21,6 +21,7 @@ export type MicroActivityStore = MicroActivityStoreState;
 export const useMicroActivityStore = defineStore<'microActivity', MicroActivityStore>(
   'microActivity',
   () => {
+    const watchAppStore = useWatchAppStore();
     const commonStore = useCommonStore();
     const channelMenuStore = useChannelMenuStore();
 
@@ -36,7 +37,7 @@ export const useMicroActivityStore = defineStore<'microActivity', MicroActivityS
     });
 
     function syncMicroActivityStore() {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const setting = watchCore.microActivity.getMicroActivitySetting();
       microActivityEnabled.value = setting.microActivityEnabled;
       microActivityPendantIcon.value = setting.pendantIcon;

@@ -156,17 +156,22 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
 import { translate } from '@/assets/lang';
 import { useAsideDrag } from '@/hooks/behaviors/use-aside-drag';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useConnectMic, useConnectMicApply, useConnectMicControl } from '../hooks/use-connect-mic';
 import { useLangStore } from '@/store/use-lang-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getAppBodyElement } = useGlobalInject();
+
+const { toast } = useToastManager();
 
 /** 外层节点 */
 const wrapRef = ref<HTMLDivElement>();
 /** 挂件内容节点 */
 const contentRef = ref<HTMLDivElement>();
 
-useAppendTo(wrapRef);
+useAppendTo(wrapRef, getAppBodyElement());
 
 const {
   supportConnectMic,
@@ -226,9 +231,18 @@ function onClickApplyConfirm() {
 /** 挂件是否展开 */
 const pendantOpened = ref(true);
 
+let closeTimer: number;
 /** 展开挂件 */
 function openPendant() {
+  if (closeTimer) clearTimeout(closeTimer);
   pendantOpened.value = true;
+}
+
+function autoClosePendant() {
+  if (closeTimer) clearTimeout(closeTimer);
+  closeTimer = window.setTimeout(() => {
+    closePendant();
+  }, 5000);
 }
 
 /** 收起挂件 */
@@ -265,6 +279,13 @@ watch(
   () => computePendantWidth(),
 );
 
+watch(
+  () => unref(connectMicStatus),
+  status => {
+    if (status === ConnectMicStatus.NotConnect) autoClosePendant();
+  },
+);
+
 onMounted(() => {
   computePendantWidth();
 });
@@ -279,7 +300,7 @@ const { top } = useAsideDrag({
 
 <style lang="scss">
 .c-mobile-connect-mic-pendant {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   z-index: $--zIndex-pendant;

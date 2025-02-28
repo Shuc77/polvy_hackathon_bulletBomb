@@ -44,6 +44,42 @@
         }
       }
     </style>
+    <script>
+      (function(win) {
+        var createRequestProxy = function(request, urlArgIndex) {
+          var blackList = ['elog.polyv.net'];
+
+          return function() {
+            var buildEnv = window.BUILD_ENV;
+            if (!buildEnv) { return request.apply(this, arguments); }
+
+            var args = new Array(arguments.length);
+            for (var i = arguments.length - 1; i >= 0; i--) {
+              args[i] = arguments[i];
+            }
+
+            var a = document.createElement('a');
+            a.href = String(args[urlArgIndex]);
+
+            var hostPrefix = buildEnv + '-';
+            var hostname = a.hostname;
+            if (
+              /\.polyv\.(?:cn|net)$/i.test(hostname) &&
+              blackList.indexOf(hostname) === -1 &&
+              hostname.indexOf(hostPrefix) !== 0
+            ) {
+              a.hostname = hostPrefix + hostname;
+              args[urlArgIndex] = a.href;
+            }
+            a = null;
+
+            return request.apply(this, args);
+          };
+        };
+        XMLHttpRequest.prototype.open = createRequestProxy(XMLHttpRequest.prototype.open, 1);
+        win.fetch = createRequestProxy(win.fetch, 0);
+      })(window);
+    </script>
   </head>
   <body>
     <noscript>

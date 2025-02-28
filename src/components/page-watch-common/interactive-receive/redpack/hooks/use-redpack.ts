@@ -1,20 +1,22 @@
 /**
  * @file 红包相关 hook
  */
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useWebviewStore } from '@/store/use-webview-store';
 import { ChatMsgRedpaperType } from '@polyv/live-watch-sdk';
-import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
+import { computed, ref } from 'vue';
 
 /**
  * @hook 互动-红包状态
  * */
 export const useRedpackStatus = () => {
+  const { getEmitter } = useGlobalInject();
+
   /** 设置某个红包的状态 */
   const setRedpackStatus = (redpackId: string, status: string) => {
-    eventBus.$emit(appEvents.interaction.SetRedpackStatus, {
+    getEmitter().emit(appEvents.interaction.SetRedpackStatus, {
       redpackId,
       status,
     });
@@ -29,8 +31,11 @@ export const useRedpackStatus = () => {
  * @hook 互动-红包
  */
 export const useRedpack = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
-  const webviewStore = useWebviewStore();
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
   const watchCore = getWatchCore();
   /** 红包 SDK 实例 */
@@ -51,7 +56,7 @@ export const useRedpack = () => {
   function openRedpack(data: ChatMsgRedpaperType) {
     if (data.type.includes('rain')) {
       // 类型是红包雨，则发送事件打开红包雨
-      eventBus.$emit(appEvents.interaction.OpenRedpackRain, {
+      getEmitter().emit(appEvents.interaction.OpenRedpackRain, {
         redCacheId: data.redCacheId,
         redpackId: data.redpackId,
         avatar: data.user.pic,
@@ -65,16 +70,10 @@ export const useRedpack = () => {
   }
 
   function onShowRedpack() {
-    webviewStore.toLockDrag('redpack');
+    toLockFeedDrag('redpack');
   }
 
-  onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenRedpack, openRedpack);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenRedpack, openRedpack);
-  });
+  useEventBusListener(appEvents.interaction.OpenRedpack, openRedpack);
 
   const { setRedpackStatus } = useRedpackStatus();
   /** 处理红包状态改变 */
@@ -85,25 +84,25 @@ export const useRedpack = () => {
   /** 处理关闭红包 */
   function onCloseRedpack() {
     redpackData.value = undefined;
-    webviewStore.toUnlockDrag();
+    toUnlockFeedDrag();
   }
 
   /** 处理点击提现按钮 */
   function onClickWithdraw() {
     onCloseRedpack();
-    eventBus.$emit(appEvents.withdraw.OpenWithdrawApply, true);
+    getEmitter().emit(appEvents.withdraw.OpenWithdrawApply, true);
   }
 
   /** 处理点击积分记录 */
   function onClickScoreRecord() {
     onCloseRedpack();
-    eventBus.$emit(appEvents.interaction.OpenScoreRecord, true);
+    getEmitter().emit(appEvents.interaction.OpenScoreRecord, true);
   }
 
   /** 处理口令红包领取 */
   function onPasswordReceived(pwd: string) {
     // 发送口令到聊天室
-    pwd && eventBus.$emit(appEvents.chat.SendMessageToChat, pwd);
+    pwd && getEmitter().emit(appEvents.chat.SendMessageToChat, pwd);
   }
 
   return {

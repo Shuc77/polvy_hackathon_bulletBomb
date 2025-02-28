@@ -56,6 +56,12 @@ import PcFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-
 
 import { SmsScene, SmsValidType } from '@polyv/live-watch-sdk';
 import { useLiveBookingForm } from './hooks/use-live-booking-form';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+
+const props = defineProps({
+  /** 其他频道预约的 channelId */
+  channelId: PropUtils.string.def(''),
+});
 
 const {
   bookingFormData,
@@ -63,7 +69,9 @@ const {
   bookingFormVisible,
   submitLiveBookingForm,
   liveBookingFormInstance,
-} = useLiveBookingForm();
+} = useLiveBookingForm({
+  otherChannelId: props.channelId,
+});
 
 defineExpose(liveBookingFormInstance);
 </script>

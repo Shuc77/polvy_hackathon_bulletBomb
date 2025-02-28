@@ -11,7 +11,7 @@
     <template #title>
       <div class="c-mobile-task-activity-dialog__header">
         <img
-          v-if="currentLang === LangType.Chinese"
+          v-if="currentLang === LangType.ZH_CN"
           src="./images/mobile-title-cn.png"
         />
         <img
@@ -38,7 +38,13 @@
         <div
           class="c-mobile-task-activity-dialog__item__icon"
           :class="['c-mobile-task-activity-dialog__item__icon--' + item.reachCondition.type]"
+          :style="{
+            backgroundImage: item.reachCondition.customIcon
+              ? `url(${item.reachCondition.customIcon})`
+              : '',
+          }"
         ></div>
+
         <!-- 标题 -->
         <div class="c-mobile-task-activity-dialog__item__title">{{ getTaskTitle(item) }}</div>
 
@@ -75,16 +81,33 @@
               @count-down-finish="onCountDownFinish"
             />
           </div>
+
+          <div
+            v-if="item.reachCondition.type === TaskActivityType.Questionnaire"
+            class="c-mobile-task-activity-dialog__item__progress"
+          >
+            {{ $lang('taskActivity.questionnaireNot') }}
+          </div>
+
+          <div
+            v-if="item.reachCondition.type === TaskActivityType.Custom"
+            class="c-mobile-task-activity-dialog__item__progress"
+          >
+            {{
+              $lang('taskActivity.customProgress', {
+                amount: item.reachCondition.amount,
+                schedule: item.reachCondition.currentSchedule || 0,
+                unit: item.reachCondition.customUnit || '',
+              })
+            }}
+          </div>
         </template>
 
         <div
           v-if="item.status === TaskActivityStatus.Finish"
           class="c-mobile-task-activity-dialog__item__finish"
         >
-          <span v-if="item.rewardStatus === TaskRewardStatus.IssuedLimit">{{
-            $lang('taskActivity.rewardStatus.limit')
-          }}</span>
-          <span v-else>{{ $lang('taskActivity.finish') }}</span>
+          {{ getFinishText(item) }}
         </div>
 
         <div
@@ -101,16 +124,16 @@
 </template>
 
 <script setup lang="ts">
-import CountDown from '@/components/common-base/count-down/count-down.vue';
-import { TaskActivityType, TaskActivityStatus, TaskRewardStatus } from '@polyv/live-watch-sdk';
-import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import { useTaskActivity } from './use-task-activity';
-import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
-import { formatDate } from '@utils-ts/date';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
+import { LangType } from '@/assets/lang/lang-enum';
+import CountDown from '@/components/common-base/count-down/count-down.vue';
+import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
+import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
-import { LangType } from '@/assets/lang/lang-enum';
+import { TaskActivityStatus, TaskActivityType } from '@polyv/live-watch-sdk';
+import { formatDate } from '@utils-ts/date';
+import { useTaskActivity } from './use-task-activity';
 
 const {
   visible,
@@ -122,6 +145,7 @@ const {
   getSurplusTime,
   showBtn,
   onCountDownFinish,
+  getFinishText,
 } = useTaskActivity();
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
@@ -249,6 +273,9 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
 
   &.c-mobile-task-activity-dialog__item__icon--online {
     background-image: url(./images/online-icon.png);
+  }
+  &.c-mobile-task-activity-dialog__item__icon--questionnaire {
+    background-image: url(./images/questionnaire-icon.png);
   }
 }
 

@@ -36,8 +36,16 @@ export function getEventPosition(event: MouseEvent | TouchEvent): {
 }
 
 /**
- * 获取在指定范围的随机整数
+ * 是否被外部应用注入使用
  */
-export function generateRandomInteger(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+export function isInjectByExternalApp(): boolean {
+  return !!(IN_SDK_INJECT_MODE && window.PolyvWatchAppSdk);
+}
+
+/**
+ * 是否使用 feed 注入模式
+ */
+export function isBuildForFeedMainMode(): boolean {
+  return process.env.VUE_APP_MAIN_MODE === 'Feed';
+  // return isInjectByExternalApp() && process.env.VUE_APP_MAIN_MODE === 'Feed';
 }

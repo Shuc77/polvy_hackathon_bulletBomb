@@ -7,6 +7,7 @@ import PcToast from './_components/pc-toast.vue';
 import MobileToast from './_components/mobile-toast.vue';
 import { ToastPropsType } from './_hooks/use-toast-comp';
 import { ToastInstance, ToastType } from './_toast_type';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 type ToastPropPickOptions = Pick<ToastPropsType, 'duration'>;
 
@@ -25,7 +26,7 @@ type ToastManagerOptions = {
   /** 最大显示数量，默认：5 */
   maxCount?: number;
   /** 渲染的父容器 */
-  mountEl?: string;
+  mountEl?: string | HTMLElement;
 };
 
 type ToastInstanceVue = CombinedVueInstance<
@@ -51,7 +52,7 @@ class ToastManager {
   /** 最大显示数量 */
   private __maxCount: number;
   /** 渲染的父容器 */
-  private _mountEl?: string;
+  private _mountEl?: string | HTMLElement;
 
   constructor(options: ToastManagerOptions) {
     this.__ToastConstructor = options.ToastConstructor;
@@ -83,7 +84,10 @@ class ToastManager {
       const ToastConstructor = this.__ToastConstructor;
 
       const instance = new ToastConstructor({
-        propsData: props,
+        propsData: {
+          ...props,
+          mountEl: this._mountEl,
+        },
       });
       instance.$mount();
       instance.openToast();
@@ -155,6 +159,19 @@ function getToastConstructor() {
 }
 
 /** 主屏消息提示对象 */
-export const toast = new ToastManager({
-  ToastConstructor: Vue.extend(getToastConstructor() as unknown as ToastConstructorCtorType),
-});
+let __toast: null | ToastManager = null;
+
+export const useToastManager = () => {
+  const { getAppRootElement } = useMultiPolyvWatchApp();
+
+  if (!__toast) {
+    __toast = new ToastManager({
+      ToastConstructor: Vue.extend(getToastConstructor() as unknown as ToastConstructorCtorType),
+      mountEl: getAppRootElement(),
+    });
+  }
+
+  return {
+    toast: __toast,
+  };
+};

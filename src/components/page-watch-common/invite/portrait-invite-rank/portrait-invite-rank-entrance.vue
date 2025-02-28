@@ -8,10 +8,13 @@
 </template>
 
 <script setup lang="ts">
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
 
 function showInviteRank() {
-  eventBus.$emit(appEvents.invite.OpenPortraitInviteRank);
+  getEmitter().emit(appEvents.invite.OpenPortraitInviteRank);
 }
 </script>
 

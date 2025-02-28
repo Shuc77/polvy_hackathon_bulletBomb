@@ -26,6 +26,11 @@ export const useAskMsgList = (options: { emit: VueEmit<typeof askMsgListEmits> }
 
   const { scrollRef, scrollListInstance, onScrollEvent, scrollToBottom } = useScrollList({
     firstElemIndex: 1,
+    getBufferTop: scrollEl => {
+      // 需要隐藏前端主动插入的主讲第一条发言信息
+      const firstElementHeight = scrollEl.firstElementChild?.clientHeight || 0;
+      return firstElementHeight * 2;
+    },
     nearTopCallback: () => {
       emit('near-top');
     },

@@ -21,8 +21,10 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { translate } from '@/assets/lang';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { usePlayerTrialMain } from '../_hooks/use-player-trial-main';
+
+const { toast } = useToastManager();
 
 const props = defineProps({
   trialInfo: PropUtils.objectType<ChannelTrialInfo>().isRequired,

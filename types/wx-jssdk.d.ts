@@ -65,7 +65,9 @@ declare namespace WechatJsSdk {
     | 'launchMiniProgram'
     /* 企业微信 */
     | 'openEnterpriseRedPacket'
-    | 'openEnterpriseChat';
+    | 'openEnterpriseChat'
+    /** 确认收款 */
+    | 'requestMerchantTransfer';
 
   type OpenTagList =
     | 'wx-open-launch-weapp'
@@ -1103,6 +1105,14 @@ declare namespace WechatJsSdk {
     miniprogram?: boolean;
   }
 
+  interface RequestMerchantTransferOptions {
+    mchId: string;
+    appId: string;
+    package: string;
+    success?: (res?: GeneralCallbackResult) => void;
+    fail?: (res?: GeneralCallbackResult) => void;
+  }
+
   export interface Wx {
     /**
      * 注入权限验证配置。
@@ -1387,6 +1397,11 @@ declare namespace WechatJsSdk {
      * @param {Object} options 配置项。
      */
     chooseWXPay(options?: ChooseWXPayOption): void;
+
+    /**
+     * 调起用户确认收款
+     */
+    requestMerchantTransfer(options: RequestMerchantTransferOptions): void;
 
     /**
      * 调起微信支付分。

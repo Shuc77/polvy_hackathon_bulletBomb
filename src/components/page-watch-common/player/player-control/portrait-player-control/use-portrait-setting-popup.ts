@@ -1,8 +1,11 @@
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { ref } from 'vue';
 
 export const usePortraitSettingPopup = (event: string) => {
+  const { getEmitter } = useGlobalInject();
+
   const { visible, setVisible } = useSimpleVisible();
 
   const useTransition = ref(false);
@@ -21,7 +24,7 @@ export const usePortraitSettingPopup = (event: string) => {
 
   /** 点击返回 */
   function onClickBack() {
-    eventBus.$emit(appEvents.portrait.OpenMenuPopup, {
+    getEmitter().emit(appEvents.portrait.OpenMenuPopup, {
       _visible: true,
       _useTransition: false,
     });

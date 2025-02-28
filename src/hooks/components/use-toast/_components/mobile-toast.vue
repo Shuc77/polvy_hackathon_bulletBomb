@@ -33,7 +33,7 @@ defineExpose(toastInstance);
 
 <style lang="scss">
 .c-mobile-toast {
-  position: fixed;
+  position: absolute;
   top: 50%;
   right: 22px;
   left: 22px;

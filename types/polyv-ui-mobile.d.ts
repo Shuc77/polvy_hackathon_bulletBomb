@@ -1,5 +1,5 @@
 /* eslint-disable no-duplicate-imports */
-/* eslint-disable @typescript-eslint/no-duplicate-imports */
+
 /**
  * 轮播图
  */

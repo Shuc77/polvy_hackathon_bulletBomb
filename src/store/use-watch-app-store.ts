@@ -8,11 +8,14 @@ import {
   AccountInfo,
 } from '@polyv/live-watch-sdk';
 
-import { paramGetter } from '@/hooks/core/use-query-params';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 
-import { getWatchCore } from '@/core/watch-sdk';
-import { PageErrorData, PageErrorType } from '@/app/layout/page-error/page-error-type';
+import {
+  DirectBusinessPageType,
+  DirectBusinessPageData,
+  PageErrorData,
+  PageErrorType,
+} from '@/app/layout/direct-business-page/type';
 
 import { useChannelStore } from './use-channel-store';
 import { useAuthStore } from './use-auth-store';
@@ -24,14 +27,22 @@ import { useDocStore } from './use-doc-store';
 import { useChatStore } from './use-chat-store';
 import { useFinanceStore } from './use-finance-store';
 import { useConnectMicStore } from './use-connect-mic-store';
+
 import { useSyncStoreForWatchPage } from '@/hooks/core/use-sync-store';
 import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-meeting/hooks/use-multi-meeting-redirect';
 
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { GlobalInjectType, useGlobalInject } from '@/app/use-global-inject';
 import { useWebviewStore } from './use-webview-store';
+import { useFeedInjectStore } from './use-feed-inject-store';
+import { isBuildForFeedMainMode, isInjectByExternalApp } from '@/assets/utils/utils';
 
 export interface WatchAppStoreState {
+  /** 页面是否激活，仅用于 web-feed */
+  isPageActive: Ref<boolean>;
+
   /** 当前是否处于回放观看页地址 */
   isPlaybackWatchUrl: Ref<boolean>;
   /** 回放观看页基本信息 */
@@ -42,12 +53,16 @@ export interface WatchAppStoreState {
   meetingMode: ComputedRef<boolean>;
   /** 是否 iframe 模式 */
   iframeMode: Ref<boolean>;
-  /** 页面异常数据 */
-  pageError: Ref<PageErrorData | undefined>;
+
   /** 观看页应用初始化完毕 */
   watchAppInited: Ref<boolean>;
   /** 账户信息 */
   accountInfo: Ref<AccountInfo>;
+
+  /** 独立业务页面关联数据 */
+  directBusinessPageData: Ref<DirectBusinessPageData | undefined>;
+  /** 独立业务页面类型 */
+  directBusinessPageType: ComputedRef<DirectBusinessPageType | undefined>;
 
   /**
    * 由于单页面没有路由机制，所以通过标志位来销毁组件
@@ -61,7 +76,7 @@ export interface WatchAppStoreState {
   /** 直播观看页是否初始化完毕 - 直播观看页渲染标识位 */
   watchPageInited: Ref<boolean>;
 
-  /** 直播观看页部分功能已初始化 */
+  /** 直播观看页除需要 pause 的功能外已初始化 */
   isLiveWatchConnected: Ref<boolean>;
 
   /** 观看页聊天室 socket 已连接 */
@@ -69,6 +84,8 @@ export interface WatchAppStoreState {
 }
 
 export interface WatchAppStoreActions {
+  /** 设置独立错误页面 */
+  setDirectBusinessPage(param: DirectBusinessPageData): void;
   /** 设置页面错误数据 */
   setPageError(param: PageErrorData): void;
   /** 重置 watchCore */
@@ -77,20 +94,31 @@ export interface WatchAppStoreActions {
   syncWatchAppStore(): void;
   /** 设置直播观看页 */
   setupLiveWatch(): Promise<void>;
-  /** 暂停直播观看页部分功能的初始化 */
-  pauseConnectLiveWatch(): void;
   /** 恢复直播观看页部分功能的初始化 */
   recoverConnectLiveWatch(): void;
+  /** 恢复激活页部分功能的初始化 */
+  recoverActivePageConnect(): void;
   /** 连接聊天室 */
   setupWatchCoreConnect(): Promise<void>;
+
+  /** 锁定当前 feed 页面 */
+  toLockDrag(trackKey: string): void;
+  /** 解锁当前 feed 页面 */
+  toUnlockDrag(): void;
 }
 
-export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions {}
+export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions, GlobalInjectType {}
 
 export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp', () => {
+  const { getWatchCore, getEmitter } = useGlobalInject();
+  const { paramGetter } = useQueryParams();
+
   const { syncStoreBeforeWatchPageInited, syncStoreAfterWatchPageInited } =
     useSyncStoreForWatchPage();
+
   const { checkRedirectSubChannel } = useMultiMeetingRedirect();
+
+  const feedInjectStore = useFeedInjectStore();
 
   const authStore = useAuthStore();
   const enrollStore = useEnrollStore();
@@ -107,6 +135,16 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const financeStore = useFinanceStore();
   const webviewStore = useWebviewStore();
 
+  const __getPageIsActive = () => {
+    return paramGetter().combinedBy() === 'web-feed'
+      ? paramGetter().watchPageInitStatus() !== 'inactive'
+      : true;
+  };
+
+  const isPageActive = ref(__getPageIsActive());
+
+  const curPageIsLockDrag = ref(false);
+
   /** 当前是否处于回放观看页地址 */
   const isPlaybackWatchUrl = ref(false);
 
@@ -120,17 +158,22 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   const meetingMode = computed(() => {
     // 移动端横屏下才需要进入会议模式
     if (isMobile && layoutStore.mobileWatchLayout === MobileWatchLayout.Normal) {
-      return paramGetter.polyvMeeting() === 'true';
+      return paramGetter().polyvMeeting() === 'true';
     }
 
     return false;
   });
 
   /** 是否 iframe 模式 */
-  const iframeMode = ref(paramGetter.hasFrame() === '1');
+  const iframeMode = ref(paramGetter().hasFrame() === '1');
 
-  /** 页面异常数据 */
-  const pageError = ref<PageErrorData>();
+  /** 独立业务页面关联数据 */
+  const directBusinessPageData = ref<DirectBusinessPageData>();
+
+  /** 独立错误页类型 */
+  const directBusinessPageType = computed(() => {
+    return directBusinessPageData.value?.pageType;
+  });
 
   /** 观看页应用初始化完毕 */
   const watchAppInited = ref(false);
@@ -167,9 +210,22 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   /** 设置页面异常数据 */
   function setPageError(param: PageErrorData) {
     // 只设置一次
-    if (pageError.value) return;
+    if (directBusinessPageType.value) return;
 
-    pageError.value = param;
+    directBusinessPageData.value = {
+      pageType: DirectBusinessPageType.ErrorPage,
+      data: param,
+    };
+  }
+
+  /** 设置独立错误页面 */
+  function setDirectBusinessPage(param: DirectBusinessPageData) {
+    if (param.pageType === DirectBusinessPageType.ErrorPage) {
+      setPageError(param.data);
+      return;
+    }
+
+    directBusinessPageData.value = param;
   }
 
   /** 重置 watchCore */
@@ -194,8 +250,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     const watchCore = getWatchCore();
 
     accountInfo.value = watchCore.getAccountInfo();
-    shouldShowForceAuth.value =
-      watchCore.weixin.checkForceWxAuth() || watchCore.identity.checkIdentityWxAuth();
+    shouldShowForceAuth.value = watchCore.weixin.checkForceWxAuth();
     isPlaybackWatchUrl.value = watchCore.isPlaybackWatchByVid();
     playbackWatchBasicInfo.value = watchCore.getPlaybackWatchBasicInfo();
   }
@@ -221,30 +276,47 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     syncStoreAfterWatchPageInited();
   }
 
-  /** 根据不同场景设置 watchPageInited 标识位 */
-  function __setWatchPageInited() {
-    // 开启风险确认函时，需要暂停部分功能初始化和 Socket 链接
-    // 等到观众同意确认后再进行恢复
-    if (
-      financeStore.riskConfirmEnabled ||
-      (paramGetter.watchPageInitStatus() === 'inactive' && !isLiveWatchConnected.value)
-    ) {
-      pauseConnectLiveWatch();
-      watchPageInited.value = true;
-      return;
-    }
-
+  /**
+   * 是否不需要连麦处理
+   */
+  function __notNeedRealTimeConnect() {
     /**
      * 不需要连麦，不需要连接聊天室
      * @scene 回放观看页地址进入观看页
      * @scene 研讨会处于"内部研讨"时不需要连接聊天室
      * @scene 研讨会处于回放时不需要连接聊天室
      */
-    if (
+    return (
       isPlaybackWatchUrl.value ||
       channelStore.privateSeminarChannel ||
       (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
+    );
+  }
+
+  /** 根据不同场景设置 watchPageInited 标识位 */
+  function __setWatchPageInited() {
+    // 开启风险确认函时，需要暂停部分功能初始化和 Socket 链接，等到观众同意确认后再进行恢复
+    if (financeStore.riskConfirmEnabled) {
+      pauseConnectLiveWatch();
+      watchPageInited.value = true;
+      return;
+    }
+
+    const isInactiveFeedPage =
+      paramGetter().watchPageInitStatus() === 'inactive' ||
+      !isPageActive.value ||
+      !webviewStore.curWebviewPageIsActive;
+
+    if (
+      (isInactiveFeedPage && !isLiveWatchConnected.value) ||
+      (isBuildForFeedMainMode() && feedInjectStore.inFirstFeedLayout)
     ) {
+      pauseInactivePageConnect();
+      watchPageInited.value = true;
+      return;
+    }
+
+    if (__notNeedRealTimeConnect()) {
       connectMicStore.$patch({ connectMicEnabled: false });
       watchPageInited.value = true;
       return;
@@ -279,8 +351,9 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   /**
    * 暂停直播观看页部分功能的初始化
    * */
-  async function pauseConnectLiveWatch() {
+  function pauseConnectLiveWatch() {
     isLiveWatchConnected.value = false;
+
     playerStore.$patch({ playerEnabled: false });
     docStore.$patch({ docEnabled: false });
     chatStore.$patch({ chatMsgListEnabled: false });
@@ -288,65 +361,144 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   }
 
   /**
+   * 尝试恢复连麦、聊天室 socket 连接功能
+   */
+  async function __tryRecoverConnectRealTimeFeature() {
+    if (__notNeedRealTimeConnect()) return;
+
+    watchPageNeedChatSocket.value = true;
+    await setupWatchCoreConnect();
+
+    connectMicStore.$patch({ connectMicEnabled: true });
+    getEmitter().emit(appEvents.connectMic.ResetUpConnectMic);
+  }
+
+  /**
    * 恢复直播观看页部分功能的初始化
    */
   async function recoverConnectLiveWatch() {
-    // 当前如果处于 webview 激活状态，要优先设置状态位
-    if (webviewStore.curWebviewPageIsActive) {
-      isLiveWatchConnected.value = true;
-    }
-
     if (!watchPageInited.value) return;
 
     isLiveWatchConnected.value = true;
+
     playerStore.$patch({ playerEnabled: true });
     docStore.$patch({ docEnabled: true });
     chatStore.$patch({ chatMsgListEnabled: true });
 
-    /**
-     * 需要连麦，需要连接聊天室
-     */
-    if (
-      !(
-        isPlaybackWatchUrl.value ||
-        channelStore.privateSeminarChannel ||
-        (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
-      )
-    ) {
-      watchPageNeedChatSocket.value = true;
-      await setupWatchCoreConnect();
-      connectMicStore.$patch({ connectMicEnabled: true });
+    getEmitter().emit(appEvents.player.ResetUpPlayer);
+    getEmitter().emit(appEvents.doc.ResetUpDoc);
+    getEmitter().emit(appEvents.chat.ResetUpChatMsgList);
+
+    await __tryRecoverConnectRealTimeFeature();
+  }
+
+  /**
+   * 暂停未激活页面部分功能的处理
+   * */
+  function pauseInactivePageConnect() {
+    isLiveWatchConnected.value = false;
+
+    docStore.$patch({ docEnabled: false });
+    chatStore.$patch({ chatMsgListEnabled: false });
+    connectMicStore.$patch({ connectMicEnabled: false });
+  }
+
+  async function recoverActivePageConnect() {
+    if (!watchPageInited.value) return;
+
+    // 当前激活状态，要优先设置状态位
+    if (webviewStore.curWebviewPageIsActive || isPageActive.value) {
+      isLiveWatchConnected.value = true;
     }
 
-    eventBus.$emit(appEvents.player.ResetUpPlayer);
-    eventBus.$emit(appEvents.doc.ResetUpDoc);
-    eventBus.$emit(appEvents.chat.ResetUpChatMsgList);
-    eventBus.$emit(appEvents.connectMic.ResetUpConnectMic);
+    isLiveWatchConnected.value = true;
+
+    docStore.$patch({ docEnabled: true });
+    chatStore.$patch({ chatMsgListEnabled: true });
+
+    getEmitter().emit(appEvents.doc.ResetUpDoc);
+    getEmitter().emit(appEvents.chat.ResetUpChatMsgList);
+
+    await __tryRecoverConnectRealTimeFeature();
+  }
+
+  // 用来记录锁住拖拽的队列
+  const pageLockDragQueue: string[] = [];
+
+  /** 锁定当前 Feed 页面 */
+  function toLockDrag(trackKey: string) {
+    if (!isInjectByExternalApp()) {
+      return;
+    }
+
+    if (!isPageActive.value) {
+      // console.warn('[web-feed-flow] try to toLockDrag but not activeWebview', trackKey);
+      return;
+    }
+
+    pageLockDragQueue.push(trackKey);
+    console.warn('[web-feed-flow][callAppEvent] toLockDrag', trackKey);
+    curPageIsLockDrag.value = true;
+    getEmitter().emit(appEvents.global.PageToLockDrag);
+  }
+
+  /** 解锁当前 Feed 页面 */
+  function toUnlockDrag() {
+    if (!isInjectByExternalApp()) {
+      return;
+    }
+
+    if (!isPageActive.value) {
+      // console.warn('[web-feed-flow] try to toUnlockDrag but not activeWebview');
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const popItem = pageLockDragQueue.pop();
+    console.warn('pop pageLockDragQueue', popItem);
+    // console.warn('pageLockDragQueue', pageLockDragQueue);
+    if (pageLockDragQueue.length > 0) {
+      return;
+    }
+
+    // console.warn('[web-feed-flow][callAppEvent]  toUnlockDrag');
+    curPageIsLockDrag.value = false;
+    getEmitter().emit(appEvents.global.PageToUnlockDrag);
   }
 
   return {
+    isPageActive,
+
     isPlaybackWatchUrl,
     playbackWatchBasicInfo,
     isWxMiniProgram,
     meetingMode,
     iframeMode,
-    pageError,
+
+    directBusinessPageType,
+    directBusinessPageData,
     accountInfo,
     watchAppInited,
     shouldShowForceAuth,
     shouldShowSplash,
     watchPageInited,
 
+    setDirectBusinessPage,
     setPageError,
     resetUpWatchCore,
     syncWatchAppStore,
     setupLiveWatch,
 
     isLiveWatchConnected,
-    pauseConnectLiveWatch,
     recoverConnectLiveWatch,
+    recoverActivePageConnect,
 
     watchPageChatConnected,
     setupWatchCoreConnect,
+
+    toLockDrag,
+    toUnlockDrag,
+
+    ...useGlobalInject(),
   };
 });

@@ -2,8 +2,6 @@
  * @file 和图片相关的工具函数
  */
 
-import { getWatchCore } from '@/core/watch-sdk';
-
 /**
  * 判断浏览器是否支持webp格式
  */
@@ -16,57 +14,6 @@ export const isSupportWebp = (() => {
     return false;
   }
 })();
-
-/**
- * 重置 oss 的图片尺寸
- * @param url 图片地址
- * @param width 宽度
- * @param height 高度
- */
-export function resizeOSSImg(url: string, width?: number, height?: number): string {
-  try {
-    if (!url) {
-      return url;
-    }
-
-    if (!width && !height) {
-      console.warn('需要指定图片的宽度或者高度才能进行调整');
-      return url;
-    }
-
-    const a = document.createElement('a');
-    a.href = url;
-
-    const host = a.host.toLowerCase();
-    const search = a.search;
-
-    const watchCore = getWatchCore();
-    const staticDomain = watchCore.domain.getDomainInfo().staticDomain;
-
-    if (!staticDomain.includes(host) || search) {
-      return url;
-    }
-
-    let result = url + '?x-oss-process=image/resize,mfit';
-
-    if (width) {
-      result += ',w_' + Math.round(width);
-    }
-
-    if (height) {
-      result += ',h_' + Math.round(height);
-    }
-
-    if (isSupportWebp) {
-      result += '/format,webp';
-    }
-
-    result += ',limit_1';
-    return result;
-  } catch (error) {
-    return url;
-  }
-}
 
 /**
  * 获取图片地址的尺寸

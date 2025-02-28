@@ -6,7 +6,7 @@
       <pc-ask-msg-list
         ref="askMsgListRef"
         :ask-msg-list="askMsgRenderList"
-        @near-top="getAskMsgList"
+        @near-top="onScrollNearTop"
         @near-bottom="hideMoreMsg"
         @scroll-to-new="scrollToNew"
       />
@@ -59,7 +59,7 @@ const { chatSetting } = storeDefinitionToRefs(useChatStore);
 const {
   askMsgRenderList,
   questionImageEnabled,
-  getAskMsgList,
+  onScrollNearTop,
 
   inputDisabled,
   askInputPlaceholder,

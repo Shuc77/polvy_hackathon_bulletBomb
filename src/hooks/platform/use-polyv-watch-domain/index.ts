@@ -2,7 +2,7 @@
  * @file 泛域名 hook
  */
 
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { RedirectWatchDomainPayOptions, WatchDomainPayType } from '@polyv/live-watch-sdk';
 import { computed } from 'vue';
 
@@ -10,6 +10,8 @@ import { computed } from 'vue';
  * @hook 泛域名处理
  * */
 export const usePolyvWatchDomain = () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const watchCore = getWatchCore();
 
   /** 泛域名开关 */

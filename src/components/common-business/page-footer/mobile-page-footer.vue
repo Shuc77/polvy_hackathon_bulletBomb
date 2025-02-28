@@ -15,8 +15,10 @@
 </template>
 
 <script setup lang="ts">
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { reactive } from 'vue';
+
+const { getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 const pageFootSetting = reactive(watchCore.channel.getPageFooterSetting());

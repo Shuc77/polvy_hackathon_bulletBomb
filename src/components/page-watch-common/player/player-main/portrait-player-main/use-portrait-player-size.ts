@@ -21,7 +21,7 @@ export interface PlayerSizeData {
  * 获取视频区域高度
  */
 function getVideoAreaHeight() {
-  const pageStore = usePageStore();
+  const portraitLayoutStore = usePortraitLayoutStore();
   const topStopHeight = 51; // 设计稿如此
   const bottomStopHeight = 218; // 设计稿如此
 
@@ -31,7 +31,8 @@ function getVideoAreaHeight() {
     /** 底部阻挡区域高度 */
     bottomStopHeight,
     /** 视频区域高度 */
-    videoAreaHeight: pageStore.pageClientHeight - topStopHeight - bottomStopHeight,
+    videoAreaHeight:
+      portraitLayoutStore.portraitWatchLayoutHeight - topStopHeight - bottomStopHeight,
   };
 }
 
@@ -40,11 +41,12 @@ function getVideoAreaHeight() {
  */
 export function computedPlayerSize(targetSize: PlayerSizeData): PlayerContainerSize | undefined {
   const pageStore = usePageStore();
+  const portraitLayoutStore = usePortraitLayoutStore();
 
   const { width: targetWidth, height: targetHeight } = targetSize;
 
   const pageClientWidth = pageStore.pageClientWidth;
-  const pageClientHeight = pageStore.pageClientHeight;
+  const portraitWatchLayoutHeight = portraitLayoutStore.portraitWatchLayoutHeight;
 
   if (!targetWidth || !targetHeight) {
     return;
@@ -57,14 +59,14 @@ export function computedPlayerSize(targetSize: PlayerSizeData): PlayerContainerS
   // 视频宽度占满屏宽的等比高度
   const _videoHeight = (targetHeight / targetWidth) * pageClientWidth;
   // 视频高度占满屏高的等比宽度
-  const _videoWidth = (targetWidth / targetHeight) * pageClientHeight;
+  const _videoWidth = (targetWidth / targetHeight) * portraitWatchLayoutHeight;
 
   // 等比高度超出屏幕高度，宽度占满，上下裁边
-  if (_videoHeight >= pageClientHeight) {
+  if (_videoHeight >= portraitWatchLayoutHeight) {
     sizeData = {
       width: pageClientWidth,
       height: _videoHeight,
-      top: (pageClientHeight - _videoHeight) / 2,
+      top: (portraitWatchLayoutHeight - _videoHeight) / 2,
       left: 0,
     };
     return sizeData;
@@ -84,7 +86,7 @@ export function computedPlayerSize(targetSize: PlayerSizeData): PlayerContainerS
   // 高度占满，左右裁边
   sizeData = {
     width: _videoWidth,
-    height: pageClientHeight,
+    height: portraitWatchLayoutHeight,
     top: 0,
     left: (pageClientWidth - _videoWidth) / 2,
   };
@@ -130,7 +132,7 @@ export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData 
   const playerContainerSizeData = computed(() => {
     let sizeData: PlayerContainerSize | undefined;
     const pageClientWidth = pageStore.pageClientWidth;
-    const pageClientHeight = pageStore.pageClientHeight;
+    const portraitWatchLayoutHeight = portraitLayoutStore.portraitWatchLayoutHeight;
 
     const targetSizeVal: PlayerSizeData = unref(targetSize) || {
       width: playerStore.resolutionWidth,
@@ -141,7 +143,7 @@ export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData 
     if (webviewStore.isSmallWindow) {
       sizeData = {
         width: pageClientWidth,
-        height: pageClientHeight,
+        height: portraitWatchLayoutHeight,
         top: 0,
         left: 0,
       };
@@ -151,7 +153,7 @@ export const usePortraitPlayerSize = (targetSize?: ResponsiveRef<PlayerSizeData 
     // 竖屏播放器页面全屏
     if (portraitLayoutStore.portraitPlayerIsPageFullscreen) {
       sizeData = {
-        width: pageClientHeight,
+        width: portraitWatchLayoutHeight,
         height: pageClientWidth,
         top: 0,
         left: 0,

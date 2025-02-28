@@ -27,7 +27,7 @@ const langStore = useLangStore();
 const snapshotTipsImgLoaded = ref(false);
 
 const snapshotTipsImgUrl = computed(() => {
-  return langStore.currentLang === LangType.Chinese
+  return langStore.currentLang === LangType.ZH_CN
     ? require('./imgs/weixin-snapshot-tips.png')
     : require('./imgs/weixin-snapshot-tips-en.png');
 });

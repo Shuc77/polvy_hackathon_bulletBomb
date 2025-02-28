@@ -1,10 +1,12 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { computed } from 'vue';
 
 export const useSeatTable = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
 
   const watchCore = getWatchCore();
@@ -36,11 +38,11 @@ export const useSeatTable = () => {
    * 处理显示用户信息
    */
   function onShowUserCard(info: unknown) {
-    eventBus.$emit(appEvents.interaction.OpenSeatTableUserCard, info);
+    getEmitter().emit(appEvents.interaction.OpenSeatTableUserCard, info);
   }
 
   function RefreshSeatTableFollowList() {
-    eventBus.$emit(appEvents.interaction.RefreshSeatTableFollowList);
+    getEmitter().emit(appEvents.interaction.RefreshSeatTableFollowList);
   }
 
   return {

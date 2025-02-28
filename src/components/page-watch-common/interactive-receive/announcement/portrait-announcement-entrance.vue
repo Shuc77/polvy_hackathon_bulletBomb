@@ -21,22 +21,24 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
-import { getWatchCore } from '@/core/watch-sdk';
 
 const IarBulletinBubble = getIarComponent('BulletinBubble');
+
+const { getEmitter, getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 /** 公告 SDK 实例 */
 const announcementSdk = watchCore.interactReceive.getAnnouncement();
 
 function onShowList() {
-  eventBus.$emit(appEvents.interaction.OpenAnnouncementList, true);
+  getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
 }
 
 function onShowDetail(data: unknown) {
-  eventBus.$emit(appEvents.interaction.OpenAnnouncementDetail, data);
+  getEmitter().emit(appEvents.interaction.OpenAnnouncementDetail, data);
 }
 </script>
 

@@ -52,7 +52,7 @@ const {
 
 const popupBackable = computed(() => {
   return (
-    questionnaireStatus.value === AllQuestionnaireStatus.isShowQuestion &&
+    questionnaireStatus.value === AllQuestionnaireStatus.IsShowQuestion &&
     questionnaireBackBtnVisible.value
   );
 });

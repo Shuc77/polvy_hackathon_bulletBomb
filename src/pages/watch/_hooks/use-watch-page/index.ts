@@ -2,23 +2,26 @@ import { LiveStatus, ChatEvents } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, watch } from 'vue';
 
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 
 import { useIarGlobalConfigHook } from '@/components/page-watch-common/interactive-receive/use-iar-global-config';
 
 import { useMainScreen } from './_hooks/use-main-screen';
 import { usePageViewPolling, usePolyvMeetingPolling } from './_hooks/use-polling';
-import { getWatchCore } from '@/core/watch-sdk';
-import { ErrorVerifyType, redirectToErrorVerify } from '@/hooks/core/use-error-verify';
+import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 
 import { useChannelStore } from '@/store/use-channel-store';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 const useWhiteListRemoveUser = () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+  const { redirectToErrorVerify } = useErrorVerify();
+
   const watchCore = getWatchCore();
 
   function onWhiteListRemoveUser() {
     redirectToErrorVerify({
-      errorType: ErrorVerifyType.isKicked,
+      errorType: ErrorVerifyType.IsKicked,
     });
   }
 
@@ -32,6 +35,8 @@ const useWhiteListRemoveUser = () => {
 };
 
 export const useWatchPage = async () => {
+  const { toast } = useToastManager();
+
   // 支持白名单移除用户逻辑
   useWhiteListRemoveUser();
 

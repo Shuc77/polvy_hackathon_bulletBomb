@@ -1,43 +1,55 @@
-import { getWatchCore } from '@/core/watch-sdk';
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue';
-import { ChatEvents, ChatMsgSpeakTopType, LiveStatus } from '@polyv/live-watch-sdk';
+import { ref, onMounted, watch, onBeforeUnmount, Ref } from 'vue';
+import {
+  ChatEvents,
+  ChatMsgSpeakTopType,
+  LiveStatus,
+  SliceIdSpeakTop,
+} from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export function useSpeakTop() {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const { liveStatus, currentSessionId } = storeDefinitionToRefs(useChannelStore);
 
   const playbackStore = usePlaybackStore();
 
-  const content = ref('');
-  const user = ref({
-    nick: '',
-    pic: '',
-  });
+  const messageList: Ref<SliceIdSpeakTop[]> = ref([]);
+
   const showSpeakTop = ref(false);
 
   const handleSpeakToTop = (data: ChatMsgSpeakTopType) => {
     // 回放ppt，可能会触发 onSliceId, 导致播放前会有一条上墙数据。这里过滤掉播放前的上墙数据
-    if (playbackStore.chatReplayEnabled && watchCore.player.getCurrentTime() < 0.1) {
+    if (playbackStore.chatMsgReplayEnabled && watchCore.player.getCurrentTime() < 0.1) {
       return;
     }
 
-    content.value = watchCore.chat.parseSpeakContent(data.content, {
-      parseEmotion: true,
-      parseLink: true,
+    messageList.value = [data, ...(data.others || [])].map(item => {
+      item.content = watchCore.chat.parseSpeakContent(item.content, {
+        parseEmotion: true,
+        parseLink: true,
+      });
+      return item;
     });
-    user.value.nick = data.nick;
-    user.value.pic = data.pic;
     showSpeakTop.value = true;
   };
 
-  const handleSpeakCancelTop = () => {
-    content.value = '';
-    user.value.nick = '';
-    user.value.pic = '';
-    showSpeakTop.value = false;
+  const handleSpeakCancelTop = (data?: { id: string }) => {
+    if (!data || !data.id) {
+      messageList.value = [];
+    } else {
+      const index = messageList.value.findIndex(item => item.id === data.id);
+      if (index !== -1) {
+        messageList.value.splice(index, 1);
+      }
+    }
+    if (messageList.value.length === 0) {
+      showSpeakTop.value = false;
+    }
   };
 
   watch(liveStatus, () => {
@@ -69,8 +81,7 @@ export function useSpeakTop() {
   });
 
   return {
-    content,
-    user,
     showSpeakTop,
+    messageList,
   };
 }

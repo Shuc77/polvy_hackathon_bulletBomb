@@ -1,12 +1,10 @@
 import { getCurrentUAInfo } from '@just4/ua-info';
 import { PlvChannelModule } from '@polyv/live-watch-sdk';
+import { isBuildForFeedMainMode } from './utils';
 
 const ua = navigator.userAgent.toLowerCase();
 
 const uaInfo = getCurrentUAInfo();
-
-/** 是否为 MAC */
-export const isMac = uaInfo.os.isMacOS;
 
 /** 是否微信（非企业微信） */
 export const isWeixin = uaInfo.client.isWx;
@@ -55,6 +53,7 @@ export const tabletLoadDesktopTemplate =
 
 /** 是否移动端 */
 export const isMobile = (() => {
+  if (isBuildForFeedMainMode()) return true;
   if (tabletLoadDesktopTemplate) return false;
   return isMob || isPcMiniProgram; // uaInfo.isPortable || isPcMiniProgram;
 })();
@@ -71,8 +70,14 @@ export const isBaiduApp = uaInfo.client.isBaiduApp;
 /** 是否安卓 */
 export const isAndroid = uaInfo.os.isAndroid;
 
+/** 是否为 MAC */
+export const isMac = uaInfo.os.isMacOS;
+
 /** 是否 ios */
 export const isIOS = uaInfo.os.isIOS;
+
+/** 是否纯血鸿蒙 */
+export const isOpenHarmony = uaInfo.os.isOpenHarmony;
 
 /** 是否被 iframe */
 export const isIframe = window.self !== window.top;

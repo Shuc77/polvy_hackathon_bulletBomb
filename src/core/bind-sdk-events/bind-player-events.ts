@@ -1,17 +1,20 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { usePlayerStore } from '@/store/use-player-store';
-import { PlayerErrorReason, PlayerEvents } from '@polyv/live-watch-sdk';
+import { PlayerErrorReason, PlayerEvents, PolyvWatchCore } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-export function bindPlayerModuleEvents(): void {
-  const watchCore = getWatchCore();
+export function bindPlayerModuleEvents(watchCore: PolyvWatchCore): void {
+  const watchAppStore = useWatchAppStore();
+
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
   const subtitleStore = useSubtitleStore();
+
+  const { toast } = useToastManager();
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerInfoChange, () => {
     playerStore.syncPlayerInfo();
@@ -35,7 +38,16 @@ export function bindPlayerModuleEvents(): void {
     toast.error(`${errorCode} ${translate('player.latency.error')}`);
 
     playerStore.$patch({ isLowLatency: false });
-    eventBus.$emit(appEvents.player.ResetUpPlayer);
+
+    const emitter = watchAppStore.getPolyvWatchApp()?.getEmitter();
+    if (!emitter) return;
+    emitter.emit(appEvents.player.ResetUpPlayer);
+  });
+
+  watchCore.player.eventEmitter.on(PlayerEvents.PlayerError, evt => {
+    if (evt.reason === PlayerErrorReason.SdkLoadError) {
+      playerStore.$patch({ playerSdkLoadError: true });
+    }
   });
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerError, evt => {

@@ -1,8 +1,8 @@
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelAgreement } from '@/hooks/business/use-channel-agreement';
-import { toast } from '@/hooks/components/use-toast';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { computed, reactive } from 'vue';
@@ -19,6 +19,10 @@ export enum IdentityInfoScene {
  * @hook
  */
 export const useIdentityInfoInput = (options: { scene: IdentityInfoScene }) => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
+  const { toast } = useToastManager();
+
   const watchCore = getWatchCore();
   const identityStore = useIdentityStore();
 
@@ -69,7 +73,6 @@ export const useIdentityInfoInput = (options: { scene: IdentityInfoScene }) => {
   });
 
   function submitForm() {
-    console.log('formData.protocolChecked', formData.protocolChecked);
     if (channelAgreementConfig.value && !formData.protocolChecked) {
       const message = translate('base.needCheck') + protocolConfirmInfo.value.title;
       toast.error(message);

@@ -16,7 +16,6 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import { FullScreenMode } from '@polyv/live-watch-sdk';
 
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
@@ -27,11 +26,14 @@ import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
 import { usePortraitPlayerSize } from '@/components/page-watch-common/player/player-main/portrait-player-main/use-portrait-player-size';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 defineProps({
   /** 是否使用定位按钮 */
   usePosition: PropUtils.bool.def(true),
 });
+
+const { getWatchCore } = useGlobalInject();
 
 const isShowFullscreenButton = ref(true);
 

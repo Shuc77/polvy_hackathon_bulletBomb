@@ -19,11 +19,12 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { MobileIconMessage } from '@/components/component-icons/mobile/map';
 import PortraitAskIcon from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-icon.vue';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -45,6 +46,10 @@ const playbackChapterEntranceVisible = computed<boolean>(() => {
   return isPlaybacking.value && (unref(playbackListVisible) || unref(chapterVisible));
 });
 
+const { getEmitter } = useGlobalInject();
+
+const { toast } = useToastManager();
+
 function onClickPlaceholder() {
   const viewerStore = useViewerStore();
 
@@ -65,11 +70,11 @@ function onClickPlaceholder() {
 
   // 未设置昵称
   if (!unref(hasNickname)) {
-    eventBus.$emit(appEvents.chat.OpenSetNick, true);
+    getEmitter().emit(appEvents.chat.OpenSetNick, true);
     return;
   }
 
-  eventBus.$emit(appEvents.chat.FocusToChatInput);
+  getEmitter().emit(appEvents.chat.FocusToChatInput);
 }
 </script>
 

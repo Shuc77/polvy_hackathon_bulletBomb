@@ -1,12 +1,12 @@
 import { ref, Ref, unref } from 'vue';
 import { defineStore } from 'pinia';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   AuthInfoItem,
   AuthSettingItem,
   PickAuthSettingItem,
   AuthType,
 } from '@polyv/live-watch-sdk';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface AuthStoreState {
   /** 观看条件列表 */
@@ -31,6 +31,8 @@ export interface AuthStore extends AuthStoreState, AuthStoreActions {}
 
 /** 观看条件 store */
 export const useAuthStore = defineStore<'auth', AuthStore>('auth', () => {
+  const watchAppStore = useWatchAppStore();
+
   /** 观看条件列表 */
   const authSettings = ref<AuthSettingItem[]>([]);
 
@@ -61,7 +63,7 @@ export const useAuthStore = defineStore<'auth', AuthStore>('auth', () => {
   }
 
   function syncAuthStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     isAuthorized.value = watchCore.auth.isAuthorized();
 
     const settings = watchCore.auth.getAuthSettings();

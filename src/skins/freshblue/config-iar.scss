@@ -39,6 +39,10 @@ $--skin-iar-common-configs: (
   'iar-product-list-item:border-color': rgba(#fff, 0.1),
   // 商品库商品名称字体色
   'iar-product-list-good-name:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 商品库商品未讲解字体颜色
+  'iar-product-list-not-explained:text-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.6),
+  // 商品库商品未讲解边框颜色
+  'iar-product-list-not-explained:border-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.2),
   // 商品库标签节点背景色
   'iar-product-list-product-label-item:bg-color': rgba(#fff, 0.1),
   // 商品库标签节点字体色

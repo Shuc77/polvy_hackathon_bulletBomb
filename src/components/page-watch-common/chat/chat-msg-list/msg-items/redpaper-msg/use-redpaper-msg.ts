@@ -1,10 +1,13 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-import { computed, onBeforeUnmount, onMounted, ref, unref } from 'vue';
-import { eventBus, appEvents } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { computed, ComputedRef, onMounted, ref, unref } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { translate } from '@/assets/lang';
-import { ChatMsgRedpaperType, RedpackType } from '@polyv/live-watch-sdk';
+import {
+  ChatMsgRedpaperType,
+  ChatMsgSource,
+  ChatMsgType,
+  RedpackType,
+} from '@polyv/live-watch-sdk';
 import { RedpackStatusData } from '@/components/page-watch-common/interactive-receive/redpack-rain/types/redpack-rain-types';
 
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
@@ -12,6 +15,8 @@ import {
   obverseTrackShowBehavior,
   useWatchEventTrack,
 } from '@/hooks/business/use-watch-event-track';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 interface RedpaperEntranceInstance {
   /** 更新红包状态 */
@@ -24,6 +29,8 @@ interface RedpaperEntranceInstance {
  * @hook 互动-红包-聊天室红包消息
  */
 export const useRedpaperMsg = () => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
   const { chatMsg } = useChatMsgDataInject<ChatMsgRedpaperType>();
 
   const watchCore = getWatchCore();
@@ -75,7 +82,7 @@ export const useRedpaperMsg = () => {
 
   /** 打开红包弹层 */
   function openRedpackDialog() {
-    eventBus.$emit(appEvents.interaction.OpenRedpack, unref(chatMsg));
+    getEmitter().emit(appEvents.interaction.OpenRedpack, unref(chatMsg));
   }
 
   const { trackUserReadRedpack } = useWatchEventTrack();
@@ -92,6 +99,8 @@ export const useRedpaperMsg = () => {
     });
   }
 
+  useEventBusListener(appEvents.interaction.SetRedpackStatus, updateEntranceStatus);
+
   onMounted(() => {
     if (entranceRef.value) {
       __trackUserReadRedpack(entranceRef.value.$el);
@@ -100,12 +109,6 @@ export const useRedpaperMsg = () => {
     if (portraitRedpaperMsgRef.value) {
       __trackUserReadRedpack(portraitRedpaperMsgRef.value);
     }
-
-    eventBus.$on(appEvents.interaction.SetRedpackStatus, updateEntranceStatus);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.SetRedpackStatus, updateEntranceStatus);
   });
 
   return {
@@ -116,5 +119,31 @@ export const useRedpaperMsg = () => {
     sendNick,
     redpackText,
     openRedpackDialog,
+  };
+};
+
+export const useRedpaperMsgVisible = (chatMsg: ComputedRef<ChatMsgType>) => {
+  const identityStore = useIdentityStore();
+
+  /**
+   * 检查当前红包消息是否显示
+   */
+  function checkRedpaperMsgVisible() {
+    if (chatMsg.value.msgSource === ChatMsgSource.Redpaper) {
+      const currentLabelIds = identityStore.currentLabelIds;
+      const redpaperUserLabels = chatMsg.value.userLabels;
+      if (redpaperUserLabels?.length) {
+        const hasLabel = redpaperUserLabels.some(item => currentLabelIds.includes(item));
+        if (!hasLabel) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  return {
+    checkRedpaperMsgVisible,
   };
 };

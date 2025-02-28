@@ -1,13 +1,14 @@
 import { computed, ref, unref, reactive } from 'vue';
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
-import { getWatchCore } from '@/core/watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
-import { WeixinPayType } from '@polyv/live-watch-sdk';
+import { ApplyWithdrawResult, WeixinPayType } from '@polyv/live-watch-sdk';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useWeixinMerchantTransfer } from '@/hooks/platform/use-weixin/use-weixin-merchant-transfer';
 
 /** 历史提现统计错误响应 */
 export function handleStatisticsErr(e: Error) {
@@ -22,9 +23,15 @@ export function handleStatisticsErr(e: Error) {
 }
 
 export const useWithdrawApplyHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const watchCore = getWatchCore();
   const { weixinPayType } = storeDefinitionToRefs(useWeixinStore);
-  const { withdrawMaxAmount } = storeDefinitionToRefs(useWithdrawStore);
+  const { withdrawMaxAmount, withdrawMinAmount } = storeDefinitionToRefs(useWithdrawStore);
+
+  const { requestMerchantTransfer } = useWeixinMerchantTransfer();
 
   /** 提现表单数据 */
   const formData = reactive<{
@@ -56,9 +63,11 @@ export const useWithdrawApplyHook = () => {
           validator: (rule, val: number | string) => {
             let errorMsg: string | undefined;
 
-            // 最小值判断，总金额不得小于 1
-            if (val < 1) {
-              errorMsg = translate('withdraw.apply.rules.amount.low');
+            // 最小值判断
+            if (Number(val) < unref(withdrawMinAmount)) {
+              errorMsg = translate('withdraw.apply.rules.amount.low', {
+                amount: String(unref(withdrawMinAmount)),
+              });
             }
 
             // 最大值判断
@@ -140,9 +149,25 @@ export const useWithdrawApplyHook = () => {
       amount: Number(formData.amount),
     });
     if (result.success) {
-      toast.success(translate('withdraw.apply.success.msg'));
+      handleApplySuccessResult(result);
     } else {
       throw new Error(handleApplyErr(result.failMessage));
+    }
+  }
+
+  function handleApplySuccessResult(result: ApplyWithdrawResult) {
+    if (!result.success) {
+      return;
+    }
+
+    if (weixinPayType.value !== WeixinPayType.TransferBill) {
+      toast.success(translate('withdraw.apply.success.msg'));
+      return;
+    }
+
+    if (result.signData) {
+      const signData = result.signData;
+      requestMerchantTransfer(signData);
     }
   }
 

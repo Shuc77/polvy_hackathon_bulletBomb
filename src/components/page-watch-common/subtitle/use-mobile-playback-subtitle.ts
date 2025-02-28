@@ -1,12 +1,12 @@
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { getWatchCore } from '@/core/watch-sdk';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { onBeforeMount, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
 import { translate } from '@/assets/lang';
 import { useLangStore } from '@/store/use-lang-store';
 import { TreeSelectDataValue } from '@/components/common-base/tree-select/mobile-tree-select.vue';
 import { isString } from '@/assets/utils/string';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export function useMobilePlaybackSubtitle(options: { openSelectAction: () => void }) {
   const {
@@ -14,6 +14,8 @@ export function useMobilePlaybackSubtitle(options: { openSelectAction: () => voi
     curSelectedReplaySubtitleItemId,
     replaySubtitleSourceLanguageOptions,
   } = storeDefinitionToRefs(useSubtitleStore);
+
+  const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
 

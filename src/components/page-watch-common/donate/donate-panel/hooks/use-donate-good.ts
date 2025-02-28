@@ -3,7 +3,7 @@
  */
 
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { DonateGoodInfo, useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { DonateType } from '@polyv/live-watch-sdk';
@@ -16,6 +16,8 @@ import { useDonatePay } from './use-donate-pay';
  * 道具打赏 hook
  */
 export const useDonateGood = (donateOptions: DonateOptions = {}) => {
+  const { toast } = useToastManager();
+
   // 打赏成功回调
   const donateSuccess = donateOptions.donateSuccess;
 

@@ -68,6 +68,10 @@ npm run build-static
 - 执行完成后，源码会构建输出到 `dist-static` 文件夹中，只要将该文件夹上传到服务器即完成部署
 - 如果需要本地预览，可以启动一个 HTTP 服务器来访问 `dist-static` 文件夹，在本地预览生产环境构建最简单的方式就是使用一个 Node.js 静态文件服务器，例如 [serve](https://github.com/vercel/serve)
 
+### SDK 注入式部署
+
+如果您需要在一个 React 项目或者其他项目内集成观看页应用，您需要借助 `external/sdk-inject-project` 这个子工程，具体详情请查阅 [处理 sdk 注入项目脚本](./external/sdk-inject-project/README.md)，如有不明之处，请咨询保利威技术团队
+
 ### 其他注意事项
 
 > 从 v1.1.0 开始，外部错误页将自动使用保利威 SaaS 域名进行跳转，如有需要可以自行修改错误页地址
@@ -90,6 +94,7 @@ npm run build-static
 | icon-svgs/ | svg 图标文件夹  |
 | types/     | 全局的 typescript 类型  |
 | src/       | 项目源码  |
+| external/  | 存放一些额外的文件/工程  |
 
 `src` 目录说明
 

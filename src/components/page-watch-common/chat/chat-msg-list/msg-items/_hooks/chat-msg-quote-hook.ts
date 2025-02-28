@@ -1,4 +1,5 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useChatStore } from '@/store/use-chat-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -15,6 +16,8 @@ export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType
   const chatStore = useChatStore();
   const watchAppStore = useWatchAppStore();
   const viewerStore = useViewerStore();
+
+  const { getEmitter } = useGlobalInject();
 
   const { category } = useChatMsgDataInject<ChatMsgQuoteOriginType>();
 
@@ -40,7 +43,7 @@ export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType
   function onClickQuote() {
     // 未设置昵称
     if (!viewerStore.hasNickname) {
-      eventBus.$emit(appEvents.chat.OpenSetNick, true);
+      getEmitter().emit(appEvents.chat.OpenSetNick, true);
       return;
     }
 
@@ -49,7 +52,7 @@ export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType
       currentQuoteMsg: unref(chatMsgRef),
     });
     // 聚焦输入框
-    eventBus.$emit(appEvents.chat.FocusToChatInput);
+    getEmitter().emit(appEvents.chat.FocusToChatInput);
   }
 
   return {

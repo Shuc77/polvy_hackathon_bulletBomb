@@ -3,17 +3,19 @@ import {
   useWorkWeixinAuthorize,
 } from '@/hooks/platform/use-weixin/use-weixin-authorize';
 import { unref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { useAuthStore } from '@/store/use-auth-store';
 import { AuthType } from '@polyv/live-watch-sdk';
 import { useWorkWeixinErrorPage } from '@/hooks/platform/use-weixin/use-work-weixin-error-page';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /**
  * @hook 处理企业微信授权
  * @returns 返回 true 则表示中断页面渲染
  */
 const useWorkWeixinSetup = async () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const watchCore = getWatchCore();
   const authStore = useAuthStore();
 
@@ -48,6 +50,8 @@ const useWorkWeixinSetup = async () => {
  * @returns 返回 true 则表示中断页面渲染
  */
 const useGeneralWeixinSetup = async () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   const watchCore = getWatchCore();
 
   const { canWeixinAuthorize, redirectWeixinAuthorize } = useWeixinAuthorize();

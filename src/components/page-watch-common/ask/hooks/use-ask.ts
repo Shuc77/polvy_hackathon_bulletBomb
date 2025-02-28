@@ -1,4 +1,3 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, unref } from 'vue';
 
@@ -15,6 +14,7 @@ import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * 倒序查找数组
@@ -36,14 +36,18 @@ export interface UseAskOptions {
 }
 
 export const useAsk = (options: UseAskOptions) => {
+  const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
+
   const { askMsgListRef } = options;
 
   const channelStore = useChannelStore();
   const askStore = useAskStore();
   const viewerStore = useViewerStore();
 
-  const historyStart = ref(0);
-  const historyLength = 20;
+  /** 页数，默认为 0，请求接口时会自动加 1 */
+  const pageNumber = ref(0);
+  const pageSize = ref(10);
   const isNoMore = ref(false);
 
   /** 提问消息列表 */
@@ -70,10 +74,12 @@ export const useAsk = (options: UseAskOptions) => {
     const list = [...unref(askMsgList)];
 
     if (channelStore.teacherInfo) {
+      const time = list[0] ? list[0].time : Date.now();
+
       // 插入默认消息
       const placeholderMsg: ChatMsgSpeakType = {
         id: placeholderMsgId,
-        time: Date.now(),
+        time,
         msgSource: ChatMsgSource.Speak,
         user: channelStore.teacherInfo,
         content: askStore.askWelcomeText,
@@ -84,26 +90,11 @@ export const useAsk = (options: UseAskOptions) => {
     return list;
   });
 
-  /** 获取提问消息列表 */
-  async function getAskMsgList() {
-    if (isNoMore.value) {
-      return;
-    }
-    const watchCore = getWatchCore();
-    const start = unref(historyStart);
-    const end = unref(historyStart) + historyLength - 1;
-    const result = await watchCore.ask.getAskHistory({
-      start,
-      end,
-    });
-
-    historyStart.value = end + 1;
-    isNoMore.value = result.isEnd;
-    const list = result.askMsgList;
+  async function __updateAskMsgList(list: AskMsgType[]) {
     askMsgList.value = [...list, ...askMsgList.value];
 
     const askMsgListInstance = unref(askMsgListRef);
-    if (start === 0) {
+    if (pageNumber.value === 1) {
       askMsgListInstance?.scrollToBottom();
     } else {
       await askMsgListInstance?.scrollToFirstRecord();
@@ -111,6 +102,24 @@ export const useAsk = (options: UseAskOptions) => {
 
     await nextTick();
     askMsgListInstance?.recordFirstElem();
+  }
+
+  /** 获取提问消息列表 */
+  async function getAskMsgList() {
+    if (isNoMore.value) {
+      return;
+    }
+
+    const result = await watchCore.ask.getAskHistoryByUserId({
+      pageNumber: pageNumber.value + 1,
+      pageSize: pageSize.value,
+    });
+
+    pageNumber.value = result.pageNumber;
+    pageSize.value = result.pageSize;
+    isNoMore.value = pageNumber.value >= result.totalPages;
+
+    __updateAskMsgList(result.contents);
   }
 
   /**
@@ -151,6 +160,10 @@ export const useAsk = (options: UseAskOptions) => {
     }
   }
 
+  function onScrollNearTop() {
+    getAskMsgList();
+  }
+
   /** 滚动显示最新消息 */
   function scrollToNew() {
     const askMsgListInstance = unref(askMsgListRef);
@@ -160,13 +173,6 @@ export const useAsk = (options: UseAskOptions) => {
   function hideMoreMsg() {
     askStore.hideMoreMsg();
   }
-
-  onMounted(() => {
-    getAskMsgList();
-    const watchCore = getWatchCore();
-    const askSetting = watchCore.ask.getAskSetting();
-    questionImageEnabled.value = askSetting.questionImageEnabled;
-  });
 
   /** 处理提问相关事件 */
   function onAskEvent(evt: { askMsg: AskMsgType }) {
@@ -216,8 +222,13 @@ export const useAsk = (options: UseAskOptions) => {
   }
 
   onMounted(() => {
+    getAskMsgList();
+    const askSetting = watchCore.ask.getAskSetting();
+    questionImageEnabled.value = askSetting.questionImageEnabled;
+
     bindAskEvent();
   });
+
   onBeforeUnmount(() => {
     unbindAskEvent();
   });
@@ -226,12 +237,12 @@ export const useAsk = (options: UseAskOptions) => {
     askMsgListRef,
     askMsgList,
     askMsgRenderList,
-    getAskMsgList,
 
     inputDisabled,
     askInputPlaceholder,
     questionImageEnabled,
 
+    onScrollNearTop,
     scrollToNew,
     hideMoreMsg,
   };
@@ -241,6 +252,8 @@ export const useAsk = (options: UseAskOptions) => {
  * 提问新消息提醒 hook
  */
 export const useAskReminder = (hookOptions: { onAskMsg: () => void }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { onAskMsg } = hookOptions;
   const askStore = useAskStore();
 
@@ -287,6 +300,8 @@ export const useAskReminder = (hookOptions: { onAskMsg: () => void }) => {
 };
 
 export const useAskSdk = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const askSdk = ref();
 
   async function getAskSdk() {

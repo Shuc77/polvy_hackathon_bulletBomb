@@ -1,7 +1,7 @@
 <!-- @file 移动端页面广告 -->
 <template>
   <div
-    v-if="advertVisible && pageAdvertEnabled && pageAdvertList.length"
+    v-if="pageAdvertVisible && pageAdvertEnabled && pageAdvertList.length"
     class="c-mobile-page-advert pws-page-advert"
   >
     <div class="c-mobile-page-advert__content">
@@ -49,9 +49,9 @@
       </plv-carousel>
 
       <mobile-icon-close-round
-        v-if="closeVisible"
+        v-if="pageAdvertCloseVisible"
         class="c-mobile-page-advert__content__close"
-        @click="closeAdvert"
+        @click="closePageAdvert"
       />
     </div>
   </div>
@@ -65,12 +65,13 @@ import {
   MobileIconArrowRight,
 } from '@/components/component-icons/mobile/map';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
-import { usePageAdvertStore } from '@/store/use-page-advert-store';
+import { useAdvertStore } from '@/store/use-advert-store';
 import { storeToRefs } from 'pinia';
+import { openLink } from '@/assets/utils/url';
 
-const pageAdvertStore = usePageAdvertStore();
-const { closeAdvert, openLink } = pageAdvertStore;
-const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible } =
+const pageAdvertStore = useAdvertStore();
+const { closePageAdvert } = pageAdvertStore;
+const { pageAdvertVisible, pageAdvertEnabled, pageAdvertList, pageAdvertCloseVisible } =
   storeToRefs(pageAdvertStore);
 </script>
 

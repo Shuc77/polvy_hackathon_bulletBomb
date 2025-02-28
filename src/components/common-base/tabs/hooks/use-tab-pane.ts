@@ -20,6 +20,8 @@ export const tabPaneProps = () => ({
   switchToRefresh: PropUtils.bool.def(false),
   /** 显示红点 */
   showReminder: PropUtils.bool.def(false),
+  /** 红点显示改为 "新消息" */
+  showNewMessage: PropUtils.bool.def(false),
 });
 
 /**
@@ -33,7 +35,8 @@ export const isTabPaneInstance = (instance: unknown): instance is TabPaneInstanc
 
 export const useTabPane = (options: { props: VueProps<typeof tabPaneProps> }) => {
   const { props } = options;
-  const { label, subLabel, name, lazyLoad, switchToRefresh, showReminder } = useProps(props);
+  const { label, subLabel, name, lazyLoad, switchToRefresh, showReminder, showNewMessage } =
+    useProps(props);
   const { currentTabName, currentTabIndex, prevTabIndex } = useTabsInject();
 
   /** 当前面板是否显示 */
@@ -59,6 +62,7 @@ export const useTabPane = (options: { props: VueProps<typeof tabPaneProps> }) =>
       subLabel: unref(subLabel),
       name: unref(name),
       showReminder: unref(showReminder),
+      showNewMessage: unref(showNewMessage),
     };
   }
 

@@ -1,7 +1,3 @@
-/**
- * @file 一些静态资源的默认地址（包括通过 require 引入到图片）
- */
-
 /** 默认分享图标 - QQ */
 export const DEFAULT_SHARE_QQ_ICON: string = require('@/assets/images/share/qq.png');
 
@@ -13,3 +9,6 @@ export const DEFAULT_SHARE_WEIBO_ICON: string = require('@/assets/images/share/w
 
 /** 默认选择的手机区号 */
 export const DEFAULT_PHONE_NUMBER_AREA_CODE = '+86';
+
+/** 默认的唯一ID */
+export const DEFAULT_APP_UNIQUE_ID = 'app';

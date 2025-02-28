@@ -29,17 +29,20 @@ import { ref, computed, watch } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import MemberList from './member-list.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
-import { appEvents, useEventBusListener, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useMemberListHook } from './use-member-list';
 
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
 
 const { startPollingOnlineUserList, stopPollingOnlineUserList } = useMemberListHook();
 
 const popupVisible = ref(false);
 
 function showRulePopup() {
-  eventBus.$emit(appEvents.portrait.OpenPortraitOnlineUserListRulePopup);
+  getEmitter().emit(appEvents.portrait.OpenPortraitOnlineUserListRulePopup);
 }
 
 watch(popupVisible, visible => {

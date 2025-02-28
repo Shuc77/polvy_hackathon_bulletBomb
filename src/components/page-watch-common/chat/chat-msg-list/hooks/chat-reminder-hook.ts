@@ -1,4 +1,4 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { ChatEvents } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
@@ -7,6 +7,8 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
  */
 export const useChatReminder = (hookOptions: { onChatMsg: () => void }) => {
   const { onChatMsg } = hookOptions;
+
+  const { getWatchCore } = useMultiPolyvWatchApp();
 
   /** 聊天消息红点提示是否可见 */
   const chatReminderVisible = ref(false);

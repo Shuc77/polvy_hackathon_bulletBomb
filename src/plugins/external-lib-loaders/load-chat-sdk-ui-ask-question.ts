@@ -2,7 +2,7 @@
  * @file 加载提问 UI SDK
  */
 
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { loadScript } from '@just4/load-script';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 
@@ -23,6 +23,8 @@ let chatSDKAskQuestionUILoader: Promise<PolyvChatSceneType> | undefined;
  * @desc 只加载竖屏提问组件
  */
 export const useChatSDKAskQuestionUILoader = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
 
   function __getConfigByWatchSdkEnv() {

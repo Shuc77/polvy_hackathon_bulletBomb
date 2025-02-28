@@ -4,6 +4,7 @@
   <div class="c-pc-watch-layout-lazyload">
     <!-- 互动功能渲染入口 -->
     <pc-iar-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <pc-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 聊天室连接失败提示 -->
     <pc-chat-connect-error-dialog />
@@ -28,19 +29,28 @@
 
     <!-- 绑定用户信息 -->
     <pc-bind-identity-info-dialog v-if="bindMobileVisible" />
+
+    <!-- 我的奖励弹层 -->
+    <pc-personal-reward-dialog />
+
+    <!-- AI 看弹窗 -->
+    <pc-playback-outline-dialog />
   </div>
 </template>
 
 <script setup lang="ts">
+import { defineAsyncComponent } from 'vue';
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
 import PcChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/pc-chat-connect-error-dialog.vue';
 import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-chat-set-nick.vue';
 import PcIarRender from '@/components/page-watch-common/interactive-receive/pc-iar-render.vue';
+import PcIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-v2.vue';
 import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-live-start-tips.vue';
 import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/pc-transmit-switch-tip.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
 import PcBindIdentityInfoDialog from '@/components/common-business/bind-identity-info/pc-bind-identity-info.vue';
+import PcPersonalRewardDialog from '@/components/page-watch-common/personal-reward/pc-personal-reward-dialog.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -48,6 +58,13 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIdentityStore } from '@/store/use-identity-store';
+
+const PcPlaybackOutlineDialog = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "pc-playback-outline-dialog" */ '@/components/page-watch-common/Intelligent-playback-outline/component/pc-playback-outline-dialog.vue'
+    ),
+);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 

@@ -4,6 +4,7 @@
   <div class="c-mobile-watch-layout-lazyload">
     <!-- 互动功能 -->
     <mobile-iar-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <mobile-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 连麦挂件 -->
     <mobile-connect-mic-pendant
@@ -66,8 +67,6 @@
     <!-- 绑定用户身份信息弹层 -->
     <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
 
-    <!-- 任务奖励弹层 -->
-    <mobile-task-reward-popup />
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup />
 
@@ -76,6 +75,12 @@
 
     <!-- 播放设置弹层 -->
     <mobile-playback-setting />
+
+    <!-- 我的奖励弹层 -->
+    <mobile-personal-reward-popup />
+
+    <!-- AI 看弹窗 -->
+    <mobile-playback-outline-dialog />
   </div>
 </template>
 
@@ -89,6 +94,7 @@ import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full
 import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
+import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
@@ -99,10 +105,10 @@ import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invi
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
-import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 import MobilePlaybackSetting from '@/components/page-watch-common/player/player-control/mobile-player-control/mobile-playback-setting.vue';
+import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -119,7 +125,10 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 
 const MobileSendRedpack = defineAsyncComponent(
-  () => import('@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'),
+  () =>
+    import(
+      /* webpackChunkName: "mobile-send-pack" */ '@/components/page-watch-common/send-redpack/mobile-send-redpack.vue'
+    ),
 );
 const MobileWithdrawApply = defineAsyncComponent(
   () =>
@@ -131,6 +140,13 @@ const MobileWithdrawDetail = defineAsyncComponent(
   () =>
     import(
       /* webpackChunkName: "mobile-withdraw-detail" */ '@/components/page-watch-common/withdraw/mobile-withdraw-detail/mobile-withdraw-detail.vue'
+    ),
+);
+
+const MobilePlaybackOutlineDialog = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "mobile-playback-outline-dialog" */ '@/components/page-watch-common/Intelligent-playback-outline/component/mobile-playback-outline-dialog.vue'
     ),
 );
 

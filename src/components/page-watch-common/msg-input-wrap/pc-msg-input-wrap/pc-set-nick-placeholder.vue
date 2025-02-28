@@ -22,16 +22,19 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { unref } from 'vue';
 
 const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 
+const { getEmitter } = useGlobalInject();
+
 function onClickSetNick() {
   if (!unref(hasNickname)) {
-    eventBus.$emit(appEvents.chat.OpenSetNick, true);
+    getEmitter().emit(appEvents.chat.OpenSetNick, true);
     return;
   }
 

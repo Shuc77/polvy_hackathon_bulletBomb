@@ -1,50 +1,22 @@
 <template>
   <div class="c-chat-speak-top">
-    <div class="c-chat-speak-top__header">
-      <div>
-        <img
-          class="c-chat-speak-top__avatar"
-          :src="user.pic"
-          alt="avatar"
-        />
-        <span class="c-chat-speak-top__title">{{ user.nick }}</span>
-      </div>
-      <button
-        class="c-chat-speak-top__close"
-        @click="closeHandler"
-      >
-        ×
-      </button>
+    <div class="c-chat-speak-top__content">
+      <span class="c-chat-speak-top__title">{{ message.nick }}：</span>
+      <span v-html="message.content"></span>
     </div>
-    <div
-      class="c-chat-speak-top__content"
-      v-html="content"
-    ></div>
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { SliceIdSpeakTop } from '@polyv/live-watch-sdk';
+import type { PropType } from 'vue';
+
 defineProps({
-  content: {
-    type: String,
+  message: {
+    type: Object as PropType<SliceIdSpeakTop>,
     required: true,
-  },
-  user: {
-    type: Object,
-    required: true,
-    default: () => ({
-      nick: '',
-      pic: '',
-      actor: '',
-    }),
   },
 });
-
-const emit = defineEmits(['close']);
-
-const closeHandler = () => {
-  emit('close');
-};
 </script>
 
 <style scoped lang="scss">
@@ -52,51 +24,20 @@ const closeHandler = () => {
   position: relative;
   box-sizing: border-box;
   width: 311px;
-  padding: 12px;
-  color: white;
-  background: rgba(29, 33, 41, 0.48);
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.c-chat-speak-top__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.c-chat-speak-top__avatar {
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
-  border-radius: 50%;
+  padding: 12px 60px 12px 12px;
 }
 
 .c-chat-speak-top__title {
-  margin-right: 10px;
   font-size: 12px;
-}
-
-.c-chat-speak-top__role {
-  margin-right: auto;
-  font-size: 14px;
-  color: #a0a0a0;
-}
-
-.c-chat-speak-top__close {
-  font-size: 20px;
-  color: white;
-  cursor: pointer;
-  background: none;
-  border: none;
+  color: #ffd16b;
 }
 
 .c-chat-speak-top__content {
   display: -webkit-box;
   overflow: hidden;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 18px;
+  color: white;
   text-overflow: ellipsis;
   word-break: break-all;
   white-space: normal;

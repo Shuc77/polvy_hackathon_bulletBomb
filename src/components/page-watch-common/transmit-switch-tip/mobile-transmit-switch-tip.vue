@@ -5,10 +5,12 @@
 
 <script setup lang="ts">
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { unref, watch } from 'vue';
 import { useTransmitSwitchTip } from './use-transmit-switch-tip';
 const { transmitSwitchTipVisible } = useTransmitSwitchTip();
+
+const { toast } = useToastManager();
 
 watch(
   () => unref(transmitSwitchTipVisible),

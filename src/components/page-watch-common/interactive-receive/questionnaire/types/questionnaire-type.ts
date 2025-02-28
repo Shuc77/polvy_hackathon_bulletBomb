@@ -1,15 +1,15 @@
 /** 所有问卷状态 */
 export enum AllQuestionnaireStatus {
   /** 正在显示答题中的问卷 */
-  isShowQuestion = 'isShowQuestion',
+  IsShowQuestion = 'isShowQuestion',
   /** 正在显示问卷结果 */
-  isShowResult = 'isShowResult',
+  IsShowResult = 'isShowResult',
   /** 正在显示问卷答案 */
-  isShowAnswer = 'isShowAnswer',
+  IsShowAnswer = 'isShowAnswer',
   /** 正在显示问卷排行榜 */
-  isShowResultRank = 'isShowResultRank',
+  IsShowResultRank = 'isShowResultRank',
   /** 正在展示问卷列表 */
-  isShowQuestionnaireList = 'isShowQuestionnaireList',
+  IsShowQuestionnaireList = 'isShowQuestionnaireList',
 }
 
 /**

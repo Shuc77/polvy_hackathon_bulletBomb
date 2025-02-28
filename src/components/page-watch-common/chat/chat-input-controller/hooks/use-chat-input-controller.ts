@@ -1,16 +1,16 @@
 import { wait } from '@/assets/utils/utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { ref } from 'vue';
 
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useSendMsg } from '@/components/page-watch-common/chat/chat-msg-list/hooks/send-msg-hook';
 import { useChatStore } from '@/store/use-chat-store';
 
 import { translate } from '@/assets/lang';
 import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { ChatMsgImageType } from '@polyv/live-watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export interface ChatInputInstance {
   /** 聚焦输入框 */
@@ -26,6 +26,10 @@ export const useChatInputController = (options?: {
   submitIntercept?: (contentList: PlvInputContent[]) => boolean;
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { autoListen = true } = options || {};
 
   const chatStore = useChatStore();
@@ -105,7 +109,7 @@ export const useChatInputController = (options?: {
     });
 
     // 回调事件到报名抽奖，判断是否满足评论抽奖的条件
-    eventBus.$emit(appEvents.interaction.CheckCommentLotteryComment, content);
+    getEmitter().emit(appEvents.interaction.CheckCommentLotteryComment, content);
 
     chatStore.$patch({
       currentQuoteMsg: undefined,

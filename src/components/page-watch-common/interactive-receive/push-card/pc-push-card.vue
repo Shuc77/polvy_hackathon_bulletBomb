@@ -1,6 +1,7 @@
 <!-- @file 移动卡片推送 -->
 <template>
   <iar-push-card
+    append-body
     class="c-pc-push-card"
     internal
     :push-card-sdk="pushCardSdk"

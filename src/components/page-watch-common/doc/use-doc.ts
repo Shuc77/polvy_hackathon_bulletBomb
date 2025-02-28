@@ -1,4 +1,3 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { DocEvents, LiveStatus, SetupDocOptions } from '@polyv/live-watch-sdk';
@@ -8,14 +7,20 @@ import { useDocStore } from '@/store/use-doc-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { MessageBoxInstance } from '@/components/common-base/message-box';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useDoc = (
   useOptions: {
     setupOptions?: Partial<SetupDocOptions>;
   } = {},
 ) => {
+  const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
+
+  const { toast } = useToastManager();
+
   const docStore = useDocStore();
   const channelStore = useChannelStore();
   const layoutStore = useLayoutStore();
@@ -27,6 +32,8 @@ export const useDoc = (
 
   const confirmRef = ref<MessageBoxInstance>();
 
+  const docSetupFinished = ref(false);
+
   /** 初始化文档 */
   async function initDoc() {
     const { setupOptions = {} } = useOptions;
@@ -35,7 +42,8 @@ export const useDoc = (
 
     if (!docStore.docEnabled) return;
 
-    const watchCore = getWatchCore();
+    docSetupFinished.value = false;
+
     await watchCore.doc.setupDoc({
       container: wrapElem,
       keyboardEnabled: !playbackStore.isPlaybacking,
@@ -51,17 +59,17 @@ export const useDoc = (
       ...setupOptions,
     });
 
+    docSetupFinished.value = true;
+
     listenDocEvent();
   }
 
   function listenDocEvent() {
     unlistenDocEvent();
-    const watchCore = getWatchCore();
     watchCore.doc.eventEmitter.on(DocEvents.FullScreenStateChange, onFullScreenStateChange);
   }
 
   function unlistenDocEvent() {
-    const watchCore = getWatchCore();
     watchCore.doc.eventEmitter.off(DocEvents.FullScreenStateChange, onFullScreenStateChange);
   }
 
@@ -98,7 +106,6 @@ export const useDoc = (
     ],
     async (next, prev) => {
       await nextTick();
-      const watchCore = getWatchCore();
       // 小窗事件结束不一定这么快
       const timeout = next[2] !== prev[2] ? 300 : 0;
       setTimeout(() => {
@@ -112,6 +119,8 @@ export const useDoc = (
   });
 
   return {
+    docSetupFinished,
+
     wrapRef,
     confirmRef,
     emptyPlaceholderVisible,

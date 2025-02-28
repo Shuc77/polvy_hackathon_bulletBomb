@@ -35,7 +35,7 @@ export const usePhoneCode = (options: {
   const searchKey = ref('');
 
   const codeList = computed(() => {
-    return currentLang.value === LangType.Chinese ? zhCodeList : enCodeList;
+    return currentLang.value === LangType.ZH_CN ? zhCodeList : enCodeList;
   });
 
   /** 所有首字母列表 */

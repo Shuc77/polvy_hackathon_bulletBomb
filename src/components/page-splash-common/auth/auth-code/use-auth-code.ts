@@ -1,6 +1,6 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { isFormItemInstance } from '@/components/common-base/form/hooks/use-form-item';
-import { getWatchCore } from '@/core/watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { AuthSettingItemCode } from '@polyv/live-watch-sdk';
 import { computed, reactive, ref, unref } from 'vue';
@@ -9,6 +9,8 @@ import { useAuthCommon, useAuthProtocol } from '../hooks/use-auth-common';
 
 /** 观看条件：验证码 hook */
 export const useAuthCode = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const { authItem } = useAuthButtonInject<AuthSettingItemCode>(onClickAuthButton);
 
   /** 弹层是否显示 */

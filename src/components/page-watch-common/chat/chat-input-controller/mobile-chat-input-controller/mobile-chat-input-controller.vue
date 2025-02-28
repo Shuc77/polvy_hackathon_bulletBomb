@@ -38,6 +38,13 @@
           class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--donate pws-mobile-donate-button"
           @click="showDonate"
         ></div>
+
+        <!-- 商品库入口 -->
+        <mobile-product-list-entrance
+          v-if="interactSetting.productEnabled && iarSdkLoaded"
+          class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--product"
+        />
+
         <!-- 点赞 -->
         <mobile-chat-like
           v-if="likeFeatureEnabled"
@@ -55,11 +62,14 @@ import MobileChatLike from '@/components/page-watch-common/chat/chat-like/mobile
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useDonateStore } from '@/store/use-donate-store';
 
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { useGlobalInject } from '@/app/use-global-inject';
+import MobileProductListEntrance from '@/components/page-watch-common/interactive-receive/product/mobile-product-list-entrance.vue';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const props = defineProps({
   /** 是否为纯净模式 */
@@ -67,6 +77,8 @@ const props = defineProps({
   /** 是否处于激活状态 */
   isAlwayActive: PropUtils.bool.def(false),
 });
+
+const { getEmitter } = useGlobalInject();
 
 const viewerStore = useViewerStore();
 const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
@@ -93,12 +105,14 @@ const { chatInputPlaceholder, chatInputDisabled, chatSetting, likeFeatureEnabled
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
+const { interactSetting, iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
 function showMore() {
-  eventBus.$emit(appEvents.global.OpenMobileMorePopup, true);
+  getEmitter().emit(appEvents.global.OpenMobileMorePopup, true);
 }
 
 function showDonate() {
-  eventBus.$emit(appEvents.donate.OpenDonatePopup, true);
+  getEmitter().emit(appEvents.donate.OpenDonatePopup, true);
 }
 
 defineExpose(chatInputInstance);
@@ -128,5 +142,11 @@ defineExpose(chatInputInstance);
 
 .c-mobile-chat-input-controller__btn--donate::after {
   background-image: url(../imgs/icon-gift.png);
+}
+
+.c-mobile-chat-input-controller__btn--product {
+  background-image: url(../imgs/icon-product.png);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 </style>

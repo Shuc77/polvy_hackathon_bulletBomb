@@ -1,4 +1,4 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlayerStore } from '@/store/use-player-store';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, Ref, unref } from 'vue';
@@ -27,6 +27,8 @@ function getVideoHeight(videoElement: HTMLVideoElement) {
 export const useResolutionSize = (options: {
   playerContainer: Ref<HTMLDivElement | undefined>;
 }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { playerContainer } = options;
   const playerStore = usePlayerStore();
 

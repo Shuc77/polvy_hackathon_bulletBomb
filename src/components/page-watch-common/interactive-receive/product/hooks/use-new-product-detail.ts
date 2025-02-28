@@ -6,16 +6,20 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { IarProductType } from '@polyv/live-watch-sdk';
 import { computed } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useLangStore } from '@/store/use-lang-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 
 export const useNewProductDetail = () => {
   const { currentLang } = storeDefinitionToRefs(useLangStore);
-  const watchCore = getWatchCore();
   const { currentProduct, productDetailVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
+  const { getWatchCore } = useGlobalInject();
   const { toPlay, toPause } = usePlayerAction();
+
+  const watchCore = getWatchCore();
+  /** 商品库 SDK 实例 */
+  const productSdk = watchCore.interactReceive.getProduct();
 
   const openProductDetail = async (good: ProductGoodData) => {
     if (good.productType === IarProductType.Normal) {
@@ -37,6 +41,8 @@ export const useNewProductDetail = () => {
       productDesc: currentProduct.value?.productDesc,
       productDetail: currentProduct.value?.productDetail || '',
       tags: currentProduct.value?.features || [],
+      customPrice: currentProduct.value?.customPrice || '',
+      priceType: currentProduct.value?.priceType || '',
     };
   });
 
@@ -69,6 +75,7 @@ export const useNewProductDetail = () => {
   };
 
   return {
+    productSdk,
     openProductDetail,
     currentProduct,
     productDetailVisible,

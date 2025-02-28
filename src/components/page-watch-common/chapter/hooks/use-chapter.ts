@@ -1,4 +1,4 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { ChapterItem } from '@polyv/live-watch-sdk';
@@ -6,6 +6,8 @@ import { ref, watch, watchEffect } from 'vue';
 import { usePlayerAction } from '../../player/hooks/use-player-action';
 
 export const useChapter = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const { toPlay, toSeekVideo } = usePlayerAction();
   const playbackStore = usePlaybackStore();
   const playerStore = usePlayerStore();

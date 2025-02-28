@@ -92,6 +92,9 @@
       layout="mobile"
     ></speak-top-business>
 
+    <!-- 其他直播预约 -->
+    <common-other-live-booking class="c-mobile-watch-layout__other-live-booking" />
+
     <!-- 底部区域 -->
     <div
       ref="layoutBottomRef"
@@ -128,6 +131,7 @@ import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-m
 import MobilePlayerStreamTrack from '@/components/page-watch-common/player/player-stream-track/mobile-player-stream-track.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
+import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 // import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -148,6 +152,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
+import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
@@ -186,6 +191,12 @@ const layoutStore = useLayoutStore();
 const layoutWrapRef = ref<HTMLDivElement>();
 const layoutTopRef = ref<HTMLDivElement>();
 const layoutBottomRef = ref<HTMLDivElement>();
+
+useResizeObserver(layoutWrapRef, () => {
+  layoutStore.$patch({
+    mobileWatchLayoutHeight: layoutWrapRef.value?.clientHeight || 0,
+  });
+});
 
 // 顶部占位距离 => 决定 layoutTopElem.clientHeight => 决定播放器高度
 const layoutTopDistance = computed(() => {
@@ -283,9 +294,9 @@ onMounted(() => {
 .c-mobile-watch-layout {
   position: relative;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
+  overflow: hidden;
   background: #202127;
 }
 
@@ -396,9 +407,17 @@ onMounted(() => {
 .c-mobile-watch-layout__speak-to-top {
   z-index: 2300;
 }
+
+.c-mobile-watch-layout__other-live-booking {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 2200;
+}
+
 .c-mobile-watch-layout__player-tips {
   position: absolute;
-  top: 32px;
+  top: 12px;
   left: 50%;
   z-index: 3000;
   transform: translateX(-50%);

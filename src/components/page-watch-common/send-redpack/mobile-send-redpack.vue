@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 
@@ -70,7 +70,7 @@ import MobileFormInput from '@/components/common-base/form/form-input/mobile-for
 import MobileFormNumberInput from '@/components/common-base/form/form-number-input/mobile-form-number-input.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useSendRedpackHook } from './_hooks/use-send-redpack';
 
 const {
@@ -87,13 +87,7 @@ const {
 
 const popupVisible = ref(false);
 
-onMounted(() => {
-  eventBus.$on(appEvents.interaction.OpenSendRedpack, handleSendRedpackPopupVisible);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.interaction.OpenSendRedpack, handleSendRedpackPopupVisible);
-});
+useEventBusListener(appEvents.interaction.OpenSendRedpack, handleSendRedpackPopupVisible);
 
 function handleSendRedpackPopupVisible(visible: boolean) {
   if (visible) {

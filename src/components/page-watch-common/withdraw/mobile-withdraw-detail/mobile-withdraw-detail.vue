@@ -72,15 +72,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { ref } from 'vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import MobileRedpackReceiveRecord from './mobile-redpack-receive-record.vue';
 import MobileCashReceiveRecord from './mobile-cash-receive-record.vue';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { WithdrawDetailTab, useWithdrawDetailHook } from '../_hooks/use-withdraw-detail';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
 
 const {
   totalAmount,
@@ -99,13 +102,7 @@ const {
 
 const popupVisible = ref(false);
 
-onMounted(() => {
-  eventBus.$on(appEvents.withdraw.OpenWithdrawDetail, handleWithdrawDetailPopupVisible);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.withdraw.OpenWithdrawDetail, handleWithdrawDetailPopupVisible);
-});
+useEventBusListener(appEvents.withdraw.OpenWithdrawDetail, handleWithdrawDetailPopupVisible);
 
 /** "提现详情" OpenWithdrawDetail 事件钩子 */
 function handleWithdrawDetailPopupVisible(visible: boolean) {
@@ -119,7 +116,7 @@ function handleWithdrawDetailPopupVisible(visible: boolean) {
 
 /** 展示提现申请 */
 function handleShowWithdrawApply() {
-  eventBus.$emit(appEvents.withdraw.OpenWithdrawApply, true);
+  getEmitter().emit(appEvents.withdraw.OpenWithdrawApply, true);
 }
 </script>
 

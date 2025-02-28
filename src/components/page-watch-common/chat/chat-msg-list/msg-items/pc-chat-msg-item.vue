@@ -35,6 +35,8 @@
       <pc-image-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Image" />
       <!-- 课堂激励点赞消息 -->
       <pc-motivation-like-msg v-else-if="chatMsg.msgSource === ChatMsgSource.MotivationLike" />
+      <!-- 特效消息 -->
+      <pc-effect-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Effect" />
     </div>
   </div>
 </template>
@@ -52,6 +54,7 @@ import PcRewardMsg from './reward-msg/pc-reward-msg.vue';
 import PcSpeakMsg from './speak-msg/pc-speak-msg.vue';
 import PcSystemMsg from './system-msg/pc-system-msg.vue';
 import PcMotivationLikeMsg from './motivation-like-msg/pc-motivation-like-msg.vue';
+import PcEffectMsg from './effect-msg/effect-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';

@@ -33,13 +33,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, unref, computed } from 'vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { SubscribeInstance } from './types';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+
+const props = defineProps({
+  /** 是否是其他频道预约 */
+  isOtherLive: PropUtils.bool.def(false),
+});
 
 const visible = ref(false);
 
@@ -59,7 +65,25 @@ function closePopup() {
 // 默认公众号二维码图片
 const defaultPLVWxImg = require('./imgs/apollo-live-qrcode.jpg');
 
-const { wxMpImageUrl, wxBookingTips } = storeDefinitionToRefs(useLiveBookingStore);
+const {
+  wxMpImageUrl: currentWxMpImageUrl,
+  wxBookingTips: currentWxBookingTips,
+  singleOtherChannelBookingConfig,
+} = storeDefinitionToRefs(useLiveBookingStore);
+
+const wxMpImageUrl = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(singleOtherChannelBookingConfig.value?.wxMpImageUrl);
+  }
+  return unref(currentWxMpImageUrl);
+});
+
+const wxBookingTips = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(singleOtherChannelBookingConfig.value?.wxBookingTips);
+  }
+  return unref(currentWxBookingTips);
+});
 
 const instance: SubscribeInstance = {
   openPopup,

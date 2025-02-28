@@ -1,11 +1,8 @@
-import { getWatchCore } from '@/core/watch-sdk';
-import { PolyvWatchCoreEvents } from '@polyv/live-watch-sdk';
+import { PolyvWatchCore, PolyvWatchCoreEvents } from '@polyv/live-watch-sdk';
 
 import { useSyncStoreForWatchCore } from '@/hooks/core/use-sync-store';
 
-export function bindWatchCoreEvents(): void {
-  const watchCore = getWatchCore();
-
+export function bindWatchCoreEvents(watchCore: PolyvWatchCore): void {
   const { syncStoreAfterWatchCoreSetuped } = useSyncStoreForWatchCore();
 
   // 观看核心已安装

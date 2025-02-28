@@ -8,17 +8,19 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents } from '@/app/app-events';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const IarBulletinTop = getIarComponent('BulletinTop');
+
+const { getEmitter, getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 /** 公告 SDK 实例 */
 const announcementSdk = watchCore.interactReceive.getAnnouncement();
 
 function onShowDetail(data: unknown) {
-  eventBus.$emit(appEvents.interaction.OpenAnnouncementDetail, data);
+  getEmitter().emit(appEvents.interaction.OpenAnnouncementDetail, data);
 }
 </script>

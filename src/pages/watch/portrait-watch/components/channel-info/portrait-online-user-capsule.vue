@@ -10,16 +10,23 @@
 
 <script setup lang="ts">
 import { useChatStore } from '@/store/use-chat-store';
+import { useChannelStore } from '@/store/use-channel-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useShortNumber } from '@/hooks/business/use-short-number';
 
 const { shortNumber } = useShortNumber();
 
 const { onlineUserCount } = storeDefinitionToRefs(useChatStore);
+const { onlineListEnabled } = storeDefinitionToRefs(useChannelStore);
+const { getEmitter } = useGlobalInject();
 
 function showInviteRank() {
-  eventBus.$emit(appEvents.portrait.OpenPortraitOnlineUserListPopup);
+  // 需要开启在线列表才展示在线列表弹层
+  if (onlineListEnabled.value) {
+    getEmitter().emit(appEvents.portrait.OpenPortraitOnlineUserListPopup);
+  }
 }
 </script>
 

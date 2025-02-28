@@ -41,12 +41,15 @@ const {
 .c-mobile-product-detail {
   width: 100%;
   height: 100%;
+
+  .plv-iar-product-detail-content {
+    overflow-y: initial !important;
+  }
 }
 
 .c-mobile-product-detail__iar-product-detail {
   width: 100%;
   height: 100%;
-  overflow: auto;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
 }

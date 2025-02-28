@@ -1,15 +1,18 @@
 /* eslint-disable n/handle-callback-err */
 /* eslint-disable promise/prefer-await-to-then */
 import { isWorkWeixin } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { loadWorkWxSdk, loadWxSdk } from '@/plugins/external-lib-loaders/load-wx-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
-import { loadWorkWxSdk, loadWxSdk } from '@/plugins/external-lib-loaders/load-wx-sdk';
 import { LoggerName } from '@polyv/live-watch-sdk';
 
 /** 创建微信 JS-SDK 实例 */
 function createWxInstance() {
+  const watchAppStore = useWatchAppStore();
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   return new Promise<WechatJsSdk.Wx>(resolve => {
     const watchCore = getWatchCore();
     Promise.all([
@@ -81,8 +84,9 @@ function createWxInstance() {
           try {
             wx.miniProgram?.getEnv(res => {
               if (res?.miniprogram === true) {
-                const watchAppStore = useWatchAppStore();
-                watchAppStore.isWxMiniProgram = true;
+                watchAppStore.$patch({
+                  isWxMiniProgram: true,
+                });
               }
             });
           } catch (e) {
@@ -130,6 +134,8 @@ export const useWeixinSdk = () => {
   const channelStore = useChannelStore();
   const weixinStore = useWeixinStore();
 
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
   /** 获取微信 js-sdk */
   const getWeixinSdk = (): Promise<WechatJsSdk.Wx | undefined> => {
     if (!weixinStore.wxSdkFeatureEnabled) {
@@ -140,7 +146,34 @@ export const useWeixinSdk = () => {
     return getWeixinSdkByChannelId(channelStore.channelId);
   };
 
+  /**
+   * 检查 api 是否支持
+   * @param apiName api 名称
+   */
+  function checkJsApi(apiName: WechatJsSdk.JsApiNames): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      (async () => {
+        const watchCore = getWatchCore();
+        const wx = await getWeixinSdk();
+
+        wx?.checkJsApi({
+          jsApiList: [apiName],
+          success: res => {
+            if (res?.checkResult[apiName]) {
+              resolve();
+            } else {
+              const msg = `check js api fail, ${apiName} not support, ${res?.errMsg}`;
+              watchCore.logger.error(LoggerName.Weixin, 'check-js-api-fail', msg);
+              reject(new Error(msg));
+            }
+          },
+        });
+      })();
+    });
+  }
+
   return {
     getWeixinSdk,
+    checkJsApi,
   };
 };

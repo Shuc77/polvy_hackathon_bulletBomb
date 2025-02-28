@@ -1,14 +1,16 @@
 import { ref } from 'vue';
 import { ChatMessageUser, ChatEvents, ChatEventsRelations } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 成员信息 */
 export interface MemberInfo extends ChatMessageUser {}
 
 export const useMemberListHook = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
 
   const viewerStore = useViewerStore();

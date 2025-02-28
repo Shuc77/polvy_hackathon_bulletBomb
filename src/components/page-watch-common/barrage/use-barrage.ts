@@ -1,7 +1,7 @@
 /**
  * @file 弹幕 hook
  */
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlayerStore } from '@/store/use-player-store';
 import { BarrageTarget } from '@polyv/live-watch-sdk';
 import { isRef, onBeforeUnmount, ref, Ref, unref, watch } from 'vue';
@@ -11,6 +11,8 @@ export const useBarrage = (
     containerRef?: HTMLDivElement | Ref<HTMLDivElement | undefined>;
   } = {},
 ) => {
+  const { getWatchCore } = useGlobalInject();
+
   const playerStore = usePlayerStore();
   const containerRef = isRef(options.containerRef)
     ? options.containerRef

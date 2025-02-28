@@ -1,4 +1,5 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import {
   useInteractReceiveStore,
   InteractiveEntranceData,
@@ -8,6 +9,8 @@ import {
  * @hook 互动-答题卡入口
  */
 export const useAnswerCardEntrance = () => {
+  const { getEmitter } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
 
   /** 答题卡入口数据 */
@@ -16,7 +19,7 @@ export const useAnswerCardEntrance = () => {
     name: 'interact.answerCard.title',
     icon: require('./imgs/icon-answer-card.png'),
     icon2: require('./imgs/icon-answer-card_p.png'),
-    onClick: () => eventBus.$emit(appEvents.interaction.OpenAnswerCard, true),
+    onClick: () => getEmitter().emit(appEvents.interaction.OpenAnswerCard, true),
   };
 
   /** 设置答题卡二次入口 */
@@ -40,6 +43,8 @@ export const useAnswerCardEntrance = () => {
  * 快速答题卡入口 hooks
  */
 export const useQuickAnswerCardEntrance = () => {
+  const { getEmitter } = useGlobalInject();
+
   const interactReceiveStore = useInteractReceiveStore();
 
   /** 快速答题卡入口数据 */
@@ -48,7 +53,7 @@ export const useQuickAnswerCardEntrance = () => {
     name: 'interact.answerCard.title',
     icon: require('./imgs/icon-answer-card.png'),
     icon2: require('./imgs/icon-answer-card_p.png'),
-    onClick: () => eventBus.$emit(appEvents.interaction.OpenQuickAnswerCard, true),
+    onClick: () => getEmitter().emit(appEvents.interaction.OpenQuickAnswerCard, true),
   };
 
   /** 设置快速答题卡二次入口 */

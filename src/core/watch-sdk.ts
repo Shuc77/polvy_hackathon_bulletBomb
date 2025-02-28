@@ -22,46 +22,37 @@ import { bindDocEvents } from './bind-sdk-events/bind-doc-events';
 import { bindInviteModuleEvents } from './bind-sdk-events/bind-invite-events';
 import { bindSubtitleEvents } from './bind-sdk-events/bind-subtitle-events';
 import { bindTaskActivityEvents } from './bind-sdk-events/bind-task-activity-events';
-
-/** 观看页核心模块实例 */
-let watchCore: PolyvWatchCore | undefined;
-
-/** 获取观看页核心模块实例 */
-export function getWatchCore(): PolyvWatchCore {
-  if (!watchCore) {
-    throw new Error('watchCore in not define!');
-  }
-  return watchCore;
-}
+import { getPolyvWatchApp, getPolyvWatchAppByUniqueId } from '@/plugins/sdk-inject-helper';
 
 /** 初始化观看页应用对象 */
 export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
-  if (watchCore) {
-    return watchCore;
-  }
   const chatStore = useChatStore();
   const viewerStore = useViewerStore();
 
-  watchCore = createWatchCore(appConfig);
+  const watchCore = createWatchCore(appConfig, { multiEnable: !!appConfig.uniqueId });
+  const plvWatchApp = appConfig.uniqueId
+    ? getPolyvWatchAppByUniqueId(appConfig.uniqueId)
+    : getPolyvWatchApp();
+  plvWatchApp?.saveWatchCore(watchCore);
 
   if (WATCH_SDK_ENV !== SdkLoaderEnv.Prod) {
     setDebugMode(true);
   }
 
   // 绑定 SDK 相关事件的监听回调
-  bindWatchCoreEvents();
-  bindChannelModuleEvents();
-  bindChatModuleEvents();
-  bindConnectMicModuleEvents();
-  bindEnrollModuleEvents();
-  bindInteractReceiveEvents();
-  bindPlayerModuleEvents();
-  bindUserEvents();
-  bindDocEvents();
-  bindInviteModuleEvents();
-  bindSubtitleEvents();
-  bindFinanceRiskEvaluationEvents();
-  bindTaskActivityEvents();
+  bindWatchCoreEvents(watchCore);
+  bindChannelModuleEvents(watchCore);
+  bindChatModuleEvents(watchCore);
+  bindConnectMicModuleEvents(watchCore);
+  bindEnrollModuleEvents(watchCore);
+  bindInteractReceiveEvents(watchCore);
+  bindPlayerModuleEvents(watchCore);
+  bindUserEvents(watchCore);
+  bindDocEvents(watchCore);
+  bindInviteModuleEvents(watchCore);
+  bindSubtitleEvents(watchCore);
+  bindFinanceRiskEvaluationEvents(watchCore);
+  bindTaskActivityEvents(watchCore);
 
   // 设置弹幕添加拦截器，如果当前只看主持人，则不添加弹幕
   watchCore.barrage.setBarrageAddIntercept(data => {
@@ -85,18 +76,15 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
 
 /** 销毁观看页应用对象 */
 export function destroyWatchSdk() {
-  destroyWatchCore();
-  watchCore = undefined;
-}
+  destroyWatchCore(getPolyvWatchApp()?.getWatchCore());
 
-export const getSocket = () => {
-  const watchCore = getWatchCore();
-  return watchCore.chat.getSocket(false);
-};
+  const polyvWatchApp = getPolyvWatchApp();
+  polyvWatchApp?.removeWatchCore();
+}
 
 window.debugWatchSdk = () => {
   // @PLV-WARN
-  window.watchCore = watchCore;
+  window.watchCore = getPolyvWatchApp()?.getWatchCore();
   setDebugMode(true);
-  console.info(watchCore);
+  console.info(window.watchCore);
 };

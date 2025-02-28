@@ -1,16 +1,16 @@
-import { ErrorVerifyType, redirectToErrorVerify } from '@/hooks/core/use-error-verify';
+import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useChatStore } from '@/store/use-chat-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { ChatEvents } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '../watch-sdk';
+import { ChatEvents, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
 /**
  * 监听聊天室模块事件
  */
-export function bindChatModuleEvents(): void {
-  const watchCore = getWatchCore();
+export function bindChatModuleEvents(watchCore: PolyvWatchCore): void {
   const watchAppStore = useWatchAppStore();
   const chatStore = useChatStore();
+
+  const { redirectToErrorVerify } = useErrorVerify();
 
   // 聊天室连接失败
   watchCore.chat.eventEmitter.on(ChatEvents.ChatConnectFail, () => {

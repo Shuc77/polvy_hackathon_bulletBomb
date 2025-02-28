@@ -1,42 +1,46 @@
 import { computed, ref, reactive, watchEffect, nextTick } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   FinanceRiskConfirmAgreement,
   FinanceRiskConfirmConditionType,
   FinanceRiskConfirmInfo,
 } from '@polyv/live-watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useFinanceStore } from '@/store/use-finance-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { debounce } from 'lodash-es';
 import { translate } from '@/assets/lang';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export enum RiskConfirmLetterRenderMode {
   /** 默认展示 */
-  DEFAULT = 'default',
+  Default = 'default',
   /** 预览协议 */
-  PREVIEW_AGREEMENT = 'previewAgreement',
+  PreviewAgreement = 'previewAgreement',
   /** "不同意"的提示 */
-  DISAGREE_TIPS = 'disagreeTips',
+  DisagreeTips = 'disagreeTips',
 }
 
 enum RiskConfirmAgreeStatus {
-  DEFAULT = 0,
-  AGREE = 1,
-  DISAGREE = 2,
+  Default = 0,
+  Agree = 1,
+  Disagree = 2,
 }
 
 export const useRiskConfirmLetterHook = () => {
   const watchAppStore = useWatchAppStore();
   const financeStore = useFinanceStore();
 
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { surplusTime, startCountDown } = useSecondCountDown();
 
   const dialogVisible = ref(false);
 
   /** 风险确认同意状态 */
-  const riskConfirmAgreeStatus = ref(RiskConfirmAgreeStatus.DEFAULT);
+  const riskConfirmAgreeStatus = ref(RiskConfirmAgreeStatus.Default);
 
   /** 观众风险确认信息 */
   const viewerRiskConfirmInfo = ref<FinanceRiskConfirmInfo | null>(null);
@@ -50,18 +54,18 @@ export const useRiskConfirmLetterHook = () => {
   /** 风险确认函-渲染模式 */
   const riskConfirmLetterRenderMode = computed(() => {
     if (curPreviewAgreement.src) {
-      return RiskConfirmLetterRenderMode.PREVIEW_AGREEMENT;
+      return RiskConfirmLetterRenderMode.PreviewAgreement;
     }
 
-    if (riskConfirmAgreeStatus.value === RiskConfirmAgreeStatus.DISAGREE) {
-      return RiskConfirmLetterRenderMode.DISAGREE_TIPS;
+    if (riskConfirmAgreeStatus.value === RiskConfirmAgreeStatus.Disagree) {
+      return RiskConfirmLetterRenderMode.DisagreeTips;
     }
 
-    return RiskConfirmLetterRenderMode.DEFAULT;
+    return RiskConfirmLetterRenderMode.Default;
   });
 
   const contentWrapperStyle = computed(() => {
-    if (riskConfirmLetterRenderMode.value === RiskConfirmLetterRenderMode.PREVIEW_AGREEMENT) {
+    if (riskConfirmLetterRenderMode.value === RiskConfirmLetterRenderMode.PreviewAgreement) {
       return {
         minHeight: '400px',
       };
@@ -160,7 +164,7 @@ export const useRiskConfirmLetterHook = () => {
 
     if (result.success) {
       dialogVisible.value = false;
-      riskConfirmAgreeStatus.value = RiskConfirmAgreeStatus.AGREE;
+      riskConfirmAgreeStatus.value = RiskConfirmAgreeStatus.Agree;
 
       financeStore.updateRiskConfirm({
         riskConfirmStatus: true,
@@ -174,7 +178,7 @@ export const useRiskConfirmLetterHook = () => {
 
   /** 不同意 */
   function handleDisagreeRiskConfirm() {
-    riskConfirmAgreeStatus.value = RiskConfirmAgreeStatus.DISAGREE;
+    riskConfirmAgreeStatus.value = RiskConfirmAgreeStatus.Disagree;
   }
 
   /** 重置风险确认函渲染模式 */
@@ -182,7 +186,7 @@ export const useRiskConfirmLetterHook = () => {
     curPreviewAgreement.title = '';
     curPreviewAgreement.src = '';
 
-    riskConfirmAgreeStatus.value = RiskConfirmAgreeStatus.DEFAULT;
+    riskConfirmAgreeStatus.value = RiskConfirmAgreeStatus.Default;
   }
 
   /**

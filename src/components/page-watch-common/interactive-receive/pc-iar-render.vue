@@ -35,7 +35,7 @@ import { onMounted } from 'vue';
 import PcAnnouncementDialog from './announcement/pc-announcement-dialog.vue';
 import PcAnswerCardDialog from './answer-card/pc-answer-card-dialog.vue';
 import PcQuickAnswerCardDialog from './answer-card/pc-quick-answer-card-dialog.vue';
-import PcCheckInDialog from './check-in/pc-check-in-dialog.vue';
+import PcCheckInDialog from '../interactive-receive-v2/check-in-v2/pc-check-in-dialog.vue';
 import PcFeedBackDialog from './feed-back/pc-feed-back-dialog.vue';
 import PcLotteryAnimation from './lottery/pc-lottery-animation.vue';
 import PcLotteryResultDialog from './lottery/pc-lottery-result-dialog.vue';
@@ -53,7 +53,7 @@ const { announcementFunctionVisible, interactSetting } =
 
 onMounted(() => {
   import(
-    '@/components/page-watch-common/interactive-receive/_style/cover-pc-interact-receive.scss'
+    /* webpackChunkName: "cover-pc-interact-receive" */ '@/components/page-watch-common/interactive-receive/_style/cover-pc-interact-receive.scss'
   );
 });
 </script>

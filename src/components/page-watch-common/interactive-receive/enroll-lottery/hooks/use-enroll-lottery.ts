@@ -1,11 +1,13 @@
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { ref } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动-抽奖-报名抽奖
  */
 export const useEnrollLottery = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   /** 报名抽奖实例 */
   const enrollLotterySdk = watchCore.interactReceive.getEnrollLottery();
@@ -17,13 +19,7 @@ export const useEnrollLottery = () => {
     dialogVisible.value = !!visible;
   }
 
-  onMounted(() => {
-    eventBus.$on(appEvents.interaction.OpenEnrollLottery, updateDialogVisible);
-  });
-
-  onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenEnrollLottery, updateDialogVisible);
-  });
+  useEventBusListener(appEvents.interaction.OpenEnrollLottery, updateDialogVisible);
 
   return {
     enrollLotterySdk,

@@ -37,6 +37,8 @@
       <mobile-image-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Image" />
       <!-- 课堂激励点赞消息 -->
       <mobile-motivation-like-msg v-else-if="chatMsg.msgSource === ChatMsgSource.MotivationLike" />
+      <!-- 特效消息 -->
+      <mobile-effect-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Effect" />
     </div>
   </div>
 </template>
@@ -53,6 +55,7 @@ import MobileRewardMsg from './reward-msg/mobile-reward-msg.vue';
 import MobileEmotionMsg from './emotion-msg/mobile-emotion-msg.vue';
 import MobileImageMsg from './image-msg/mobile-image-msg.vue';
 import MobileMotivationLikeMsg from './motivation-like-msg/mobile-motivation-like-msg.vue';
+import MobileEffectMsg from './effect-msg/effect-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

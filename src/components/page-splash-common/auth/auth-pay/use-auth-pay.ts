@@ -2,18 +2,22 @@ import { useWeixinAuthorize } from '@/hooks/platform/use-weixin/use-weixin-autho
 import { useWeixinPay } from '@/hooks/platform/use-weixin/use-weixin-pay';
 import { translate } from '@/assets/lang';
 import { isWeixin } from '@/assets/utils/browser';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { AuthPayFailReason, AuthSettingItemPay, AuthType } from '@polyv/live-watch-sdk';
 import { computed, onBeforeUnmount, ref, unref, watch } from 'vue';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon } from '../hooks/use-auth-common';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * PC 端付费观看 hook
  */
 export const useAuthPayPc = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const weixinStore = useWeixinStore();
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
   const { authItem } = useAuthButtonInject<AuthSettingItemPay>(onClickAuthButton);
@@ -34,6 +38,7 @@ export const useAuthPayPc = () => {
   /** 打开支付弹层 */
   function openPayDialog() {
     const watchCore = getWatchCore();
+
     watchCore.auth.closeCheckWechatPayStatusPolling();
     dialogType.value = 'pay';
     dialogVisible.value = true;
@@ -167,6 +172,10 @@ export const useAuthPayPc = () => {
  * 移动端付费观看 hook
  */
 export const useAuthPayMobile = () => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { handleAuthVerifySuccess } = useAuthCommon();
   const { chooseWXPay } = useWeixinPay();
   const { redirectWeixinAuthorize } = useWeixinAuthorize();

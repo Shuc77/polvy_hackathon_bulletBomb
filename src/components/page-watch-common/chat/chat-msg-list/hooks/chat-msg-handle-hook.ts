@@ -1,6 +1,7 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMessageEffect } from '@/components/page-watch-common/message-effect/hooks/use-message-effect';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { ChatEvents, ChatMsgType } from '@polyv/live-watch-sdk';
 import { isUndefined } from 'lodash-es';
@@ -12,6 +13,8 @@ import { ChatMsgListHookOptions } from './types';
  * 聊天室消息处理 hook
  */
 export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const chatMsgStore = useChatMsgStore();
   const { sendSystemMsg, sendSpeakMsg } = useSendMsg();
@@ -55,6 +58,8 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
   onBeforeUnmount(() => {
     watchCore.chat.eventEmitter.off(ChatEvents.ReplaceChatMessage, onReplaceChatMessage);
   });
+
+  useEventBusListener(appEvents.chat.ReplaceChatMessage, onReplaceChatMessage);
 
   /** -------------- 处理清空聊天室 -------------- */
   function onClearMsgHistory() {
@@ -112,4 +117,8 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
     });
   }
   useEventBusListener(appEvents.chat.SendMessageToChat, onSendMessageToChat);
+
+  /** -------------- 特效消息处理 -------------- */
+
+  useMessageEffect();
 };

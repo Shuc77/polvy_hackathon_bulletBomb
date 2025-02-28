@@ -2,9 +2,8 @@
  * @file 播放器 hook
  */
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { getImgSize } from '@/assets/utils/image';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
@@ -20,6 +19,8 @@ import { usePlayerEvent } from './use-player-event';
 import { LangType } from '@/assets/lang/lang-enum';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getForceAutoResult } from '@/assets/utils/video/force-autoplay';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { debounce } from 'lodash-es';
 
 export type InitPlayerOptions = Omit<SetupPlayerOptions, 'container'>;
 
@@ -30,6 +31,8 @@ export const usePlayerMain = ({
 }: {
   initPlayerOptions?: InitPlayerOptionsType;
 } = {}) => {
+  const { getWatchCore, getEmitter } = useGlobalInject();
+
   const { bindPlayerEvents, unbindPlayerEvents } = usePlayerEvent();
 
   const channelStore = useChannelStore();
@@ -84,8 +87,8 @@ export const usePlayerMain = ({
         playbackStore.syncPlaybackStore();
         await playbackStore.initCurrentPlaybackTarget();
         // 聊天重放需要重新渲染聊天列表
-        if (playbackStore.chatReplayEnabled) {
-          eventBus.$emit(appEvents.chat.ResetUpChatMsgList);
+        if (playbackStore.chatMsgReplayEnabled) {
+          getEmitter().emit(appEvents.chat.ResetUpChatMsgList);
         }
         __hadForceChangePlayback = true;
         return getPlayerPlaybackOptions();
@@ -137,7 +140,7 @@ export const usePlayerMain = ({
   }
 
   /** 初始化播放器 */
-  async function initPlayer(): Promise<void> {
+  const initPlayer: () => void = debounce(async () => {
     const container = unref(playerContainer);
     if (!container) {
       return;
@@ -158,7 +161,7 @@ export const usePlayerMain = ({
     let playerOptions: SetupPlayerOptions = {
       container,
       lowLatency: playerStore.isLowLatency,
-      language: langStore.currentLang === LangType.Chinese ? 0 : 1,
+      language: langStore.currentLang === LangType.ZH_CN ? 0 : 1,
       streamTrackKey: playerStore.streamTrackKey,
       languageStreamEnabled: true,
       autoChangePlayback: false, // @PLV-WARN 默认不要更改该选项配置，如果业务上需要直播结束后自动切换回放，请先咨询保利威工作人员
@@ -201,7 +204,7 @@ export const usePlayerMain = ({
         isPlaybacking: true,
       });
     }
-  }
+  }, 300);
 
   /** 销毁播放器 */
   function destroyPlayer(): void {

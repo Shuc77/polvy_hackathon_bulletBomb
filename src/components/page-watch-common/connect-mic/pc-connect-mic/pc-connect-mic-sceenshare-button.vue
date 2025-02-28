@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import {
@@ -55,14 +55,17 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import PcScreenShareSetting from './pc-connect-mic-sceenshare-setting.vue';
 import PcScreenShareTips from './pc-connect-mic-screenshare-tips.vue';
 import { useConnectMicScreenShare } from '../hooks/use-connect-mic-screen-share';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { screenShareInfo } = storeDefinitionToRefs(useConnectMicStore);
 
 const { onClickStartScreenShare, stopScreenShare } = useConnectMicScreenShare();
 
+const { getEmitter } = useGlobalInject();
+
 /** 点击设置 */
 function onClickSetting() {
-  eventBus.$emit(appEvents.connectMic.OpenScreenShareSetting, true);
+  getEmitter().emit(appEvents.connectMic.OpenScreenShareSetting, true);
 }
 </script>
 

@@ -2,7 +2,7 @@ import { translate } from '@/assets/lang';
 import { isIframe } from '@/assets/utils/browser';
 import { copyText } from '@/assets/utils/copy';
 import { downloadFile, getFileSuffix } from '@/assets/utils/file';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatMsgFileType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onMounted, ref, unref } from 'vue';
@@ -10,6 +10,9 @@ import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 
 export const useFileMsg = () => {
   const { chatMsg } = useChatMsgDataInject<ChatMsgFileType>();
+
+  const { toast } = useToastManager();
+
   const watchAppStore = useWatchAppStore();
 
   /** 文件地址 */

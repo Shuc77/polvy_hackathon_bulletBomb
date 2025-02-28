@@ -76,18 +76,24 @@
 </template>
 
 <script setup lang="ts">
-import { eventBus, appEvents, useEventBusListener } from '@/app/app-events';
-import { resizeOSSImg } from '@/assets/utils/image';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import MiniStatusTag from '@/components/common-business/status-tag/mini-status-tag.vue';
 import { MobileIconArrowDown, MobileIconArrowUp } from '@/components/component-icons/mobile/map';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { nextTick, ref, watch } from 'vue';
 import { useMultiMeeting } from '../hooks/use-multi-meeting';
 
+const { resizeOSSImg } = useResizeOssImage();
+
 const { multiMeetingList, multiMeetingTotal, currentMultiMeetingSeat } =
   storeDefinitionToRefs(useMultiMeetingStore);
+
+const { getEmitter } = useGlobalInject();
 
 const {
   visible: listVisible,
@@ -95,16 +101,18 @@ const {
   close: closeList,
 } = useSimpleVisible(true, {
   showCallback: () => {
-    eventBus.$emit(appEvents.global.MobileLayoutComputedSize);
+    getEmitter().emit(appEvents.global.MobileLayoutComputedSize);
   },
   hideCallback: () => {
-    eventBus.$emit(appEvents.global.MobileLayoutComputedSize);
+    getEmitter().emit(appEvents.global.MobileLayoutComputedSize);
   },
 });
 
 useEventBusListener(appEvents.global.MsgInputFocus, closeList);
 
 const { isShowLiveIcon } = useMultiMeeting();
+
+const { scrollIntoView } = useMultiPolyvWatchApp();
 
 const meetingRef = ref<HTMLElement[]>([]);
 
@@ -120,7 +128,7 @@ watch(
     multiMeetingList.value.forEach((item, index) => {
       if (item.isCurrentChannel) {
         const elem = elems[index];
-        elem.scrollIntoView({
+        scrollIntoView(elem, {
           block: 'center',
           inline: 'center',
         });

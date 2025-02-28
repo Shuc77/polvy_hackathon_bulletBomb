@@ -1,4 +1,3 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   LiveStatus,
   MultiMeetingItem,
@@ -8,6 +7,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ref, Ref, unref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface MultiMeetingStoreState {
   /** 分会场开关 */
@@ -40,6 +40,7 @@ export interface MultiMeetingStore extends MultiMeetingStoreState, MultiMeetingS
 export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStore>(
   'multiMeeting',
   () => {
+    const watchAppStore = useWatchAppStore();
     const __multiMeetingSetting = PlvMultiMeetingModule.generateDefaultMultiMeetingSetting();
 
     /** 分会场开关 */
@@ -75,7 +76,7 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
 
     /** 刷新分会场直播状态 */
     async function refreshMultiMeetingLiveStatus(): Promise<void> {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const statusResult = await watchCore.multiMeeting.getMultiMeetingLiveStatus();
       const newList = unref(multiMeetingList).map<MultiMeetingItem>(item => {
         const statusItem = statusResult.find(statusItem => statusItem.channelId === item.channelId);
@@ -89,7 +90,7 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
     }
 
     function syncMultiMeetingStore() {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       const multiSetting = watchCore.multiMeeting.getMultiMeetingSetting();
 
       multiMeetingEnabled.value = multiSetting.multiMeetingEnabled;

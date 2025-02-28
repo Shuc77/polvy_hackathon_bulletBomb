@@ -2,10 +2,12 @@
  * @file 微信 store
  */
 import { isWeixin } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { PlvWeixinModule, WeixinPayType, WxShareInfo, YN } from '@polyv/live-watch-sdk';
+import { ynToBool } from '@utils-ts/boolean';
 import { defineStore } from 'pinia';
 import { Ref, ref } from 'vue';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface WeixinStoreState {
   /** 是否使用微信 SDK 功能 */
@@ -35,8 +37,12 @@ export interface WeixinStoreAction {
 export interface WeixinStore extends WeixinStoreState, WeixinStoreAction {}
 
 export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () => {
+  const watchAppStore = useWatchAppStore();
+
+  const { paramGetter } = useQueryParams();
+
   /** 是否使用微信 SDK 功能 */
-  const wxSdkFeatureEnabled = ref(true);
+  const wxSdkFeatureEnabled = ref(ynToBool(paramGetter().wxSdkFeatureEnabled(), YN.Y));
 
   /** 是否进入微信快照页模式 */
   const isWeixinSnapshotPageMode = ref(false);
@@ -73,7 +79,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   const weixinResetNickEnabled = ref(__weixinConfig.weixinResetNickEnabled);
 
   function syncWeixinStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     isWeixinSnapshotPageMode.value = isWeixin && watchCore.weixin.isWeixinSnapshotPageMode();
     weixinAuthorized.value = watchCore.weixin.isWeixinAuthorized();

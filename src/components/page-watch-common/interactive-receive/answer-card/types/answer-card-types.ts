@@ -3,11 +3,11 @@ import { IarAnswerQuestionTypes } from '@polyv/live-watch-sdk';
 /** 所有答题卡状态 */
 export enum AllAnswerCardStatus {
   /** 正在显示答题中的问题 */
-  isShowQuestion = 'isShowQuestion',
+  IsShowQuestion = 'isShowQuestion',
   /** 正在显示问卷结果 */
-  isShowResult = 'isShowResult',
+  IsShowResult = 'isShowResult',
   /** 正在显示问卷答案 */
-  isShowAnswer = 'isShowAnswer',
+  IsShowAnswer = 'isShowAnswer',
 }
 
 export interface IarAnswerCardInstance {

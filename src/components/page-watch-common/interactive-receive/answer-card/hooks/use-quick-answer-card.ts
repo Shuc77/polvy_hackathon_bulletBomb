@@ -1,13 +1,13 @@
 import { computed, onBeforeMount, onBeforeUnmount, ref } from 'vue';
-import { getWatchCore } from '@/core/watch-sdk';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { translate } from '@/assets/lang';
 
 import { IarAnswerQuestionTypes } from '@polyv/live-watch-sdk';
 import { QuestionData } from '../types/answer-card-types';
 import { useQuickAnswerCardEntrance } from './use-answer-card-entrance';
-import { useWebviewStore } from '@/store/use-webview-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
 /**
  * @hook 互动-答题卡-快速问答
@@ -16,7 +16,9 @@ export const useQuickAnswerCard = () => {
   const { setQuickAnswerCardEntrance, removeQuickAnswerCardEntrance } =
     useQuickAnswerCardEntrance();
 
-  const webviewStore = useWebviewStore();
+  const { getWatchCore } = useGlobalInject();
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
   const watchCore = getWatchCore();
   /** 答题卡 SDK 实例 */
@@ -39,10 +41,10 @@ export const useQuickAnswerCard = () => {
 
     // 显示答题中的状态，设置二次入口
     if (visible) {
-      webviewStore.toLockDrag('quick-answer-card');
+      toLockFeedDrag('quick-answer-card');
       setQuickAnswerCardEntrance();
     } else {
-      webviewStore.toUnlockDrag();
+      toUnlockFeedDrag();
     }
 
     if (question && question.type) {
@@ -55,13 +57,13 @@ export const useQuickAnswerCard = () => {
     removeQuickAnswerCardEntrance();
   };
 
+  useEventBusListener(appEvents.interaction.OpenQuickAnswerCard, setQuickAnswerCardVisible);
+
   onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenQuickAnswerCard, setQuickAnswerCardVisible);
     answerCardSdk.on(answerCardSdk.events.STOP_TEST_QUESTION, removeQuickAnswerCardEntrance);
   });
 
   onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenQuickAnswerCard, setQuickAnswerCardVisible);
     answerCardSdk.off(answerCardSdk.events.STOP_TEST_QUESTION, removeQuickAnswerCardEntrance);
   });
 

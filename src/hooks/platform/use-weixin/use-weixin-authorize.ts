@@ -2,7 +2,7 @@
  * @file 微信授权 hook
  */
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { computed } from 'vue';
 
 export interface WxAuthorizeOptions {
@@ -24,6 +24,7 @@ export interface WxAuthorizeParams {
  * @hook 微信授权
  */
 export function useWeixinAuthorize() {
+  const { getWatchCore } = useMultiPolyvWatchApp();
   const watchCore = getWatchCore();
 
   /** 能否进行微信授权 */
@@ -63,7 +64,6 @@ export function useWeixinAuthorize() {
    * 跳转微信授权地址
    */
   async function redirectWeixinAuthorize(authorizeOptions: WxAuthorizeOptions = {}) {
-    const watchCore = getWatchCore();
     await watchCore.weixin.redirectWeixinAuthorizeUrl({
       snsApiBase: authorizeOptions.snsApiBase,
     });
@@ -81,6 +81,7 @@ export function useWeixinAuthorize() {
  * 企业微信授权 hook
  */
 export function useWorkWeixinAuthorize() {
+  const { getWatchCore } = useMultiPolyvWatchApp();
   const watchCore = getWatchCore();
 
   /** 能否进行企业微信授权 */
@@ -103,7 +104,6 @@ export function useWorkWeixinAuthorize() {
    * 跳转企业微信授权地址
    */
   async function redirectWorkWeixinAuthorize(authorizeOptions: WxAuthorizeOptions = {}) {
-    const watchCore = getWatchCore();
     await watchCore.weixin.redirectWorkWeixinAuthorizeUrl({
       snsApiBase: authorizeOptions.snsApiBase,
     });

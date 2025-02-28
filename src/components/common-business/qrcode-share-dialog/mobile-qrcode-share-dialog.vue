@@ -30,10 +30,18 @@ import { useShareStore } from '@/store/use-share-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import MobileDialog from '@/components/common-base/dialog/mobile-dialog/mobile-dialog.vue';
 import { useQrcodeShareDialog } from './use-qrcode-share-dialog';
+import { useCopyText } from '@/assets/utils/copy';
 
-const { shareQrCodeUrl } = storeDefinitionToRefs(useShareStore);
-const { copyShareWatchUrl } = useShareStore();
+const { shareQrCodeUrl, shareWatchUrl } = storeDefinitionToRefs(useShareStore);
 const { visible } = useQrcodeShareDialog();
+
+const { copyText, toastCopySuccess } = useCopyText();
+
+/** 复制分享的观看页地址 */
+async function copyShareWatchUrl() {
+  await copyText(shareWatchUrl.value);
+  toastCopySuccess();
+}
 </script>
 
 <style lang="scss">

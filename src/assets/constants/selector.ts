@@ -13,3 +13,6 @@ export const PC_LAYOUT_ASIDE_WRAP = '.c-pc-watch-layout__main__right';
 
 /** 移动端直播播放器内部 Wrap 选择器 */
 export const MOBILE_LIVE_PLAYER_INNER_WRAP = '.plwrap';
+
+/** 移动端文档层内部选择器 */
+export const MOBILE_DOC_PPT_INNER = '#pptContentForH5Out';

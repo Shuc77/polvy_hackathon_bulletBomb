@@ -7,6 +7,7 @@
       'c-mobile-live-booking-button--splash': buttonPosition === 'splash',
       'c-mobile-live-booking-button--player': buttonPosition === 'player',
       'c-mobile-live-booking-button--corner': buttonPosition === 'corner',
+      'c-mobile-live-booking-button--other-live': isOtherLive,
     }"
   >
     <normal-button
@@ -18,13 +19,17 @@
     >
       <div class="c-mobile-live-booking-button__button__top">
         <mobile-icon-booking
-          v-if="!isLiveBooking"
+          v-if="!isLiveBooking && !isOtherLive"
+          class="c-mobile-live-booking-button__button__top__icon"
+        />
+        <mobile-icon-bell
+          v-if="isOtherLive"
           class="c-mobile-live-booking-button__button__top__icon"
         />
         <span>{{ buttonText }}</span>
       </div>
       <div
-        v-if="isShowBookingCount"
+        v-if="isShowBookingCount && !isOtherLive"
         class="c-mobile-live-booking-button__button__bottom"
       >
         {{ wxBookingCount }} {{ $lang('base.people') }}
@@ -32,10 +37,16 @@
     </normal-button>
 
     <!-- 短信预约表单弹层 -->
-    <mobile-live-booking-form-popup ref="bookingFormRef" />
+    <mobile-live-booking-form-popup
+      ref="bookingFormRef"
+      :channel-id="channelId"
+    />
 
     <!-- 关注公众号弹层 -->
-    <mobile-live-booking-subscribe-popup ref="subscribeRef" />
+    <mobile-live-booking-subscribe-popup
+      ref="subscribeRef"
+      :is-other-live="isOtherLive"
+    />
 
     <!-- 取消微信预约提示弹层 -->
     <mobile-message-box
@@ -54,7 +65,7 @@ import { translate } from '@/assets/lang';
 import { computed, ref, unref } from 'vue';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
 
-import { MobileIconBooking } from '@/components/component-icons/mobile/map';
+import { MobileIconBooking, MobileIconBell } from '@/components/component-icons/mobile/map';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import MobileLiveBookingFormPopup from './mobile-live-booking-form-popup.vue';
@@ -75,14 +86,47 @@ const props = defineProps({
   buttonPosition: PropUtils.oneOf(['splash', 'player', 'corner'] as const).def('splash'),
   /** 按钮类型 */
   buttonType: PropUtils.enum<ButtonType>().def(ButtonType.Primary),
+  /** 是否是其他直播频道预约 */
+  isOtherLive: PropUtils.bool.def(false),
+  /** 其他频道预约的 channelId */
+  channelId: PropUtils.string.def(''),
 });
 
 const { buttonPosition } = useProps(props);
 
 const { subscribeRef, wxSubmitLiveBooking, wxCancelLiveBooking } = useLiveBookingWx();
 
-const { isLiveBooking, wxBookingCount, useWxBooking, wxBookingCountVisible } =
-  storeDefinitionToRefs(useLiveBookingStore);
+const {
+  isLiveBooking: isNormalLiveBooking,
+  wxBookingCount: normalWxBookingCount,
+  useWxBooking: normalUseWxBooking,
+  useSingleWxBooking,
+  wxBookingCountVisible,
+  isOtherLiveBooking,
+  singleOtherChannelBookingConfig,
+} = storeDefinitionToRefs(useLiveBookingStore);
+
+const isLiveBooking = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(isOtherLiveBooking);
+  }
+  return unref(isNormalLiveBooking);
+});
+
+const useWxBooking = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(useSingleWxBooking);
+  }
+
+  return unref(normalUseWxBooking);
+});
+
+const wxBookingCount = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(singleOtherChannelBookingConfig.value?.wxBookingCount);
+  }
+  return unref(normalWxBookingCount);
+});
 
 /** 按钮尺寸 */
 const buttonSize = computed(() => {
@@ -144,10 +188,10 @@ async function onClickWxButton() {
   if (unref(isLiveBooking)) {
     const res = await bookingCancelTipsRef.value?.$confirm();
     if (res) {
-      wxCancelLiveBooking();
+      wxCancelLiveBooking({ otherChannelId: props.channelId });
     }
   } else {
-    wxSubmitLiveBooking();
+    wxSubmitLiveBooking({ otherChannelId: props.channelId });
   }
 }
 
@@ -215,6 +259,22 @@ async function onClickSmsButton() {
   .c-mobile-live-booking-button__button {
     width: 60px;
     white-space: nowrap;
+  }
+}
+
+.c-mobile-live-booking-button--other-live {
+  .c-mobile-live-booking-button__button {
+    width: auto;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 25px;
+    color: #3f76fc;
+    background-color: transparent !important;
+  }
+
+  .c-mobile-live-booking-button__button__top__icon {
+    font-size: 20px !important;
+    line-height: 15px;
   }
 }
 </style>

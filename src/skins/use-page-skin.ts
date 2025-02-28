@@ -3,9 +3,10 @@ import { watch } from 'vue';
 import { ChannelWatchPageSkin, MobileWatchLayout } from '@polyv/live-watch-sdk';
 
 import { isMobile } from '@/assets/utils/browser';
-import { paramGetter } from '@/hooks/core/use-query-params';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /**
  * 页面皮肤 hook
@@ -14,13 +15,18 @@ export const usePageSkin = () => {
   const layoutStore = useLayoutStore();
   const themeStore = useThemeStore();
 
+  const { getAppRootElement, getPolyvWatchApp } = useMultiPolyvWatchApp();
+  const { paramGetter } = useQueryParams({
+    getPolyvWatchAppLoader: () => () => getPolyvWatchApp(),
+  });
+
   /**
    * 初始化观看页多皮肤
    */
   async function initPageSkin(): Promise<void> {
     let pageSkin = themeStore.pageSkin;
 
-    const querySkin = paramGetter.skin();
+    const querySkin = paramGetter().skin();
     if (querySkin) {
       pageSkin = querySkin;
     }
@@ -176,28 +182,47 @@ export const usePageSkin = () => {
     }
   }
 
+  /**
+   * 获取皮肤类名
+   */
+  function getSkinClassName(pageSkin?: ChannelWatchPageSkin) {
+    const __pageSkin = pageSkin || themeStore.pageSkin;
+    let skinClassPrefix = 'pws-skin-';
+    if (
+      layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait &&
+      __pageSkin === ChannelWatchPageSkin.Black
+    ) {
+      const mobileSkin = skinClassPrefix + __pageSkin;
+      const nextPrefix = skinClassPrefix + 'portrait-';
+      skinClassPrefix = mobileSkin + ' ' + nextPrefix;
+    }
+
+    return skinClassPrefix + __pageSkin;
+  }
+
   // 设置页面的 class
   watch(
     () => themeStore.pageSkin,
     (pageSkin, oldPageSkin) => {
-      const skinClassPrefix = 'pws-skin-';
-      const $document = $(document.documentElement);
+      const $document = $(getAppRootElement());
 
       if (oldPageSkin) {
-        const oldPageSkinClass = `${skinClassPrefix}${oldPageSkin}`;
+        const oldPageSkinClass = getSkinClassName(oldPageSkin);
         if ($document.hasClass(oldPageSkinClass)) {
           $document.removeClass(oldPageSkinClass);
         }
       }
 
       if (pageSkin) {
-        const pageSkinClass = `${skinClassPrefix}${pageSkin}`;
+        const pageSkinClass = getSkinClassName(pageSkin);
         $document.addClass(pageSkinClass);
       }
     },
   );
 
   return {
+    getSkinClassName,
+
     initPageSkin,
     setPageSkin,
     importPageSkin,

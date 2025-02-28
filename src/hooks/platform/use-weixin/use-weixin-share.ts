@@ -1,6 +1,7 @@
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { appendUrl, fitProtocol } from '@/assets/utils/url';
-import { getWatchCore } from '@/core/watch-sdk';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useShareStore } from '@/store/use-share-store';
@@ -20,8 +21,10 @@ interface WxShareUrlParams {
   invitePosterId?: string;
   /** 回放分享-回放 Id */
   playBackVid?: string;
-  /** 一客一码邀请 Id */
+  /** 一客一码--销售邀请的客户id */
   inviteCustomerId?: string;
+  /** 邀请观看--分销员/邀请人id */
+  inviteWatchSaleId?: string;
 }
 
 /**
@@ -30,14 +33,15 @@ interface WxShareUrlParams {
 export const useWeixinShare = () => {
   const { getWeixinSdk } = useWeixinSdk();
 
-  const watchCore = getWatchCore();
-
   const themeStore = useThemeStore();
   const shareStore = useShareStore();
   const weixinStore = useWeixinStore();
   const inviteStore = useInviteStore();
   const playbackStore = usePlaybackStore();
   const watchAppStore = useWatchAppStore();
+
+  const { getWatchCore } = useMultiPolyvWatchApp();
+  const watchCore = getWatchCore();
 
   /** 微信分享地址上需要携带的参数 */
   const wxShareUrlParams = computed(() => {
@@ -56,6 +60,11 @@ export const useWeixinShare = () => {
     // 一客一码--销售邀请的客户id
     if (shareStore.saleInviteCustomerId) {
       params.inviteCustomerId = shareStore.saleInviteCustomerId;
+    }
+
+    // 邀请观看--分销员/邀请人id
+    if (shareStore.inviteWatchSaleId) {
+      params.inviteWatchSaleId = shareStore.inviteWatchSaleId;
     }
 
     return params;
@@ -110,6 +119,8 @@ export const useWeixinShare = () => {
    * 更新微信分享配置
    */
   async function updateWxShareConfig(shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption) {
+    if (isBuildForFeedMainMode()) return;
+
     const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
 
@@ -153,6 +164,8 @@ export const useWeixinShare = () => {
   async function updateWorkWxShareConfig(
     shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption,
   ) {
+    if (isBuildForFeedMainMode()) return;
+
     const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
 

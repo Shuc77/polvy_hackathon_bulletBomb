@@ -1,5 +1,5 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { EmotionImageData } from '@polyv/live-watch-sdk';
 import { onMounted, ref } from 'vue';
 import { useSendMsg } from '../../chat/chat-msg-list/hooks/send-msg-hook';
@@ -12,6 +12,8 @@ export const emotionImagePickerEmits = () => ({
 export const useEmotionImagePicker = (options: {
   emit: VueEmit<typeof emotionImagePickerEmits>;
 }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { sendEmotionImageMsg } = useSendMsg();
 
   const { emit } = options;
@@ -31,7 +33,7 @@ export const useEmotionImagePicker = (options: {
 
   onMounted(async () => {
     const watchCore = getWatchCore();
-    const data = await watchCore.chat.getEmotionImages();
+    const data = await watchCore.emotion.getEmotionImages();
     emotionList.value = data;
   });
 

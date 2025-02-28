@@ -6,6 +6,9 @@
       'c-portrait-boundary-wrap--right': seat === 'right',
       'c-portrait-boundary-wrap--fullscreen': portraitPlayerIsPageFullscreen,
     }"
+    :style="{
+      height: `${portraitWatchLayoutHeight}px`,
+    }"
   >
     <div class="c-portrait-boundary-wrap__content">
       <slot></slot>
@@ -18,7 +21,8 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
-const { portraitPlayerIsPageFullscreen } = storeDefinitionToRefs(usePortraitLayoutStore);
+const { portraitPlayerIsPageFullscreen, portraitWatchLayoutHeight } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 defineProps({
   /** 位置，左 or 右 */
@@ -32,11 +36,10 @@ defineProps({
   bottom: 0;
   z-index: 1;
   width: 0;
-  height: $--plv-mobile-watch-full-screen-vh;
 }
 
 .c-portrait-boundary-wrap--fullscreen {
-  height: $--plv-mobile-watch-full-screen-vw;
+  height: $--plv-mobile-watch-full-screen-vw !important;
 }
 
 .c-portrait-boundary-wrap--left {

@@ -23,7 +23,8 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { MobileIconArrowLeft, MobileIconClose } from '@/components/component-icons/mobile/map';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeToRefs } from 'pinia';
@@ -35,13 +36,15 @@ const { isSmallWindow } = storeToRefs(webviewStore);
 
 const { normalPlayButtonVisible } = usePlayerControl();
 
+const { getEmitter } = useGlobalInject();
+
 function onClickWrap(event: MouseEvent) {
   // 小窗下没有显示暂停按钮时，恢复正常窗口
   if (unref(isSmallWindow) && !unref(normalPlayButtonVisible)) {
     webviewStore.toNormalWindow();
   }
 
-  eventBus.$emit(appEvents.portrait.ClickPlayerRegion, event);
+  getEmitter().emit(appEvents.portrait.ClickPlayerRegion, event);
 }
 
 function onClickBack() {

@@ -10,14 +10,14 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { LangType } from '@/assets/lang/lang-enum';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import MobileActionSheet from '@/components/common-base/action-sheet/mobile-action-sheet.vue';
 import { ActionSheetItem, ActionSheetValue } from '@/components/common-base/action-sheet/types';
 import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { computed, onBeforeUnmount, onMounted, unref } from 'vue';
+import { computed, unref } from 'vue';
 
 const { visible, show: showLangSwitch } = useSimpleVisible();
 
@@ -38,11 +38,5 @@ function onClickAction(lang: ActionSheetValue) {
   langStore.switchLang(lang as LangType);
 }
 
-onMounted(() => {
-  eventBus.$on(appEvents.global.OpenLanguageSwitch, showLangSwitch);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.global.OpenLanguageSwitch, showLangSwitch);
-});
+useEventBusListener(appEvents.global.OpenLanguageSwitch, showLangSwitch);
 </script>

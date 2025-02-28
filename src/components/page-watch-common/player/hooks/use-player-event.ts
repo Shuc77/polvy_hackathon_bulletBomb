@@ -1,5 +1,4 @@
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents } from '@/app/app-events';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePlaybackList } from '@/components/page-watch-common/playback-list/use-playback-list';
@@ -14,7 +13,9 @@ import {
 } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount } from 'vue';
 import { usePlayerAction } from './use-player-action';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 /**
  * 播放器相关事件 hook
@@ -24,8 +25,12 @@ export const usePlayerEvent = () => {
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
   const webviewStore = useWebviewStore();
+  const watchAppStore = useWatchAppStore();
 
   const { toToggleBarrageMobileSettingVisible, forcePausePlay, toFreezePlay } = usePlayerAction();
+  const { getEmitter, getWatchCore } = useMultiPolyvWatchApp();
+  const { onClickPlaybackItem } = usePlaybackList();
+  const watchCore = getWatchCore();
 
   function onPlayerConfigLoaded(): void {
     if (!webviewStore.curWebviewPageIsActive) {
@@ -42,10 +47,14 @@ export const usePlayerEvent = () => {
       forcePausePlay();
       toFreezePlay(true);
     }
+
+    if (!watchAppStore.isPageActive) {
+      forcePausePlay();
+    }
   }
 
   function onPlayerPlaying(): void {
-    if (!webviewStore.curWebviewPageIsActive) {
+    if (!webviewStore.curWebviewPageIsActive || !watchAppStore.isPageActive) {
       playerStore.$patch({
         isPlayStarted: false,
         playStatus: PlayStatus.Pause,
@@ -61,13 +70,11 @@ export const usePlayerEvent = () => {
   }
 
   function onHistoryPlay(evt: { historyTime: number }): void {
-    eventBus.$emit(appEvents.player.ShowHistoryTips, evt.historyTime);
+    getEmitter().emit(appEvents.player.ShowHistoryTips, evt.historyTime);
   }
 
   /** 处理回放播放结束 */
   async function onPlaybackOver() {
-    const { onClickPlaybackItem } = usePlaybackList();
-
     const toPlayTarget = async (target: PlaybackTarget) => {
       await onClickPlaybackItem(target);
     };
@@ -121,7 +128,6 @@ export const usePlayerEvent = () => {
 
   /** 音量修改 */
   function onVolumeChanged() {
-    const watchCore = getWatchCore();
     const currentVolume = watchCore.player.getCurrentVolume();
     playerStore.$patch({ currentVolume });
   }
@@ -160,7 +166,6 @@ export const usePlayerEvent = () => {
   /** 绑定播放器事件 */
   function bindPlayerEvents() {
     unbindPlayerEvents();
-    const watchCore = getWatchCore();
 
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerConfigLoaded, onPlayerConfigLoaded);
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerInited, onPlayerInited);
@@ -178,8 +183,6 @@ export const usePlayerEvent = () => {
 
   /** 解绑播放器事件 */
   function unbindPlayerEvents() {
-    const watchCore = getWatchCore();
-
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerConfigLoaded, onPlayerConfigLoaded);
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerInited, onPlayerInited);
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerPlaying, onPlayerPlaying);

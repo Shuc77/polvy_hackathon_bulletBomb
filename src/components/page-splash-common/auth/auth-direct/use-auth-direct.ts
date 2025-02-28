@@ -1,14 +1,22 @@
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
-import { PageErrorType } from '@/app/layout/page-error/page-error-type';
+import { PageErrorType } from '@/app/layout/direct-business-page/type';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useAuthCommon } from '../hooks/use-auth-common';
 import { DirectAuthSignParams } from '@polyv/live-watch-sdk';
-import { paramGetter, queryParams } from '@/hooks/core/use-query-params';
-import { toast } from '@/hooks/components/use-toast';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 export const useAuthDirectAction = () => {
+  const { getWatchCore, getPolyvWatchApp } = useMultiPolyvWatchApp();
+
+  const { toast } = useToastManager();
+
   const watchAppStore = useWatchAppStore();
+
+  const { getQueryParams, paramGetter } = useQueryParams({
+    getPolyvWatchAppLoader: () => () => getPolyvWatchApp(),
+  });
 
   const { failMessage, getDefaultFailMessage, handleAuthVerifySuccess, handleAuthVerifyFail } =
     useAuthCommon();
@@ -18,10 +26,10 @@ export const useAuthDirectAction = () => {
    */
   function getDirectAuthSignParams(): DirectAuthSignParams {
     return {
-      userid: paramGetter.userid() || '',
-      ts: paramGetter.ts() || '',
-      sign: paramGetter.sign() || '',
-      nickname: paramGetter.nickname() || '',
+      userid: paramGetter().userid() || '',
+      ts: paramGetter().ts() || '',
+      sign: paramGetter().sign() || '',
+      nickname: paramGetter().nickname() || '',
     };
   }
 
@@ -38,7 +46,10 @@ export const useAuthDirectAction = () => {
    */
   async function verifyAuthDirect() {
     const watchCore = getWatchCore();
-    const result = await watchCore.auth.verifyDirectAuth(getDirectAuthSignParams(), queryParams);
+    const result = await watchCore.auth.verifyDirectAuth(
+      getDirectAuthSignParams(),
+      getQueryParams(),
+    );
     if (result.success) {
       await handleAuthVerifySuccess(result);
     } else {

@@ -122,7 +122,9 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import { randomStr } from '@utils-ts/string';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+
+const { paramGetter } = useQueryParams();
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
@@ -161,7 +163,7 @@ const bottomMenuList = computed<ChannelMenuItem[]>(() => {
 const pcBottomMenuRef = ref<TabsInstance>();
 
 onMounted(() => {
-  const playBackVid = paramGetter.playBackVid();
+  const playBackVid = paramGetter().playBackVid();
   if (playBackVid) {
     const hasPlayBack = bottomMenuList.value.findIndex(
       item => item.menuType === ChannelMenuType.Previous,

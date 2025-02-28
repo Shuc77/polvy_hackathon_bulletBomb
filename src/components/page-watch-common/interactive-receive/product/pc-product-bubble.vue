@@ -14,6 +14,8 @@
           :get-link-params="getLinkParams"
           :recruitment-enabled="recruitmentEnabled"
           :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+          :redirect-directly-enabled="interactSetting.outLinkProductRedirectEnabled"
+          @click-cover="openProductDetail"
           @job-detail="onJobDetailEvent"
           @buy="onWechatBuy"
           @change="onChange"
@@ -27,6 +29,7 @@
       :get-link-params="getLinkParams"
       :recruitment-enabled="recruitmentEnabled"
       :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+      :redirect-directly-enabled="interactSetting.outLinkProductRedirectEnabled"
       @job-detail="onJobDetailEvent"
       @buy="onWechatBuy"
       @click-detail="openProductDetail"
@@ -39,7 +42,7 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProduct, useProductLinkParams } from './hooks/use-product';
-import { onJobDetailEvent } from './hooks/use-product-job-detail';
+import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
@@ -55,6 +58,9 @@ const props = defineProps({
   },
 });
 const { productBubbleEnable, productDialogEnable } = useProps(props);
+
+const { onJobDetailEvent } = useProductJobDetailEvent();
+
 const IarProductBubble = getIarComponent('ProductBubble');
 const IarProductDialog = getIarComponent('ProductDialog');
 const { openProductDetail } = useNewProductDetail();

@@ -5,20 +5,107 @@
 /* eslint-env node */
 /* eslint-disable prefer-const */
 /* eslint-disable prettier/prettier */
+/* eslint-disable sonarjs/no-duplicate-string */
 
 const path = require('path');
 const pkgJSON = require('../package');
-
 const { formatDate } = require('@polyv/utils/cjs/date');
 
 /** 当前是否为开发模式 */
 const devMode = (exports.devMode = process.env.NODE_ENV !== 'production');
 
+/** 开发服务器端口号 */
+const devServerPort = (exports.devServerPort = 15020);
+
+/** 开发服务器局域网ip */
+exports.devServerHost = '0.0.0.0';
+
+let livePolyvCn = 'http://live.polyv.cn';
+
+/** 本地开发服务器代理 */
+exports.devServerProxy = {
+  '^/(v2|error-verify)': {
+    target: livePolyvCn, // 测试环境
+    changeOrigin: true,
+    onProxyReq(proxyReq) {
+      proxyReq.setHeader('host', 'live.polyv.cn');
+    },
+    onProxyRes(proxyRes) {
+      const cookies = proxyRes.headers['set-cookie'];
+      if (cookies) {
+        const newCookie = cookies.map(item => {
+          return item.replace(/;\s*Domain=([^;])+/, '');
+        });
+        proxyRes.headers['set-cookie'] = newCookie;
+      }
+    },
+  },
+};
 
 
-/** 发布路径 */
-let publicPath = process.env.VUE_APP_BUILD_MODE === 'STATIC' ? './' : '/';
+/** 构建模式 */
+const buildMode = process.env.VUE_APP_BUILD_MODE;
 
+/** sdk 注入模式 */
+const inSdkInjectMode = (exports.inSdkInjectMode = buildMode === 'SDK_INJECT');
+
+/**
+ * 构建模式
+ * @type { {[key:string]: { [key:string]: {publicPath:string; outputDir:string} }} }
+ * dev 代表本地调试，prod 代表构建发布
+ * */
+let buildModeConfigMap = {
+  /** 常规 */
+  GENERAL: {
+    dev: {
+      publicPath: '/',
+      outputDir: 'dist',
+    },
+    prod: {
+      publicPath: '/',
+      outputDir: 'dist',
+    },
+  },
+  /** 静态 */
+  STATIC: {
+    dev: {
+      publicPath: '/',
+      outputDir: 'dist-static',
+    },
+    prod: {
+      publicPath: './',
+      outputDir: 'dist-static',
+    },
+  },
+  /** SDK注入 */
+  SDK_INJECT: {
+    dev: {
+      publicPath: `http://localhost:${devServerPort}`,
+      outputDir: 'dist-sdk-inject',
+    },
+    prod: {
+      // @PLV-WARN 如果需要使用 sdk 注入模式，需要处理此处，不然只能配合 sdk-inject-project 使用
+      publicPath: `http://localhost:5500/polyv-watch-app/`,
+      outputDir: 'dist-sdk-inject',
+    },
+  },
+};
+
+
+const curBuildModeConfig = buildModeConfigMap[buildMode] || buildModeConfigMap.GENERAL;
+
+/**
+ * 是否启用运行时公共路径
+ * @PLV-WARN 更改该配置前，请确认已知晓更改的风险和原理，当前只建议在 {@link inSdkInjectMode} 下更改该配置
+ */
+const enableRuntimePublicPath = false;
+
+/** 公共路径 */
+let publicPath = (() => {
+  if (enableRuntimePublicPath) return '';
+
+  return devMode ? curBuildModeConfig.dev.publicPath : curBuildModeConfig.prod.publicPath;
+})();
 exports.publicPath = publicPath;
 
 /** 项目构建时间 */
@@ -27,13 +114,11 @@ const projectBuildTime = (exports.projectBuildTime = formatDate(new Date(), 'YYY
 /** 项目版本号 */
 let projectVersion = (exports.projectVersion = pkgJSON.version);
 
-
 /**
  * 获取观看页 SDK 环境变量
  * */
 function getWatchSdkEnv() {
-  
-  return 'prod';
+    return 'prod';
 }
 
 /** 注入的全局常量 */
@@ -44,6 +129,12 @@ exports.defineConstants = {
   PROJECT_VERSION: JSON.stringify(projectVersion),
   /** 观看页 SDK 加载的环境 */
   WATCH_SDK_ENV: JSON.stringify(getWatchSdkEnv()),
+  /** 处于 sdk-inject 构建模式下 */
+  IN_SDK_INJECT_MODE: JSON.stringify(inSdkInjectMode),
+  /** 是否启用运行时公共路径 */
+  ENABLE_RUNTIME_PUBLIC_PATH: JSON.stringify(enableRuntimePublicPath),
+  /** 构建环境 */
+  BUILD_ENV: JSON.stringify(process.env.BUILD_ENV)
 };
 
 /** ts 配置文件 */
@@ -68,7 +159,6 @@ exports.sassResources = ['assets/styles/variables.scss', 'assets/styles/mixins.s
 
 let devAlias = {};
 
-
 /** 别名 */
 exports.alias = {
   '@': path.resolve(__dirname, '../src'),
@@ -76,33 +166,6 @@ exports.alias = {
   ...devAlias,
 };
 
-/** 开发服务器端口号 */
-exports.devServerPort = 15020;
-
-/** 开发服务器局域网ip */
-exports.devServerHost = '0.0.0.0';
-
-/** 本地开发服务器代理 */
-exports.devServerProxy = {
-  '^/(v2|error-verify)': {
-    target: 'http://live.polyv.cn', // 测试环境
-    changeOrigin: true,
-    onProxyReq(proxyReq) {
-      proxyReq.setHeader('host', 'live.polyv.cn');
-    },
-    onProxyRes(proxyRes) {
-      const cookies = proxyRes.headers['set-cookie'];
-      if (cookies) {
-        const newCookie = cookies.map(item => {
-          return item.replace(/;\s*Domain=([^;])+/, '');
-        });
-        proxyRes.headers['set-cookie'] = newCookie;
-      }
-    },
-  },
-};
-
 /** 生产环境构建文件的目录 */
-let outputDir = process.env.VUE_APP_BUILD_MODE === 'STATIC' ? 'dist-static' : 'dist';
-
+let outputDir = devMode ? curBuildModeConfig.dev.outputDir : curBuildModeConfig.prod.outputDir;
 exports.outputDir = outputDir;

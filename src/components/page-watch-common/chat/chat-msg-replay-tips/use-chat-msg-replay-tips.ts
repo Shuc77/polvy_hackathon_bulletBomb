@@ -1,9 +1,10 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
 import { ChatEvents, ChatMsgReplayStatus } from '@polyv/live-watch-sdk';
 import { computed, onBeforeMount, ref } from 'vue';
 
 export const useChatMsgReplayTips = () => {
+  const { getWatchCore } = useGlobalInject();
   const watchCore = getWatchCore();
 
   const replayTipStatus = ref<ChatMsgReplayStatus>();

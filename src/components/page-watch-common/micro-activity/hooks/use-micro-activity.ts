@@ -10,8 +10,8 @@ import {
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { MicroActivityDeviceMotion } from './window-device-motion';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 type IframeMessageHandleCb<T> = (data: T) => void;
 
@@ -27,6 +27,10 @@ interface MicroActivityHookOption {
 }
 
 export const useMicroActivityHook = (hookOptions: MicroActivityHookOption) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const {
     fullScreenMessageHandler = () => {},
     backHomeMessageHandler = () => {},

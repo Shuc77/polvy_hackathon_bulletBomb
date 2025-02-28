@@ -2,28 +2,24 @@
 <template>
   <div class="c-pc-splash">
     <header class="c-pc-splash__header g-outside">
-      <custom-teleport to="body">
+      <custom-teleport :to="getAppBodyElement()">
         <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
         <div class="c-pc-splash__header__bg__teleport__wrapper g-outside">
           <div
-            v-if="supportsFilterStyle && splashImg"
-            class="c-pc-splash__header__bg g-img-cover"
-            :style="{
-              backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
-            }"
-          ></div>
+            v-if="supportsFilterStyle && hasSplash"
+            class="c-pc-splash__header__bg"
+          >
+            <channel-splash-img />
+          </div>
           <!-- 遮罩层 -->
           <div class="c-pc-splash__header__mask"></div>
         </div>
       </custom-teleport>
       <!-- 头部内容层 -->
       <div class="c-pc-splash__header__inner g-boundary">
-        <div
-          class="c-pc-splash__header__cover g-img-cover"
-          :style="{
-            backgroundImage: `url(${resizeOSSImg(splashImg, 1280, 720)})`,
-          }"
-        ></div>
+        <div class="c-pc-splash__header__cover">
+          <channel-splash-img />
+        </div>
         <div class="c-pc-splash__header__main">
           <!-- 频道标题 -->
           <h1 class="c-pc-splash__header__title">{{ channelTitle }}</h1>
@@ -128,30 +124,33 @@ import { supportsFilterStyle } from '@/assets/utils/dom';
 import { ChannelMenuType } from '@polyv/live-watch-sdk';
 
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
-import { PcIconPeople } from '@/components/component-icons/pc/map';
 import PcRichTextRender from '@/components/common-base/rich-text-render/pc-rich-text-render.vue';
 import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tab-pane.vue';
 import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
+import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
 import PcEnroll from '@/components/common-business/enroll/pc-enroll.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
 import PcLiveBookingButton from '@/components/common-business/live-booking/pc-live-booking-button.vue';
 import PcLiveCountDown from '@/components/common-business/live-count-down/pc-live-count-down.vue';
+import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
 import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
-import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
+import { PcIconPeople } from '@/components/component-icons/pc/map';
 import PcAuth from '@/components/page-splash-common/auth/pc-auth.vue';
 import { usePopper } from '@/hooks/components/use-popper';
 
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useAuthStore } from '@/store/use-auth-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useLangStore } from '@/store/use-lang-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { resizeOSSImg } from '@/assets/utils/image';
+
+const { getAppBodyElement } = useGlobalInject();
 
 const { isAuthorized } = storeDefinitionToRefs(useAuthStore);
 
@@ -166,7 +165,7 @@ const {
   liveStartTimeText,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { splashImg } = storeDefinitionToRefs(useThemeStore);
+const { hasSplash } = storeDefinitionToRefs(useThemeStore);
 
 const {
   referenceRef: publisherReferenceRef,
@@ -219,6 +218,7 @@ $--splash-header-content-height: 406px;
 }
 .c-pc-splash__header__bg {
   filter: blur(18px);
+  transform: scale(1.2);
 }
 .c-pc-splash__header__mask {
   background: rgba(20, 21, 24, 0.75);
@@ -319,7 +319,7 @@ $--splash-header-content-height: 406px;
   position: relative;
 }
 
-.c-pc-splash__main__inner__lang-switch {
+.c-pc-splash__main__inner__lang-switch.c-pc-lang-switch {
   position: absolute;
   top: 20px;
   right: 0;

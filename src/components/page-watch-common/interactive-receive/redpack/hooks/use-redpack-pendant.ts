@@ -1,4 +1,4 @@
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 /**
@@ -6,6 +6,8 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
  * */
 export const useRedpackPendant = () => {
   const interactReceiveStore = useInteractReceiveStore();
+
+  const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
   /** 红包 SDK 实例 */

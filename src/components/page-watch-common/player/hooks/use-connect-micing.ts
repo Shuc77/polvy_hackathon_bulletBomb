@@ -6,9 +6,7 @@ import { PlayStatus } from '@polyv/live-watch-sdk';
 import { isMobile } from '@/assets/utils/browser';
 
 const useConnectMicingPlayerHelper = () => {
-  const playerStore = usePlayerStore();
-
-  const { toPlay, toChangeVolume, toPause, toStop } = usePlayerAction();
+  const { toPlay, toChangeVolume, forcePausePlay } = usePlayerAction();
 
   function recoverPlay(recordVolume?: number) {
     if (!isMobile) {
@@ -16,15 +14,6 @@ const useConnectMicingPlayerHelper = () => {
     }
     if (isMobile && document.hidden) return;
     toPlay();
-  }
-
-  function forcePausePlay() {
-    // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
-    if (playerStore.isLowLatency) {
-      toStop();
-    } else {
-      toPause();
-    }
   }
 
   return {

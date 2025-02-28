@@ -29,7 +29,7 @@ export const useShortNumber = () => {
    * @param num 数值
    */
   function shortNumber(num: number) {
-    const unit = langStore.currentLang === LangType.Chinese ? 'w' : 'k';
+    const unit = langStore.currentLang === LangType.ZH_CN ? 'w' : 'k';
 
     return __shortNumber(num, unit);
   }

@@ -8,73 +8,77 @@
         'c-mobile-chat-room-pendant--screen__horizontal': isHorizontalScreenOrientation,
       }"
     >
-      <!-- 风险测评 -->
-      <risk-evaluation-entrance
-        v-if="riskEvaluationEntranceEnabled"
-        class="c-mobile-chat-room-pendant__item"
-      />
+      <template v-if="iarSdkLoaded">
+        <!-- 风险测评 -->
+        <risk-evaluation-entrance
+          v-if="riskEvaluationEntranceEnabled"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <!-- 卡片推送 -->
-      <mobile-push-card
-        v-show="!isPageFullscreenOrHorizontalScreen"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <!-- 卡片推送 -->
+        <mobile-push-card
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <!-- 红包 -->
-      <mobile-redpack-pendant class="c-mobile-chat-room-pendant__item" />
+        <!-- 红包 -->
+        <mobile-redpack-pendant class="c-mobile-chat-room-pendant__item" />
 
-      <!-- 邀请海报 -->
-      <mobile-invite-poster-entry
-        v-if="mobileChatInvitePendantVisible"
-        v-show="!isPageFullscreenOrHorizontalScreen"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <!-- 邀请海报 -->
+        <mobile-invite-poster-entry
+          v-if="mobileChatInvitePendantVisible"
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <!-- 报名抽奖 -->
-      <mobile-enroll-lottery-pendant
-        v-show="!isPageFullscreenOrHorizontalScreen"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <!-- 报名抽奖 -->
+        <mobile-enroll-lottery-pendant
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <!-- 话题 PK -->
-      <mobile-topic-pk
-        v-show="!isPageFullscreenOrHorizontalScreen"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <!-- 话题 PK -->
+        <mobile-topic-pk
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <!-- 抽奖 -->
-      <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
+        <!-- 抽奖 -->
+        <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
 
-      <!-- 条件抽奖 -->
-      <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
+        <!-- 条件抽奖 -->
+        <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
 
-      <!-- 抢答 -->
-      <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
+        <!-- 抢答 -->
+        <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
 
-      <!-- 任务活动 -->
-      <mobile-task-activity-pendant
-        v-if="!isPageFullscreenOrHorizontalScreen"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <!-- 任务活动 -->
+        <mobile-task-activity-pendant
+          v-if="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <mobile-product-bubble
-        v-if="iarSdkLoaded"
-        :product-dialog-enable="false"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <mobile-product-bubble
+          v-if="chatTabHasBeenShowed"
+          :product-dialog-enable="false"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-      <!-- 情绪反馈 -->
-      <mobile-emotional-feedback
-        v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
-        v-show="!isPageFullscreenOrHorizontalScreen"
-        class="c-mobile-chat-room-pendant__item"
-      />
+        <!-- 情绪反馈 -->
+        <mobile-emotional-feedback
+          v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+      </template>
+      <!-- 图标广告 -->
+      <mobile-img-advert class="c-mobile-chat-room-pendant__item" />
     </div>
   </custom-teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, unref } from 'vue';
+import { computed, ref, unref, watch } from 'vue';
 
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
@@ -87,9 +91,11 @@ import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
+import mobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
 
+import { TAB_NAME_CHAT } from '@/assets/constants/tab-name';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -105,6 +111,7 @@ const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
 const {
+  mobileMenuCurrentName,
   mobilePlayerIsPageFullscreen,
   isHorizontalScreenOrientation,
 
@@ -113,6 +120,14 @@ const {
 
 const renderParent = computed<string | HTMLElement>(() => {
   return unref(isPageFullscreenOrHorizontalScreen) ? document.body : '';
+});
+
+const chatTabHasBeenShowed = ref(false);
+const $stopWatch = watch(mobileMenuCurrentName, () => {
+  if (mobileMenuCurrentName.value === TAB_NAME_CHAT) {
+    chatTabHasBeenShowed.value = true;
+    $stopWatch();
+  }
 });
 </script>
 

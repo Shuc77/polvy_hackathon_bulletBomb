@@ -1,8 +1,9 @@
 import { computed } from 'vue';
 import { ChannelPlayMode } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useCountDownLayer = () => {
+  const { getWatchCore } = useGlobalInject();
   const watchCore = getWatchCore();
 
   /** 是否显示右上角模式 */

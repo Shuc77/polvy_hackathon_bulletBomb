@@ -1,4 +1,4 @@
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { TAB_NAME_CHAT } from '@/assets/constants/tab-name';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
@@ -21,10 +21,10 @@ import { ChatMsgListHookOptions, VirtualListInstance } from './hooks/types';
 import { RenderPosition } from '@just4/virtual-list/types';
 import { isMobile } from '@/assets/utils/browser';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useRequestHistoryTime } from './hooks/request-history-time-hook';
 import { ChatMsgItemCategory } from './msg-items/use-chat-msg-item';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 /** 监听聊天 Tab 切换 */
 const useChatTabSwitchWatch = (options: { cb: () => void }) => {
@@ -57,8 +57,10 @@ const useChatTabSwitchWatch = (options: { cb: () => void }) => {
  * 聊天室消息列表 hook
  */
 export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemComponentOptions }) => {
-  const watchCore = getWatchCore();
   const watchAppStore = useWatchAppStore();
+  const { getWatchCore } = useMultiPolyvWatchApp();
+
+  const watchCore = getWatchCore();
   const chatStore = useChatStore();
   const channelStore = useChannelStore();
   const chatMsgStore = useChatMsgStore();
@@ -80,18 +82,26 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
 
   // 获取聊天历史数据对应的 Hook
   function requestHistoryHook(hookOptions: ChatMsgListHookOptions) {
+    const baseGetStore = () => ({
+      chatMsgStore,
+      watchAppStore,
+    });
+
     if (watchAppStore.isPlaybackWatchUrl) {
-      return useRequestHistorySession();
+      return useRequestHistorySession(() => ({
+        playbackStore,
+        ...baseGetStore(),
+      }));
     }
 
-    if (playbackStore.chatReplayEnabled) {
-      return useRequestHistoryReplayHook(hookOptions);
+    if (playbackStore.chatMsgReplayEnabled) {
+      return useRequestHistoryReplayHook(hookOptions, baseGetStore);
     }
 
     if (chatStore.onlySpecialMsg || !chatStore.chatSetting.getChatHistoryByTimestampEnabled) {
-      return useRequestHistory(hookOptions);
+      return useRequestHistory(hookOptions, baseGetStore);
     } else {
-      return useRequestHistoryTime(hookOptions);
+      return useRequestHistoryTime(hookOptions, baseGetStore);
     }
   }
 
@@ -198,7 +208,9 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
       return;
     }
 
+    // 聊天消息加载
     const { loadInitialData } = requestHistoryHook(hookOptions);
+
     const result = await loadInitialData();
     if (!result.data) {
       return;
@@ -217,6 +229,10 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
   /** 重新加载聊天回放数据 */
   async function reloadChatReplayData() {
     if (!virtualList) {
+      return;
+    }
+
+    if (!playbackStore.chatMsgReplayEnabled) {
       return;
     }
 
@@ -256,16 +272,16 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     initVirtualList();
   });
 
+  useEventBusListener(appEvents.chat.ScrollToNew, scrollToNew);
+
   onMounted(() => {
     initVirtualList();
-    eventBus.$on(appEvents.chat.ScrollToNew, scrollToNew);
     watchCore.chat.eventEmitter.on(ChatEvents.ChatMsgReplayReload, reloadChatReplayData);
     scrollToHideMsgTips();
   });
 
   onBeforeUnmount(() => {
     destroyVirtualList();
-    eventBus.$off(appEvents.chat.ScrollToNew, scrollToNew);
     watchCore.chat.eventEmitter.off(ChatEvents.ChatMsgReplayReload, reloadChatReplayData);
   });
 

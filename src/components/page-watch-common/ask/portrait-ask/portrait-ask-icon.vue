@@ -4,7 +4,7 @@
     v-if="askMenuData.visible"
     class="c-portrait-ask-icon"
   >
-    <template v-if="currentLang === LangType.Chinese">
+    <template v-if="currentLang === LangType.ZH_CN">
       <mobile-origin-icon-question
         v-show="portraitMessageTabCurrentName === PortraitChatTabName.Chat"
         class="c-portrait-ask-icon__emotion"
@@ -32,6 +32,7 @@
     <div
       v-if="askReminderVisible"
       class="c-portrait-ask-icon__news"
+      @click.stop="onClickIcon(PortraitChatTabName.Ask)"
     >
       <span>{{ $lang('ask.news') }}</span>
     </div>
@@ -62,6 +63,8 @@ const iconFontSize = computed(() => `${props.fontSize}px`);
 
 const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
+const portraitLayoutStore = usePortraitLayoutStore();
+
 const { portraitMessageTabCurrentName } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { askReminderVisible } = storeDefinitionToRefs(useAskStore);
@@ -69,7 +72,6 @@ const { askReminderVisible } = storeDefinitionToRefs(useAskStore);
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 function onClickIcon(name: PortraitChatTabName) {
-  const portraitLayoutStore = usePortraitLayoutStore();
   portraitLayoutStore.$patch({
     portraitMessageTabCurrentName: name,
   });
@@ -102,7 +104,7 @@ function onClickIcon(name: PortraitChatTabName) {
   line-height: 18px;
   color: #fff;
   white-space: nowrap;
-  background: #ff5459;
+  background: #ff5252;
   border-radius: 8px 8px 8px 0;
 }
 </style>

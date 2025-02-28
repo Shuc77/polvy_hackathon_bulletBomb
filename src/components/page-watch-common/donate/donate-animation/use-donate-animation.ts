@@ -1,5 +1,7 @@
+import { useGlobalInject } from '@/app/use-global-inject';
+import { translate } from '@/assets/lang';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -19,6 +21,8 @@ export interface AnimationTrackItem {
   animationId: string;
   /** 昵称 */
   nick: string;
+  /** 头像 */
+  pic: string;
   /** 礼物道具图片 */
   gimg: string;
   /** 礼物数量 */
@@ -31,13 +35,18 @@ export interface AnimationTrackItem {
 
 export const donateAnimationProps = () => ({
   /** 动画轨道数 */
-  trackCount: PropUtils.number.def(3),
+  trackCount: PropUtils.number.def(2),
 });
 
 export const useDonateAnimation = (options: { props: VueProps<typeof donateAnimationProps> }) => {
+  const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
+
   const interactReceiveStore = useInteractReceiveStore();
   const donateStore = useDonateStore();
   const playbackStore = usePlaybackStore();
+
+  const effectSetting = watchCore.channel.getEffectSetting();
 
   const { props } = options;
 
@@ -56,6 +65,8 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
       return;
     }
 
+    const defaultSource = watchCore.utils.getDefaultResource();
+
     if (unref(trackList).length < props.trackCount) {
       // 有空位，则补充空位
       const surplusCount = props.trackCount - unref(trackList).length;
@@ -65,6 +76,7 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
         trackList.value.push({
           animationId: uuidV4(),
           nick: chatMsg.user.nick,
+          pic: chatMsg.user.pic || defaultSource.defaultViewerAvatar,
           gimg: chatMsg.gimg,
           count: chatMsg.goodNum ?? 1,
           rewardContent: chatMsg.rewardContent,
@@ -122,7 +134,7 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
     }
 
     // 非聊天重放的场景下，自己的打赏只接收本地插入的
-    if (!playbackStore.chatReplayEnabled && isSelfGood && !chatMsg.isLocal) {
+    if (!playbackStore.chatMsgReplayEnabled && isSelfGood && !chatMsg.isLocal) {
       return;
     }
 
@@ -136,18 +148,42 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
   }
 
   onMounted(() => {
-    const watchCore = getWatchCore();
-    watchCore.chat.eventEmitter.on(ChatEvents.ChatMessage, onChatMsgEvent);
+    if (effectSetting.interactionEffectEnabled) {
+      watchCore.chat.eventEmitter.on(ChatEvents.ChatMessage, onChatMsgEvent);
+    }
   });
 
   onBeforeUnmount(() => {
-    const watchCore = getWatchCore();
-    watchCore.chat.eventEmitter.off(ChatEvents.ChatMessage, onChatMsgEvent);
+    if (effectSetting.interactionEffectEnabled) {
+      watchCore.chat.eventEmitter.off(ChatEvents.ChatMessage, onChatMsgEvent);
+    }
   });
 
   return {
     trackList,
     itemHeight,
     onItemLeaved,
+  };
+};
+
+export const useDonateAnimationVisible = () => {
+  const { toast } = useToastManager();
+  const donateStore = useDonateStore();
+
+  /** 切换打赏动画显示状态 */
+  function toggleDonateAnimationVisible() {
+    donateStore.$patch({
+      donateAnimationVisible: !donateStore.donateAnimationVisible,
+    });
+
+    if (donateStore.donateAnimationVisible) {
+      toast.success(translate('donate.showAnimation.tips'));
+    } else {
+      toast.success(translate('donate.hideAnimation.tips'));
+    }
+  }
+
+  return {
+    toggleDonateAnimationVisible,
   };
 };

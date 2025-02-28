@@ -10,6 +10,7 @@
 
     <!-- 互动功能 -->
     <portrait-iar-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <portrait-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 邀请榜弹层 -->
     <portrait-invite-rank-popup v-if="inviteRankEnabled" />
@@ -74,8 +75,6 @@
     <!-- 绑定用户身份信息弹层 -->
     <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
 
-    <!-- 任务奖励弹层 -->
-    <mobile-task-reward-popup />
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup />
 
@@ -87,6 +86,12 @@
 
     <!-- 播放设置弹层 -->
     <portrait-player-playback-setting />
+
+    <!-- 多会场弹层 -->
+    <portrait-multi-meeting-popup v-if="multiMeetingEnabled" />
+
+    <!-- 我的奖励弹层 -->
+    <mobile-personal-reward-popup />
   </div>
 </template>
 
@@ -96,6 +101,7 @@ import PortraitChatInputController from '@/components/page-watch-common/chat/cha
 import PortraitChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/portrait-chat-set-nick.vue';
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import PortraitIarRender from '@/components/page-watch-common/interactive-receive/portrait-iar-render.vue';
+import PortraitIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/portrait-iar-render-v2.vue';
 import PortraitInviteRankPopup from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
@@ -114,11 +120,12 @@ import PortraitPlayerStreamTrackPopup from '@/components/page-watch-common/playe
 import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/portrait-invite-detail-popup.vue';
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
-import MobileTaskRewardPopup from '@/components/page-watch-common/task-activity/mobile-task-reward-popup.vue';
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 import PortraitMemberListPopup from '@/components/page-watch-common/member-list/portrait-member-list.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-playback-setting.vue';
+import PortraitMultiMeetingPopup from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-popup.vue';
+import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -134,6 +141,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -163,4 +171,6 @@ const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+
+const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 </script>

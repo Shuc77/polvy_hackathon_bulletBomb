@@ -1,3 +1,4 @@
+<!-- @file 移动端-竖屏提问 -->
 <template>
   <div class="c-portrait-ask">
     <ask-comp-portrait

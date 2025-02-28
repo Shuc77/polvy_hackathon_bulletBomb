@@ -8,7 +8,13 @@
     >
       <div>
         <p class="c-mobile-cash-receive-record__item-type">
-          {{ $lang('withdraw.cash.receive.record.listName') }}
+          {{ getWithdrawStatusText(record.status) }}
+          <span
+            v-if="record.status === WithdrawStatus.WaitUserConfirm && record.confirmSignData"
+            @click="requestMerchantTransfer(record.confirmSignData)"
+          >
+            {{ $lang('withdraw.cash.receive.record.toConfirm') }}
+          </span>
         </p>
         <p class="c-mobile-cash-receive-record__item-date">
           {{ convertReceiveDate(record.applyTime) }}
@@ -31,9 +37,13 @@
 import { onMounted } from 'vue';
 import listLoading from '@/components/common-base/list-loading/list-loading.vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
-import { useReceiveRecordHook } from '../_hooks/use-receive-record';
+import { WithdrawStatus } from '@polyv/live-watch-sdk';
+import { useReceiveRecordHook, getWithdrawStatusText } from '../_hooks/use-receive-record';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useWeixinMerchantTransfer } from '@/hooks/platform/use-weixin/use-weixin-merchant-transfer';
+
+const { getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 
@@ -44,9 +54,15 @@ const {
   convertReceiveDate,
   convertAmount,
   getReceiveRecordList,
+  refreshList,
 } = useReceiveRecordHook({
   fetchMethod: params => watchCore.withdraw.getWithdrawRecord(params),
   errMsg: translate('withdraw.cash.receive.history.error'),
+});
+
+const { requestMerchantTransfer } = useWeixinMerchantTransfer({
+  successCb: () => refreshList(),
+  cancelCb: () => refreshList(),
 });
 
 onMounted(async () => {
@@ -67,10 +83,18 @@ defineExpose({
   border-bottom: 1px solid #ededef;
 }
 .c-mobile-cash-receive-record__item-type {
+  display: flex;
+  align-items: center;
   margin-bottom: 2px;
   font-size: 14px;
   line-height: 20px;
   color: #333;
+
+  span {
+    margin-left: 4px;
+    font-size: 12px;
+    color: #3f76fc;
+  }
 }
 .c-mobile-cash-receive-record__item-date {
   font-size: 12px;

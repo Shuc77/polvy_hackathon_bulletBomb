@@ -1,12 +1,12 @@
 import { useWeixinPay } from '@/hooks/platform/use-weixin/use-weixin-pay';
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
-import { getWatchCore } from '@/core/watch-sdk';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { computed, reactive, unref } from 'vue';
 import { SubmitSendRedpackParams, WatchDomainPayType } from '@polyv/live-watch-sdk';
 import { usePolyvWatchDomain } from '@/hooks/platform/use-polyv-watch-domain';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** "发送红包"表单类型 */
 interface SendRedpackFormData {
@@ -23,6 +23,10 @@ export const useSendRedpackHook = (
     successCallback?: () => unknown;
   } = {},
 ) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { polyvWatchDomainEnabled, skipWatchDomainPay } = usePolyvWatchDomain();
   const { chooseWXPay } = useWeixinPay();
   const watchCore = getWatchCore();
@@ -51,12 +55,12 @@ export const useSendRedpackHook = (
             }
 
             // 总金额不得小于 1
-            if (val < 1) {
+            if (Number(val) < 1) {
               errorMsg = translate('redpack.send.amount.low');
             }
 
             // 最大值判断
-            if (val > unref(sendRedpackMaxAmount)) {
+            if (Number(val) > unref(sendRedpackMaxAmount)) {
               errorMsg = translate('redpack.single.amount.limit', {
                 amount: `${unref(sendRedpackMaxAmount)}`,
               });
@@ -94,7 +98,7 @@ export const useSendRedpackHook = (
             }
 
             // 最大值判断
-            if (val > unref(sendRedpackMaxCount)) {
+            if (Number(val) > unref(sendRedpackMaxCount)) {
               errorMsg = translate('redpack.single.num.limit', {
                 count: `${unref(sendRedpackMaxCount)}`,
               });

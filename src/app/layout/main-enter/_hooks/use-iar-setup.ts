@@ -1,20 +1,25 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { loadIarUI } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { paramGetter } from '@/hooks/core/use-query-params';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { YN } from '@polyv/live-watch-sdk';
 
 /**
  * @hook 互动功能安装 hook
  */
 export const useIarSetup = () => {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+  const { paramGetter } = useQueryParams();
+
+  const { toast } = useToastManager();
+
   const interactReceiveStore = useInteractReceiveStore();
 
   /** 加载互动功能 SDK */
   async function loadIarSDK() {
-    if (paramGetter.notNeedIar() === YN.Y) {
+    if (paramGetter().notNeedIar() === YN.Y) {
       return;
     }
 

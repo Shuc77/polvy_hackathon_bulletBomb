@@ -24,7 +24,9 @@
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
 import { MobileIconCloseRound } from '@/components/component-icons/mobile/map';
 import { useChatMsgQuoteControl } from './use-chat-msg-quote';
-import { parseQuoteSpeakContent } from '../chat-msg-list/msg-items/speak-msg/use-speak-msg';
+import { useQuoteSpeakContentParse } from '../chat-msg-list/msg-items/speak-msg/use-speak-msg';
+
+const { parseQuoteSpeakContent } = useQuoteSpeakContentParse();
 
 const { currentQuoteMsg, msgUserNick, onClickClose } = useChatMsgQuoteControl();
 </script>

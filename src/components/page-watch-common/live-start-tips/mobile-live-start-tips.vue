@@ -5,9 +5,11 @@
 
 <script setup lang="ts">
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { unref, watch } from 'vue';
 import { useLiveStartTips } from './use-live-start-tips';
+
+const { toast } = useToastManager();
 
 const { tipsVisible } = useLiveStartTips();
 

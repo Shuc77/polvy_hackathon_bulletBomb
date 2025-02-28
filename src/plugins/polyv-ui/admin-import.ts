@@ -38,3 +38,6 @@ export { default as PlvPopper } from '@polyv/polyv-ui/lib-admin/popper';
 
 import '@polyv/polyv-ui/lib-admin/theme/cascader.css';
 export { default as PlvCascaderSelect } from '@polyv/polyv-ui/lib-admin/cascader';
+
+import '@polyv/polyv-ui/lib-admin/theme/channel-cover.css';
+export { default as PlvChannelCover } from '@polyv/polyv-ui/lib-admin/channel-cover';

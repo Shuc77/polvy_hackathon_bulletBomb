@@ -1,6 +1,9 @@
 <!-- @file 移动端观看页 -->
 <template>
   <div class="c-mobile-watch">
+    <!-- 顶部引导条 -->
+    <mobile-top-guide />
+
     <!-- 观看页主体布局 -->
     <mobile-watch-layout />
 
@@ -11,6 +14,7 @@
 
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
+import MobileTopGuide from '@/components/page-watch-common/top-guide/mobile-top-guide.vue';
 import MobileWatchLayout from './layout/mobile-watch-layout.vue';
 
 import { usePvTrack } from '@/hooks/business/use-pv-track';
@@ -36,7 +40,13 @@ const { layoutLoaded } = useLayoutLoad('mobile-watch');
   position: absolute;
   top: 0;
   left: 0;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+}
+
+.c-mobile-watch--no-flex {
+  display: block;
 }
 </style>

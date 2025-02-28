@@ -1,15 +1,15 @@
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { validatePhoneNumber } from '@/assets/utils/validate';
-import { getWatchCore } from '@/core/watch-sdk';
-import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { toast } from '@/hooks/components/use-toast';
-import { getSelectData } from '@/plugins/polyv-ui/area-utils';
-import { useCommonStore } from '@/store/use-common-store';
+import type {
+  RewardReceiveData,
+  RewardReceiveFormItem,
+  RewardReceiveFormType,
+  RewardReceiveSubmitAction,
+} from '@polyv/iar-reward-receive-ui';
 import {
   RewardAcceptFormItem,
   RewardAcceptFormType,
-  RewardAcceptType,
   TaskRewardItem,
   YN,
 } from '@polyv/live-watch-sdk';
@@ -17,46 +17,52 @@ import { ynToBool } from '@utils-ts/boolean';
 import { ref } from 'vue';
 
 export const useTaskRewardReceive = () => {
-  const commonStore = useCommonStore();
+  const { getWatchCore, getEmitter } = useGlobalInject();
 
-  const { visible, show } = useSimpleVisible();
+  const watchCore = getWatchCore();
 
   const currentRewardItem = ref<TaskRewardItem>();
-  const isReadonly = ref(false);
-  const formList = ref<RewardAcceptFormItem[]>([]);
-  const qrCode = ref('');
-  const qrCodeTips = ref('');
-  const acceptType = ref(RewardAcceptType.Form);
 
-  const areaPickerValue = ref([]);
+  const receiveData = ref<RewardReceiveData>();
 
   function open(rewardItem: TaskRewardItem) {
     if (!rewardItem.acceptInfo) {
       return;
     }
-    isReadonly.value = ynToBool(rewardItem.acceptInfo.received, YN.N);
+
+    const _formList: RewardReceiveFormItem[] = [];
+    if (rewardItem.acceptInfo.formInfo) {
+      rewardItem.acceptInfo.formInfo.forEach(item => {
+        const texts = getItemText(item);
+        let formType: RewardReceiveFormType = 'input';
+        switch (item.type) {
+          case RewardAcceptFormType.Address:
+            formType = 'address';
+            break;
+          case RewardAcceptFormType.UserPhone:
+            formType = 'phone';
+            break;
+        }
+
+        _formList.push({
+          title: texts.label,
+          placeholder: texts.placeholder,
+          value: item.value || '',
+          formType,
+          isRequired: item.required,
+        });
+      });
+    }
+
+    receiveData.value = {
+      receiveType: rewardItem.acceptInfo.acceptType,
+      isReceived: ynToBool(rewardItem.acceptInfo.received, YN.N),
+      formList: _formList,
+      linkUrl: rewardItem.acceptInfo.prizeUrl || '',
+      qrCode: rewardItem.acceptInfo.qrCode || '',
+      qrCodeTips: rewardItem.acceptInfo.qrCodeTips || '',
+    };
     currentRewardItem.value = rewardItem;
-    acceptType.value = rewardItem.acceptInfo.acceptType;
-
-    if (rewardItem.acceptInfo.acceptType === RewardAcceptType.Form) {
-      formList.value = rewardItem.acceptInfo.formInfo;
-    }
-
-    if (rewardItem.acceptInfo.acceptType === RewardAcceptType.QrCode) {
-      formList.value = rewardItem.acceptInfo.formInfo;
-      qrCode.value = rewardItem.acceptInfo.qrCode || '';
-      qrCodeTips.value = rewardItem.acceptInfo.qrCodeTips || '';
-    }
-
-    show();
-  }
-
-  function isSimpleFormType(type: RewardAcceptFormType) {
-    return [
-      RewardAcceptFormType.UserName,
-      RewardAcceptFormType.UserPhone,
-      RewardAcceptFormType.Custom,
-    ].includes(type);
   }
 
   function getItemText(item: RewardAcceptFormItem) {
@@ -83,48 +89,14 @@ export const useTaskRewardReceive = () => {
     return res;
   }
 
-  async function submitForm() {
-    if (!currentRewardItem.value) {
+  const submitTaskReceive: RewardReceiveSubmitAction = async formValue => {
+    const formInfo = currentRewardItem.value?.acceptInfo?.formInfo;
+    if (!formInfo || !currentRewardItem.value) {
       return;
     }
-    for (let i = 0; i < formList.value.length; i++) {
-      const formItem = formList.value[i];
 
-      if (!formItem.required) {
-        continue;
-      }
-
-      if (isSimpleFormType(formItem.type) && !formItem.value) {
-        toast.error(translate('taskActivity.rewardReceive.error1'));
-        return;
-      }
-
-      if (
-        formItem.type === RewardAcceptFormType.UserPhone &&
-        !validatePhoneNumber(formItem.value || '')
-      ) {
-        toast.error(translate('taskActivity.rewardReceive.error2'));
-        return;
-      }
-
-      if (
-        formItem.type === RewardAcceptFormType.Address &&
-        (areaPickerValue.value.length === 0 || !formItem.value)
-      ) {
-        toast.error(translate('taskActivity.rewardReceive.error1'));
-        return;
-      }
-    }
-
-    const formInfoPostData = formList.value.map(item => {
-      let value = item.value;
-
-      if (item.type === RewardAcceptFormType.Address) {
-        const areaData = getSelectData(areaPickerValue.value, commonStore.areaData).map(
-          item => item.name,
-        );
-        value = `${areaData.join('')}${item.value || ''}`;
-      }
+    const formInfoPostData = formInfo.map((item, index) => {
+      const value = formValue[index];
 
       return {
         ...item,
@@ -132,26 +104,14 @@ export const useTaskRewardReceive = () => {
       };
     });
 
-    const watchCore = getWatchCore();
     await watchCore.taskActivity.submitRewardReceive(currentRewardItem.value.id, formInfoPostData);
-
-    toast.success(translate('base.submitSuccess'));
-    eventBus.$emit(appEvents.global.RefreshTaskRewardList);
-    visible.value = false;
-  }
+    getEmitter().emit(appEvents.global.RefreshTaskRewardList);
+  };
 
   useEventBusListener(appEvents.global.OpenTaskRewardReceiveDialog, open);
 
   return {
-    visible,
-    isReadonly,
-    acceptType,
-    areaPickerValue,
-    formList,
-    qrCode,
-    qrCodeTips,
-    isSimpleFormType,
-    submitForm,
-    getItemText,
+    submitTaskReceive,
+    receiveData,
   };
 };

@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
@@ -74,9 +74,14 @@ import FormSubmitButton from '@/components/common-base/form/form-submit-button.v
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useWithdrawApplyHook } from '../_hooks/use-withdraw-apply';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { toast } = useToastManager();
+
+const { getEmitter } = useGlobalInject();
 
 const { nickname } = storeDefinitionToRefs(useViewerStore);
 const {
@@ -94,13 +99,7 @@ const {
 
 const popupVisible = ref(false);
 
-onMounted(() => {
-  eventBus.$on(appEvents.withdraw.OpenWithdrawApply, handleWithdrawApplyPopupVisible);
-});
-
-onBeforeUnmount(() => {
-  eventBus.$off(appEvents.withdraw.OpenWithdrawApply, handleWithdrawApplyPopupVisible);
-});
+useEventBusListener(appEvents.withdraw.OpenWithdrawApply, handleWithdrawApplyPopupVisible);
 
 /** "申请提现"  OpenWithdrawApply 钩子 */
 function handleWithdrawApplyPopupVisible(visible: boolean) {
@@ -122,7 +121,7 @@ async function handleSubmitForm() {
   try {
     await submitForm();
     // 需要先隐藏"提现详情"
-    eventBus.$emit(appEvents.withdraw.OpenWithdrawDetail, false);
+    getEmitter().emit(appEvents.withdraw.OpenWithdrawDetail, false);
     handleWithdrawApplyPopupVisible(false);
   } catch (error) {
     toast.error((error as Error).message);

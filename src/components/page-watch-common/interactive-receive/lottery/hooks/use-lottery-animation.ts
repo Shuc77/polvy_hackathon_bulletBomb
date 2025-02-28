@@ -3,16 +3,16 @@ import { ref } from 'vue';
 
 import { IarLotteryStatus } from '@polyv/live-watch-sdk';
 import { useLotterySdk } from './use-lottery-sdk';
-import { useWebviewStore } from '@/store/use-webview-store';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
 /**
  * @hook 互动-抽奖-抽奖动画
  * */
 export const useLotteryAnimation = () => {
-  const webviewStore = useWebviewStore();
-
   /** 抽奖动画是否显示 */
   const lotteryAnimationVisible = ref(false);
+
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
   const { lotterySdk, openLotteryByStatus } = useLotterySdk();
 
@@ -25,9 +25,9 @@ export const useLotteryAnimation = () => {
   function onVisibleChange(visible = false) {
     lotteryAnimationVisible.value = visible;
     if (visible) {
-      webviewStore.toLockDrag('lottery-animation');
+      toLockFeedDrag('lottery-animation');
     } else {
-      webviewStore.toUnlockDrag();
+      toUnlockFeedDrag();
     }
   }
 

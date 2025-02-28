@@ -2,7 +2,6 @@
  * @file 标签页 Tabs hook
  */
 
-import { eventBus } from '@/app/app-events';
 import { useVue } from '@/hooks/core/use-vue';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
@@ -26,6 +25,7 @@ import {
   TabsInstance,
 } from './types';
 import { isTabPaneInstance } from './use-tab-pane';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const tabsProps = () => ({
   /** 激活的面板 name */
@@ -53,6 +53,7 @@ export const useTabs = (options: {
   emit: VueEmit<typeof tabsEmits>;
   switchEvent?: string;
 }) => {
+  const { getEmitter } = useGlobalInject();
   const { props, emit } = options;
   const { value } = useProps(props);
   const { getSlot } = useVue();
@@ -107,7 +108,7 @@ export const useTabs = (options: {
     emit('input', name);
 
     if (options.switchEvent) {
-      eventBus.$emit(options.switchEvent, name);
+      getEmitter().emit(options.switchEvent, name);
     }
   }
 

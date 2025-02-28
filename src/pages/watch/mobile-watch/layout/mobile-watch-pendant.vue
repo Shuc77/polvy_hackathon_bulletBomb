@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 import { computed, unref } from 'vue';
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 
 import { useInviteStore } from '@/store/use-invite-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -41,6 +41,7 @@ import MobileSeatTablePendant from '@/components/page-watch-common/interactive-r
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 
 import { TAB_NAME_QA, TAB_NAME_SEAT } from '@/assets/constants/tab-name';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { mobileWatchInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
@@ -52,8 +53,10 @@ const morePendantVisible = computed(() => {
   return !unref(chatMenuData).visible;
 });
 
+const { getEmitter } = useGlobalInject();
+
 function showMorePopup() {
-  eventBus.$emit(appEvents.global.OpenMobileMorePopup, true);
+  getEmitter().emit(appEvents.global.OpenMobileMorePopup, true);
 }
 </script>
 

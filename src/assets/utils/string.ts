@@ -1,8 +1,7 @@
 /**
  * @file 跟字符串相关的工具方法
  */
-
-import { resizeOSSImg } from './image';
+import {} from '@polyv/utils/es/string';
 
 /**
  * 将字符串中的&nbsp;转换为空格
@@ -13,22 +12,6 @@ import { resizeOSSImg } from './image';
  */
 export function nbspToSpace(str: string): string {
   return String(str).replace(/&nbsp;/g, ' ');
-}
-
-/**
- * 将富文本字符串中的图片地址进行大小处理
- * @param htmlContent 富文本字符串
- */
-export function resizeHtmlContentImg(htmlContent: string): string {
-  if (!htmlContent) {
-    return '';
-  }
-  return htmlContent.replace(
-    /(<img.*?\ssrc=)(["']?)(.+?)\2(.*?>)/gi,
-    (match, before, quot, src, after) => {
-      return before + '"' + resizeOSSImg(src, 1680) + '"' + ' data-src="' + src + '"' + after;
-    },
-  );
 }
 
 export function isString(target: unknown): target is string {
@@ -43,4 +26,11 @@ export function htmlStr2Text(htmlStr: string): string | null {
   const dom = document.createElement('div');
   dom.innerHTML = htmlStr;
   return dom.textContent;
+}
+
+export function replaceStrTemplate(strTemplate: string, data: Record<string, unknown>): string {
+  return strTemplate.replace(/\{(.*?)\}/g, (_, key) => {
+    const res = data[key] || '';
+    return res as string;
+  });
 }

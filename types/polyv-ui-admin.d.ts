@@ -1,5 +1,5 @@
 /* eslint-disable no-duplicate-imports */
-/* eslint-disable @typescript-eslint/no-duplicate-imports */
+
 declare module '@polyv/polyv-ui/lib-admin/popper-manager' {
   type PopperManager = {
     /** 为元素设置 z-index 属性 */
@@ -119,6 +119,15 @@ declare module '@polyv/polyv-ui/lib-admin/popper' {
  * 级联选择器
  */
 declare module '@polyv/polyv-ui/lib-admin/cascader' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
+ * 直播封面图
+ */
+declare module '@polyv/polyv-ui/lib-admin/channel-cover' {
   import Vue, { ComponentOptions } from 'vue';
   const component: ComponentOptions<Vue>;
   export default component;

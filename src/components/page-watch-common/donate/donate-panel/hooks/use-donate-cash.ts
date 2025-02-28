@@ -4,7 +4,7 @@
 
 import { useFormatPrice } from '@/hooks/tools/use-format';
 import { translate } from '@/assets/lang';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { ref, unref } from 'vue';
 import { useDonatePay } from './use-donate-pay';
 import { DonateType } from '@polyv/live-watch-sdk';
@@ -14,6 +14,8 @@ import { DonateOptions } from './types';
 
 /** 现金打赏 hook */
 export const useDonateCash = (donateOptions: DonateOptions = {}) => {
+  const { toast } = useToastManager();
+
   // 打赏成功回调
   const donateSuccess = donateOptions.donateSuccess;
 

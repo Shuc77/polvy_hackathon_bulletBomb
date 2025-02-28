@@ -21,7 +21,6 @@ import {
   SeatTableTemplate,
 } from '@polyv/live-watch-sdk';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useViewerStore } from './use-viewer-store';
 import { useThemeStore } from './use-theme-store';
@@ -132,7 +131,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     );
 
     function syncInteractStore() {
-      const watchCore = getWatchCore();
+      const watchCore = watchAppStore.getWatchCore();
       interactSetting.value = watchCore.interactReceive.getInteractSetting();
     }
 
@@ -163,7 +162,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     /** 公告提示是否显示 */
     const announcementTipsVisible = ref(
-      getStorageTipsStatus() === AnnouncementTipsStatus.showing &&
+      getStorageTipsStatus() === AnnouncementTipsStatus.Showing &&
         !watchAppStore.isPlaybackWatchUrl,
     );
 
@@ -183,7 +182,12 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     /** 是否存在未提交的中奖记录 */
     const hasNotReceivedLottery = computed<boolean>(() => {
-      return unref(lotteryWinRecords).some(item => !item.received);
+      return unref(lotteryWinRecords).some(item => {
+        if (typeof item.received === 'boolean') {
+          return !item.received;
+        }
+        return item.received !== 'Y';
+      });
     });
 
     /** 卡片推送入口是否正在显示 */

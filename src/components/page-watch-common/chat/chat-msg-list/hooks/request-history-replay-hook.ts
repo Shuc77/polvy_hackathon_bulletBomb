@@ -1,6 +1,6 @@
 import { isString } from '@/assets/utils/string';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatReplayMsgType, ChatReplayRequestHistoryMode } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
@@ -12,15 +12,21 @@ import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
  */
 export const useRequestHistoryReplayHook = (
   hookOptions: ChatMsgListHookOptions,
+  getStore: () => {
+    chatMsgStore: ReturnType<typeof useChatMsgStore>;
+    watchAppStore: ReturnType<typeof useWatchAppStore>;
+  },
 ): RequestHistoryCommonResult => {
+  const watchAppStore = getStore().watchAppStore;
+  const getWatchCore = watchAppStore.getWatchCore;
+
   const watchCore = getWatchCore();
-  const chatMsgStore = useChatMsgStore();
+  const chatMsgStore = getStore().chatMsgStore;
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { filterSpecialMsgList } = useFilterSpecialMsgHook();
 
   /**
    * 请求聊天室历史消息
-   * @todo 实际是要根据下标来获取到对应的时间，然后通过时间和 batchCount 去获取到要加载的数据
    */
   async function requestChatHistory(start = 0, mode?: ChatReplayRequestHistoryMode) {
     const reqMode = mode || ChatReplayRequestHistoryMode.Init;

@@ -2,8 +2,10 @@
  * @file 全局样式及页面元素处理
  */
 import { isIOS, isPcMiniProgram } from '@/assets/utils/browser';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { $ } from '@just4/dom';
 import { watchEffect } from 'vue';
 
@@ -49,22 +51,26 @@ export const useGlobalStyle = () => {
  * 浏览器标签页标题 hook
  */
 export const useBrowserTitle = () => {
+  const watchAppStore = useWatchAppStore();
   const channelInfoStore = useChannelInfoStore();
 
   /**
    * 设置浏览器标签页标题
    */
   function setBrowserTitle(): void {
+    if (isBuildForFeedMainMode()) return;
+
     const channelTitle = channelInfoStore.channelTitle;
-    if (channelTitle) {
+    if (channelTitle && watchAppStore.isPageActive) {
       window.document.title = channelTitle;
     }
   }
 
-  watchEffect(setBrowserTitle);
+  const setBrowserTitleEffectStop = watchEffect(setBrowserTitle);
 
   return {
     setBrowserTitle,
+    setBrowserTitleEffectStop,
   };
 };
 
@@ -72,6 +78,7 @@ export const useBrowserTitle = () => {
  * 浏览器标签页图标 hook
  */
 export const useBrowserIcon = () => {
+  const watchAppStore = useWatchAppStore();
   const themeStore = useThemeStore();
 
   /**
@@ -90,12 +97,17 @@ export const useBrowserIcon = () => {
   }
 
   function setBrowserIcon(): void {
-    setFavIconElem(themeStore.browserFavIcon);
+    if (isBuildForFeedMainMode()) return;
+
+    if (watchAppStore.isPageActive) {
+      setFavIconElem(themeStore.browserFavIcon);
+    }
   }
 
-  watchEffect(setBrowserIcon);
+  const setBrowserIconEffectStop = watchEffect(setBrowserIcon);
 
   return {
     setBrowserIcon,
+    setBrowserIconEffectStop,
   };
 };

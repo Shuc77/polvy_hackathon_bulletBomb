@@ -6,14 +6,18 @@ import { ref, computed, watch } from 'vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { MobileMessageBox, MessageBoxInstance } from '@/components/common-base/message-box';
 import { translate } from '@/assets/lang';
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { usePay } from './use-pay';
 import { OrderListInstance } from '../types/order-types';
 import { CreateOrderResponse } from '@polyv/live-watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export function useOrderCenter() {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
+
+  const { toast } = useToastManager();
 
   /** 订单管理sdk */
   const orderSdk = watchCore.interactReceive.getOrder();

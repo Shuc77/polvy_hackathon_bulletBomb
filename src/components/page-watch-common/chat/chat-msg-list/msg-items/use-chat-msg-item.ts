@@ -3,6 +3,7 @@ import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { computed, ExtractPropTypes, unref } from 'vue';
 import { GetVirtualListFn } from '../hooks/types';
+import { useRedpaperMsgVisible } from './redpaper-msg/use-redpaper-msg';
 import { useChatMsgComputedProvide } from './_hooks/chat-msg-computed-hook';
 import { useChatMsgData } from './_hooks/chat-msg-data-hook';
 import { useChatMsgTime } from './_hooks/chat-msg-time-hook';
@@ -46,6 +47,8 @@ export const useChatMsgItem = (options: { props: VueProps<typeof chatMsgItemProp
 
   const { chatMsg, prevChatMsg, nextChatMsg, msgId } = chatMsgDataContext;
 
+  const { checkRedpaperMsgVisible } = useRedpaperMsgVisible(chatMsg);
+
   /** 滚动容器 */
   const containerRef = computed(() => props.containerElem);
 
@@ -85,6 +88,10 @@ export const useChatMsgItem = (options: { props: VueProps<typeof chatMsgItemProp
    * 是否显示当前消息
    */
   const msgVisible = computed<boolean>(() => {
+    if (!checkRedpaperMsgVisible()) {
+      return false;
+    }
+
     return !chatMsgStore.hideChatMsgSources.includes(unref(chatMsg).msgSource);
   });
 

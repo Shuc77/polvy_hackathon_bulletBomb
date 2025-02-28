@@ -1,13 +1,19 @@
 <!-- @file PC 端表情选择 -->
 <template>
-  <div class="c-pc-emotion-picker pws-pc-emotion-panel">
+  <div
+    class="c-pc-emotion-picker pws-pc-emotion-panel"
+    v-if="emotionResourceLoaded"
+  >
     <!-- face 表情 -->
     <div
       v-if="faceEmotionEnabled"
       v-show="currentType === 'face'"
       class="c-pc-emotion-picker__panel pws-pc-emotion-panel-scrollbar"
     >
-      <pc-emotion-face-picker @click-face="onClickFace" />
+      <pc-emotion-face-picker
+        :key="langStore.currentLang"
+        @click-face="onClickFace"
+      />
     </div>
 
     <!-- image 表情 -->
@@ -16,7 +22,10 @@
       v-show="currentType === 'image'"
       class="c-pc-emotion-picker__panel pws-pc-emotion-panel-scrollbar"
     >
-      <pc-emotion-image-picker @click-image="onClickImage" />
+      <pc-emotion-image-picker
+        :key="langStore.currentLang"
+        @click-image="onClickImage"
+      />
     </div>
 
     <!-- 类型切换 -->
@@ -46,6 +55,7 @@
 </template>
 
 <script setup lang="ts">
+import { useLangStore } from '@/store/use-lang-store';
 import PcEmotionFacePicker from './pc-emotion-face-picker.vue';
 import PcEmotionImagePicker from './pc-emotion-image-picker.vue';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
@@ -54,10 +64,16 @@ import {
   emotionPickerProps,
   useEmotionPicker,
 } from '../hooks/use-emotion-picker';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChatStore } from '@/store/use-chat-store';
 
 const props = defineProps(emotionPickerProps());
 
 const emit = defineEmits(emotionPickerEmits());
+
+const langStore = useLangStore();
+
+const { emotionResourceLoaded } = storeDefinitionToRefs(useChatStore);
 
 const { faceEmotionEnabled, imageEmotionEnabled } = useProps(props);
 

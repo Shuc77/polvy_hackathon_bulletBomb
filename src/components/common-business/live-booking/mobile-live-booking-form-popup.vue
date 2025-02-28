@@ -49,6 +49,12 @@ import FormSubmitButton from '@/components/common-base/form/form-submit-button.v
 import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
 import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
 import { useLiveBookingForm } from './hooks/use-live-booking-form';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+
+const props = defineProps({
+  /** 其他频道预约的 channelId */
+  channelId: PropUtils.string.def(''),
+});
 
 const {
   bookingFormData,
@@ -57,7 +63,9 @@ const {
   openBookingForm,
   submitLiveBookingForm,
   cancelLiveBooking,
-} = useLiveBookingForm();
+} = useLiveBookingForm({
+  otherChannelId: props.channelId,
+});
 
 defineExpose({
   openBookingForm,

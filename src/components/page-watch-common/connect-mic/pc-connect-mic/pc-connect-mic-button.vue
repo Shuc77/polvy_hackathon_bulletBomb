@@ -47,7 +47,8 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
@@ -65,20 +66,22 @@ const {
   showJoinQueueNumberEnabled,
 } = storeDefinitionToRefs(useConnectMicStore);
 
+const { getEmitter } = useGlobalInject();
+
 /** 点击申请连麦 */
 function onClickApplyConnectMic() {
-  eventBus.$emit(appEvents.connectMic.TriggerApplyConnectMic);
+  getEmitter().emit(appEvents.connectMic.TriggerApplyConnectMic);
 }
 
 /** 点击取消申请连麦 */
 function onClickCancelApplyConnectMic() {
-  eventBus.$emit(appEvents.connectMic.TriggerCancelApplyConnectMic);
+  getEmitter().emit(appEvents.connectMic.TriggerCancelApplyConnectMic);
 }
 
 /** 点击结束连麦 */
 function onClickEndConnectMic() {
   // 唤起二次确认弹层
-  eventBus.$emit(appEvents.connectMic.TriggerEndConnectConfirm);
+  getEmitter().emit(appEvents.connectMic.TriggerEndConnectConfirm);
 }
 
 /** 取消申请按钮文案 */

@@ -52,10 +52,19 @@
 <script setup lang="ts">
 import { useShareStore } from '@/store/use-share-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useCopyText } from '@/assets/utils/copy';
 
 const { shareWatchUrl, webShareList, shareQrCodeUrl } = storeDefinitionToRefs(useShareStore);
 
-const { copyShareWatchUrl } = useShareStore();
+const shareStore = useShareStore();
+
+const { copyText, toastCopySuccess } = useCopyText();
+
+/** 复制分享的观看页地址 */
+async function copyShareWatchUrl() {
+  await copyText(shareStore.shareWatchUrl);
+  toastCopySuccess();
+}
 </script>
 
 <style lang="scss">

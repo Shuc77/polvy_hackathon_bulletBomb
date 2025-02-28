@@ -28,7 +28,10 @@
       background-color: map.get($--skin-configs, 'mobile-splash:bg-color') !important;
     }
     .pws-mobile-splash-page-live-count-down-wrap {
-      background-color: map.get($--skin-configs, 'mobile-splash-live-count-down-wrap:bg-color') !important;
+      background-color: map.get(
+        $--skin-configs,
+        'mobile-splash-live-count-down-wrap:bg-color'
+      ) !important;
     }
 
     // --------- 页脚 --------- //
@@ -43,17 +46,26 @@
 
     // --------- 倒计时 ---------- //
     .pws-mobile-count-down-square-item {
-      background-color: map.get($--skin-configs, 'mobile-count-down-square-item:bg-color') !important;
+      background-color: map.get(
+        $--skin-configs,
+        'mobile-count-down-square-item:bg-color'
+      ) !important;
       .pws-count-down-square-item-count {
         color: map.get($--skin-configs, 'mobile-count-down-square-item:text-color') !important;
-        border-color: map.get($--skin-configs, 'mobile-count-down-square-item:border-color') !important;
+        border-color: map.get(
+          $--skin-configs,
+          'mobile-count-down-square-item:border-color'
+        ) !important;
       }
       .pws-count-down-square-item-word {
         color: map.get($--skin-configs, 'mobile-count-down-square-item-word:text-color') !important;
       }
       &::before,
       &::after {
-        background-color: map.get($--skin-configs, 'mobile-count-down-square-item-dot:bg-color') !important;
+        background-color: map.get(
+          $--skin-configs,
+          'mobile-count-down-square-item-dot:bg-color'
+        ) !important;
       }
     }
 
@@ -119,16 +131,25 @@
         color: map.get($--skin-configs, 'mobile-emotion-panel-send-button:bg-color') !important;
       }
       .pws-mobile-chat-msg-input {
-        background-color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input:bg-color') !important;
+        background-color: map.get(
+          $--skin-configs,
+          'mobile-emotion-panel-msg-input:bg-color'
+        ) !important;
       }
       .pws-mobile-chat-msg-input-textarea {
         color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input:text-color') !important;
         &::placeholder {
-          color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input-placeholder:text-color') !important;
+          color: map.get(
+            $--skin-configs,
+            'mobile-emotion-panel-msg-input-placeholder:text-color'
+          ) !important;
         }
       }
       .pws-mobile-msg-input-suffix-icon {
-        color: map.get($--skin-configs, 'mobile-emotion-panel-msg-input-suffix-icon:text-color') !important;
+        color: map.get(
+          $--skin-configs,
+          'mobile-emotion-panel-msg-input-suffix-icon:text-color'
+        ) !important;
       }
     }
     .pws-mobile-emotion-picker {
@@ -144,11 +165,17 @@
       }
     }
     .pws-mobile-emotion-picker-tabs-active {
-      background-color: map.get($--skin-configs, 'mobile-emotion-panel-type--active:bg-color') !important;
+      background-color: map.get(
+        $--skin-configs,
+        'mobile-emotion-panel-type--active:bg-color'
+      ) !important;
     }
     .pws-mobile-emotion-picker-del-button {
       color: map.get($--skin-configs, 'mobile-emotion-panel-del-button:text-color') !important;
-      background-color: map.get($--skin-configs, 'mobile-emotion-panel-del-button:bg-color') !important;
+      background-color: map.get(
+        $--skin-configs,
+        'mobile-emotion-panel-del-button:bg-color'
+      ) !important;
     }
 
     // --------- 菜单 --------- //
@@ -191,7 +218,10 @@
     .pws-mobile-donate-carousel-indicator-item {
       background-color: map.get($--skin-configs, 'mobile-donate-indicator:bg-color') !important;
       &.is-active {
-        background-color: map.get($--skin-configs, 'mobile-donate-indicator--active:bg-color') !important;
+        background-color: map.get(
+          $--skin-configs,
+          'mobile-donate-indicator--active:bg-color'
+        ) !important;
       }
     }
     .pws-mobile-donate-panel-option {
@@ -199,13 +229,22 @@
       background-color: map.get($--skin-configs, 'mobile-donate-panel-option:bg-color') !important;
       &.is-active {
         color: map.get($--skin-configs, 'mobile-donate-panel-option--active:text-color') !important;
-        background-color: map.get($--skin-configs, 'mobile-donate-panel-option--active:bg-color') !important;
-        border-color: map.get($--skin-configs, 'mobile-donate-panel-option--active:border-color') !important;
+        background-color: map.get(
+          $--skin-configs,
+          'mobile-donate-panel-option--active:bg-color'
+        ) !important;
+        border-color: map.get(
+          $--skin-configs,
+          'mobile-donate-panel-option--active:border-color'
+        ) !important;
       }
     }
     .pws-mobile-donate-send-button {
       color: map.get($--skin-configs, 'mobile-donate-panel-send-button:text-color') !important;
-      background-color: map.get($--skin-configs, 'mobile-donate-panel-send-button:bg-color') !important;
+      background-color: map.get(
+        $--skin-configs,
+        'mobile-donate-panel-send-button:bg-color'
+      ) !important;
     }
     .pws-mobile-donate-point-data {
       color: map.get($--skin-configs, 'mobile-donate-panel-point:text-color') !important;
@@ -218,11 +257,17 @@
     }
     .pws-mobile-donate-custom-cash-input {
       .pws-mobile-form-input-main {
-        background-color: map.get($--skin-configs, 'mobile-donate-custom-cash-input:bg-color') !important;
+        background-color: map.get(
+          $--skin-configs,
+          'mobile-donate-custom-cash-input:bg-color'
+        ) !important;
         border: none;
       }
       .pws-mobile-form-input-main-title {
-        color: map.get($--skin-configs, 'mobile-donate-custom-cash-input-title:text-color') !important;
+        color: map.get(
+          $--skin-configs,
+          'mobile-donate-custom-cash-input-title:text-color'
+        ) !important;
       }
       .pws-mobile-form-input-main-input {
         color: map.get($--skin-configs, 'mobile-donate-custom-cash-input:text-color') !important;
@@ -290,7 +335,8 @@
         background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
       }
 
-      .pws-mobile-subtitle-select__body__input, .pws-mobile-subtitle-select__body__icon {
+      .pws-mobile-subtitle-select__body__input,
+      .pws-mobile-subtitle-select__body__icon {
         color: map.get($--skin-configs, 'subtitle:text-color') !important;
       }
     }
@@ -301,7 +347,7 @@
         background: map.get($--skin-configs, 'subtitle-item:bg-color') !important;
       }
       .pws-mobile-subtitle__content-item-line {
-        border-color: map.get($--skin-configs, 'subtitle-item:line-color') !important;;
+        border-color: map.get($--skin-configs, 'subtitle-item:line-color') !important;
       }
     }
 
@@ -334,7 +380,11 @@
     //  -------------- 云席嘉宾证 -------------  //
     @if map.has-key($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image') {
       .pws-mobile-seat-table-guest-card__main {
-        background-image: url(map.get($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image')) !important;
+        background-image: url(
+          map.get(
+            $--skin-configs,
+            'mobile-seat-table-guest-card-main:bg-image'
+          )) !important;
         background-position: center !important;
         background-size: cover !important;
       }
@@ -349,11 +399,13 @@
       }
     }
 
-
     // -------------- 移动端弹层样式  -------------  //
     .pws-mobile-popup__content {
       color: map.get($--skin-configs, 'mobile-mobile-popup__content:text-color') !important;
-      background-color: map.get($--skin-configs, 'mobile-mobile-popup__content:bg-color') !important;
+      background-color: map.get(
+        $--skin-configs,
+        'mobile-mobile-popup__content:bg-color'
+      ) !important;
     }
     .pws-mobile-popup__header__title {
       color: map.get($--skin-configs, 'mobile-mobile-popup__header__title:text-color') !important;
@@ -408,9 +460,81 @@
     .plv-player-module-danmu-node--self {
       box-sizing: border-box;
       padding: 4px 8px !important;
-      background: rgba($color: #000000, $alpha: .1);
+      background: rgba($color: #000000, $alpha: 0.1);
       border: solid 1px $--skin-primary-color !important;
       border-radius: 4px !important;
+    }
+
+    // --------- 商品库 --------- //
+    .pws-iar-product-list-wrap {
+      background-color: #fff !important;
+    }
+    .pws-iar-product-list-content {
+      background-color: #fff !important;
+      &::-webkit-scrollbar-thumb {
+        background-color: #e5e6eb !important;
+      }
+    }
+    .pws-iar-product-list-total {
+      color: #adadc0 !important;
+      background-color: inherit !important;
+    }
+    .pws-iar-icon-product-list-icon {
+      path {
+        fill: #858585;
+      }
+    }
+    .pws-iar-icon-product-list-icon-recruitment {
+      path {
+        fill: #858585;
+      }
+    }
+    .pws-iar-product-list-total-highlight {
+      color: #5394f6 !important;
+    }
+    .pws-iar-product-list-name {
+      color: #333 !important;
+    }
+    .pws-iar-product-list-number {
+      color: #fff !important;
+    }
+    .plv-iar-product__item {
+      color: #333 !important;
+    }
+    .pws-iar-product-list-desc-label {
+      color: #adadc0 !important;
+      opacity: 0.8;
+    }
+    .pws-iar-product-list-desc {
+      color: #999 !important;
+      opacity: 1;
+    }
+    .pws-iar-product-list-label {
+      height: 14px !important;
+      padding: unset !important;
+      font-weight: 500;
+      line-height: 14px !important;
+      color: #f15d5d !important;
+      background-color: #fff !important;
+      border: 0.5px solid rgba(#ff6363, 0.6);
+      border-radius: 2px;
+    }
+    .pws-iar-product-list-number {
+      color: #fff !important;
+    }
+    .pws-iar-product-list-empty-text {
+      color: #adadc0 !important;
+    }
+    .pws-iar-product-list-empty-img {
+      background-image: url(map.get($--skin-configs, 'iar-product-list-empty:icon-image')) !important;
+    }
+    .pws-iar-product-list-item {
+      border-bottom-color: rgba(#fff, 0.1) !important;
+    }
+
+    // ---------- 订单 --------- //
+    .pws-iar-order-enter {
+      color: #545c6b !important;
     }
 
     // @warn 需要在这块区域补充多皮肤样式

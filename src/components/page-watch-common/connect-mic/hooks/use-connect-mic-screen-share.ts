@@ -1,10 +1,10 @@
-import { appEvents, eventBus, useEventBusListener } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { getLocalStorage, setLocalStorage } from '@/assets/utils/storage';
 import { SelectOptionItem } from '@/components/common-base/form/form-select/types/form-select-types';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { ScreenShareError, ScreenShareMode } from '@polyv/live-watch-sdk';
 import { computed, reactive } from 'vue';
@@ -21,6 +21,9 @@ export const setTipsOnce = () => setLocalStorage(SCREEN_SHARE_TIPS_ONCE_KEY, 'tr
 /** 屏幕共享 hook */
 export const useConnectMicScreenShare = () => {
   const connectMicStore = useConnectMicStore();
+  const { getEmitter, getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
 
   /** 处理点击开始屏幕共享 */
   function onClickStartScreenShare() {
@@ -30,7 +33,7 @@ export const useConnectMicScreenShare = () => {
     }
 
     if (!isTipsOnce()) {
-      eventBus.$emit(appEvents.connectMic.OpenScreenShareTips, true);
+      getEmitter().emit(appEvents.connectMic.OpenScreenShareTips, true);
       return;
     }
 
@@ -81,6 +84,8 @@ export const useConnectMicScreenShare = () => {
 
 /** 屏幕共享设置 hook */
 export const useConnectMicScreenShareSetting = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const { visible, show: openSetting, close: closeSetting } = useSimpleVisible(false);
 
   const connectMicStore = useConnectMicStore();

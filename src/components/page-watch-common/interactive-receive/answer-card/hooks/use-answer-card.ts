@@ -1,17 +1,19 @@
 import { onBeforeMount, onBeforeUnmount, ref, computed, unref } from 'vue';
-import { appEvents, eventBus } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { translate } from '@/assets/lang';
 
 import { AllAnswerCardStatus, IarAnswerCardInstance } from '../types/answer-card-types';
 import { useAnswerCardEntrance } from './use-answer-card-entrance';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动-答题卡
  */
 export const useAnswerCard = () => {
   const { setAnswerCardEntrance, removeAnswerCardEntrance } = useAnswerCardEntrance();
+
+  const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
   /** 答题卡组件节点 */
@@ -21,21 +23,21 @@ export const useAnswerCard = () => {
   /** 答题卡是否显示 */
   const answerCardVisible = ref(false);
   /** 答题卡状态 */
-  const answerCardStatus = ref(AllAnswerCardStatus.isShowQuestion);
+  const answerCardStatus = ref(AllAnswerCardStatus.IsShowQuestion);
 
   /** 答题卡标题 */
   const answerCardTitle = computed(() => {
     let title = '';
     switch (unref(answerCardStatus)) {
-      case AllAnswerCardStatus.isShowQuestion:
+      case AllAnswerCardStatus.IsShowQuestion:
         title = translate('interact.answerCard.title');
         break;
-      case AllAnswerCardStatus.isShowResult:
+      case AllAnswerCardStatus.IsShowResult:
         title = answerCardSdk.curSubmittedAnswer
           ? translate('interact.answerCard.checkResultTitle')
           : translate('interact.answerCard.notSubmitted');
         break;
-      case AllAnswerCardStatus.isShowAnswer:
+      case AllAnswerCardStatus.IsShowAnswer:
         title = answerCardSdk.curSubmittedAnswer
           ? translate('interact.answerCard.checkAnswerTitle')
           : translate('interact.answerCard.notSubmitted');
@@ -53,7 +55,7 @@ export const useAnswerCard = () => {
     if (
       visible &&
       answerCardInstance &&
-      answerCardInstance.status === AllAnswerCardStatus.isShowQuestion
+      answerCardInstance.status === AllAnswerCardStatus.IsShowQuestion
     ) {
       setAnswerCardEntrance();
     }
@@ -69,13 +71,13 @@ export const useAnswerCard = () => {
     removeAnswerCardEntrance();
   };
 
+  useEventBusListener(appEvents.interaction.OpenAnswerCard, setAnswerCardVisible);
+
   onBeforeMount(() => {
-    eventBus.$on(appEvents.interaction.OpenAnswerCard, setAnswerCardVisible);
     answerCardSdk.on(answerCardSdk.events.STOP_TEST_QUESTION, removeAnswerCardEntrance);
   });
 
   onBeforeUnmount(() => {
-    eventBus.$off(appEvents.interaction.OpenAnswerCard, setAnswerCardVisible);
     answerCardSdk.off(answerCardSdk.events.STOP_TEST_QUESTION, removeAnswerCardEntrance);
   });
 

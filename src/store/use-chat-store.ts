@@ -4,8 +4,7 @@
 
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
-import { getWatchCore } from '@/core/watch-sdk';
-import { ErrorVerifyType, redirectToErrorVerify } from '@/hooks/core/use-error-verify';
+import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import {
   ChannelMenuType,
   ChatMsgQuoteOriginType,
@@ -35,6 +34,8 @@ export interface ChatStoreState {
   chatExited: Ref<boolean>;
   /** 聊天室是否已关闭 */
   chatRoomIsClosed: Ref<boolean>;
+  /** 表情资源加载完成  */
+  emotionResourceLoaded: Ref<boolean>;
   /** 当前用户是否被踢出 */
   isKicked: Ref<boolean>;
   /** 当前用户是否被禁言 */
@@ -59,6 +60,8 @@ export interface ChatStoreState {
   chatInputDisabled: ComputedRef<boolean>;
   /** 当前正在引用的聊天消息 */
   currentQuoteMsg: Ref<ChatMsgQuoteOriginType | undefined>;
+  /** 聊天室在线人数是否展示 */
+  chatOnlineNumberEnable: ComputedRef<boolean>;
 }
 
 export interface ChatStoreAction {
@@ -77,6 +80,8 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   const viewerStore = useViewerStore();
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
+
+  const { redirectToErrorVerify } = useErrorVerify();
 
   /** 聊天室设置信息 */
   const chatSetting = ref<ChatSetting>(PlvChatModule.generateDefaultChatSetting());
@@ -99,6 +104,9 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天室是否已关闭 */
   const chatRoomIsClosed = ref(false);
+
+  /** 表情资源加载完成  */
+  const emotionResourceLoaded = ref(false);
 
   /** 当前用户是否被踢出 */
   const isKicked = ref(false);
@@ -154,7 +162,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   /** 聊天室输入框占位符 */
   const chatInputPlaceholder = computed<string>(() => {
     // 聊天室被关闭
-    if (unref(chatRoomIsClosed) || playbackStore.chatReplayEnabled) {
+    if (unref(chatRoomIsClosed) || playbackStore.chatMsgReplayEnabled) {
       return translate('chat.roomClosed');
     }
 
@@ -184,7 +192,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     // 聊天室被关闭 || 聊天重放 || 需要实名认证
     if (
       unref(chatRoomIsClosed) ||
-      playbackStore.chatReplayEnabled ||
+      playbackStore.chatMsgReplayEnabled ||
       viewerStore.needRealNameAuth
     ) {
       return true;
@@ -196,8 +204,13 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   /** 当前正在引用的聊天消息 */
   const currentQuoteMsg = ref<ChatMsgQuoteOriginType>();
 
+  /** 聊天室在线人数是否展示 */
+  const chatOnlineNumberEnable = computed(() => {
+    return chatSetting.value.chatOnlineNumberEnable;
+  });
+
   function syncChatStore(): void {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const setting = watchCore.chat.getChatSetting();
     chatSetting.value = setting;
 
@@ -214,7 +227,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     // 如果被踢出了则跳走页面
     if (isKicked.value) {
       redirectToErrorVerify({
-        errorType: ErrorVerifyType.isKicked,
+        errorType: ErrorVerifyType.IsKicked,
       });
     }
   }
@@ -227,6 +240,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     connectError,
     chatExited,
     chatRoomIsClosed,
+    emotionResourceLoaded,
     isKicked,
     isShield,
 
@@ -246,5 +260,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
     syncChatStore,
     toggleOnlySpecialMsg,
+
+    chatOnlineNumberEnable,
   };
 });

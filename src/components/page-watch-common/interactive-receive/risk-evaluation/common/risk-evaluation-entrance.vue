@@ -16,8 +16,7 @@
 
 <script lang="ts" setup>
 import { nextTick, onBeforeMount, ref, watch } from 'vue';
-import { eventBus, appEvents, useEventBusListener } from '@/app/app-events';
-import { getWatchCore } from '@/core/watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useFinanceStore } from '@/store/use-finance-store';
@@ -25,10 +24,13 @@ import { useFinanceStore } from '@/store/use-finance-store';
 import { RiskEvaluationMainDialogOpenMode } from '../types/risk-evaluation-types';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const IarEvaluationPendant = getIarComponent('EvaluationPendant');
 
 const { toPlay, toPause } = usePlayerAction();
+
+const { getEmitter, getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 const questionnaireSdk = watchCore.interactReceive.getQuestionnaire();
@@ -71,7 +73,7 @@ function clearTimeoutCache() {
 }
 
 function openEvaluation() {
-  eventBus.$emit(appEvents.finance.RiskEvaluationMainDialogShow, {
+  getEmitter().emit(appEvents.finance.RiskEvaluationMainDialogShow, {
     openMode: RiskEvaluationMainDialogOpenMode.ManualOpen,
   });
 }
@@ -86,7 +88,7 @@ function openEvaluationForce() {
   // 需要暂停播放
   toPause();
 
-  eventBus.$emit(appEvents.finance.RiskEvaluationMainDialogShow, {
+  getEmitter().emit(appEvents.finance.RiskEvaluationMainDialogShow, {
     openMode: RiskEvaluationMainDialogOpenMode.TimeoutAutoOpen,
   });
 }

@@ -18,7 +18,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
-import { usePageAdvertStore } from '@/store/use-page-advert-store';
+import { useAdvertStore } from '@/store/use-advert-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
@@ -57,6 +57,7 @@ export const useSyncStoreForWatchApp = () => {
 
     channelStore.syncChannelStore();
     channelInfoStore.syncChannelInfo();
+    identityStore.syncIdentityStore();
     viewerStore.syncViewerInfo();
 
     layoutStore.syncLayoutStore();
@@ -66,7 +67,6 @@ export const useSyncStoreForWatchApp = () => {
     shareStore.syncShareStore();
     inviteStore.syncInviteInfo();
     multiMeetingStore.syncMultiMeetingStore();
-    identityStore.syncIdentityStore();
   }
 
   return {
@@ -116,7 +116,7 @@ export const useSyncStoreForWatchPage = () => {
   const shareStore = useShareStore();
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
-  const pageAdvertStore = usePageAdvertStore();
+  const pageAdvertStore = useAdvertStore();
   const polyvAIStore = usePolyvAIStore();
 
   const viewerStore = useViewerStore();
@@ -140,7 +140,7 @@ export const useSyncStoreForWatchPage = () => {
     shareStore.syncShareStore();
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
-    pageAdvertStore.syncPageAdvertStore();
+    pageAdvertStore.syncAdvertStore();
     polyvAIStore.syncPolyvAIStore();
     webviewStore.syncWebviewInfo();
 

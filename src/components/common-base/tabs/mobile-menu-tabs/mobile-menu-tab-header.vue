@@ -14,18 +14,27 @@
             class="c-mobile-menu-tab-header__header__item pws-main-tab-header-item"
             :class="{
               'is-active': paneData.name === currentTabName,
-              'c-mobile-menu-tab-header__header__item--reminder': paneData.showReminder,
+              'c-mobile-menu-tab-header__header__item--reminder':
+                paneData.showReminder && !paneData.showNewMessage,
             }"
             @click="onClickHeaderItem(paneData)"
           >
-            <span>{{ paneData.label }}</span>
+            <span
+              v-if="paneData.showNewMessage"
+              :class="{ 'c-mobile-menu-tab-header__header__item--news': paneData.showReminder }"
+            >
+              {{ paneData.label }}
+              <span v-if="paneData.showReminder">
+                {{ $lang('ask.news') }}
+              </span>
+            </span>
+            <span v-else>{{ paneData.label }}</span>
             <span
               v-if="paneData.subLabel"
               class="c-mobile-menu-tab-header__header__item__sub-label"
               >{{ paneData.subLabel }}</span
             >
           </div>
-
           <div
             v-if="tabPaneData.length > 1"
             ref="currentLineRef"
@@ -138,6 +147,25 @@ const { leftArrowVisible: leftShadowVisible, rightArrowVisible: rightShadowVisib
   .c-mobile-menu-tab-header__header__item__sub-label {
     margin-left: 4px;
     font-size: 12px;
+  }
+}
+
+.c-mobile-menu-tab-header__header__item--news {
+  position: relative;
+
+  > span {
+    position: absolute;
+    bottom: 100%;
+    left: 100%;
+    padding: 0 6px;
+    margin: 0 0 -6px -24px;
+    font-size: 12px;
+    line-height: 18px;
+    color: #fff;
+    white-space: nowrap;
+    background: #ff5252;
+    border-radius: 8px 8px 8px 0;
+    transform: scale(0.78);
   }
 }
 

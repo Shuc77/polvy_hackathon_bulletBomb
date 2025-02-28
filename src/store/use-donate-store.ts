@@ -8,8 +8,6 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from '@/store/use-channel-store';
 import { ynToBool } from '@utils-ts/boolean';
 import { changeProtocol } from '@utils-ts/net';
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
 import { useWatchAppStore } from './use-watch-app-store';
 
 export interface DonateGoodInfo extends DonateGoodData {
@@ -55,8 +53,6 @@ export interface DonateStoreState {
 }
 
 export interface DonateStoreAction {
-  /** 切换打赏动画显示状态 */
-  toggleDonateAnimationVisible: () => void;
   /** 翻译打赏道具的道具名 */
   translateGoodName: (goodName: string) => string;
   /** 获取打赏道具的价格文案 */
@@ -186,17 +182,6 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   /** 是否显示其他人的打赏特效 */
   const donateAnimationVisible = ref(true);
 
-  /** 切换打赏动画显示状态 */
-  function toggleDonateAnimationVisible() {
-    donateAnimationVisible.value = !unref(donateAnimationVisible);
-
-    if (donateAnimationVisible.value) {
-      toast.success(translate('donate.showAnimation.tips'));
-    } else {
-      toast.success(translate('donate.hideAnimation.tips'));
-    }
-  }
-
   /** 翻译打赏道具的道具名 */
   function translateGoodName(goodName: string): string {
     const translateName = unref(goodNamesConfig)[goodName];
@@ -252,7 +237,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
    * 同步打赏 Store 数据
    */
   function syncDonateStore() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
 
     showDonateCash.value = watchCore.donate.isShowDonateCash();
     showDonateCashGood.value = watchCore.donate.isShowDonateCashGood();
@@ -269,7 +254,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
 
   /** 初始化所有打赏道具列表 */
   function __initDonateItemAll() {
-    const watchCore = getWatchCore();
+    const watchCore = watchAppStore.getWatchCore();
     const { goods } = watchCore.donate.getDonateGoods();
 
     __donateItemAll.value = goods.map<DonateGoodInfo>(good => {
@@ -297,7 +282,6 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     waitPayDonateData,
     donateAnimationVisible,
 
-    toggleDonateAnimationVisible,
     translateGoodName,
     getGoodPriceText,
     findDonateGoodById,

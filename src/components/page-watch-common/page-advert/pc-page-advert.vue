@@ -1,7 +1,7 @@
 <!-- @file PC 端页面广告 -->
 <template>
   <div
-    v-if="advertVisible && pageAdvertEnabled && pageAdvertList.length"
+    v-if="pageAdvertVisible && pageAdvertEnabled && pageAdvertList.length"
     class="c-pc-page-advert pws-page-advert"
   >
     <div class="c-pc-page-advert__content">
@@ -49,9 +49,9 @@
       </plv-carousel>
 
       <pc-icon-close-round
-        v-if="closeVisible"
+        v-if="pageAdvertCloseVisible"
         class="c-pc-page-advert__content__close"
-        @click="closeAdvert"
+        @click="closePageAdvert"
       />
     </div>
   </div>
@@ -65,13 +65,14 @@ import {
   PcIconArrowRight,
 } from '@/components/component-icons/pc/map';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/pc-import';
-import { usePageAdvertStore } from '@/store/use-page-advert-store';
+import { useAdvertStore } from '@/store/use-advert-store';
 import { storeToRefs } from 'pinia';
+import { openLink } from '@/assets/utils/url';
 
-const pageAdvertStore = usePageAdvertStore();
-const { closeAdvert, openLink } = pageAdvertStore;
-const { advertVisible, pageAdvertEnabled, pageAdvertList, closeVisible } =
-  storeToRefs(pageAdvertStore);
+const advertStore = useAdvertStore();
+const { closePageAdvert } = advertStore;
+const { pageAdvertVisible, pageAdvertEnabled, pageAdvertList, pageAdvertCloseVisible } =
+  storeToRefs(advertStore);
 </script>
 
 <style lang="scss">

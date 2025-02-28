@@ -1,9 +1,11 @@
-import { getWatchCore } from '@/core/watch-sdk';
 import { ref } from 'vue';
 import { ChannelEvents } from '@polyv/live-watch-sdk';
-import { generateRandomInteger } from '@/assets/utils/utils';
+import { generateRandomInteger } from '@/assets/utils/number';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useTransmitSwitchTip = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const watchCore = getWatchCore();
   const transmitSwitchTipVisible = ref(false);
 

@@ -1,5 +1,5 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { getWatchCore } from '@/core/watch-sdk';
 import { onMounted, ref, unref } from 'vue';
 
 export const emotionFacePickerEmits = () => ({
@@ -11,6 +11,8 @@ export const emotionFacePickerEmits = () => ({
  * face 表情选取 hook
  */
 export const useEmotionFacePicker = (options: { emit: VueEmit<typeof emotionFacePickerEmits> }) => {
+  const { getWatchCore } = useGlobalInject();
+
   const { emit } = options;
 
   /** 容器节点 */
@@ -20,7 +22,7 @@ export const useEmotionFacePicker = (options: { emit: VueEmit<typeof emotionFace
   function onClickContainer(event: Event) {
     const watchCore = getWatchCore();
 
-    const title = watchCore.chat.getEmotionFaceClickTarget(event);
+    const title = watchCore.emotion.getEmotionFaceClickTarget(event);
     if (!title) {
       return;
     }
@@ -33,7 +35,7 @@ export const useEmotionFacePicker = (options: { emit: VueEmit<typeof emotionFace
     const watchCore = getWatchCore();
     const containerElem = unref(containerRef);
     if (containerElem) {
-      containerElem.appendChild(watchCore.chat.getEmotionFaceDomList());
+      containerElem.appendChild(watchCore.emotion.getEmotionFaceDomList());
     }
   });
 

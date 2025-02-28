@@ -10,209 +10,260 @@ import {
   ZoneType,
 } from '@polyv/live-watch-sdk';
 import { parse, appendToURL } from '@just4/querystring';
-
-/** 获取默认参数值 */
-const getDefaultQueryParams = (): UniversalParams<string | undefined> => ({
-  watchPageInitStatus: 'active',
-});
+import { useGlobalInject } from '@/app/use-global-inject';
+import { PolyvWatchAppClass } from '@/plugins/sdk-inject-helper';
+import { isInjectByExternalApp } from '@/assets/utils/utils';
 
 /** 获取地址栏上的参数 */
 export const getUrlQueryParams = (): UniversalParams<string | string[] | undefined> => {
   return parse(window.location.search && window.location.search.slice(1)) || {};
 };
 
-/**
- * 地址栏参数，每次操作地址栏变化时都会同步更改该变量
- * {@link appendQueryParam} 添加参数到地址栏
- * {@link removeQueryParam} 从地址栏移除参数
- */
-export let queryParams = getUrlQueryParams();
+export const useQueryParams = (opts?: {
+  getPolyvWatchAppLoader: () => () => PolyvWatchAppClass | undefined;
+}) => {
+  const { getPolyvWatchAppLoader } = opts || {
+    getPolyvWatchAppLoader: () => useGlobalInject().getPolyvWatchApp,
+  };
 
-/** 设置 queryParams */
-function __setQueryParams(params: UniversalParams<string | string[] | undefined>) {
-  queryParams = { ...params };
-}
+  const getPolyvWatchApp = getPolyvWatchAppLoader();
 
-/**
- * 获取当前观看页地址上的所有参数的对象
- * @desc 如果从地址上获取不到，会从默认值中获取，如果默认值也获取不到，则返回 undefined
- * */
-function __getQueryParamItem(key: string): string | undefined {
-  const result = queryParams[key];
+  /** 获取参数值 */
+  function getQueryParams(): UniversalParams<string | string[] | undefined> {
+    const plvWatchApp = getPolyvWatchApp();
 
-  if (typeof result !== 'undefined') {
-    if (Array.isArray(result)) {
-      console.warn(`${key} 的值为数组，当前仅返回数组中的第一个元素`);
-      return result[0];
+    if (!plvWatchApp) {
+      console.warn('当前 PolyvWatchApp 未创建，将直接使用 url 参数');
+      return getUrlQueryParams();
     }
-    return result;
+
+    return plvWatchApp.getStoreMap().queryParams || {};
   }
 
-  return getDefaultQueryParams()[key];
-}
+  /** 设置 queryParams */
+  function __setQueryParams(params: UniversalParams<string | string[] | undefined>) {
+    const plvWatchApp = getPolyvWatchApp();
 
-const buildGetters = <T extends string = string>(key: string) => {
-  return (): T | undefined => {
-    return __getQueryParamItem(key) as T | undefined;
+    if (!plvWatchApp) {
+      throw new Error('__setQueryParams error for plvWatchApp');
+    }
+
+    plvWatchApp.setQueryParams(params);
+  }
+
+  /**
+   * 获取当前观看页地址上的所有参数的对象
+   * @desc 如果从地址上获取不到，会从默认值中获取，如果默认值也获取不到，则返回 undefined
+   * */
+  function __getQueryParamItem(key: string): string | undefined {
+    const __formatResult = (result: string | string[] | undefined) => {
+      if (typeof result !== 'undefined') {
+        if (Array.isArray(result)) {
+          console.warn(`${key} 的值为数组，当前仅返回数组中的第一个元素`);
+          return result[0];
+        }
+        return result;
+      }
+    };
+
+    return __formatResult(getQueryParams()[key]);
+  }
+
+  const buildGetters = <T extends string = string>(key: string) => {
+    return (): T | undefined => {
+      return __getQueryParamItem(key) as T | undefined;
+    };
+  };
+
+  /** 兼容 pathname 中出现多个 / 的情况 */
+  function getLocationPathName() {
+    return window.location.pathname.replace(/\/+/g, '/');
+  }
+
+  function replaceHistoryState({ url }: { url: string }) {
+    if (isInjectByExternalApp()) {
+      console.warn('replaceHistoryState', url);
+      return;
+    }
+
+    if (url === window.location.href) return;
+
+    try {
+      if (window.history.replaceState) {
+        window.history.replaceState(null, document.title, url);
+      } else {
+        window.location.href = url;
+      }
+    } catch (error) {
+      // 可能会出现 url 非同源错误
+      console.error('replaceHistoryState error', error);
+      window.location.href = url;
+    }
+  }
+
+  type ParamGetterType = ReturnType<typeof paramGetter>;
+
+  type QueryParamsKeyType = keyof ParamGetterType;
+
+  /**
+   * 参数获取器
+   * @desc 需要获取地址上的参数都必须通过该获取器获取
+   */
+  const paramGetter = () => ({
+    // ===========  polyv sdk 外链参数 ===========
+
+    /** 互动功能 sdk 层 js 地址 */
+    interactionSdkScriptUrl: buildGetters('interactionSdkScriptUrl'),
+    /** 直播播放器 js 地址 */
+    livePlayerScriptUrl: buildGetters('livePlayerScriptUrl'),
+    /** 无延迟直播播放器 js 地址 */
+    liveLowLatencyPlayerScriptUrl: buildGetters('liveLowLatencyPlayerScriptUrl'),
+    /** 点播播放器 js 地址 */
+    vodPlayerScriptUrl: buildGetters('vodPlayerScriptUrl'),
+    /** 连麦 sdk js 地址 */
+    rtcWebScriptUrl: buildGetters('rtcWebScriptUrl'),
+    /** 聊天室功能 sdk 层 js 地址 */
+    chatSdkScriptUrl: buildGetters('chatSdkScriptUrl'),
+
+    // ===========  业务参数 ===========
+
+    /** 不需要互动功能 */
+    notNeedIar: buildGetters<YN>('notNeedIar'),
+    /** 是否需要微信 SDK 功能 */
+    wxSdkFeatureEnabled: buildGetters<YN>('wxSdkFeatureEnabled'),
+    /** 观看页初始状态，用于 webview-feed 和 web-feed */
+    watchPageInitStatus: buildGetters<'active' | 'inactive'>('watchPageInitStatus'),
+    /** 被某种方式嵌入使用，目前仅用于 web-feed' 处理 */
+    combinedBy: buildGetters<'web-feed'>('combinedBy'),
+    /** 观看页布局 */
+    watchLayout: buildGetters<MobileWatchLayout>('watchLayout'),
+    /** feed 流布局层级 */
+    feedLayoutLevel: buildGetters<'0' | '1'>('feedLayoutLevel'),
+
+    /** 频道号 */
+    channelId: buildGetters('channelId'),
+    /**
+     * 会议模式
+     * 传入该参数后，在移动端横屏场景不会加载播放器和PPT
+     * */
+    polyvMeeting: buildGetters<'true'>('polyvMeeting'),
+    /** 是否加载 VConsole */
+    console: buildGetters<'1'>('console'),
+    /** 多语言 */
+    lang: buildGetters('lang'),
+    /** 回放地址-回放 vid */
+    vid: buildGetters('vid'),
+    /** 回放地址-回放来源 */
+    playbackType: buildGetters<PlaybackOrigin>('playbackType'),
+    /** 回放分享-回放视频 Id */
+    playBackVid: buildGetters('playBackVid'),
+    /** 渠道 id */
+    promoteId: buildGetters('promoteId'),
+    /** 企业微信分享海报的企微员工 ID */
+    wxInviteId: buildGetters('wxInviteId'),
+    /** 邀请海报唯一ID */
+    invitePosterId: buildGetters('invitePosterId'),
+    /** 受邀者 ID */
+    invitee: buildGetters('invitee'),
+    /** 测试模式 token */
+    testModeToken: buildGetters('testModeToken'),
+    /** 忽略微信授权 */
+    ignoreWxAuth: buildGetters<YN>('ignoreWxAuth'),
+    /** 观众 id */
+    viewerid: buildGetters('viewerid'),
+    /** 观看条件-验证码 */
+    password: buildGetters('password'),
+    /** 观众昵称 */
+    name: buildGetters('name'),
+    /** 观众昵称 */
+    nickname: buildGetters('nickname'),
+    /** 观众头像 */
+    avatar: buildGetters('avatar'),
+    /** 网络类型 */
+    zone: buildGetters<ZoneType>('zone'),
+    /** 是否被 iframe */
+    hasFrame: buildGetters<'1'>('hasFrame'),
+    /** 用户系统独立授权的用户 id */
+    externalViewerId: buildGetters('externalViewerId'),
+    /** 自定义授权 & 外部授权 & 独立授权 & 用户系统独立授权中的用户 id */
+    userid: buildGetters('userid'),
+    /** 参与者头衔 */
+    actor: buildGetters('actor'),
+    /** 自定义授权 & 外部授权 & 独立授权 & 用户系统独立授权中的时间戳 */
+    ts: buildGetters('ts'),
+    /** 自定义授权 & 外部授权 & 独立授权 & 用户系统独立授权中的签名 */
+    sign: buildGetters('sign'),
+    /** 微信 openId */
+    openid: buildGetters('openid'),
+    /** 微信 unionId */
+    unionid: buildGetters('unionid'),
+    /** 微信用户 id */
+    wechatUserId: buildGetters('wechatUserId'),
+    /** 播放器 param4 */
+    param4: buildGetters('param4'),
+    /** 播放器 param5 */
+    param5: buildGetters('param5'),
+    /** 真实姓名 */
+    realName: buildGetters('realName'),
+    /** 多皮肤 */
+    skin: buildGetters<ChannelWatchPageSkin>('skin'),
+    /** 是否使用 ip 地址进行 CDN 拉流 */
+    ipPlay: buildGetters<'1'>('ipPlay'),
+    /** 微信快照页环境 */
+    snapshotPage: buildGetters<YN>('snapshotPage'),
+    /** 一客一码--销售码 */
+    saleCode: buildGetters<string>('saleCode'),
+    /** 一客一码--销售邀请的客户id */
+    inviteCustomerId: buildGetters<string>('inviteCustomerId'),
+    /** 是否关闭引导条 */
+    noAppBar: buildGetters<'1'>('noAppBar'),
+    /** 邀请观看--分销员/邀请人 Id */
+    inviteWatchSaleId: buildGetters<string>('inviteWatchSaleId'),
+  });
+
+  /**
+   * 移除当前观看页地址上对应的参数
+   * */
+  function removeQueryParam(keys: QueryParamsKeyType[]) {
+    const urlParams = getUrlQueryParams();
+    for (const key of keys) {
+      if (!urlParams[key]) {
+        continue;
+      }
+      delete urlParams[key];
+    }
+
+    __setQueryParams(urlParams);
+
+    const url = appendToURL(getLocationPathName(), getQueryParams());
+    replaceHistoryState({ url });
+  }
+
+  /**
+   * 添加当前观看页地址上对应的参数
+   * */
+  function appendQueryParam(params: { [key in QueryParamsKeyType]?: string } = {}) {
+    const urlParams = getUrlQueryParams();
+
+    __setQueryParams({
+      ...urlParams,
+      ...params,
+    });
+
+    const url = appendToURL(getLocationPathName(), getQueryParams(), { ignoreEmpty: true });
+    replaceHistoryState({ url });
+  }
+
+  return {
+    getQueryParams,
+
+    paramGetter,
+
+    removeQueryParam,
+    appendQueryParam,
   };
 };
 
-/**
- * @hook 参数获取器
- * @desc 需要获取地址上的参数都必须通过该获取器获取
- */
-export const paramGetter = {
-  /** 不需要互动功能 */
-  notNeedIar: buildGetters<YN>('notNeedIar'),
-  /** 页面初始状态 */
-  watchPageInitStatus: buildGetters<'inactive' | 'active'>('watchPageInitStatus'),
-  /** 观看页布局 */
-  watchLayout: buildGetters<MobileWatchLayout>('watchLayout'),
+export type ParamGetterType = ReturnType<ReturnType<typeof useQueryParams>['paramGetter']>;
 
-  // ===========  polyv sdk 外链参数 ===========
-
-  /** 互动功能 sdk 层 js 地址 */
-  interactionSdkScriptUrl: buildGetters('interactionSdkScriptUrl'),
-  /** 直播播放器 js 地址 */
-  livePlayerScriptUrl: buildGetters('livePlayerScriptUrl'),
-  /** 无延迟直播播放器 js 地址 */
-  liveLowLatencyPlayerScriptUrl: buildGetters('liveLowLatencyPlayerScriptUrl'),
-  /** 点播播放器 js 地址 */
-  vodPlayerScriptUrl: buildGetters('vodPlayerScriptUrl'),
-  /** 连麦 sdk js 地址 */
-  rtcWebScriptUrl: buildGetters('rtcWebScriptUrl'),
-  /** 聊天室功能 sdk 层 js 地址 */
-  chatSdkScriptUrl: buildGetters('chatSdkScriptUrl'),
-
-  // ===========  业务参数 ===========
-
-  /** 频道号 */
-  channelId: buildGetters('channelId'),
-  /**
-   * 会议模式
-   * 传入该参数后，在移动端横屏场景不会加载播放器和PPT
-   * */
-  polyvMeeting: buildGetters<'true'>('polyvMeeting'),
-  /** 是否加载 VConsole */
-  console: buildGetters<'1'>('console'),
-  /** 多语言 */
-  lang: buildGetters('lang'),
-  /** 回放地址-回放 vid */
-  vid: buildGetters('vid'),
-  /** 回放地址-回放来源 */
-  playbackType: buildGetters<PlaybackOrigin>('playbackType'),
-  /** 回放分享-回放视频 Id */
-  playBackVid: buildGetters('playBackVid'),
-  /** 渠道 id */
-  promoteId: buildGetters('promoteId'),
-  /** 企业微信分享海报的企微员工 ID */
-  wxInviteId: buildGetters('wxInviteId'),
-  /** 邀请海报唯一ID */
-  invitePosterId: buildGetters('invitePosterId'),
-  /** 受邀者 ID */
-  invitee: buildGetters('invitee'),
-  /** 测试模式 token */
-  testModeToken: buildGetters('testModeToken'),
-  /** 忽略微信授权 */
-  ignoreWxAuth: buildGetters<YN>('ignoreWxAuth'),
-  /** 观众 id */
-  viewerid: buildGetters('viewerid'),
-  /** 观看条件-验证码 */
-  password: buildGetters('password'),
-  /** 观众昵称 */
-  name: buildGetters('name'),
-  /** 观众昵称 */
-  nickname: buildGetters('nickname'),
-  /** 观众头像 */
-  avatar: buildGetters('avatar'),
-  /** 网络类型 */
-  zone: buildGetters<ZoneType>('zone'),
-  /** 是否被 iframe */
-  hasFrame: buildGetters<'1'>('hasFrame'),
-  /** 自定义授权 & 外部授权 & 独立授权中的用户 id */
-  userid: buildGetters('userid'),
-  /** 参与者头衔 */
-  actor: buildGetters('actor'),
-  /** 自定义授权 & 外部授权 & 独立授权中的时间戳 */
-  ts: buildGetters('ts'),
-  /** 自定义授权 & 外部授权 & 独立授权中的签名 */
-  sign: buildGetters('sign'),
-  /** 微信 openId */
-  openid: buildGetters('openid'),
-  /** 微信 unionId */
-  unionid: buildGetters('unionid'),
-  /** 微信用户 id */
-  wechatUserId: buildGetters('wechatUserId'),
-  /** 播放器 param4 */
-  param4: buildGetters('param4'),
-  /** 播放器 param5 */
-  param5: buildGetters('param5'),
-  /** 真实姓名 */
-  realName: buildGetters('realName'),
-  /** 多皮肤 */
-  skin: buildGetters<ChannelWatchPageSkin>('skin'),
-  /** 是否使用 ip 地址进行 CDN 拉流 */
-  ipPlay: buildGetters<'1'>('ipPlay'),
-  /** 微信快照页环境 */
-  snapshotPage: buildGetters<YN>('snapshotPage'),
-  /** 一客一码--销售码 */
-  saleCode: buildGetters<string>('saleCode'),
-  /** 一客一码--销售邀请的客户id */
-  inviteCustomerId: buildGetters<string>('inviteCustomerId'),
-};
-
-export type QueryParamsKeyType = keyof typeof paramGetter;
-
-/** 兼容 pathname 中出现多个 / 的情况 */
-function getLocationPathName() {
-  return window.location.pathname.replace(/\/+/g, '/');
-}
-
-function replaceHistoryState({ url }: { url: string }) {
-  if (url === window.location.href) return;
-
-  try {
-    if (window.history.replaceState) {
-      window.history.replaceState(null, document.title, url);
-    } else {
-      window.location.href = url;
-    }
-  } catch (error) {
-    // 可能会出现 url 非同源错误
-    console.error('replaceHistoryState error', error);
-    window.location.href = url;
-  }
-}
-
-/**
- * 移除当前观看页地址上对应的参数
- * */
-export function removeQueryParam(keys: QueryParamsKeyType[]) {
-  const urlParams = getUrlQueryParams();
-  for (const key of keys) {
-    if (!urlParams[key]) {
-      continue;
-    }
-    delete urlParams[key];
-  }
-
-  __setQueryParams(urlParams);
-
-  const url = appendToURL(getLocationPathName(), queryParams);
-  replaceHistoryState({ url });
-}
-
-/**
- * 添加当前观看页地址上对应的参数
- * */
-export function appendQueryParam(params: { [key in QueryParamsKeyType]?: string } = {}) {
-  const urlParams = getUrlQueryParams();
-
-  __setQueryParams({
-    ...urlParams,
-    ...params,
-  });
-
-  const url = appendToURL(getLocationPathName(), queryParams, { ignoreEmpty: true });
-  replaceHistoryState({ url });
-}
+export type QueryParamsKeyType = keyof ParamGetterType;

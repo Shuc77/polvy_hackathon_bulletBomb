@@ -71,10 +71,11 @@ import { PlvSwitch } from '@/plugins/polyv-ui/pc-import';
 import { PlvCheckbox } from '@/plugins/polyv-ui/admin-import';
 import PcSelect from '@/components/common-base/select/pc-select.vue';
 
-import { getWatchCore } from '@/core/watch-sdk';
-
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const {
   liveSubtitlesEnable,
@@ -99,7 +100,7 @@ function changeSubtitleSwitch() {
   const watchCore = getWatchCore();
   const enable = !localUerSubtitlesEnable.value;
   changeLocalUerSubtitlesEnable(enable);
-  watchCore.subtitles.changeViewerSubtitleEnable(enable);
+  watchCore.subtitle.changeViewerSubtitleEnable(enable);
 }
 </script>
 

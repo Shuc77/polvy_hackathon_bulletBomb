@@ -87,7 +87,6 @@
 
 <script setup lang="ts">
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
-import { resizeOSSImg } from '@/assets/utils/image';
 import MiniStatusTag from '@/components/common-business/status-tag/mini-status-tag.vue';
 import { MobileIconPageView } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -98,6 +97,9 @@ import { useScrollBar } from '@/hooks/behaviors/use-scroll-bar';
 import { nextTick, ref, unref, watch, watchEffect } from 'vue';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { TAB_NAME_MULTI_MEETING } from '@/assets/constants/tab-name';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const { currentMultiMeetingSeat, multiMeetingTotal, multiMeetingList } =
   storeDefinitionToRefs(useMultiMeetingStore);

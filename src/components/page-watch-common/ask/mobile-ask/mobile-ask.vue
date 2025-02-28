@@ -1,4 +1,4 @@
-<!-- @file PC 端提问 -->
+<!-- @file 移动端-横屏提问 -->
 <template>
   <div class="c-mobile-ask">
     <!-- 消息列表 -->
@@ -6,7 +6,7 @@
       <mobile-ask-msg-list
         ref="askMsgListRef"
         :ask-msg-list="askMsgRenderList"
-        @near-top="getAskMsgList"
+        @near-top="onScrollNearTop"
         @near-bottom="hideMoreMsg"
         @scroll-to-new="scrollToNew"
       />
@@ -53,7 +53,7 @@ const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const {
   askMsgRenderList,
-  getAskMsgList,
+  onScrollNearTop,
 
   inputDisabled,
   askInputPlaceholder,

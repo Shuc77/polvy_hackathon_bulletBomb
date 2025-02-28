@@ -25,7 +25,7 @@ export const usePageLayoutStyle = () => {
 
   onBeforeUnmount(() => {
     window.removeEventListener('resize', updatePageWidth, false);
-    document.documentElement.style.fontSize = '';
+    // document.documentElement.style.fontSize = '';
   });
 
   return {

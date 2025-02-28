@@ -8,10 +8,10 @@ import {
   InviteDetailLoadStatusData,
   InviteDetailExportErrorReason,
 } from '@polyv/live-watch-sdk';
-import { getWatchCore } from '@/core/watch-sdk';
 import { useInviteStore } from '@/store/use-invite-store';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 下载明细按钮实例 */
 export interface DetailExportButtonInstance {
@@ -28,6 +28,11 @@ export const useInviteDetail = () => {
   const inviteDetailList = ref<InviteDetailListItem[]>([]);
   const inviteStore = useInviteStore();
 
+  const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
+
+  const { toast } = useToastManager();
+
   async function initInviteDetail() {
     page.value = 0;
     isLoading.value = false;
@@ -42,7 +47,6 @@ export const useInviteDetail = () => {
       isLoadFailed.value = false;
       isLoading.value = true;
 
-      const watchCore = getWatchCore();
       const data = await watchCore.invite.getInviteDetailList({
         pageNumber: page.value + 1,
       });
@@ -118,7 +122,6 @@ export const useInviteDetail = () => {
 
   /** 获取明细下载状态 */
   async function toGetInviteDetailExportStatus(): Promise<void> {
-    const watchCore = getWatchCore();
     const data = await watchCore.invite.getInviteDetailLoadStatusInfo();
     detailLoadStatus.value = data;
     if (isWaitStatusFirstGet.value) {
@@ -158,7 +161,6 @@ export const useInviteDetail = () => {
    */
   async function handleDownloadDetail() {
     detailStatusLoading.value = true;
-    const watchCore = getWatchCore();
     const data = await watchCore.invite.startLoadInviteDetail();
     detailStatusLoading.value = false;
 

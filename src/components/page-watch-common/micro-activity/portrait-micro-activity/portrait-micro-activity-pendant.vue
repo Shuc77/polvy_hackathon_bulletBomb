@@ -9,9 +9,10 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { eventBus, appEvents } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { CSSProperties } from 'vue/types/jsx';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const microActivityStore = useMicroActivityStore();
 
@@ -21,8 +22,10 @@ const iconStyle = computed<CSSProperties>(() => {
   };
 });
 
+const { getEmitter } = useGlobalInject();
+
 function showMicroActivity() {
-  eventBus.$emit(appEvents.microActivity.OpenPortraitMicroActivity, true);
+  getEmitter().emit(appEvents.microActivity.OpenPortraitMicroActivity, true);
 }
 </script>
 

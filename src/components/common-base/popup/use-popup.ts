@@ -15,7 +15,7 @@ import { CSSProperties } from 'vue/types/jsx';
 import { PopupInstance, PopupHorizontalScreenPosition, PopupTheme } from './types';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { isScrollNearBottom } from '@/assets/utils/dom';
-import { useWebviewStore } from '@/store/use-webview-store';
+import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
 export const popupProps = () => ({
   /** 显示状态，默认：false，支持 .sync */
@@ -104,7 +104,7 @@ export const usePopup = (options: {
 }) => {
   const { props, emit } = options;
 
-  const webviewStore = useWebviewStore();
+  const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
   const {
     isVerticalScreenOrientation,
@@ -255,7 +255,7 @@ export const usePopup = (options: {
 
   /** 打开弹层 */
   function openPopup() {
-    webviewStore.toLockDrag('mobile-popup');
+    toLockFeedDrag('mobile-popup');
     wrapVisible.value = true;
     contentVisible.value = true;
     updateHeight();
@@ -268,7 +268,7 @@ export const usePopup = (options: {
 
   /** 关闭弹层 */
   function closePopup() {
-    webviewStore.toUnlockDrag();
+    toUnlockFeedDrag();
     contentVisible.value = false;
     emit('close');
     emit('update:visible', false);
@@ -425,7 +425,7 @@ export const usePopup = (options: {
     }
     setTimeout(() => {
       updateHeight();
-    }, 200);
+    }, 500);
   }
 
   if (props.appendToBody) {

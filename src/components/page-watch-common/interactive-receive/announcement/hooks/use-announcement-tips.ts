@@ -1,15 +1,16 @@
-import { appEvents, eventBus } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { local } from '@just4/storage';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { getStorageKey } from '@/assets/utils/storage';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /** 公告的提示状态 */
 export enum AnnouncementTipsStatus {
   /** 显示中、未关闭提示 */
-  showing = 'showing',
+  Showing = 'showing',
   /** 已显示过、已点击关闭 */
-  closed = 'closed',
+  Closed = 'closed',
 }
 
 /** localStorage 记录的 key */
@@ -29,6 +30,8 @@ export const setStorageTipsStatus = (status: AnnouncementTipsStatus) => {
  * @hook 互动-公告-公告提示
  */
 export const useAnnouncementTips = () => {
+  const { getEmitter } = useGlobalInject();
+
   /** 公告提示是否显示 */
   const { announcementTipsVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
@@ -40,23 +43,23 @@ export const useAnnouncementTips = () => {
   /** 显示公告提示，如果 storage 中记录的是 closed 则不响应 */
   const openAnnouncementTips = () => {
     const tipsStatus = getStorageTipsStatus();
-    if (tipsStatus !== AnnouncementTipsStatus.closed) {
+    if (tipsStatus !== AnnouncementTipsStatus.Closed) {
       setAnnouncementTipsVisible(true);
-      setStorageTipsStatus(AnnouncementTipsStatus.showing);
+      setStorageTipsStatus(AnnouncementTipsStatus.Showing);
     }
   };
 
   /** 关闭提示 */
   const closeAnnouncementTips = () => {
     // 设为提示关闭
-    setStorageTipsStatus(AnnouncementTipsStatus.closed);
+    setStorageTipsStatus(AnnouncementTipsStatus.Closed);
     setAnnouncementTipsVisible(false);
   };
 
   /** 处理点击公告提示 */
   const onClickAnnouncementTips = () => {
     // 打开公告弹层
-    eventBus.$emit(appEvents.interaction.OpenAnnouncementList, true);
+    getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
     closeAnnouncementTips();
   };
 

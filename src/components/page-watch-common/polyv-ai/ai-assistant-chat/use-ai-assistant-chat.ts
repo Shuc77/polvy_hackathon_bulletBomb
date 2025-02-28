@@ -5,7 +5,6 @@ import { translate } from '@/assets/lang';
 
 import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
-import { getWatchCore } from '@/core/watch-sdk';
 import {
   PolyvAIAssistantChatMsgSource,
   PolyvAIAssistantChatMsgType,
@@ -17,12 +16,15 @@ import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 import { TAB_NAME_AI_ASSISTANT } from '@/assets/constants/tab-name';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { AIAssistantChatMsgListInstanceType } from './ai-assistant-chat-msg-list/use-ai-assistant-chat-msg-list';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * AI 助手答疑 hook
  * @hook
  */
 export const useAIAssistantChat = () => {
+  const { getWatchCore } = useGlobalInject();
+
   const polyvAIStore = usePolyvAIStore();
   const layoutStore = useLayoutStore();
 

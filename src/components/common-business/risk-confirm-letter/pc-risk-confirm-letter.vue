@@ -9,7 +9,7 @@
     :closable="false"
   >
     <!-- 预览协议 -->
-    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.PREVIEW_AGREEMENT">
+    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.PreviewAgreement">
       <section
         class="c-pc-risk-confirm-letter__content__preview-agreement"
         :style="contentWrapperStyle"
@@ -34,7 +34,7 @@
       </div>
     </section>
     <!-- "不同意"的提示 -->
-    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.DISAGREE_TIPS">
+    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.DisagreeTips">
       <section
         class="c-pc-risk-confirm-letter__content__disagree-tips"
         :style="contentWrapperStyle"
@@ -60,7 +60,7 @@
       </div>
     </section>
     <!-- 默认展示 -->
-    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.DEFAULT">
+    <section v-show="riskConfirmLetterRenderMode === RiskConfirmLetterRenderMode.Default">
       <section class="c-pc-risk-confirm-letter__content-wrapper">
         <div
           v-if="viewerRiskConfirmInfo"

@@ -1,9 +1,9 @@
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { getWatchCore } from '@/core/watch-sdk';
-import { toast } from '@/hooks/components/use-toast';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { computed, unref } from 'vue';
 
 export const formUploadImageProps = () => ({
@@ -21,6 +21,10 @@ export const useFormUploadImage = (options: {
   props: VueProps<typeof formUploadImageProps>;
   emit: VueEmit<typeof formUploadImageEmit>;
 }) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const { toast } = useToastManager();
+
   const { props, emit } = options;
   const { value, maxCount } = useProps(props);
 

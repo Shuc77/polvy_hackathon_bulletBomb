@@ -34,6 +34,9 @@ logs
 *.min.js
 **/.dist/
 **/dist/
+**/dist-static/
+**/dist-sdk-inject/
 **/dist-saas/
 **/map-file/**
 **/component-icons/**
+inject-assets.js

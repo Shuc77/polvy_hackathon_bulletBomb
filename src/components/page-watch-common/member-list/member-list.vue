@@ -41,10 +41,12 @@
 import { onBeforeMount, onMounted, ref, unref, watch } from 'vue';
 import { ChatEvents, ChannelMenuType } from '@polyv/live-watch-sdk';
 
-import { getWatchCore } from '@/core/watch-sdk';
 import MemberListItem from './member-list-item.vue';
 import { useMemberListHook } from './use-member-list';
 import { isMobile } from '@/assets/utils/browser';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const {
   mobileMenuCurrentName,

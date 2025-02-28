@@ -44,8 +44,10 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
-import { getWatchCore } from '@/core/watch-sdk';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getWatchCore } = useGlobalInject();
 
 const { supportTimeAxisMark } = storeDefinitionToRefs(usePlayerStore);
 

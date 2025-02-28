@@ -24,10 +24,10 @@
 </template>
 
 <script setup lang="ts">
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import UserActor from '@/components/page-watch-common/chat/chat-msg-list/msg-items/_msg-user-actor/msg-user-actor.vue';
-import { getWatchCore } from '@/core/watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useCommonStore } from '@/store/use-common-store';
 import { useLangStore } from '@/store/use-lang-store';
@@ -35,6 +35,8 @@ import { onMounted, ref } from 'vue';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { MemberInfo } from './use-member-list';
 import { isMobile } from '@/assets/utils/browser';
+
+const { getWatchCore } = useGlobalInject();
 
 const { translateNick } = useLangStore();
 const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
