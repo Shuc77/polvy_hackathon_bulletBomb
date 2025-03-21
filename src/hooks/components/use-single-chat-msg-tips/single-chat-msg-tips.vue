@@ -127,16 +127,18 @@ function updatePopperLocation() {
 
 /** 更新气泡聊天消息内容 */
 function $updateItemData(options: SingleChatMsgTipsOptions) {
-  const { target, itemData, mountEl } = options;
-  singleTipsData.value = itemData;
-  referenceTarget = target;
-  singleTipsMountEl = mountEl;
+  setTimeout(() => {
+    const { target, itemData, mountEl } = options;
+    singleTipsData.value = itemData;
+    referenceTarget = target;
+    singleTipsMountEl = mountEl;
 
-  chatMsgStore.$patch({
-    isMsgTipsPopperVisible: true,
-  });
+    chatMsgStore.$patch({
+      isMsgTipsPopperVisible: true,
+    });
 
-  updatePopperLocation();
+    updatePopperLocation();
+  }, 100);
 }
 
 /** 隐藏气泡 */

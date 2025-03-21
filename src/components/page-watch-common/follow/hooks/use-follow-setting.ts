@@ -38,9 +38,14 @@ export const useFollowSetting = () => {
     return followSetting.followImage;
   });
 
-  /** 关注提示文案 */
+  /** 移动端关注提示文案 */
   const followTips = computed(() => {
     return followSetting.followTips;
+  });
+
+  /** PC端关注提示文案 */
+  const pcFollowTips = computed(() => {
+    return followSetting.pcFollowTips;
   });
 
   return {
@@ -49,5 +54,6 @@ export const useFollowSetting = () => {
     followEntrance,
     followImage,
     followTips,
+    pcFollowTips,
   };
 };

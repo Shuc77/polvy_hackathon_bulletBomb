@@ -128,17 +128,26 @@
             <pc-bulletin-marquee />
           </div>
 
-          <transition name="fade">
-            <div
-              ref="ProductDetailDialogRef"
-              class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__product-detail-dialog"
-              v-if="iarSdkLoaded && productDetailVisible"
-            >
-              <div class="c-pc-watch-layout__main__product-detail-dialog__inner">
-                <pc-product-detail />
-              </div>
+          <!-- 播放器侧边 - 互动功能渲染入口 -->
+          <div class="c-pc-watch-layout__main-layer">
+            <div class="c-pc-watch-layout__main__iar-render">
+              <pc-iar-render-upper-player v-if="iarSdkLoaded" />
+              <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded" />
             </div>
-          </transition>
+          </div>
+
+          <div class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__page-notices">
+            <div class="c-pc-watch-layout__main__page-notices__content">
+              <!-- 发起转播频道被踢出提示 -->
+              <pc-page-notice
+                v-if="chatExited"
+                :tips="$lang('chat.transformTip')"
+              />
+
+              <!-- 聊天重放消息提示 -->
+              <pc-chat-msg-replay-tips />
+            </div>
+          </div>
 
           <!-- 播放器控制栏层 -->
           <div
@@ -217,9 +226,12 @@ import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
-import PcProductDetail from '@/components/page-watch-common/product-detail/pc-product-detail.vue';
 import PcBulletinMarquee from '@/components/page-watch-common/bulletin-marquee/pc-bulletin-marquee.vue';
+import PcChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
+import PcIarRenderUpperPlayer from '@/components/page-watch-common/interactive-receive/pc-iar-render-upper-player.vue';
+import PcIarRenderUpperPlayerV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-upper-player-v2.vue';
+import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -241,8 +253,11 @@ import {
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useChatStore } from '@/store/use-chat-store';
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { chatExited } = storeDefinitionToRefs(useChatStore);
 
 const { canRenderPlayer, switchQualityTipStatus, showControl } =
   storeDefinitionToRefs(usePlayerStore);
@@ -261,10 +276,9 @@ const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(us
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded, productDetailVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const PlayerControlWrapperRef = ref<HTMLDivElement>();
-const ProductDetailDialogRef = ref<HTMLDivElement>();
 
 const {
   hoverItemVisible: playerControlVisible,
@@ -441,6 +455,10 @@ $--layout-sub-pack-up-height: 40px !default;
   width: $--layout-left-width-percent;
   height: 100%;
   pointer-events: none;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .c-pc-watch-layout__sub-pack-up-wrap {
@@ -575,18 +593,14 @@ $--layout-sub-pack-up-height: 40px !default;
   height: 100%;
 }
 
-.c-pc-watch-layout__main__product-detail-dialog {
-  z-index: 3001;
-
-  .c-pc-watch-layout__main__product-detail-dialog__inner {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 30%;
-    min-width: 300px;
-    height: 100%;
-    pointer-events: initial;
-  }
+.c-pc-watch-layout__main__iar-render {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 375px;
+  min-width: 300px;
+  height: 100%;
+  pointer-events: none;
 }
 
 .c-pc-watch-layout__main__other-live-booking {
@@ -595,5 +609,20 @@ $--layout-sub-pack-up-height: 40px !default;
   left: 32px;
   z-index: $--layer-zIndex-count-down;
   pointer-events: initial;
+}
+
+.c-pc-watch-layout__main__page-notices__content {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 350px;
+  transform: translateX(-50%);
+
+  .c-pc-page-notice {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
 }
 </style>

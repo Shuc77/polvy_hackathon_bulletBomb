@@ -26,11 +26,7 @@
         }}
       </div>
       <div
-        v-if="
-          [TaskActivityRewardType.Cash, TaskActivityRewardType.ExternalPoint].includes(
-            item.taskReward.type,
-          )
-        "
+        v-if="canShowRewardStatus(item)"
         class="c-mobile-task-reward-list__item__status"
         :class="['c-mobile-task-reward-list__item__status--' + item.rewardStatus]"
         @click="openErrorTips(item)"
@@ -87,8 +83,15 @@ import { formatDate } from '@utils-ts/date';
 import { useTaskRewardList } from './hooks/use-task-reward-list';
 import { useTaskActivityText } from './use-task-activity';
 
-const { scrollRef, onScroll, rewardList, getRewardStatusText, openReceive, openErrorTips } =
-  useTaskRewardList();
+const {
+  scrollRef,
+  onScroll,
+  rewardList,
+  getRewardStatusText,
+  openReceive,
+  openErrorTips,
+  canShowRewardStatus,
+} = useTaskRewardList();
 
 const { getTaskRewardText, getTaskReachText } = useTaskActivityText();
 </script>
@@ -195,7 +198,6 @@ const { getTaskRewardText, getTaskReachText } = useTaskActivityText();
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  line-height: 17px;
   color: #999999;
   background: #fff;
   border-radius: 12px;

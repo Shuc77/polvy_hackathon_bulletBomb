@@ -10,13 +10,17 @@
       @click="onClickMsg"
     >
       <span
-        :class="['c-portrait-effect-msg__item', `c-portrait-effect-msg__item--${item.textType}`]"
+        :class="[
+          'c-portrait-effect-msg__item',
+          `c-portrait-effect-msg__item--${item.textType}`,
+          {
+            'pws-secondary-text-color': item.textType === 'nickname',
+          },
+        ]"
         v-for="(item, index) in getEffectText(effectData)"
         :key="index"
       >
-        <span class="c-portrait-effect-msg__item__text">
-          {{ item.text }}
-        </span>
+        <span class="c-portrait-effect-msg__item__text">{{ item.text }}</span>
 
         <span
           v-if="item.textType === 'nickname' && item.count && item.count > 1"
@@ -46,11 +50,9 @@ const { getEffectText, getNicknameCountText } = useEffectText();
 @import '../_styles/vars.scss';
 
 .c-portrait-effect-msg__inner {
-  font-size: 14px;
-  color: #fff;
-
   &.c-portrait-effect-msg__inner--ProductClick,
   &.c-portrait-effect-msg__inner--ProductBuy {
+    cursor: pointer;
     .c-portrait-effect-msg__icon {
       display: inline-flex !important;
     }
@@ -59,22 +61,11 @@ const { getEffectText, getNicknameCountText } = useEffectText();
 
 .c-portrait-effect-msg__item {
   line-height: 20px;
-  vertical-align: middle;
-
-  &:first-of-type {
-    .c-portrait-effect-msg__item__text {
-      margin-left: 0 !important;
-    }
-  }
+  // vertical-align: middle;
 }
 
-.c-portrait-effect-msg__item--nickname,
-.c-portrait-effect-msg__item--productName {
-  .c-portrait-effect-msg__item__text {
-    // margin-right: 4px;
-    // margin-left: 4px;
-    color: rgba(255, 255, 255, 0.6);
-  }
+.c-portrait-effect-msg__item--nickname {
+  margin-right: 4px;
 }
 
 .c-portrait-effect-msg__icon {

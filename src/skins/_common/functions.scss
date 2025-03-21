@@ -33,6 +33,6 @@
 @function generate-portrait-skin-setup-configs() {
   $--new-configs: $--skin-portrait-configs;
   $--skin-configs: generate-skin-setup-configs();
-  $--new-configs: map.deep-merge($--new-configs, $--skin-configs);
+  $--new-configs: map.deep-merge($--skin-configs, $--new-configs);
   @return $--new-configs;
 }

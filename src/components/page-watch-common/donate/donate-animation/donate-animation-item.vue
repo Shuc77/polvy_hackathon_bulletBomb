@@ -30,7 +30,7 @@
           v-if="donateType === DonateType.Good"
           class="c-donate-animation-item__good-image g-img-cover"
           :style="{
-            backgroundImage: `url(${gimg})`,
+            backgroundImage: `url(${resizeOSSImg(gimg, 36, 36)})`,
           }"
         ></div>
         <div
@@ -59,6 +59,7 @@
 import { generateRandomInteger, numberToFixed } from '@/assets/utils/number';
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { DonateType } from '@polyv/live-watch-sdk';
@@ -90,6 +91,8 @@ const { nick, donateType, gimg, count } = useProps(props);
 const { translateNick } = useLangStore();
 
 const { translateGoodName } = useDonateStore();
+
+const { resizeOSSImg } = useResizeOssImage();
 
 const content = computed(() => {
   if (props.donateType === DonateType.Cash) {

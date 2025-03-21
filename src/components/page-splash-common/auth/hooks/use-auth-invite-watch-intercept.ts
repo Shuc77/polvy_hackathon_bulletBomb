@@ -33,6 +33,11 @@ export const useAuthInviteWatchIntercept = () => {
         saleId: opts.saleId,
       });
       if (verifyResult.success) {
+        // 无需审核，刷新页面获取最新的邀请信息
+        if (!verifyResult.needAudit) {
+          window.location.reload();
+          return true;
+        }
         watchAppStore.setDirectBusinessPage({
           pageType: DirectBusinessPageType.InviteWatchAuditing,
         });

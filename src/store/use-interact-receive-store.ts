@@ -26,6 +26,7 @@ import { useViewerStore } from './use-viewer-store';
 import { useThemeStore } from './use-theme-store';
 
 import { ProductGoodData } from '@/components/page-watch-common/interactive-receive/product/types/product-types';
+import { usePlaybackStore } from './use-playback-store';
 
 /**
  * 互动功能二次入口数据
@@ -98,6 +99,12 @@ export interface InteractReceiveStoreState {
   currentProduct: Ref<ProductGoodData | undefined>;
   /** 商品详情弹层是否可见 */
   productDetailVisible: Ref<boolean>;
+  /** 优惠券挂件是否显示 */
+  couponPendantVisible: Ref<boolean>;
+  /** 优惠券待领取列表是否显示 */
+  couponCommonListVisible: Ref<boolean>;
+  /** 优惠券已领取列表是否显示 */
+  couponUserListVisible: Ref<boolean>;
 }
 
 export interface InteractReceiveStoreAction {
@@ -107,6 +114,8 @@ export interface InteractReceiveStoreAction {
   setInteractiveEntrance(entranceData: InteractiveEntranceData): void;
   /** 根据类型移除互动二次入口 */
   removeInteractiveEntrance(type: string): void;
+  /** 设置问卷返回按钮显示 */
+  setQuestionnaireBackBtnVisible(visible: boolean): void;
 }
 
 export interface InteractReceiveStore
@@ -121,6 +130,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const layoutStore = useLayoutStore();
     const themeStore = useThemeStore();
     const viewerStore = useViewerStore();
+    const playbackStore = usePlaybackStore();
 
     /** 互动 SDK 加载完成，注意不一定加载成功 */
     const iarSdkLoaded = ref(false);
@@ -281,10 +291,32 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 问卷是否显示返回按钮 */
     const questionnaireBackBtnVisible = ref(true);
 
+    /** 设置问卷返回按钮显示 */
+    function setQuestionnaireBackBtnVisible(visible: boolean) {
+      let __visible = visible;
+
+      // 回放问卷不允许返回
+      if (playbackStore.questionnaireReplayEnabled) {
+        __visible = false;
+      }
+      questionnaireBackBtnVisible.value = __visible;
+    }
+
     /** 当前商品选择的商品数据 */
     const currentProduct = ref<ProductGoodData>();
     /** 商品详情弹层是否可见 */
     const productDetailVisible = ref(false);
+
+    /** 优惠券挂件是否显示 */
+    const couponPendantVisible = computed(() => {
+      return interactSetting.value.couponEnabled;
+    });
+
+    /** 优惠券待领取列表是否显示 */
+    const couponCommonListVisible = ref(false);
+
+    /** 优惠券已领取列表是否显示 */
+    const couponUserListVisible = ref(false);
 
     return {
       iarSdkLoaded,
@@ -317,9 +349,14 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       hasCheckIn,
       productBubbleVisible,
       questionnaireBackBtnVisible,
+      setQuestionnaireBackBtnVisible,
 
       currentProduct,
       productDetailVisible,
+
+      couponPendantVisible,
+      couponCommonListVisible,
+      couponUserListVisible,
     };
   },
 );

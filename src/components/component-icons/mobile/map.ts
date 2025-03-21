@@ -43,6 +43,7 @@ export { default as MobileIconSearch } from './icons/search';
 export { default as MobileIconShare } from './icons/share';
 export { default as MobileIconSmilingFace } from './icons/smiling-face';
 export { default as MobileIconTranslate } from './icons/translate';
+export { default as MobileIconTranslateTwo } from './icons/translate-two';
 export { default as MobileIconVideoCall } from './icons/video-call';
 export { default as MobileIconVoiceCall } from './icons/voice-call';
 export { default as MobileIconWarningRoundFill } from './icons/warning-round-fill';

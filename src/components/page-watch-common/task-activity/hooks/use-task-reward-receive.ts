@@ -10,22 +10,29 @@ import type {
 import {
   RewardAcceptFormItem,
   RewardAcceptFormType,
+  SubmitRewardReceiveIdOptions,
   TaskRewardItem,
   YN,
 } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@utils-ts/boolean';
 import { ref } from 'vue';
 
+export type TaskRewardItemData = Pick<TaskRewardItem, 'acceptInfo'> & {
+  id?: number;
+  activityId?: number;
+  taskId?: number;
+};
+
 export const useTaskRewardReceive = () => {
   const { getWatchCore, getEmitter } = useGlobalInject();
 
   const watchCore = getWatchCore();
 
-  const currentRewardItem = ref<TaskRewardItem>();
+  const currentRewardItem = ref<TaskRewardItemData>();
 
   const receiveData = ref<RewardReceiveData>();
 
-  function open(rewardItem: TaskRewardItem) {
+  function open(rewardItem: TaskRewardItemData) {
     if (!rewardItem.acceptInfo) {
       return;
     }
@@ -104,7 +111,20 @@ export const useTaskRewardReceive = () => {
       };
     });
 
-    await watchCore.taskActivity.submitRewardReceive(currentRewardItem.value.id, formInfoPostData);
+    let targetId: number | SubmitRewardReceiveIdOptions | undefined;
+
+    if (currentRewardItem.value.id) {
+      targetId = currentRewardItem.value.id;
+    } else if (currentRewardItem.value.activityId && currentRewardItem.value.taskId) {
+      targetId = {
+        activityId: currentRewardItem.value.activityId,
+        taskId: currentRewardItem.value.taskId,
+      };
+    }
+
+    if (targetId) {
+      await watchCore.taskActivity.submitRewardReceive(targetId, formInfoPostData);
+    }
     getEmitter().emit(appEvents.global.RefreshTaskRewardList);
   };
 

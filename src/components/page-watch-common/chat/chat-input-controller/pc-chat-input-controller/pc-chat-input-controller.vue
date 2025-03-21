@@ -134,8 +134,11 @@ const donatePanelRef = ref<HTMLDivElement>();
 const {
   visible: donateVisible,
   togglePanel: toggleDonatePanel,
+  showPanel: showDonatePanel,
   hidePanel: hideDonatePanel,
 } = usePanelVisible([donatePanelRef, '[data-donate]']);
+
+useEventBusListener(appEvents.donate.OpenDonatePopup, showDonatePanel);
 
 function onClickDonateEnter() {
   const result = checkNeedRealNameAuth();

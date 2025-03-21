@@ -1,6 +1,9 @@
 <!-- @file 打赏动画 -->
 <template>
-  <div class="c-donate-animation">
+  <div
+    v-if="trackList.length"
+    class="c-donate-animation"
+  >
     <div
       v-for="item in trackList"
       :key="item.animationId"
@@ -34,7 +37,16 @@ const { trackList, onItemLeaved } = useDonateAnimation({ props });
 
 .c-donate-animation {
   position: relative;
-  margin-bottom: -#{$--donate-animation-item-margin};
   pointer-events: none;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.c-donate-animation__item:last-of-type {
+  .c-donate-animation-item {
+    margin-bottom: 0;
+  }
 }
 </style>

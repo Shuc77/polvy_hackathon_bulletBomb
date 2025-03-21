@@ -3,25 +3,45 @@
   <portrait-msg-container
     class="c-portrait-redpaper-receive-msg"
     hide-user-info
+    :nickname="receiveNick"
   >
-    <div class="c-portrait-redpaper-receive-msg__content">
-      <i class="c-portrait-redpaper-receive-msg__icon g-img-cover"></i>
-      <span class="c-portrait-redpaper-receive-msg__nick">{{ receiveNick }}</span>
+    <span class="c-portrait-redpaper-receive-msg__content">
+      <i
+        v-if="isRedpaperRain"
+        class="c-portrait-redpaper-receive-msg__icon-rain g-img-cover"
+      ></i>
+      <i
+        v-else
+        class="c-portrait-redpaper-receive-msg__icon g-img-cover"
+      ></i>
 
-      <span v-if="isRedpaperRain">{{ $lang('redpack.rain.get') }}</span>
-      <span v-else-if="isRedpaperPassword">{{ $lang('redpack.password.get') }}</span>
-      <span v-else-if="isRedpaperQuestion">{{ $lang('redpack.question.get') }}</span>
-      <span v-else>{{ $lang('redpack.normal.get') }}</span>
-
-      <span class="c-portrait-redpaper-receive-msg__highlight">
-        {{ $lang('redpack.receive.name') }}
-      </span>
+      <span>{{ $lang('redpack.get') }}</span>
+      <span
+        v-if="isRedpaperRain"
+        class="c-portrait-redpaper-receive-msg__highlight"
+        >{{ $lang('redpack.rain.name') }}</span
+      >
+      <span
+        v-else-if="isRedpaperPassword"
+        class="c-portrait-redpaper-receive-msg__highlight"
+        >{{ $lang('redpack.password.name') }}</span
+      >
+      <span
+        v-else-if="isRedpaperQuestion"
+        class="c-portrait-redpaper-receive-msg__highlight"
+        >{{ $lang('redpack.question.name') }}</span
+      >
+      <span
+        v-else
+        class="c-portrait-redpaper-receive-msg__highlight"
+        >{{ $lang('redpack.normal.name') }}</span
+      >
 
       <template v-if="isOver">
         <span v-if="isRedpaperRain">{{ $lang('redpack.rain.finish') }}</span>
         <span v-else>{{ $lang('redpack.finish') }}</span>
       </template>
-    </div>
+    </span>
   </portrait-msg-container>
 </template>
 
@@ -38,20 +58,24 @@ const { receiveNick, isRedpaperRain, isRedpaperPassword, isOver, isRedpaperQuest
   font-size: 12px;
 }
 
-.c-portrait-redpaper-receive-msg__icon {
+.c-portrait-redpaper-receive-msg__icon,
+.c-portrait-redpaper-receive-msg__icon-rain {
   display: inline-block;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   margin-top: -2px;
   margin-right: 4px;
   vertical-align: middle;
-  background-image: url(./imgs/redpaper-msg-ico.png);
 }
 
-.c-portrait-redpaper-receive-msg__nick {
-  margin-right: 4px;
-  color: #ffd16b;
+.c-portrait-redpaper-receive-msg__icon {
+  background-image: url(./imgs/redpaper-msg-ico.svg);
 }
+
+.c-portrait-redpaper-receive-msg__icon-rain {
+  background-image: url(./imgs/redpaper-rain-msg-ico.svg);
+}
+
 .c-portrait-redpaper-receive-msg__highlight {
   color: #ffd16b;
 }

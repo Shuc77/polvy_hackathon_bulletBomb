@@ -61,19 +61,28 @@
         </form-item>
       </template>
 
+      <!-- 未报名入口 -->
+      <div
+        v-if="needEnrollByEnter"
+        class="c-pc-enroll-login__entrance"
+        @click="redirectToEnroll"
+      >
+        {{ $lang('enroll.entrance') }}
+      </div>
+
       <div class="c-pc-enroll-login__submit">
-        <form-submit-button
-          class="c-pc-enroll-login__submit__button"
-          :size="ButtonSize.Small"
-          :text="$lang('base.enterLive')"
-          debounce-submit
-        />
         <normal-button
           class="c-pc-enroll-login__submit__button"
           :size="ButtonSize.Small"
           :type="ButtonType.Info"
           :text="$lang('base.cancel')"
           @click="onClickCancel"
+        />
+        <form-submit-button
+          class="c-pc-enroll-login__submit__button"
+          :size="ButtonSize.Small"
+          :text="$lang('base.enterLive')"
+          debounce-submit
         />
       </div>
     </form-wrap>
@@ -99,7 +108,7 @@ import { enrollLoginEmits, useEnrollLogin } from './hooks/use-enroll-login';
 
 const emit = defineEmits(enrollLoginEmits());
 
-const { enrollAuthType, smsVerifyEnabled, enrollAuthName, enrollAuthTips } =
+const { needEnrollByEnter, enrollAuthType, smsVerifyEnabled, enrollAuthName, enrollAuthTips } =
   storeDefinitionToRefs(useEnrollStore);
 
 const {
@@ -111,6 +120,7 @@ const {
   formRules,
   submitLoginForm,
   onClickCancel,
+  redirectToEnroll,
 } = useEnrollLogin({
   emit,
 });
@@ -123,6 +133,15 @@ const {
     width: 344px;
     margin: 0 auto 24px;
   }
+}
+
+.c-pc-enroll-login__entrance {
+  width: 344px;
+  margin: 32px auto 20px;
+  font-size: 14px;
+  color: $--color-primary;
+  text-align: center;
+  cursor: pointer;
 }
 
 .c-pc-enroll-login__submit {

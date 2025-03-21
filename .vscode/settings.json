@@ -45,10 +45,9 @@
   "i18n-ally.displayLanguage": "zh-CN",
   "i18n-ally.enabledParsers": [
     "ts",
+    "json",
   ],
   "i18n-ally.localesPaths": [
-    "src/assets/lang/i18ns",
-    "src/assets/lang",
-    "src/components/component-icons/pc/icons/lang"
+    "src/assets/lang/i18ns"
   ],
 }

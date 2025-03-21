@@ -71,12 +71,8 @@ const { visible, msgUserActor, msgUserType, msgUserNick, fullContent, copyConten
     background: linear-gradient(0deg, #ffffff 0%, rgba(255, 255, 255, 0) 98%);
   }
 }
-.c-portrait-chat-full-message__main__actor {
-  float: left;
-  margin-top: 2px;
-}
+
 .c-portrait-chat-full-message__main__nick {
-  float: left;
   color: #f09343;
 }
 

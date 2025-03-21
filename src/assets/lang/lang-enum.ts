@@ -6,18 +6,14 @@
  * 语言类型枚举
  */
 export enum LangType {
-  /** 中文 */
+  /** 简体中文 */
   ZH_CN = 'zh_CN',
+  /** 繁体中文 */
+  ZH_TW = 'zh_TW',
   /** 英文 */
   English = 'en',
-  /** 俄语 */
-  Russian = 'ru',
-  /** 葡萄牙语 */
-  Portuguese = 'pt',
-  /** 阿拉伯语 */
-  Arabic = 'ar',
-  /** 波斯语 */
-  Farsi = 'fa',
-  /** 西班牙语 */
-  Spanish = 'es',
+  /** 日语 */
+  Japanese = 'ja',
+  /** 韩语 */
+  Korean = 'ko',
 }

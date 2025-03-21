@@ -3,7 +3,6 @@
  */
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
 import { translate } from '@/assets/lang';
-import { LangType } from '@/assets/lang/lang-enum';
 import {
   isAndroid,
   isBaiduApp,
@@ -100,7 +99,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
     const channelInfo = computed(() => {
       let info: ChannelBasicInfo = unref(cnChannelBasicInfo);
 
-      if (langStore.englishSettingEnabled && langStore.currentLang !== LangType.ZH_CN) {
+      if (langStore.englishSettingEnabled && !langStore.isChineseLang) {
         info = unref(enChannelBasicInfo);
       }
 

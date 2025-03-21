@@ -13,4 +13,8 @@ export const withdrawEvents = {
    * @param {boolean} visible 显示状态
    */
   OpenWithdrawApply: 'OpenWithdrawApply',
+  /**
+   * 刷新余额
+   */
+  RefreshBalance: 'RefreshBalance',
 };

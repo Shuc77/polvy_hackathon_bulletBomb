@@ -8,7 +8,7 @@
 
 ## 项目说明
 
-该开源项目基于 `vue-cli@4.x + vue@2.7 + typescript@4.x + pinia` 实现的单页面应用(SPA)，除 `@polyv/live-watch-sdk` 外，还集成了其他**保利威 npm 库**和部分第三方开源工具库
+该开源项目基于 `vue-cli@5.x + vue@2.7 + typescript@5.x + pinia` 实现的单页面应用(SPA)，除 `@polyv/live-watch-sdk` 外，还集成了其他**保利威 npm 库**和部分第三方开源工具库
 
 | 保利威 npm 库 | 备注  |
 | :---------- | :---- |
@@ -24,7 +24,7 @@
 
 项目运行前请**注意**
 
-- 确保 `node` 版本 `^14.15.4 || >=16.0.0`
+- 确保 `node` 版本 `>= 20.10.0`
 - 了解保利威基础业务概念，比如：频道号(channelId)
 - 由于项目初始化会自动设置 `husky` 钩子，请确保项目根目录存在 `.git` 文件夹，或者通过这篇[文档](https://typicode.github.io/husky/#/?id=custom-directory)指定对应的 `.git` 文件夹位置。如果完全不使用 `git`，请删除 `package.json` 中的 `prepare` 脚本命令
 
@@ -112,9 +112,12 @@ npm run build-static
 
 关键文件指引
 
-- 主入口
+- 观看页应用主入口
   - `src/main.ts`
   - `src/app/watch-app.vue`
+- 保利威信息流应用主入口
+  - `src/feed-main.ts`
+  - `src/app/watch-feed-app.vue`
 - 搭配 SDK 逻辑层
   - `src/core/watch-sdk.ts`
   - `src/store/use-watch-app-store.ts` => `resetUpWatchCore`
@@ -132,10 +135,21 @@ npm run build-static
     - `src/app/_hooks/use-iar-setup.ts`
   - 微信配置
     - `src/app/_hooks/use-weixin-setup`
+  - sdk 注入模式
+    - `src/plugins/sdk-inject-helper`
 
 ## 补充说明
 
 请注意代码中标记 `@PLV-WARN` 的注释
+
+### 项目应用入口说明
+
+从 2.x 开始，该项目会有两个主入口
+
+- 【观看页】应用主入口 `src/main.ts`
+- 【保利威信息流】应用主入口 `src/feed-main.ts`
+
+对应配套的 [Feed 流容器项目](https://gitee.com/polyv_ef/polyv-web-feed-container) 能够正常接入这两个应用入口，但只以【观看页】主入口为示例接入，如果您需要改用【保利威信息流】主入口，请自行接入。
 
 ### 构建图标组件
 
@@ -148,7 +162,7 @@ npm run build-static
 
 - 目前该项目支持在 `git commit` 时进行校验，如校验失败需自动修复，可以执行 `npm run lint-fix` 尝试修复。如不需要在提交代码时进行校验，可以移除 `package.json` 中的 `precommit` 命令，或者注释 `.husky/pre-commit` 的执行命令
 - 项目调试时会使用 `eslint + stylelint` 来校验代码，如不需要，可以到 `src/build/webpack.vue.config` 文件中注释相关的插件
-- 由于项目中使用的 `fork-ts-checker-webpack-plugin` 不支持 `vue2.7` 对 `script setup` 区块的代码校验，建议在生产构建前，执行 `npm run check` 来检查一遍代码
+- 2.x 不在试用 `fork-ts-checker-webpack-plugin` 对 `vue` 的 `script` 区块进行代码校验，建议在生产构建前，执行 `npm run check` 来检查一遍代码
 
 ### PC 端布局
 
@@ -157,4 +171,4 @@ npm run build-static
 ### 关于 vscode 插件
 
 - 项目中的 `.vscode` 文件默认会推荐使用的插件，可以根据需要进行安装
-- 由于项目使用 `vue@2.7` 进行开发，推荐配合 `volar` 使用，并同步开启 [volar-takeover-mode](https://cn.vuejs.org/guide/typescript/overview.html#volar-takeover-mode) 来使用单个 ts 实例 （注意：volar 的版本迭代很快，建议暂时用 1.2.0 版本）
+- 由于项目使用 `vue@2.7` 进行开发，推荐配合 `volar` 使用，并同步开启 [volar-takeover-mode](https://cn.vuejs.org/guide/typescript/overview.html#volar-takeover-mode) 来使用单个 ts 实例 （注意：volar 的版本迭代很快，建议暂时用 2.0.28 版本）

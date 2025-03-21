@@ -23,6 +23,9 @@ export const countDownProps = () => ({
   size: PropUtils.oneOf(countDownSizes).def('default'),
   /** 倒计时样式，square-方形，text-文本，默认：square */
   theme: PropUtils.oneOf(countdownThemes).def('square'),
+
+  /** 自定义倒计时时间内容 */
+  customTimeSecond: PropUtils.number.def(undefined),
 });
 
 /**
@@ -57,6 +60,81 @@ export interface CountDownItem {
   unit: string;
 }
 
+/** 格式化数值，自动补 0 */
+export function formatNumber(count: number): string {
+  return count < 10 ? `0${count}` : count.toString();
+}
+
+/**
+ * 将秒数转换为倒计时剩余时间数据
+ * @param seconds 秒数
+ */
+export function secondsToCountDownSurplus(seconds: number): CountDownSurplusData {
+  const days = Math.floor(seconds / (24 * 60 * 60));
+  const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+  const minutes = Math.floor((seconds % (60 * 60)) / 60);
+  const remainSeconds = seconds % 60;
+
+  return {
+    days,
+    hours,
+    minutes,
+    seconds: remainSeconds,
+    totalMsecs: seconds * 1000,
+  };
+}
+
+/**
+ * 获取倒计时时间内容
+ * @param surplusTime 倒计时剩余时间
+ * @param options 选项
+ * @param options.hideZeroDays 当天数为 0 时隐藏天数，默认：true
+ * @param options.hideZeroHours 当天数为 0 时隐藏小时，默认：false
+ */
+export function getTimeContents(
+  surplusTime: CountDownSurplusData,
+  options: {
+    hideZeroDays?: boolean;
+    hideZeroHours?: boolean;
+  },
+) {
+  const contents: CountDownItem[] = [];
+
+  const fields: CountDownFieldItem[] = [
+    { field: 'days', title: translate('unit.dayTitle'), unit: translate('unit.day') },
+    { field: 'hours', title: translate('unit.hourTitle'), unit: translate('unit.hour') },
+    { field: 'minutes', title: translate('unit.minuteTitle'), unit: translate('unit.minute') },
+    { field: 'seconds', title: translate('unit.secondTitle'), unit: translate('unit.second') },
+  ];
+
+  fields.forEach(({ field, title, unit }) => {
+    const count = surplusTime[field];
+
+    // 对于 0 天则不在显示列表中
+    if (options.hideZeroDays && field === 'days' && count === 0) {
+      return;
+    }
+
+    // 对于 0 小时则不在显示列表中
+    if (options.hideZeroHours && field === 'hours' && count === 0) {
+      return;
+    }
+
+    contents.push({
+      // 数值
+      count,
+      // 数值文案，自动补 0
+      text: formatNumber(count),
+      // 标题
+      title,
+      // 单位，含多语言
+      unit,
+    });
+  });
+
+  return contents;
+}
+
 /**
  * 倒计时 hook
  * @param {Object} options 选项
@@ -72,13 +150,19 @@ export const useCountDown = (options: {
   const { props, emit } = options;
   const { hideZeroDays, hideZeroHours, second, endTimestamp } = useProps(props);
 
-  const { surplusTime, computedSecond, initCountDown, startCountDown, stopCountDown } =
-    useSecondCountDown({
-      second,
-      endTimestamp,
-      onCountDownChange: data => emit('count-down-change', data),
-      onCountDownFinish: () => emit('count-down-finish'),
-    });
+  const {
+    surplusTime,
+    computedSecond,
+    initCountDown,
+    startCountDown,
+    stopCountDown,
+    pauseCountDown,
+  } = useSecondCountDown({
+    second,
+    endTimestamp,
+    onCountDownChange: data => emit('count-down-change', data),
+    onCountDownFinish: () => emit('count-down-finish'),
+  });
 
   /** 显示的时间内容列表 */
   const timeContents = computed(() => {
@@ -136,11 +220,6 @@ export const useCountDown = (options: {
     return texts.join(' ');
   });
 
-  /** 格式化数值，自动补 0 */
-  function formatNumber(count: number): string {
-    return count < 10 ? `0${count}` : count.toString();
-  }
-
   watch(
     () => unref(computedSecond),
     () => initCountDown(),
@@ -155,5 +234,6 @@ export const useCountDown = (options: {
     timeText,
     startCountDown,
     stopCountDown,
+    pauseCountDown,
   };
 };

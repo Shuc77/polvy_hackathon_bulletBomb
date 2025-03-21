@@ -48,15 +48,6 @@
   .pws-main-tab-header {
     background-color: map.get($--skin-configs, 'main-tab-header:bg-color') !important;
   }
-  .pws-main-tab-header-item {
-    color: map.get($--skin-configs, 'main-tab-header:text-color') !important;
-    &:hover {
-      color: map.get($--skin-configs, 'main-tab-header--hover:text-color') !important;
-    }
-    &.is-active {
-      color: map.get($--skin-configs, 'main-tab-header--active:text-color') !important;
-    }
-  }
   .pws-main-tab-header-active-line {
     background-color: map.get($--skin-configs, 'main-tab-header-line--active:bg-color') !important;
   }
@@ -70,9 +61,6 @@
   .pws-main-tab-header-arrow-left {
     color: map.get($--skin-configs, 'main-tab-header--active:text-color') !important;
     background-color: map.get($--skin-configs, 'main-tab-header:bg-color') !important;
-  }
-  .pws-main-tab-header-item-reminder::after {
-    background-color: map.get($--skin-configs, 'main-tab-header-reminder:color');
   }
   .pws-main-tab-body {
     background-color: map.get($--skin-configs, 'main-tab-body:bg-color') !important;

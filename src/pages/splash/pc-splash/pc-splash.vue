@@ -317,6 +317,7 @@ $--splash-header-content-height: 406px;
 
 .c-pc-splash__main__inner {
   position: relative;
+  min-height: 200px;
 }
 
 .c-pc-splash__main__inner__lang-switch.c-pc-lang-switch {

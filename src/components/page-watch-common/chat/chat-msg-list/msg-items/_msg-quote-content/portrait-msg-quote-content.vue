@@ -1,6 +1,6 @@
 <!-- @file 竖屏端消息引用内容 -->
 <template>
-  <div class="c-portrait-msg-quote-content g-singleline">
+  <div class="c-portrait-msg-quote-content g-singleline pws-secondary-text-color">
     <!-- 昵称 -->
     <span class="c-portrait-msg-quote-content__nick">{{ quoteNick }}：</span>
     <!-- 内容 -->
@@ -48,12 +48,13 @@ const { quoteNick } = useMsgQuoteContent({ props });
 
 <style lang="scss">
 .c-portrait-msg-quote-content {
-  padding-top: 8px;
-  margin-top: 8px;
+  // border-bottom: 1px solid rgba(#fff, 0.08);
+  position: relative;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
   font-size: 12px;
-  line-height: 17px;
-  color: rgba($--color-white, 0.8);
-  border-top: 1px solid rgba(255, 254, 252, 0.3);
+  line-height: 22px;
+  @include pseudo-border-bottom;
 }
 
 .c-portrait-msg-quote-content__main {

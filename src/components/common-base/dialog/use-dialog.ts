@@ -51,6 +51,8 @@ export const dialogMobileProps = () => ({
   closeOnClickMask: PropUtils.bool.def(true),
   /** 蒙层透明度，默认：0.6 */
   maskOpacity: PropUtils.number.def(0.6),
+  /** 自定义关闭 */
+  customClose: PropUtils.func(),
 });
 
 export const dialogEmits = () => ({

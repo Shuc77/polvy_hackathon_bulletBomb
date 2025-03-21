@@ -494,6 +494,9 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   display: flex;
   margin-top: $--portrait-carousel-main-screen__bottom-marginTop;
   pointer-events: initial;
+  &:empty {
+    display: none;
+  }
 }
 .c-portrait-carousel-main-screen__bottom__item--padding {
   padding: 0 16px;

@@ -1,13 +1,18 @@
+import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { useToastManager } from '@/hooks/components/use-toast';
-import { LoggerName, WxMerchantTransferSignData } from '@polyv/live-watch-sdk';
+import {
+  CancelWithdrawParams,
+  LoggerName,
+  WxMerchantTransferSignData,
+} from '@polyv/live-watch-sdk';
 import { WxCallback } from './types';
 import { useWeixinJSBridge } from './use-weixin-js-bridge';
 import { useWeixinSdk } from './use-weixin-sdk';
 
 export const useWeixinMerchantTransfer = (hookCallback: WxCallback = {}) => {
-  const { getWatchCore } = useGlobalInject();
+  const { getWatchCore, getEmitter } = useGlobalInject();
   const { getWeixinSdk, checkJsApi } = useWeixinSdk();
   const { getWeixinJSBridge } = useWeixinJSBridge();
 
@@ -42,8 +47,11 @@ export const useWeixinMerchantTransfer = (hookCallback: WxCallback = {}) => {
           hookCallback.successCb && hookCallback.successCb();
           callback.successCb && callback.successCb();
         } else {
-          console.log('invokeRes.err_msg', invokeRes.err_msg);
           if (invokeRes.err_msg === 'requestMerchantTransfer:cancel') {
+            await cancelWithdraw({
+              outBillNo: info.outBillNo,
+              withdrawId: info.withdrawId,
+            });
             hookCallback.cancelCb && hookCallback.cancelCb();
             callback.cancelCb && callback.cancelCb();
           }
@@ -54,6 +62,8 @@ export const useWeixinMerchantTransfer = (hookCallback: WxCallback = {}) => {
             JSON.stringify(invokeRes),
           );
         }
+
+        getEmitter().emit(appEvents.withdraw.RefreshBalance);
       },
     );
   }
@@ -66,8 +76,16 @@ export const useWeixinMerchantTransfer = (hookCallback: WxCallback = {}) => {
     return watchCore.withdraw.checkWithdrawStatus({ outBillNo });
   }
 
+  /**
+   * 取消提现
+   */
+  function cancelWithdraw(params: CancelWithdrawParams): Promise<void> {
+    return watchCore.withdraw.cancelWithdraw(params);
+  }
+
   return {
     requestMerchantTransfer,
     checkWithdrawStatus,
+    cancelWithdraw,
   };
 };

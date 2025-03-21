@@ -29,6 +29,8 @@
               'c-pc-basic-info__main__low-latency__en': !isChineseLang,
             }"
           ></i>
+          <!-- 引导关注按钮 -->
+          <pc-follow-btn class="c-pc-basic-info__main__follow" />
         </h1>
       </div>
 
@@ -148,6 +150,7 @@
 import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
 import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
+import PcFollowBtn from '@/components/page-watch-common/follow/follow-btn/pc-follow-btn.vue';
 import {
   PcIconShare,
   PcIconPeople,
@@ -281,6 +284,11 @@ $--basic-logo-size: 50px;
     margin-left: 8px;
     background-image: url(./imgs/low-latency-bg-pc-en.svg);
   }
+}
+
+.c-pc-basic-info__main__follow {
+  flex-shrink: 0;
+  margin-left: 13px;
 }
 
 .c-pc-basic-info__main__bottom {

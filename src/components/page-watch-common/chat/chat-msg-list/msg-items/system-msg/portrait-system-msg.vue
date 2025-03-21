@@ -4,7 +4,7 @@
     class="c-portrait-system-msg"
     hide-user-info
   >
-    <span>{{ chatMsg.content }}</span>
+    <span class="c-portrait-system-msg__text pws-secondary-text-color">{{ chatMsg.content }}</span>
   </portrait-msg-container>
 </template>
 

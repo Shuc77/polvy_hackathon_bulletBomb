@@ -38,11 +38,21 @@
         >
           {{ item.text }}
         </span>
+
+        <div
+          v-if="withdrawVisible && weixinPayType === WeixinPayType.TransferBill"
+          class="c-mobile-personal-reward-popup__switch__withdraw"
+          @click="openWithdraw"
+        >
+          <span>{{ $lang('personalReward.withdraw') }}</span>
+          <mobile-icon-arrow-right class="c-mobile-personal-reward-popup__switch__withdraw__icon" />
+        </div>
       </div>
 
       <div class="c-mobile-personal-reward-popup__inner">
         <mobile-task-reward-list v-if="currentType === 'task-activity'" />
         <mobile-lottery-record-list v-show="currentType === 'lottery'" />
+        <mobile-lucky-lottery-prize-list v-if="currentType === 'lucky-lottery'" />
       </div>
     </div>
   </mobile-popup>
@@ -51,16 +61,32 @@
 <script setup lang="ts">
 import { LangType } from '@/assets/lang/lang-enum';
 import MobilePopup from '@/components/common-base/popup';
-import { MobileIconClose } from '@/components/component-icons/mobile/map';
+import { MobileIconClose, MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import MobileLotteryRecordList from '../interactive-receive-v2/lottery-v2/mobile-lottery-record-list.vue';
 import MobileTaskRewardList from '../task-activity/mobile-task-reward-list.vue';
+import MobileLuckyLotteryPrizeList from '../interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-prize-list.vue';
 import { usePersonalReward } from './use-personal-reward';
+import { useWithdrawStore } from '@/store/use-withdraw-store';
+import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useWeixinStore } from '@/store/use-weixin-store';
+import { WeixinPayType } from '@polyv/live-watch-sdk';
+
+const { getEmitter } = useGlobalInject();
 
 const { visible, close, rewardTypes, currentType } = usePersonalReward();
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
+
+const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
+
+const { weixinPayType } = storeDefinitionToRefs(useWeixinStore);
+
+function openWithdraw() {
+  getEmitter().emit(appEvents.withdraw.OpenWithdrawDetail, true);
+}
 </script>
 
 <style lang="scss">
@@ -157,7 +183,7 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
   padding: 0 12px;
   margin-bottom: 12px;
 
-  span {
+  & > span {
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -177,6 +203,18 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
       border-color: #fe3f52;
     }
   }
+}
+
+.c-mobile-personal-reward-popup__switch__withdraw {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: bold;
+  color: #8e1e33;
+}
+.c-mobile-personal-reward-popup__switch__withdraw__icon {
+  display: flex;
 }
 
 .c-mobile-personal-reward-popup__inner {

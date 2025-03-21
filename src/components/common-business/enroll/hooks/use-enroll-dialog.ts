@@ -1,6 +1,6 @@
 import { translate } from '@/assets/lang';
 import { useEnrollStore } from '@/store/use-enroll-store';
-import { computed, ref, unref } from 'vue';
+import { computed, ref } from 'vue';
 
 /**
  * 报名表单实例
@@ -21,12 +21,18 @@ export const useEnrollDialog = () => {
   /** 弹层是否显示 */
   const dialogVisible = ref(false);
 
+  function getDefaultDialogModel(): EnrollDialogModel {
+    if (enrollStore.needEnrollByChat) return 'form';
+
+    return 'login';
+  }
+
   /** 弹层模式 */
-  const dialogModel = ref<EnrollDialogModel>('form');
+  const dialogModel = ref<EnrollDialogModel>(getDefaultDialogModel());
 
   /** 弹层标题 */
   const dialogTitle = computed<string>(() => {
-    if (unref(dialogModel) === 'login') {
+    if (dialogModel.value === 'login') {
       return translate('enroll.loginTitle');
     }
 
@@ -35,7 +41,7 @@ export const useEnrollDialog = () => {
 
   /** 显示报名观看表单弹层 */
   function openEnrollForm() {
-    dialogModel.value = 'form';
+    dialogModel.value = getDefaultDialogModel();
     dialogVisible.value = true;
   }
 
@@ -44,13 +50,14 @@ export const useEnrollDialog = () => {
     dialogVisible.value = false;
   }
 
-  /** 处理点击已报名入口 */
-  function onClickEnrolled() {
-    dialogModel.value = 'login';
+  /** 跳转去待报名的表单验证 */
+  function redirectToEnroll() {
+    dialogModel.value = 'form';
   }
 
-  function onClickBack() {
-    dialogModel.value = 'form';
+  /** 跳转去已报名的表单 */
+  function redirectToEnrolled() {
+    dialogModel.value = 'login';
   }
 
   const enrollDialogInstance: EnrollDialogInstance = {
@@ -64,7 +71,7 @@ export const useEnrollDialog = () => {
     dialogModel,
     openEnrollForm,
     closeEnrollDialog,
-    onClickEnrolled,
-    onClickBack,
+    redirectToEnroll,
+    redirectToEnrolled,
   };
 };

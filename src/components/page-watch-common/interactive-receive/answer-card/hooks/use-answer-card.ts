@@ -6,12 +6,15 @@ import { translate } from '@/assets/lang';
 import { AllAnswerCardStatus, IarAnswerCardInstance } from '../types/answer-card-types';
 import { useAnswerCardEntrance } from './use-answer-card-entrance';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
 /**
  * @hook 互动-答题卡
  */
 export const useAnswerCard = () => {
   const { setAnswerCardEntrance, removeAnswerCardEntrance } = useAnswerCardEntrance();
+
+  const playbackStore = usePlaybackStore();
 
   const { getWatchCore } = useGlobalInject();
 
@@ -44,6 +47,10 @@ export const useAnswerCard = () => {
         break;
     }
     return title;
+  });
+
+  const serverTimeSyncEnabled = computed(() => {
+    return !playbackStore.answerCardReplayEnabled;
   });
 
   /** 设置答题卡显示状态 */
@@ -88,6 +95,7 @@ export const useAnswerCard = () => {
     answerCardVisible,
     answerCardTitle,
     answerCardStatus,
+    serverTimeSyncEnabled,
     setAnswerCardVisible,
     onStatusChanged,
     onSubmitSuccess,

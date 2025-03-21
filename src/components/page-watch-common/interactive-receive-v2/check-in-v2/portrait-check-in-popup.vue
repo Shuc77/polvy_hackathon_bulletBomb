@@ -6,6 +6,7 @@
     class="c-portrait-check-in-popup"
     v-show="checkInVisible"
     enable-sound-effects
+    :check-in-record-enabled="checkInRecordEnabled"
     :check-in-target="getIarTarget()"
     :is-full-screen="isIarFullScreen"
     @show-entrance="showEntrance"
@@ -29,6 +30,7 @@ const {
   getIarTarget,
   checkInRef,
   checkInVisible,
+  checkInRecordEnabled,
   setCheckInVisible,
   showEntrance,
   onCheckInStatus,

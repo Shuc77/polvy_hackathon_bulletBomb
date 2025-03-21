@@ -112,6 +112,10 @@ const emit = defineEmits({
   background-image: url(./imgs/icon-playback-setting.png);
 }
 
+.c-mobile-more-item__icon--coupon {
+  background-image: url(./imgs/icon-menu-coupon.png);
+}
+
 .c-mobile-more-item__text {
   width: 100%;
   font-size: 12px;

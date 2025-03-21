@@ -11,29 +11,32 @@
             v-for="(paneData, index) in tabPaneData"
             :key="index"
             ref="itemRef"
-            class="c-mobile-menu-tab-header__header__item pws-main-tab-header-item"
+            class="c-mobile-menu-tab-header__header__item"
             :class="{
-              'is-active': paneData.name === currentTabName,
-              'c-mobile-menu-tab-header__header__item--reminder':
-                paneData.showReminder && !paneData.showNewMessage,
+              'pws-secondary-text-color': paneData.name !== currentTabName,
+              'pws-primary-text-color is-active': paneData.name === currentTabName,
+              'c-mobile-menu-tab-header__header__item--reminder': paneData.showReminder,
+              'c-mobile-menu-tab-header__header__item--news': paneData.showNewMessage,
             }"
             @click="onClickHeaderItem(paneData)"
           >
-            <span
-              v-if="paneData.showNewMessage"
-              :class="{ 'c-mobile-menu-tab-header__header__item--news': paneData.showReminder }"
-            >
+            <span class="c-mobile-menu-tab-header__header__item__label">
               {{ paneData.label }}
-              <span v-if="paneData.showReminder">
+
+              <span
+                v-if="paneData.showNewMessage"
+                class="c-mobile-menu-tab-header__header__item__news"
+              >
                 {{ $lang('ask.news') }}
               </span>
+
+              <span
+                v-if="paneData.subLabel"
+                class="c-mobile-menu-tab-header__header__item__sub-label pws-secondary-text-color"
+              >
+                {{ paneData.subLabel }}
+              </span>
             </span>
-            <span v-else>{{ paneData.label }}</span>
-            <span
-              v-if="paneData.subLabel"
-              class="c-mobile-menu-tab-header__header__item__sub-label"
-              >{{ paneData.subLabel }}</span
-            >
           </div>
           <div
             v-if="tabPaneData.length > 1"
@@ -47,22 +50,22 @@
       </div>
 
       <!-- 左侧阴影 -->
-      <div
+      <!-- <div
         v-show="leftShadowVisible"
         class="c-mobile-menu-tab-header__content__shadow--left pws-main-tab-header-shadow-left"
-      ></div>
+      ></div> -->
       <!-- 右侧阴影 -->
-      <div
+      <!-- <div
         v-show="rightShadowVisible"
         class="c-mobile-menu-tab-header__content__shadow--right pws-main-tab-header-shadow-right"
-      ></div>
+      ></div> -->
     </div>
     <slot name="header-suffix"></slot>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useTabHeader, useTabHeaderArrow } from '../hooks/use-tab-header';
+import { useTabHeader } from '../hooks/use-tab-header';
 
 const {
   scrollRef,
@@ -75,12 +78,6 @@ const {
 } = useTabHeader({
   scrollCurrent: true,
 });
-
-const { leftArrowVisible: leftShadowVisible, rightArrowVisible: rightShadowVisible } =
-  useTabHeaderArrow({
-    scrollRef,
-    tabPaneData,
-  });
 </script>
 
 <style lang="scss">
@@ -117,48 +114,49 @@ const { leftArrowVisible: leftShadowVisible, rightArrowVisible: rightShadowVisib
   display: flex;
   width: 100%;
   height: 100%;
-  font-size: 16px;
+  font-size: 14px;
   white-space: nowrap;
 }
 .c-mobile-menu-tab-header__header__item {
+  position: relative;
   box-sizing: border-box;
   display: flex;
-  flex: 1;
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 16px;
-  color: #adadc0;
+  padding: 0 20px;
   text-align: center;
+}
 
-  &.is-active {
-    color: $--color-white;
-  }
+.c-mobile-menu-tab-header__header__item__label {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
 
-  &.c-mobile-menu-tab-header__header__item--reminder::after {
-    width: 8px;
-    height: 8px;
-    margin-left: 3px;
-    content: '';
-    background: #f24453;
-    border-radius: 50%;
-  }
+.c-mobile-menu-tab-header__header__item__sub-label {
+  margin-left: 4px;
+  font-family: DINProFont;
+  font-size: 12px;
+  zoom: 0.83;
+}
 
-  .c-mobile-menu-tab-header__header__item__sub-label {
-    margin-left: 4px;
-    font-size: 12px;
-  }
+.c-mobile-menu-tab-header__header__item--reminder::after {
+  width: 8px;
+  height: 8px;
+  margin-left: 3px;
+  content: '';
+  background: #f24453;
+  border-radius: 50%;
 }
 
 .c-mobile-menu-tab-header__header__item--news {
-  position: relative;
-
-  > span {
+  .c-mobile-menu-tab-header__header__item__news {
     position: absolute;
     bottom: 100%;
     left: 100%;
     padding: 0 6px;
-    margin: 0 0 -6px -24px;
+    margin: 0 0 -6px -16px;
     font-size: 12px;
     line-height: 18px;
     color: #fff;
@@ -172,9 +170,10 @@ const { leftArrowVisible: leftShadowVisible, rightArrowVisible: rightShadowVisib
 .c-mobile-menu-tab-header__current-line {
   position: absolute;
   bottom: 0;
-  width: 32px;
+  width: 16px;
   height: 2px;
   background: $--color-white;
+  border-radius: 1px;
   transition-duration: 0.3s;
   transition-property: left;
 }

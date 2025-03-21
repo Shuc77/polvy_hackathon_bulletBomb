@@ -8,14 +8,14 @@
     >
       <div>
         <p class="c-mobile-redpack-receive-record__item-type">
-          {{ $lang('withdraw.redpack.receive.record.listName') }}
+          {{ getRedpackType(record.redPackType) }}
         </p>
         <p class="c-mobile-redpack-receive-record__item-date">
           {{ convertReceiveDate(record.receiveTime) }}
         </p>
       </div>
-      <p class="c-mobile-redpack-receive-record__item-amount pws-mobile-withdraw-highlight">
-        +{{ convertAmount(record.amount) }}
+      <p class="c-mobile-redpack-receive-record__item-amount">
+        +￥{{ convertAmount(record.amount) }}
       </p>
     </li>
     <li
@@ -31,7 +31,7 @@
 import { onMounted } from 'vue';
 import listLoading from '@/components/common-base/list-loading/list-loading.vue';
 
-import { RedpackPayType } from '@polyv/live-watch-sdk';
+import { RedpackPayType, RedpackType } from '@polyv/live-watch-sdk';
 import { useReceiveRecordHook } from '../_hooks/use-receive-record';
 import { translate } from '@/assets/lang';
 import { useGlobalInject } from '@/app/use-global-inject';
@@ -55,6 +55,13 @@ const {
   errMsg: translate('redpack.receive.history.error'),
 });
 
+function getRedpackType(redPackType: RedpackType) {
+  if (redPackType === RedpackType.TaskWard) {
+    return translate('withdraw.redpack.receive.record.listName2');
+  }
+  return translate('withdraw.redpack.receive.record.listName');
+}
+
 onMounted(async () => {
   await getReceiveRecordList();
 });
@@ -73,24 +80,24 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid #ededef;
+  padding: 12px 16px;
 }
 .c-mobile-redpack-receive-record__item-type {
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   font-size: 14px;
   line-height: 20px;
-  color: #333;
+  color: rgba(#000, 0.8);
 }
 .c-mobile-redpack-receive-record__item-date {
   font-size: 12px;
-  color: #666666;
+  line-height: 18px;
+  color: rgba(#000, 0.4);
 }
 .c-mobile-redpack-receive-record__item-amount {
-  color: #3082fe;
+  color: #3f76fc;
 }
 .c-mobile-redpack-receive-record__item--loading {
-  padding-top: 10px;
+  padding: 16px 0;
   text-align: center;
 }
 </style>

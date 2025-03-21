@@ -211,6 +211,8 @@ export const useQueryParams = (opts?: {
     ipPlay: buildGetters<'1'>('ipPlay'),
     /** 微信快照页环境 */
     snapshotPage: buildGetters<YN>('snapshotPage'),
+    /** 强制优先独立授权，默认关 */
+    forceDirectAuth: buildGetters<YN>('forceDirectAuth'),
     /** 一客一码--销售码 */
     saleCode: buildGetters<string>('saleCode'),
     /** 一客一码--销售邀请的客户id */

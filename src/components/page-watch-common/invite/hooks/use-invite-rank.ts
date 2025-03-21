@@ -5,17 +5,21 @@ import { computed, ref, unref } from 'vue';
 
 import { useInviteStore } from '@/store/use-invite-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 import { translate } from '@/assets/lang';
-import { isWeixin } from '@/assets/utils/browser';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import {
   InviteRankCurrentViewer,
   InviteRankItem,
   InviteRankRequestFailReason,
   InviteListSetting,
+  AuthType,
 } from '@polyv/live-watch-sdk';
 import { useGlobalInject } from '@/app/use-global-inject';
+
+import { isWeixin } from '@/assets/utils/browser';
+import { useAuthStore } from '@/store/use-auth-store';
 
 interface TopInviteRankItem extends InviteRankItem {
   /** 是否是造出来的数据 */
@@ -70,10 +74,23 @@ export const useInviteRankHook = () => {
 
   const viewerStore = useViewerStore();
   const { invitePosterEnabled } = storeDefinitionToRefs(useInviteStore);
-
   /** 是否显示底部信息 */
+  const identityStore = useIdentityStore();
+  // 独立/外部/自定义授权 在这期暂时关闭入口，等待后端就绪后再打开
+  const authSettings = useAuthStore();
   const showBottomInfo = computed(() => {
-    return isWeixin && currentRankInfo.value && invitePosterEnabled.value;
+    return (
+      isWeixin ||
+      (identityStore.identityUnionInfo &&
+        currentRankInfo.value &&
+        invitePosterEnabled.value &&
+        authSettings.authSettings.some(
+          item =>
+            item.authType !== AuthType.Custom &&
+            item.authType !== AuthType.External &&
+            item.authType !== AuthType.Direct,
+        ))
+    );
   });
 
   /** 当前用户的排名文案 */
@@ -111,9 +128,7 @@ export const useInviteRankHook = () => {
     const watchCore = getWatchCore();
     inviteListSettingInfo.value = watchCore.invite.getInviteRankSettingInfo();
 
-    if (isWeixin) {
-      await getCurrentRankInfo();
-    }
+    await getCurrentRankInfo();
   }
 
   const debounceTime = 300;

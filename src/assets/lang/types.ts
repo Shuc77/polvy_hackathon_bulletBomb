@@ -1,5 +1,5 @@
 import { LangType } from './lang-enum';
-import { zhCNLang } from './i18ns/zh-CN';
+import zhCNLang from './i18ns/zh-CN.json';
 
 /** 某个多语言配置 */
 export type LangConfig = typeof zhCNLang;

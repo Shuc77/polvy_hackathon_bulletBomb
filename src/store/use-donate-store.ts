@@ -9,6 +9,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { ynToBool } from '@utils-ts/boolean';
 import { changeProtocol } from '@utils-ts/net';
 import { useWatchAppStore } from './use-watch-app-store';
+import { usePlaybackStore } from './use-playback-store';
 
 export interface DonateGoodInfo extends DonateGoodData {
   /** 翻译后的礼物名称 */
@@ -70,6 +71,7 @@ export interface DonateStore extends DonateStoreState, DonateStoreAction {}
 export const useDonateStore = defineStore<'donate', DonateStore>('donate', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
+  const playbackStore = usePlaybackStore();
 
   /** 道具礼物中英文 */
   const goodNamesConfig = computed<UniversalParams<string>>(() => {
@@ -113,6 +115,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   const showDonateFunction = computed(() => {
     if (watchAppStore.isPlaybackWatchUrl) return false;
     if (channelStore.isSeminarChannel) return false;
+    if (playbackStore.chatMsgReplayEnabled) return false;
 
     return unref(showDonateCash) || unref(showDonateGifts);
   });

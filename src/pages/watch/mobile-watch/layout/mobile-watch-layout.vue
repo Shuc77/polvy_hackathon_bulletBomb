@@ -4,6 +4,17 @@
     ref="layoutWrapRef"
     class="c-mobile-watch-layout"
   >
+    <div class="c-mobile-watch-layout__page-notices">
+      <!-- 发起转播频道被踢出提示 -->
+      <mobile-page-notice
+        v-if="chatExited"
+        :tips="$lang('chat.transformTip')"
+      />
+
+      <!-- 聊天消息重放提示 -->
+      <mobile-chat-msg-replay-tips />
+    </div>
+
     <!-- 顶部占位 -->
     <div
       ref="layoutTopRef"
@@ -132,6 +143,8 @@ import MobilePlayerStreamTrack from '@/components/page-watch-common/player/playe
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
+import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
+import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
 // import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -153,12 +166,15 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
+import { useChatStore } from '@/store/use-chat-store';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
 );
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { chatExited } = storeDefinitionToRefs(useChatStore);
 
 const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
@@ -298,6 +314,27 @@ onMounted(() => {
   flex-direction: column;
   overflow: hidden;
   background: #202127;
+}
+
+.c-mobile-watch-layout__page-notices {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  left: 12px;
+  z-index: 100;
+  box-sizing: border-box;
+  pointer-events: none;
+
+  .c-mobile-page-notice {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  &:empty {
+    display: none;
+  }
 }
 
 .c-mobile-watch-layout__top {

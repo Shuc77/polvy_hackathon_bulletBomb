@@ -26,7 +26,7 @@
         }}
       </div>
       <div
-        v-if="item.taskReward.type === TaskActivityRewardType.Cash"
+        v-if="canShowRewardStatus(item)"
         class="c-pc-task-reward-list__item__status"
         :class="['c-pc-task-reward-list__item__status--' + item.rewardStatus]"
         @click="openErrorTips(item)"
@@ -83,8 +83,15 @@ import { formatDate } from '@utils-ts/date';
 import { useTaskRewardList } from './hooks/use-task-reward-list';
 import { useTaskActivityText } from './use-task-activity';
 
-const { scrollRef, onScroll, rewardList, getRewardStatusText, openReceive, openErrorTips } =
-  useTaskRewardList();
+const {
+  scrollRef,
+  onScroll,
+  rewardList,
+  getRewardStatusText,
+  openReceive,
+  openErrorTips,
+  canShowRewardStatus,
+} = useTaskRewardList();
 
 const { getTaskReachText, getTaskRewardText } = useTaskActivityText();
 </script>

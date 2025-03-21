@@ -27,9 +27,9 @@ const { msgUserActor, actorLabelColor } = useMsgUserActor({ props });
   align-items: center;
   justify-content: center;
   max-width: 110px;
-  height: 18px;
+  height: 14px;
   margin-right: 4px;
-  line-height: 18px;
+  line-height: 14px;
   color: $--color-white;
   border-radius: 18px;
   transform: translateY(-1px);
@@ -43,9 +43,9 @@ const { msgUserActor, actorLabelColor } = useMsgUserActor({ props });
 }
 
 .c-msg-user-actor__content {
-  padding: 0 6px;
+  padding: 0 3px;
   font-size: 12px;
   white-space: nowrap;
-  transform: scale(0.833);
+  transform: scale(0.75);
 }
 </style>

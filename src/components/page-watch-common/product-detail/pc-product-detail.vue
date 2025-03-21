@@ -1,47 +1,53 @@
 <template>
-  <div class="c-pc-product-detail">
-    <iar-product-detail
-      class="c-pc-product-detail__iar-product-detail"
-      :product-info="productDetailInfo"
-      :cover-config="productDetailCoverConfig"
-      @play="handleProductDetailVideoPlay"
-      @pause="handleProductDetailVideoPause"
+  <div
+    class="c-pc-product-detail-side-popup"
+    ref="productDetailSidePopupWrapRef"
+  >
+    <pc-side-popup
       v-if="productDetailVisible"
-      :lang="currentLang"
-    />
-
-    <div class="c-pc-product-detail__footer">
-      <iar-product-btn
-        v-if="currentProduct"
-        :product-sdk="productSdk"
-        :good="currentProduct"
-        :get-weixin-sdk="getWeixinSdk"
-        :get-link-params="getLinkParams"
-        :recruitment-enabled="recruitmentEnabled"
-        :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
-        @buy="onWechatBuy"
-      >
-        <template #default="{ buttonText, disabled }">
-          <normal-button
-            :size="ButtonSize.Medium"
-            :type="ButtonType.Aggravate"
-            block
-            :text="buttonText"
-            :disabled="disabled"
-          />
-        </template>
-      </iar-product-btn>
-    </div>
-
-    <span
-      class="c-product-detail__close-icon"
-      @click="closeProductDetail"
+      ref="productDetailSidePopupRef"
+      :visible.sync="productDetailVisible"
+      :mount-el="productDetailSidePopupWrapRef"
     >
-    </span>
+      <div class="c-pc-product-detail">
+        <iar-product-detail
+          class="c-pc-product-detail__iar-product-detail"
+          :product-info="productDetailInfo"
+          :cover-config="productDetailCoverConfig"
+          @play="handleProductDetailVideoPlay"
+          @pause="handleProductDetailVideoPause"
+          :lang="currentLang"
+        />
+
+        <div class="c-pc-product-detail__footer">
+          <iar-product-btn
+            v-if="currentProduct"
+            :product-sdk="productSdk"
+            :good="currentProduct"
+            :get-weixin-sdk="getWeixinSdk"
+            :get-link-params="getLinkParams"
+            :recruitment-enabled="recruitmentEnabled"
+            :product-link-jump-tip-enabled="interactSetting.productLinkJumpTipEnabled ? YN.Y : YN.N"
+            @buy="onWechatBuy"
+          >
+            <template #default="{ buttonText, disabled }">
+              <normal-button
+                :size="ButtonSize.Medium"
+                :type="ButtonType.Aggravate"
+                block
+                :text="buttonText"
+                :disabled="disabled"
+              />
+            </template>
+          </iar-product-btn>
+        </div>
+      </div>
+    </pc-side-popup>
   </div>
 </template>
 
 <script setup lang="ts">
+import pcSidePopup from '@/components/common-base/side-poupou/pc-side-popup.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
@@ -54,6 +60,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { YN } from '@polyv/live-watch-sdk';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import { ref } from 'vue';
+import { appEvents, useEventBusListener } from '@/app/app-events';
+import { PcSidePopupInstance } from '@/components/common-base/side-poupou/type';
 
 const { getWeixinSdk } = useWeixinSdk();
 
@@ -68,15 +77,19 @@ const IarProductBtn = getIarComponent('ProductButton');
 const {
   productDetailInfo,
   productDetailCoverConfig,
-  closeProductDetail,
   currentProduct,
   productDetailVisible,
   handleProductDetailVideoPlay,
   handleProductDetailVideoPause,
   currentLang,
+  productDetailSidePopupWrapRef,
 } = useNewProductDetail();
 
-console.info('currentLang', currentLang);
+const productDetailSidePopupRef = ref<PcSidePopupInstance>();
+
+useEventBusListener(appEvents.interaction.OpenProductDetail, () => {
+  productDetailSidePopupRef.value?.raiseZIndex();
+});
 </script>
 
 <style lang="scss">

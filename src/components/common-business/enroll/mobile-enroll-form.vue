@@ -3,15 +3,6 @@
   <div class="c-mobile-enroll-form">
     <div class="c-mobile-enroll-form__body">
       <div class="c-mobile-enroll-form__body__content">
-        <!-- 已报名入口 -->
-        <div
-          v-if="showLoginEnrollEnter"
-          class="c-mobile-enroll-form__entrance"
-          @click="onClickEnrolled"
-        >
-          {{ $lang('enroll.entrance') }}
-        </div>
-
         <!-- 头部图 -->
         <img
           v-if="enrollBanner"
@@ -247,7 +238,7 @@
               class="c-mobile-enroll-form__body__submit__button"
               :size="ButtonSize.Medium"
               block
-              :text="$lang('base.enterLive')"
+              :text="needEnrollByEnter ? $lang('base.enterLive') : $lang('base.submit')"
               allow-disabled-click
               debounce-submit
             />
@@ -287,7 +278,7 @@ import {
 defineProps(enrollFormMobileProps());
 const emit = defineEmits(enrollFormEmits());
 
-const { enrollBanner, showLoginEnrollEnter, smsVerifyEnabled, enrollAuthType, enrollFields } =
+const { needEnrollByEnter, enrollBanner, smsVerifyEnabled, enrollAuthType, enrollFields } =
   storeDefinitionToRefs(useEnrollStore);
 
 const {
@@ -300,7 +291,6 @@ const {
   onEmailChange,
   formatSpecialName,
   submitForm,
-  onClickEnrolled,
 } = useEnrollForm({
   emit,
 });

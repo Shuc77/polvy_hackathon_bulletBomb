@@ -37,6 +37,10 @@
     <mobile-qr-code-share-dialog />
     <!-- 订单中心弹窗 -->
     <mobile-order-center-popup />
+    <!-- 优惠券弹窗 -->
+    <mobile-coupon-common-popup />
+    <!-- 优惠券已领取弹窗 -->
+    <mobile-coupon-user-popup />
   </div>
 </template>
 
@@ -62,6 +66,8 @@ import MobileOrderPopup from './order/mobile-order-popup.vue';
 import MobileOrderCenterPopup from './order/mobile-order-center-popup.vue';
 import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
 import PortraitProductListPopup from './product/portrait-product-list-popup.vue';
+import MobileCouponCommonPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-common-popup.vue';
+import MobileCouponUserPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-user-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useRedpackStore } from '@/store/use-redpack-store';

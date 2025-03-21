@@ -12,6 +12,23 @@ import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { useIdentityStore } from './use-identity-store';
 import { useWatchAppStore } from './use-watch-app-store';
 
+interface EnrollLoginFormData {
+  /** 验证的手机号 */
+  phoneNumber: string;
+  /** 手机区号 */
+  areaCode: string;
+  /** 验证的邮箱地址 */
+  email: string;
+}
+
+export interface EnrollBasicFormData extends EnrollLoginFormData {
+  /** 图片验证码 */
+  imageId: string;
+  imageCaptcha: string;
+  /** 短信验证码 */
+  smsCode: string;
+}
+
 export interface EnrollStoreState {
   /** 报名观看开关 */
   enrollEnabled: Ref<boolean>;
@@ -41,8 +58,6 @@ export interface EnrollStoreState {
   needEnrollByEnter: ComputedRef<boolean>;
   /** 需要在互动前进行报名观看 */
   needEnrollByChat: ComputedRef<boolean>;
-  /** 显示登录入口 */
-  showLoginEnrollEnter: ComputedRef<boolean>;
   /** 入口文本 */
   entranceText: ComputedRef<string>;
   /** 报名观看标题 */
@@ -51,6 +66,8 @@ export interface EnrollStoreState {
   enrollBanner: Ref<string | undefined>;
   /** 是否使用报名观看姓名作为昵称 */
   enrollNickEnabled: Ref<boolean>;
+  /** (缓存)报名登录的表单信息 */
+  cacheLoginFormData: Ref<Partial<EnrollLoginFormData>>;
 }
 
 export interface EnrollStoreAction {
@@ -132,13 +149,6 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     );
   });
 
-  const showLoginEnrollEnter = computed<boolean>(() => {
-    if (identityStore.identitySetting.watchUserSystemEnabled) {
-      return false;
-    }
-    return unref(needEnrollByEnter);
-  });
-
   /** 需要在互动前进行报名观看 */
   const needEnrollByChat = computed<boolean>(
     () =>
@@ -172,6 +182,9 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
 
   /** 是否使用报名观看姓名作为昵称 */
   const enrollNickEnabled = ref(__enrollInfo.enrollNickEnabled);
+
+  /** (缓存)报名登录的表单信息 */
+  const cacheLoginFormData = ref<Partial<EnrollLoginFormData>>({});
 
   /** 同步信息 */
   function syncEnrollInfo() {
@@ -208,11 +221,12 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     auditNotPass,
     needEnrollByEnter,
     needEnrollByChat,
-    showLoginEnrollEnter,
     entranceText,
     enrollTitle,
     enrollBanner,
     enrollNickEnabled,
+
+    cacheLoginFormData,
 
     syncEnrollInfo,
   };

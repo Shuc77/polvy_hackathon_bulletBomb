@@ -2,6 +2,7 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useShareStore } from '@/store/use-share-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 
 /** 卡片推送 hook */
@@ -42,6 +43,7 @@ export const usePushCardLinkParams = () => {
   const watchCore = getWatchCore();
   const channelStore = useChannelStore();
   const viewerStore = useViewerStore();
+  const shareStore = useShareStore();
 
   /** 获取链接参数 */
   const getLinkParams = () => {
@@ -52,6 +54,8 @@ export const usePushCardLinkParams = () => {
       channelId: channelStore.channelId,
       // 跟进人 id
       saleId: saleInfo.saleId,
+      // 邀请观看--分销员/邀请人id
+      inviteWatchSaleId: shareStore.inviteWatchSaleId,
     };
   };
 

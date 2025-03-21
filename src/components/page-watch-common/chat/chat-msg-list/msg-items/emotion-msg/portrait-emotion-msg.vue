@@ -30,7 +30,7 @@ const { emotionUrl, isLoaded, onImgLoad, onClickEmotion } = useEmotionMsg();
 </script>
 
 <style lang="scss">
-$--emotion-size: 68px;
+$--emotion-size: 80px;
 
 .c-portrait-emotion-msg__placeholder {
   width: $--emotion-size;

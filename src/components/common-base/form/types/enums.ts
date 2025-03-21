@@ -14,6 +14,8 @@ export enum FormTheme {
   Default = 'default',
   /** 黑暗 */
   Dark = 'dark',
+  /** 白色 */
+  White = 'white',
   /** 简约 */
   Simplicity = 'simplicity',
 }

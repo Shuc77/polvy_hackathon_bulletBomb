@@ -5,10 +5,26 @@ import { ChannelWatchPageSkin, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
+import { useLayoutStore } from './use-layout-store';
+
+/** 主题颜色模式 */
+export enum SkinColorMode {
+  /** 深色 */
+  Dark = 'dark',
+  /** 浅色 */
+  Light = 'light',
+}
+
+export interface SkinConfig {
+  /** 颜色深浅 */
+  mode: SkinColorMode;
+}
 
 export interface ThemeStore {
   /** 观看页皮肤 */
   pageSkin: Ref<ChannelWatchPageSkin | undefined>;
+  /** 当前皮肤的深浅 */
+  pageSkinColorMode: ComputedRef<SkinColorMode>;
   /** 浏览器标签页图标 */
   browserFavIcon: Ref<string>;
   /** 频道图标 */
@@ -42,10 +58,53 @@ export interface ThemeStore {
 /** 皮肤主题 store */
 export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   const watchAppStore = useWatchAppStore();
+  const layoutStore = useLayoutStore();
   const __themeSetting = PlvChannelModule.generateDefaultThemeSetting();
 
   /** 观看页皮肤 */
   const pageSkin = ref<ChannelWatchPageSkin>();
+
+  const pageSkinConfig: Record<ChannelWatchPageSkin, SkinConfig> = {
+    [ChannelWatchPageSkin.Black]: {
+      mode: SkinColorMode.Dark,
+    },
+    [ChannelWatchPageSkin.Blue]: {
+      mode: SkinColorMode.Light,
+    },
+    [ChannelWatchPageSkin.Freshblue]: {
+      mode: SkinColorMode.Dark,
+    },
+    [ChannelWatchPageSkin.Golden]: {
+      mode: SkinColorMode.Light,
+    },
+    [ChannelWatchPageSkin.Green]: {
+      mode: SkinColorMode.Dark,
+    },
+    [ChannelWatchPageSkin.Red]: {
+      mode: SkinColorMode.Dark,
+    },
+    [ChannelWatchPageSkin.White]: {
+      mode: SkinColorMode.Light,
+    },
+  };
+
+  /** 当前皮肤的深浅 */
+  const pageSkinColorMode = computed<SkinColorMode>(() => {
+    const skin = unref(pageSkin);
+    if (!skin) {
+      return SkinColorMode.Dark;
+    }
+    const config = pageSkinConfig[skin];
+
+    let mode = config.mode;
+
+    // 当进入观看页时，如果是竖屏布局，且观看页已经初始化，则使用深色模式
+    if (watchAppStore.watchAppInited && layoutStore.isPortraitWatchLayout) {
+      mode = SkinColorMode.Dark;
+    }
+
+    return mode;
+  });
 
   /** 浏览器标签页图标 */
   const browserFavIcon = ref(__themeSetting.browserFavIcon);
@@ -137,6 +196,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
   return {
     pageSkin,
+    pageSkinColorMode,
     browserFavIcon,
     channelCoverImg,
     splashImg,

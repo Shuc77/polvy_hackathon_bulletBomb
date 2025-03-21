@@ -10,25 +10,31 @@
           v-for="(paneData, index) in tabPaneData"
           :key="index"
           ref="itemRef"
-          class="c-pc-aside-tab-header__item pws-main-tab-header-item"
+          class="c-pc-aside-tab-header__item"
           :class="{
-            'is-active': paneData.name === currentTabName,
-            'c-pc-aside-tab-header__item--reminder pws-main-tab-header-item-reminder':
-              paneData.showReminder && !paneData.showNewMessage,
+            'pws-secondary-text-color': paneData.name !== currentTabName,
+            'pws-primary-text-color is-active': paneData.name === currentTabName,
+            'c-pc-aside-tab-header__item--reminder': paneData.showReminder,
+            'c-pc-aside-tab-header__item--news': paneData.showNewMessage,
           }"
           @click="onClickHeaderItem(paneData)"
         >
-          <span
-            v-if="paneData.showNewMessage"
-            :class="{ 'c-pc-aside-tab-header__item--news': paneData.showReminder }"
-          >
+          <span class="c-pc-aside-tab-header__item__label">
             {{ paneData.label }}
-            <span v-if="paneData.showReminder">
+
+            <span
+              v-if="paneData.showNewMessage"
+              class="c-pc-aside-tab-header__item__news"
+            >
               {{ $lang('ask.news') }}
             </span>
+
+            <span
+              v-if="paneData.subLabel"
+              class="c-pc-aside-tab-header__item__sub-label pws-secondary-text-color"
+              >{{ paneData.subLabel }}</span
+            >
           </span>
-          <span v-else>{{ paneData.label }}</span>
-          <span v-if="paneData.subLabel">{{ paneData.subLabel }}</span>
         </div>
 
         <div
@@ -127,23 +133,35 @@ const { leftArrowVisible, rightArrowVisible } = useTabHeaderArrow({
   transition-duration: 0.3s;
   transition-property: color;
 }
+.c-pc-aside-tab-header__item__label {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.c-pc-aside-tab-header__item__sub-label {
+  margin-left: 4px;
+  font-family: DINProFont;
+  font-size: 12px;
+  zoom: 0.83;
+}
+
 .c-pc-aside-tab-header__item--reminder::after {
   width: 8px;
   height: 8px;
   margin-left: 3px;
   content: '';
+  background-color: #f24453;
   border-radius: 50%;
 }
 
 .c-pc-aside-tab-header__item--news {
-  position: relative;
-
-  > span {
+  .c-pc-aside-tab-header__item__news {
     position: absolute;
     bottom: 100%;
     left: 100%;
     padding: 0 6px;
-    margin: 0 0 -7px -17px;
+    margin: 0 0 -7px -14px;
     font-size: 12px;
     line-height: 18px;
     color: #fff;
@@ -158,9 +176,9 @@ const { leftArrowVisible, rightArrowVisible } = useTabHeaderArrow({
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 36px;
-  height: 3px;
-  border-radius: 4px;
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
   transition-duration: 0.3s;
   transition-property: left;
 }

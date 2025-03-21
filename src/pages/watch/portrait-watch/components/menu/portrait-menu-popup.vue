@@ -177,6 +177,14 @@
         :text="$lang('redpack.name')"
         @click="onClickSendRedpack"
       /> -->
+
+      <!-- 优惠券 -->
+      <menu-item
+        v-if="couponPendantVisible"
+        icon="coupon"
+        :text="$lang('interact.coupon.title')"
+        @click="onClickCoupon"
+      />
     </ul>
   </mobile-popup>
 </template>
@@ -252,7 +260,7 @@ const { toggleOnlySpecialMsg } = chatStore;
 const playerStore = usePlayerStore();
 const { isAudioPlayerMode } = storeToRefs(playerStore);
 
-const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { interactSetting, couponPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -414,6 +422,12 @@ function onClickPlaybackSetting() {
     _visible: true,
     _useTransition: false,
   });
+}
+
+/** 点击优惠券 */
+function onClickCoupon() {
+  getEmitter().emit(appEvents.interaction.OpenCouponUserList, true);
+  closeMenu();
 }
 
 watch(isSmallWindow, (pip: boolean) => {

@@ -53,6 +53,16 @@ export const useSlideVerify = (options: {
   async function initSlideVerify() {
     const AWSC = await loadAliAwsc();
 
+    // https://help.aliyun.com/zh/captcha/captcha1-0/user-guide/custom-ui-and-language-settings
+    const language =
+      {
+        [LangType.ZH_CN]: 'cn',
+        [LangType.ZH_TW]: 'tw',
+        [LangType.English]: 'en',
+        [LangType.Japanese]: 'ja_JP',
+        [LangType.Korean]: 'ko_KR',
+      }[langStore.currentLang] || 'en';
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     AWSC.use('nc', (state: unknown, module: any) => {
       const watchCore = getWatchCore();
@@ -64,7 +74,7 @@ export const useSlideVerify = (options: {
         // 声明滑动验证需要渲染的目标ID。
         renderTo: `#${id}`,
         // 配置语言
-        language: langStore.currentLang === LangType.ZH_CN ? 'cn' : 'en',
+        language,
         // 更新多语言配置
         upLang: langConfig,
         // 前端滑动验证通过时会触发该回调参数。您可以在该回调参数中将会话ID（sessionId）、签名串（sig）、请求唯一标识（token）字段记录下来，随业务请求一同发送至您的服务端调用验签。

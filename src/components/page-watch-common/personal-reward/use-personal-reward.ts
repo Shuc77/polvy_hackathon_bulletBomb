@@ -12,6 +12,7 @@ export const usePersonalReward = () => {
     return [
       { type: 'task-activity', text: translate('personalReward.taskEnter') },
       { type: 'lottery', text: translate('personalReward.lotteryEnter') },
+      { type: 'lucky-lottery', text: translate('personalReward.luckyLotteryEnter') },
     ];
   });
 
@@ -28,6 +29,9 @@ export const usePersonalReward = () => {
         case 'lottery':
           getEmitter().emit(appEvents.iar.RefreshLotteryRecordList);
           break;
+        case 'lucky-lottery':
+          getEmitter().emit(appEvents.iar.RefreshLuckyLotteryPrizeList);
+          break;
       }
     }
   });
@@ -42,6 +46,11 @@ export const usePersonalReward = () => {
 
   useEventBusListener(appEvents.iar.OpenLotteryRecordDialog, () => {
     currentType.value = 'lottery';
+    show();
+  });
+
+  useEventBusListener(appEvents.iar.OpenLuckyLotteryPrizeListDialog, () => {
+    currentType.value = 'lucky-lottery';
     show();
   });
 

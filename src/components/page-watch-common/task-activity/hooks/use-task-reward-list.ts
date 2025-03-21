@@ -3,11 +3,15 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { messageBox } from '@/components/common-base/message-box';
 import { useScrollPagination } from '@/hooks/tools/use-page/use-scroll-page';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWeixinStore } from '@/store/use-weixin-store';
 import {
   TaskRewardItem,
   TaskRewardStatus,
   RewardAcceptType,
   OutTradeErrorCode,
+  TaskActivityRewardType,
+  WeixinPayType,
 } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
 
@@ -20,6 +24,8 @@ export const useTaskRewardList = () => {
 
   const { getWatchCore, getEmitter } = useGlobalInject();
   const watchCore = getWatchCore();
+
+  const { weixinPayType } = storeDefinitionToRefs(useWeixinStore);
 
   const {
     scrollRef,
@@ -50,6 +56,24 @@ export const useTaskRewardList = () => {
     return txt;
   }
 
+  /**
+   * 是否显示奖励状态
+   * @param item 任务奖励项
+   */
+  function canShowRewardStatus(item: TaskRewardItem) {
+    if (
+      item.taskReward.type === TaskActivityRewardType.Cash &&
+      item.rewardStatus === TaskRewardStatus.Issued &&
+      weixinPayType.value === WeixinPayType.TransferBill
+    ) {
+      return false;
+    }
+
+    return [TaskActivityRewardType.Cash, TaskActivityRewardType.ExternalPoint].includes(
+      item.taskReward.type,
+    );
+  }
+
   function openReceive(item: TaskRewardItem) {
     switch (item.acceptInfo?.acceptType) {
       case RewardAcceptType.Form:
@@ -78,6 +102,12 @@ export const useTaskRewardList = () => {
       case OutTradeErrorCode.SystemError:
         text = translate('taskActivity.rewardError.msg3');
         break;
+      case OutTradeErrorCode.MarketingAccountUnbound:
+        text = translate('taskActivity.rewardError.msg4');
+        break;
+      case OutTradeErrorCode.MarketingAccountError:
+        text = translate('taskActivity.rewardError.msg5');
+        break;
     }
 
     messageBox({
@@ -98,5 +128,6 @@ export const useTaskRewardList = () => {
     showClose,
     openReceive,
     openErrorTips,
+    canShowRewardStatus,
   };
 };

@@ -119,6 +119,14 @@
       :text="$lang('player.pictureInPicture.playbackSetting')"
       @click="onClickPlaybackSetting"
     />
+
+    <!-- 优惠券 -->
+    <more-item
+      v-if="couponPendantVisible"
+      icon="coupon"
+      :text="$lang('interact.coupon.title')"
+      @click="onClickCoupon"
+    />
   </ul>
 </template>
 
@@ -148,7 +156,7 @@ const emit = defineEmits({
 
 const { getEmitter, getWatchCore } = useGlobalInject();
 
-const { announcementFunctionVisible, interactSetting } =
+const { announcementFunctionVisible, interactSetting, couponPendantVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
@@ -275,6 +283,12 @@ function onClickPlaybackSetting() {
     _visible: true,
     _useTransition: false,
   });
+}
+
+/** 点击优惠券 */
+function onClickCoupon() {
+  getEmitter().emit(appEvents.interaction.OpenCouponUserList, true);
+  closeMore();
 }
 
 watch(isSmallWindow, pip => {

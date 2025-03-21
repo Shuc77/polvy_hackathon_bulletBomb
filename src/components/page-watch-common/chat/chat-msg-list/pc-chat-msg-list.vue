@@ -13,15 +13,12 @@
     >
       {{ $lang('chat.moreMsg') }}
     </div>
-
-    <span class="c-pc-chat-msg-list__shadow-top pws-bg-none"></span>
-    <span class="c-pc-chat-msg-list__shadow-bottom pws-bg-none"></span>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ChatMsgItemComponentOptions } from './hooks/msg-render-hook';
-import PcChatMsgItem from './msg-items/pc-chat-msg-item.vue';
+import PcChatMsgItem from './msg-items/portrait-chat-msg-item.vue';
 import { useChatMsgList } from './use-chat-msg-list';
 import './styles/index.scss';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -38,32 +35,24 @@ const { containerRef, scrollToNew } = useChatMsgList({
 .c-pc-chat-msg-list {
   position: relative;
   height: 100%;
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 1) 8px);
 }
 
 .c-pc-chat-msg-list__container {
   position: relative;
+  box-sizing: border-box;
   height: 100%;
+  padding: 12px 64px 0 16px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain; // 阻止滚动传播
   @include scrollbar;
 }
 
-.c-pc-chat-msg-list__shadow-top,
-.c-pc-chat-msg-list__shadow-bottom {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  pointer-events: none;
-  background-repeat: repeat-x;
-  background-size: auto 100%;
-}
-
 .c-pc-chat-msg-list__more-msg {
   position: absolute;
-  bottom: 36px;
-  left: 50%;
+  bottom: 4px;
+  left: 16px;
   z-index: 10;
   height: 32px;
   padding: 0 16px;
@@ -72,15 +61,5 @@ const { containerRef, scrollToNew } = useChatMsgList({
   cursor: pointer;
   border-radius: 16px;
   opacity: 0.8;
-  transform: translateX(-50%);
-}
-
-.c-pc-chat-msg-list__shadow-top {
-  top: 0;
-  background: linear-gradient(180deg, #202127 0%, rgba(32, 33, 39, 0) 100%);
-}
-.c-pc-chat-msg-list__shadow-bottom {
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(32, 33, 39, 0) 0%, #202127 100%);
 }
 </style>

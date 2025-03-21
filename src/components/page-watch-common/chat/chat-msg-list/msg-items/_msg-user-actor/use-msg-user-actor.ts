@@ -12,10 +12,10 @@ export const useMsgUserActor = (options: { props: VueProps<typeof msgUserActorPr
 
   /** 头衔的颜色关系 */
   const actorColors = {
-    [ChatUserType.Manager]: '#33BBC5',
-    [ChatUserType.Assistant]: '#598FE5',
-    [ChatUserType.Teacher]: '#F09343',
-    [ChatUserType.Guest]: '#EB6165',
+    [ChatUserType.Manager]: 'linear-gradient(270deg, #818CF0 0%, #716AF7 100%)',
+    [ChatUserType.Assistant]: 'linear-gradient(278deg, #14D0B2 1%, #04B888 96%)',
+    [ChatUserType.Teacher]: 'linear-gradient(270deg, #57B7FF 0%, #2987FF 100%)',
+    [ChatUserType.Guest]: 'linear-gradient(90deg, #FF8165 -1%, #FEB235 100%)',
     [ChatUserType.Dummy]: '#F09343',
   };
 

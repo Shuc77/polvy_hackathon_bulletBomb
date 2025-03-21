@@ -45,7 +45,7 @@ defineExpose(tabsInstance);
   flex-direction: column;
   height: 100%;
   color: $--color-white;
-  background: #202127;
+  // background: #202127;
 }
 
 .c-mobile-menu-tabs__body {

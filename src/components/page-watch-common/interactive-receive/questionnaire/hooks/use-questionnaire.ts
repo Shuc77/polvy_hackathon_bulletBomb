@@ -7,6 +7,7 @@ import { AllQuestionnaireStatus, IarQuestionnaireInstance } from '../types/quest
 import { useGlobalInject } from '@/app/use-global-inject';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
 /**
  * @hook 互动-问卷
@@ -18,6 +19,8 @@ export const useQuestionnaire = () => {
 
   const watchCore = getWatchCore();
   const interactReceiveStore = useInteractReceiveStore();
+
+  const playbackStore = usePlaybackStore();
 
   /** 问卷组件节点 */
   const questionnaireRef = ref<IarQuestionnaireInstance>();
@@ -52,6 +55,9 @@ export const useQuestionnaire = () => {
 
   /** 问卷返回按钮  */
   const questionnaireBackBtnVisible = computed(() => {
+    // 回放问卷不允许返回
+    if (playbackStore.questionnaireReplayEnabled) return false;
+
     return interactReceiveStore.questionnaireBackBtnVisible;
   });
 
@@ -59,9 +65,7 @@ export const useQuestionnaire = () => {
     () => questionnaireVisible.value,
     val => {
       if (!val) {
-        interactReceiveStore.$patch({
-          questionnaireBackBtnVisible: true,
-        });
+        interactReceiveStore.setQuestionnaireBackBtnVisible(true);
         lotteryQuestionnaireId.value = '';
       }
     },

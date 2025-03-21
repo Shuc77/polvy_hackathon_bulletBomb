@@ -1,9 +1,9 @@
-import { DefineComponent, ref, shallowRef } from 'vue';
-import { formatDate } from '@utils-ts/date';
-import { PageContent, WithdrawStatus } from '@polyv/live-watch-sdk';
-import { useToastManager } from '@/hooks/components/use-toast';
-import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
+import { DATE_FORMAT_DOT } from '@/assets/constants/date-format';
 import { translate } from '@/assets/lang';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { PageContent, WithdrawStatus } from '@polyv/live-watch-sdk';
+import { formatDate } from '@utils-ts/date';
+import { DefineComponent, ref, shallowRef } from 'vue';
 
 export function getWithdrawStatusText(status: WithdrawStatus) {
   switch (status) {
@@ -52,7 +52,7 @@ export const useReceiveRecordHook = <T>(hookOption: {
 
   /** 转换领取日期 */
   function convertReceiveDate(ts: string | number) {
-    return formatDate(new Date(ts), DATE_FORMAT_SLASH);
+    return formatDate(new Date(ts), DATE_FORMAT_DOT);
   }
 
   /** 转换金额，转成保留 2 位小数的数字字符串 */

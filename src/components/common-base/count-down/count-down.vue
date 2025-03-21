@@ -12,7 +12,7 @@
       class="c-count-down__square"
     >
       <div
-        v-for="(item, index) in timeContents"
+        v-for="(item, index) in realTimeContents"
         :key="`square-${index}`"
         class="c-count-down__square__item"
         :class="{
@@ -35,7 +35,7 @@
       class="c-count-down__red-square"
     >
       <div
-        v-for="(item, index) in timeContents"
+        v-for="(item, index) in realTimeContents"
         :key="`red-square-${index}`"
         class="c-count-down__red-square__item"
       >
@@ -48,7 +48,7 @@
       v-if="theme === 'text'"
       class="c-count-down__text"
     >
-      <template v-for="(item, index) in timeContents">
+      <template v-for="(item, index) in realTimeContents">
         <div
           :key="`count-${index}`"
           class="c-count-down__text__count"
@@ -67,9 +67,16 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { isMobile } from '@/assets/utils/browser';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
-import { countDownProps, countDownEmits, useCountDown } from './use-count-down';
+import {
+  countDownProps,
+  countDownEmits,
+  useCountDown,
+  secondsToCountDownSurplus,
+  getTimeContents,
+} from './use-count-down';
 
 const props = defineProps(countDownProps());
 
@@ -80,6 +87,19 @@ const { size, theme } = useProps(props);
 const { timeContents } = useCountDown({
   props,
   emit,
+});
+
+const realTimeContents = computed(() => {
+  if (props.customTimeSecond === undefined) {
+    return timeContents.value;
+  }
+
+  const surplusTime = secondsToCountDownSurplus(props.customTimeSecond);
+
+  return getTimeContents(surplusTime, {
+    hideZeroDays: props.hideZeroDays,
+    hideZeroHours: props.hideZeroHours,
+  });
 });
 </script>
 

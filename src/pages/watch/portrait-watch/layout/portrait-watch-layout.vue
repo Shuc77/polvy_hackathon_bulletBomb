@@ -58,23 +58,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
-import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
-import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue';
-import PortraitWatchLayoutCarousel from './portrait-watch-layout-carousel.vue';
 import PortraitConnectMicContainer from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-container.vue';
+import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
+import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { computed, ref, watch } from 'vue';
+import PortraitWatchLayoutCarousel from './portrait-watch-layout-carousel.vue';
 
-import { useDocStore } from '@/store/use-doc-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { useWebviewStore } from '@/store/use-webview-store';
-import { usePlayerStore } from '@/store/use-player-store';
+import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { usePlayerStore } from '@/store/use-player-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 
-import { CSSProperties } from 'vue/types/jsx';
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
+import { CSSProperties } from 'vue/types/jsx';
 
 const { isVerticalScreenOrientation } = storeDefinitionToRefs(useLayoutStore);
 

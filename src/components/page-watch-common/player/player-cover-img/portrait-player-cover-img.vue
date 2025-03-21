@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 import { getImgSize } from '@/assets/utils/image';
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -49,10 +49,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import PortraitAudioPanel from '../common/audio-panel/portrait-audio-panel.vue';
 
-import {
-  PlayerSizeData,
-  usePortraitPlayerSize,
-} from '../player-main/portrait-player-main/use-portrait-player-size';
+import { usePortraitPlayerSize } from '../player-main/portrait-player-main/use-portrait-player-size';
 import { useChannelStore } from '@/store/use-channel-store';
 
 const {
@@ -65,8 +62,7 @@ const {
 
 const { isSeminarHostInGroup } = storeDefinitionToRefs(useChannelStore);
 
-const imgSize = ref<PlayerSizeData>();
-const { playerContainerStyle } = usePortraitPlayerSize(imgSize);
+const { setTargetSize, playerContainerStyle } = usePortraitPlayerSize();
 
 /**
  * 加载暖场图片
@@ -80,10 +76,12 @@ watch(
 
     const { width, height } = await getImgSize(warmUpRenderCover.value);
 
-    imgSize.value = {
+    const imgSize = {
       width,
       height,
     };
+
+    setTargetSize(imgSize);
   },
   {
     immediate: true,

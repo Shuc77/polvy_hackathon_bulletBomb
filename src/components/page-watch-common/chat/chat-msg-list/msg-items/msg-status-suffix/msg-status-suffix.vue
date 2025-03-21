@@ -1,6 +1,6 @@
 <template>
   <span
-    v-show="
+    v-if="
       iconShowStatus === ChatMsgItemSendStatus.Loading ||
       iconShowStatus === ChatMsgItemSendStatus.Fail
     "

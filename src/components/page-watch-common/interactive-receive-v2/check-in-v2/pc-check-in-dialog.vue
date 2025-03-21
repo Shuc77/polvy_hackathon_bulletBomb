@@ -12,6 +12,7 @@
       :check-in-target="getIarTarget()"
       enable-sound-effects
       :mount-node="dialogMountEl"
+      :check-in-record-enabled="checkInRecordEnabled"
       @show-entrance="showEntrance"
       @to-show="setCheckInVisible(true, false)"
       @to-hide="setCheckInVisible(false)"
@@ -34,6 +35,7 @@ const {
   checkInRef,
   checkInVisible,
   checkInTitle,
+  checkInRecordEnabled,
   setCheckInVisible,
   showEntrance,
   onCheckInStatus,

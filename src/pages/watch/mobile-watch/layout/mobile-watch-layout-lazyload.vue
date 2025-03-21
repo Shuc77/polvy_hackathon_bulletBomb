@@ -70,6 +70,9 @@
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup />
 
+    <!-- 任务完成弹层 -->
+    <mobile-task-activity-finish-dialog />
+
     <!-- 在线用户列表规则弹层 -->
     <mobile-member-list-rule-popup />
 
@@ -106,6 +109,7 @@ import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
+import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 import MobilePlaybackSetting from '@/components/page-watch-common/player/player-control/mobile-player-control/mobile-playback-setting.vue';
 import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';

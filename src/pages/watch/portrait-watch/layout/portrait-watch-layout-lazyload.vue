@@ -22,10 +22,10 @@
     <mobile-donate-popup v-if="showDonateFunction" />
 
     <!-- 提现申请弹层 -->
-    <portrait-withdraw-apply v-if="withdrawVisible" />
+    <mobile-withdraw-apply v-if="withdrawVisible" />
 
     <!-- 提现详情弹层 -->
-    <portrait-withdraw-detail v-if="withdrawVisible" />
+    <mobile-withdraw-detail v-if="withdrawVisible" />
 
     <!-- 切换语言弹层 -->
     <mobile-lang-switch v-if="langSwitchEnabled" />
@@ -78,6 +78,9 @@
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup />
 
+    <!-- 任务完成弹层 -->
+    <mobile-task-activity-finish-dialog />
+
     <!-- 在线用户列表弹层 -->
     <portrait-member-list-popup />
 
@@ -106,8 +109,8 @@ import PortraitInviteRankPopup from '@/components/page-watch-common/invite/portr
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import PortraitMicroActivity from '@/components/page-watch-common/micro-activity/portrait-micro-activity/portrait-micro-activity.vue';
-import PortraitWithdrawApply from '@/components/page-watch-common/withdraw/portrait-withdraw-apply/portrait-withdraw-apply.vue';
-import PortraitWithdrawDetail from '@/components/page-watch-common/withdraw/portrait-withdraw-detail/portrait-withdraw-detail.vue';
+import MobileWithdrawApply from '@/components/page-watch-common/withdraw/mobile-withdraw-apply/mobile-withdraw-apply.vue';
+import MobileWithdrawDetail from '@/components/page-watch-common/withdraw/mobile-withdraw-detail/mobile-withdraw-detail.vue';
 import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/components/playback-chapter-popup/portrait-playback-chapter-popup.vue';
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
 import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
@@ -121,6 +124,7 @@ import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mob
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
+import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
 import PortraitMemberListPopup from '@/components/page-watch-common/member-list/portrait-member-list.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-playback-setting.vue';

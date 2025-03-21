@@ -160,6 +160,7 @@ export function createWatchApp() {
         code: paramGetter().password(),
         ignoreWxAuth: paramGetter().ignoreWxAuth(),
         wxSnapshotPageMode: paramGetter().snapshotPage(),
+        forceDirectAuth: paramGetter().forceDirectAuth(),
       },
       saleInviteParams: {
         saleCode: paramGetter().saleCode(),

@@ -62,6 +62,7 @@ import { ref, watch, computed } from 'vue';
 
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 
+import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { dialogMobileProps, dialogEmits } from '../use-dialog';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 
@@ -108,10 +109,19 @@ function openDialog() {
   if (props.visible && props.bodyLocked) {
     document.body.classList.add('g-body-locked');
   }
+
+  if (dialogRef.value) {
+    PlvPopperManager.openPopper(dialogRef.value);
+  }
 }
 
 /** 关闭弹窗 */
 function closeDialog() {
+  if (props.customClose) {
+    props.customClose();
+    return;
+  }
+
   toUnlockFeedDrag();
 
   innerVisible.value = false;
