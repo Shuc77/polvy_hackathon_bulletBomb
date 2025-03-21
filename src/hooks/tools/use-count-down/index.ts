@@ -114,9 +114,14 @@ export const useSecondCountDown = (options: UseSecondCountDownOptions = {}) => {
     }
   }
 
-  /** 暂停倒计时 */
+  /** 停止倒计时 */
   function stopCountDown(): void {
     countDownInstance && countDownInstance.stop();
+  }
+
+  /** 暂停倒计时 */
+  function pauseCountDown(): void {
+    countDownInstance && countDownInstance.pause();
   }
 
   /**
@@ -142,6 +147,7 @@ export const useSecondCountDown = (options: UseSecondCountDownOptions = {}) => {
     initCountDown,
     startCountDown,
     stopCountDown,
+    pauseCountDown,
     destroyCountDown,
   };
 };

@@ -16,6 +16,8 @@ export const enrollLoginEmits = () => ({
   'click-cancel': emitFunc<void>(),
   /** 关闭弹层 */
   'close-dialog': emitFunc<void>(),
+  /** 跳转去报名 */
+  'redirect-to-enroll': emitFunc<void>(),
 });
 
 /**
@@ -88,6 +90,10 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
     return rules;
   });
 
+  function redirectToEnroll() {
+    emit('redirect-to-enroll');
+  }
+
   /**
    * 提交登录表单
    */
@@ -108,11 +114,14 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
 
     // 未填写报名信息
     if (!result.hasEnrolled) {
-      let toastMsg = translate('enroll.error.phoneUnenroll');
-      if (enrollStore.enrollAuthType === EnrollAuthType.Email) {
-        toastMsg = translate('enroll.error.emailUnenroll');
-      }
-      toast.error(toastMsg);
+      enrollStore.$patch({
+        cacheLoginFormData: {
+          areaCode: formData.areaCode,
+          phoneNumber: formData.phoneNumber,
+          email: formData.email,
+        },
+      });
+      redirectToEnroll();
       return;
     }
 
@@ -144,5 +153,6 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
     formRules,
     submitLoginForm,
     onClickCancel,
+    redirectToEnroll,
   };
 };

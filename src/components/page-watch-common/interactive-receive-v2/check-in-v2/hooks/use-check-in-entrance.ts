@@ -4,6 +4,7 @@ import {
   InteractiveEntranceData,
   useInteractReceiveStore,
 } from '@/store/use-interact-receive-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
 /**
  * @hook 互动-签到入口
@@ -12,6 +13,7 @@ export const useCheckInEntrance = () => {
   const { getEmitter } = useGlobalInject();
 
   const interactReceiveStore = useInteractReceiveStore();
+  const playbackStore = usePlaybackStore();
 
   /** 签到入口数据 */
   const checkInEntranceData: InteractiveEntranceData = {
@@ -24,6 +26,9 @@ export const useCheckInEntrance = () => {
 
   /** 设置签到二次入口 */
   const setCheckInEntrance = () => {
+    // 签到重放的情况下，不显示签到二次入口
+    if (playbackStore.checkInReplayEnabled) return;
+
     interactReceiveStore.setInteractiveEntrance(checkInEntranceData);
   };
 

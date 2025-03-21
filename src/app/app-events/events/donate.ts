@@ -3,6 +3,6 @@
  */
 
 export const donateEvents = {
-  /** 显示打赏弹层（竖屏 + 移动端） */
+  /** 显示打赏弹层 */
   OpenDonatePopup: 'OpenDonatePopup',
 };

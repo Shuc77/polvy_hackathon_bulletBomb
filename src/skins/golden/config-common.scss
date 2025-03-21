@@ -36,7 +36,7 @@ $--skin-basic-configs: (
 
   // ---------- 背景色 ---------- //
   // 主要背景色（以侧边栏主体背景色定义）
-  'main-bg-color': #F4F4F4,
+  'main-bg-color': #f2f2f2,
   // 次要背景色（以侧边栏头部背景色定义）
   'sub-bg-color': $--color-white,
   // 面板背景色
@@ -68,9 +68,9 @@ $--skin-basic-configs: (
 // 皮肤基础组件配置
 $--skin-component-configs: (
   // 主要 tab 头部背景色
-  'main-tab-header:bg-color': map.get($--skin-basic-configs, 'sub-bg-color'),
+  'main-tab-header:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
   // 主要 tab 头部字体色
-  'main-tab-header:text-color': #666666,
+  'main-tab-header:text-color': rgba(#000000, 0.4),
   // 主要 tab 头部 hover 字体色
   'main-tab-header--hover:text-color': #666666,
   // 主要 tab 头部激活字体色
@@ -81,8 +81,6 @@ $--skin-component-configs: (
   'main-tab-header-shadow-start:color': map.get($--skin-basic-configs, 'sub-bg-color'),
   // 主要 tab 头部阴影结束颜色
   'main-tab-header-shadow-end:color': rgba(62, 62, 78, 0),
-  // 主要 tab 头部红点颜色
-  'main-tab-header-reminder:color': #f24453,
   // 主要 tab 主体背景色
   'main-tab-body:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
   // 主要 tab 主体滚动栏颜色

@@ -14,13 +14,13 @@ import {
   WarmUpType,
   PlvBarrageModule,
   PlvPlayerModule,
+  PlayerResolutionRatio,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
-import { useThemeStore } from './use-theme-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useWebviewStore } from './use-webview-store';
 
@@ -43,10 +43,6 @@ export interface PlayerStoreState {
   onceHiddenPlayButton: Ref<boolean>;
   /** 播放器暖场设置 */
   warmUpSetting: Ref<PlayerWarmUpSetting>;
-  /** 暖场封面 */
-  warmUpCover: ComputedRef<string>;
-  /** 暖场大封面 */
-  warmUpLargeCover: ComputedRef<string | undefined>;
   /** 暖场渲染图片 */
   warmUpRenderCover: ComputedRef<string>;
   /** 是否存在暖场视频 */
@@ -188,7 +184,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
   const webViewStore = useWebviewStore();
-  const themeStore = useThemeStore();
 
   const __defaultPlayerInfo = PlvPlayerModule.generateDefaultPlayerInfo();
 
@@ -231,8 +226,23 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 视频流高度，仅用作比例计算 */
   const resolutionHeight = ref<number>();
 
+  /**
+   * 播放器比例配置
+   */
+  const playerResolutionRatio = ref<PlayerResolutionRatio>(
+    __defaultPlayerInfo.playerResolutionRatio,
+  );
+
   /** 视频流是否为竖状比例 */
   const isPortraitResolutionRate = computed<boolean>(() => {
+    // 只有竖屏模板下，配置播放比例为竖向比例的时候，才强制视频为竖状比例
+    if (
+      playerResolutionRatio.value === PlayerResolutionRatio.Vertical &&
+      layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait
+    ) {
+      return true;
+    }
+
     const width = unref(resolutionWidth);
     const height = unref(resolutionHeight);
     if (!width || !height) {
@@ -254,41 +264,25 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     return warmUpSetting.value.warmUpType === WarmUpType.Video;
   });
 
-  /** 暖场视频封面 */
-  const warmUpVideoCover = computed<string>(() => {
-    if (existWarmUpVideo.value && themeStore.splashImg) {
-      return themeStore.splashImg;
-    }
-    return '';
-  });
-
   /** 暖场封面 */
   const warmUpCover = computed(() => {
-    return warmUpSetting.value.warmUpImg || warmUpVideoCover.value;
+    return warmUpSetting.value.warmUpImg || '';
   });
 
   /** 暖场大封面 */
   const warmUpLargeCover = computed(() => {
-    return warmUpSetting.value.warmUpLargeImg;
+    return warmUpSetting.value.warmUpLargeImg || '';
   });
 
-  /** 暖场渲染图片 */
+  /** 暖场渲染图片，既作为暖场图，又作为暖场视频的封面图 */
   const warmUpRenderCover = computed(() => {
-    if (
-      isMobile &&
-      layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait &&
-      warmUpLargeCover.value
-    ) {
-      // 如果当前视频流为竖状
-      if (isPortraitResolutionRate.value) {
-        return warmUpLargeCover.value;
-      }
-      // 如果未直播中且没上传横屏暖场图
-      if (channelStore.liveStatus !== LiveStatus.Live && !warmUpCover.value) {
-        return warmUpLargeCover.value;
-      }
+    let result = '';
+    if (isMobile && isPortraitResolutionRate.value) {
+      result = warmUpLargeCover.value;
+    } else {
+      result = warmUpCover.value;
     }
-    return warmUpCover.value;
+    return result;
   });
 
   /** 是否显示播放器暖场图片 */
@@ -302,19 +296,18 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       return false;
     }
 
-    // 没有暖场视频的前提下，非无延迟移动端横屏不展示自定义暖场图
+    // 没有暖场视频的前提下，正常延迟移动端横屏不在观看页展示自定义暖场图
     if (isCdnWithNormalLayout.value && !existWarmUpVideo.value) {
       return false;
     }
 
-    const isNotPlaying = playStatus.value !== PlayStatus.Playing;
     return (
       // 播放器已初始化
       unref(playerInited) &&
       // 有暖场封面
       !!warmUpRenderCover.value &&
-      // 还没开始播放 || 不处于播放中状态
-      (!unref(isPlayStarted) || isNotPlaying)
+      // 还没开始播放
+      !unref(isPlayStarted)
     );
   });
 
@@ -605,6 +598,8 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     playbackProgressBarEnabled.value = playerInfo.playbackProgressBarEnabled;
     playbackShowPlayButtonEnabled.value = playerInfo.playbackShowPlayButtonEnabled;
 
+    playerResolutionRatio.value = playerInfo.playerResolutionRatio;
+
     /**
      * 暂不支持三分屏场景和研讨会场景
      * 暂不支持移动端竖屏
@@ -631,8 +626,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     onceHiddenPlayButton,
     warmUpSetting,
     existWarmUpVideo,
-    warmUpCover,
-    warmUpLargeCover,
     warmUpRenderCover,
     showWarmUpImg,
     showAudioLivePlaceholder,

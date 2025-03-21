@@ -3,15 +3,6 @@
   <div class="c-pc-enroll-form">
     <div class="c-pc-enroll-form__body">
       <div class="c-pc-enroll-form__body__content">
-        <!-- 已报名入口 -->
-        <div
-          v-if="showLoginEnrollEnter"
-          class="c-pc-enroll-form__entrance"
-          @click="onClickEnrolled"
-        >
-          {{ $lang('enroll.entrance') }}
-        </div>
-
         <!-- 头部图 -->
         <img
           v-if="enrollBanner"
@@ -236,18 +227,19 @@
           </template>
 
           <div class="c-pc-enroll-form__body__submit">
-            <form-submit-button
-              class="c-pc-enroll-form__body__submit__button"
-              :size="ButtonSize.Small"
-              :text="$lang('base.enterLive')"
-              debounce-submit
-            />
             <normal-button
+              v-if="needEnrollByEnter"
               class="c-pc-enroll-form__body__submit__button"
               :size="ButtonSize.Small"
               :type="ButtonType.Info"
-              :text="$lang('base.cancel')"
+              :text="$lang('base.back')"
               @click="onClickCancel"
+            />
+            <form-submit-button
+              class="c-pc-enroll-form__body__submit__button"
+              :size="ButtonSize.Small"
+              :text="needEnrollByEnter ? $lang('base.enterLive') : $lang('base.submit')"
+              debounce-submit
             />
           </div>
         </form-wrap>
@@ -280,7 +272,7 @@ import { enrollFormEmits, useEnrollForm, useEnrollCheckMobile } from './hooks/us
 
 const emit = defineEmits(enrollFormEmits());
 
-const { enrollBanner, showLoginEnrollEnter, smsVerifyEnabled, enrollAuthType, enrollFields } =
+const { needEnrollByEnter, enrollBanner, smsVerifyEnabled, enrollAuthType, enrollFields } =
   storeDefinitionToRefs(useEnrollStore);
 
 const {
@@ -294,7 +286,6 @@ const {
   formatSpecialName,
   submitForm,
   onClickCancel,
-  onClickEnrolled,
 } = useEnrollForm({
   emit,
 });
@@ -318,15 +309,6 @@ const { blurToCheckStatus } = useEnrollCheckMobile({
 
 .c-pc-enroll-form__body__content {
   padding: 24px 0 0;
-}
-
-.c-pc-enroll-form__entrance {
-  width: 344px;
-  margin: 0 auto 20px;
-  font-size: 14px;
-  color: $--color-primary;
-  text-align: right;
-  cursor: pointer;
 }
 
 .c-pc-enroll-form__banner {

@@ -7,7 +7,7 @@ import {
   ProductClickType,
 } from '@polyv/live-watch-sdk';
 import { randomStr } from '@polyv/utils/es/string';
-import { computed, onBeforeUnmount, onMounted, Ref, ref, watchEffect } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, watchEffect } from 'vue';
 import { MessageEffectData, MessageEffectType } from '../type';
 import { useEffectSetting } from './use-effect-setting';
 
@@ -256,11 +256,22 @@ export const useRunwayEffect = () => {
   useRunwayProduct(controller);
   useRunwayCheckIn(controller);
 
+  /** 外层是否显示 */
+  const wrapVisible = ref(false);
+
   /** 跑道队列 */
   const runwayQueue = ref<MessageEffectData[]>([]);
 
+  function onAfterLeave() {
+    if (runwayQueue.value.length === 0) {
+      wrapVisible.value = false;
+    }
+  }
+
   /** 插入队列 */
-  function pushQueue(item: MessageEffectData) {
+  async function pushQueue(item: MessageEffectData) {
+    wrapVisible.value = true;
+    await nextTick();
     runwayQueue.value.push(item);
   }
 
@@ -288,9 +299,6 @@ export const useRunwayEffect = () => {
   const currentData = computed<MessageEffectData | undefined>(() => {
     return runwayQueue.value[0];
   });
-
-  /** 欢迎语是否显示 */
-  const runwayVisible = computed<boolean>(() => !!currentData.value);
 
   /** 隐藏时间，毫秒级别 */
   let visibleTime = 3000;
@@ -333,7 +341,8 @@ export const useRunwayEffect = () => {
 
   return {
     currentData,
+    onAfterLeave,
     pushQueue,
-    runwayVisible,
+    wrapVisible,
   };
 };

@@ -56,6 +56,9 @@ export const usePageSkin = () => {
       return;
     }
 
+    import(/* webpackChunkName: "skin-dark" */ '@/skins/_v2/dark/style.scss');
+    import(/* webpackChunkName: "skin-light" */ '@/skins/_v2/light/style.scss');
+
     if (!isMobile) {
       await importPcPageSkin(pageSkin);
       return;
@@ -217,6 +220,30 @@ export const usePageSkin = () => {
         const pageSkinClass = getSkinClassName(pageSkin);
         $document.addClass(pageSkinClass);
       }
+    },
+  );
+
+  watch(
+    () => themeStore.pageSkinColorMode,
+    (pageSkinColorMode, oldPageSkinColorMode) => {
+      const $document = $(getAppRootElement());
+
+      const classPrefix = 'pws-skin-color-mode-';
+
+      if (oldPageSkinColorMode) {
+        const oldClass = classPrefix + oldPageSkinColorMode;
+        if ($document.hasClass(oldClass)) {
+          $document.removeClass(oldClass);
+        }
+      }
+
+      if (pageSkinColorMode) {
+        const newClass = classPrefix + pageSkinColorMode;
+        $document.addClass(newClass);
+      }
+    },
+    {
+      immediate: true,
     },
   );
 

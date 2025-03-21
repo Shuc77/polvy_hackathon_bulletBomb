@@ -1,7 +1,7 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { PolyvIarCheckIn, PolyvIarCheckInEvent } from '@polyv/live-watch-sdk';
-import { onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, ref } from 'vue';
 
 import { translate } from '@/assets/lang';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
@@ -9,9 +9,11 @@ import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIarTarget } from '../../_hooks/use-iar-target';
 import { useCheckInEntrance } from './use-check-in-entrance';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
 export const useCheckIn = () => {
   const interactReceiveStore = useInteractReceiveStore();
+  const playbackStore = usePlaybackStore();
 
   const { setCheckInEntrance, removeCheckInEntrance } = useCheckInEntrance();
 
@@ -36,6 +38,10 @@ export const useCheckIn = () => {
   const checkInRef = ref();
   /** 签到标题 */
   const checkInTitle = translate('interact.checkIn.title');
+
+  const checkInRecordEnabled = computed(() => {
+    return !playbackStore.checkInReplayEnabled;
+  });
 
   /** 获取签到列表数据  */
   const getCheckInRecord = async function () {
@@ -135,6 +141,7 @@ export const useCheckIn = () => {
     removeCheckInEntrance,
     checkInRef,
     isOldEntrance,
+    checkInRecordEnabled,
     showEntrance,
     onCheckInStatus,
   };

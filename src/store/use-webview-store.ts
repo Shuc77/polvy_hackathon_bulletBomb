@@ -198,9 +198,7 @@ export const useWebviewStore = defineStore<'webview', WebviewStore>('webview', (
 
   /** 获取暂存/回放/点播视频url */
   function getPlaybackUrl() {
-    const watchCore = watchAppStore.getWatchCore();
-    const options = watchCore.player.getCurrentPlaybackOptions();
-    return options?.url;
+    return playbackStore.currentPlaybackTarget?.playbackOptions.url;
   }
 
   function syncWebviewInfo() {

@@ -88,8 +88,7 @@
           :key="`quiz-${index}`"
           :label="menu.name"
           :name="TAB_NAME_ASK"
-          :show-reminder="askReminderVisible"
-          :show-new-message="true"
+          :show-new-message="askReminderVisible"
           lazy-load
         >
           <pc-ask />
@@ -252,6 +251,10 @@ function onIsEmptyCallback(isEmpty: boolean) {
   left: 0;
   z-index: 50;
   width: 100%;
+
+  &:empty {
+    display: none;
+  }
 }
 .c-pc-watch-aside-menu__topic-item {
   margin: 8px 8px 0;

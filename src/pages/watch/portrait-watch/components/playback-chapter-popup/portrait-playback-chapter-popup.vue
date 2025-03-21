@@ -20,10 +20,7 @@
     </template>
 
     <!-- 回放列表 -->
-    <mobile-playback-list
-      v-if="listVal === 'playback'"
-      :show-start-time="false"
-    />
+    <mobile-playback-list v-if="listVal === 'playback'" />
     <!-- 章节列表 -->
     <mobile-chapter
       v-if="chapterVisible"

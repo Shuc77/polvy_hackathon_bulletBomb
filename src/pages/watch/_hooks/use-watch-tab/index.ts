@@ -1,9 +1,8 @@
-import { translate } from '@/assets/lang';
-import { computed, watch } from 'vue';
-import { useChatStore } from '@/store/use-chat-store';
 import { TAB_NAME_ASK, TAB_NAME_CHAT } from '@/assets/constants/tab-name';
 import { useAskReminder } from '@/components/page-watch-common/ask/hooks/use-ask';
 import { useChatReminder } from '@/components/page-watch-common/chat/chat-msg-list/hooks/chat-reminder-hook';
+import { useChatStore } from '@/store/use-chat-store';
+import { computed, watch } from 'vue';
 
 /**
  * @hook Tab/Menu 菜单附加数据 Hook
@@ -26,9 +25,7 @@ export const useWatchTabHook = (options: {
 
   /** 聊天 Tab 附加文本 */
   const chatSubLabel = computed(() => {
-    return chatStore.chatSetting.chatOnlineNumberEnable
-      ? `(${chatStore.onlineUserCount}${translate('base.people')})`
-      : '';
+    return chatStore.chatSetting.chatOnlineNumberEnable ? `${chatStore.onlineUserCount}` : '';
   });
 
   /** 提问新消息提醒 */

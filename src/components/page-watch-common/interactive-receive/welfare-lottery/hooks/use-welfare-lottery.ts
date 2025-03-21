@@ -69,9 +69,7 @@ export const useWelfareLottery = () => {
    */
   const onToFillQuestionnaire = (questionnaireId: string) => {
     console.log('>>>> 显示抽奖问卷 set questionnaireBackBtnVisible:', false);
-    interactReceiveStore.$patch({
-      questionnaireBackBtnVisible: false,
-    });
+    interactReceiveStore.setQuestionnaireBackBtnVisible(false);
     getEmitter().emit(appEvents.interaction.OpenQuestionnaire, questionnaireId);
   };
 

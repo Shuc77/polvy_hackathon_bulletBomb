@@ -41,7 +41,7 @@
           {{ item.title }}
         </p>
         <p
-          v-if="item.startTime && showStartTime"
+          v-if="item.startTime && listLiveStartTimeEnabled"
           class="c-mobile-playback-list__item__start-time pws-mobile-playback-list-time"
         >
           {{ formatDate(item.startTime, DATE_FORMAT_COMPLETE) }}
@@ -76,20 +76,17 @@ import { formatDuration } from '@/assets/utils/date-time';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlaybackList } from '../use-playback-list';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
 const playbackStore = usePlaybackStore();
 const {
+  listLiveStartTimeEnabled,
+
   playbackList,
   currentPlaybackTarget,
 
   isLoading,
   isNoMore,
 } = storeDefinitionToRefs(usePlaybackStore);
-
-defineProps({
-  showStartTime: PropUtils.bool.def(true),
-});
 
 const { onClickPlaybackItem } = usePlaybackList();
 

@@ -125,4 +125,16 @@ export const interactionEvents = {
    * 打开订单中心弹窗
    */
   OpenOrderCenterPopup: 'OpenOrderCenterPopup',
+  /**
+   * 打开优惠券待领取弹窗
+   */
+  OpenCouponCommonList: 'OpenCouponCommonList',
+  /**
+   * 打开优惠券已领取弹窗
+   */
+  OpenCouponUserList: 'OpenCouponUserList',
+  /**
+   * 打开商品详情
+   */
+  OpenProductDetail: 'OpenProductDetail',
 };

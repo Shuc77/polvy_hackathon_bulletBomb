@@ -5,6 +5,7 @@ import { useToastManager } from '@/hooks/components/use-toast';
 import { handleStatisticsErr } from './use-withdraw-apply';
 import { ReceiveRecordInstance } from './use-receive-record';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 export enum WithdrawDetailTab {
   /** 红包领取记录/历史红包领取  */
@@ -59,6 +60,8 @@ export const useWithdrawDetailHook = () => {
       toast.error(errMsg);
     }
   }
+
+  useEventBusListener(appEvents.withdraw.RefreshBalance, getWithdrawStatistics);
 
   /** 初始化-提现详情 */
   async function initWithdrawDetail() {

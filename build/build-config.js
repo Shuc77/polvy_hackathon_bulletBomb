@@ -49,6 +49,10 @@ const buildMode = process.env.VUE_APP_BUILD_MODE;
 /** sdk 注入模式 */
 const inSdkInjectMode = (exports.inSdkInjectMode = buildMode === 'SDK_INJECT');
 
+/** 是否提取 index-webpack-assets */
+let extractIndexWebpackAssetsEnabled = !!inSdkInjectMode;
+exports.extractIndexWebpackAssetsEnabled = extractIndexWebpackAssetsEnabled;
+
 /**
  * 构建模式
  * @type { {[key:string]: { [key:string]: {publicPath:string; outputDir:string} }} }
@@ -134,7 +138,7 @@ exports.defineConstants = {
   /** 是否启用运行时公共路径 */
   ENABLE_RUNTIME_PUBLIC_PATH: JSON.stringify(enableRuntimePublicPath),
   /** 构建环境 */
-  BUILD_ENV: JSON.stringify(process.env.BUILD_ENV)
+  BUILD_ENV: JSON.stringify(process.env.BUILD_ENV),
 };
 
 /** ts 配置文件 */

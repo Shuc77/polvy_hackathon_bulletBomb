@@ -7,6 +7,7 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { translate } from '@/assets/lang';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /** 错误页类型 */
 export enum ErrorVerifyType {
@@ -31,14 +32,15 @@ export const useErrorVerify = () => {
   const watchAppStore = useWatchAppStore();
   const interactReceiveStore = useInteractReceiveStore();
   const playbackStore = usePlaybackStore();
+  const webviewStore = useWebviewStore();
+  const channelStore = useChannelStore();
+  const langStore = useLangStore();
   const { getWatchCore } = useMultiPolyvWatchApp();
 
   /**
    * 跳转到错误页
    */
   async function redirectToErrorVerify(params: RedirectErrorParams = {}) {
-    const channelStore = useChannelStore();
-    const langStore = useLangStore();
     const watchCore = getWatchCore();
 
     /** @PLV-WARN */
@@ -47,6 +49,9 @@ export const useErrorVerify = () => {
       lang: langStore.currentLang,
       ...params,
     });
+
+    webviewStore.closeWindow();
+    webviewStore.sendUserInfo(false);
 
     // 此处销毁当前应用是为了兼容部分浏览器调用 replace 方法时会询问用户是否离开当前页面做的兼容处理
     await destroyCurrentWatchApp(translate('pageError.kicked'));

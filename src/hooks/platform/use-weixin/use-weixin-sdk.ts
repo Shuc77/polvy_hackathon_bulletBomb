@@ -1,6 +1,8 @@
 /* eslint-disable n/handle-callback-err */
 /* eslint-disable promise/prefer-await-to-then */
+import { translate } from '@/assets/lang';
 import { isWorkWeixin } from '@/assets/utils/browser';
+import { messageBox } from '@/components/common-base/message-box';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { loadWorkWxSdk, loadWxSdk } from '@/plugins/external-lib-loaders/load-wx-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
@@ -162,6 +164,12 @@ export const useWeixinSdk = () => {
             if (res?.checkResult[apiName]) {
               resolve();
             } else {
+              messageBox({
+                title: translate('base.tips'),
+                content: translate('withdraw.apply.error.msg'),
+                confirmButtonText: translate('base.ok'),
+              }).$confirm();
+
               const msg = `check js api fail, ${apiName} not support, ${res?.errMsg}`;
               watchCore.logger.error(LoggerName.Weixin, 'check-js-api-fail', msg);
               reject(new Error(msg));

@@ -8,6 +8,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useTaskActivityStore } from '@/store/use-task-activity-store';
 import {
+  OutTradeErrorCode,
   TaskActivityItem,
   TaskActivityReachCondition,
   TaskActivityRewardSetting,
@@ -15,6 +16,7 @@ import {
   TaskActivityStatus,
   TaskActivityType,
   TaskRewardStatus,
+  OnlineTaskUpdateType,
 } from '@polyv/live-watch-sdk';
 import { ref, watch } from 'vue';
 
@@ -117,6 +119,8 @@ export const useTaskActivity = () => {
 
   const { toast } = useToastManager();
 
+  const onlineTaskUpdateType = ref<OnlineTaskUpdateType>(OnlineTaskUpdateType.Socket);
+
   /** 弹层显示状态 */
   const visible = ref(false);
 
@@ -143,7 +147,6 @@ export const useTaskActivity = () => {
       }
     },
   );
-
   /** 任务列表 */
   const { taskList } = storeDefinitionToRefs(useTaskActivityStore);
 
@@ -227,7 +230,17 @@ export const useTaskActivity = () => {
     }
 
     if (item.rewardStatus === TaskRewardStatus.IssuedLimit) {
-      return translate('taskActivity.rewardStatus.limit');
+      let text = translate('taskActivity.rewardStatus.limit');
+
+      switch (item.outTradeErrCode) {
+        case OutTradeErrorCode.MarketingAccountUnbound:
+          text = translate('taskActivity.rewardError.msg4');
+          break;
+        case OutTradeErrorCode.MarketingAccountError:
+          text = translate('taskActivity.rewardError.msg5');
+          break;
+      }
+      return text;
     }
 
     return translate('taskActivity.finish');
@@ -283,6 +296,13 @@ export const useTaskActivity = () => {
     return item.reachCondition.amount * 60 - (item.reachCondition.currentSchedule || 0) / 1000;
   }
 
+  /**
+   * 获取在线任务更新类型
+   */
+  function getOnlineTaskUpdateType() {
+    onlineTaskUpdateType.value = watchCore.taskActivity.getOnlineTaskUpdateType();
+  }
+
   useEventBusListener(appEvents.global.OpenTaskActivityDialog, open);
   useEventBusListener(appEvents.global.RefreshTaskActivity, refreshActivityData);
   useEventBusListener(appEvents.interaction.CheckInFinish, refreshActivityData);
@@ -303,5 +323,7 @@ export const useTaskActivity = () => {
     onCountDownFinish,
     showBtn,
     getFinishText,
+    getOnlineTaskUpdateType,
+    onlineTaskUpdateType,
   };
 };

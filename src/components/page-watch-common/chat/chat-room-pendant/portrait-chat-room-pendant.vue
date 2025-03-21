@@ -32,6 +32,9 @@
       <!-- 条件抽奖 -->
       <mobile-welfare-lottery class="c-portrait-chat-room-pendant__item" />
 
+      <!-- 平台抽奖 -->
+      <mobile-lucky-lottery-pendant class="c-portrait-chat-room-pendant__item" />
+
       <!-- 抢答 -->
       <mobile-rush-answer class="c-portrait-chat-room-pendant__item" />
 
@@ -40,6 +43,9 @@
 
       <!-- 商品库卡片气泡 -->
       <portrait-product-bubble :product-dialog-enable="false" />
+
+      <!-- 优惠券 -->
+      <mobile-coupon-pendant class="c-portrait-chat-room-pendant__item" />
 
       <!-- 情绪反馈 -->
       <mobile-emotional-feedback
@@ -66,6 +72,8 @@ import PortraitLotteryPendant from '@/components/page-watch-common/interactive-r
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
 import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
 import mobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
+import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
 
 import { useChatStore } from '@/store/use-chat-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';

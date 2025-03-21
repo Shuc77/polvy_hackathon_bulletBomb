@@ -49,7 +49,7 @@
 
         <p class="c-pc-playback-list__item__title g-singleline">{{ item.title }}</p>
         <p
-          v-if="item.startTime"
+          v-if="item.startTime && listLiveStartTimeEnabled"
           class="c-pc-playback-list__item__start-time"
         >
           {{ $lang('playback.startTime') }}
@@ -80,6 +80,8 @@ import { PlvPagination, PlvRow, PlvCol } from '@/plugins/polyv-ui/admin-import';
 const playbackStore = usePlaybackStore();
 
 const {
+  listLiveStartTimeEnabled,
+
   pageNumber,
   totalPages,
 
@@ -103,13 +105,14 @@ const { onClickPlaybackItem } = usePlaybackList();
 .c-pc-playback-list__item {
   box-sizing: border-box;
   flex-shrink: 0;
+  margin-bottom: 6px;
   cursor: pointer;
 }
 
 .c-pc-playback-list__item__cover-wrap {
   position: relative;
   width: 100%;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   overflow: hidden;
 
   &::before {

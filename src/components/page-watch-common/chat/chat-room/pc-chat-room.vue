@@ -2,33 +2,20 @@
 <template>
   <div class="c-pc-chat-room">
     <!-- 聊天室顶部固定区域 -->
-    <div class="c-pc-chat-room__topic">
+    <div class="c-pc-chat-room__topic pws-main-tab-body">
       <!-- 置顶公告 -->
       <pc-announcement-top
         v-if="announcementFunctionVisible && iarSdkLoaded"
-        class="c-pc-chat-room__topic__announcement"
-      />
-
-      <!-- 发起转播频道被踢出提示 -->
-      <pc-chat-error-tips
-        v-if="chatExited"
-        class="c-pc-chat-room__topic__error"
-        :content="$lang('chat.transformTip')"
-      />
-
-      <!-- 聊天重放消息提示 -->
-      <pc-chat-msg-replay-tips
-        v-if="chatMsgReplayEnabled"
-        class="c-pc-chat-room__topic__replay"
+        class="c-pc-chat-room__topic__item c-pc-chat-room__topic__announcement"
       />
 
       <!-- 跑道消息 -->
-      <pc-runway-effect />
+      <pc-runway-effect class="c-pc-chat-room__topic__item" />
 
       <!-- 打赏动画 -->
       <pc-donate-animation
         v-if="donateAnimationVisible"
-        class="c-pc-chat-room__donate-animation"
+        class="c-pc-chat-room__topic__item"
       />
     </div>
 
@@ -65,27 +52,21 @@ import PcDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-
 
 import PcAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
 import PcInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/pc-interactive-entrance.vue';
-import PcChatErrorTips from '../chat-error-tips/pc-chat-error-tips.vue';
 import PcChatInputController from '../chat-input-controller/pc-chat-input-controller/pc-chat-input-controller.vue';
 import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
 import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
 import PcRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
-import PcChatMsgReplayTips from '../chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
-
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
 import { useDonateStore } from '@/store/use-donate-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatExited, chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
-
-const { chatMsgReplayEnabled } = storeDefinitionToRefs(usePlaybackStore);
+const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -109,22 +90,25 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
   left: 0;
   z-index: 10;
   width: 100%;
+  padding: 0 0 12px;
   pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 1) 8px);
+
+  .c-pc-chat-room__topic__item {
+    margin-top: 4px;
+    &:empty {
+      display: none;
+    }
+  }
 
   .c-pc-chat-room__topic__announcement {
-    margin-bottom: 8px;
     pointer-events: initial;
   }
 
-  .c-pc-chat-room__topic__error,
-  .c-pc-chat-room__topic__replay {
-    margin: 8px 8px 0;
-    pointer-events: initial;
-  }
-
-  .c-pc-chat-room__donate-animation {
-    position: relative;
-    left: 0;
+  &:empty {
+    display: none;
   }
 }
 

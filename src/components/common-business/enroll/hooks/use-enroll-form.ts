@@ -6,7 +6,7 @@ import { useDialogTipsUtils } from '@/components/common-base/dialog/use-dialog-t
 import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { getAreaSelectNames, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
-import { useEnrollStore } from '@/store/use-enroll-store';
+import { EnrollBasicFormData, useEnrollStore } from '@/store/use-enroll-store';
 import {
   EnrollAuthType,
   EnrollFieldItem,
@@ -21,20 +21,6 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { useEnrollSms } from './use-enroll-sms';
 import { useGlobalInject } from '@/app/use-global-inject';
 
-interface EnrollBasicFormData {
-  /** 验证的手机号 */
-  phoneNumber: string;
-  /** 手机区号 */
-  areaCode: string;
-  /** 图片验证码 */
-  imageId: string;
-  imageCaptcha: string;
-  /** 短信验证码 */
-  smsCode: string;
-  /** 验证的邮箱地址 */
-  email: string;
-}
-
 type EnrollValFormData = Record<string, string | string[] | boolean>;
 
 /** 报名观看表单移动端 props */
@@ -48,8 +34,6 @@ export const enrollFormEmits = () => ({
   'close-dialog': emitFunc<void>(),
   /** 点击取消 */
   'click-cancel': emitFunc<void>(),
-  /** 点击我已报名 */
-  'click-enrolled': emitFunc<void>(),
 });
 
 /**
@@ -84,6 +68,22 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
       } else {
         data[item.fieldId] = '';
       }
+
+      if (
+        item.type === EnrollFieldType.Mobile &&
+        enrollStore.enrollAuthType === EnrollAuthType.Mobile &&
+        enrollStore.cacheLoginFormData.phoneNumber
+      ) {
+        data[item.fieldId] = enrollStore.cacheLoginFormData.phoneNumber;
+      }
+
+      if (
+        item.type === EnrollFieldType.Mobile &&
+        enrollStore.enrollAuthType === EnrollAuthType.Email &&
+        enrollStore.cacheLoginFormData.email
+      ) {
+        data[item.fieldId] = enrollStore.cacheLoginFormData.email;
+      }
     });
 
     return data;
@@ -104,6 +104,7 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
     smsCode: '',
     // 验证的邮箱地址
     email: '',
+    ...enrollStore.cacheLoginFormData,
   });
 
   /** 处理手机号码输入框改变 */
@@ -312,10 +313,6 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
     emit('click-cancel');
   }
 
-  function onClickEnrolled() {
-    emit('click-enrolled');
-  }
-
   return {
     EnrollFieldType,
     EnrollAuthType,
@@ -329,7 +326,6 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
     formatSpecialName,
     submitForm,
     onClickCancel,
-    onClickEnrolled,
   };
 };
 

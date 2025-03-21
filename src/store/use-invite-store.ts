@@ -6,6 +6,8 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useIdentityStore } from '@/store/use-identity-store';
+import { isWeixin } from '@/assets/utils/browser';
 
 import {
   TAB_NAME_CHAT,
@@ -13,7 +15,6 @@ import {
   TAB_NAME_MICRO_ACTIVITY,
   TAB_NAME_SEAT,
 } from '@/assets/constants/tab-name';
-import { isWeixin } from '@/assets/utils/browser';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useLayoutStore } from './use-layout-store';
 import {
@@ -74,6 +75,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   const watchAppStore = useWatchAppStore();
   const channelMenuStore = useChannelMenuStore();
   const layoutStore = useLayoutStore();
+  const identityStore = useIdentityStore();
 
   const { appendQueryParam, paramGetter } = useQueryParams();
 
@@ -128,10 +130,10 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
   /** 移动端聊天室 Tab 中邀请挂件是否显示 */
   const mobileChatInvitePendantVisible = computed<boolean>(() => {
-    if (!isWeixin) {
+    // 非微信环境下并且没有用户信息时不显示
+    if (!isWeixin && !identityStore.identityUnionInfo) {
       return false;
     }
-
     // 如果存在邀请榜的 tab 则不显示邀请榜挂件
     if (channelMenuStore.inviteRankMenuData.visible) {
       return false;
@@ -142,7 +144,8 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
   /** 移动端页面中常驻的邀请挂件是否显示 */
   const mobileWatchInvitePendantVisible = computed<boolean>(() => {
-    if (!isWeixin) {
+    // 非微信环境下并且没有用户信息时不显示
+    if (!isWeixin && !!identityStore.identityUnionInfo) {
       return false;
     }
 

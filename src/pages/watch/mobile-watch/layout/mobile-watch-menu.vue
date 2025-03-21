@@ -84,8 +84,7 @@
           :key="`quiz-${index}`"
           :label="menu.name"
           :name="TAB_NAME_ASK"
-          :show-reminder="askReminderVisible"
-          :show-new-message="true"
+          :show-new-message="askReminderVisible"
           lazy-load
         >
           <mobile-ask />
@@ -417,10 +416,13 @@ watch(liveStatus, () => {
   left: 0;
   z-index: 20;
   width: 100%;
+  &:empty {
+    display: none;
+  }
 }
 
 .c-mobile-watch-mobile-menu__topic-item {
-  margin: 16px 8px 0;
+  margin: 4px 12px 0;
 }
 
 .c-mobile-watch-mobile-menu__motivation-like-animation {

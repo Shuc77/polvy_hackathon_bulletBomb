@@ -13,6 +13,7 @@
       ref="checkInRef"
       :check-in-target="getIarTarget()"
       enable-sound-effects
+      :check-in-record-enabled="checkInRecordEnabled"
       @show-entrance="showEntrance"
       @to-show="setCheckInVisible(true, false)"
       @to-hide="setCheckInVisible(false)"
@@ -38,6 +39,7 @@ const {
   checkInVisible,
   checkInTitle,
   setCheckInVisible,
+  checkInRecordEnabled,
   showEntrance,
   onCheckInStatus,
 } = useCheckIn();

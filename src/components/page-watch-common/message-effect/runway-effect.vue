@@ -1,12 +1,16 @@
 <!-- @file 跑道消息 -->
 <template>
   <div
+    v-if="wrapVisible"
     class="c-runway-effect"
     :class="{
       'c-runway-effect--portrait': isPortraitWatchLayout,
     }"
   >
-    <transition name="runway-effect">
+    <transition
+      name="runway-effect"
+      @after-leave="onAfterLeave"
+    >
       <div
         v-if="currentData"
         :key="currentData.id"
@@ -55,7 +59,7 @@ defineProps({
   left: PropUtils.number.def(12),
 });
 
-const { currentData } = useRunwayEffect();
+const { wrapVisible, currentData, onAfterLeave } = useRunwayEffect();
 
 const { getEffectText, getNicknameCountText } = useEffectText();
 
@@ -66,29 +70,30 @@ const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 @import './animation.scss';
 .c-runway-effect {
   position: relative;
-  box-sizing: border-box;
   width: 100%;
-  height: 40px;
+  height: 20px;
   overflow: hidden;
 
   &.c-runway-effect--portrait {
     padding: 0 12px;
   }
 
-  // &:empty {
-  //   display: none;
-  // }
+  &:empty {
+    display: none;
+  }
 }
 
 .c-runway-effect__inner {
   position: absolute;
-  top: 8px;
+  top: 0;
   left: 12px;
   box-sizing: border-box;
   display: inline-block;
   max-width: calc(100% - 26px);
-  padding: 3px 8px;
+  height: 20px;
+  padding: 0 8px;
   font-size: 12px;
+  line-height: 20px;
   color: #fff;
   background: #ff5091;
   border-radius: 10px;

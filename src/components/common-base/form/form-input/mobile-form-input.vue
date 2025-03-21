@@ -194,6 +194,13 @@ defineExpose(formInstance);
   }
 }
 
+.c-mobile-form-input--theme-white {
+  .c-mobile-form-input__main {
+    background: #fff;
+    border: none;
+  }
+}
+
 .c-mobile-form-input--theme-simplicity {
   .c-mobile-form-input__main {
     background: none;

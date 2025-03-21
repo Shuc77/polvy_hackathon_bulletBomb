@@ -49,6 +49,9 @@
         <!-- 条件抽奖 -->
         <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
 
+        <!-- 平台抽奖 -->
+        <mobile-lucky-lottery-pendant class="c-mobile-chat-room-pendant__item" />
+
         <!-- 抢答 -->
         <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
 
@@ -61,6 +64,12 @@
         <mobile-product-bubble
           v-if="chatTabHasBeenShowed"
           :product-dialog-enable="false"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 优惠券 -->
+        <mobile-coupon-pendant
+          v-show="!isPageFullscreenOrHorizontalScreen"
           class="c-mobile-chat-room-pendant__item"
         />
 
@@ -94,6 +103,8 @@ import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-
 import mobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
 import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
+import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
 
 import { TAB_NAME_CHAT } from '@/assets/constants/tab-name';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

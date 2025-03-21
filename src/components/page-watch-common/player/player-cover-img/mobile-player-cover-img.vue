@@ -8,11 +8,11 @@
   >
     <!-- 暖场图/播放器封面图 -->
     <div
-      v-if="warmUpCover"
+      v-if="warmUpRenderCover"
       v-show="showWarmUpImg"
       class="c-mobile-player-cover-img__warm-up-img"
     >
-      <channel-splash-img :cover-img="warmUpCover" />
+      <channel-splash-img :cover-img="warmUpRenderCover" />
     </div>
     <!-- 音频直播下占位图-直播封面图 -->
     <player-audio-live-placeholder
@@ -40,7 +40,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
 
 const {
-  warmUpCover,
+  warmUpRenderCover,
   showWarmUpImg,
 
   showAudioLivePlaceholder,

@@ -14,6 +14,7 @@ import { LiveStatus } from '@polyv/live-watch-sdk';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { appEvents } from '@/app/app-events';
 import type { ProductGoodData } from '../types/product-types';
+import { useShareStore } from '@/store/use-share-store';
 
 /**
  * @hook 互动-商品库
@@ -104,6 +105,7 @@ export const useProductLinkParams = () => {
   const channelStore = useChannelStore();
   const viewerStore = useViewerStore();
   const inviteStore = useInviteStore();
+  const shareStore = useShareStore();
 
   /** 获取链接参数 */
   const getLinkParams = () => {
@@ -125,6 +127,8 @@ export const useProductLinkParams = () => {
       sessionId: channelStore.currentSessionId,
       // 跟进人 id
       saleId: saleInfo.saleId,
+      // 邀请观看--分销员/邀请人id
+      inviteWatchSaleId: shareStore.inviteWatchSaleId,
     };
   };
 

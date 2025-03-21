@@ -16,12 +16,31 @@ const {
   defineConstants,
   devMode,
   inSdkInjectMode,
+  extractIndexWebpackAssetsEnabled,
   outputDir,
 } = require('./build-config');
 const { externalConfigs, tagConfigs } = require('./tag-config');
 
 const srcPath = path.resolve(__dirname, '../src');
 const include = [srcPath];
+
+const indexWebpackAssetsPlugins = extractIndexWebpackAssetsEnabled
+  ? [
+      inSdkInjectMode
+        ? new ExtractIndexWebpackAssetPlugin({
+            outputPath: path.resolve(__dirname, '../external/sdk-inject-project/lib'),
+            fileName: 'inject-assets.js',
+            buildModule: 'esm',
+            indexAssetVarKey: 'injectAssets',
+          })
+        : new ExtractIndexWebpackAssetPlugin({
+            outputPath: path.resolve(__dirname, `../${outputDir}`),
+            fileName: 'index-assets.js',
+            buildModule: 'umd',
+            indexAssetVarKey: 'indexAssets',
+          }),
+    ]
+  : [];
 
 /** @type {import('webpack').Configuration} */
 let webpackVueConfig = {
@@ -120,21 +139,7 @@ let webpackVueConfig = {
       lintDirtyModulesOnly: devMode,
       files: ['**/*.{vue,css,scss}'],
     }),
-
-    inSdkInjectMode
-      ? new ExtractIndexWebpackAssetPlugin({
-          outputPath: path.resolve(__dirname, '../external/sdk-inject-project/lib'),
-          fileName: 'inject-assets.js',
-          buildModule: 'esm',
-          indexAssetVarKey: 'injectAssets',
-        })
-      : new ExtractIndexWebpackAssetPlugin({
-          outputPath: path.resolve(__dirname, `../${outputDir}`),
-          fileName: 'index-assets.js',
-          buildModule: 'umd',
-          indexAssetVarKey: 'indexAssets',
-        }),
-  ],
+  ].concat(indexWebpackAssetsPlugins),
 
   optimization: {
     splitChunks: {

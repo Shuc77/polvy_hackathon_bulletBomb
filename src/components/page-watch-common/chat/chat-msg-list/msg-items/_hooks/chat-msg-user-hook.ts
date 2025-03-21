@@ -4,9 +4,10 @@
 import { fitProtocol } from '@/assets/utils/url';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useCommonStore } from '@/store/use-common-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { ChatMessageUser, ChatMsgType, ChatUserType } from '@polyv/live-watch-sdk';
-import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
+import { ComputedRef, InjectionKey, computed, inject, provide, unref } from 'vue';
 import { useHideChatMsgActorHook } from '../../hooks/hide-chat-msg-hook';
 
 /**
@@ -27,6 +28,8 @@ export interface ChatMsgUserContext {
   msgUserQuestionLabels: ComputedRef<string[]>;
   /** 是否隐藏消息的用户头衔 */
   hideUserActor: ComputedRef<boolean>;
+  /** 是否隐藏消息的用户头像 */
+  hideUserAvatar: ComputedRef<boolean>;
   /** 是否为自己发言 */
   isSelfMsg: ComputedRef<boolean>;
   /** 是否为特殊用户 */
@@ -41,6 +44,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
   const viewerStore = useViewerStore();
   const chatMsgStore = useChatMsgStore();
   const commonStore = useCommonStore();
+  const layoutStore = useLayoutStore();
 
   const { needHideActorByUserType } = useHideChatMsgActorHook();
 
@@ -68,6 +72,16 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
   const msgUserAvatar = computed<string>(() => {
     const user = unref(msgUser);
     return fitProtocol(user?.pic ?? commonStore.plvDefaultResource.defaultViewerAvatar);
+  });
+
+  /**
+   * 是否隐藏消息的用户头像
+   */
+  const hideUserAvatar = computed<boolean>(() => {
+    if (layoutStore.isPortraitWatchLayout) {
+      return true;
+    }
+    return false;
   });
 
   /**
@@ -128,6 +142,7 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
     isSelfMsg,
     isSpecialUser,
     hideUserActor,
+    hideUserAvatar,
   };
 
   return chatMsgUserContext;

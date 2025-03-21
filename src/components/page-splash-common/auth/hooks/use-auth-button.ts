@@ -13,6 +13,7 @@ import {
   unref,
 } from 'vue';
 import { AuthButtonInject } from '../types/auth-type';
+import { useToastManager } from '@/hooks/components/use-toast';
 
 /**
  * 观看页条件按钮 props 配置
@@ -59,6 +60,8 @@ export const useAuthButton = (options: { props: VueProps<typeof authButtonProps>
   const { props } = options;
   const channelStore = useChannelStore();
   const enrollStore = useEnrollStore();
+
+  const { toast } = useToastManager();
 
   const thisInstance = getCurrentInstance()?.proxy;
 
@@ -141,6 +144,11 @@ export const useAuthButton = (options: { props: VueProps<typeof authButtonProps>
       text = authItem.externalEntryText;
     }
 
+    // 自定义授权入口文本
+    if (authItem.authType === AuthType.Custom && authItem.customEntryText) {
+      text = authItem.customEntryText;
+    }
+
     // 无条件入口文本
     if (authItem.authType === AuthType.None && channelStore.liveStatus === LiveStatus.Playback) {
       text = translate('auth.button.playback');
@@ -165,6 +173,13 @@ export const useAuthButton = (options: { props: VueProps<typeof authButtonProps>
   const clickCallbackEvent = 'click-auth-button';
   /** 处理点击观看条件按钮 */
   function onClickAuthButton(): void {
+    const authItem = props.authItem;
+    if (authItem.authType === AuthType.InviteWatch) {
+      // 客户开启平台用户体系后，已存在的直播间并不会同步开启，如果客户配置了邀请观看限制，则需要让客户去调整
+      toast.warning(translate('inviteWatch.prepare.tips'));
+      return;
+    }
+
     thisInstance?.$emit(clickCallbackEvent);
   }
   /** 监听点击按钮事件 */

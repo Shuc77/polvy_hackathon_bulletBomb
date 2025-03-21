@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, Ref, unref } from 'vue';
+import { onBeforeUnmount, Ref, unref } from 'vue';
 import {
   loadSvgaPlayer,
   SVGAParser,
@@ -94,15 +94,12 @@ export const useSvgaAnimation = (options: UseSvgaAnimationOptions) => {
     intervalTimer = undefined;
   }
 
-  onMounted(() => {
-    createPlayer();
-  });
-
   onBeforeUnmount(() => {
     clearIntervalTimer();
   });
 
   return {
+    createPlayer,
     setupSvgaUrl,
     clearAnimation,
   };

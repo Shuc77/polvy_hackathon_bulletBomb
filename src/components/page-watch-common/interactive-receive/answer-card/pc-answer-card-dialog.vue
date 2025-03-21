@@ -10,6 +10,7 @@
     <iar-pc-answer-card
       ref="answerCardRef"
       :answer-card-sdk="answerCardSdk"
+      :server-time-sync-enabled="serverTimeSyncEnabled"
       @to-show="setAnswerCardVisible(true)"
       @to-hide="setAnswerCardVisible(false)"
       @status-changed="onStatusChanged"
@@ -30,6 +31,7 @@ const {
   answerCardSdk,
   answerCardVisible,
   answerCardTitle,
+  serverTimeSyncEnabled,
   setAnswerCardVisible,
   onStatusChanged,
   onSubmitSuccess,

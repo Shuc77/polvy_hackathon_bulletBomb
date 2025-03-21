@@ -33,7 +33,7 @@
 
     <!-- “点击播放”播放按钮，仅用来展示  -->
     <player-play-button
-      v-if="isLowLatency || existWarmUpVideo"
+      v-if="isLowLatency || needPlayerBtnForWarmup"
       :mode="PlayButtonMode.Text"
       class="c-mobile-player-main__play-btn"
     />
@@ -159,7 +159,12 @@ const {
   newPlayerPauseStyleEnabled,
   isCdnWithNormalLayout,
   existWarmUpVideo,
+  showWarmUpImg,
 } = storeDefinitionToRefs(usePlayerStore);
+
+const needPlayerBtnForWarmup = computed(() => {
+  return showWarmUpImg.value && existWarmUpVideo.value;
+});
 
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);
@@ -198,7 +203,10 @@ function onClickContainer() {
   // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
   // cdn播放器且处于横屏模板时不显示观看页大播放按钮，所以不需要调用toPlay()
   // 存在暖场视频的情况下，需要触发 toPlay 方法
-  if (bigPlayButtonVisible.value && (!isCdnWithNormalLayout.value || existWarmUpVideo.value)) {
+  if (
+    bigPlayButtonVisible.value &&
+    (!isCdnWithNormalLayout.value || needPlayerBtnForWarmup.value)
+  ) {
     toPlay();
   }
   getEmitter().emit(appEvents.player.ClickMobilePlayerContainer);

@@ -1,11 +1,17 @@
 <!-- @file 移动端大图布局的引导页 -->
 <template>
-  <div
-    class="c-mobile-splash-full"
-    :style="{
-      backgroundImage: `url(${mobileSplashLargeImg})`,
-    }"
-  >
+  <div class="c-mobile-splash-full">
+    <plv-channel-cover
+      class="c-mobile-splash-full__bg"
+      :channel-id="channelId"
+      :splash-img="renderImg"
+      :title="channelTitle"
+      :text-cover-bg-id="splashImgBackgroundId"
+      :image-props="{
+        gradual: false,
+      }"
+    />
+
     <header
       v-if="trialEnabled"
       class="c-mobile-splash-full__header"
@@ -34,13 +40,17 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
+import { PlvChannelCover } from '@/plugins/polyv-ui/admin-import';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
 import MobileSplashBtn from './components/mobile-splash-btn.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 const MobilePlayerTrial = defineAsyncComponent(
   () =>
@@ -50,7 +60,27 @@ const MobilePlayerTrial = defineAsyncComponent(
     ),
 );
 
-const { mobileSplashLargeImg } = storeDefinitionToRefs(useThemeStore);
+const { getWatchCore } = useGlobalInject();
+
+const watchCore = getWatchCore();
+
+const { mobileSplashLargeImg, splashImgBackgroundId } = storeDefinitionToRefs(useThemeStore);
+
+const { channelTitle } = storeDefinitionToRefs(useChannelInfoStore);
+
+const { channelId } = storeDefinitionToRefs(useChannelStore);
+
+const renderImg = computed(() => {
+  const defaultSource = watchCore.utils.getDefaultResource();
+
+  const coverUrl = mobileSplashLargeImg.value;
+
+  if (coverUrl === defaultSource.defaultSplashFullImg) {
+    return '';
+  }
+
+  return coverUrl;
+});
 
 const { trialEnabled, trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } =
   usePlayerTrialHook();
@@ -67,10 +97,20 @@ const { trialEnabled, trialPlayerVisible, trialPlayFinishTipVisible, trialInfo }
   background-size: 100% 100%;
 }
 
+.c-mobile-splash-full__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
 .c-mobile-splash-full__bottom-btn {
   position: absolute;
   bottom: 23px;
   left: 0;
+  z-index: 10;
   box-sizing: border-box;
   width: 100%;
   padding: 0 44px;
@@ -87,6 +127,7 @@ const { trialEnabled, trialPlayerVisible, trialPlayFinishTipVisible, trialInfo }
 
 .c-mobile-splash-full__header {
   position: relative;
+  z-index: 10;
   width: 100%;
   height: 0;
   padding-bottom: 56.25%;

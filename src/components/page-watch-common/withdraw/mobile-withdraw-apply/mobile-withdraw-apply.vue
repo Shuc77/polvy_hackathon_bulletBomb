@@ -4,13 +4,15 @@
     class="c-mobile-withdraw-apply"
     :title="$lang('withdraw.apply.popup.title')"
     :visible.sync="popupVisible"
-    fill-body-section
     append-to-body
     backable
+    hide-header-border
+    content-background="#F5F5F6"
     @click-back="handleWithdrawApplyPopupBackClick"
   >
     <div class="c-mobile-withdraw-apply__container">
       <form-wrap
+        :theme="FormTheme.White"
         :form-data="formData"
         :form-rules="formRules"
         :submit-action="handleSubmitForm"
@@ -25,7 +27,7 @@
           >
             <span
               slot="suffix"
-              class="c-mobile-withdraw-apply__form-item__all-btn pws-mobile-withdraw-highlight"
+              class="c-mobile-withdraw-apply__form-item__all-btn"
               @click="setMaxAmount"
             >
               {{ $lang('withdraw.apply.amount.all') }}
@@ -33,7 +35,7 @@
           </mobile-form-number-input>
         </form-item>
 
-        <form-item>
+        <form-item style="margin-bottom: 8px">
           <mobile-form-input
             disabled
             :input-title="$lang('withdraw.apply.username')"
@@ -63,21 +65,22 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { ButtonSize } from '@/components/common-base/normal-button/types';
-import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import FormWrap from '@/components/common-base/form/form-wrap.vue';
-import FormItem from '@/components/common-base/form/form-item.vue';
 import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormItem from '@/components/common-base/form/form-item.vue';
 import MobileFormNumberInput from '@/components/common-base/form/form-number-input/mobile-form-number-input.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import { FormTheme } from '@/components/common-base/form/types/enums';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
+import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { useWithdrawApplyHook } from '../_hooks/use-withdraw-apply';
-import { useToastManager } from '@/hooks/components/use-toast';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useWithdrawApplyHook } from '../_hooks/use-withdraw-apply';
 
 const { toast } = useToastManager();
 
@@ -136,6 +139,10 @@ async function handleSubmitForm() {
   height: 100%;
   padding: 20px 24px 0 24px;
   overflow: hidden;
+
+  .c-mobile-form-input__main {
+    border-radius: 8px !important;
+  }
 }
 
 .c-mobile-withdraw-apply__form-item__all-btn {
@@ -148,7 +155,7 @@ async function handleSubmitForm() {
 }
 
 .c-mobile-withdraw-apply__tips {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 22px;
   color: #666;
   span {
@@ -157,12 +164,10 @@ async function handleSubmitForm() {
 }
 
 .c-mobile-withdraw-apply__btn-wrap {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   box-sizing: border-box;
   width: 100%;
   padding: 0 24px 34px;
+  margin-top: 40px;
   @include iphone-x-pb(20px);
 }
 </style>

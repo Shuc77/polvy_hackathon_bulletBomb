@@ -1,7 +1,6 @@
 <!-- @file 竖屏商品库入口 -->
 <template>
   <div class="c-portrait-product-list-entrance">
-    <!-- 原先的 if 条件是写在组件外层，但这会导致商品库关闭后，下面的 portrait-product-bubble 大卡片组件无法显示出来 -->
     <template v-if="interactSetting.productEnabled">
       <div
         v-if="!recruitmentEnabled"
@@ -24,7 +23,7 @@
 import PortraitProductBubble from './portrait-product-bubble.vue';
 import { useSvgaAnimation } from '@/hooks/animation/use-svga-animation';
 import shopIconUrl from './imgs/icon-shop-car.svga';
-import { ref, unref } from 'vue';
+import { ref, unref, watchEffect } from 'vue';
 import { useProduct } from './hooks/use-product';
 import { appEvents } from '@/app/app-events';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
@@ -39,12 +38,23 @@ const containerRef = ref<HTMLDivElement>();
 
 const { recruitmentEnabled } = useProduct();
 
-if (!unref(recruitmentEnabled)) {
-  useSvgaAnimation({
-    containerRef,
-    svgaUrl: shopIconUrl,
-  });
-}
+const { createPlayer, clearAnimation } = useSvgaAnimation({
+  containerRef,
+  svgaUrl: shopIconUrl,
+});
+
+watchEffect(
+  () => {
+    if (unref(interactSetting).productEnabled && !unref(recruitmentEnabled)) {
+      createPlayer();
+    } else {
+      clearAnimation();
+    }
+  },
+  {
+    flush: 'post',
+  },
+);
 
 const { getEmitter } = useGlobalInject();
 

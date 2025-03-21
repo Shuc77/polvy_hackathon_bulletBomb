@@ -29,6 +29,9 @@
       <!-- 抢答 -->
       <pc-rush-answer class="c-pc-chat-room-pendant__item" />
 
+      <!-- 优惠券 -->
+      <pc-coupon-pendant class="c-pc-chat-room-pendant__item" />
+
       <!-- 情绪反馈 -->
       <pc-emotional-feedback
         v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
@@ -58,6 +61,8 @@ import PcLotteryPendant from '@/components/page-watch-common/interactive-receive
 import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/pc-topic-pk.vue';
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
+import PcCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+
 import PcChatLike from '../chat-like/pc-chat-like.vue';
 import PcImgAdvert from '@/components/page-watch-common/icon-advert/pc-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
@@ -79,6 +84,7 @@ const {
   welfareLotteryPendantVisible,
   lotteryPendantVisible,
   rushAnswerPendantVisible,
+  couponPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 点赞上方是否有其他挂件 */
@@ -89,7 +95,8 @@ const hasOtherPendant = computed<boolean>(() => {
     unref(enrollLotteryPendantVisible) ||
     unref(lotteryPendantVisible) ||
     unref(welfareLotteryPendantVisible) ||
-    unref(rushAnswerPendantVisible)
+    unref(rushAnswerPendantVisible) ||
+    unref(couponPendantVisible)
   );
 });
 </script>

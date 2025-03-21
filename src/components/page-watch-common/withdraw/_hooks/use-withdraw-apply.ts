@@ -116,12 +116,7 @@ export const useWithdrawApplyHook = () => {
   });
 
   /** 提示语 */
-  const withdrawApplyTips = computed(() =>
-    translate('withdraw.apply.tips', {
-      amount: `<span class='pws-mobile-withdraw-highlight'>1</span>`,
-      day: `<span class='pws-mobile-withdraw-highlight'>3</span>`,
-    }),
-  );
+  const withdrawApplyTips = computed(() => translate('withdraw.apply.tips'));
 
   /** 设置最大提现额 */
   function setMaxAmount() {
@@ -133,6 +128,7 @@ export const useWithdrawApplyHook = () => {
     try {
       const result = await watchCore.withdraw.getUserStatistics();
       totalAmount.value = result.totalAmount;
+      setMaxAmount();
     } catch (error) {
       const errMsg = handleStatisticsErr(error as Error);
       toast.error(errMsg);

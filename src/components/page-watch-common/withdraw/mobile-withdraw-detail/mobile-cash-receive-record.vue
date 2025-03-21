@@ -20,9 +20,7 @@
           {{ convertReceiveDate(record.applyTime) }}
         </p>
       </div>
-      <p class="c-mobile-cash-receive-record__item-amount pws-mobile-withdraw-highlight">
-        -{{ convertAmount(record.amount) }}
-      </p>
+      <p class="c-mobile-cash-receive-record__item-amount">-￥{{ convertAmount(record.amount) }}</p>
     </li>
     <li
       v-show="loadingVisible"
@@ -79,16 +77,15 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid #ededef;
+  padding: 12px 16px;
 }
 .c-mobile-cash-receive-record__item-type {
   display: flex;
   align-items: center;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   font-size: 14px;
   line-height: 20px;
-  color: #333;
+  color: rgba(#000, 0.8);
 
   span {
     margin-left: 4px;
@@ -98,13 +95,14 @@ defineExpose({
 }
 .c-mobile-cash-receive-record__item-date {
   font-size: 12px;
-  color: #666666;
+  line-height: 18px;
+  color: rgba(#000, 0.4);
 }
 .c-mobile-cash-receive-record__item-amount {
-  color: #333;
+  color: #3f76fc;
 }
 .c-mobile-cash-receive-record__item--loading {
-  padding-top: 10px;
+  padding: 16px 0;
   text-align: center;
 }
 </style>

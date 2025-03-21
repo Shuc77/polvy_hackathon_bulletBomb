@@ -9,19 +9,24 @@
     }"
   >
     <div
-      class="c-portrait-msg-container__bubble"
-      :class="{ 'c-portrait-msg-container__bubble__margin': askMenuData.visible }"
+      class="c-portrait-msg-container__bubble pws-primary-text-color pws-dark-basic-bg-10 pws-light-basic-bg-20"
     >
       <slot name="msg-header"></slot>
 
       <div
         class="c-portrait-msg-container__content"
         @click="onClickReferenceRef"
+        @contextmenu="onContextMenu"
       >
         <slot name="msg-left"></slot>
 
         <div class="c-portrait-msg-container__content__inner">
           <portrait-msg-user-info v-if="!hideUserInfo" />
+          <span
+            v-if="nickname"
+            class="c-portrait-msg-container__content__inner__nick pws-secondary-text-color"
+            >{{ nickname }}：</span
+          >
           <slot></slot>
         </div>
 
@@ -39,17 +44,19 @@
 </template>
 
 <script setup lang="ts">
+import { isMobile } from '@/assets/utils/browser';
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { ref } from 'vue';
+import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 
 defineProps({
   /** 是否隐藏用户信息，默认：false */
   hideUserInfo: PropUtils.bool.def(false),
   /** 是否使用提示气泡，默认：false */
   useMsgTipsControl: PropUtils.bool.def(false),
+  /** 昵称 */
+  nickname: PropUtils.string,
 
   suffixMode: PropUtils.string.def('align-center'),
 });
@@ -66,14 +73,14 @@ const emit = defineEmits({
     };
     mountEl: string;
   }>(),
+  /** 鼠标右键 */
+  'bubble-contextmenu': emitFunc<MouseEvent>(),
 });
-
-const { askMenuData } = useChannelMenuStore();
 
 const referenceRef = ref(null);
 
 function onClickReferenceRef(e: MouseEvent) {
-  if (!referenceRef.value) return;
+  if (!referenceRef.value || !isMobile) return;
   const { x, y } = e;
   emit('click-msg-to-tips', {
     target: referenceRef.value,
@@ -83,6 +90,13 @@ function onClickReferenceRef(e: MouseEvent) {
     },
     mountEl: 'c-portrait-chat-msg-list__container',
   });
+}
+
+function onContextMenu(event: MouseEvent) {
+  if (isMobile) {
+    return;
+  }
+  emit('bubble-contextmenu', event);
 }
 </script>
 
@@ -96,10 +110,8 @@ function onClickReferenceRef(e: MouseEvent) {
   box-sizing: border-box;
   display: inline-block;
   max-width: 100%;
-  padding: 8px 16px;
-  color: $--color-white;
-  background-color: rgba(51, 51, 51, 0.6);
-  border-radius: 14px;
+  padding: 3px 8px;
+  border-radius: 12px;
 }
 .c-portrait-msg-container__content {
   position: relative;
@@ -114,9 +126,6 @@ function onClickReferenceRef(e: MouseEvent) {
   background-color: rgba(66, 68, 83, 0.95);
   border-radius: 4px;
 }
-.c-portrait-msg-container__bubble__margin {
-  margin-right: 8px;
-}
 
 .c-portrait-msg-container--suffix-align-center {
   .c-portrait-msg-container__content__suffix {
@@ -126,6 +135,7 @@ function onClickReferenceRef(e: MouseEvent) {
 
 .c-portrait-msg-container__content__suffix {
   flex-shrink: 0;
+  margin-left: 6px;
   font-size: 12px;
   line-height: initial;
   white-space: nowrap;

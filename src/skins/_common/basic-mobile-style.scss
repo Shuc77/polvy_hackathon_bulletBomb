@@ -363,19 +363,6 @@
       color: map.get($--skin-configs, 'subtitle-item-line:text-color') !important;
       background: map.get($--skin-configs, 'subtitle-item-line:bg-color') !important;
     }
-    // 提现
-    .pws-mobile-withdraw-highlight {
-      color: map.get($--skin-configs, 'primary-color') !important;
-      & > span {
-        color: map.get($--skin-configs, 'primary-color') !important;
-      }
-    }
-    .pws-mobile-withdraw-tab--active {
-      color: map.get($--skin-configs, 'primary-color') !important;
-      &::after {
-        background: map.get($--skin-configs, 'primary-color') !important;
-      }
-    }
 
     //  -------------- 云席嘉宾证 -------------  //
     @if map.has-key($--skin-configs, 'mobile-seat-table-guest-card-main:bg-image') {

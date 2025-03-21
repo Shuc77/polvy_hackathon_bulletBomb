@@ -151,19 +151,19 @@
   }
 
   // --------- 置顶公告 ---------- //
-  .pws-iar-bulletin-top-banner {
-    background-color: map.get($--skin-configs, 'iar-bulletin-top-banner:bg-color') !important;
-  }
-  .pws-iar-bulletin-top-banner-icon {
-    fill: map.get($--skin-configs, 'iar-bulletin-top-banner:text-color') !important;
-  }
-  .pws-iar-bulletin-top-banner-text,
-  .pws-iar-bulletin-top-banner-close {
-    &,
-    & * {
-      color: map.get($--skin-configs, 'iar-bulletin-top-banner:text-color') !important;
-    }
-  }
+  // .pws-iar-bulletin-top-banner {
+  //   background-color: map.get($--skin-configs, 'iar-bulletin-top-banner:bg-color') !important;
+  // }
+  // .pws-iar-bulletin-top-banner-icon {
+  //   fill: map.get($--skin-configs, 'iar-bulletin-top-banner:text-color') !important;
+  // }
+  // .pws-iar-bulletin-top-banner-text,
+  // .pws-iar-bulletin-top-banner-close {
+  //   &,
+  //   & * {
+  //     color: map.get($--skin-configs, 'iar-bulletin-top-banner:text-color') !important;
+  //   }
+  // }
 
   // --------- 快速答题卡 --------- //
   .pws-iar-quick-answer-option.is-active {

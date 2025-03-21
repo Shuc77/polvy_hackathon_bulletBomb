@@ -79,6 +79,12 @@
               hide-zero-hours
               theme="red-square"
               @count-down-finish="onCountDownFinish"
+              :custom-time-second="
+                onlineTaskUpdateType === OnlineTaskUpdateType.Player
+                  ? getSurplusTime(item)
+                  : undefined
+              "
+              ref="countDownRef"
             />
           </div>
 
@@ -131,9 +137,10 @@ import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
-import { TaskActivityStatus, TaskActivityType } from '@polyv/live-watch-sdk';
+import { TaskActivityStatus, TaskActivityType, OnlineTaskUpdateType } from '@polyv/live-watch-sdk';
 import { formatDate } from '@utils-ts/date';
 import { useTaskActivity } from './use-task-activity';
+import { ref, onMounted } from 'vue';
 
 const {
   visible,
@@ -146,7 +153,18 @@ const {
   showBtn,
   onCountDownFinish,
   getFinishText,
+  getOnlineTaskUpdateType,
+  onlineTaskUpdateType,
 } = useTaskActivity();
+
+const countDownRef = ref<InstanceType<typeof CountDown>>();
+
+onMounted(() => {
+  // 设置倒计时接口
+  console.info('countDownRef', countDownRef.value);
+
+  getOnlineTaskUpdateType();
+});
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 </script>

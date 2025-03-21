@@ -1,35 +1,12 @@
 <!-- @file 竖屏端聊天室文件分享消息 -->
 <template>
-  <portrait-msg-container
-    class="c-portrait-file-msg"
-    hide-user-info
-    @click-container="toDownloadFile"
-  >
+  <portrait-msg-container class="c-portrait-file-msg">
     <div
-      ref="textWrapRef"
-      class="c-portrait-file-msg__content-wrap"
+      class="c-portrait-file-msg__content pws-dark-basic-bg-10 pws-light-basic-bg-40"
+      @click="toDownloadFile"
     >
       <div
-        ref="textContentRef"
-        class="c-portrait-file-msg__content-inner g-multiline"
-        :class="{
-          'c-portrait-file-msg__content-inner--block': needBlock,
-        }"
-      >
-        <portrait-msg-user-info />
-        <div
-          v-if="needBlock"
-          class="c-portrait-file-msg__content-suffix"
-        >
-          {{ fileSuffix }}
-        </div>
-        <span>{{ fileName }}</span>
-      </div>
-    </div>
-
-    <template #msg-right>
-      <div
-        class="c-portrait-file-msg__icon g-img-cover"
+        class="c-portrait-file-msg__icon"
         :class="{
           'c-portrait-file-msg__icon--doc': ['doc', 'docx'].includes(fileSuffix),
           'c-portrait-file-msg__icon--ppt': ['ppt', 'pptx'].includes(fileSuffix),
@@ -37,54 +14,38 @@
           'c-portrait-file-msg__icon--pdf': ['pdf'].includes(fileSuffix),
         }"
       ></div>
-    </template>
+
+      <span>{{ fileName }}</span>
+    </div>
   </portrait-msg-container>
 </template>
 
 <script setup lang="ts">
-import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
-import { useFileMsg, useFileNameBlock } from './use-file-msg';
+import { useFileMsg } from './use-file-msg';
 
 const { fileName, fileSuffix, toDownloadFile } = useFileMsg();
-
-const { textWrapRef, textContentRef, needBlock } = useFileNameBlock();
 </script>
 
 <style lang="scss">
-$--file-icon-height: 38px;
+.c-portrait-file-msg__content {
+  display: flex;
+  padding: 7px 8px;
+  line-height: 20px;
+  cursor: pointer;
+  border-radius: 8px;
 
-.c-portrait-file-msg {
-  width: 231px;
-  line-height: 18px;
-}
-
-.c-portrait-file-msg__content-wrap {
-  max-height: $--file-icon-height;
-  overflow: hidden;
-}
-
-.c-portrait-file-msg__content-inner--block::before {
-  float: right;
-  height: 19px;
-  content: '';
-}
-
-.c-portrait-file-msg__content-suffix {
-  float: right;
-  margin-left: -4px;
-  clear: both;
-  &::before {
-    content: '....';
+  span {
+    @include multiline-text;
   }
 }
-
 .c-portrait-file-msg__icon {
   flex-shrink: 0;
-  width: 32px;
-  height: $--file-icon-height;
-  margin-right: -5px;
-  margin-left: 5px;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 .c-portrait-file-msg__icon--doc {
   background-image: url(./imgs/icon_doc.svg);

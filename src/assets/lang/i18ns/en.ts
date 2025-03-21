@@ -198,6 +198,8 @@ export const englishLang: LangConfig = {
   'chat.empty': 'Nothing in chat room ~',
   'chat.connectError.tips1': 'Chatroom disconnect, you cannot chat with others, refresh now?',
   'chat.connectError.tips2': 'Chatroom connection failure',
+  'chat.connectError.tips3': 'Connection failed,',
+  'chat.connectError.tips4': 'Refresh to retry',
   'chat.norMore': 'No more updates',
   'chat.loadError': 'Message failed to load',
   'chat.closeTips':
@@ -252,7 +254,7 @@ export const englishLang: LangConfig = {
   'donate.placeholder': 'Please enter the amount',
   'donate.yuan': '￥',
   'donate.random': 'Random',
-  'donate.goodAction': 'send',
+  'donate.goodAction': 'send ',
   'donate.cashAction': 'gift',
   'donate.free': 'Free',
   'donate.button': 'Confirm',
@@ -290,16 +292,12 @@ export const englishLang: LangConfig = {
   'donate.showAnimation.tips': 'Other users gift effects have been restored',
   'donate.spot': 'Spot',
 
+  'enroll.entrance': 'I have not signed up. Go sign up.',
+  'enroll.loginTitle': 'Login',
   'enroll.text': 'Sign up',
   'enroll.enrolledTips':
     'You have already signed up, the content currently filled in will overwirte the previous',
-  'enroll.entrance': 'I have signed up, go directly to >',
   'enroll.auditing': 'Under review',
-  'enroll.loginTitle': 'Login',
-  'enroll.error.phoneUnenroll':
-    'The phone number has not been registered yet, please register first to watch the live',
-  'enroll.error.emailUnenroll':
-    'The email has not been registered yet, please register first to watch the live',
   'enroll.error.smsCodeError': 'Incorrect SMS verification code',
 
   'form.name.phoneNumber': 'Phone number',
@@ -365,6 +363,8 @@ export const englishLang: LangConfig = {
   'interact.tuwen.totalCount': ' Records',
   'interact.scoreRecord.title': 'Score record',
   'interact.enrollLottery.title': 'Enroll lottery',
+  'interact.coupon.title': 'Coupon',
+  'interact.coupon.title.user': 'My coupon',
 
   'liveBooking.book': 'Book',
   'liveBooking.bookLive': 'Book',
@@ -426,6 +426,8 @@ export const englishLang: LangConfig = {
     'Illegal source of request, Please to configure the secure domain',
   'pageError.kicked': 'You are not allowed to access this page',
 
+  'inviteWatch.prepare.tips':
+    'Unable to access the live room. Please contact the administrator to check the settings.',
   'inviteWatch.notAllow.tips':
     "Invalid sharing link, you don't have permission to watch this live stream",
   'inviteWatch.auditing.title': 'Under Review',
@@ -513,9 +515,14 @@ export const englishLang: LangConfig = {
 
   'redpack.receive.name': '',
   'redpack.finish': '. The red envelope has been taken out',
+  'redpack.get': 'Get ',
+  'redpack.normal.name': 'normal red envelope',
   'redpack.normal.get': 'got the red envelope from the normal red envelope',
+  'redpack.password.name': 'password red envelope',
   'redpack.password.get': 'got the red envelope from the password red envelope',
+  'redpack.question.name': 'question red envelope',
   'redpack.question.get': 'got the red envelope from the question red envelope',
+  'redpack.rain.name': 'red envelope rain',
   'redpack.rain.get': 'got the red envelope from the red envelope rain',
   'redpack.rain.finish': ' The red envelope rain has been taken out',
   'redpack.type.normal': 'normal redpack',
@@ -614,9 +621,10 @@ export const englishLang: LangConfig = {
   'withdraw.apply.amount.most.merchant': 'The maximum single withdrawal amount is ￥{amount}',
   'withdraw.apply.username': 'username',
   'withdraw.apply.tips':
-    '* Balance should be more than ¥{amount} Yuan for withdrawing. Withdrawal will be in your Wechat wallet within {day} working days',
+    'You can withdraw 1-200 yuan at a time, and check the arrival status in your WeChat wallet.',
   'withdraw.apply.btn.text': 'Withdrawal',
   'withdraw.apply.success.msg': 'Successful application for withdrawals',
+  'withdraw.apply.error.msg': 'WeChat version is too low, please upgrade and try again',
   'withdraw.apply.rules.amount.required': 'Fill in the total amount',
   'withdraw.apply.rules.amount.low': 'The amount should not be less than {amount} yuan',
   'withdraw.apply.rules.amount.dotLimit': 'The amount should only be entered in two decimal places',
@@ -628,8 +636,10 @@ export const englishLang: LangConfig = {
 
   'withdraw.detail.popup.title': 'Balance',
   'withdraw.detail.btn.text': 'Withdrawal',
+  'withdraw.detail.balance': 'Balance',
   'withdraw.redpack.receive.record': 'Receive history',
-  'withdraw.redpack.receive.record.listName': 'Received',
+  'withdraw.redpack.receive.record.listName': 'Grab redpack',
+  'withdraw.redpack.receive.record.listName2': 'Task reward',
   'withdraw.cash.receive.record': 'Cash withdrawal',
   'withdraw.cash.receive.record.listName': 'Withdrawal',
   'withdraw.cash.receive.history.error': 'Failed to get historical cash withdrawal data',
@@ -841,7 +851,9 @@ export const englishLang: LangConfig = {
   'taskActivity.rewardError.msg1': 'Not in WeChat event',
   'taskActivity.rewardError.msg2': 'Account exception, restricted collection',
   'taskActivity.rewardError.msg3': 'System error',
-  'taskActivity.rewardDesc': 'Prizes in 10 mins',
+  'taskActivity.rewardError.msg4': 'Not bound to invitee, no prizes available',
+  'taskActivity.rewardError.msg5': 'Invitee marketing wallet exception',
+  'taskActivity.rewardDesc': 'Prizes in 3 mins',
   'taskActivity.emptyReward': 'No prizes available',
   'taskActivity.rewardReceive.title': 'Fill in the award information',
   'taskActivity.rewardReceive.nameLabel': 'Name',
@@ -857,6 +869,13 @@ export const englishLang: LangConfig = {
   'taskActivity.rewardReceive.error2': 'Please enter the correct phone number',
   'taskActivity.rewardReceive.receive': 'Receive',
   'taskActivity.rewardReceive.look': 'Look',
+  'taskActivity.finish.title': 'Congratulations',
+  'taskActivity.finish.tips': 'View in "More-Withdraw" in the live broadcast',
+  'taskActivity.finish.redpack': 'Cash Red Envelope',
+  'taskActivity.finish.point': 'Point',
+  'taskActivity.finish.unit1': 'yuan',
+  'taskActivity.finish.unit2': 'point',
+  'taskActivity.finish.toWithdraw': 'To withdraw',
 
   'order.paySuccess': 'Payment successful',
   'order.payCancel': 'Cancel Payment',
@@ -884,8 +903,10 @@ export const englishLang: LangConfig = {
   'effect.peopleCount': 'and {count} others',
 
   'personalReward.myReward': 'My reward',
-  'personalReward.taskEnter': 'Reward record',
-  'personalReward.lotteryEnter': 'Winning record',
+  'personalReward.taskEnter': 'Task reward',
+  'personalReward.luckyLotteryEnter': 'Lucky lottery',
+  'personalReward.lotteryEnter': 'Lottery',
+  'personalReward.withdraw': 'Red envelope withdrawal',
 };
 
 export default englishLang;

@@ -147,6 +147,29 @@ export const useDonateAnimation = (options: { props: VueProps<typeof donateAnima
     checkAnimationTrack();
   }
 
+  // setInterval(() => {
+  //   const chatMsg: ChatMsgRewardType = {
+  //     msgSource: ChatMsgSource.Reward,
+  //     donateType: DonateType.Good,
+  //     gimg: '//s1.videocc.net/default-img/donate/coffee.png',
+  //     goodNum: 1,
+  //     id: 'a6974498-d6e1-43e5-bfbc-da65e90adb6f',
+  //     isFree: true,
+  //     isLocal: true,
+  //     isSelf: true,
+  //     rewardContent: '咖啡',
+  //     time: Date.now(),
+  //     user: {
+  //       userId: '1740121515343',
+  //       nick: '测试用户',
+  //       pic: '//s1.videocc.net/default-img/avatar/viewer.png',
+  //       userType: ChatUserType.Student,
+  //     },
+  //   };
+
+  //   onChatMsgEvent({ chatMsg });
+  // }, 1000);
+
   onMounted(() => {
     if (effectSetting.interactionEffectEnabled) {
       watchCore.chat.eventEmitter.on(ChatEvents.ChatMessage, onChatMsgEvent);

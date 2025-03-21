@@ -55,7 +55,7 @@ const {
 </script>
 
 <style lang="scss">
-$--image-size: 68px;
+$--image-size: 80px;
 
 .c-portrait-image-msg__illegal {
   display: flex;

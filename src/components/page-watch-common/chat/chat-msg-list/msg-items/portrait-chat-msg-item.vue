@@ -29,6 +29,10 @@
       <portrait-emotion-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Emotion" />
       <!-- 图片消息 -->
       <portrait-image-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Image" />
+      <!-- 课堂激励点赞消息 -->
+      <portrait-motivation-like-msg
+        v-else-if="chatMsg.msgSource === ChatMsgSource.MotivationLike"
+      />
       <!-- 特效消息 -->
       <portrait-effect-msg v-else-if="chatMsg.msgSource === ChatMsgSource.Effect" />
     </div>
@@ -46,6 +50,7 @@ import PortraitSystemMsg from './system-msg/portrait-system-msg.vue';
 import PortraitRewardMsg from './reward-msg/portrait-reward-msg.vue';
 import PortraitEmotionMsg from './emotion-msg/portrait-emotion-msg.vue';
 import PortraitImageMsg from './image-msg/portrait-image-msg.vue';
+import PortraitMotivationLikeMsg from './motivation-like-msg/portrait-motivation-like-msg.vue';
 import PortraitEffectMsg from './effect-msg/portrait-effect-msg.vue';
 import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';

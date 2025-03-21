@@ -29,6 +29,8 @@ export interface PlaybackStoreState {
   playbackList: Ref<PlaybackTarget[]>;
   /** 是否开启循环播放 */
   loopPlayEnabled: Ref<boolean>;
+  /** 回放列表是否显示开始时间 */
+  listLiveStartTimeEnabled: Ref<boolean>;
   /** 当前页的回放列表 */
   currentPagePlaybackList: ComputedRef<PlaybackTarget[]>;
   /** 当前播放的回放对象 */
@@ -43,6 +45,12 @@ export interface PlaybackStoreState {
   chatMsgReplayEnabled: ComputedRef<boolean>;
   /** 是否能够商品库重放 */
   productReplayEnabled: ComputedRef<boolean>;
+  /** 是否能够签到重放 */
+  checkInReplayEnabled: ComputedRef<boolean>;
+  /** 是否能够答题卡重放 */
+  answerCardReplayEnabled: ComputedRef<boolean>;
+  /** 是否能够问卷重放 */
+  questionnaireReplayEnabled: ComputedRef<boolean>;
 }
 
 export interface PlaybackStoreActions {
@@ -96,6 +104,9 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
   /** 是否已加载完毕 */
   const isNoMore = ref(false);
+
+  /** 回放列表是否显示开始时间 */
+  const listLiveStartTimeEnabled = ref(false);
 
   /** 已加载的列表 */
   const playbackList = ref<PlaybackTarget[]>([]);
@@ -152,6 +163,30 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     return currentPlaybackTarget.value.productReplayEnabled;
   });
 
+  /** 是否可以签到重放 */
+  const checkInReplayEnabled = computed(() => {
+    if (!__supportReplay.value) return false;
+    if (!currentPlaybackTarget.value) return false;
+
+    return currentPlaybackTarget.value.checkInReplayEnabled;
+  });
+
+  /** 是否可以答题卡重放 */
+  const answerCardReplayEnabled = computed(() => {
+    if (!__supportReplay.value) return false;
+    if (!currentPlaybackTarget.value) return false;
+
+    return currentPlaybackTarget.value.answerCardReplayEnabled;
+  });
+
+  /** 是否可以问卷重放 */
+  const questionnaireReplayEnabled = computed(() => {
+    if (!__supportReplay.value) return false;
+    if (!currentPlaybackTarget.value) return false;
+
+    return currentPlaybackTarget.value.questionnaireReplayEnabled;
+  });
+
   /** 是否开启循环播放 */
   const loopPlayEnabled = ref(true);
 
@@ -178,6 +213,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     playbackMode.value = watchCore.playback.getCurrentPlaybackMode();
     chapterEnabled.value = watchCore.playback.getChapterEnabled();
     loopPlayEnabled.value = watchCore.playback.getLoopPlayEnabled();
+    listLiveStartTimeEnabled.value = watchCore.playback.getListLiveStartTimeEnabled();
   }
 
   /**
@@ -356,7 +392,11 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     chatReplayEnabled,
     chatMsgReplayEnabled,
     productReplayEnabled,
+    checkInReplayEnabled,
+    answerCardReplayEnabled,
+    questionnaireReplayEnabled,
     loopPlayEnabled,
+    listLiveStartTimeEnabled,
 
     syncPlaybackStore,
     updateCurrentPlaybackTarget,

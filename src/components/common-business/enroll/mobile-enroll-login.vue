@@ -61,6 +61,15 @@
         </form-item>
       </template>
 
+      <!-- 未报名入口 -->
+      <div
+        v-if="needEnrollByEnter"
+        class="c-mobile-enroll-login__entrance"
+        @click="redirectToEnroll"
+      >
+        {{ $lang('enroll.entrance') }}
+      </div>
+
       <div class="c-mobile-enroll-login__submit">
         <form-submit-button
           class="c-mobile-enroll-login__submit__button"
@@ -93,7 +102,7 @@ import { enrollLoginEmits, useEnrollLogin } from './hooks/use-enroll-login';
 
 const emit = defineEmits(enrollLoginEmits());
 
-const { enrollAuthType, smsVerifyEnabled, enrollAuthName, enrollAuthTips } =
+const { needEnrollByEnter, enrollAuthType, smsVerifyEnabled, enrollAuthName, enrollAuthTips } =
   storeDefinitionToRefs(useEnrollStore);
 
 const {
@@ -104,6 +113,7 @@ const {
   formData,
   formRules,
   submitLoginForm,
+  redirectToEnroll,
 } = useEnrollLogin({
   emit,
 });
@@ -112,6 +122,14 @@ const {
 <style lang="scss">
 .c-mobile-enroll-login {
   padding: 16px 16px 0;
+}
+
+.c-mobile-enroll-login__entrance {
+  margin: 32px auto 20px;
+  font-size: 14px;
+  color: $--color-primary;
+  text-align: center;
+  cursor: pointer;
 }
 
 .c-mobile-enroll-login__submit {
