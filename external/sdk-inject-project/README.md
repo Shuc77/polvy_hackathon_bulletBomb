@@ -50,11 +50,32 @@ import { loadPolyvWatchAppSdk } from '@/plugins/polyv-watch-app-sdk-loader.js';
 // 加载 SDK
 const PolyvWatchAppSdk = await loadPolyvWatchAppSdk();
 
+/** 全局的观看页应用实例 */
+let globalPolyvWatchApp = null;
+
+function setGlobalPolyvWatchApp(plvWatchApp) {
+  globalPolyvWatchApp = plvWatchApp;
+}
+
+// 外部项目提供方法注入：获取当前激活的观看页应用实例
+PolyvWatchAppSdk.getActivePolyvWatchApp = () => {
+  return globalPolyvWatchApp; // 此处示例仅返回全局实例
+};
+
+// 外部项目提供方法注入：获取指定 id 的观看页应用实例
+PolyvWatchAppSdk.getPolyvWatchApp = id => {
+  return globalPolyvWatchApp; // 此处示例仅返回全局实例
+};
+
 // 绑定事件--初始化
 PolyvWatchAppSdk.eventEmitter.on('init', () => {
+  // 创建观看页应用实例
   const plvWatchApp = PolyvWatchAppSdk.createPolyvWatchApp({
-    id: "plv-watch-app-container"
+    id: 'plv-watch-app-container',
   });
+
+  // 同步存储实例
+  setGlobalPolyvWatchApp(plvWatchApp);
 
   // 设置必要的请求参数
   plvWatchApp.setQueryParams({
@@ -67,6 +88,7 @@ PolyvWatchAppSdk.eventEmitter.on('init', () => {
 
 // 加载应用资源
 PolyvWatchAppSdk.loadPolyvWatchAppSource();
+
 ```
 
 ## 调试方式

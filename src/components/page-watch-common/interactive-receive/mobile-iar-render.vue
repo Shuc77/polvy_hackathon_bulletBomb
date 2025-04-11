@@ -9,10 +9,14 @@
     <mobile-check-in-popup />
     <!-- 反馈 -->
     <mobile-feed-back-popup v-if="interactSetting.watchFeedbackEnabled" />
-    <!-- 抽奖动画 -->
-    <mobile-lottery-animation />
-    <!-- 抽奖结果弹层 -->
-    <mobile-lottery-result-popup />
+
+    <template v-if="!useV2Lottery">
+      <!-- 抽奖动画 -->
+      <mobile-lottery-animation />
+      <!-- 抽奖结果弹层 -->
+      <mobile-lottery-result-popup />
+    </template>
+
     <!-- 问卷 -->
     <mobile-questionnaire-popup />
     <!-- 红包弹窗 -->
@@ -79,6 +83,7 @@ const {
   seatTableVisible,
   isMeetingSeatTableTemplate,
   interactSetting,
+  useV2Lottery,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);

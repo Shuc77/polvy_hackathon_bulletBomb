@@ -11,10 +11,14 @@
     <pc-check-in-dialog />
     <!-- 反馈 -->
     <pc-feed-back-dialog v-if="interactSetting.watchFeedbackEnabled" />
-    <!-- 抽奖动画 -->
-    <pc-lottery-animation />
-    <!-- 抽奖结果弹层 -->
-    <pc-lottery-result-dialog />
+
+    <template v-if="!useV2Lottery">
+      <!-- 抽奖动画 -->
+      <pc-lottery-animation />
+      <!-- 抽奖结果弹层 -->
+      <pc-lottery-result-dialog />
+    </template>
+
     <!-- 问卷 -->
     <pc-questionnaire-dialog />
     <!-- 红包弹窗 -->
@@ -48,7 +52,7 @@ import PcQrCodeShareDialog from '../../common-business/qrcode-share-dialog/pc-qr
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
-const { announcementFunctionVisible, interactSetting } =
+const { announcementFunctionVisible, interactSetting, useV2Lottery } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 onMounted(() => {

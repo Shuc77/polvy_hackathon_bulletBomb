@@ -223,6 +223,14 @@ export const useRiskConfirmLetterHook = () => {
       ) {
         startCountDown({ second: viewerRiskConfirmInfo.value.readSeconds });
       }
+
+      // 检查内容是否需要滚动，无需滚动直接设置已阅读完毕
+      if (RiskConfirmLetterContentRef.value) {
+        const { scrollHeight, clientHeight } = RiskConfirmLetterContentRef.value;
+        if (scrollHeight <= clientHeight) {
+          isScrollToBottom.value = true;
+        }
+      }
     });
   });
 

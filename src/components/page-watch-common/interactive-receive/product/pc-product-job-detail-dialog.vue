@@ -19,17 +19,18 @@
 <script setup lang="ts">
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductJobDetail } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const IarProductJobDetail = getIarComponent('ProductJob');
 
 const { productSdk, productHotEffectEnabled } = useProduct();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const { visible, jobDetail } = useProductJobDetail();
 

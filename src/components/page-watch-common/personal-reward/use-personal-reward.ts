@@ -44,6 +44,10 @@ export const usePersonalReward = () => {
     },
   );
 
+  useEventBusListener(appEvents.global.ClosePersonalRewardDialog, () => {
+    close();
+  });
+
   useEventBusListener(appEvents.iar.OpenLotteryRecordDialog, () => {
     currentType.value = 'lottery';
     show();

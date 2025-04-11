@@ -4,7 +4,9 @@
     v-if="targetInited"
     ref="prizeListRef"
     :lucky-lottery-target="getIarTarget()"
-    @open-receive="openLotteryReceive"
+    :immediate-list="false"
+    @to-show="onShow"
+    @to-close="onClose"
   />
 </template>
 
@@ -13,9 +15,8 @@ import { defineAsyncComponent, ref } from 'vue';
 import { useLotteryTarget } from './use-lucky-lottery';
 import { useIarUILoader } from '../_load-iar-ui-v2';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { useGlobalInject } from '@/app/use-global-inject';
-import type { PolyvLuckyLotteryPrizeItem } from '@polyv/live-watch-sdk';
 import type { LotteryRecordInstance } from '@polyv/iar-lucky-lottery-ui';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { loadIarUI } = useIarUILoader('iar-lucky-lottery-ui');
 
@@ -28,11 +29,15 @@ const { getEmitter } = useGlobalInject();
 
 const prizeListRef = ref<LotteryRecordInstance>();
 
-function openLotteryReceive(data: PolyvLuckyLotteryPrizeItem) {
-  getEmitter().emit(appEvents.iar.OpenLuckyLotteryReceiveDialog, data.recordId);
-}
-
 useEventBusListener(appEvents.iar.RefreshLuckyLotteryPrizeList, () => {
   prizeListRef.value?.refreshPrizeList();
 });
+
+function onShow() {
+  getEmitter().emit(appEvents.iar.OpenLuckyLotteryPrizeListDialog);
+}
+
+function onClose() {
+  getEmitter().emit(appEvents.global.ClosePersonalRewardDialog);
+}
 </script>

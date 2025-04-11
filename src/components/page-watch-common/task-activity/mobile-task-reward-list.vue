@@ -5,67 +5,68 @@
     class="c-mobile-task-reward-list"
     @scroll="onScroll"
   >
-    <div
-      v-for="(item, index) in rewardList"
-      :key="index"
-      class="c-mobile-task-reward-list__item"
-    >
-      <div class="c-mobile-task-reward-list__item__title">
-        {{ $lang('taskActivity.rewardGeted', { content: getTaskRewardText(item.taskReward) }) }}
-      </div>
-      <div class="c-mobile-task-reward-list__item__desc">
-        {{
-          $lang('taskActivity.rewardGetCondition', { content: getTaskReachText(item.taskReach) })
-        }}
-      </div>
-      <div class="c-mobile-task-reward-list__item__desc">
-        {{
-          $lang('taskActivity.rewardGetTime', {
-            content: formatDate(item.finishTime, DATE_FORMAT_COMPLETE),
-          })
-        }}
-      </div>
+    <div class="c-mobile-task-reward-list__inner">
       <div
-        v-if="canShowRewardStatus(item)"
-        class="c-mobile-task-reward-list__item__status"
-        :class="['c-mobile-task-reward-list__item__status--' + item.rewardStatus]"
-        @click="openErrorTips(item)"
+        v-for="(item, index) in rewardList"
+        :key="index"
+        class="c-mobile-task-reward-list__item"
       >
-        {{ getRewardStatusText(item.rewardStatus) }}
+        <div class="c-mobile-task-reward-list__item__title">
+          {{ $lang('taskActivity.rewardGeted', { content: getTaskRewardText(item.taskReward) }) }}
+        </div>
+        <div class="c-mobile-task-reward-list__item__desc">
+          {{
+            $lang('taskActivity.rewardGetCondition', { content: getTaskReachText(item.taskReach) })
+          }}
+        </div>
+        <div class="c-mobile-task-reward-list__item__desc">
+          {{
+            $lang('taskActivity.rewardGetTime', {
+              content: formatDate(item.finishTime, DATE_FORMAT_COMPLETE),
+            })
+          }}
+        </div>
+        <div
+          v-if="canShowRewardStatus(item)"
+          class="c-mobile-task-reward-list__item__status"
+          :class="['c-mobile-task-reward-list__item__status--' + item.rewardStatus]"
+          @click="openErrorTips(item)"
+        >
+          {{ getRewardStatusText(item.rewardStatus) }}
 
-        <mobile-icon-question-round
-          v-if="item.outTradeErrCode"
-          class="c-mobile-task-reward-list__item__status__icon"
-        />
-      </div>
+          <mobile-icon-question-round
+            v-if="item.outTradeErrCode"
+            class="c-mobile-task-reward-list__item__status__icon"
+          />
+        </div>
 
-      <div
-        v-if="
-          item.taskReward.type === TaskActivityRewardType.Cash &&
-          item.rewardStatus === TaskRewardStatus.NotIssued
-        "
-        class="c-mobile-task-reward-list__item__reward-desc"
-      >
-        {{ $lang('taskActivity.rewardDesc') }}
-      </div>
+        <div
+          v-if="
+            item.taskReward.type === TaskActivityRewardType.Cash &&
+            item.rewardStatus === TaskRewardStatus.NotIssued
+          "
+          class="c-mobile-task-reward-list__item__reward-desc"
+        >
+          {{ $lang('taskActivity.rewardDesc') }}
+        </div>
 
-      <!-- 领取按钮 -->
-      <div
-        v-if="
-          item.acceptInfo?.activeAcceptEnabled === 'Y' &&
-          item.taskReward.type === TaskActivityRewardType.Custom
-        "
-        class="c-mobile-task-reward-list__item__receive"
-        @click="openReceive(item)"
-      >
-        {{
-          item.acceptInfo.received === 'N'
-            ? $lang('taskActivity.rewardReceive.receive')
-            : $lang('taskActivity.rewardReceive.look')
-        }}
+        <!-- 领取按钮 -->
+        <div
+          v-if="
+            item.acceptInfo?.activeAcceptEnabled === 'Y' &&
+            item.taskReward.type === TaskActivityRewardType.Custom
+          "
+          class="c-mobile-task-reward-list__item__receive"
+          @click="openReceive(item)"
+        >
+          {{
+            item.acceptInfo.received === 'N'
+              ? $lang('taskActivity.rewardReceive.receive')
+              : $lang('taskActivity.rewardReceive.look')
+          }}
+        </div>
       </div>
     </div>
-
     <div
       v-if="rewardList.length === 0"
       class="c-mobile-task-reward-list__empty"
@@ -104,13 +105,16 @@ const { getTaskRewardText, getTaskReachText } = useTaskActivityText();
   padding: 0 12px 12px;
   overflow-y: auto;
 }
+.c-mobile-task-reward-list__inner {
+  background-color: #fff;
+  border-radius: 12px;
+}
 .c-mobile-task-reward-list__item {
   position: relative;
   z-index: 10;
-  padding: 16px;
-  margin-bottom: 8px;
-  background-color: #fff;
-  border-radius: 12px;
+  padding: 16px 0;
+  margin: 0 16px;
+  border-bottom: 1px solid rgba(#000, 0.06);
 }
 .c-mobile-task-reward-list__item__title {
   padding-right: 60px;
@@ -132,7 +136,7 @@ const { getTaskRewardText, getTaskReachText } = useTaskActivityText();
 .c-mobile-task-reward-list__item__status {
   position: absolute;
   top: 13px;
-  right: 18px;
+  right: 0;
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -170,7 +174,7 @@ const { getTaskRewardText, getTaskReachText } = useTaskActivityText();
 }
 .c-mobile-task-reward-list__item__receive {
   position: absolute;
-  right: 16px;
+  right: 0;
   bottom: 16px;
   box-sizing: border-box;
   display: flex;

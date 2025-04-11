@@ -26,11 +26,16 @@
       <!-- 话题 PK -->
       <mobile-topic-pk class="c-portrait-chat-room-pendant__item" />
 
-      <!-- 抽奖挂件 -->
-      <portrait-lottery-pendant class="c-portrait-chat-room-pendant__item" />
-
-      <!-- 条件抽奖 -->
-      <mobile-welfare-lottery class="c-portrait-chat-room-pendant__item" />
+      <template v-if="useV2Lottery">
+        <!-- 抽奖 -->
+        <lottery-pendant-v2 class="c-portrait-chat-room-pendant__item" />
+      </template>
+      <template v-else>
+        <!-- 抽奖挂件 -->
+        <portrait-lottery-pendant class="c-portrait-chat-room-pendant__item" />
+        <!-- 条件抽奖 -->
+        <mobile-welfare-lottery class="c-portrait-chat-room-pendant__item" />
+      </template>
 
       <!-- 平台抽奖 -->
       <mobile-lucky-lottery-pendant class="c-portrait-chat-room-pendant__item" />
@@ -74,6 +79,7 @@ import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-
 import mobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
+import LotteryPendantV2 from '../../interactive-receive-v2/lottery-v2/lottery-pendant/lottery-pendant.vue';
 
 import { useChatStore } from '@/store/use-chat-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
@@ -86,7 +92,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, useV2Lottery } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { microActivityEnabled } = storeDefinitionToRefs(useMicroActivityStore);
 

@@ -86,6 +86,8 @@ export interface ShareStoreState {
   saleInviteCustomerId: Ref<string | null>;
   /** 邀请观看--分销员/邀请人id */
   inviteWatchSaleId: Ref<string | null>;
+  /** 邀请观看上级邀请员的 inviteWatchSaleId */
+  inviteWatchInviteSalesId: Ref<string | null>;
 }
 
 export interface ShareStoreAction {
@@ -122,6 +124,9 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
   /** 邀请观看--分销员/邀请人id */
   const inviteWatchSaleId = ref<string | null>(null);
+
+  /** 邀请观看上级邀请员的inviteWatchSaleId */
+  const inviteWatchInviteSalesId = ref<string | null>(null);
 
   /** PC web 分享的观看地址 */
   const shareWatchUrl = computed(() => {
@@ -239,6 +244,8 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     }
 
     inviteWatchSaleId.value = watchCore.user.getInviteWatchSaleId();
+    inviteWatchInviteSalesId.value = watchCore.user.getInviteWatchInviteSalesId();
+
     if (inviteWatchSaleId.value) {
       appendQueryParam({ inviteWatchSaleId: inviteWatchSaleId.value });
     }
@@ -249,6 +256,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
     playbackShareTitleEnabled,
     saleInviteCustomerId,
     inviteWatchSaleId,
+    inviteWatchInviteSalesId,
     shareWatchUrl,
     shareQrCodeUrl,
     qqShareUrl,

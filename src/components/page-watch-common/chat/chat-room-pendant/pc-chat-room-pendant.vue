@@ -20,11 +20,16 @@
       <!-- 话题 PK -->
       <pc-topic-pk class="c-pc-chat-room-pendant__item" />
 
-      <!-- 抽奖 -->
-      <pc-lottery-pendant class="c-pc-chat-room-pendant__item" />
-
-      <!-- 条件抽奖 -->
-      <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
+      <template v-if="useV2Lottery">
+        <!-- 抽奖 -->
+        <lottery-pendant-v2 class="c-pc-chat-room-pendant__item" />
+      </template>
+      <template v-else>
+        <!-- 抽奖 -->
+        <pc-lottery-pendant class="c-pc-chat-room-pendant__item" />
+        <!-- 条件抽奖 -->
+        <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
+      </template>
 
       <!-- 抢答 -->
       <pc-rush-answer class="c-pc-chat-room-pendant__item" />
@@ -62,6 +67,7 @@ import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
 import PcCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import LotteryPendantV2 from '../../interactive-receive-v2/lottery-v2/lottery-pendant/lottery-pendant.vue';
 
 import PcChatLike from '../chat-like/pc-chat-like.vue';
 import PcImgAdvert from '@/components/page-watch-common/icon-advert/pc-img-advert.vue';
@@ -85,6 +91,7 @@ const {
   lotteryPendantVisible,
   rushAnswerPendantVisible,
   couponPendantVisible,
+  useV2Lottery,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 点赞上方是否有其他挂件 */

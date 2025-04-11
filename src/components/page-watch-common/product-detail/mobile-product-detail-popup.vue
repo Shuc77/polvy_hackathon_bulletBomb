@@ -44,10 +44,8 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
-import {
-  useProductLinkParams,
-  useProduct,
-} from '@/components/page-watch-common/interactive-receive/product/hooks/use-product';
+import { useProduct } from '@/components/page-watch-common/interactive-receive/product/hooks/use-product';
+import { useIarExternalLinkParams } from '../interactive-receive/use-iar-external-link-params';
 
 const IarProductBtn = getIarComponent('ProductButton');
 
@@ -59,7 +57,8 @@ const { currentProduct } = useNewProductDetail();
 
 const { getWeixinSdk } = useWeixinSdk();
 
-const { getLinkParams } = useProductLinkParams();
+// eslint-disable-next-line no-undef
+const { getLinkParams } = useIarExternalLinkParams();
 </script>
 
 <style lang="scss">

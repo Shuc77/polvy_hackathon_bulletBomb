@@ -9,7 +9,11 @@
     }"
   >
     <div
-      class="c-portrait-msg-container__bubble pws-primary-text-color pws-dark-basic-bg-10 pws-light-basic-bg-20"
+      class="c-portrait-msg-container__bubble pws-primary-text-color pws-light-basic-bg-20"
+      :class="{
+        'pws-dark-basic-bg-10': pageSkinColorMode === SkinColorMode.Dark && !isPortraitWatchLayout,
+        'pws-dark-basic-bg-20': pageSkinColorMode === SkinColorMode.Dark && isPortraitWatchLayout,
+      }"
     >
       <slot name="msg-header"></slot>
 
@@ -49,6 +53,9 @@ import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { ref } from 'vue';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 defineProps({
   /** 是否隐藏用户信息，默认：false */
@@ -76,6 +83,10 @@ const emit = defineEmits({
   /** 鼠标右键 */
   'bubble-contextmenu': emitFunc<MouseEvent>(),
 });
+
+const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
+
+const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
 const referenceRef = ref(null);
 

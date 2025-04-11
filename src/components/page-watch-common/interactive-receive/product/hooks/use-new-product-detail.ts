@@ -1,15 +1,15 @@
 /**
  * 商品详情hooks
  */
-import { ProductGoodData } from '../types/product-types';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { IarProductType } from '@polyv/live-watch-sdk';
-import { computed, ref } from 'vue';
-import { useLangStore } from '@/store/use-lang-store';
-import { useGlobalInject } from '@/app/use-global-inject';
 import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLangStore } from '@/store/use-lang-store';
+import { IarProductType } from '@polyv/live-watch-sdk';
+import { computed } from 'vue';
+import { ProductGoodData } from '../types/product-types';
 
 export const useNewProductDetail = () => {
   const { currentLang } = storeDefinitionToRefs(useLangStore);
@@ -21,8 +21,6 @@ export const useNewProductDetail = () => {
   const watchCore = getWatchCore();
   /** 商品库 SDK 实例 */
   const productSdk = watchCore.interactReceive.getProduct();
-
-  const productDetailSidePopupWrapRef = ref<HTMLElement>();
 
   const openProductDetail = async (good: ProductGoodData) => {
     if (good.productType === IarProductType.Normal) {
@@ -92,7 +90,5 @@ export const useNewProductDetail = () => {
     handleProductDetailVideoPlay,
     handleProductDetailVideoPause,
     currentLang,
-
-    productDetailSidePopupWrapRef,
   };
 };

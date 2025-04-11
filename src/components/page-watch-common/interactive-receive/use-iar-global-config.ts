@@ -1,6 +1,3 @@
-import { useGlobalInject } from '@/app/use-global-inject';
-import { useToastManager } from '@/hooks/components/use-toast';
-import { messageBox } from '@/components/common-base/message-box';
 import { useLangStore } from '@/store/use-lang-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
@@ -19,10 +16,6 @@ export const useIarGlobalConfigHook = () => {
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
 
-  const { getEmitter } = useGlobalInject();
-
-  const { toast } = useToastManager();
-
   function getIarDelayTime() {
     return playbackStore.chatReplayEnabled ? 0 : playerStore.delayTime;
   }
@@ -30,14 +23,6 @@ export const useIarGlobalConfigHook = () => {
   const provideData = reactive({
     globalLang: langStore.currentLang,
     globalDelayTime: getIarDelayTime(),
-
-    toast: (msg: string) => {
-      toast.success(msg);
-    },
-    messageBox: (options: Parameters<typeof messageBox>[0]) => {
-      messageBox(options).$confirm();
-    },
-    getEmitter,
   });
 
   watchEffect(() => {

@@ -10,8 +10,10 @@ import { useAddress } from './use-address';
 import { usePay } from './use-pay';
 import type { AddressDetail, OrderInfo } from '../types/order-types';
 import type { ProductGoodData } from '../../product/types/product-types';
-import { isAndroid } from '@/assets/utils/browser';
+import { isAndroid, isWeixin } from '@/assets/utils/browser';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { PayProvider } from '@polyv/live-watch-sdk';
+import { useAliPay } from '@/hooks/platform/use-ali/use-ali-pay';
 
 export function useOrder() {
   const { getWatchCore, getEmitter } = useGlobalInject();
@@ -24,7 +26,7 @@ export function useOrder() {
   const { address, addressManagementSdk } = useAddress();
   const { pay } = usePay();
   const interactReceiveStore = useInteractReceiveStore();
-
+  const { pay: payAli } = useAliPay();
   /** 订单管理sdk */
   const orderSdk = watchCore.interactReceive.getOrder();
 
@@ -42,6 +44,29 @@ export function useOrder() {
   const addressEditRef = ref();
   /** 地址编辑页进入来源是订单页 */
   let isEditOriginFromOrder = false;
+  /** 支持的支付方式 */
+  const supportPayProvider = computed(() => {
+    return interactReceiveStore.supportPayProvider;
+  });
+  /** 是否显示支付方式 */
+  const showPaymentMethod = computed(() => {
+    return interactReceiveStore.showPayMethod;
+  });
+
+  /** 是否显示loading */
+  const loadingVisible = ref(false);
+
+  /** 选中的支付方式 */
+  const selectedPayment = ref<PayProvider>(PayProvider.Wechat);
+
+  /** 是否只使用支付宝 */
+  const onlyUseAliPay = computed(() => {
+    return (
+      !isWeixin &&
+      supportPayProvider.value.length === 1 &&
+      supportPayProvider.value[0] === PayProvider.Alipay
+    );
+  });
 
   /** 弹窗标题 */
   const orderPopupTitle = computed(() => {
@@ -205,8 +230,19 @@ export function useOrder() {
     if (submitting.value) return;
     submitting.value = true;
 
+    loadingVisible.value = true;
+
+    payload.payProvider = selectedPayment.value;
+
+    // 非微信环境如果只支持支付宝，则强制设置为支付宝
+    if (onlyUseAliPay.value) {
+      payload.payProvider = PayProvider.Alipay;
+    }
+
     try {
       const res = await watchCore.order.createOrder(payload);
+
+      loadingVisible.value = false;
 
       const showOrderDetail = () => {
         nextTick(() => {
@@ -221,30 +257,46 @@ export function useOrder() {
         toast.success(translate('order.paySuccess'));
         return;
       }
-      pay(
-        {
-          timestamp: Number(res.timeStamp),
-          nonceStr: res.nonceStr,
-          package: res.prepayId,
-          signType: res.signType,
-          paySign: res.paySign,
-        },
-        {
-          successCb: () => {
-            visible.value = false;
-            showOrderDetail();
+
+      if (res.payProvider === PayProvider.Alipay) {
+        payAli(res.codeUrl);
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        visible.value = false;
+        showOrderDetail();
+      } else if (res.payProvider === PayProvider.Wechat) {
+        pay(
+          {
+            timestamp: Number(res.timeStamp),
+            nonceStr: res.nonceStr,
+            package: res.prepayId,
+            signType: res.signType,
+            paySign: res.paySign,
           },
-          cancelCb: () => {
-            visible.value = false;
-            showOrderDetail();
+          {
+            successCb: () => {
+              visible.value = false;
+              showOrderDetail();
+            },
+            cancelCb: () => {
+              visible.value = false;
+              showOrderDetail();
+            },
           },
-        },
-      );
+        );
+      } else {
+        toast.error('未知的支付方式');
+      }
     } catch (error) {
       toast.error((error as Error).message);
     } finally {
       submitting.value = false;
+      loadingVisible.value = false;
     }
+  }
+
+  function onChangePaymentMethod(payProvider: PayProvider) {
+    selectedPayment.value = payProvider;
   }
 
   /** 兼容商品订单输入框安卓下显示不全问题 */
@@ -286,5 +338,10 @@ export function useOrder() {
     onSubmitOrder,
     orderSdk,
     isFillBodySection,
+    selectedPayment,
+    showPaymentMethod,
+    onChangePaymentMethod,
+    loadingVisible,
+    onlyUseAliPay,
   };
 }

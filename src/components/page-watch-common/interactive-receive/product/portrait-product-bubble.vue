@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { YN } from '@polyv/live-watch-sdk';
@@ -54,6 +54,7 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const props = defineProps({
   productBubbleEnable: {
@@ -86,7 +87,7 @@ const {
   onChange,
 } = useProduct();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { openProductDetail } = useNewProductDetail();

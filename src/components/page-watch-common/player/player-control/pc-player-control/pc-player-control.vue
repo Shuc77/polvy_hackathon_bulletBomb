@@ -181,7 +181,7 @@
             :data-tips="
               isFullscreen ? $lang('layout.fullscreenCancel') : $lang('layout.fullscreen')
             "
-            @click="toggleFullscreen"
+            @click="togglePlayerFullscreen"
           ></div>
         </div>
       </div>
@@ -298,9 +298,34 @@ function onClickRestart() {
   closeHistoryTips();
 }
 
-const { isFullscreen, toggleFullscreen } = useFullscreen(() => {
+const { isFullscreen, supportFullscreen, toggleFullscreen } = useFullscreen(() => {
   return getAppRootElement().querySelector(PC_PLAYER_FULL_SCREEN_SELECTOR) as FullscreenElement;
 });
+
+function tryRequestVideoFullscreen() {
+  const fullDivEl = getAppRootElement().querySelector(PC_PLAYER_FULL_SCREEN_SELECTOR);
+  if (!fullDivEl) {
+    console.warn('找不到对应的全屏元素');
+    return;
+  }
+
+  const videoEl = fullDivEl.querySelector('video') as any;
+  console.warn('videoEl', videoEl);
+  if (videoEl && videoEl.webkitEnterFullScreen) {
+    videoEl.webkitEnterFullScreen();
+  } else {
+    console.warn('不支持系统全屏');
+  }
+}
+
+function togglePlayerFullscreen() {
+  if (supportFullscreen.value) {
+    toggleFullscreen();
+  } else {
+    console.warn('不支持通用全屏 API，尝试用播放器全屏');
+    tryRequestVideoFullscreen();
+  }
+}
 </script>
 
 <style lang="scss">

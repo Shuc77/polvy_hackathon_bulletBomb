@@ -28,16 +28,18 @@
 
     <div class="c-mobile-personal-reward-popup__content">
       <div class="c-mobile-personal-reward-popup__switch">
-        <span
-          v-for="(item, index) in rewardTypes"
-          :key="index"
-          :class="{
-            'is-active': item.type === currentType,
-          }"
-          @click="currentType = item.type"
-        >
-          {{ item.text }}
-        </span>
+        <div class="c-mobile-personal-reward-popup__switch__inner">
+          <span
+            v-for="(item, index) in rewardTypes"
+            :key="index"
+            :class="{
+              'is-active': item.type === currentType,
+            }"
+            @click="currentType = item.type"
+          >
+            {{ item.text }}
+          </span>
+        </div>
 
         <div
           v-if="withdrawVisible && weixinPayType === WeixinPayType.TransferBill"
@@ -52,7 +54,7 @@
       <div class="c-mobile-personal-reward-popup__inner">
         <mobile-task-reward-list v-if="currentType === 'task-activity'" />
         <mobile-lottery-record-list v-show="currentType === 'lottery'" />
-        <mobile-lucky-lottery-prize-list v-if="currentType === 'lucky-lottery'" />
+        <mobile-lucky-lottery-prize-list v-show="currentType === 'lucky-lottery'" />
       </div>
     </div>
   </mobile-popup>
@@ -64,7 +66,7 @@ import MobilePopup from '@/components/common-base/popup';
 import { MobileIconClose, MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
-import MobileLotteryRecordList from '../interactive-receive-v2/lottery-v2/mobile-lottery-record-list.vue';
+import MobileLotteryRecordList from '../interactive-receive-v2/lottery-v2/lottery-record-list/mobile-lottery-record-list.vue';
 import MobileTaskRewardList from '../task-activity/mobile-task-reward-list.vue';
 import MobileLuckyLotteryPrizeList from '../interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-prize-list.vue';
 import { usePersonalReward } from './use-personal-reward';
@@ -92,17 +94,17 @@ function openWithdraw() {
 <style lang="scss">
 .c-mobile-personal-reward-popup__body {
   overflow: hidden;
-  background: linear-gradient(144deg, #f2d1ef 0%, #fdf2df 100%);
+  background: linear-gradient(180deg, #fee5e1 0%, #fef9f4 100%);
   &::before {
     position: absolute;
-    top: 0;
-    right: -7px;
+    top: -26px;
+    right: -87px;
     z-index: 1;
-    width: 216px;
-    height: 113px;
+    width: 176px;
+    height: 168px;
     content: '';
-    background: linear-gradient(254deg, #ef8767 -8%, #f9dec5 57%);
-    filter: blur(70px);
+    background: #fdf0d5;
+    filter: blur(80px);
     border-radius: 50%;
   }
   .c-mobile-popup__body {
@@ -181,7 +183,20 @@ function openWithdraw() {
   display: flex;
   align-items: center;
   padding: 0 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.c-mobile-personal-reward-popup__switch__inner {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  background: linear-gradient(
+    97deg,
+    rgba(254, 150, 104, 0.2) 0%,
+    rgba(254, 63, 82, 0.2) 49%,
+    rgba(255, 86, 145, 0.2) 100%
+  );
+  border-radius: 8px;
 
   & > span {
     box-sizing: border-box;
@@ -189,18 +204,15 @@ function openWithdraw() {
     align-items: center;
     justify-content: center;
     min-width: 72px;
-    height: 24px;
+    height: 22px;
     padding: 0 8px;
-    margin-right: 12px;
     font-size: 12px;
-    color: #666666;
-    background: #fff8f8;
-    border: 1px solid #fff8f8;
-    border-radius: 12px;
+    color: #8e1e33;
+    border-radius: 6px;
 
     &.is-active {
-      color: #fe3f52;
-      border-color: #fe3f52;
+      font-weight: bold;
+      background: #fff5fb;
     }
   }
 }

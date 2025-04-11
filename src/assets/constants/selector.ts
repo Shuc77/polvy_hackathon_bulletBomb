@@ -11,9 +11,6 @@ export const PC_PLAYER_FULL_SCREEN_SELECTOR = '.c-pc-watch-layout__main__fullscr
 /** PC 端右边侧边栏外层 */
 export const PC_LAYOUT_ASIDE_WRAP = '.c-pc-watch-layout__main__right';
 
-/** PC 端播放器上层右侧互动渲染容器 */
-export const PC_LAYOUT_PLAYER_UPPER_IAR_RENDER = '.c-pc-watch-layout__main__iar-render';
-
 /** 移动端直播播放器内部 Wrap 选择器 */
 export const MOBILE_LIVE_PLAYER_INNER_WRAP = '.plwrap';
 

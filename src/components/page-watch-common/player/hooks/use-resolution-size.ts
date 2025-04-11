@@ -28,6 +28,7 @@ export const useResolutionSize = (options: {
   playerContainer: Ref<HTMLDivElement | undefined>;
 }) => {
   const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
 
   const { playerContainer } = options;
   const playerStore = usePlayerStore();
@@ -61,6 +62,32 @@ export const useResolutionSize = (options: {
     if (retryTimer) {
       clearTimeout(retryTimer);
       retryTimer = undefined;
+    }
+  }
+
+  /**
+   * 通过player-module获取视频信息刷新视频流尺寸
+   */
+  function refreshResolutionByVideoInfo() {
+    const removeEventListener = () => {
+      watchCore.player.eventEmitter.off(
+        PlayerEvents.PlayerInnerTimeUpdate,
+        refreshResolutionByVideoInfo,
+      );
+    };
+
+    const videoInfo = watchCore.player.getPlayerVideoInfo();
+    const videoWidth = videoInfo.videoWidth || 0;
+    const videoHeight = videoInfo.videoHeight || 0;
+
+    if (videoWidth > 0 && videoHeight > 0) {
+      // console.info('refreshResolutionByVideoInfo', videoWidth, videoHeight);
+      playerStore.$patch({
+        resolutionWidth: videoWidth,
+        resolutionHeight: videoHeight,
+      });
+
+      removeEventListener();
     }
   }
 
@@ -113,12 +140,16 @@ export const useResolutionSize = (options: {
   }
 
   onMounted(() => {
-    const watchCore = getWatchCore();
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerPlaying, refreshResolution);
+
+    // 新增通过timeupdate事件获取视频信息刷新视频流尺寸， 旧逻辑保留
+    watchCore.player.eventEmitter.on(
+      PlayerEvents.PlayerInnerTimeUpdate,
+      refreshResolutionByVideoInfo,
+    );
   });
 
   onBeforeUnmount(() => {
-    const watchCore = getWatchCore();
     watchCore.player.eventEmitter.off(PlayerEvents.PlayerPlaying, refreshResolution);
 
     removeRetryTimer();

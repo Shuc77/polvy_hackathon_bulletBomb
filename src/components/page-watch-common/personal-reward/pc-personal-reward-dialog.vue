@@ -1,9 +1,21 @@
 <template>
-  <pc-dialog
+  <pc-side-popup
     class="c-pc-personal-reward-popup"
     :title="$lang('personalReward.myReward')"
     :visible.sync="visible"
   >
+    <template #title>
+      <div class="c-pc-personal-reward-popup__header">
+        <img
+          v-if="currentLang === LangType.ZH_CN"
+          src="./images/mobile-reward-title-cn.png"
+        />
+        <img
+          v-else
+          src="./images/mobile-reward-title-en.png"
+        />
+      </div>
+    </template>
     <div class="c-pc-personal-reward-popup__content">
       <!-- <div class="c-pc-personal-reward-popup__switch">
         <span
@@ -23,22 +35,30 @@
         <pc-lottery-record-list v-show="currentType === 'lottery'" />
       </div>
     </div>
-  </pc-dialog>
+  </pc-side-popup>
 </template>
 
 <script setup lang="ts">
-import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
-import PcLotteryRecordList from '../interactive-receive-v2/lottery-v2/pc-lottery-record-list.vue';
+import { LangType } from '@/assets/lang/lang-enum';
+import PcSidePopup from '@/components/common-base/side-popup/pc-side-popup.vue';
+import PcLotteryRecordList from '../interactive-receive-v2/lottery-v2/lottery-record-list/pc-lottery-record-list.vue';
 import PcTaskRewardList from '../task-activity/pc-task-reward-list.vue';
 import { usePersonalReward } from './use-personal-reward';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLangStore } from '@/store/use-lang-store';
+
+const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 const { visible, currentType } = usePersonalReward();
 </script>
 
 <style lang="scss">
 .c-pc-personal-reward-popup {
-  .c-pc-dialog__header {
-    border-color: rgba(#000000, 0.04);
+  background: linear-gradient(180deg, #fee5e1 0%, #fef9f4 100%);
+
+  .c-pc-side-popup__header {
+    height: 66px;
+    background: none;
   }
   .c-pc-dialog__content {
     overflow: hidden;
@@ -57,16 +77,43 @@ const { visible, currentType } = usePersonalReward();
       border-radius: 50%;
     }
   }
+}
 
-  .c-mobile-popup__body {
-    z-index: 2;
+.c-pc-personal-reward-popup__header {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  img {
+    height: 20px;
+    margin-right: 12px;
+    margin-left: 12px;
+  }
+
+  &::before,
+  &::after {
+    width: 15px;
+    height: 11px;
+    content: '';
+    background-position: center;
+    background-size: cover;
+  }
+
+  &::before {
+    background-image: url(./images/mobile-title-left.png);
+  }
+  &::after {
+    background-image: url(./images/mobile-title-right.png);
   }
 }
 
 .c-pc-personal-reward-popup__content {
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 100%;
 }
 
 .c-pc-personal-reward-popup__switch {
@@ -99,7 +146,6 @@ const { visible, currentType } = usePersonalReward();
 
 .c-pc-personal-reward-popup__inner {
   flex: 1;
-  margin-top: 14px;
   overflow: hidden;
 }
 </style>

@@ -101,6 +101,10 @@ export const globalEvents = {
    */
   OpenPersonalRewardDialog: 'OpenPersonalRewardDialog',
   /**
+   * 关闭个人奖励弹层
+   */
+  ClosePersonalRewardDialog: 'ClosePersonalRewardDialog',
+  /**
    * 打开二维码分享弹窗
    */
   OpenQrCodeShareDialog: 'OpenQrCodeShareDialog',

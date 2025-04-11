@@ -5,7 +5,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { VirtualList } from '@just4/virtual-list';
-import { ItemsRemoveEvent, VirtualListEvent } from '@just4/virtual-list/events';
+import { ItemsRemoveEvent } from '@just4/virtual-list/events';
 import { ChatEvents, ChatMsgType, LiveStatus } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { useChatMsgHandle } from './hooks/chat-msg-handle-hook';
@@ -177,7 +177,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
      * dom 节点通过实例化 Vue 来创建
      * 移除时，需要手动销毁实例，否则不会被回收掉，高并发下会占用很高内存
      */
-    virtualList.on(VirtualListEvent.ITEM_REMOVE, (data: unknown) => {
+    virtualList.on('item-remove', (data: unknown) => {
       const result = data as ItemsRemoveEvent<ChatMsgType>;
       const itemNodes = result.itemNodes;
       itemNodes.forEach(elem => {
@@ -204,7 +204,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
    * 重新请求最新消息并渲染
    */
   async function initChatMsgRender() {
-    if (!virtualList) {
+    if (!virtualList || (virtualList && !virtualList.inited)) {
       return;
     }
 

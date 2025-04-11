@@ -24,10 +24,11 @@ import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductJobDetail } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const IarProductJobDetail = getIarComponent('ProductJob');
 
@@ -35,7 +36,7 @@ const { productSdk, productHotEffectEnabled } = useProduct();
 
 const { getWeixinSdk } = useWeixinSdk();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const { visible, jobDetail } = useProductJobDetail();
 

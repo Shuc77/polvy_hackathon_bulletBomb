@@ -1,5 +1,5 @@
 <template>
-  <iar-mobile-reward-receive
+  <iar-reward-receive
     :receive-data="receiveData"
     :submit-action="submitTaskReceive"
   />
@@ -12,7 +12,7 @@ import { useIarUILoader } from '../interactive-receive-v2/_load-iar-ui-v2';
 
 const { loadIarUI } = useIarUILoader('iar-reward-receive-ui');
 
-const IarMobileRewardReceive = defineAsyncComponent(() => loadIarUI('mobile-reward-receive'));
+const IarRewardReceive = defineAsyncComponent(() => loadIarUI('reward-receive'));
 
 const { receiveData, submitTaskReceive } = useTaskRewardReceive();
 </script>

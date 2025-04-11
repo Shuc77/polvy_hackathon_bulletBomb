@@ -13,10 +13,9 @@ import PcProductDetail from '@/components/page-watch-common/product-detail/pc-pr
 <style lang="scss">
 .c-pc-iar-render-upper-player {
   position: absolute;
-  width: 100%;
+  top: 0;
+  right: 0;
   height: 100%;
-  * {
-    pointer-events: initial;
-  }
+  pointer-events: initial;
 }
 </style>

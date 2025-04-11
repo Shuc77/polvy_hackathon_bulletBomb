@@ -11,28 +11,40 @@
       @click-back="onPopupBack"
     >
       <div class="c-mobile-order-center__wrap">
-        <iar-mobile-order-list
-          v-show="!isShowDetail"
-          ref="orderListRef"
-          class="c-mobile-order-center__wrap__item"
-          :order-sdk="orderSdk"
-          :confirm-receipt="onConfirmReceipt"
-          :confirm-pay="onConfirmPay"
-          @confirm-receipt-success="onConfirmReceiptSuccess"
-          @pay-success="onPaySuccess"
-          @reach-detail="handleReachDetail"
-        />
-        <iar-mobile-order-detail
-          v-if="isShowDetail"
-          class="c-mobile-order-center__wrap__item c-mobile-order-center__detail"
-          :order-sdk="orderSdk"
-          :force-sync-pay-status="openDetailFromPaySuccess"
-          :confirm-receipt="onConfirmReceipt"
-          :confirm-pay="onConfirmPay"
-          :order-no="currentDetailOrderNo"
-          @confirm-receipt-success="onConfirmReceiptSuccess"
-          @pay-success="onPaySuccess"
-        />
+        <transition name="c-mobile-order-center__fade">
+          <iar-mobile-order-list
+            v-if="!isShowDetail"
+            ref="orderListRef"
+            class="c-mobile-order-center__wrap__item"
+            :order-sdk="orderSdk"
+            :confirm-receipt="onConfirmReceipt"
+            :confirm-pay="onOrderListConfirmPay"
+            @confirm-receipt-success="onConfirmReceiptSuccess"
+            @pay-success="onPaySuccess"
+            @reach-detail="handleReachDetail"
+          />
+        </transition>
+        <transition name="c-mobile-order-center__fade">
+          <iar-mobile-order-detail
+            v-if="isShowDetail"
+            class="c-mobile-order-center__wrap__item c-mobile-order-center__detail"
+            :order-sdk="orderSdk"
+            :force-sync-pay-status="openDetailFromPaySuccess"
+            :confirm-receipt="onConfirmReceipt"
+            :confirm-pay="onConfirmPay"
+            :order-no="currentDetailOrderNo"
+            :show-payment-method="showPaymentMethod"
+            :is-polling-api-after-confirm-pay="isPollingApiAfterConfirmPay"
+            @confirm-receipt-success="onConfirmReceiptSuccess"
+            @pay-success="onPaySuccess"
+          />
+        </transition>
+        <div
+          class="c-mobile-order-center__loading-container"
+          v-if="loadingVisible"
+        >
+          <list-loading class="c-mobile-order-center__loading" />
+        </div>
       </div>
     </mobile-popup>
 
@@ -48,9 +60,12 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useOrderCenter } from './hooks/user-order-center';
+import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const IarMobileOrderList = getIarComponent('MobileOrderList');
 const IarMobileOrderDetail = getIarComponent('MobileOrderDetail');
@@ -71,7 +86,16 @@ const {
   onPaySuccess,
   openDetailFromPaySuccess,
   orderSdk,
+  showPaymentMethod,
+  loadingVisible,
+  onOrderListConfirmPay,
+  isPollingApiAfterConfirmPay,
 } = useOrderCenter();
+
+onMounted(() => {
+  const interactReceiveStore = useInteractReceiveStore();
+  interactReceiveStore.getSupportPayProvider();
+});
 </script>
 
 <style lang="scss">
@@ -104,5 +128,28 @@ const {
     width: 100%;
     height: 100%;
   }
+}
+
+.c-mobile-order-center__loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.c-mobile-order-center__fade-enter-active,
+.c-mobile-order-center__fade-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+}
+
+.c-mobile-order-center__fade-enter-from,
+.c-mobile-order-center__fade-leave-to {
+  opacity: 0;
 }
 </style>

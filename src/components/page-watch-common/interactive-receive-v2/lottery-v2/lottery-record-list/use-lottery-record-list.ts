@@ -1,10 +1,10 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { useGlobalInject } from '@/app/use-global-inject';
 import { useLotteryRecordEntrance } from './use-lottery-record-entrance';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { type LotteryRecordInstance } from '@polyv/iar-lottery-ui';
 import { type PolyvIarLotteryRecordData } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 export const useLotteryRecordList = () => {
   const { getEmitter } = useGlobalInject();
@@ -19,10 +19,6 @@ export const useLotteryRecordList = () => {
     recordRef.value?.refreshRecord();
   });
 
-  function openLotteryReceive(data: PolyvIarLotteryRecordData) {
-    getEmitter().emit(appEvents.iar.OpenLotteryReceiveDialog, data.lotteryId);
-  }
-
   function onRecordList(list: PolyvIarLotteryRecordData[]) {
     interactRecordStore.$patch({
       lotteryWinRecords: list,
@@ -35,9 +31,18 @@ export const useLotteryRecordList = () => {
     }
   }
 
+  function onShow() {
+    getEmitter().emit(appEvents.global.OpenPersonalRewardDialog, 'lottery');
+  }
+
+  function onClose() {
+    getEmitter().emit(appEvents.global.ClosePersonalRewardDialog);
+  }
+
   return {
     recordRef,
-    openLotteryReceive,
     onRecordList,
+    onShow,
+    onClose,
   };
 };

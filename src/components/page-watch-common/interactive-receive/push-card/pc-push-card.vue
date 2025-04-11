@@ -12,11 +12,12 @@
 
 <script setup lang="ts">
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
-import { usePushCard, usePushCardLinkParams } from './hooks/use-push-card';
+import { usePushCard } from './hooks/use-push-card';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const IarPushCard = getIarComponent('PushCard');
 
 const { pushCardSdk, onEntryVisibleChanged } = usePushCard();
 
-const { getLinkParams } = usePushCardLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 </script>

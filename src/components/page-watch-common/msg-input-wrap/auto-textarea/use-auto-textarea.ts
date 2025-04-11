@@ -2,6 +2,7 @@ import { isDesktopIPad } from '@/assets/utils/browser';
 import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
+import { throttle } from 'lodash-es';
 import { ref, computed, unref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue';
 
 export const autoTextareaProps = () => ({
@@ -102,17 +103,21 @@ export const useAutoTextarea = (options: {
   });
 
   /**
-   * 重置高度
+   * 自适应高度
    */
-  async function resetHeight() {
+  async function resizeHeight(reset: boolean = false) {
     const textareaElem = unref(textareaRef);
     if (!textareaElem) return;
 
     textareaElem.style.height = 'auto';
+
     await nextTick();
-    if (textareaElem.scrollHeight) {
-      textareaElem.style.height = `${textareaElem.scrollHeight}px`;
+    const scrollHeight = textareaElem.scrollHeight;
+    const displayHeight = reset ? originHeight.value : scrollHeight;
+    if (displayHeight) {
+      textareaElem.style.height = `${displayHeight}px`;
     }
+
     clientHeight.value = textareaElem.clientHeight;
 
     console.log('textAreaIsMultiRow', textAreaIsMultiRow.value, clientHeight.value);
@@ -126,9 +131,17 @@ export const useAutoTextarea = (options: {
     emit('update:isMultiRow', textAreaIsMultiRow.value);
   }
 
+  const throttleRestHeight = throttle((reset: boolean) => resizeHeight(reset), 300);
+
   watch(
     () => unref(value),
-    () => resetHeight(),
+    val => {
+      if (!originHeight.value) {
+        initHeightInfo();
+      }
+
+      throttleRestHeight(!val);
+    },
   );
 
   function onBlur() {
@@ -207,9 +220,17 @@ export const useAutoTextarea = (options: {
     blurTextarea();
   }
 
-  onMounted(() => {
-    resetHeight();
+  /**
+   * 初始化高度信息，便于后续配置
+   */
+  function initHeightInfo() {
+    if (!textareaRef.value) return;
 
+    clientHeight.value = textareaRef.value.clientHeight;
+    originHeight.value = textareaRef.value.clientHeight;
+  }
+
+  onMounted(() => {
     if (isDesktopIPad) {
       // 兼容ipad横竖屏切换，系统键盘遮挡观看页输入框的问题。
       // 这里监听屏幕方向改变的事件，用于系统横屏时使播放器满屏显示。
@@ -221,8 +242,8 @@ export const useAutoTextarea = (options: {
     }
 
     setTimeout(() => {
-      originHeight.value = textareaRef.value?.clientHeight || 0;
-    }, 200);
+      initHeightInfo();
+    }, 0);
   });
 
   onBeforeUnmount(() => {
@@ -249,6 +270,7 @@ export const useAutoTextarea = (options: {
     textareaMaxHeight,
     realValue,
     clientHeight,
+    originHeight,
     textAreaIsMultiRow,
     onBlur,
     onFocus,

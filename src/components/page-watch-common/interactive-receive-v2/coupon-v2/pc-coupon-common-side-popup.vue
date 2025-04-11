@@ -1,29 +1,25 @@
 <!-- @file PC 端优惠券待领取弹窗 -->
 <template>
-  <div
-    class="c-pc-coupon-side-popup"
-    ref="couponSidePopupWrapRef"
+  <pc-side-popup
+    v-if="couponCommonListVisible"
+    :visible.sync="couponCommonListVisible"
+    :open-event="appEvents.interaction.OpenCouponCommonList"
+    :title="couponCommonListTitle"
   >
-    <pc-side-popup
-      v-if="couponCommonListVisible"
-      ref="couponSidePopupRef"
-      :visible.sync="couponCommonListVisible"
-      :mount-el="couponSidePopupWrapRef"
-    >
-      <iar-normal-coupon-common-list
-        ref="couponCommonListRef"
-        v-if="targetInited"
-        :coupon-target="getIarTarget()"
-      />
-    </pc-side-popup>
-  </div>
+    <iar-normal-coupon-common-list
+      ref="couponCommonListRef"
+      v-if="targetInited"
+      :coupon-target="getIarTarget()"
+    />
+  </pc-side-popup>
 </template>
 
 <script setup lang="ts">
+import { appEvents } from '@/app/app-events';
+import PcSidePopup from '@/components/common-base/side-popup/pc-side-popup.vue';
 import { defineAsyncComponent } from 'vue';
-import pcSidePopup from '@/components/common-base/side-poupou/pc-side-popup.vue';
-import { useCouponCommonList } from './hooks/use-coupon-common-list-v2';
 import { useIarUILoader } from '../_load-iar-ui-v2';
+import { useCouponCommonList } from './hooks/use-coupon-common-list-v2';
 
 const { loadIarUI } = useIarUILoader('iar-coupon-ui');
 
@@ -32,8 +28,7 @@ const {
   targetInited,
   getIarTarget,
   couponCommonListVisible,
-  couponSidePopupWrapRef,
-  couponSidePopupRef,
+  couponCommonListTitle,
 } = useCouponCommonList();
 
 const IarNormalCouponCommonList = defineAsyncComponent(() =>
