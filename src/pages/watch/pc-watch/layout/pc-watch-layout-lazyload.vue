@@ -1,9 +1,7 @@
 <!-- @file PC端-延迟加载的弹出层类型组件 -->
 
 <template>
-  <div
-    class="c-pc-watch-layout-lazyload"
-  >
+  <div class="c-pc-watch-layout-lazyload">
     <!-- 互动功能渲染入口 -->
     <pc-iar-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
     <pc-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
@@ -32,9 +30,6 @@
     <!-- 绑定用户信息 -->
     <pc-bind-identity-info-dialog v-if="bindMobileVisible" />
 
-    <!-- 我的奖励弹层 -->
-    <pc-personal-reward-dialog />
-
     <!-- AI 看弹窗 -->
     <pc-playback-outline-dialog />
 
@@ -55,7 +50,7 @@ import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
 import PcBindIdentityInfoDialog from '@/components/common-business/bind-identity-info/pc-bind-identity-info.vue';
-import PcPersonalRewardDialog from '@/components/page-watch-common/personal-reward/pc-personal-reward-dialog.vue';
+
 import PcFollowDialog from '@/components/page-watch-common/follow/follow-layer/pc-follow-dialog.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';

@@ -90,50 +90,13 @@
         </div>
       </div>
     </mobile-popup>
-
-    <dynamic-popup
-      class="c-portrait-product-list__detail__popup"
-      :visible.sync="productDetailVisible"
-      :show-header="false"
-      :content-percent-height="0.8"
-      :fill-body-section="true"
-      :ignore-content-max-height="true"
-      :max-height="0.95"
-      :init-height="0.75"
-    >
-      <mobile-product-detail></mobile-product-detail>
-
-      <template #footer>
-        <div class="c-portrait-product-list__detail__popup__product-detail-btn">
-          <iar-product-btn
-            v-if="currentProduct"
-            :product-sdk="productSdk"
-            :good="currentProduct"
-            :get-weixin-sdk="getWeixinSdk"
-            :get-link-params="getLinkParams"
-            @buy="onWechatBuy"
-          >
-            <template #default="{ buttonText, disabled }">
-              <normal-button
-                :size="ButtonSize.Medium"
-                :type="ButtonType.Aggravate"
-                block
-                :text="buttonText"
-                :disabled="disabled"
-              />
-            </template>
-          </iar-product-btn>
-        </div>
-      </template>
-    </dynamic-popup>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { ref } from 'vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import DynamicPopup from '@/components/common-base/dynamic-popup/index.vue';
 import { PopupTheme } from '@/components/common-base/popup/types';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
@@ -141,7 +104,7 @@ import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductList } from './hooks/use-product-list';
 import { useProductDetail } from './hooks/use-product-detail';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -151,7 +114,7 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import { isAndroid } from '@/assets/utils/browser';
 
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
-import MobileProductDetail from '@/components/page-watch-common/product-detail/mobile-product-detail.vue';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const { onJobDetailEvent } = useProductJobDetailEvent();
 
@@ -160,7 +123,7 @@ const IarProductBtn = getIarComponent('ProductButton');
 
 const { getWeixinSdk } = useWeixinSdk();
 
-const { interactSetting, productDetailVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
@@ -168,7 +131,7 @@ const { getPlvWebviewBridge } = useWebviewStore();
 const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } =
   useProduct();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const {
   iarProductListRef,
@@ -181,7 +144,7 @@ const {
 
 const { goodDetail, goodDetailVisible, openGoodDetail, closeGoodDetail } = useProductDetail();
 
-const { openProductDetail, currentProduct } = useNewProductDetail();
+const { openProductDetail } = useNewProductDetail();
 
 /** 商品列表弹窗是否显示 */
 const productListVisible = ref(false);
@@ -270,15 +233,5 @@ useEventBusListener(appEvents.interaction.OpenPortraitProductList, setProductLis
 .c-portrait-product-list__popup .c-mobile-popup__content {
   overflow: hidden;
   border-radius: 16px 16px 0 0 !important;
-}
-
-.c-portrait-product-list__detail__popup {
-  .c-mobile-popup__content {
-    border-radius: 16px 16px 0 0 !important;
-  }
-}
-
-.c-portrait-product-list__detail__popup__product-detail-btn {
-  padding: 12px 24px 34px;
 }
 </style>

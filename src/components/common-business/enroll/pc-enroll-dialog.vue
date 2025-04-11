@@ -18,6 +18,7 @@
       @click-cancel="closeEnrollDialog"
       @redirect-to-enroll="redirectToEnroll"
       @close-dialog="closeEnrollDialog"
+      @resize="resizeDialog"
     />
   </pc-dialog>
 </template>
@@ -45,11 +46,15 @@ const dialogInstance = ref<DialogInstance>();
 watch(
   () => dialogModel.value,
   () => {
-    nextTick(() => {
-      dialogInstance.value?.resetPosition();
-    });
+    resizeDialog();
   },
 );
+
+function resizeDialog() {
+  nextTick(() => {
+    dialogInstance.value?.resetPosition();
+  });
+}
 
 defineExpose(enrollDialogInstance);
 </script>

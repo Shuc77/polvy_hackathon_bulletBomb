@@ -18,7 +18,9 @@ import { formSubmitButtonProps, useFormSubmitButton } from './hooks/use-form-sub
 
 const props = defineProps(formSubmitButtonProps());
 
-const { buttonIsDisabled, onButtonClick } = useFormSubmitButton({
+const { buttonIsDisabled, onButtonClick, formSubmitButtonInstance } = useFormSubmitButton({
   props,
 });
+
+defineExpose(formSubmitButtonInstance);
 </script>

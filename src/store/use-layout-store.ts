@@ -54,6 +54,8 @@ export interface LayoutStoreState {
   mobileSplashLayout: Ref<MobileSplashLayout>;
   /** 移动端下底部菜单栏的激活 name */
   mobileMenuCurrentName: Ref<string>;
+  /** 移动端下底部菜单栏聊天区域已展示 */
+  mobileChatTabHasBeenShowed: Ref<boolean>;
   /** 移动端下菜单栏 header 高度 */
   mobileMenuHeaderHeight: Ref<number>;
   /** 移动端布局顶部区域的高度 */
@@ -173,6 +175,9 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
   /** 移动端下底部菜单栏的激活 name */
   const mobileMenuCurrentName = ref('');
 
+  /** 移动端下底部菜单栏聊天区域已展示 */
+  const mobileChatTabHasBeenShowed = ref(false);
+
   /** 移动端下菜单栏 header 高度 */
   const mobileMenuHeaderHeight = ref(40);
 
@@ -257,6 +262,7 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     mobileSplashLayout,
     subScreenPackUp,
     mobileMenuCurrentName,
+    mobileChatTabHasBeenShowed,
     mobileMenuHeaderHeight,
     mobileLayoutTopHeight,
     mobileLayoutBottomHeight,

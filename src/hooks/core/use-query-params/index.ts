@@ -221,6 +221,10 @@ export const useQueryParams = (opts?: {
     noAppBar: buildGetters<'1'>('noAppBar'),
     /** 邀请观看--分销员/邀请人 Id */
     inviteWatchSaleId: buildGetters<string>('inviteWatchSaleId'),
+    /** 支付宝支付跳转方式 target */
+    aliPayLinkTarget: buildGetters<string>('aliPayLinkTarget'),
+    /** 抽奖版本 */
+    lotteryVersion: buildGetters<'v1' | 'v2'>('lotteryVersion'),
   });
 
   /**

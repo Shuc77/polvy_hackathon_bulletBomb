@@ -71,10 +71,11 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { YN } from '@polyv/live-watch-sdk';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductDetail } from './hooks/use-product-detail';
 import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { useProductList } from './hooks/use-product-list';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
 const { getPlvWebviewBridge } = useWebviewStore();
@@ -91,7 +92,7 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { productSdk, recruitmentEnabled, jobDescLabel, onWechatBuy, productHotEffectEnabled } =
   useProduct();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const {
   iarProductListRef,

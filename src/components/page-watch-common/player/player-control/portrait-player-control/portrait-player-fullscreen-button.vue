@@ -76,6 +76,14 @@ function togglePortraitPlayerFullscreen() {
   layoutStore.$patch({
     mobilePlayerIsPageFullscreen: isFullscreen,
   });
+
+  /**
+   * 低延迟iOS软解，网页全屏需要调用 resizeScreen 重新渲染画面。由于竖屏页面全屏非播放器触发，播放器内部不知道网页全屏了，内部的resizeObserver的resize不知道是网页全屏了（并且可能导致画面比例异常），所以需要延迟调用一下resizeScreen
+   */
+  setTimeout(() => {
+    const watchCore = getWatchCore();
+    watchCore.player.resizeScreen(0, isFullscreen ? 90 : 0);
+  }, 0);
 }
 
 function isSystemFullscreenMode() {

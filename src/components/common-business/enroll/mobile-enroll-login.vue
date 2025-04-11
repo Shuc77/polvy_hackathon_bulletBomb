@@ -19,10 +19,11 @@
             v-model="formData.phoneNumber"
             :placeholder="enrollAuthTips"
             :area-code.sync="formData.areaCode"
+            @blur="blurToCheckStatus"
           />
         </form-item>
         <!-- 图片验证码 -->
-        <form-item v-if="imageVerifyInputEnabled">
+        <form-item v-if="imageVerifyInputEnabled && checkedNeedSmsVerify">
           <mobile-form-image-verify-input
             ref="imageVerifyInputRef"
             v-model="formData.imageCaptcha"
@@ -31,7 +32,7 @@
         </form-item>
         <!-- 短信验证码 -->
         <form-item
-          v-if="smsVerifyEnabled"
+          v-if="smsVerifyEnabled && checkedNeedSmsVerify"
           form-field="smsCode"
         >
           <mobile-form-sms-verify-input
@@ -72,6 +73,7 @@
 
       <div class="c-mobile-enroll-login__submit">
         <form-submit-button
+          ref="formSubmitRef"
           class="c-mobile-enroll-login__submit__button"
           :size="ButtonSize.Medium"
           block
@@ -98,7 +100,9 @@ import { SmsScene, EnrollAuthType } from '@polyv/live-watch-sdk';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-import { enrollLoginEmits, useEnrollLogin } from './hooks/use-enroll-login';
+import { enrollLoginEmits, useEnrollInfoCheck, useEnrollLogin } from './hooks/use-enroll-login';
+import { ref } from 'vue';
+import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
 
 const emit = defineEmits(enrollLoginEmits());
 
@@ -114,8 +118,18 @@ const {
   formRules,
   submitLoginForm,
   redirectToEnroll,
+  emitResize,
 } = useEnrollLogin({
   emit,
+});
+
+const formSubmitRef = ref<FormSubmitButtonInstance>();
+
+const { blurToCheckStatus, checkedNeedSmsVerify } = useEnrollInfoCheck({
+  getAreaCode: () => formData.areaCode,
+  getPhoneMumber: () => formData.phoneNumber,
+  cb: () => emitResize(),
+  formSubmitRef,
 });
 </script>
 

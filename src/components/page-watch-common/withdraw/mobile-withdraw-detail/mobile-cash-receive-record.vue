@@ -7,7 +7,10 @@
       :key="record.withdrawId"
     >
       <div>
-        <p class="c-mobile-cash-receive-record__item-type">
+        <p
+          class="c-mobile-cash-receive-record__item-type"
+          @click="handleError(record)"
+        >
           {{ getWithdrawStatusText(record.status) }}
           <span
             v-if="record.status === WithdrawStatus.WaitUserConfirm && record.confirmSignData"
@@ -15,6 +18,10 @@
           >
             {{ $lang('withdraw.cash.receive.record.toConfirm') }}
           </span>
+          <mobile-icon-question-round
+            v-if="record.status === WithdrawStatus.Fail && record.outTradeErrCode"
+            class="c-mobile-cash-receive-record__item__error"
+          />
         </p>
         <p class="c-mobile-cash-receive-record__item-date">
           {{ convertReceiveDate(record.applyTime) }}
@@ -35,11 +42,14 @@
 import { onMounted } from 'vue';
 import listLoading from '@/components/common-base/list-loading/list-loading.vue';
 
-import { WithdrawStatus } from '@polyv/live-watch-sdk';
+import { MobileIconQuestionRound } from '@/components/component-icons/mobile/map';
+import { WithdrawRecord, WithdrawStatus } from '@polyv/live-watch-sdk';
 import { useReceiveRecordHook, getWithdrawStatusText } from '../_hooks/use-receive-record';
 import { translate } from '@/assets/lang';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useWeixinMerchantTransfer } from '@/hooks/platform/use-weixin/use-weixin-merchant-transfer';
+import { useWeixinOutTradeError } from '@/hooks/platform/use-weixin/use-weixin-out-trade-erroe';
+import { messageBox } from '@/components/common-base/message-box';
 
 const { getWatchCore } = useGlobalInject();
 
@@ -62,6 +72,21 @@ const { requestMerchantTransfer } = useWeixinMerchantTransfer({
   successCb: () => refreshList(),
   cancelCb: () => refreshList(),
 });
+
+const { getWeixinOutTradeErrorTips } = useWeixinOutTradeError();
+
+function handleError(record: WithdrawRecord) {
+  if (record.status !== WithdrawStatus.Fail || !record.outTradeErrCode) {
+    return;
+  }
+
+  const text = getWeixinOutTradeErrorTips(record.outTradeErrCode);
+
+  messageBox({
+    content: text,
+    confirmButtonText: translate('base.popup.understood'),
+  }).$confirm();
+}
 
 onMounted(async () => {
   await getReceiveRecordList();
@@ -104,5 +129,11 @@ defineExpose({
 .c-mobile-cash-receive-record__item--loading {
   padding: 16px 0;
   text-align: center;
+}
+
+.c-mobile-cash-receive-record__item__error {
+  display: flex;
+  align-items: center;
+  color: #fe3f52 !important;
 }
 </style>

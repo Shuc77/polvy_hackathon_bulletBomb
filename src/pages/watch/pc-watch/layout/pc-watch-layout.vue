@@ -130,9 +130,10 @@
 
           <!-- 播放器侧边 - 互动功能渲染入口 -->
           <div class="c-pc-watch-layout__main-layer">
-            <div class="c-pc-watch-layout__main__iar-render">
+            <div class="c-pc-watch-layout__main__side-popup-render">
               <pc-iar-render-upper-player v-if="iarSdkLoaded" />
               <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded" />
+              <pc-watch-layout-player-side-popup />
             </div>
           </div>
 
@@ -231,6 +232,7 @@ import PcChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-re
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import PcIarRenderUpperPlayer from '@/components/page-watch-common/interactive-receive/pc-iar-render-upper-player.vue';
 import PcIarRenderUpperPlayerV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-upper-player-v2.vue';
+import PcWatchLayoutPlayerSidePopup from './pc-watch-layout-player-side-popup.vue';
 import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -404,6 +406,7 @@ $--layout-sub-pack-up-height: 40px !default;
 }
 .c-pc-watch-layout__main__fullscreen-wrap__height {
   width: $--layout-left-width-percent;
+  pointer-events: none;
   &::before {
     display: block;
     width: 100%;
@@ -499,6 +502,8 @@ $--layout-sub-pack-up-height: 40px !default;
 }
 
 .c-pc-watch-layout__main__fullscreen-wrap--fullscreened {
+  pointer-events: initial;
+
   .c-pc-watch-layout__main-layer {
     width: 100%;
   }
@@ -593,13 +598,14 @@ $--layout-sub-pack-up-height: 40px !default;
   height: 100%;
 }
 
-.c-pc-watch-layout__main__iar-render {
+.c-pc-watch-layout__main__side-popup-render {
   position: absolute;
   top: 0;
   right: 0;
-  width: 375px;
-  min-width: 300px;
+  z-index: 20;
+  width: 100%;
   height: 100%;
+  overflow: hidden;
   pointer-events: none;
 }
 

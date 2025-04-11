@@ -76,7 +76,7 @@ $--skin-component-configs: (
   // 主要 tab 头部激活字体色
   'main-tab-header--active:text-color': $--color-white,
   // 主要 tab 头部激活选项线条背景色
-  'main-tab-header-line--active:bg-color': $--color-white,
+  'main-tab-header-line--active:bg-color': #3F76FC,
   // 主要 tab 头部阴影开始颜色
   'main-tab-header-shadow-start:color': map.get($--skin-basic-configs, 'sub-bg-color'),
   // 主要 tab 头部阴影结束颜色

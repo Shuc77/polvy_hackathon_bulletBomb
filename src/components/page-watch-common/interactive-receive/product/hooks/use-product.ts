@@ -1,20 +1,17 @@
 import { computed, unref } from 'vue';
 
 import { useChannelStore } from '@/store/use-channel-store';
-import { useViewerStore } from '@/store/use-viewer-store';
 
 import { translate } from '@/assets/lang';
 import { isMobile, isWeixin } from '@/assets/utils/browser';
 import { useToastManager } from '@/hooks/components/use-toast';
 
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useInviteStore } from '@/store/use-invite-store';
-import { LiveStatus } from '@polyv/live-watch-sdk';
+import { LiveStatus, PayProvider } from '@polyv/live-watch-sdk';
 
 import { useGlobalInject } from '@/app/use-global-inject';
 import { appEvents } from '@/app/app-events';
 import type { ProductGoodData } from '../types/product-types';
-import { useShareStore } from '@/store/use-share-store';
 
 /**
  * @hook 互动-商品库
@@ -43,6 +40,14 @@ export const useProduct = () => {
   /** 招聘岗位开关 */
   const recruitmentEnabled = computed(() => {
     return interactReceiveStore.interactSetting.recruitmentEnabled;
+  });
+
+  /** 是否显示订单 */
+  const showQrCodeShareDialog = computed(() => {
+    const supportPayProvider = interactReceiveStore.supportPayProvider;
+    const enabledAliPay = supportPayProvider.includes(PayProvider.Alipay);
+
+    return !isMobile || (!isWeixin && !enabledAliPay);
   });
 
   /** 招聘标签文本 */
@@ -74,7 +79,7 @@ export const useProduct = () => {
     }
 
     // Pc引导到H5微信
-    if (!isMobile || !isWeixin) {
+    if (showQrCodeShareDialog.value) {
       getEmitter().emit(appEvents.global.OpenQrCodeShareDialog);
       return;
     }
@@ -94,46 +99,7 @@ export const useProduct = () => {
     productHotEffectEnabled,
     onWechatBuy,
     onChange,
-  };
-};
-
-/** 商品库跳转参数 hook */
-export const useProductLinkParams = () => {
-  const { getWatchCore } = useGlobalInject();
-
-  const watchCore = getWatchCore();
-  const channelStore = useChannelStore();
-  const viewerStore = useViewerStore();
-  const inviteStore = useInviteStore();
-  const shareStore = useShareStore();
-
-  /** 获取链接参数 */
-  const getLinkParams = () => {
-    const saleInfo = watchCore.user.getUserSaleInfo();
-    return {
-      openId: viewerStore.openId,
-      unionId: viewerStore.unionId,
-      userId: viewerStore.viewerId,
-      nickname: viewerStore.nickname,
-      // 邀请人 openId
-      inviteOpenId: inviteStore.inviteUserOpenId,
-      // 邀请人 unionId
-      inviteUnionId: inviteStore.inviteUserUnionId,
-      // 渠道 id
-      promoteId: channelStore.promoteId,
-      // 频道号
-      channelId: channelStore.channelId,
-      // 当前场次号
-      sessionId: channelStore.currentSessionId,
-      // 跟进人 id
-      saleId: saleInfo.saleId,
-      // 邀请观看--分销员/邀请人id
-      inviteWatchSaleId: shareStore.inviteWatchSaleId,
-    };
-  };
-
-  return {
-    getLinkParams,
+    showQrCodeShareDialog,
   };
 };
 

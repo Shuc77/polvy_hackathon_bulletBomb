@@ -22,8 +22,4 @@ export const iarEvents = {
    * 刷新平台抽奖中奖记录列表
    */
   RefreshLuckyLotteryPrizeList: 'RefreshLuckyLotteryPrizeList',
-  /**
-   * 打开平台抽奖活动列表
-   */
-  OpenLuckyLotteryReceiveDialog: 'OpenLuckyLotteryReceiveDialog',
 };

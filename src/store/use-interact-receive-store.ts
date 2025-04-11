@@ -4,6 +4,7 @@
 
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { isBoolean } from 'lodash-es';
 
 import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
@@ -17,6 +18,7 @@ import { LotteryRecordData } from '@/components/page-watch-common/interactive-re
 import {
   ChannelWatchPageSkin,
   InteractSetting,
+  PayProvider,
   PlvInteractReceiveModule,
   SeatTableTemplate,
 } from '@polyv/live-watch-sdk';
@@ -27,6 +29,7 @@ import { useThemeStore } from './use-theme-store';
 
 import { ProductGoodData } from '@/components/page-watch-common/interactive-receive/product/types/product-types';
 import { usePlaybackStore } from './use-playback-store';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 /**
  * 互动功能二次入口数据
@@ -61,6 +64,8 @@ export interface InteractReceiveStoreState {
   hasBulletin: Ref<boolean>;
   /** 公告功能是否显示 */
   announcementFunctionVisible: ComputedRef<boolean>;
+  /** 是否使用 v2 版本的抽奖 */
+  useV2Lottery: ComputedRef<boolean>;
   /** 当前中奖记录列表 */
   lotteryWinRecords: Ref<LotteryRecordData[]>;
   /** 是否存在未提交的中奖记录 */
@@ -105,6 +110,10 @@ export interface InteractReceiveStoreState {
   couponCommonListVisible: Ref<boolean>;
   /** 优惠券已领取列表是否显示 */
   couponUserListVisible: Ref<boolean>;
+  /** 支持的支付方式 */
+  supportPayProvider: Ref<PayProvider[]>;
+  /** 是否显示支付方式 */
+  showPayMethod: ComputedRef<boolean>;
 }
 
 export interface InteractReceiveStoreAction {
@@ -116,6 +125,9 @@ export interface InteractReceiveStoreAction {
   removeInteractiveEntrance(type: string): void;
   /** 设置问卷返回按钮显示 */
   setQuestionnaireBackBtnVisible(visible: boolean): void;
+
+  /** 获取支持的支付方式 */
+  getSupportPayProvider(): void;
 }
 
 export interface InteractReceiveStore
@@ -131,6 +143,8 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const themeStore = useThemeStore();
     const viewerStore = useViewerStore();
     const playbackStore = usePlaybackStore();
+
+    const { paramGetter } = useQueryParams();
 
     /** 互动 SDK 加载完成，注意不一定加载成功 */
     const iarSdkLoaded = ref(false);
@@ -185,6 +199,19 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       if (channelStore.isSeminarChannel) return false;
 
       return true;
+    });
+
+    const useV2Lottery = computed(() => {
+      let version = 'v1';
+
+      const queryVersion = paramGetter().lotteryVersion();
+      if (queryVersion) {
+        version = queryVersion;
+      } else {
+        version = interactSetting.value.lotteryVersion;
+      }
+
+      return version === 'v2';
     });
 
     /** 当前中奖记录列表 */
@@ -318,6 +345,22 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 优惠券已领取列表是否显示 */
     const couponUserListVisible = ref(false);
 
+    /** 支持的支付方式 */
+    const supportPayProvider = ref<PayProvider[]>([]);
+
+    /** 获取支持的支付方式 */
+    async function getSupportPayProvider(options: { useReqCache?: boolean } = {}) {
+      const watchCore = watchAppStore.getWatchCore();
+      supportPayProvider.value = await watchCore.order.getPayProviders({
+        useReqCache: isBoolean(options.useReqCache) ? options.useReqCache : true,
+      });
+    }
+
+    /** 是否显示支付方式 */
+    const showPayMethod = computed(() => {
+      return supportPayProvider.value.length >= 2;
+    });
+
     return {
       iarSdkLoaded,
 
@@ -331,6 +374,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
       announcementTipsVisible,
       announcementFunctionVisible,
+      useV2Lottery,
       lotteryWinRecords,
       hasNotReceivedLottery,
       pushCardPendantVisible,
@@ -357,6 +401,11 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       couponPendantVisible,
       couponCommonListVisible,
       couponUserListVisible,
+
+      supportPayProvider,
+      getSupportPayProvider,
+
+      showPayMethod,
     };
   },
 );

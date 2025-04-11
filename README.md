@@ -162,7 +162,7 @@ npm run build-static
 
 - 目前该项目支持在 `git commit` 时进行校验，如校验失败需自动修复，可以执行 `npm run lint-fix` 尝试修复。如不需要在提交代码时进行校验，可以移除 `package.json` 中的 `precommit` 命令，或者注释 `.husky/pre-commit` 的执行命令
 - 项目调试时会使用 `eslint + stylelint` 来校验代码，如不需要，可以到 `src/build/webpack.vue.config` 文件中注释相关的插件
-- 2.x 不在试用 `fork-ts-checker-webpack-plugin` 对 `vue` 的 `script` 区块进行代码校验，建议在生产构建前，执行 `npm run check` 来检查一遍代码
+- 2.x 不在使用 `fork-ts-checker-webpack-plugin` 对 `vue` 的 `script` 区块进行代码校验，建议在生产构建前，执行 `npm run check` 来检查一遍代码
 
 ### PC 端布局
 
@@ -171,4 +171,4 @@ npm run build-static
 ### 关于 vscode 插件
 
 - 项目中的 `.vscode` 文件默认会推荐使用的插件，可以根据需要进行安装
-- 由于项目使用 `vue@2.7` 进行开发，推荐配合 `volar` 使用，并同步开启 [volar-takeover-mode](https://cn.vuejs.org/guide/typescript/overview.html#volar-takeover-mode) 来使用单个 ts 实例 （注意：volar 的版本迭代很快，建议暂时用 2.0.28 版本）
+- 由于项目使用 `vue@2.7` 进行开发，推荐配合 `volar` 使用 （PS：volar 的版本迭代很快，建议暂时用 2.0.28 版本）

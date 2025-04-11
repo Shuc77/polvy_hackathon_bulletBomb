@@ -37,7 +37,6 @@ export const useMsgUserInfo = () => {
     [ChatUserType.Assistant]: 'linear-gradient(270deg, #1CCBAF 0%, #0CBF8F 100%)',
     [ChatUserType.Teacher]: 'linear-gradient(270deg, #57B7FF 0%, #358DFF 100%)',
     [ChatUserType.Guest]: 'linear-gradient(90deg, #FF8D73 -7%, #FFB438 100%)',
-    [ChatUserType.Dummy]: 'rgba(255, 255, 255, 0.6)',
   };
 
   /** 昵称颜色 */

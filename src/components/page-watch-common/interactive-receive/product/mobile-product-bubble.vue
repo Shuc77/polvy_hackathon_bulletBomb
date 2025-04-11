@@ -85,7 +85,7 @@ import { getIarComponent } from '@/components/page-watch-common/interactive-rece
 import MobileProductDetail from '@/components/page-watch-common/product-detail/mobile-product-detail.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -94,6 +94,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const IarProductBtn = getIarComponent('ProductButton');
 
@@ -119,7 +120,7 @@ const IarProductDialog = getIarComponent('ProductDialog');
 
 const { getWeixinSdk } = useWeixinSdk();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const {
   productSdk,

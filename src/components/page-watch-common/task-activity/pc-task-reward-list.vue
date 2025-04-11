@@ -132,7 +132,7 @@ const { getTaskReachText, getTaskRewardText } = useTaskActivityText();
 .c-pc-task-reward-list__item__status {
   position: absolute;
   top: 13px;
-  right: 18px;
+  right: 0;
   display: flex;
   align-items: center;
   font-size: 12px;

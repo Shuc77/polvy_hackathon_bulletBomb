@@ -41,11 +41,12 @@
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
 import { YN } from '@polyv/live-watch-sdk';
 import { useProps } from '@/assets/utils/vue-utils/props-utils';
 import { useNewProductDetail } from '@/components/page-watch-common/interactive-receive/product/hooks/use-new-product-detail';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const props = defineProps({
   productBubbleEnable: {
@@ -74,7 +75,7 @@ const {
   onChange,
 } = useProduct();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>

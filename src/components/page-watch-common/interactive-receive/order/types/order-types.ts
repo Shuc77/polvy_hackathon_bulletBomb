@@ -1,3 +1,5 @@
+import { PayProvider } from '@polyv/live-watch-sdk';
+
 /** 地址详情 */
 export interface AddressDetail {
   id: string | number;
@@ -19,6 +21,9 @@ export interface OrderInfo {
     mobile: string;
     name?: string;
   };
+
+  /** 支付方式 */
+  payProvider: PayProvider;
 }
 
 export interface OrderListInstance {

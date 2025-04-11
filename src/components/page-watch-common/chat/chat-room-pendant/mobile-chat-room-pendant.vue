@@ -43,11 +43,16 @@
           class="c-mobile-chat-room-pendant__item"
         />
 
-        <!-- 抽奖 -->
-        <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
-
-        <!-- 条件抽奖 -->
-        <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
+        <template v-if="useV2Lottery">
+          <!-- 抽奖 -->
+          <lottery-pendant-v2 class="c-mobile-chat-room-pendant__item" />
+        </template>
+        <template v-else>
+          <!-- 抽奖 -->
+          <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
+          <!-- 条件抽奖 -->
+          <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
+        </template>
 
         <!-- 平台抽奖 -->
         <mobile-lucky-lottery-pendant class="c-mobile-chat-room-pendant__item" />
@@ -62,7 +67,7 @@
         />
 
         <mobile-product-bubble
-          v-if="chatTabHasBeenShowed"
+          v-if="mobileChatTabHasBeenShowed"
           :product-dialog-enable="false"
           class="c-mobile-chat-room-pendant__item"
         />
@@ -87,7 +92,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, unref, watch } from 'vue';
+import { computed, unref } from 'vue';
 
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
@@ -105,8 +110,8 @@ import { RiskEvaluationEntrance } from '@/components/page-watch-common/interacti
 import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
 import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
+import LotteryPendantV2 from '../../interactive-receive-v2/lottery-v2/lottery-pendant/lottery-pendant.vue';
 
-import { TAB_NAME_CHAT } from '@/assets/constants/tab-name';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -117,12 +122,12 @@ import { useFinanceStore } from '@/store/use-finance-store';
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, useV2Lottery } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
 const {
-  mobileMenuCurrentName,
+  mobileChatTabHasBeenShowed,
   mobilePlayerIsPageFullscreen,
   isHorizontalScreenOrientation,
 
@@ -131,14 +136,6 @@ const {
 
 const renderParent = computed<string | HTMLElement>(() => {
   return unref(isPageFullscreenOrHorizontalScreen) ? document.body : '';
-});
-
-const chatTabHasBeenShowed = ref(false);
-const $stopWatch = watch(mobileMenuCurrentName, () => {
-  if (mobileMenuCurrentName.value === TAB_NAME_CHAT) {
-    chatTabHasBeenShowed.value = true;
-    $stopWatch();
-  }
 });
 </script>
 

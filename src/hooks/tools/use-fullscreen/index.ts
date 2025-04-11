@@ -2,8 +2,8 @@
  * @file 浏览器全屏 hook
  */
 import { useLayoutStore } from '@/store/use-layout-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { computed, onBeforeUnmount, Ref, unref } from 'vue';
+import { storeToRefs } from 'pinia';
 
 export interface FullscreenFieldData {
   /** 浏览器是否支持全屏模式的 api 字段 */
@@ -27,11 +27,20 @@ const apis = [
     exitApiField: 'exitFullscreen',
     fullscreenChangeEvent: 'fullscreenchange',
   },
+  // New WebKit
   {
     enabledField: 'webkitFullscreenEnabled',
-    elementField: 'webkitCurrentFullScreenElement',
+    elementField: 'webkitFullscreenElement',
     requestApiField: 'webkitRequestFullscreen',
     exitApiField: 'webkitExitFullscreen',
+    fullscreenChangeEvent: 'webkitfullscreenchange',
+  },
+  // Old WebKit
+  {
+    enabledField: 'webkitCancelFullScreen',
+    elementField: 'webkitCurrentFullScreenElement',
+    requestApiField: 'webkitRequestFullScreen',
+    exitApiField: 'webkitCancelFullScreen',
     fullscreenChangeEvent: 'webkitfullscreenchange',
   },
   {
@@ -70,9 +79,9 @@ export type GetFullscreenElement = () => FullscreenElement;
  */
 export const useFullscreen = (
   elementRef: FullscreenElement | GetFullscreenElement = document.documentElement,
-  // eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
-  const { isFullscreen } = storeDefinitionToRefs(useLayoutStore);
+  const layoutStore = useLayoutStore();
+  const { isFullscreen } = storeToRefs(layoutStore);
 
   /** 是否支持浏览器全屏 */
   const supportFullscreen = computed(() => !!fieldData);
@@ -121,9 +130,13 @@ export const useFullscreen = (
       return;
     }
     if (document[fieldData.elementField]) {
-      isFullscreen.value = true;
+      layoutStore.$patch({
+        isFullscreen: true,
+      });
     } else {
-      isFullscreen.value = false;
+      layoutStore.$patch({
+        isFullscreen: false,
+      });
     }
   }
 

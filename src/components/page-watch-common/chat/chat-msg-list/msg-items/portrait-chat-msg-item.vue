@@ -4,6 +4,12 @@
     v-show="msgVisible"
     class="c-portrait-chat-msg-item"
   >
+    <div
+      v-if="showMsgTime && !isPortraitWatchLayout"
+      class="c-portrait-chat-msg-item__time pws-secondary-text-color"
+    >
+      {{ msgTimeText }}
+    </div>
     <div class="c-portrait-chat-msg-item__content">
       <template v-if="iarSdkLoaded">
         <!-- 红包消息 -->
@@ -56,17 +62,26 @@ import { chatMsgItemProps, useChatMsgItem } from './use-chat-msg-item';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 const props = defineProps(chatMsgItemProps());
 
-const { chatMsg, msgVisible } = useChatMsgItem({
+const { chatMsg, msgVisible, showMsgTime, msgTimeText } = useChatMsgItem({
   props,
 });
+
+const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">
+.c-portrait-chat-msg-item__time {
+  margin: 12px 0;
+  font-size: 12px;
+  line-height: 17px;
+  text-align: center;
+}
 .c-portrait-chat-msg-item__content {
   margin: 4px 0;
 }

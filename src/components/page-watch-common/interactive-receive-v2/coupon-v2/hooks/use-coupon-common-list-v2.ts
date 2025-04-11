@@ -5,7 +5,7 @@ import type { NormalCouponCommonListInstance } from '@polyv/iar-coupon-ui';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { translate } from '@/assets/lang';
-import { PcSidePopupInstance } from '@/components/common-base/side-poupou/type';
+import { PcSidePopupInstance } from '@/components/common-base/side-popup/type';
 
 export const useCouponCommonList = () => {
   const { targetInited, getIarTarget } = useCoupon();
@@ -13,7 +13,6 @@ export const useCouponCommonList = () => {
   /** 优惠券是否显示 */
   const { couponCommonListVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 
-  const couponSidePopupWrapRef = ref<HTMLElement>();
   const couponSidePopupRef = ref<PcSidePopupInstance>();
 
   const couponCommonListRef = ref<NormalCouponCommonListInstance>();
@@ -39,7 +38,6 @@ export const useCouponCommonList = () => {
     getIarTarget,
     couponCommonListVisible,
     couponCommonListTitle,
-    couponSidePopupWrapRef,
     couponSidePopupRef,
   };
 };

@@ -55,7 +55,7 @@
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
-import { useProduct, useProductLinkParams } from './hooks/use-product';
+import { useProduct } from './hooks/use-product';
 import { useProductDetail } from './hooks/use-product-detail';
 import { useProductList } from './hooks/use-product-list';
 import { useProductJobDetailEvent } from './hooks/use-product-job-detail';
@@ -64,6 +64,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { YN } from '@polyv/live-watch-sdk';
 import { useNewProductDetail } from './hooks/use-new-product-detail';
+import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const { onJobDetailEvent } = useProductJobDetailEvent();
 
@@ -75,7 +76,7 @@ const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 const { productSdk, recruitmentEnabled, productHotEffectEnabled, jobDescLabel, onWechatBuy } =
   useProduct();
 
-const { getLinkParams } = useProductLinkParams();
+const { getLinkParams } = useIarExternalLinkParams();
 
 const { iarProductListRef, onGoodTotalChange } = useProductList();
 

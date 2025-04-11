@@ -1,26 +1,27 @@
 <!-- 移动端中奖记录列表 -->
 <template>
-  <iar-pc-lottery-record
+  <iar-lottery-record
     v-if="targetInited"
     ref="recordRef"
     :lottery-target="getIarTarget()"
     :lottery-config="lotteryConfig"
-    @open-receive="openLotteryReceive"
     @record-list="onRecordList"
+    @to-show="onShow"
+    @to-close="onClose"
   />
 </template>
 
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
-import { useLotteryTarget } from './use-lottery-v2';
-import { useLotteryRecordList } from './hooks/use-lottery-record-list';
-import { useIarUILoader } from '../_load-iar-ui-v2';
+import { useLotteryTarget } from '../use-lottery-v2';
+import { useLotteryRecordList } from './use-lottery-record-list';
+import { useIarUILoader } from '../../_load-iar-ui-v2';
 
 const { loadIarUI } = useIarUILoader('iar-lottery-ui');
 
-const IarPcLotteryRecord = defineAsyncComponent(() => loadIarUI('pc-lottery-record'));
+const IarLotteryRecord = defineAsyncComponent(() => loadIarUI('lottery-record'));
 
 const { targetInited, getIarTarget, lotteryConfig } = useLotteryTarget();
 
-const { recordRef, openLotteryReceive, onRecordList } = useLotteryRecordList();
+const { recordRef, onRecordList, onShow, onClose } = useLotteryRecordList();
 </script>

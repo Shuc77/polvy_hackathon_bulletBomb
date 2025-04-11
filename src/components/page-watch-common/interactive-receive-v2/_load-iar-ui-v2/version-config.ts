@@ -5,46 +5,41 @@ import camelCase from 'camelcase';
 export const iarUIVersions = {
   /** 签到 */
   'iar-check-in-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20250320',
-    [SdkLoaderEnv.Rc]: 'rc-20250320',
-    [SdkLoaderEnv.Test]: 'dev-20250320',
+    [SdkLoaderEnv.Prod]: 'rc-20250410',
+    [SdkLoaderEnv.Rc]: 'rc-20250410',
+    [SdkLoaderEnv.Test]: 'dev-20250410',
     components: ['pc-check-in', 'mobile-check-in', 'portrait-check-in'] as const,
   },
 
   /** 抽奖 */
   'iar-lottery-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20250320',
-    [SdkLoaderEnv.Rc]: 'rc-20250320',
-    [SdkLoaderEnv.Test]: 'dev-20250320',
-    components: [
-      'pc-lottery-record',
-      'mobile-lottery-record',
-      'pc-lottery-receive',
-      'mobile-lottery-receive',
-    ] as const,
+    [SdkLoaderEnv.Prod]: 'rc-20250410',
+    [SdkLoaderEnv.Rc]: 'rc-20250410',
+    [SdkLoaderEnv.Test]: 'dev-20250410',
+    components: ['lottery-pendant', 'lottery-dialog', 'lottery-record'] as const,
   },
 
   /** 问答 */
   'iar-questionnaire-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20250320',
-    [SdkLoaderEnv.Rc]: 'rc-20250320',
-    [SdkLoaderEnv.Test]: 'dev-20250320',
+    [SdkLoaderEnv.Prod]: 'rc-20250410',
+    [SdkLoaderEnv.Rc]: 'rc-20250410',
+    [SdkLoaderEnv.Test]: 'dev-20250410',
     components: ['normal-questionnaire'] as const,
   },
 
   /** 奖励领取 */
   'iar-reward-receive-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20250320',
-    [SdkLoaderEnv.Rc]: 'rc-20250320',
-    [SdkLoaderEnv.Test]: 'dev-20250320',
-    components: ['pc-reward-receive', 'mobile-reward-receive'] as const,
+    [SdkLoaderEnv.Prod]: 'rc-20250410',
+    [SdkLoaderEnv.Rc]: 'rc-20250410',
+    [SdkLoaderEnv.Test]: 'dev-20250410',
+    components: ['reward-receive'] as const,
   },
 
   /** 优惠券 */
   'iar-coupon-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20250320',
-    [SdkLoaderEnv.Rc]: 'rc-20250320',
-    [SdkLoaderEnv.Test]: 'dev-20250320',
+    [SdkLoaderEnv.Prod]: 'rc-20250410',
+    [SdkLoaderEnv.Rc]: 'rc-20250410',
+    [SdkLoaderEnv.Test]: 'dev-20250410',
     components: [
       'normal-coupon-common-list',
       'normal-coupon-user-list',
@@ -54,9 +49,9 @@ export const iarUIVersions = {
 
   /** 平台抽奖 */
   'iar-lucky-lottery-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20250320',
-    [SdkLoaderEnv.Rc]: 'rc-20250320',
-    [SdkLoaderEnv.Test]: 'dev-20250320',
+    [SdkLoaderEnv.Prod]: 'rc-20250410',
+    [SdkLoaderEnv.Rc]: 'rc-20250410',
+    [SdkLoaderEnv.Test]: 'dev-20250410',
     components: [
       'lucky-lottery-pendant',
       'mobile-lucky-lottery-detail',

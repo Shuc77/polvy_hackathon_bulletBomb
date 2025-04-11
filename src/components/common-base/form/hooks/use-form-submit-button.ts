@@ -10,6 +10,10 @@ export const formSubmitButtonProps = () => ({
   debounceSubmit: PropUtils.bool.def(false),
 });
 
+export interface FormSubmitButtonInstance {
+  checkDisabled: () => Promise<void>;
+}
+
 export const useFormSubmitButton = (options: { props: VueProps<typeof formSubmitButtonProps> }) => {
   const props = options.props;
   const formProps = useFormWrapPropsInject();
@@ -102,9 +106,14 @@ export const useFormSubmitButton = (options: { props: VueProps<typeof formSubmit
     }
   }
 
+  const formSubmitButtonInstance: FormSubmitButtonInstance = {
+    checkDisabled,
+  };
+
   return {
     buttonIsDisabled,
     checkDisabled,
     onButtonClick,
+    formSubmitButtonInstance,
   };
 };

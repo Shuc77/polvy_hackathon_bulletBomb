@@ -1,7 +1,6 @@
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { IarProductListInstance, ProductGoodData } from '../types/product-types';
-import { useProductTrack } from './use-product';
-import { isMobile, isWeixin } from '@/assets/utils/browser';
+import { useProductTrack, useProduct } from './use-product';
 import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 
@@ -17,6 +16,8 @@ export const useProductList = (opts?: { autoInit: boolean }) => {
 
   const { trackOpenProductList } = useProductTrack();
 
+  const { showQrCodeShareDialog } = useProduct();
+
   /** 互动功能商品列表组件实例 */
   const iarProductListRef = ref<IarProductListInstance>();
 
@@ -27,7 +28,9 @@ export const useProductList = (opts?: { autoInit: boolean }) => {
   const orderEnabled = watchCore.order.getOrderEnabled();
 
   /** 是否显示订单中心 */
-  const isShowOrderCenter = isMobile && isWeixin && orderEnabled;
+  const isShowOrderCenter = computed(() => {
+    return !showQrCodeShareDialog.value && orderEnabled;
+  });
 
   /** 初始化商品列表，并上报打开数据 */
   const initProductList = async () => {

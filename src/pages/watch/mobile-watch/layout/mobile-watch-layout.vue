@@ -152,7 +152,7 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
+import { TAB_NAME_CHAT, TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 
 import { MainScreenContent, MultiMeetingListLayout, PlayStatus } from '@polyv/live-watch-sdk';
@@ -180,6 +180,7 @@ const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
 const { multiMeetingEnabled, multiMeetingListLayout } = storeDefinitionToRefs(useMultiMeetingStore);
 
+const layoutStore = useLayoutStore();
 const {
   isHorizontalScreenOrientation,
   isVerticalScreenOrientation,
@@ -202,7 +203,6 @@ const { toPlayInLimit } = usePlayerAction();
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
-const layoutStore = useLayoutStore();
 
 const layoutWrapRef = ref<HTMLDivElement>();
 const layoutTopRef = ref<HTMLDivElement>();
@@ -304,6 +304,15 @@ useWindowResizeListener(() => {
 onMounted(() => {
   computedLayoutSize();
 });
+
+const $stopWatch = watch(mobileMenuCurrentName, () => {
+  if (mobileMenuCurrentName.value === TAB_NAME_CHAT) {
+    layoutStore.$patch({
+      mobileChatTabHasBeenShowed: true,
+    });
+    $stopWatch();
+  }
+});
 </script>
 
 <style lang="scss">
@@ -391,6 +400,9 @@ onMounted(() => {
     right: 0;
     bottom: 0;
     left: 0;
+  }
+  .c-mobile-player-main--page-fullscreen {
+    top: -20px !important;
   }
 }
 

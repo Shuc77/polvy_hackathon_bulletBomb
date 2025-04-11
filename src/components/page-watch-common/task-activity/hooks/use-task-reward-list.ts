@@ -2,6 +2,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { messageBox } from '@/components/common-base/message-box';
+import { useWeixinOutTradeError } from '@/hooks/platform/use-weixin/use-weixin-out-trade-erroe';
 import { useScrollPagination } from '@/hooks/tools/use-page/use-scroll-page';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWeixinStore } from '@/store/use-weixin-store';
@@ -38,6 +39,8 @@ export const useTaskRewardList = () => {
       pageSize: params.pageSize,
     });
   });
+
+  const { getWeixinOutTradeErrorTips } = useWeixinOutTradeError();
 
   /**
    * 获取奖励状态文本
@@ -97,7 +100,7 @@ export const useTaskRewardList = () => {
         text = translate('taskActivity.rewardError.msg1');
         break;
       case OutTradeErrorCode.WxPayAccountError:
-        text = translate('taskActivity.rewardError.msg2');
+        text = getWeixinOutTradeErrorTips(item.outTradeErrDesc);
         break;
       case OutTradeErrorCode.SystemError:
         text = translate('taskActivity.rewardError.msg3');

@@ -62,7 +62,9 @@
     </template>
 
     <!-- 固定的聊天消息输入框 -->
-    <mobile-chat-input-controller-fixed v-if="chatInputControllerEnable" />
+    <mobile-chat-input-controller-fixed
+      v-if="interactSetting.seatTableEnabled && chatInputControllerEnable"
+    />
 
     <!-- 绑定用户身份信息弹层 -->
     <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
@@ -173,7 +175,7 @@ const { inviteDetailEnabled, inviteActivityEnabled } = storeDefinitionToRefs(use
 
 const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 </script>

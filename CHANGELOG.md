@@ -4,6 +4,61 @@
 
 ---
 
+## v2.2.0(2025-04-11)
+
+### Deprecated
+
+- 删除不再需要的多语言文件
+- 删除 V1 互动抽奖记录组件
+
+### Bug Fixes
+
+- 修复在移动端竖屏下，使用 obs 推流在部分场景下无法正常显示 9:16 视频比例的问题
+- 修复在移动端横屏三分屏场景下，播放器切换副屏进行网页全屏时，无法正常占满屏幕全屏的问题
+- 修复风险确认函在读完协议或者文字内容，无法点击同意按钮的问题
+- 修复从回放切换直播，自动切换到聊天 Tab 时，会展示重复的聊天历史记录的问题
+- 修复移动端横屏下，多个功能入口常驻时底部聊天输入框样式异常
+- 修复关闭商品列表后再重新打开，点击商品列表和大小卡片都无法唤起商品详情页的问题
+
+### Features
+
+- 新增 V2 互动抽奖功能
+- 新增互动商品-支付宝支付功能
+- 新增 inviteWatchInviteSalesId 字段来传递邀请观看邀请员 ID
+
+### Styles
+
+- 优化改版后的聊天区域样式，包括多皮肤、聊天气泡背景、用户昵称等
+
+### Code Refactoring
+
+- 优化 `pc-side-popup` 来统一处理 PC 端播放器侧边区域的弹层
+- 新增 `use-iar-external-link-params` 来统一处理互动卡片推送和商品库跳转外链的参数
+- 优化 PC 端全屏逻辑，支持在 ios-webview 全屏播放器
+
+### Optimizes
+
+- 优化报名观看填写逻辑，在报名登录表单中，只有已报名的手机号才需要继续填写短信验证码
+- 优化任务奖励提现状态，增加对应的提现错误信息展示
+
+### Build System
+
+- `@just4/virtual-list` 更新至 `2.1.0`
+- `@polyv/watch-identify-sdk-ui-default` 更新至 `rc-20250410`
+- `@polyv/interactions-receive-sdk-ui-default` 更新至 `rc-20250410`
+- `@polyv/iar` 更新互动版本
+
+  ```
+    "@polyv/iar-check-in-ui": "^2.5.0-rc-20250410.1",
+    "@polyv/iar-coupon-ui": "^2.5.0-rc-20250410.1",
+    "@polyv/iar-lottery-ui": "^2.5.0-rc-20250410.1",
+    "@polyv/iar-lucky-lottery-ui": "^2.5.0-rc-20250410.1",
+    "@polyv/iar-questionnaire-ui": "^2.5.0-rc-20250410.1",
+    "@polyv/iar-reward-receive-ui": "^2.5.0-rc-20250410.1",
+  ```
+
+---
+
 ## v2.1.0(2025-03-21)
 
 ### Bug Fixes

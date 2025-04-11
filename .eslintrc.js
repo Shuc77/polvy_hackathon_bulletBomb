@@ -46,5 +46,7 @@ module.exports = {
         ignores: [],
       },
     ],
+
+    // 'vue/enforce-style-attribute': ['warn', { allow: ['plain'] }],
   },
 };

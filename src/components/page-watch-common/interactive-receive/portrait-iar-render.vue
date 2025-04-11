@@ -13,12 +13,18 @@
     <portrait-check-in-popup />
     <!-- 反馈 -->
     <mobile-feed-back-popup v-if="interactSetting.watchFeedbackEnabled" />
-    <!-- 抽奖动画 -->
-    <mobile-lottery-animation />
-    <!-- 抽奖结果弹层 -->
-    <mobile-lottery-result-popup />
+
+    <template v-if="!useV2Lottery">
+      <!-- 抽奖动画 -->
+      <mobile-lottery-animation />
+      <!-- 抽奖结果弹层 -->
+      <mobile-lottery-result-popup />
+    </template>
+
     <!-- 商品库弹层 -->
     <portrait-product-list-popup v-if="interactSetting.productEnabled" />
+    <!-- 商品详情弹层，不跟随商品库开关，因为大小卡片可以唤起详情 -->
+    <portrait-product-detail-popup />
     <!-- 问卷 -->
     <mobile-questionnaire-popup />
     <!-- 红包弹窗 -->
@@ -31,8 +37,8 @@
     <mobile-enroll-lottery-popup />
     <!-- 问答 -->
     <portrait-question-answer v-if="qaMenuData.visible" />
-    <!-- 商品库职位详情弹层 -->
-    <portrait-product-job-detail-popup v-if="interactSetting.productEnabled" />
+    <!-- 商品库职位详情弹层，不跟随商品库开关，因为大小卡片可以唤起详情 -->
+    <portrait-product-job-detail-popup />
     <!-- 下单弹窗 -->
     <mobile-order-popup />
     <!-- 二维码分弹窗 -->
@@ -56,6 +62,7 @@ import MobileFeedBackPopup from './feed-back/mobile-feed-back-popup.vue';
 import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
 import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
 import PortraitProductListPopup from './product/portrait-product-list-popup.vue';
+import PortraitProductDetailPopup from './product/portrait-product-detail-popup.vue';
 import MobileQuestionnairePopup from './questionnaire/mobile-questionnaire-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
@@ -74,7 +81,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 
-const { announcementFunctionVisible, interactSetting } =
+const { announcementFunctionVisible, interactSetting, useV2Lottery } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);

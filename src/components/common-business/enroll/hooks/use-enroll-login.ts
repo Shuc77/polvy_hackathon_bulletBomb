@@ -6,10 +6,11 @@ import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { EnrollAuthType } from '@polyv/live-watch-sdk';
-import { computed, reactive } from 'vue';
+import { computed, nextTick, reactive, Ref, ref, watch } from 'vue';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useEnrollSms } from './use-enroll-sms';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
 
 export const enrollLoginEmits = () => ({
   /** 点击取消 */
@@ -18,6 +19,8 @@ export const enrollLoginEmits = () => ({
   'close-dialog': emitFunc<void>(),
   /** 跳转去报名 */
   'redirect-to-enroll': emitFunc<void>(),
+  /** 尺寸调整 */
+  resize: emitFunc<void>(),
 });
 
 /**
@@ -94,6 +97,10 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
     emit('redirect-to-enroll');
   }
 
+  function emitResize() {
+    emit('resize');
+  }
+
   /**
    * 提交登录表单
    */
@@ -154,5 +161,61 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
     submitLoginForm,
     onClickCancel,
     redirectToEnroll,
+    emitResize,
+  };
+};
+
+export const useEnrollInfoCheck = (options: {
+  /** 获取手机区号 */
+  getAreaCode: () => string;
+  getPhoneMumber: () => string;
+  cb: () => void;
+  formSubmitRef: Ref<FormSubmitButtonInstance | undefined>;
+}) => {
+  const { formSubmitRef } = options;
+
+  const { getWatchCore } = useGlobalInject();
+
+  const checkedNeedSmsVerify = ref(false);
+
+  watch(
+    () => [options.getPhoneMumber(), options.getAreaCode()],
+    () => {
+      const phoneNumber = options.getPhoneMumber();
+      const areaCode = options.getAreaCode();
+
+      if (phoneNumber && validatePhoneNumber(phoneNumber, areaCode)) {
+        blurToCheckStatus(phoneNumber);
+      }
+    },
+  );
+
+  /** 失焦检查报名状态 */
+  async function blurToCheckStatus(mobileOrEmail: string) {
+    if (!mobileOrEmail) {
+      return;
+    }
+
+    const watchCore = getWatchCore();
+    const result = await watchCore.enroll.getEnrollStatus({
+      phoneNumber: mobileOrEmail,
+      email: mobileOrEmail,
+      areaCode: options.getAreaCode(),
+    });
+
+    if (result.hasEnrolled) {
+      checkedNeedSmsVerify.value = true;
+    } else {
+      checkedNeedSmsVerify.value = false;
+    }
+    options.cb();
+
+    await nextTick();
+    formSubmitRef.value?.checkDisabled();
+  }
+
+  return {
+    checkedNeedSmsVerify,
+    blurToCheckStatus,
   };
 };
