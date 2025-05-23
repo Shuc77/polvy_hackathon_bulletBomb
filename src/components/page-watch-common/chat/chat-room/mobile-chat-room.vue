@@ -35,7 +35,7 @@
       <mobile-chat-msg-list />
 
       <!-- 右下角挂件 -->
-      <mobile-chat-room-pendant v-if="!isPlaybackWatchUrl" />
+      <mobile-chat-room-pendant />
 
       <!-- 打赏 svga 特效 -->
       <mobile-donate-svga-animation v-if="donateAnimationVisible" />

@@ -9,7 +9,7 @@ export const useContractHistory = (hookOptions: ChatMsgListHookOptions) => {
   const chatMsgStore = useChatMsgStore();
 
   /** 历史消息列表最大数量 */
-  const maxHistoryCount = 250;
+  const maxHistoryCount = 300;
   /** 保留数量 */
   const saveHistoryCount = 200;
 

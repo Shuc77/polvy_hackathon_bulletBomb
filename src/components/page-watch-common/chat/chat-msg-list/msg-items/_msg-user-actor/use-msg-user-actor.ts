@@ -16,7 +16,6 @@ export const useMsgUserActor = (options: { props: VueProps<typeof msgUserActorPr
     [ChatUserType.Assistant]: 'linear-gradient(278deg, #14D0B2 1%, #04B888 96%)',
     [ChatUserType.Teacher]: 'linear-gradient(270deg, #57B7FF 0%, #2987FF 100%)',
     [ChatUserType.Guest]: 'linear-gradient(90deg, #FF8165 -1%, #FEB235 100%)',
-    [ChatUserType.Dummy]: '#F09343',
   };
 
   const msgUserType = computed(() => props.userType);
@@ -25,9 +24,27 @@ export const useMsgUserActor = (options: { props: VueProps<typeof msgUserActorPr
 
   /** 头衔标签的颜色 */
   const actorLabelColor = computed<string | undefined>(() => {
-    const userType = unref(msgUserType);
+    let userType = unref(msgUserType);
     if (!userType) {
       return undefined;
+    }
+
+    if (userType === ChatUserType.Dummy) {
+      const releations = {
+        [ChatUserType.Manager]: ['管理员'],
+        [ChatUserType.Assistant]: ['助教'],
+        [ChatUserType.Teacher]: ['讲师', '主讲'],
+        [ChatUserType.Guest]: ['嘉宾'],
+      };
+
+      const actorText = msgUserActor.value;
+      for (const key in releations) {
+        const _key = key as keyof typeof releations;
+        if (releations[_key].includes(actorText)) {
+          userType = _key;
+          break;
+        }
+      }
     }
 
     return actorColors[userType as keyof typeof actorColors];

@@ -90,9 +90,9 @@
 
     <!-- 投诉反馈 -->
     <more-item
-      v-if="interactSetting.watchFeedbackEnabled"
+      v-if="feedbackMenuVisible"
       icon="feedback"
-      :text="$lang('interact.feedBack.title')"
+      :text="$lang('interact.feedback.title')"
       @click="onClickFeedback"
     />
 
@@ -156,7 +156,7 @@ const emit = defineEmits({
 
 const { getEmitter, getWatchCore } = useGlobalInject();
 
-const { announcementFunctionVisible, interactSetting, couponPendantVisible } =
+const { announcementFunctionVisible, feedbackMenuVisible, couponPendantVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
@@ -214,7 +214,7 @@ function onClickAnnouncement() {
 
 /** 点击投诉反馈 */
 function onClickFeedback() {
-  getEmitter().emit(appEvents.interaction.OpenFeedBack, true);
+  getEmitter().emit(appEvents.interaction.OpenFeedback, true);
   closeMore();
 }
 

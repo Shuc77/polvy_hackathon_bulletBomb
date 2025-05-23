@@ -100,6 +100,7 @@ function onClickPlaceholder() {
 
 .c-portrait-chat-input-placeholder__text {
   flex: 1;
+  width: 0;
   font-size: 14px;
   color: rgba($--color-white, 0.6);
 }

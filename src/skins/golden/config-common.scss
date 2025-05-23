@@ -75,12 +75,6 @@ $--skin-component-configs: (
   'main-tab-header--hover:text-color': #666666,
   // 主要 tab 头部激活字体色
   'main-tab-header--active:text-color': #666666,
-  // 主要 tab 头部激活选项线条背景色
-  'main-tab-header-line--active:bg-color': map.get($--skin-basic-configs, 'primary-color'),
-  // 主要 tab 头部阴影开始颜色
-  'main-tab-header-shadow-start:color': map.get($--skin-basic-configs, 'sub-bg-color'),
-  // 主要 tab 头部阴影结束颜色
-  'main-tab-header-shadow-end:color': rgba(62, 62, 78, 0),
   // 主要 tab 主体背景色
   'main-tab-body:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
   // 主要 tab 主体滚动栏颜色
@@ -262,7 +256,6 @@ $--skin-page-common-configs: (
   'pws-ai-outline-bg:bg-color': rgba($--color-white, 0.6),
   'pws-ai-outline-text:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   'pws-ai-outline-desc:desc-color': map.get($--skin-basic-configs, 'describe-text-color'),
-  'pws-ai-outline-tag-bg:bg-color': #F4F4F4,
   'pws-ai-outline-border:border-color': '1px solid #F4F4F4',
   'pws-ai-outline-label-text:text-color': #CEAE67,
   'pws-ai-outline-label-bg:bg-color': #FBFBFB,

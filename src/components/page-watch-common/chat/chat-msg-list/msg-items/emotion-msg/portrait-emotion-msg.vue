@@ -3,6 +3,8 @@
   <portrait-msg-container
     class="c-portrait-emotion-msg"
     :suffix-mode="'align-center'"
+    response-relax
+    hide-bubble-style
   >
     <div
       v-if="!isLoaded"
@@ -46,5 +48,11 @@ $--emotion-size: 80px;
   margin: 4px 0;
   cursor: zoom-in;
   object-fit: contain;
+}
+
+.c-portrait-msg-container--relax-mode {
+  .c-portrait-emotion-msg__img {
+    margin: 0;
+  }
 }
 </style>

@@ -46,6 +46,8 @@ export interface EnrollStoreState {
   enrollAuthType: Ref<EnrollAuthType>;
   /** 是否需要短信验证 */
   smsVerifyEnabled: Ref<boolean>;
+  /** 是否需要手机区号 */
+  areaCodeEnabled: Ref<boolean>;
   /** 验证字段对象 */
   enrollAuthField: ComputedRef<EnrollFieldItemMobile | undefined>;
   /** 验证字段名称 */
@@ -109,6 +111,9 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
 
   /** 是否需要短信验证 */
   const smsVerifyEnabled = ref(__enrollInfo.smsVerifyEnabled);
+
+  /** 是否开启手机区号 */
+  const areaCodeEnabled = ref(__enrollInfo.areaCodeEnabled);
 
   /** 验证字段对象 */
   const enrollAuthField = computed<EnrollFieldItemMobile | undefined>(() => {
@@ -202,6 +207,7 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     enrollFields.value = enrollInfo.enrollFields;
     enrollAuthType.value = enrollInfo.enrollAuthType;
     smsVerifyEnabled.value = enrollInfo.smsVerifyEnabled;
+    areaCodeEnabled.value = enrollInfo.areaCodeEnabled;
     enrollNickEnabled.value = enrollInfo.enrollNickEnabled;
   }
 
@@ -214,6 +220,7 @@ export const useEnrollStore = defineStore<'enroll', EnrollStore>('enroll', () =>
     enrollFields,
     enrollAuthType,
     smsVerifyEnabled,
+    areaCodeEnabled,
 
     enrollAuthField,
     enrollAuthName,

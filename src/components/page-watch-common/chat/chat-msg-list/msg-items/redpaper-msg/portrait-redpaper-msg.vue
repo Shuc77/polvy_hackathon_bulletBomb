@@ -1,6 +1,10 @@
 <!-- @file 竖屏端聊天室红包消息 -->
 <template>
-  <portrait-msg-container class="c-portrait-redpaper-msg">
+  <portrait-msg-container
+    class="c-portrait-redpaper-msg"
+    response-relax
+    hide-bubble-style
+  >
     <iar-redpaper-entrance
       class="c-portrait-redpaper-msg__entrance"
       ref="entranceRef"
@@ -29,6 +33,7 @@ const { chatMsg, redpackSdk, entranceRef, openRedpackDialog } = useRedpaperMsg()
 <style lang="scss">
 .c-portrait-redpaper-msg__entrance {
   margin-top: 6px;
+  cursor: pointer;
   border-radius: 8px !important;
 
   &::after {

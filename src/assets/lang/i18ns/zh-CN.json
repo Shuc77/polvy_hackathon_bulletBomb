@@ -1,9 +1,7 @@
 {
   "global.pageSlideForbidden.tips.connectMic": "正在连麦中，无法切换直播间",
-
   "feed.switchLayout.entrance.text": "点击进入直播间",
   "watchCore.error.uploadImage": "图片上传失败！",
-
   "auth.button.none": "观看直播",
   "auth.button.phone": "会员观看",
   "auth.button.pay": "付费观看",
@@ -47,23 +45,20 @@
   "auth.error.workWeixinNotAllow": "若为企微员工请在企业微信打开该链接观看直播",
   "auth.error.workWeixinNotStaff": "登录失败，请确认员工身份",
   "auth.enter": "进入直播",
-
   "ask.input.placeholder": "发起提问",
   "ask.placeholderMsg": "您好！请问有什么问题吗",
   "ask.news": "新消息",
   "ask.badWord": "您发送的问题含有违禁词",
-
   "ai.input.placeholder": "试试输入你的问题",
   "ai.not.config": "AI助手未上岗",
   "ai.busy": "当前系统繁忙，请稍后再试。",
   "ai.hello": "你好，有任何问题都可以来问我哦！",
-
   "ai.summary.desc": "摘要",
   "ai.summary.mind": "思维导图",
   "ai.summary.sum": "分段总结",
   "ai.summary.init": "分析中，请耐心等待",
   "ai.summary.empty": "暂无数据，请稍后再试",
-
+  "ai.summary.redirect.tip": "点击跳转至 {content}",
   "base.back": "返回",
   "base.error.unknown": "未知错误",
   "base.error.iarSetup": "数据请求异常，加载互动功能失败！",
@@ -117,11 +112,9 @@
   "base.reSendWhenIsShield": "发送失败！你已经被禁言。",
   "base.needCheck": "请勾选",
   "base.start.live": "开播",
-
   "channel.noLive": "当前暂无直播",
   "channel.descEmpty": "暂无直播介绍~",
   "channel.transmitSwitch": "当前频道已取消关联，将为你退出页面",
-
   "call.connect": "连线",
   "connectMic.deviceCheck": "设备检测",
   "connectMic.openVideoTips": "讲师开启了视频连线",
@@ -174,7 +167,6 @@
   "connectMic.deviceAutoRecoverFailed.tips1": "摄像头或麦克风设备异常，请在设备正常连接后，点击",
   "connectMic.deviceAutoRecoverFailed.tips2": "刷新",
   "connectMic.deviceAutoRecoverFailed.tips3": "解决",
-
   "chat.empty": "聊天室空空如也~",
   "chat.connectError.tips1": "聊天室连接失败，无法与其他人互动，立即刷新重试？",
   "chat.connectError.tips2": "聊天室连接失败,请刷新重试",
@@ -212,18 +204,15 @@
   "chat.msg.replay.tips.wait": "回放消息正在准备中，可稍等刷新查看",
   "chat.msg.replay.tips.ing": "聊天重放已开启，将会显示历史消息",
   "chat.msg.fast": "您的发言过快，请稍后再试",
-
   "copy.link": "复制链接",
   "copy.success": "复制成功",
   "copy.linkSuccess": "链接复制成功，可去浏览器粘贴下载",
-
   "doc.name": "文档",
   "doc.givePaint": "讲师已授予您书写白板权限",
   "doc.removePaint": "讲师已结束您的共享白板权限",
   "doc.enterPaint": "点击可以进入画笔模式",
   "doc.exitPaint": "点击可以退出画笔模式",
   "doc.deleteConfirm": "此操作将永久删除该页画笔, 是否继续?",
-
   "donate.title": "打赏",
   "donate.cash": "现金",
   "donate.cashReward": "现金打赏",
@@ -269,14 +258,12 @@
   "donate.showAnimation": "展示特效",
   "donate.showAnimation.tips": "已恢复其他用户的礼物特效",
   "donate.spot": "点",
-
   "enroll.entrance": "我未报名，完善报名信息 >",
   "enroll.loginTitle": "输入报名信息",
   "enroll.text": "报名观看",
   "enroll.enrolledTips": "您已报名，新填写的信息会覆盖原有信息",
   "enroll.auditing": "报名审核中",
   "enroll.error.smsCodeError": "短信验证码错误",
-
   "form.name.phoneNumber": "手机号码",
   "form.name.verifyCode": "验证码",
   "form.placeholder.phoneInput": "请输入手机号码",
@@ -304,10 +291,8 @@
   "form.select.multiSuffix": "项",
   "form.uploadImage.prefixTips": "当前可上传",
   "form.uploadImage.suffixTips": "张",
-
   "global.singleSession.error.unknow": "未知原因异常，您将被退出观看",
   "global.singleSession.error.relogin": "帐号在另外的地方登录，您将被退出观看",
-
   "interact.announcement.title": "公告",
   "interact.announcement.titleList": "公告列表",
   "interact.announcement.titleDetail": "公告",
@@ -318,7 +303,7 @@
   "interact.answerCard.checkAnswerTitle": "查看答案",
   "interact.answerCard.notSubmitted": "未作答",
   "interact.checkIn.title": "签到",
-  "interact.feedBack.title": "投诉反馈",
+  "interact.feedback.title": "投诉反馈",
   "interact.lottery.result": "中奖结果",
   "interact.lottery.record": "中奖记录",
   "interact.lottery.checkList": "中奖名单",
@@ -342,7 +327,6 @@
   "interact.enrollLottery.title": "报名抽奖",
   "interact.coupon.title": "优惠券",
   "interact.coupon.title.user": "我的优惠券",
-
   "liveBooking.book": "预约",
   "liveBooking.bookLive": "预约直播",
   "liveBooking.booked": "已预约",
@@ -356,9 +340,7 @@
   "liveBooking.subscribe2": "直播开始前可收到提醒",
   "liveBooking.welcome": "欢迎观看本次直播",
   "liveBooking.cancel.tips": "确定取消预约吗？",
-
   "liveCountDown.text": "直播倒计时",
-
   "liveStatus.live": "直播中",
   "liveStatus.waiting": "等待中",
   "liveStatus.waitingText": "休息一下，稍后继续",
@@ -366,22 +348,19 @@
   "liveStatus.stop": "直播暂停",
   "liveStatus.playback": "回放中",
   "liveStatus.unStart": "未开始",
-
   "live.audioLive": "音频模式",
   "live.goLive": "直播开始 立即前往",
-
   "layout.fullscreen": "全屏",
   "layout.fullscreenCancel": "取消全屏",
-
   "motivation.like.received": "收获了",
   "motivation.like.praise": "的夸奖",
   "motivation.like.msg.of": "的",
   "motivation.like.msg.praise": "夸奖",
-
   "pageError.channel.unknowError": "获取频道详情异常",
   "pageError.channel.closed": "频道号已被关闭",
   "pageError.channel.notExist": "频道号不存在",
-  "pageError.channel.feedBack": "请检查你的频道号是否正确，如无法解决请截图反馈至直播管理员。",
+  "pageError.channel.feedback": "请检查你的频道号是否正确，如无法解决请截图反馈至直播管理员。",
+  "pageError.channel.forbidden": "直播间暂时不可用",
   "pageError.platform.onlyPc": "本直播仅支持PC端观看，请使用PC浏览以下地址",
   "pageError.network.general.title": "当前网络不可用",
   "pageError.network.general.desc": "请检查你的网络设置",
@@ -396,15 +375,14 @@
   "pageError.saleInvite.limit.weixin": "专属观看请复制链接在微信下打开",
   "pageError.saleInvite.illegalSaleCode": "分享链接无效，暂无权限查看直播",
   "pageError.NotAllowDomain.title": "页面来源域名非法，请前往观看页安全域名进行配置",
+  "pageError.NotAllowAccess.title": "无权限访问直播间",
   "pageError.kicked": "您未被授权观看本直播",
-
   "inviteWatch.prepare.tips": "无法访问直播间，请联系管理员检查直播设置",
   "inviteWatch.notAllow.tips": "分享链接无效，暂无权限观看本场直播",
   "inviteWatch.auditing.title": "正在审核中",
   "inviteWatch.auditing.desc": "审核通过后，可进入直播间观看",
   "inviteWatch.auditing.contacts": "联系",
   "inviteWatch.auditing.urgent": "加快审核",
-
   "player.error.sdkLoad": "播放器加载失败. 请刷新页面重试。",
   "player.play.button.text": "点击播放",
   "player.play": "播放",
@@ -422,7 +400,7 @@
   "player.barrage.close": "弹幕关",
   "player.openBarrage": "开启弹幕",
   "player.closeBarrage": "关闭弹幕",
-  "player.marquee.checkError": "播放器出了点小问题,您可将问题编号（LIVE-#012）反馈给管理员",
+  "player.marquee.checkError": "播放器出了点小问题,您可将问题编号（{code}）反馈给管理员",
   "player.lineSwitch": "线路选择",
   "player.lineSetting": "切换线路",
   "player.line": "线路",
@@ -458,26 +436,21 @@
   "player.tips.badNetworkTips": "目前网络有点卡，试试切换",
   "player.fastForwardBackward.back": "快退",
   "player.fastForwardBackward.forward": "快进",
-
   "player.pictureInPicture.title": "小窗播放",
   "player.pictureInPicture.playbackSetting": "播放设置",
   "player.pictureInPicture.tips": "退出页面自动开启小窗",
   "player.pictureInPicture.tips2": "退出应用后台自动启用小窗",
-
   "playback.list": "回放列表",
   "playback.playing": "播放中",
   "playback.startTime": "开始时间：",
   "playback.chapter": "章节",
   "playback.no.more": "没有更多了",
-
   "trial.play.finish.tip": "试看已结束",
   "trial.player.start.tip": "本次直播为付费直播，您可试看 {time} 分钟",
   "trial.player.end.tip": "试看已结束。如果您觉得本直播不错，请点击付费观看",
-
   "realName.phone": "验证手机号",
   "realName.desc": "根据《互联网跟帖评论服务管理规定》，用户发表评论前，需基于手机号完成验证，请您填写手机号。",
   "realName.agreementContent": "我已阅读并同意<a href=\"{userAgreement}\" target=\"_blank\">《用户协议》</a>和<a href=\"{policyAgreement}\" target=\"_blank\">《隐私政策》</a>",
-
   "redpack.receive.name": "红包",
   "redpack.finish": "，红包已被领完",
   "redpack.get": "领取了",
@@ -498,7 +471,6 @@
   "redpack.sendMsg": "发送了一个",
   "redpack.receive": "点击领取",
   "redpack.receive.history.error": "获取历史领取数据失败",
-
   "redpack.name": "红包",
   "redpack.send.title": "发红包",
   "redpack.send.sum": "总金额",
@@ -518,7 +490,6 @@
   "redpack.send.amount.dotLimit": "金额只能输入两位小数",
   "redpack.greeting.long": "祝福语过长",
   "redpack.unsupported": "不支持该红包类型",
-
   "risk.confirm.letter.title": "欢迎进入直播间",
   "risk.confirm.letter.agree": "同意",
   "risk.confirm.letter.disagree": "不同意",
@@ -526,7 +497,6 @@
   "risk.confirm.letter.disagreeTips1": "为了您有更好的观看体验",
   "risk.confirm.letter.disagreeTips2": "请同意协议后进入直播间",
   "risk.confirm.letter.readAll.tips": "请阅读以上全部内容",
-
   "saleInvite.confirm": "同意并观看直播",
   "saleInvite.tips1": "验证手机号",
   "saleInvite.tips2": "观看直播需收集您的个人信息，请您填写手机号",
@@ -535,19 +505,16 @@
   "saleInvite.corpName": "企业名称",
   "saleInvite.position": "职务",
   "saleInvite.email": "邮箱",
-
   "seminar.host": "主持人",
   "seminar.noLive": "直播暂不对外开放",
   "seminar.disabledChat": "直播暂不对外开放，无法查看消息",
   "seminar.hostCloseLive": "主持已关闭直播",
   "seminar.hostInGroup": "主持人正在参与小组讨论，请稍等...",
-
   "share.title": "分享",
   "share.wxScan": "微信扫一扫",
   "share.QQ": "QQ",
   "share.QZone": "QQ空间",
   "share.weibo": "新浪微博",
-
   "unit.day": "天",
   "unit.dayTitle": "天",
   "unit.hour": "时",
@@ -556,16 +523,13 @@
   "unit.minuteTitle": "分",
   "unit.second": "秒",
   "unit.secondTitle": "秒",
-
   "watch.liveTime": "直播时间",
   "watch.pvSuffix": "次访问",
-
   "welcome.text": "欢迎",
   "welcome.wait": "等",
   "welcome.peopleJoin": "人加入",
   "welcome.join": "加入",
   "welcome.deliver": "投递了",
-
   "weixin.scanToPay": "请使用微信扫码支付",
   "weixin.pay.success": "支付成功",
   "weixin.error.payTimeout": "支付超时",
@@ -609,7 +573,6 @@
   "weixin.outTrade.error35": "系统异常",
   "weixin.outTrade.error36": "手动取消提现",
   "weixin.outTrade.error37": "企业营销账户余额不足",
-
   "withdraw.name": "提现",
   "withdraw.apply.popup.title": "提现",
   "withdraw.apply.amount": "提现金额",
@@ -617,19 +580,17 @@
   "withdraw.apply.amount.most": "最多可提现 {amount} 元",
   "withdraw.apply.amount.most.merchant": "单次最多提现 {amount} 元",
   "withdraw.apply.username": "提现用户名",
-  "withdraw.apply.tips": "单次可提现1-200元，提现后在微信零钱查看到账情况。",
+  "withdraw.apply.tips": "单次可提现0.3-200元，提现后在微信零钱查看到账情况。",
   "withdraw.apply.btn.text": "提现",
   "withdraw.apply.success.msg": "提现申请成功",
   "withdraw.apply.error.msg": "微信版本过低，请升级后发起提现",
   "withdraw.apply.rules.amount.required": "请填写提现金额",
   "withdraw.apply.rules.amount.low": "金额不能小于{amount}元",
   "withdraw.apply.rules.amount.dotLimit": "金额只能输入两位小数",
-
   "withdraw.error.noUser": "找不到该微信用户",
   "withdraw.error.getCashExceed": "提取金额超过用户余额",
   "withdraw.error.getCashMoreThan1": "提取金额必须大于1元",
   "withdraw.error.getCashFailed": "申请提现失败",
-
   "withdraw.detail.popup.title": "提现列表",
   "withdraw.detail.btn.text": "提现",
   "withdraw.detail.balance": "余额",
@@ -645,7 +606,6 @@
   "withdraw.cash.receive.record.inPay": "提现中",
   "withdraw.cash.receive.record.confirm": "待确认",
   "withdraw.cash.receive.record.toConfirm": "去确认 >",
-
   "menu.tabName.desc": "直播介绍",
   "menu.tabName.chat": "聊天",
   "menu.tabName.text": "图文",
@@ -666,14 +626,12 @@
   "menu.tabName.AIAssistant": "AI助手答疑",
   "menu.tabName.AISummary": "AI 看",
   "menu.empty": "暂无菜单",
-
   "multiMeeting.other": "其它会场",
   "multiMeeting.text": "会场直播间",
   "multiMeeting.mainChannel": "主会场",
   "multiMeeting.playing": "播放中",
   "multiMeeting.noLive": "直播未开始",
   "multiMeeting.viewCount": "次观看",
-
   "member.self": "我",
   "member.failTips": "网络异常，成员加载失败，请",
   "member.failTips.retry": "点击重试",
@@ -687,9 +645,7 @@
   "member.popup.title": "规则说明",
   "member.list.onlineUser": "在线成员",
   "member.online.userCount": "人在线",
-
   "microActivity.wechatScan": "微信扫码参与该互动",
-
   "invite.rank": "排行",
   "invite.rank.people.number": "人数",
   "invite.rank.people": "人",
@@ -703,22 +659,18 @@
   "invite.rank.onlyShowBottom": "该榜单仅显示前{number}人",
   "invite.rank.first.desc": "稳居第一！你已有好友{number}人",
   "invite.rank.detail.btn": "明细",
-
   "invite.detail.download": "下载明细",
   "invite.detail.downloading": "下载中",
   "invite.detail.reDownload": "重新下载",
   "invite.detail.save": "去查看",
   "invite.detail.limit": "当前下载人数过多，请稍后再来",
-
   "invite.poster.num.text": "人数",
   "invite.poster.not.on.the.list": "未上榜",
   "invite.poster.go.invite": "生成海报",
   "invite.poster.no.data": "暂无好友，赶快抓住机会上榜吧！",
-
   "invite.detail.popup.title": "好友明细",
   "invite.detail.viewer.name": "观众信息",
   "invite.detail.viewer.accessTime": "观众进入时间",
-
   "invite.activity.pendant.text": "奖励",
   "invite.activity.countdown.tips": "活动结束倒计时：",
   "invite.activity.result.title1": "恭喜你获得奖品",
@@ -734,16 +686,13 @@
   "invite.activity.detail.prizeDetail.condition": "领取条件： 第 {order} 名",
   "invite.activity.will.end.tips1": "活动即将结束",
   "invite.activity.will.end.tips2": "最后的冲榜机会哦！",
-
   "invite.prize.receive.link.tips": "<p style=\"text-align: center;\">即将离开直播间，前往领取奖品，<br/>是否继续？</p>",
   "invite.prize.receive.link.cancel": "暂不领取",
   "invite.prize.receive.link.confirm": "继续前往",
-
   "invite.prize.receive.popup.title1": "查看收货信息",
   "invite.prize.receive.popup.title2": "填写收货信息",
   "invite.prize.receive.popup.title3": "识别二维码领取奖品",
   "invite.prize.receive.form.hasReceived.tips": "已提交收货信息，若需修改请联系主办方",
-
   "seatTable.me": "我的",
   "seatTable.invite": "好友",
   "seatTable.chat": "发言",
@@ -756,37 +705,30 @@
   "seatTable.seatTips3": "长按即可保存或分享",
   "barrage.setting": "弹幕设置",
   "barrage.setting.recover": "恢复默认设置",
-
   "barrage.size": "弹幕大小",
   "barrage.size.verySmall": "较小",
   "barrage.size.small": "小",
   "barrage.size.normal": "标准",
   "barrage.size.big": "大",
   "barrage.size.veryBig": "较大",
-
   "barrage.speed": "弹幕速度",
   "barrage.speed.verySlow": "缓慢",
   "barrage.speed.slow": "较慢",
   "barrage.speed.normal": "标准",
   "barrage.speed.fast": "较快",
   "barrage.speed.veryFast": "极快",
-
   "barrage.location": "弹幕位置",
   "barrage.location.top": "顶部",
   "barrage.location.bottom": "底部",
   "barrage.location.half": "半屏",
   "barrage.location.full": "全屏",
-
   "barrage.alpha": "弹幕透明度",
-
   "promote.external.link.tips": "点击菜单后在新页面显示此链接内容；若无法新建页面则在当前页显示，替换原观看页",
-
   "wxAuth.dialog.title": "登录授权",
   "wxAuth.qrcode.tips": "请使用微信扫码",
   "wxAuth.copy": "复制直播间链接",
   "wxAuth.btn.text": "微信快捷登录",
   "wxAuth.protocol.tips": "请阅读并同意协议",
-
   "subtitle.change": "切换字幕",
   "subtitle.all": "双语字幕",
   "subtitle.source": "原声字幕",
@@ -795,14 +737,10 @@
   "subtitle.new": "查看最新",
   "subtitle.limit": "当前最多展示近{limit}条记录",
   "subtitle.footer.tips": "内容为AI实时生成仅供参考",
-
   "identitySetting.profile": "个人中心",
   "identityInfo.bindMobile": "绑定手机号",
-
   "watch.duration.learnTime": "累计学习 {duration} 分钟",
-
   "chatStatus.resendImageError": "图片重发失败",
-
   "taskActivity.myReward": "我的奖励",
   "taskActivity.signCondition": "累计签到 {amount} 次",
   "taskActivity.signBtn": "去签到",
@@ -866,7 +804,6 @@
   "taskActivity.finish.unit1": "元",
   "taskActivity.finish.unit2": "点",
   "taskActivity.finish.toWithdraw": "去提现",
-
   "order.paySuccess": "支付成功",
   "order.payCancel": "取消支付",
   "order.receiptSuccess": "已确认收货",
@@ -878,22 +815,19 @@
   "order.center": "订单中心",
   "order.confirmReceipt": "请确认已经收到包裹",
   "order.pickArea": "请选择省市区",
-
   "qrCodeShareDialog.title": "请前往微信观看页购买",
   "qrCodeShareDialog.tip": "保存二维码去微信打开",
   "qrCodeShareDialog.tip2": "请使用微信扫码",
   "qrCodeShareDialog.shortCopyBtnText": "复制",
   "qrCodeShareDialog.copyBtnText": "复制直播间链接",
   "qrCodeShareDialog.linkLabel": "直播间链接",
-
   "topGuide.fail": "当前页跳转失败",
   "topGuide.wxFail": "暂不支持微信访问，链接已复制，请在浏览器内打开",
-
   "effect.peopleCount": "等{count}人",
-
   "personalReward.myReward": "我的奖励",
   "personalReward.taskEnter": "任务奖励",
   "personalReward.luckyLotteryEnter": "幸运抽奖",
   "personalReward.lotteryEnter": "抽奖",
-  "personalReward.withdraw": "红包提现"
+  "personalReward.withdraw": "红包提现",
+  "player.streamStop.waitPlayback": "回放待生成"
 }

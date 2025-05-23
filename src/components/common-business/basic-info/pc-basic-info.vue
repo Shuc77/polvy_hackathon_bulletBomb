@@ -95,12 +95,12 @@
 
         <!-- 举报反馈 -->
         <div
-          v-if="interactSetting.watchFeedbackEnabled"
-          class="c-pc-basic-info__main__bottom__feed-back"
+          v-if="feedbackEnabled"
+          class="c-pc-basic-info__main__bottom__feedback"
           @click="onClickFeedback"
         >
-          <pc-icon-feedback class="c-pc-basic-info__main__bottom__feed-back__icon" />
-          {{ $lang('interact.feedBack.title') }}
+          <pc-icon-feedback class="c-pc-basic-info__main__bottom__feedback__icon" />
+          {{ $lang('interact.feedback.title') }}
         </div>
 
         <!-- 分享 -->
@@ -222,12 +222,12 @@ const { langSwitchEnabled, isChineseLang } = storeDefinitionToRefs(useLangStore)
 
 const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
 
-const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { feedbackEnabled } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { getEmitter } = useGlobalInject();
 
 function onClickFeedback() {
-  getEmitter().emit(appEvents.interaction.OpenFeedBack, true);
+  getEmitter().emit(appEvents.interaction.OpenFeedback, true);
 }
 </script>
 
@@ -354,7 +354,7 @@ $--basic-logo-size: 50px;
   font-size: 20px !important;
 }
 
-.c-pc-basic-info__main__bottom__feed-back {
+.c-pc-basic-info__main__bottom__feedback {
   display: flex;
   align-items: center;
   height: 20px;
@@ -362,7 +362,7 @@ $--basic-logo-size: 50px;
   white-space: nowrap;
   cursor: pointer;
 }
-.c-pc-basic-info__main__bottom__feed-back__icon {
+.c-pc-basic-info__main__bottom__feedback__icon {
   display: flex;
   margin-right: 6px;
   font-size: 18px;

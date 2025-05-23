@@ -40,7 +40,7 @@
         <div
           v-if="tabPaneData.length > 1"
           ref="currentLineRef"
-          class="c-pc-aside-tab-header__current-line pws-main-tab-header-active-line"
+          class="c-pc-aside-tab-header__current-line pws-special-bg-color"
           :style="{
             left: `${currentLineLeft}px`,
           }"

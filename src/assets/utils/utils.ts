@@ -11,6 +11,52 @@ export function wait(time = 3000) {
 }
 
 /**
+ * 通过 setTimeout 和递归来模拟 setInterval
+ */
+export function plvInterval(
+  fn: AnyFunc,
+  intervalTime: number | (() => number),
+  options?: {
+    maxCount?: number;
+    immediate?: boolean;
+  },
+): { clear: () => void } {
+  const { maxCount = Infinity, immediate = false } = options || {};
+
+  let timer: number | undefined;
+  let intervalCount = 0;
+
+  const __intervalTime = typeof intervalTime === 'function' ? intervalTime() : intervalTime;
+
+  const innerInterval = () => {
+    timer = window.setTimeout(() => {
+      fn();
+      intervalCount++;
+
+      if (intervalCount < maxCount) {
+        innerInterval();
+      } else {
+        window.clearTimeout(timer);
+      }
+    }, __intervalTime);
+  };
+
+  if (immediate) {
+    fn();
+  }
+  innerInterval();
+
+  return {
+    clear: () => {
+      // 处理 intervalTime 过少的情况，比如 100ms
+      window.setTimeout(() => {
+        window.clearTimeout(timer);
+      }, 0);
+    },
+  };
+}
+
+/**
  * 获取事件对象中的坐标
  * @param event 事件对象
  */

@@ -1,22 +1,22 @@
 <template>
-  <div class="pc-playback-outline">
+  <div class="c-pc-playback-outline">
     <div
       v-show="outlineType === 'finish'"
-      class="pc-playback-outline__wrap pws-ai-outline-text"
+      class="c-pc-playback-outline__wrap pws-ai-outline-text"
     >
       <!-- 摘要 -->
-      <div class="pc-playback-outline__introduction">
-        <div class="pc-playback-outline__introduction__title">
+      <div class="c-pc-playback-outline__introduction">
+        <div class="c-pc-playback-outline__introduction__title">
           <span>{{ $lang('ai.summary.desc') }}</span>
           <span
-            class="pc-playback-outline__introduction__mind"
+            class="c-pc-playback-outline__introduction__mind"
             @click="handleMinMapPreview"
           >
             {{ $lang('ai.summary.mind') }}
             <mobile-icon-arrow-right />
           </span>
         </div>
-        <div class="pc-playback-outline__introduction__content pws-ai-outline-bg">
+        <div class="c-pc-playback-outline__introduction__content pws-ai-outline-bg">
           <p
             ref="contentRef"
             class="pws-ai-outline-desc"
@@ -37,30 +37,36 @@
       <!-- 分段总结 -->
       <div
         v-show="outlineContent"
-        class="pc-playback-outline__summary"
+        class="c-pc-playback-outline__summary"
       >
-        <div class="pc-playback-outline__summary__title">{{ $lang('ai.summary.sum') }}</div>
-        <div class="pc-playback-outline__summary__content pws-ai-outline-bg pws-ai-outline-desc">
+        <div class="c-pc-playback-outline__summary__title">{{ $lang('ai.summary.sum') }}</div>
+        <div class="c-pc-playback-outline__summary__content pws-ai-outline-bg pws-ai-outline-desc">
           <div
             v-for="(item, index) in outlineContent"
             :key="index"
-            class="pc-playback-outline__paragraph"
+            class="c-pc-playback-outline__paragraph"
           >
             <!-- 段落标题 -->
-            <div class="pc-playback-outline__paragraph__title">
+            <div class="c-pc-playback-outline__paragraph__title">
+              <div class="c-pc-playback-outline__paragraph-info pws-ai-outline-desc">
+                {{ item.title }}
+              </div>
               <div
-                class="pc-playback-outline__paragraph-tag pws-ai-outline-tag pws-ai-outline-tag-bg"
+                class="c-pc-playback-outline__paragraph-tag pws-ai-outline-tag"
                 @click="handleSeekVideo(item.startTime)"
               >
-                <mobile-icon-play-seek class="pc-playback-outline__paragraph-icon" />
-                <div>{{ item.startTime }}</div>
-              </div>
-              <div class="pc-playback-outline__paragraph-info pws-ai-outline-desc">
-                {{ item.title }}
+                <plv-popper
+                  theme="dark"
+                  trigger="hover"
+                  placement="bottom"
+                >
+                  <div>{{ $lang('ai.summary.redirect.tip', { content: item.startTime }) }}</div>
+                  <div slot="reference">{{ item.startTime }}</div>
+                </plv-popper>
               </div>
             </div>
             <!-- 有序列表 -->
-            <ul class="pc-playback-outline__paragraph__content">
+            <ul class="c-pc-playback-outline__paragraph__content">
               <li
                 v-for="(summaryItem, idx) in item.summary"
                 :key="idx"
@@ -75,11 +81,11 @@
 
     <div
       v-if="outlineType !== 'finish'"
-      class="pc-playback-outline__empty pws-ai-outline-text"
+      class="c-pc-playback-outline__empty pws-ai-outline-text"
     >
       <img
         v-if="outlineType === 'init'"
-        class="pc-playback-outline__empty__icon"
+        class="c-pc-playback-outline__empty__icon"
         src="./images/icon-empty.png"
       />
       {{ outlineType === 'init' ? $lang('ai.summary.init') : $lang('ai.summary.empty') }}
@@ -88,9 +94,10 @@
 </template>
 
 <script setup lang="ts">
-import { MobileIconPlaySeek, MobileIconArrowRight } from '@/components/component-icons/mobile/map';
+import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { useAISummary } from './use-playback-outline';
 import { computed, ref } from 'vue';
+import { PlvPopper } from '@/plugins/polyv-ui/admin-import';
 
 const {
   outlineType,
@@ -116,7 +123,7 @@ const shouldShowButton = computed(() => {
 </script>
 
 <style lang="scss">
-.pc-playback-outline {
+.c-pc-playback-outline {
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -124,7 +131,7 @@ const shouldShowButton = computed(() => {
   overflow-y: scroll;
   @include hidden-scrollbar;
 }
-.pc-playback-outline__wrap {
+.c-pc-playback-outline__wrap {
   position: relative;
   box-sizing: border-box;
   display: flex;
@@ -135,12 +142,12 @@ const shouldShowButton = computed(() => {
   @include iphone-x-pb(24px);
 }
 
-.pc-playback-outline__introduction {
+.c-pc-playback-outline__introduction {
   display: flex;
   flex-direction: column;
 }
-.pc-playback-outline__introduction__title,
-.pc-playback-outline__summary__title {
+.c-pc-playback-outline__introduction__title,
+.c-pc-playback-outline__summary__title {
   margin: 10px 0;
   margin-bottom: 12px;
   font-size: 16px;
@@ -148,7 +155,7 @@ const shouldShowButton = computed(() => {
   line-height: 24px;
   // color: #ffffff;
 }
-.pc-playback-outline__introduction__title {
+.c-pc-playback-outline__introduction__title {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -160,13 +167,13 @@ const shouldShowButton = computed(() => {
     margin-left: 4px;
   }
 }
-.pc-playback-outline__introduction__mind {
+.c-pc-playback-outline__introduction__mind {
   font-size: 14px;
   line-height: 22px;
   cursor: pointer;
 }
 
-.pc-playback-outline__introduction__content {
+.c-pc-playback-outline__introduction__content {
   position: relative;
   box-sizing: border-box;
   display: flex;
@@ -208,7 +215,7 @@ const shouldShowButton = computed(() => {
   }
 }
 
-.pc-playback-outline__summary__content {
+.c-pc-playback-outline__summary__content {
   padding: 12px 12px 0 12px;
   font-size: 14px;
   line-height: 1.3;
@@ -217,23 +224,24 @@ const shouldShowButton = computed(() => {
   border-radius: 4px;
 }
 
-.pc-playback-outline__paragraph__title {
+.c-pc-playback-outline__paragraph__title {
   display: flex;
   align-items: center;
 }
-.pc-playback-outline__paragraph + .pc-playback-outline__paragraph {
+.c-pc-playback-outline__paragraph + .c-pc-playback-outline__paragraph {
   padding-top: 14px;
   border-top: 1px solid rgba($color: #ffffff, $alpha: 0.1);
 }
-.pc-playback-outline__paragraph-tag {
+.c-pc-playback-outline__paragraph-tag {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  padding: 2px 4px;
-  margin-right: 8px;
+  justify-content: center;
+  padding-bottom: 2px;
   color: #bec2ca;
+  white-space: nowrap;
   cursor: pointer;
-  background: rgba($color: #ffffff, $alpha: 0.1);
   border-radius: 4px;
 
   > div {
@@ -241,16 +249,8 @@ const shouldShowButton = computed(() => {
     line-height: 1 !important;
   }
 }
-.pc-playback-outline__paragraph-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 2px;
-  font-size: 16px;
-  transform: scale(0.5);
-}
-.pc-playback-outline__paragraph-info {
+.c-pc-playback-outline__paragraph-info {
   display: inline-block;
-  flex: 1;
   margin-right: 8px;
   overflow: hidden;
   font-size: 15px;
@@ -259,12 +259,12 @@ const shouldShowButton = computed(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.pc-playback-outline__paragraph__content {
+.c-pc-playback-outline__paragraph__content {
   padding: 8px 12px 10px 0;
   font-size: 14px;
   line-height: 22px;
 }
-.pc-playback-outline__empty {
+.c-pc-playback-outline__empty {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -272,7 +272,7 @@ const shouldShowButton = computed(() => {
   font-size: 14px;
   transform: translate(-50%, -100px);
 }
-.pc-playback-outline__empty__icon {
+.c-pc-playback-outline__empty__icon {
   width: 26px;
   height: 18px;
   margin-bottom: 15px;

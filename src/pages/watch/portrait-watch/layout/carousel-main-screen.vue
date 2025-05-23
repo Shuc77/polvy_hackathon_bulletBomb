@@ -159,10 +159,7 @@
 
       <!-- 右侧挂件 -->
       <div class="c-portrait-carousel-main-screen__bottom__pendant">
-        <portrait-chat-room-pendant
-          v-if="!isPlaybackWatchUrl"
-          v-show="!portraitPlayerIsPageFullscreen"
-        />
+        <portrait-chat-room-pendant v-show="!portraitPlayerIsPageFullscreen" />
       </div>
 
       <!-- 回放控制栏 -->
@@ -224,7 +221,10 @@
           ></div>
 
           <!-- 菜单入口 -->
-          <portrait-menu-entrance class="c-portrait-carousel-main-screen__bottom__button" />
+          <portrait-menu-entrance
+            v-if="!isPlaybackWatchUrl"
+            class="c-portrait-carousel-main-screen__bottom__button"
+          />
           <!-- 点赞 -->
           <portrait-chat-like
             v-if="likeFeatureEnabled && !isPlaybacking"
@@ -492,6 +492,7 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 .c-portrait-carousel-main-screen__bottom__item {
   position: relative;
   display: flex;
+  max-width: 100%;
   margin-top: $--portrait-carousel-main-screen__bottom-marginTop;
   pointer-events: initial;
   &:empty {
@@ -515,12 +516,15 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 
 .c-portrait-carousel-main-screen__bottom__pendant {
   position: relative;
+  z-index: 10;
   pointer-events: initial;
 }
 
 .c-portrait-carousel-main-screen__bottom__right-auto {
   display: flex;
+  flex: 1;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .c-portrait-carousel-main-screen__input-wrap {
@@ -546,6 +550,7 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 }
 
 .c-portrait-carousel-main-screen__playback-entrance {
+  flex-shrink: 0;
   width: 32px;
   height: 32px;
   background-image: url(./images/icon-playback.png);

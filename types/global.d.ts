@@ -7,6 +7,10 @@ declare global {
       error: (err: Error) => void;
       setConfig: (params: object) => void;
     };
+    plvLogger?: {
+      error: (err: Error) => void;
+      updateCommonParams: (params: { cid?: string; uid?: string }) => void;
+    };
   }
 
   interface HTMLElement {

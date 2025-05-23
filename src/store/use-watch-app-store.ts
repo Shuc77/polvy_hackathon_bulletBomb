@@ -237,7 +237,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
       setPageError({
         type: PageErrorType.UnknownError,
         title: translate('pageError.channel.unknowError'),
-        desc: translate('pageError.channel.feedBack'),
+        desc: translate('pageError.channel.feedback'),
       });
       console.error('resetUpWatchCore error', error);
       // 需要抛出主流程阻塞的异常

@@ -51,7 +51,8 @@ export const usePageErrorHook = () => {
   const isNotExistError = computed(() => {
     return (
       unref(pageError).type === PageErrorType.ChannelIdError ||
-      unref(pageError).type === PageErrorType.ChannelClosed
+      unref(pageError).type === PageErrorType.ChannelClosed ||
+      unref(pageError).type === PageErrorType.ChannelForbidden
     );
   });
 

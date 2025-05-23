@@ -2,9 +2,8 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { KeyCodeMap } from '@/assets/constants/key-code';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
-import { onBeforeUnmount, watchEffect } from 'vue';
+import { onBeforeUnmount, onMounted } from 'vue';
 
 /**
  * 文档键盘控制 hook
@@ -12,8 +11,9 @@ import { onBeforeUnmount, watchEffect } from 'vue';
 export const useDocKeydownControl = () => {
   const { getWatchCore } = useGlobalInject();
 
+  const watchCore = getWatchCore();
+
   const layoutStore = useLayoutStore();
-  const playbackStore = usePlaybackStore();
   const docStore = useDocStore();
 
   function onKeydownEvent(event: KeyboardEvent) {
@@ -22,7 +22,12 @@ export const useDocKeydownControl = () => {
       return;
     }
 
-    const watchCore = getWatchCore();
+    const target = event.target as HTMLElement;
+    const tagName = target?.tagName;
+    const contentEditable = target?.contentEditable === 'true';
+    if (tagName === 'INPUT' || tagName === 'TEXTAREA' || contentEditable) {
+      return;
+    }
 
     if (keyCode === KeyCodeMap.ArrowLeft) {
       watchCore.doc.gotoPrev();
@@ -36,19 +41,17 @@ export const useDocKeydownControl = () => {
 
   function listenEvent() {
     removeListenEvent();
+    watchCore.doc.setKeyboardEnabled(false);
     window.addEventListener('keydown', onKeydownEvent);
   }
 
   function removeListenEvent() {
-    window.addEventListener('keydown', onKeydownEvent);
+    watchCore.doc.setKeyboardEnabled(true);
+    window.removeEventListener('keydown', onKeydownEvent);
   }
 
-  watchEffect(() => {
-    if (playbackStore.isPlaybacking) {
-      listenEvent();
-    } else {
-      removeListenEvent();
-    }
+  onMounted(() => {
+    listenEvent();
   });
 
   onBeforeUnmount(() => {

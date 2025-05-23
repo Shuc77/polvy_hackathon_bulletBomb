@@ -1,4 +1,5 @@
 import { translate } from '@/assets/lang';
+import { openLink } from '@/assets/utils/url';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { ChannelMenuIframeOpenType } from '@polyv/live-watch-sdk';
 import { computed, watch } from 'vue';
@@ -42,12 +43,12 @@ export const usePromoteExternalLinkHook = (options: {
       if (!isActive || !props.src) return;
 
       if (isOpenInNewPage.value) {
-        window.open(props.src);
+        openLink(props.src);
         return;
       }
 
       if (isOpenInCurrentPage.value) {
-        location.href = props.src;
+        window.location.href = props.src;
       }
     },
     {

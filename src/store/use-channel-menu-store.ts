@@ -37,6 +37,8 @@ export interface ChannelMenuStoreState {
   enChannelMenus: Ref<ChannelMenuItem[]>;
   /** 频道菜单（根据多语言返回） */
   channelMenus: ComputedRef<ChannelMenuItem[]>;
+  /** 直播介绍菜单信息 */
+  descMenuData: ComputedRef<MenuDataType>;
   /** 聊天室菜单信息 */
   chatMenuData: ComputedRef<MenuDataType>;
   /** 商品库菜单信息 */
@@ -244,6 +246,16 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       return label;
     }
 
+    /** 直播介绍菜单信息 */
+    const descMenuData = computed<MenuDataType>(() => {
+      const menuData = getMenuData(ChannelMenuType.Desc);
+
+      return {
+        visible: !!menuData,
+        label: menuData?.name ?? translate('menu.tabName.desc'),
+      };
+    });
+
     /** 聊天室菜单信息 */
     const chatMenuData = computed<MenuDataType>(() => {
       const menuData = getMenuData(ChannelMenuType.Chat);
@@ -351,6 +363,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       cnChannelMenus,
       enChannelMenus,
       channelMenus,
+      descMenuData,
       chatMenuData,
       productMenuData,
       membersMenuData,

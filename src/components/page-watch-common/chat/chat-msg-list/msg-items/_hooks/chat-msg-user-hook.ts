@@ -3,12 +3,13 @@
  */
 import { fitProtocol } from '@/assets/utils/url';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
+import { useChatStore } from '@/store/use-chat-store';
 import { useCommonStore } from '@/store/use-common-store';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { ChatMessageUser, ChatMsgType, ChatUserType } from '@polyv/live-watch-sdk';
 import { ComputedRef, InjectionKey, computed, inject, provide, unref } from 'vue';
 import { useHideChatMsgActorHook } from '../../hooks/hide-chat-msg-hook';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 /**
  * 聊天室消息用户上下文
@@ -42,6 +43,7 @@ export interface ChatMsgUserContext {
  */
 export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | undefined>) => {
   const viewerStore = useViewerStore();
+  const chatStore = useChatStore();
   const chatMsgStore = useChatMsgStore();
   const commonStore = useCommonStore();
   const layoutStore = useLayoutStore();
@@ -79,9 +81,9 @@ export const useChatMsgUserBasic = (chatMsgRef: ResponsiveRef<ChatMsgType | unde
    */
   const hideUserAvatar = computed<boolean>(() => {
     if (layoutStore.isPortraitWatchLayout) {
-      return true;
+      return !chatStore.chatSetting.portraitChatMessageAvatarDisplay;
     }
-    return false;
+    return !chatStore.chatSetting.chatMessageAvatarDisplay;
   });
 
   /**

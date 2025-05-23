@@ -7,7 +7,7 @@
       @scroll="onScrollEvent"
     >
       <template v-for="(item, index) in askMsgList">
-        <mobile-chat-msg-item
+        <portrait-chat-msg-item
           :category="ChatMsgItemCategory.Ask"
           :key="item.id"
           :chat-msg="item"
@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import MobileChatMsgItem from '@/components/page-watch-common/chat/chat-msg-list/msg-items/mobile-chat-msg-item.vue';
+import PortraitChatMsgItem from '@/components/page-watch-common/chat/chat-msg-list/msg-items/portrait-chat-msg-item.vue';
 import { ChatMsgItemCategory } from '../../chat/chat-msg-list/msg-items/use-chat-msg-item';
 import { askMsgListEmits, askMsgListProps, useAskMsgList } from './use-ask-msg-list';
 import { useAskStore } from '@/store/use-ask-store';
@@ -54,6 +54,7 @@ defineExpose(askMsgListInstance);
 
 .c-mobile-ask-msg-list {
   height: 100%;
+  padding: 0 12px;
   overflow-y: auto;
 }
 

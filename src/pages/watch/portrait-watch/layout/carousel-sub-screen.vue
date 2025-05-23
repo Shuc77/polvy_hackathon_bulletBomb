@@ -14,7 +14,7 @@
     </boundary-wrap>
     <div class="c-portrait-carousel-sub-screen__main">
       <!-- 直播介绍 -->
-      <portrait-channel-description />
+      <portrait-channel-description v-if="descMenuData.visible" />
     </div>
   </div>
 </template>
@@ -25,8 +25,11 @@ import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import PortraitChannelDescription from '@/pages/watch/portrait-watch/components/channel-description/portrait-channel-description.vue';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const { channelInfoSeat } = storeDefinitionToRefs(usePortraitLayoutStore);
+
+const { descMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 </script>
 
 <style lang="scss">

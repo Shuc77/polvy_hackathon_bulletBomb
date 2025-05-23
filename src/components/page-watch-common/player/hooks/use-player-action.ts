@@ -109,6 +109,13 @@ export const usePlayerAction = () => {
    * */
   function toTogglePlayInLimit(): void {
     const { playButtonVisible, bigPlayButtonVisible } = usePlayerControl();
+
+    // 播放不受限制
+    if (playerStore.playStatus === PlayStatus.Pause) {
+      toPlay();
+      return;
+    }
+
     if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
       return;
     }

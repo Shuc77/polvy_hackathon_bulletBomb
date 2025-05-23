@@ -247,6 +247,20 @@ export const usePageSkin = () => {
     },
   );
 
+  watch(
+    () => themeStore.pageSkinConfig,
+    () => {
+      const rootElement = getAppRootElement();
+      const { specialColor } = themeStore.pageSkinConfig;
+      if (specialColor) {
+        rootElement.style.setProperty('--plv-watch-skin-special-color', specialColor);
+      }
+    },
+    {
+      immediate: true,
+    },
+  );
+
   return {
     getSkinClassName,
 

@@ -40,7 +40,6 @@
     />
 
     <dynamic-popup
-      v-if="!productDialogEnable"
       class="c-mobile-product-list__detail__popup"
       :visible.sync="productDetailVisible"
       :show-header="false"

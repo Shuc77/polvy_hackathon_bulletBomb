@@ -5,6 +5,7 @@
     :class="{
       'c-portrait-speak-msg--over-style': chatMsg.isOverLength,
     }"
+    response-relax
     @click-msg-to-tips="onBubbleChatMsgTips"
     @bubble-contextmenu="onBubbleContextmenu"
   >

@@ -315,6 +315,7 @@ defineExpose(msgInputWrapInstance);
 }
 
 .c-mobile-msg-input-wrap--emotion-show {
+  z-index: #{$--zIndex-pendant + 1};
   .c-mobile-msg-input-wrap__main {
     padding-top: 16px;
     padding-bottom: 8px;

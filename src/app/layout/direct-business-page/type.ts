@@ -18,6 +18,8 @@ export enum PageErrorType {
   ChannelIdError = 'ChannelIdError',
   /** 频道号被关闭 */
   ChannelClosed = 'ChannelClosed',
+  /** 直播间暂时不可用 */
+  ChannelForbidden = 'ChannelForbidden',
   /** 移动端观看被关闭 */
   MobileChannelClosed = 'MobileChannelClosed',
   /** 外部授权失败 */
@@ -28,6 +30,8 @@ export enum PageErrorType {
   UnknownError = 'UnknownError',
   /** 企微业务错误 */
   WorkWechatBusinessError = 'WorkWechatBusinessError',
+  /** 禁止访问 */
+  NotAllowAccess = 'NotAllowAccess',
 }
 
 /**

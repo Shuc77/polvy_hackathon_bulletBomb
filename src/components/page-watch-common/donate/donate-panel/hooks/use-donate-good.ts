@@ -21,7 +21,8 @@ export const useDonateGood = (donateOptions: DonateOptions = {}) => {
   // 打赏成功回调
   const donateSuccess = donateOptions.donateSuccess;
 
-  const { showDonatePointGood, showDonateCashGood } = storeDefinitionToRefs(useDonateStore);
+  const { showDonatePointGood, showDonateCashGood, donatePointUnit } =
+    storeDefinitionToRefs(useDonateStore);
 
   /** 打赏数量 */
   const donateCount = ref(1);
@@ -69,5 +70,6 @@ export const useDonateGood = (donateOptions: DonateOptions = {}) => {
     setSelectedGood,
     donateGood,
     donatePointGood,
+    donatePointUnit,
   };
 };

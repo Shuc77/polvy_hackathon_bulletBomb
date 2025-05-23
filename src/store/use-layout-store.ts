@@ -28,8 +28,10 @@ export interface LayoutStoreState {
   // ---------- PC 端 ---------- //
   /** 副屏是否被收起 */
   subScreenPackUp: Ref<boolean>;
-  /** 当前是否正在系统全屏 */
+  /** 当前 PC 端是否正在全屏(系统全屏/网页全屏) */
   isFullscreen: Ref<boolean>;
+  /** 当前 PC 端是否正在网页全屏 */
+  isPcPageFullscreen: Ref<boolean>;
   /** PC 端侧边菜单栏的激活 name */
   pcAsideTabCurrentName: Ref<string>;
   /** PC 端侧边菜单栏是否为空 */
@@ -115,8 +117,11 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
   /** 副屏是否被收起 */
   const subScreenPackUp = ref(false);
 
-  /** 当前是否正在系统全屏 */
+  /** 当前 PC 端是否正在系统全屏 */
   const isFullscreen = ref(false);
+
+  /** 当前 PC 端是否正在网页全屏 */
+  const isPcPageFullscreen = ref(false);
 
   /** PC 端侧边菜单栏的激活 name */
   const pcAsideTabCurrentName = ref('');
@@ -249,6 +254,7 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     toggleMainScreen,
 
     isFullscreen,
+    isPcPageFullscreen,
     pcAsideTabCurrentName,
     pcAsideTabIsEmpty,
     pcAsideSectionIsEmpty,

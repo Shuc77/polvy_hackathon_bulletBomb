@@ -117,6 +117,7 @@
                 <pc-form-phone-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
+                  :need-area-code="smsVerifyEnabled || areaCodeEnabled"
                   :area-code.sync="formData.areaCode"
                   @input="onPhoneNumberChange"
                   @blur="blurToCheckStatus"
@@ -272,8 +273,14 @@ import { enrollFormEmits, useEnrollForm, useEnrollCheckMobile } from './hooks/us
 
 const emit = defineEmits(enrollFormEmits());
 
-const { needEnrollByEnter, enrollBanner, smsVerifyEnabled, enrollAuthType, enrollFields } =
-  storeDefinitionToRefs(useEnrollStore);
+const {
+  needEnrollByEnter,
+  enrollBanner,
+  smsVerifyEnabled,
+  areaCodeEnabled,
+  enrollAuthType,
+  enrollFields,
+} = storeDefinitionToRefs(useEnrollStore);
 
 const {
   imageVerifyInputEnabled,

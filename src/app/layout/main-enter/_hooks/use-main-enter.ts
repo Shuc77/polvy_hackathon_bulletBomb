@@ -15,6 +15,8 @@ import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weix
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useEmotionSetup } from './use-emotion-setup';
+import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
+import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 
 /**
  * 页面尺寸初始化设置
@@ -48,6 +50,16 @@ const usePageSizeSetup = () => {
   useWindowResizeListener(() => {
     savePageSize();
   }, true);
+
+  if (tabletLoadDesktopTemplate) {
+    useScreenOrientHook({
+      autoListenCb: () => {
+        setTimeout(() => {
+          savePageSize();
+        }, 0);
+      },
+    });
+  }
 };
 
 export const mainEnterEmits = () => ({

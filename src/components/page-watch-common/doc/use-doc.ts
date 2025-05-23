@@ -1,15 +1,15 @@
-import { useChannelStore } from '@/store/use-channel-store';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
-import { DocEvents, LiveStatus, SetupDocOptions } from '@polyv/live-watch-sdk';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { useDocStore } from '@/store/use-doc-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
-import { useWebviewStore } from '@/store/use-webview-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { translate } from '@/assets/lang';
+import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 import { MessageBoxInstance } from '@/components/common-base/message-box';
 import { useToastManager } from '@/hooks/components/use-toast';
-import { translate } from '@/assets/lang';
-import { useGlobalInject } from '@/app/use-global-inject';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useDocStore } from '@/store/use-doc-store';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { DocEvents, LiveStatus, SetupDocOptions } from '@polyv/live-watch-sdk';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 
 export const useDoc = (
   useOptions: {
@@ -24,7 +24,6 @@ export const useDoc = (
   const docStore = useDocStore();
   const channelStore = useChannelStore();
   const layoutStore = useLayoutStore();
-  const playbackStore = usePlaybackStore();
   const webviewStore = useWebviewStore();
 
   /** 创建文档的外层节点 */
@@ -46,7 +45,7 @@ export const useDoc = (
 
     await watchCore.doc.setupDoc({
       container: wrapElem,
-      keyboardEnabled: !playbackStore.isPlaybacking,
+      keyboardEnabled: false,
       beforeClear: async () => {
         if (confirmRef.value) {
           const result = await confirmRef.value.$confirm();
@@ -100,16 +99,28 @@ export const useDoc = (
 
   watch(
     () => [
+      layoutStore.isHorizontalScreenOrientation,
+      layoutStore.isPcPageFullscreen,
+      layoutStore.isFullscreen,
       layoutStore.mainScreen,
       layoutStore.mobileDocIsPageFullscreen,
+      // 小窗固定放在最后
       webviewStore.isSmallWindow,
     ],
     async (next, prev) => {
       await nextTick();
       // 小窗事件结束不一定这么快
-      const timeout = next[2] !== prev[2] ? 300 : 0;
-      setTimeout(() => {
+      const length = next.length - 1 >= 0 ? next.length - 1 : 0;
+      const timeout = next[length] !== prev[length] ? 500 : 0;
+
+      setTimeout(async () => {
         watchCore.doc.resize();
+
+        // 该模式下需要再调用一次 resize，才能正常调整大小
+        if (tabletLoadDesktopTemplate) {
+          await nextTick();
+          watchCore.doc.resize();
+        }
       }, timeout);
     },
   );

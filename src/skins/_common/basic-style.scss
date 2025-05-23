@@ -48,15 +48,6 @@
   .pws-main-tab-header {
     background-color: map.get($--skin-configs, 'main-tab-header:bg-color') !important;
   }
-  .pws-main-tab-header-active-line {
-    background-color: map.get($--skin-configs, 'main-tab-header-line--active:bg-color') !important;
-  }
-  .pws-main-tab-header-shadow-left {
-    background: linear-gradient(90deg, map.get($--skin-configs, 'main-tab-header-shadow-start:color') 0, map.get($--skin-configs, 'main-tab-header-shadow-end:color') 100%) !important;
-  }
-  .pws-main-tab-header-shadow-right {
-    background: linear-gradient(90deg, map.get($--skin-configs, 'main-tab-header-shadow-end:color') 0, map.get($--skin-configs, 'main-tab-header-shadow-start:color') 100%) !important
-  }
   .pws-main-tab-header-arrow-right,
   .pws-main-tab-header-arrow-left {
     color: map.get($--skin-configs, 'main-tab-header--active:text-color') !important;
@@ -276,10 +267,15 @@
     color: map.get($--skin-configs, 'pws-ai-outline-desc:desc-color') !important;
   }
   .pws-ai-outline-tag {
-    color: map.get($--skin-configs, 'pws-ai-outline-tag:text-color') !important;
-  }
-  .pws-ai-outline-tag-bg {
-    background-color: map.get($--skin-configs, 'pws-ai-outline-tag-bg:bg-color') !important;
+    color: map.get($--skin-configs, 'main-highlight-text-color') !important;
+    &::after {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      content: '';
+      background-color: map.get($--skin-configs, 'main-highlight-text-color') !important;
+    }
   }
   .pws-ai-outline-bg {
     background-color: map.get($--skin-configs, 'pws-ai-outline-bg:bg-color') !important;

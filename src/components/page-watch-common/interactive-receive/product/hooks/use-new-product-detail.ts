@@ -46,6 +46,7 @@ export const useNewProductDetail = () => {
       tags: currentProduct.value?.features || [],
       customPrice: currentProduct.value?.customPrice || '',
       priceType: currentProduct.value?.priceType || '',
+      openPriceEnable: currentProduct.value?.openPriceEnable || 'Y', // 默认展示价格
     };
   });
 

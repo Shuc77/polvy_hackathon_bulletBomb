@@ -99,9 +99,9 @@
 
       <!-- 投诉反馈 -->
       <menu-item
-        v-if="interactSetting.watchFeedbackEnabled"
+        v-if="feedbackMenuVisible"
         icon="feedback"
-        :text="$lang('interact.feedBack.title')"
+        :text="$lang('interact.feedback.title')"
         @click="onClickFeedback"
       />
 
@@ -260,7 +260,8 @@ const { toggleOnlySpecialMsg } = chatStore;
 const playerStore = usePlayerStore();
 const { isAudioPlayerMode } = storeToRefs(playerStore);
 
-const { interactSetting, couponPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { feedbackMenuVisible, couponPendantVisible } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -344,7 +345,7 @@ function onClickScoreRecord() {
 
 /** 点击投诉反馈 */
 function onClickFeedback() {
-  getEmitter().emit(appEvents.interaction.OpenFeedBack, true);
+  getEmitter().emit(appEvents.interaction.OpenFeedback, true);
   closeMenu();
 }
 

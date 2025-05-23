@@ -3,17 +3,26 @@
   <div
     class="c-portrait-msg-container"
     @click="emit('click-container')"
-    ref="referenceRef"
     :class="{
       'c-portrait-msg-container--suffix-align-center': suffixMode === 'align-center',
+      'c-portrait-msg-container--relax-mode': msgRelaxMode,
+      'is-hide-avatar': hideUserAvatar,
     }"
   >
+    <portrait-msg-user-info
+      v-if="!hideUserInfo && msgRelaxMode"
+      :msg-relax-mode="msgRelaxMode"
+    />
     <div
-      class="c-portrait-msg-container__bubble pws-primary-text-color pws-light-basic-bg-20"
-      :class="{
-        'pws-dark-basic-bg-10': pageSkinColorMode === SkinColorMode.Dark && !isPortraitWatchLayout,
-        'pws-dark-basic-bg-20': pageSkinColorMode === SkinColorMode.Dark && isPortraitWatchLayout,
-      }"
+      ref="referenceRef"
+      class="c-portrait-msg-container__bubble pws-primary-text-color"
+      :class="[
+        bubbleBgClass,
+        {
+          'c-portrait-msg-container__bubble--hide-bubble-style': hideBubbleStyle && msgRelaxMode,
+        },
+      ]"
+      :style="bubbleBgStyle"
     >
       <slot name="msg-header"></slot>
 
@@ -22,19 +31,10 @@
         @click="onClickReferenceRef"
         @contextmenu="onContextMenu"
       >
-        <slot name="msg-left"></slot>
-
         <div class="c-portrait-msg-container__content__inner">
-          <portrait-msg-user-info v-if="!hideUserInfo" />
-          <span
-            v-if="nickname"
-            class="c-portrait-msg-container__content__inner__nick pws-secondary-text-color"
-            >{{ nickname }}：</span
-          >
+          <portrait-msg-user-info v-if="!hideUserInfo && !msgRelaxMode" />
           <slot></slot>
         </div>
-
-        <slot name="msg-right"></slot>
       </div>
 
       <slot name="msg-footer"></slot>
@@ -51,21 +51,27 @@
 import { isMobile } from '@/assets/utils/browser';
 import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
+import tinycolor from 'tinycolor2';
+import { ChatMessageLayout } from '@polyv/live-watch-sdk';
+import { useChatStore } from '@/store/use-chat-store';
 
-defineProps({
+const props = defineProps({
   /** 是否隐藏用户信息，默认：false */
   hideUserInfo: PropUtils.bool.def(false),
   /** 是否使用提示气泡，默认：false */
   useMsgTipsControl: PropUtils.bool.def(false),
-  /** 昵称 */
-  nickname: PropUtils.string,
 
   suffixMode: PropUtils.string.def('align-center'),
+  /** 是否响应宽松模式 */
+  responseRelax: PropUtils.bool.def(false),
+  /** 宽松模式下不显示气泡样式 */
+  hideBubbleStyle: PropUtils.bool.def(false),
 });
 
 const emit = defineEmits({
@@ -84,9 +90,26 @@ const emit = defineEmits({
   'bubble-contextmenu': emitFunc<MouseEvent>(),
 });
 
-const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
+const { isSpecialUser, hideUserAvatar } = useChatMsgUserInject();
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
+
+const { pageSkinColorMode, pageSkinConfig } = storeDefinitionToRefs(useThemeStore);
 
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
+
+/** 是否宽松模式 */
+const msgRelaxMode = computed(() => {
+  let enabled = false;
+
+  if (isPortraitWatchLayout.value) {
+    enabled = chatSetting.value.portraitChatMessageLayout === ChatMessageLayout.Loose;
+  } else {
+    enabled = chatSetting.value.chatMessageLayout === ChatMessageLayout.Loose;
+  }
+
+  return props.responseRelax && enabled;
+});
 
 const referenceRef = ref(null);
 
@@ -109,6 +132,33 @@ function onContextMenu(event: MouseEvent) {
   }
   emit('bubble-contextmenu', event);
 }
+
+const bubbleBgStyle = computed(() => {
+  const styles: Record<string, string> = {};
+
+  if (isSpecialUser.value) {
+    const colorInstance = tinycolor(pageSkinConfig.value.specialColor);
+    colorInstance.setAlpha(0.3);
+    styles.background = colorInstance.toRgbString();
+  }
+
+  return styles;
+});
+
+const bubbleBgClass = computed(() => {
+  if (isSpecialUser.value) {
+    return '';
+  }
+
+  switch (pageSkinColorMode.value) {
+    case SkinColorMode.Dark:
+      return isPortraitWatchLayout.value ? 'pws-dark-basic-bg-20' : 'pws-dark-basic-bg-10';
+    case SkinColorMode.Light:
+      return 'pws-light-basic-bg-20';
+  }
+
+  return '';
+});
 </script>
 
 <style lang="scss">
@@ -116,6 +166,29 @@ function onContextMenu(event: MouseEvent) {
   display: flex;
   font-size: 14px;
   line-height: 22px;
+}
+.c-portrait-msg-container--relax-mode {
+  display: block;
+  margin: 12px 0;
+  font-size: 16px;
+
+  .c-portrait-msg-container__bubble {
+    padding: 8px 10px;
+    margin-left: 36px;
+    border-radius: 8px;
+
+    &.c-portrait-msg-container__bubble--hide-bubble-style {
+      padding: 0;
+      background: none !important;
+      border-radius: 0;
+    }
+  }
+
+  &.is-hide-avatar {
+    .c-portrait-msg-container__bubble {
+      margin-left: 0;
+    }
+  }
 }
 .c-portrait-msg-container__bubble {
   box-sizing: border-box;
