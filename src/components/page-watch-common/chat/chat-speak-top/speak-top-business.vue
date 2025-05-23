@@ -69,7 +69,7 @@ defineProps({
   layout: PropUtils.oneOf(tupleString('pc', 'mobile', 'portrait')).isRequired,
 });
 
-const { showSpeakTop, messageList } = useSpeakTop();
+const { showSpeakTop, messageList, isSetupPanelShow } = useSpeakTop();
 const { isMobileWebPageFullscreen } = useWebPageFullscreen();
 
 watch(
@@ -93,7 +93,8 @@ const handleChange = (index: number) => {
 const speakTopLayerShow = computed(() => {
   return (
     showSpeakTop.value === true &&
-    (liveStatus.value === LiveStatus.Live || playbackStore.chatMsgReplayEnabled)
+    (liveStatus.value === LiveStatus.Live || playbackStore.chatMsgReplayEnabled) &&
+    !isSetupPanelShow.value
   );
 });
 </script>

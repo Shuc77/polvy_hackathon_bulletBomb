@@ -17,6 +17,7 @@
         >
           <mobile-form-phone-input
             v-model="formData.phoneNumber"
+            :need-area-code="smsVerifyEnabled || areaCodeEnabled"
             :placeholder="enrollAuthTips"
             :area-code.sync="formData.areaCode"
             @blur="blurToCheckStatus"
@@ -106,8 +107,14 @@ import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/us
 
 const emit = defineEmits(enrollLoginEmits());
 
-const { needEnrollByEnter, enrollAuthType, smsVerifyEnabled, enrollAuthName, enrollAuthTips } =
-  storeDefinitionToRefs(useEnrollStore);
+const {
+  needEnrollByEnter,
+  enrollAuthType,
+  smsVerifyEnabled,
+  areaCodeEnabled,
+  enrollAuthName,
+  enrollAuthTips,
+} = storeDefinitionToRefs(useEnrollStore);
 
 const {
   imageVerifyInputRef,

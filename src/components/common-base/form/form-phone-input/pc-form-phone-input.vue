@@ -98,7 +98,7 @@ const {
   box-shadow: $--shadow-dialog;
 }
 
-.c-pc-form-phone-input .c-pc-form-input__main__input {
+.c-pc-form-phone-input .c-pc-form-input__main__inner:nth-child(2) .c-pc-form-input__main__input {
   padding-left: 0;
 }
 </style>

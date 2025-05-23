@@ -56,6 +56,10 @@ button {
   content: '.';
 }
 
+.g-overflow-hidden {
+  overflow: hidden;
+}
+
 /* 单行内容，如有超出则以省略号结尾 */
 .g-singleline {
   overflow: hidden;

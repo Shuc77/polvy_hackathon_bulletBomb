@@ -6,14 +6,14 @@ import {
   PolyvWatchCore,
 } from '@polyv/live-watch-sdk';
 
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { useChannelStore } from '@/store/use-channel-store';
+import { appEvents } from '@/app/app-events';
 import { PageErrorType } from '@/app/layout/direct-business-page/type';
 import { translate } from '@/assets/lang';
-import { useLayoutStore } from '@/store/use-layout-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { appEvents } from '@/app/app-events';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
   const watchAppStore = useWatchAppStore();
@@ -23,7 +23,7 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
   const ChannelMenuStore = useChannelMenuStore();
 
   // 处理频道模块安装失败
-  watchCore.channel.eventEmitter.on(ChannelEvents.ChannelSetupFail, ({ failReason }) => {
+  watchCore.channel.eventEmitter.on(ChannelEvents.ChannelSetupFail, async ({ failReason }) => {
     if (failReason === ChannelSetupFailReason.NetworkError) {
       watchAppStore.setPageError({
         type: PageErrorType.UnknownError,
@@ -52,10 +52,18 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
       return;
     }
 
+    if (failReason === ChannelSetupFailReason.NotAllowAccess) {
+      watchAppStore.setPageError({
+        type: PageErrorType.NotAllowAccess,
+        title: translate('pageError.NotAllowAccess.title'),
+      });
+      return;
+    }
+
     watchAppStore.setPageError({
       type: PageErrorType.UnknownError,
       title: translate('pageError.channel.unknowError'),
-      desc: translate('pageError.channel.feedBack'),
+      desc: translate('pageError.channel.feedback'),
       reloadBtnVisible: true,
     });
   });

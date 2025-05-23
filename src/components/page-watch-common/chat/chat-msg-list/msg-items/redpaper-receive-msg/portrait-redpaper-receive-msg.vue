@@ -3,9 +3,9 @@
   <portrait-msg-container
     class="c-portrait-redpaper-receive-msg"
     hide-user-info
-    :nickname="receiveNick"
   >
     <span class="c-portrait-redpaper-receive-msg__content">
+      <span class="pws-secondary-text-color">{{ receiveNick }}：</span>
       <i
         v-if="isRedpaperRain"
         class="c-portrait-redpaper-receive-msg__icon-rain g-img-cover"

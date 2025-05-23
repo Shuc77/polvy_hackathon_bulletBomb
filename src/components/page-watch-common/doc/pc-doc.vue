@@ -1,6 +1,11 @@
 <!-- @file PC 端文档组件 -->
 <template>
-  <div class="c-pc-doc">
+  <div
+    class="c-pc-doc"
+    :class="{
+      'c-pc-doc--tabletLoadDesktopTemplate': tabletLoadDesktopTemplate,
+    }"
+  >
     <div
       ref="wrapRef"
       class="c-pc-doc__wrap"
@@ -30,6 +35,7 @@ import PcDocPaintSwitch from './doc-paint-switch/pc-doc-paint-switch.vue';
 import { useDoc } from './use-doc';
 import { useDocKeydownControl } from './_hooks/use-keydown-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
+import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 
 const { wrapRef, emptyPlaceholderVisible, confirmRef } = useDoc();
 
@@ -43,6 +49,17 @@ useDocKeydownControl();
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+
+.c-pc-doc--tabletLoadDesktopTemplate {
+  .ppt-h5-setting-nav__ul {
+    margin-bottom: 20px;
+  }
+
+  .ppt-h5-setting-nav__full,
+  .ppt-h5-setting-nav__rotate {
+    display: none !important;
+  }
 }
 
 .c-pc-doc__wrap {

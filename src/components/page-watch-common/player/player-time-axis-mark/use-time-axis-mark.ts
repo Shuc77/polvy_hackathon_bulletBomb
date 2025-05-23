@@ -4,6 +4,7 @@ import { PlayerEvents, PlayerEventsRelations, TimeAxisMarkInfo } from '@polyv/li
 import { usePlayerAction } from '../hooks/use-player-action';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 
 /** 打点信息合并列表项 */
 export interface TimeAxisMarkMergedListItem {
@@ -11,10 +12,13 @@ export interface TimeAxisMarkMergedListItem {
   details: TimeAxisMarkInfo[];
 }
 
-export const useTimeAxisMarkHook = (hookOptions?: { getContainerWidth: () => number }) => {
+export const useTimeAxisMarkHook = (hookOptions?: {
+  getContainerWidth: () => number;
+  getContainerEl: () => HTMLElement;
+}) => {
   const { getWatchCore } = useGlobalInject();
 
-  const { getContainerWidth = () => 0 } = hookOptions || {};
+  const { getContainerWidth = () => 0, getContainerEl = () => null } = hookOptions || {};
 
   const timeAxisMarkList = ref<TimeAxisMarkInfo[]>([]);
 
@@ -49,6 +53,20 @@ export const useTimeAxisMarkHook = (hookOptions?: { getContainerWidth: () => num
       params.timeAxisMarkList,
       __getComputedContainerWidth(),
     );
+
+    const containerEl = getContainerEl();
+
+    if (containerEl && containerEl.clientWidth === 0) {
+      const { observer } = useResizeObserver(ref(containerEl), () => {
+        if (containerEl.clientWidth > 0) {
+          syncTimeAxisMarkInfo({
+            timeAxisMarkList: timeAxisMarkList.value,
+          });
+
+          observer.disconnect();
+        }
+      });
+    }
   }
 
   const { toSeekVideo } = usePlayerAction();

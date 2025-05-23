@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 import { translate } from '@/assets/lang';
+import { DEFAULT_PHONE_NUMBER_AREA_CODE } from '@/assets/constants/defaults';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { useDialogTipsUtils } from '@/components/common-base/dialog/use-dialog-tips';
@@ -95,7 +96,7 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
     // 手机号
     phoneNumber: '',
     // 手机区号
-    areaCode: '+86',
+    areaCode: DEFAULT_PHONE_NUMBER_AREA_CODE,
     // 图片验证码 id
     imageId: '',
     // 图片验证码
@@ -170,7 +171,10 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
           break;
         case EnrollFieldType.Mobile:
           // 使用手机号验证
-          if (fieldItem.authType === EnrollAuthType.Mobile) {
+          if (
+            fieldItem.authType === EnrollAuthType.Mobile &&
+            (enrollStore.smsVerifyEnabled || enrollStore.areaCodeEnabled)
+          ) {
             rules[fieldId] = [
               {
                 type: 'string',
@@ -190,6 +194,7 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
                 },
               },
             ];
+
             if (enrollStore.smsVerifyEnabled) {
               rules.smsCode = [
                 {

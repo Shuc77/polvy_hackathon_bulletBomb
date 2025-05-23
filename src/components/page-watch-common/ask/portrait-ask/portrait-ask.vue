@@ -7,6 +7,7 @@
       :ask-sdk="askSdk"
       :lang="currentLang"
       :hide-actor-user-type="hideActorUserType"
+      :hide-user-avatar="!chatSetting.portraitChatMessageAvatarDisplay"
     />
   </div>
 </template>
@@ -21,6 +22,7 @@ import { useAskReminder, useAskSdk } from '../hooks/use-ask';
 import { useHideChatMsgActorHook } from '../../chat/chat-msg-list/hooks/hide-chat-msg-hook';
 
 import { useChatSDKAskQuestionUILoader } from '@/plugins/external-lib-loaders/load-chat-sdk-ui-ask-question';
+import { useChatStore } from '@/store/use-chat-store';
 
 const { asyncImportChatSDKAskQuestionComponent } = useChatSDKAskQuestionUILoader();
 
@@ -33,6 +35,8 @@ const { askWelcomeText } = storeDefinitionToRefs(useAskStore);
 const { hideActorUserType } = useHideChatMsgActorHook();
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
+
+const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const { updateAskReminderVisible } = useAskReminder({
   onAskMsg: () => {

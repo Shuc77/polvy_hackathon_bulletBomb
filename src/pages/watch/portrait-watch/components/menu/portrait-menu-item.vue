@@ -65,7 +65,7 @@ const emit = defineEmits({
   background-image: url(./images/icon-show-all.png);
 }
 .c-portrait-more-item__icon--feedback {
-  background-image: url(./images/icon-feed.png);
+  background-image: url(./images/icon-feedback.png);
 }
 .c-portrait-more-item__icon--score {
   background-image: url(./images/icon-score-withdraw.png);

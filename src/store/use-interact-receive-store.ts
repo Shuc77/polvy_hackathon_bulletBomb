@@ -104,6 +104,12 @@ export interface InteractReceiveStoreState {
   currentProduct: Ref<ProductGoodData | undefined>;
   /** 商品详情弹层是否可见 */
   productDetailVisible: Ref<boolean>;
+  /** 投诉反馈功能是否可见 */
+  feedbackEnabled: ComputedRef<boolean>;
+  /** 投诉反馈挂件是否可见 */
+  feedbackPendantVisible: ComputedRef<boolean>;
+  /** 投诉反馈菜单是否可见 */
+  feedbackMenuVisible: ComputedRef<boolean>;
   /** 优惠券挂件是否显示 */
   couponPendantVisible: Ref<boolean>;
   /** 优惠券待领取列表是否显示 */
@@ -334,6 +340,27 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     /** 商品详情弹层是否可见 */
     const productDetailVisible = ref(false);
 
+    /** 投诉反馈功能是否可见 */
+    const feedbackEnabled = computed(() => {
+      return iarSdkLoaded.value && interactSetting.value.watchFeedbackEnabled;
+    });
+
+    /** 投诉反馈挂件是否可见 */
+    const feedbackPendantVisible = computed(() => {
+      return (
+        feedbackEnabled.value &&
+        interactSetting.value.watchFeedbackButtonPositions.includes('EXTERNAL')
+      );
+    });
+
+    /** 投诉反馈菜单是否可见 */
+    const feedbackMenuVisible = computed(() => {
+      return (
+        feedbackEnabled.value &&
+        interactSetting.value.watchFeedbackButtonPositions.includes('CONTROL_STRIP_INNER')
+      );
+    });
+
     /** 优惠券挂件是否显示 */
     const couponPendantVisible = computed(() => {
       return interactSetting.value.couponEnabled;
@@ -397,6 +424,10 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
       currentProduct,
       productDetailVisible,
+
+      feedbackEnabled,
+      feedbackPendantVisible,
+      feedbackMenuVisible,
 
       couponPendantVisible,
       couponCommonListVisible,

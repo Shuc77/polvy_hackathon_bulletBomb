@@ -9,6 +9,7 @@
       <span class="c-mobile-donate-panel-good__point__count pws-mobile-donate-point-data-count">
         {{ surplusPoint }}
       </span>
+      {{ donatePointUnit }}
     </div>
 
     <div
@@ -137,10 +138,17 @@ const emit = defineEmits({
 const { showDonatePointGood, showDonateCashGood, donateContentPages } =
   storeDefinitionToRefs(useDonateStore);
 
-const { surplusPoint, selectedGood, setSelectedGood, quickCounts, donateCount, donateGood } =
-  useDonateGood({
-    donateSuccess: () => emit('donate-success'),
-  });
+const {
+  surplusPoint,
+  selectedGood,
+  setSelectedGood,
+  quickCounts,
+  donateCount,
+  donateGood,
+  donatePointUnit,
+} = useDonateGood({
+  donateSuccess: () => emit('donate-success'),
+});
 
 /** 处理点击 */
 function onClickItem(good: DonateGoodInfo) {

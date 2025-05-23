@@ -11,6 +11,7 @@
       @click="onClickMsg"
     >
       <span
+        v-if="!hideUserAvatar"
         class="c-portrait-reward-msg__avatar"
         :style="{
           backgroundImage: `url(${msgUserAvatar})`,
@@ -46,12 +47,15 @@ import { useEffectText } from '@/components/page-watch-common/message-effect/hoo
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useRewardMsg } from './use-reward-msg';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
+import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
 
 const { resizeOSSImg } = useResizeOssImage();
 
 const { getEffectText } = useEffectText();
 
 const { effectData, msgUserAvatar, onClickMsg } = useRewardMsg();
+
+const { hideUserAvatar } = useChatMsgUserInject();
 </script>
 
 <style lang="scss">

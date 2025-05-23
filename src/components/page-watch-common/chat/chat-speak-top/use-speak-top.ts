@@ -3,6 +3,7 @@ import {
   ChatEvents,
   ChatMsgSpeakTopType,
   LiveStatus,
+  PlayerEvents,
   SliceIdSpeakTop,
 } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
@@ -21,6 +22,9 @@ export function useSpeakTop() {
   const messageList: Ref<SliceIdSpeakTop[]> = ref([]);
 
   const showSpeakTop = ref(false);
+
+  // 是否显示设置面板
+  const isSetupPanelShow = ref(false);
 
   const handleSpeakToTop = (data: ChatMsgSpeakTopType) => {
     // 回放ppt，可能会触发 onSliceId, 导致播放前会有一条上墙数据。这里过滤掉播放前的上墙数据
@@ -52,6 +56,10 @@ export function useSpeakTop() {
     }
   };
 
+  const handlePlayerSetupPanelChange = (data: { isShow: boolean }) => {
+    isSetupPanelShow.value = data.isShow;
+  };
+
   watch(liveStatus, () => {
     if ([LiveStatus.End, LiveStatus.Live].includes(liveStatus.value)) {
       handleSpeakCancelTop();
@@ -68,6 +76,10 @@ export function useSpeakTop() {
   onMounted(() => {
     watchCore.chat.eventEmitter.on(ChatEvents.SpeakToTop, handleSpeakToTop);
     watchCore.chat.eventEmitter.on(ChatEvents.SpeakCancelTop, handleSpeakCancelTop);
+    watchCore.player.eventEmitter.on(
+      PlayerEvents.PlayerSetupPanelChange,
+      handlePlayerSetupPanelChange,
+    );
 
     const data = watchCore.chat.getSpeakTopInfo();
     if (data) {
@@ -78,10 +90,15 @@ export function useSpeakTop() {
   onBeforeUnmount(() => {
     watchCore.chat.eventEmitter.off(ChatEvents.SpeakToTop, handleSpeakToTop);
     watchCore.chat.eventEmitter.off(ChatEvents.SpeakCancelTop, handleSpeakCancelTop);
+    watchCore.player.eventEmitter.off(
+      PlayerEvents.PlayerSetupPanelChange,
+      handlePlayerSetupPanelChange,
+    );
   });
 
   return {
     showSpeakTop,
     messageList,
+    isSetupPanelShow,
   };
 }

@@ -65,8 +65,8 @@ export function bindPlayerModuleEvents(watchCore: PolyvWatchCore): void {
     }
   });
 
-  watchCore.player.eventEmitter.on(PlayerEvents.PlayerMarqueeError, () => {
-    toast.error(translate('player.marquee.checkError'));
+  watchCore.player.eventEmitter.on(PlayerEvents.PlayerMarqueeError, ({ code }) => {
+    toast.error(translate('player.marquee.checkError', { code }));
   });
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerSubtitleSwitched, ({ checked }) => {

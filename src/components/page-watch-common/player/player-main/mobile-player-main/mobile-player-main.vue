@@ -123,11 +123,10 @@ import MobileSubtitleSelect from '@/components/page-watch-common/subtitle/mobile
 import { MainScreenContent, PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
-import { useChannelStore } from '@/store/use-channel-store';
-import { translate } from '@/assets/lang';
 import { ComponentInstance } from '@/hooks/core/use-vue';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useShortNumber } from '@/hooks/business/use-short-number';
+import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
 
 const { shortNumber } = useShortNumber();
 
@@ -146,7 +145,7 @@ const lowLatencyPlayerIsPageFullscreen = computed(() => {
   );
 });
 
-const channelStore = useChannelStore();
+const { getStreamStopText } = usePlayerStreamStopText();
 
 const {
   playerSdkLoadError,
@@ -174,9 +173,7 @@ const { playerContainer } = usePlayerMain({
     return {
       showController: !unref(isLowLatency),
       skinConfig: {
-        streamStopTxt: channelStore.privateSeminarChannel
-          ? translate('seminar.noLive')
-          : translate('channel.noLive'),
+        streamStopTxt: getStreamStopText(),
         bgColor: '#2B3045',
         streamPause: require('../../imgs/player-stop.png'),
         streamStop: require('../../imgs/player-no-live.png'),

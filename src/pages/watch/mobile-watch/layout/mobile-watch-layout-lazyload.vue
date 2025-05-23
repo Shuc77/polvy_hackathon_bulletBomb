@@ -3,7 +3,7 @@
 <template>
   <div class="c-mobile-watch-layout-lazyload">
     <!-- 互动功能 -->
-    <mobile-iar-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <mobile-iar-render v-if="iarSdkLoaded" />
     <mobile-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 连麦挂件 -->
@@ -67,7 +67,7 @@
     />
 
     <!-- 绑定用户身份信息弹层 -->
-    <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
+    <mobile-identity-collect-info-dialog v-if="bindMobileVisible" />
 
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup />
@@ -109,7 +109,7 @@ import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobil
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
-import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
+import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';

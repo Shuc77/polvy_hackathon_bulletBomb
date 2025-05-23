@@ -9,7 +9,7 @@
     />
 
     <!-- 互动功能 -->
-    <portrait-iar-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <portrait-iar-render v-if="iarSdkLoaded" />
     <portrait-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 邀请榜弹层 -->
@@ -73,7 +73,7 @@
     </template>
 
     <!-- 绑定用户身份信息弹层 -->
-    <mobile-bind-identity-info-popup v-if="bindMobileVisible" />
+    <mobile-identity-collect-info-dialog v-if="bindMobileVisible" />
 
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup />
@@ -113,7 +113,7 @@ import MobileWithdrawApply from '@/components/page-watch-common/withdraw/mobile-
 import MobileWithdrawDetail from '@/components/page-watch-common/withdraw/mobile-withdraw-detail/mobile-withdraw-detail.vue';
 import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/components/playback-chapter-popup/portrait-playback-chapter-popup.vue';
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
-import MobileBindIdentityInfoPopup from '@/components/common-business/bind-identity-info/mobile-bind-identity-info.vue';
+import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
 
 import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';

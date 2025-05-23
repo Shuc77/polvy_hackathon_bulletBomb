@@ -1,9 +1,7 @@
 /**
  * @file 浏览器全屏 hook
  */
-import { useLayoutStore } from '@/store/use-layout-store';
-import { computed, onBeforeUnmount, Ref, unref } from 'vue';
-import { storeToRefs } from 'pinia';
+import { computed, onBeforeUnmount, ref, Ref, unref } from 'vue';
 
 export interface FullscreenFieldData {
   /** 浏览器是否支持全屏模式的 api 字段 */
@@ -79,12 +77,27 @@ export type GetFullscreenElement = () => FullscreenElement;
  */
 export const useFullscreen = (
   elementRef: FullscreenElement | GetFullscreenElement = document.documentElement,
+  options?: {
+    /** 强制禁用全屏 */
+    forceDisabled?: boolean;
+    onFullscreenChange?: (isFullscreen: boolean) => void;
+  },
 ) => {
-  const layoutStore = useLayoutStore();
-  const { isFullscreen } = storeToRefs(layoutStore);
+  const isFullscreen = ref(false);
+
+  const { onFullscreenChange: cbFullScreen, forceDisabled = false } = options || {};
+
+  function setFullScreen(val: boolean) {
+    isFullscreen.value = val;
+    cbFullScreen && cbFullScreen(val);
+  }
 
   /** 是否支持浏览器全屏 */
-  const supportFullscreen = computed(() => !!fieldData);
+  const supportFullscreen = computed(() => {
+    if (forceDisabled) return false;
+
+    return !!fieldData;
+  });
 
   const getFullscreenElement = () => {
     if (typeof elementRef === 'function') {
@@ -130,13 +143,9 @@ export const useFullscreen = (
       return;
     }
     if (document[fieldData.elementField]) {
-      layoutStore.$patch({
-        isFullscreen: true,
-      });
+      setFullScreen(true);
     } else {
-      layoutStore.$patch({
-        isFullscreen: false,
-      });
+      setFullScreen(false);
     }
   }
 

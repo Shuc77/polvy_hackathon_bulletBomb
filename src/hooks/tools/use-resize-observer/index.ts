@@ -23,4 +23,8 @@ export const useResizeObserver = (refObj: Ref<Element | undefined>, callback: ()
   onBeforeUnmount(() => {
     observer.disconnect();
   });
+
+  return {
+    observer,
+  };
 };

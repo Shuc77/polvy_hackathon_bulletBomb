@@ -191,7 +191,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
 import { formatSeconds } from '@utils-ts/date';
 
 import PcPlayerProgressBar from '@/components/page-watch-common/player/player-progress-bar/pc-player-progress-bar.vue';
@@ -216,7 +215,6 @@ import PcVolumeSetting from './pc-volume-setting.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { MainScreenContent, PlayStatus } from '@polyv/live-watch-sdk';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -228,7 +226,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
-import { useGlobalInject } from '@/app/use-global-inject';
+import { usePcPlayerFullscreen } from '../../hooks/use-player-fullscreen';
 
 const playerControlUI = ref<HTMLDivElement>();
 collectPlayerKeyboardEffectElements(playerControlUI);
@@ -252,8 +250,6 @@ const {
   toForwardVideo,
 } = usePlayerAction();
 
-const { getAppRootElement } = useGlobalInject();
-
 const {
   playbackTimeVisible,
   playerProgressVisible,
@@ -273,6 +269,8 @@ const {
   forwardButtonTips,
   backwardButtonTips,
 } = usePlayerControl();
+
+const { isFullscreen, togglePlayerFullscreen } = usePcPlayerFullscreen();
 
 const { visible: manualTipsVisible, close: closeManualTips } = useSimpleVisible(true);
 
@@ -296,35 +294,6 @@ useEventBusListener(appEvents.player.ShowHistoryTips, (duration: number) => {
 function onClickRestart() {
   toRestart();
   closeHistoryTips();
-}
-
-const { isFullscreen, supportFullscreen, toggleFullscreen } = useFullscreen(() => {
-  return getAppRootElement().querySelector(PC_PLAYER_FULL_SCREEN_SELECTOR) as FullscreenElement;
-});
-
-function tryRequestVideoFullscreen() {
-  const fullDivEl = getAppRootElement().querySelector(PC_PLAYER_FULL_SCREEN_SELECTOR);
-  if (!fullDivEl) {
-    console.warn('找不到对应的全屏元素');
-    return;
-  }
-
-  const videoEl = fullDivEl.querySelector('video') as any;
-  console.warn('videoEl', videoEl);
-  if (videoEl && videoEl.webkitEnterFullScreen) {
-    videoEl.webkitEnterFullScreen();
-  } else {
-    console.warn('不支持系统全屏');
-  }
-}
-
-function togglePlayerFullscreen() {
-  if (supportFullscreen.value) {
-    toggleFullscreen();
-  } else {
-    console.warn('不支持通用全屏 API，尝试用播放器全屏');
-    tryRequestVideoFullscreen();
-  }
 }
 </script>
 

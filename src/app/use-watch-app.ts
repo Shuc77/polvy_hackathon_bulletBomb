@@ -56,7 +56,7 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
     watchAppStore.setPageError({
       type: PageErrorType.ChannelClosed,
       title: translate('pageError.channel.closed'),
-      desc: translate('pageError.channel.feedBack'),
+      desc: translate('pageError.channel.feedback'),
     });
     return true;
   }
@@ -66,6 +66,15 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
     watchAppStore.setPageError({
       type: PageErrorType.MobileChannelClosed,
       title: translate('pageError.platform.onlyPc'),
+    });
+    return true;
+  }
+
+  const accountInfo = watchCore.getAccountInfo();
+  if (accountInfo.isForbidden) {
+    watchAppStore.setPageError({
+      type: PageErrorType.ChannelForbidden,
+      title: translate('pageError.channel.forbidden'),
     });
     return true;
   }
@@ -116,7 +125,7 @@ export function createWatchApp() {
       watchAppStore.setPageError({
         type: PageErrorType.ChannelIdError,
         title: translate('pageError.channel.notExist'),
-        desc: translate('pageError.channel.feedBack'),
+        desc: translate('pageError.channel.feedback'),
       });
       return;
     }

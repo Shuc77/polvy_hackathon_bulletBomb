@@ -81,6 +81,7 @@
           >
             {{ $lang('donate.point.myPoint') }}
             <span>{{ surplusPoint }}</span>
+            {{ donatePointUnit }}
           </div>
         </template>
       </div>
@@ -118,13 +119,20 @@ const { popperRef, popperVisible, showPopper, hidePopper } = usePopper({
   outSideClickDelayHide: true,
 });
 
-const { selectedGood, setSelectedGood, quickCounts, donateCount, surplusPoint, donateGood } =
-  useDonateGood({
-    donateSuccess: () => {
-      hidePopper();
-      emit('donate-finish');
-    },
-  });
+const {
+  selectedGood,
+  setSelectedGood,
+  quickCounts,
+  donateCount,
+  surplusPoint,
+  donateGood,
+  donatePointUnit,
+} = useDonateGood({
+  donateSuccess: () => {
+    hidePopper();
+    emit('donate-finish');
+  },
+});
 
 /** 处理点击 */
 function onClickItem(event: Event, good: DonateGoodInfo) {

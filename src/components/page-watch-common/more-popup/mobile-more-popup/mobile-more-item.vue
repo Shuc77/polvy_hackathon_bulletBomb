@@ -71,7 +71,7 @@ const emit = defineEmits({
   background-image: url(./imgs/icon-menu-announcement-mob.png);
 }
 .c-mobile-more-item__icon--feedback {
-  background-image: url(./imgs/icon-menu-feed-back.png);
+  background-image: url(./imgs/icon-menu-feedback.png);
 }
 .c-mobile-more-item__icon--score {
   background-image: url(./imgs/icon-menu-score-redpack.png);

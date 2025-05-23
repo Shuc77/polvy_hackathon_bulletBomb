@@ -1,6 +1,10 @@
 <!-- @file 竖屏端图片消息 -->
 <template>
-  <portrait-msg-container class="c-portrait-image-msg">
+  <portrait-msg-container
+    class="c-portrait-image-msg"
+    response-relax
+    hide-bubble-style
+  >
     <div
       v-if="chatMsg.isIllegal"
       class="c-portrait-image-msg__illegal"
@@ -89,7 +93,14 @@ $--image-size: 80px;
   max-width: $--image-size;
   max-height: $--image-size;
   margin: 4px 0;
-  object-fit: contain;
+  cursor: zoom-in;
   border-radius: 4px;
+  object-fit: contain;
+}
+
+.c-portrait-msg-container--relax-mode {
+  .c-portrait-image-msg__img {
+    margin: 0;
+  }
 }
 </style>

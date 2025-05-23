@@ -40,7 +40,7 @@ export const interactionEvents = {
    * 打开举报反馈弹窗
    * @param {boolean} visible 显示状态
    */
-  OpenFeedBack: 'OpenFeedBack',
+  OpenFeedback: 'OpenFeedback',
   /**
    * 判断发言是否满足评论抽奖
    * @param {string} comment 消息内容

@@ -6,10 +6,12 @@ import Vue, { ComponentOptions } from 'vue';
 
 const entranceMobile = {} as {
   MobileWatchIdentifyLoginPage: ComponentOptions<Vue>;
+  MobileWatchIdentifyCollectInfoDialog: ComponentOptions<Vue>;
 };
 
 const entrancePc = {} as {
   PcWatchIdentifyLoginPage: ComponentOptions<Vue>;
+  PcWatchIdentifyCollectInfoDialog: ComponentOptions<Vue>;
 };
 
 type PolyvWatchIdentifySDKSceneType = {
@@ -39,15 +41,15 @@ export const useWatchIdentifySDKSceneLoader = () => {
     const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20250410',
+        version: 'rc-20250522',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20250410',
+        version: 'rc-20250522',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: 'dev-20250410',
+        version: 'dev-20250522',
       },
     };
 

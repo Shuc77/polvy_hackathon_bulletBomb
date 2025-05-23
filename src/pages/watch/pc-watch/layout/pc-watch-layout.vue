@@ -63,6 +63,7 @@
           class="c-pc-watch-layout__main__fullscreen-wrap"
           :class="{
             'c-pc-watch-layout__main__fullscreen-wrap--fullscreened': isFullscreen,
+            'c-pc-watch-layout__main__fullscreen-wrap--page-fullscreened': isPcPageFullscreen,
           }"
           @mousemove="showPlayerControl"
           @mouseenter="showPlayerControl"
@@ -269,7 +270,7 @@ const { managerBulletinMarqueeEnabled, managerBulletinMarqueeRenderEnabled } =
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { mainScreen, subScreenPackUp, isFullscreen, pcAsideSectionIsEmpty } =
+const { mainScreen, subScreenPackUp, isFullscreen, isPcPageFullscreen, pcAsideSectionIsEmpty } =
   storeDefinitionToRefs(useLayoutStore);
 
 const { masterMicItem, isDeviceRecoverFailed } = storeDefinitionToRefs(useConnectMicStore);
@@ -513,6 +514,15 @@ $--layout-sub-pack-up-height: 40px !default;
   .c-pc-watch-layout__main__player-wrap--right {
     display: none;
   }
+}
+
+.c-pc-watch-layout__main__fullscreen-wrap--page-fullscreened {
+  position: fixed;
+  z-index: $--zIndex-max-top;
+  width: $--plv-pc-watch-full-screen-vw;
+  height: $--plv-pc-watch-full-screen-vh;
+  // 增加背景色防止网页全屏后底下的内容被显现出来
+  background-color: #212121;
 }
 
 .c-pc-watch-layout__main__left {

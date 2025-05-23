@@ -58,7 +58,10 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
     const rules: ValidatorRules = {};
 
     // 手机号验证
-    if (enrollStore.enrollAuthType === EnrollAuthType.Mobile) {
+    if (
+      enrollStore.enrollAuthType === EnrollAuthType.Mobile &&
+      (enrollStore.smsVerifyEnabled || enrollStore.areaCodeEnabled)
+    ) {
       rules.phoneNumber = [
         { type: 'string', message: translate('form.error.phoneNumberRequired'), required: true },
         {

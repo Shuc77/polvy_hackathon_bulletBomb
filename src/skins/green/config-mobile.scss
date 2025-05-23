@@ -178,7 +178,4 @@ $--skin-page-mobile-configs: (
   'mobile-mobile-popup__header__title:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   // 移动端弹窗主体-头部按钮颜色
   'mobile-mobile-popup__header__btn:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-
-  // AI 看 回放大纲
-  'pws-ai-outline-tag:text-color': rgba($--color-white, 0.5),
 );

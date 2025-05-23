@@ -1,36 +1,42 @@
 <!-- @file PC 端互动功能接收端弹窗组件渲染入口 -->
 <template>
   <div class="c-pc-iar-render">
-    <!-- 公告 -->
-    <pc-announcement-dialog v-if="announcementFunctionVisible" />
-    <!-- 答题卡 -->
-    <pc-answer-card-dialog />
-    <!-- 快速答题卡 -->
-    <pc-quick-answer-card-dialog />
-    <!-- 签到 -->
-    <pc-check-in-dialog />
-    <!-- 反馈 -->
-    <pc-feed-back-dialog v-if="interactSetting.watchFeedbackEnabled" />
-
-    <template v-if="!useV2Lottery">
-      <!-- 抽奖动画 -->
-      <pc-lottery-animation />
-      <!-- 抽奖结果弹层 -->
-      <pc-lottery-result-dialog />
+    <template v-if="isPlaybackWatchUrl">
+      <!-- 举报/投诉反馈 -->
+      <pc-feedback-dialog v-if="feedbackEnabled" />
     </template>
+    <template v-else>
+      <!-- 公告 -->
+      <pc-announcement-dialog v-if="announcementFunctionVisible" />
+      <!-- 答题卡 -->
+      <pc-answer-card-dialog />
+      <!-- 快速答题卡 -->
+      <pc-quick-answer-card-dialog />
+      <!-- 签到 -->
+      <pc-check-in-dialog />
+      <!-- 反馈 -->
+      <pc-feedback-dialog v-if="feedbackEnabled" />
 
-    <!-- 问卷 -->
-    <pc-questionnaire-dialog />
-    <!-- 红包弹窗 -->
-    <pc-redpack-dialog />
-    <!-- 红包雨组件 -->
-    <pc-redpack-rain />
-    <!-- 报名抽奖 -->
-    <pc-enroll-lottery-dialog />
-    <!-- 商品库职位详情弹层 -->
-    <pc-product-job-detail-dialog />
-    <!-- 二维码分弹窗 -->
-    <pc-qr-code-share-dialog />
+      <template v-if="!useV2Lottery">
+        <!-- 抽奖动画 -->
+        <pc-lottery-animation />
+        <!-- 抽奖结果弹层 -->
+        <pc-lottery-result-dialog />
+      </template>
+
+      <!-- 问卷 -->
+      <pc-questionnaire-dialog />
+      <!-- 红包弹窗 -->
+      <pc-redpack-dialog />
+      <!-- 红包雨组件 -->
+      <pc-redpack-rain />
+      <!-- 报名抽奖 -->
+      <pc-enroll-lottery-dialog />
+      <!-- 商品库职位详情弹层 -->
+      <pc-product-job-detail-dialog />
+      <!-- 二维码分弹窗 -->
+      <pc-qr-code-share-dialog />
+    </template>
   </div>
 </template>
 
@@ -40,7 +46,7 @@ import PcAnnouncementDialog from './announcement/pc-announcement-dialog.vue';
 import PcAnswerCardDialog from './answer-card/pc-answer-card-dialog.vue';
 import PcQuickAnswerCardDialog from './answer-card/pc-quick-answer-card-dialog.vue';
 import PcCheckInDialog from '../interactive-receive-v2/check-in-v2/pc-check-in-dialog.vue';
-import PcFeedBackDialog from './feed-back/pc-feed-back-dialog.vue';
+import PcFeedbackDialog from './feedback/pc-feedback-dialog.vue';
 import PcLotteryAnimation from './lottery/pc-lottery-animation.vue';
 import PcLotteryResultDialog from './lottery/pc-lottery-result-dialog.vue';
 import PcQuestionnaireDialog from './questionnaire/pc-questionnaire-dialog.vue';
@@ -51,8 +57,11 @@ import PcProductJobDetailDialog from './product/pc-product-job-detail-dialog.vue
 import PcQrCodeShareDialog from '../../common-business/qrcode-share-dialog/pc-qrcode-share-dialog.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-const { announcementFunctionVisible, interactSetting, useV2Lottery } =
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { announcementFunctionVisible, feedbackEnabled, useV2Lottery } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 onMounted(() => {

@@ -1,22 +1,22 @@
 <template>
-  <div class="mobile-playback-outline">
+  <div class="c-mobile-playback-outline">
     <div
       v-show="outlineType === 'finish'"
-      class="mobile-playback-outline__wrap pws-ai-outline-text"
+      class="c-mobile-playback-outline__wrap pws-ai-outline-text"
     >
       <!-- 摘要 -->
-      <div class="mobile-playback-outline__introduction">
-        <div class="mobile-playback-outline__introduction__title">
+      <div class="c-mobile-playback-outline__introduction">
+        <div class="c-mobile-playback-outline__introduction__title">
           <span>{{ $lang('ai.summary.desc') }}</span>
           <span
-            class="mobile-playback-outline__introduction__mind"
+            class="c-mobile-playback-outline__introduction__mind"
             @click="handleMinMapPreview"
           >
             {{ $lang('ai.summary.mind') }}
             <mobile-icon-arrow-right />
           </span>
         </div>
-        <div class="mobile-playback-outline__introduction__content pws-ai-outline-bg">
+        <div class="c-mobile-playback-outline__introduction__content pws-ai-outline-bg">
           <p
             ref="contentRef"
             class="pws-ai-outline-desc"
@@ -37,32 +37,31 @@
       <!-- 分段总结 -->
       <div
         v-show="outlineContent"
-        class="mobile-playback-outline__summary"
+        class="c-mobile-playback-outline__summary"
       >
-        <div class="mobile-playback-outline__summary__title">{{ $lang('ai.summary.sum') }}</div>
+        <div class="c-mobile-playback-outline__summary__title">{{ $lang('ai.summary.sum') }}</div>
         <div
-          class="mobile-playback-outline__summary__content pws-ai-outline-bg pws-ai-outline-desc"
+          class="c-mobile-playback-outline__summary__content pws-ai-outline-bg pws-ai-outline-desc"
         >
           <div
             v-for="(item, index) in outlineContent"
             :key="index"
-            class="mobile-playback-outline__paragraph"
+            class="c-mobile-playback-outline__paragraph"
           >
             <!-- 段落标题 -->
-            <div class="mobile-playback-outline__paragraph__title">
+            <div class="c-mobile-playback-outline__paragraph__title">
+              <div class="c-mobile-playback-outline__paragraph-info pws-ai-outline-desc">
+                {{ item.title }}
+              </div>
               <div
-                class="mobile-playback-outline__paragraph-tag pws-ai-outline-tag pws-ai-outline-tag-bg"
+                class="c-mobile-playback-outline__paragraph-tag pws-ai-outline-tag"
                 @click="handleSeekVideo(item.startTime)"
               >
-                <mobile-icon-play-seek class="mobile-playback-outline__paragraph-icon" />
                 <div>{{ item.startTime }}</div>
-              </div>
-              <div class="mobile-playback-outline__paragraph-info pws-ai-outline-desc">
-                {{ item.title }}
               </div>
             </div>
             <!-- 有序列表 -->
-            <ul class="mobile-playback-outline__paragraph__content">
+            <ul class="c-mobile-playback-outline__paragraph__content">
               <li
                 v-for="(summaryItem, idx) in item.summary"
                 :key="idx"
@@ -77,11 +76,11 @@
 
     <div
       v-if="outlineType !== 'finish'"
-      class="mobile-playback-outline__empty pws-ai-outline-text"
+      class="c-mobile-playback-outline__empty pws-ai-outline-text"
     >
       <img
         v-if="outlineType === 'init'"
-        class="mobile-playback-outline__empty__icon"
+        class="c-mobile-playback-outline__empty__icon"
         src="./images/icon-empty.png"
       />
       {{ outlineType === 'init' ? $lang('ai.summary.init') : $lang('ai.summary.empty') }}
@@ -90,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { MobileIconPlaySeek, MobileIconArrowRight } from '@/components/component-icons/mobile/map';
+import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { useAISummary } from './use-playback-outline';
 import { computed, ref } from 'vue';
 
@@ -118,12 +117,12 @@ const shouldShowButton = computed(() => {
 </script>
 
 <style lang="scss">
-.mobile-playback-outline {
+.c-mobile-playback-outline {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
 }
-.mobile-playback-outline__wrap {
+.c-mobile-playback-outline__wrap {
   position: relative;
   box-sizing: border-box;
   display: flex;
@@ -134,12 +133,12 @@ const shouldShowButton = computed(() => {
   @include iphone-x-pb(24px);
 }
 
-.mobile-playback-outline__introduction {
+.c-mobile-playback-outline__introduction {
   display: flex;
   flex-direction: column;
 }
-.mobile-playback-outline__introduction__title,
-.mobile-playback-outline__summary__title {
+.c-mobile-playback-outline__introduction__title,
+.c-mobile-playback-outline__summary__title {
   margin: 10px 0;
   margin-bottom: 12px;
   font-size: 16px;
@@ -147,7 +146,7 @@ const shouldShowButton = computed(() => {
   line-height: 24px;
   // color: #ffffff;
 }
-.mobile-playback-outline__introduction__title {
+.c-mobile-playback-outline__introduction__title {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -159,12 +158,12 @@ const shouldShowButton = computed(() => {
     margin-left: 4px;
   }
 }
-.mobile-playback-outline__introduction__mind {
+.c-mobile-playback-outline__introduction__mind {
   font-size: 14px;
   line-height: 22px;
 }
 
-.mobile-playback-outline__introduction__content {
+.c-mobile-playback-outline__introduction__content {
   position: relative;
   box-sizing: border-box;
   display: flex;
@@ -206,7 +205,7 @@ const shouldShowButton = computed(() => {
   }
 }
 
-.mobile-playback-outline__summary__content {
+.c-mobile-playback-outline__summary__content {
   padding: 12px 12px 0 12px;
   font-size: 14px;
   line-height: 1.3;
@@ -215,23 +214,22 @@ const shouldShowButton = computed(() => {
   border-radius: 4px;
 }
 
-.mobile-playback-outline__paragraph__title {
+.c-mobile-playback-outline__paragraph__title {
   display: flex;
   align-items: center;
 }
-.mobile-playback-outline__paragraph + .mobile-playback-outline__paragraph {
+.c-mobile-playback-outline__paragraph + .c-mobile-playback-outline__paragraph {
   padding-top: 14px;
   border-top: 1px solid rgba($color: #ffffff, $alpha: 0.1);
 }
-.mobile-playback-outline__paragraph-tag {
+.c-mobile-playback-outline__paragraph-tag {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  padding: 2px 4px;
-  margin-right: 8px;
+  padding-bottom: 2px;
   color: #bec2ca;
   cursor: pointer;
-  background: rgba($color: #ffffff, $alpha: 0.1);
   border-radius: 4px;
 
   > div {
@@ -239,16 +237,8 @@ const shouldShowButton = computed(() => {
     line-height: 1 !important;
   }
 }
-.mobile-playback-outline__paragraph-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 2px;
-  font-size: 16px;
-  transform: scale(0.5);
-}
-.mobile-playback-outline__paragraph-info {
+.c-mobile-playback-outline__paragraph-info {
   display: inline-block;
-  flex: 1;
   margin-right: 8px;
   overflow: hidden;
   font-size: 15px;
@@ -257,12 +247,12 @@ const shouldShowButton = computed(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.mobile-playback-outline__paragraph__content {
+.c-mobile-playback-outline__paragraph__content {
   padding: 8px 12px 10px 0;
   font-size: 14px;
   line-height: 22px;
 }
-.mobile-playback-outline__tip {
+.c-mobile-playback-outline__tip {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -270,11 +260,11 @@ const shouldShowButton = computed(() => {
   font-size: 14px;
   color: #999;
 }
-.mobile-playback-outline__preview {
+.c-mobile-playback-outline__preview {
   width: 100%;
   height: 300px;
 }
-.mobile-playback-outline__empty {
+.c-mobile-playback-outline__empty {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -283,7 +273,7 @@ const shouldShowButton = computed(() => {
   color: #ffffff;
   transform: translateY(-40px);
 }
-.mobile-playback-outline__empty__icon {
+.c-mobile-playback-outline__empty__icon {
   width: 26px;
   height: 18px;
   margin-bottom: 15px;

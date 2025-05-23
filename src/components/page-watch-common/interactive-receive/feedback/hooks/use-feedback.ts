@@ -7,31 +7,31 @@ import { useGlobalInject } from '@/app/use-global-inject';
 /**
  * @hook 互动-反馈
  * */
-export const useFeedBack = () => {
+export const useFeedback = () => {
   const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
 
   /** 反馈 SDK 实例 */
-  const feedBackSdk = watchCore.interactReceive.getFeedBack();
+  const feedbackSdk = watchCore.interactReceive.getFeedBack();
 
   /** 反馈标题 */
-  const feedBackTitle = computed(() => translate('interact.feedBack.title'));
+  const feedbackTitle = computed(() => translate('interact.feedback.title'));
 
   /** 反馈是否显示 */
-  const feedBackVisible = ref(false);
+  const feedbackVisible = ref(false);
 
   /** 设置反馈是否显示 */
-  const setFeedBackVisible = (visible = true) => {
-    feedBackVisible.value = visible;
+  const setFeedbackVisible = (visible = true) => {
+    feedbackVisible.value = visible;
   };
 
-  useEventBusListener(appEvents.interaction.OpenFeedBack, setFeedBackVisible);
+  useEventBusListener(appEvents.interaction.OpenFeedback, setFeedbackVisible);
 
   return {
-    feedBackSdk,
-    feedBackTitle,
-    feedBackVisible,
-    setFeedBackVisible,
+    feedbackSdk,
+    feedbackTitle,
+    feedbackVisible,
+    setFeedbackVisible,
   };
 };

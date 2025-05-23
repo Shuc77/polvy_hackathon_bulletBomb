@@ -44,6 +44,9 @@ const installVue = () => {
     if (window.aegis) {
       window.aegis.error(error);
     }
+    if (window.plvLogger) {
+      window.plvLogger.error(error);
+    }
   };
 
   Vue.use(PiniaVuePlugin);

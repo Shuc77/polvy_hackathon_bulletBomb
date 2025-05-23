@@ -51,9 +51,8 @@ import { useConnectMicing } from '../../hooks/use-connect-micing';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { translate } from '@/assets/lang';
+import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
 
 const {
   playerSdkLoadError,
@@ -65,7 +64,7 @@ const {
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
-const channelStore = useChannelStore();
+const { getStreamStopText } = usePlayerStreamStopText();
 
 const { playerContainer } = usePlayerMain({
   initPlayerOptions: () => {
@@ -73,9 +72,7 @@ const { playerContainer } = usePlayerMain({
       barrageEnabled: false,
       showController: false,
       skinConfig: {
-        streamStopTxt: channelStore.privateSeminarChannel
-          ? translate('seminar.noLive')
-          : translate('channel.noLive'),
+        streamStopTxt: getStreamStopText(),
         bgColor: '#2B3045',
         streamPause: require('../../imgs/player-stop.png'),
         streamStop: require('../../imgs/player-no-live.png'),

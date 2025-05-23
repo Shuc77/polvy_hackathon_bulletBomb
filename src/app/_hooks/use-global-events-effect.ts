@@ -2,7 +2,7 @@ import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePageStore } from '@/store/use-page-store';
 import { onMounted } from 'vue';
-import { isMobile } from '@/assets/utils/browser';
+import { isMobile, tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 
 /**
  * @hook 监听全局事件的副作用处理
@@ -11,7 +11,7 @@ export function useGlobalEventsEffect() {
   const layoutStore = useLayoutStore();
   const pageStore = usePageStore();
 
-  if (isMobile) {
+  if (isMobile || tabletLoadDesktopTemplate) {
     // 处理屏幕旋转
     useScreenOrientHook({
       autoListenCb: screenOrientationMode => {

@@ -39,6 +39,8 @@ export interface ProductGoodData {
   cover: string;
   /** 封面图列表 */
   coverList: string[];
+  /** 是否开价 */
+  openPriceEnable?: string;
 
   /** 扩展信息 */
   ext?: string;

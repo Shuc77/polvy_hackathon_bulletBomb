@@ -41,24 +41,13 @@
           <div
             v-if="tabPaneData.length > 1"
             ref="currentLineRef"
-            class="c-mobile-menu-tab-header__current-line pws-main-tab-header-active-line"
+            class="c-mobile-menu-tab-header__current-line pws-special-bg-color"
             :style="{
               left: `${currentLineLeft}px`,
             }"
           ></div>
         </div>
       </div>
-
-      <!-- 左侧阴影 -->
-      <!-- <div
-        v-show="leftShadowVisible"
-        class="c-mobile-menu-tab-header__content__shadow--left pws-main-tab-header-shadow-left"
-      ></div> -->
-      <!-- 右侧阴影 -->
-      <!-- <div
-        v-show="rightShadowVisible"
-        class="c-mobile-menu-tab-header__content__shadow--right pws-main-tab-header-shadow-right"
-      ></div> -->
     </div>
     <slot name="header-suffix"></slot>
   </div>

@@ -127,6 +127,7 @@ const {
   toSeekByTimeAxisMark,
 } = useTimeAxisMarkHook({
   getContainerWidth: () => props.containerEl.clientWidth || 0,
+  getContainerEl: () => props.containerEl,
 });
 
 /** 当前激活的标记点 */
