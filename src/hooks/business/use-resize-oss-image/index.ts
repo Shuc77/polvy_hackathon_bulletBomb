@@ -1,5 +1,21 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { isSupportWebp } from '@/assets/utils/image';
+import { appendUrl } from '@/assets/utils/url';
+
+export function appendToOssProcess(url: string, additionalParams: string) {
+  const ossProcessRegex = /(x-oss-process=)([^&]*)/;
+  const match = url.match(ossProcessRegex);
+
+  if (match) {
+    const existingParams = match[2];
+    const newParams = `${existingParams},${additionalParams}`;
+    return url.replace(ossProcessRegex, `$1${newParams}`);
+  } else {
+    return appendUrl(url, {
+      'x-oss-process': additionalParams,
+    });
+  }
+}
 
 export const useResizeOssImage = () => {
   const { getWatchCore } = useGlobalInject();

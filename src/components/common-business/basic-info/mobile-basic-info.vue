@@ -1,97 +1,100 @@
 <!-- @file 移动端基础信息显示 -->
 <template>
   <div class="c-mobile-basic-info">
-    <!-- 基础信息 -->
-    <div class="c-mobile-basic-info__channel">
-      <!-- 频道 logo -->
-      <div
-        class="c-mobile-basic-info__channel__cover g-img-cover"
-        :style="{
-          backgroundImage: `url(${resizeOSSImg(channelCoverImg, 80, 80)})`,
-        }"
-      ></div>
-      <div class="c-mobile-basic-info__channel__inner">
-        <!-- 频道标题 + 频道状态 -->
-        <div class="c-mobile-basic-info__channel__inner__top">
+    <div class="c-mobile-basic-info__top pws-dark-white-bg-10 pws-light-white-bg-40">
+      <!-- 基础信息 -->
+      <div class="c-mobile-basic-info__channel">
+        <!-- 频道 logo -->
+        <div
+          class="c-mobile-basic-info__channel__cover g-img-cover"
+          :style="{
+            backgroundImage: `url(${resizeOSSImg(channelCoverImg, 80, 80)})`,
+          }"
+        ></div>
+        <div class="c-mobile-basic-info__channel__inner">
+          <!-- 频道标题 + 频道状态 -->
+          <div class="c-mobile-basic-info__channel__inner__top">
+            <div class="c-mobile-basic-info__channel__inner__title pws-primary-text-color">
+              {{ channelTitle }}
+              <normal-status-tag
+                class="c-mobile-basic-info__channel__inner__status"
+                :live-status="liveStatus"
+              />
+            </div>
+          </div>
+          <!-- 直播时间 + 浏览次数 + 无延迟标记 -->
           <div
-            class="c-mobile-basic-info__channel__inner__title pws-mobile-basic-info-channel-title"
+            class="c-mobile-basic-info__channel__inner__bottom pws-dark-white-color-80 pws-light-black-color-40"
           >
-            {{ channelTitle }}
-            <span class="c-mobile-basic-info__channel__inner__status">
-              <mobile-status-tag :live-status="liveStatus" />
+            <span class="c-mobile-basic-info__channel__inner__start-time">
+              {{ pageViewVisible ? '' : `${$lang('watch.liveTime')}：` }}
+              {{ liveStartTimeText }}
             </span>
+            <span
+              v-if="pageViewVisible"
+              class="c-mobile-basic-info__channel__inner__page-view pws-basic-border-color"
+            >
+              {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
+            </span>
+            <!-- 无延迟标签 -->
+            <span
+              v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
+              class="c-mobile-basic-info__channel__inner__low-latency g-img-cover"
+              :class="{
+                'c-mobile-basic-info__channel__inner__low-latency__en': !isChineseLang,
+              }"
+            ></span>
           </div>
         </div>
-        <!-- 直播时间 + 浏览次数 + 无延迟标记 -->
-        <div class="c-mobile-basic-info__channel__inner__bottom pws-mobile-basic-info-data">
-          <span
-            class="c-mobile-basic-info__channel__inner__start-time pws-mobile-basic-info-start-time"
-          >
-            {{ pageViewVisible ? '' : `${$lang('watch.liveTime')}：` }}
-            {{ liveStartTimeText }}
-          </span>
-          <span
-            v-if="pageViewVisible"
-            class="c-mobile-basic-info__channel__inner__page-view pws-mobile-basic-info-page-view"
-          >
-            {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
-          </span>
-          <!-- 无延迟标签 -->
-          <span
-            v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
-            class="c-mobile-basic-info__channel__inner__low-latency g-img-cover"
-            :class="{
-              'c-mobile-basic-info__channel__inner__low-latency__en': !isChineseLang,
-            }"
-          ></span>
-        </div>
       </div>
-    </div>
 
-    <!-- 主持人信息 -->
-    <div class="c-mobile-basic-info__author pws-mobile-basic-info-author">
-      <!-- 主持人 -->
+      <!-- 主持人信息 -->
       <div
-        class="c-mobile-basic-info__author__publisher pws-mobile-basic-info-publisher"
-        @click="togglePublisherFullVisible"
+        class="c-mobile-basic-info__author pws-basic-border-color pws-dark-white-color-80 pws-light-black-color-40"
       >
-        <img
-          v-if="channelPublisherPic"
-          :src="channelPublisherPic"
-          class="c-mobile-basic-info__author__publisher__icon"
-        />
-        <mobile-icon-people
-          v-else
-          class="c-mobile-basic-info__author__publisher__icon c-mobile-basic-info__author__publisher__icon-people"
-        />
-        <span
-          :class="{
-            'g-multiline': !publisherFullVisible,
-          }"
-        >
-          {{ channelPublisher }}
-        </span>
-      </div>
-      <section class="c-mobile-basic-info__author__right">
-        <!-- 点赞数 -->
+        <!-- 主持人 -->
         <div
-          v-if="showLikeCount"
-          class="c-mobile-basic-info__author__right-item c-mobile-basic-info__author__like-count g-text-nowrap pws-mobile-basic-info-like"
+          class="c-mobile-basic-info__author__publisher"
+          @click="togglePublisherFullVisible"
         >
-          <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
-          <span>{{ realtimeLikes }}</span>
-        </div>
-        <!-- 观看时长 -->
-        <div
-          v-if="watchDurationEnabled"
-          class="c-mobile-basic-info__author__right-item c-mobile-basic__author__watch-duration g-text-nowrap pws-mobile-basic-info-publisher"
-        >
-          <mobile-icon-watch-duration class="c-mobile-basic__author__watch-duration__icon" />
-          <span>
-            {{ $lang('watch.duration.learnTime', { duration: String(viewerWatchDuration) }) }}
+          <img
+            v-if="channelPublisherPic"
+            :src="channelPublisherPic"
+            class="c-mobile-basic-info__author__publisher__icon"
+          />
+          <mobile-icon-people
+            v-else
+            class="c-mobile-basic-info__author__publisher__icon c-mobile-basic-info__author__publisher__icon-people"
+          />
+          <span
+            :class="{
+              'g-multiline': !publisherFullVisible,
+            }"
+          >
+            {{ channelPublisher }}
           </span>
         </div>
-      </section>
+        <section class="c-mobile-basic-info__author__right">
+          <!-- 点赞数 -->
+          <div
+            v-if="showLikeCount"
+            class="c-mobile-basic-info__author__right-item c-mobile-basic-info__author__like-count g-text-nowrap"
+          >
+            <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
+            <span>{{ realtimeLikes }}</span>
+          </div>
+          <!-- 观看时长 -->
+          <div
+            v-if="watchDurationEnabled"
+            class="c-mobile-basic-info__author__right-item c-mobile-basic__author__watch-duration g-text-nowrap"
+          >
+            <mobile-icon-watch-duration class="c-mobile-basic__author__watch-duration__icon" />
+            <span>
+              {{ $lang('watch.duration.learnTime', { duration: String(viewerWatchDuration) }) }}
+            </span>
+          </div>
+        </section>
+      </div>
     </div>
 
     <!-- 频道介绍 -->
@@ -115,7 +118,7 @@ import {
 } from '@/components/component-icons/mobile/map';
 import MobileRichTextRender from '@/components/common-base/rich-text-render/mobile-rich-text-render.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
-import MobileStatusTag from '@/components/common-business/status-tag/mobile-status-tag.vue';
+import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
 
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelStore } from '@/store/use-channel-store';
@@ -196,18 +199,26 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   flex-direction: column;
   min-height: 100%;
 }
+
+.c-mobile-basic-info__top {
+  padding: 0 16px;
+  margin: 12px 16px 0;
+  border-radius: 8px;
+}
+
 .c-mobile-basic-info__channel {
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
   width: 100%;
-  padding: 16px;
+  padding: 16px 0;
 }
 
 .c-mobile-basic-info__channel__cover {
   width: 40px;
   height: 40px;
-  margin-right: 10px;
+  margin-right: 12px;
+  border-radius: 8px;
 }
 
 .c-mobile-basic-info__channel__inner {
@@ -219,21 +230,22 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   align-items: center;
 }
 .c-mobile-basic-info__channel__inner__title {
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 22px;
   word-break: break-word;
 }
 
 .c-mobile-basic-info__channel__inner__status {
   margin-left: 8px;
+  transform: translateY(-1px);
 }
 
 .c-mobile-basic-info__channel__inner__bottom {
   display: flex;
   align-items: center;
   height: 18px;
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: 3px;
+  font-size: 14px;
 }
 
 .c-mobile-basic-info__channel__inner__page-view {
@@ -262,12 +274,11 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
 .c-mobile-basic-info__author {
   display: flex;
   align-items: center;
-  padding: 10px 16px;
+  padding: 12px 0;
 
-  font-size: 12px;
+  font-size: 14px;
 
   border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
 }
 
 .c-mobile-basic-info__author__publisher {

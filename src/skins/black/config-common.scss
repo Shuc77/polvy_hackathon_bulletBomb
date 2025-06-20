@@ -116,25 +116,6 @@ $--skin-component-configs: (
   'aside-menu-button--hover:bg-color': rgba($--color-white, 0.2),
   // 侧边栏按钮 active 背景色
   'aside-menu-button--active:bg-color': rgba($--color-white, 0.15),
-
-  // pc 端直播状态标签颜色
-  'pc-live-status-tag:color': (
-    'unStart' #ADADC0,
-    'waiting' #78A7ED,
-    'live' #F06E6E,
-    'end' rgba(#ffffff, .6),
-    'playback' #78A7ED,
-    'stop' #F06E6E,
-  ),
-  // mobile 端直播状态标签颜色
-  'mobile-live-status-tag:color': (
-    'unStart' #ADADC0,
-    'waiting' #78A7ED,
-    'live' #F06E6E,
-    'end' rgba(#ffffff, .6),
-    'playback' #78A7ED,
-    'stop' #F06E6E,
-  ),
 );
 
 // 皮肤公用页面配置

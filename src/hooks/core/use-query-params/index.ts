@@ -142,6 +142,8 @@ export const useQueryParams = (opts?: {
 
     /** 频道号 */
     channelId: buildGetters('channelId'),
+    /** 目标场次 Id */
+    targetSessionId: buildGetters('targetSessionId'),
     /**
      * 会议模式
      * 传入该参数后，在移动端横屏场景不会加载播放器和PPT
@@ -273,3 +275,28 @@ export const useQueryParams = (opts?: {
 export type ParamGetterType = ReturnType<ReturnType<typeof useQueryParams>['paramGetter']>;
 
 export type QueryParamsKeyType = keyof ParamGetterType;
+
+/**
+ * 从 url 链接路径中提取频道号和场次 Id
+ * @param paramUrl 地址
+ */
+export function extractChannelAndSessionId(paramUrl?: string) {
+  const url = paramUrl || window.location.href;
+  const pathname = new URL(url).pathname;
+  const parts = pathname.split('/').filter(part => part);
+  const lastPart = parts[parts.length - 1];
+
+  let channelId: string | undefined;
+  let targetSessionId: string | undefined;
+
+  if (/^\d+$/.test(lastPart)) {
+    channelId = lastPart; // 如果最后一个部分是纯数字，则认为是 channelId
+  } else {
+    targetSessionId = lastPart;
+    if (parts.length >= 2 && /^\d+$/.test(parts[parts.length - 2])) {
+      channelId = parts[parts.length - 2];
+    }
+  }
+
+  return { channelId, targetSessionId };
+}

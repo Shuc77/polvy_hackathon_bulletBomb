@@ -1,6 +1,6 @@
-import { ref, nextTick, computed, unref } from 'vue';
+import { ref, nextTick, computed } from 'vue';
 import { isEmpty } from 'lodash-es';
-import { appEvents, useEventBusListener } from '@/app/app-events';
+import { appEvents } from '@/app/app-events';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 
@@ -32,7 +32,6 @@ export function useOrder() {
 
   /** 提交中 */
   const submitting = ref(false);
-  useEventBusListener(appEvents.interaction.OpenOrderPopup, showPopup);
 
   const areaPickVisible = ref(false);
   /** 商品 */
@@ -84,45 +83,10 @@ export function useOrder() {
     }
   });
 
-  /** 商品埋点开关 */
-  const productTrackEnabled = computed(() => {
-    return interactReceiveStore.interactSetting.productTrackEnabled;
-  });
-
   /**
    * 弹窗高度是否填满除播放器外其余高度
    */
   const isFillBodySection = ref(true);
-
-  /**
-   * @description: 显示弹窗
-   */
-  function showPopup(values: ProductGoodData[]) {
-    products.value = values;
-    visible.value = true;
-    trackOrderPageVisit(values[0]);
-  }
-
-  /**
-   * @description: 订单访问页埋点
-   */
-  function trackOrderPageVisit(product: ProductGoodData) {
-    const watchEventTrackEnabled = watchCore.channel.getWatchEventTrackEnabled();
-    if (!watchEventTrackEnabled || !unref(productTrackEnabled) || !product) return;
-
-    watchCore.rtas.trackBehaviorEvent({
-      eventType: 'show',
-      eventId: 'order_page_visit',
-      data: {
-        buyType: product.buyType || '',
-        deliveryType: product.deliveryType || '',
-        name: product.name || '',
-        productId: product.productId || '',
-        productType: product.productType || '',
-        productPushRule: product.productPushRule || '',
-      },
-    });
-  }
 
   /**
    * @description: 跳转到地址列表

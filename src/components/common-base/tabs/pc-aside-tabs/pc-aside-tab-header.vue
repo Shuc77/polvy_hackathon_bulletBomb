@@ -141,7 +141,7 @@ const { leftArrowVisible, rightArrowVisible } = useTabHeaderArrow({
 
 .c-pc-aside-tab-header__item__sub-label {
   margin-left: 4px;
-  font-family: DINProFont;
+  font-family: DINPro-Medium;
   font-size: 12px;
   zoom: 0.83;
 }

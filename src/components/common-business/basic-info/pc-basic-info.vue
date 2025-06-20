@@ -20,7 +20,10 @@
             {{ channelTitle }}
           </span>
           <!-- 直播状态标签 -->
-          <pc-status-tag class="c-pc-basic-info__main__status" />
+          <normal-status-tag
+            class="c-pc-basic-info__main__status"
+            force-dark
+          />
           <!-- 无延迟标签 -->
           <i
             v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
@@ -147,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
+import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
 import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
 import PcFollowBtn from '@/components/page-watch-common/follow/follow-btn/pc-follow-btn.vue';
@@ -323,7 +326,7 @@ $--basic-logo-size: 50px;
   width: 24px;
   height: 24px;
   margin-right: 8px;
-  font-size: 20px !important;
+  font-size: 24px !important;
   border-radius: 50%;
 }
 .c-pc-basic-info__main__bottom__publisher__panel {

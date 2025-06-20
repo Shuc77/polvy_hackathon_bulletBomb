@@ -29,6 +29,40 @@
       </div>
     </div>
 
+    <!-- 数字方形样式 -->
+    <div
+      v-if="theme === 'number-square'"
+      class="c-count-down__number-square"
+      :class="{
+        'is-pc': !isMobile,
+      }"
+    >
+      <div
+        v-for="(item, index) in realTimeContents"
+        :key="`number-square-${index}`"
+        class="c-count-down__number-square__item"
+      >
+        <span
+          v-for="(text, numIndex) in item.text.split('')"
+          :key="`number-square-${index}-${numIndex}`"
+          class="c-count-down__number-square__item__count"
+          :class="{
+            'pws-dark-white-bg-20 pws-light-white-bg-100 pws-primary-text-color': isMobile,
+          }"
+        >
+          {{ text }}
+        </span>
+        <span
+          class="c-count-down__number-square__item__word"
+          :class="{
+            'pws-secondary-text-color': isMobile,
+          }"
+        >
+          {{ item.title }}
+        </span>
+      </div>
+    </div>
+
     <!-- 自定义样式 -->
     <div
       v-if="theme === 'red-square'"
@@ -163,6 +197,49 @@ const realTimeContents = computed(() => {
   height: 23px;
   font-size: 12px;
   line-height: 23px;
+}
+
+.c-count-down__number-square {
+  display: flex;
+}
+.c-count-down__number-square__item {
+  display: flex;
+  align-items: flex-end;
+}
+.c-count-down__number-square__item__count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 26px;
+  margin-right: 2px;
+  font-family: DINPro-Medium;
+  font-size: 20px;
+  border-radius: 4px;
+}
+.c-count-down__number-square__item__word {
+  margin-right: 4px;
+  margin-left: 2px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.c-count-down__number-square.is-pc {
+  .c-count-down__number-square__item__count {
+    width: 32px;
+    height: 52px;
+    margin-right: 4px;
+    font-size: 40px;
+    color: #fff;
+    background: rgba(#fff, 0.2);
+    border-radius: 8px;
+  }
+  .c-count-down__number-square__item__word {
+    margin-right: 8px;
+    margin-left: 4px;
+    font-size: 20px;
+    line-height: 28px;
+    color: rgba(#fff, 0.6);
+  }
 }
 
 // red-square

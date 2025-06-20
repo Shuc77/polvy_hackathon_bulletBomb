@@ -61,6 +61,7 @@ export const useSlideVerify = (options: {
         [LangType.English]: 'en',
         [LangType.Japanese]: 'ja_JP',
         [LangType.Korean]: 'ko_KR',
+        [LangType.Russian]: 'ru_RU',
       }[langStore.currentLang] || 'en';
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

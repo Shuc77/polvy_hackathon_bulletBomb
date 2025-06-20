@@ -19,6 +19,8 @@ export enum ButtonType {
   Aggravate = 'aggravate',
   /** 侧边菜单栏 */
   AsideMenu = 'aside-menu',
+  /** 置灰按钮 */
+  Gray = 'gray',
 }
 
 /**

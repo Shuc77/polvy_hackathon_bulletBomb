@@ -24,7 +24,7 @@ import { useSaleInviteIntercept } from './_hooks/use-sale-invite-intercept';
 import { useUserIdentityIntercept } from './_hooks/use-user-identity-intercept';
 import { useGlobalInject } from './use-global-inject';
 import { useExternalContainerEffect } from './_hooks/use-external-container-effect';
-import { useQueryParams } from '@/hooks/core/use-query-params';
+import { extractChannelAndSessionId, useQueryParams } from '@/hooks/core/use-query-params';
 import { DEFAULT_APP_UNIQUE_ID } from '@/assets/constants/defaults';
 import { isBuildForFeedMainMode, isInjectByExternalApp } from '@/assets/utils/utils';
 import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/auth/hooks/use-auth-invite-watch-intercept';
@@ -34,7 +34,10 @@ import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/aut
  * @desc 存在需要拦截的情况下，拦截器内部会自行处理，调用方需要终止初始化函数继续执行
  * @returns 是否需要拦截
  * */
-const useInterceptWatchAppInit = async (): Promise<boolean> => {
+const useInterceptWatchAppInit = async (opts: {
+  channelId: string;
+  targetSessionId?: string;
+}): Promise<boolean> => {
   const watchAppStore = useWatchAppStore();
   const watchCore = watchAppStore.getWatchCore();
 
@@ -79,6 +82,27 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
     return true;
   }
 
+  // 需要指定场次才能观看
+  const targetSessionEnabled = watchCore.channel.getTargetSessionEnabled();
+  if (targetSessionEnabled && !opts.targetSessionId) {
+    watchAppStore.setPageError({
+      type: PageErrorType.TargetSessionNotExist,
+      title: translate('pageError.targetSession.notExist.title'),
+      desc: translate('pageError.targetSession.notExist.desc'),
+    });
+    return true;
+  }
+
+  // 处理企业微信和用户体系冲突
+  if (watchCore.weixin.limitEnterpriseWatchByConflictIdentityInfo()) {
+    watchAppStore.setPageError({
+      type: PageErrorType.WorkWechatBusinessError,
+      title: translate('pageError.work.wechat.businessError.title'),
+      desc: translate('pageError.work.wechat.businessError.desc2'),
+    });
+    return true;
+  }
+
   return false;
 };
 
@@ -106,14 +130,26 @@ export function createWatchApp() {
       return paramGetter().channelId();
     }
 
-    let channelId: string | undefined;
-
-    if (/\d+$/.test(window.location.pathname)) {
-      channelId = RegExp.lastMatch;
-    } else if (paramGetter().channelId()) {
+    let { channelId } = extractChannelAndSessionId();
+    // 如果从链接路径中获取不到，就尝试从参数获取
+    if (!channelId) {
       channelId = paramGetter().channelId();
     }
+
     return channelId;
+  }
+
+  function getTargetSessionIdByUrl(): string | undefined {
+    if (isBuildForFeedMainMode() && paramGetter().targetSessionId()) {
+      return paramGetter().targetSessionId();
+    }
+
+    let { targetSessionId } = extractChannelAndSessionId();
+    // 如果从链接路径中获取不到，就尝试从参数获取
+    if (!targetSessionId) {
+      targetSessionId = paramGetter().targetSessionId();
+    }
+    return targetSessionId;
   }
 
   /**
@@ -121,6 +157,7 @@ export function createWatchApp() {
    */
   async function setupWatchApp(): Promise<void> {
     const channelId = getChannelIdByUrl();
+    const targetSessionId = getTargetSessionIdByUrl();
     if (!channelId) {
       watchAppStore.setPageError({
         type: PageErrorType.ChannelIdError,
@@ -142,6 +179,7 @@ export function createWatchApp() {
       uniqueId: existExternalUniqueId ? uniqueId : undefined,
       useShareAuthToken,
       channelId,
+      targetSessionId,
       env: WATCH_SDK_ENV,
       language: convert2WatchSdkLang(getDefaultLang()),
       promoteId: paramGetter().promoteId(),
@@ -199,7 +237,10 @@ export function createWatchApp() {
     syncStoreBeforeWatchAppInited();
 
     /** 需要拦截观看页应用初始化 */
-    const needInterceptWatchAppInit = await useInterceptWatchAppInit();
+    const needInterceptWatchAppInit = await useInterceptWatchAppInit({
+      channelId,
+      targetSessionId,
+    });
     if (needInterceptWatchAppInit) {
       return;
     }

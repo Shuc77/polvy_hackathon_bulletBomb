@@ -1,7 +1,7 @@
 /**
  * @file 频道信息 store
  */
-import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
+import { DATE_FORMAT_DOT } from '@/assets/constants/date-format';
 import { translate } from '@/assets/lang';
 import {
   isAndroid,
@@ -21,7 +21,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { formatDate } from '@utils-ts/date';
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, Ref, ref, unref } from 'vue';
+import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { useLangStore } from './use-lang-store';
 import { useWatchAppStore } from './use-watch-app-store';
@@ -215,7 +215,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
         return '- -';
       }
 
-      return formatDate(time, DATE_FORMAT_SLASH);
+      return formatDate(time, DATE_FORMAT_DOT);
     });
 
     /** 直播倒计时是否显示 */

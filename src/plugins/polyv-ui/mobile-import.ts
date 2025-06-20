@@ -1,4 +1,5 @@
 /* eslint-disable import/first */
+import '@polyv/polyv-ui/lib-admin/theme/front-din-pro.css';
 import './cover-styles.scss';
 
 import '@polyv/polyv-ui/lib-front-mob/theme/like.css';

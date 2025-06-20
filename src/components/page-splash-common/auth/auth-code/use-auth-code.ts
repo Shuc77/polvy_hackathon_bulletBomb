@@ -2,10 +2,11 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { isFormItemInstance } from '@/components/common-base/form/hooks/use-form-item';
 import { ValidatorRules } from '@/plugins/async-validator';
-import { AuthSettingItemCode } from '@polyv/live-watch-sdk';
+import { AuthSettingItemCode, AuthVerifyError } from '@polyv/live-watch-sdk';
 import { computed, reactive, ref, unref } from 'vue';
 import { useAuthButtonInject } from '../hooks/use-auth-button';
 import { useAuthCommon, useAuthProtocol } from '../hooks/use-auth-common';
+import { ImageVerifyInputInstance } from '@/components/common-base/form/form-image-verify-input/type';
 
 /** 观看条件：验证码 hook */
 export const useAuthCode = () => {
@@ -23,7 +24,12 @@ export const useAuthCode = () => {
   const formData = reactive({
     code: '',
     checkProtocol: false,
+    imageId: '',
+    captcha: '',
   });
+
+  /** 是否需要图形验证码 */
+  const needImageVerify = ref(false);
 
   const { protocolContent, protocolFormRules } = useAuthProtocol({
     authItem,
@@ -34,6 +40,8 @@ export const useAuthCode = () => {
   function onClickAuthButton(): void {
     dialogVisible.value = true;
     formData.code = '';
+    formData.imageId = '';
+    formData.captcha = '';
     formData.checkProtocol = false;
   }
 
@@ -51,6 +59,7 @@ export const useAuthCode = () => {
   const formRules = computed<ValidatorRules>(() => {
     return {
       code: { type: 'string', message: translate('auth.error.codeEmpty'), required: true },
+      captcha: { type: 'string', message: translate('auth.error.captchaEmpty'), required: true },
       ...unref(protocolFormRules),
     };
   });
@@ -58,18 +67,38 @@ export const useAuthCode = () => {
   const { failMessage, handleAuthVerifySuccess, handleAuthVerifyFail } = useAuthCommon();
   const formItemRef = ref();
 
+  const imageVerifyFormItemRef = ref();
+  const imageVerifyRef = ref<ImageVerifyInputInstance>();
+
   /** 提交授权表单 */
   async function submitAuth() {
     const watchCore = getWatchCore();
     const result = await watchCore.auth.verifyCodeAuth({
       code: formData.code,
+      imageId: formData.imageId,
+      captcha: formData.captcha,
     });
 
     if (result.success) {
       dialogVisible.value = false;
       handleAuthVerifySuccess(result);
     } else {
+      if (result.failReason === AuthVerifyError.CodeNeedVerify) {
+        needImageVerify.value = true;
+      }
       handleAuthVerifyFail(result);
+
+      // 图形验证码错误
+      const imageVerifyFormInstance = unref(imageVerifyFormItemRef);
+      if (
+        failMessage.value &&
+        isFormItemInstance(imageVerifyFormInstance) &&
+        result.failReason === AuthVerifyError.ImageCodeError
+      ) {
+        imageVerifyFormInstance.setErrorMessage(failMessage.value);
+        imageVerifyRef.value?.refreshVerifyImage();
+        return;
+      }
 
       // 设置表单的异常提示
       const formItemInstance = unref(formItemRef);
@@ -85,11 +114,14 @@ export const useAuthCode = () => {
     qrcodeImg,
     qrcodeTips,
     protocolContent,
+    needImageVerify,
     formData,
     formRules,
     onClickCancel,
     submitAuth,
     failMessage,
     formItemRef,
+    imageVerifyFormItemRef,
+    imageVerifyRef,
   };
 };

@@ -338,7 +338,7 @@ onBeforeUnmount(() => {
 
 .c-mobile-task-activity-finish__amount {
   margin-top: 2px;
-  font-family: DINProFont;
+  font-family: DINPro-Medium;
   font-size: 40px;
   line-height: 47px;
   color: #ed3835;

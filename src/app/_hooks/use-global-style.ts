@@ -1,7 +1,7 @@
 /**
  * @file 全局样式及页面元素处理
  */
-import { isIOS, isPcMiniProgram } from '@/assets/utils/browser';
+import { forceMobile, isIOS, isPcMiniProgram } from '@/assets/utils/browser';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useThemeStore } from '@/store/use-theme-store';
@@ -24,10 +24,10 @@ export const useGlobalStyle = () => {
       $(document.body).addClass(iosPageClass);
     }
 
-    // 针对 pc 小程序环境添加 css 标识
-    const pcMiniProgramClass = 'g-page--pc-mini-program';
-    if (isPcMiniProgram) {
-      $(document.documentElement).addClass(pcMiniProgramClass);
+    // 针对在 pc 环境强制使用移动端样式添加 css 标识
+    const fakeMobileClass = 'g-page--fake-mobile-in-pc';
+    if (isPcMiniProgram || forceMobile) {
+      $(document.documentElement).addClass(fakeMobileClass);
     }
   }
 

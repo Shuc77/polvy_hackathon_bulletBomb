@@ -5,7 +5,7 @@
     :theme="popupTheme"
     :content-height="512"
     class="c-portrait-multi-meeting-popup"
-    :title="'观看其他会场'"
+    :title="$lang('multiMeeting.watchOther')"
     closable
     ignore-content-max-height
     :content-percent-height="0.784"

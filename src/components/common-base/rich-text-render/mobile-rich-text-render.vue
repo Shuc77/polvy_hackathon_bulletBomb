@@ -5,7 +5,7 @@
       v-html="renderHtmlContent"
       class="c-mobile-rich-text-render__content"
       :class="{
-        'pws-mobile-rich-text-content': followPageSkin,
+        'pws-primary-text-color': followPageSkin,
       }"
     ></div>
   </div>

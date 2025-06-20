@@ -5,7 +5,7 @@
   >
     <normal-button
       class="c-pc-auth-button__btn"
-      :size="ButtonSize.Large"
+      :size="ButtonSize.Medium"
       :text="buttonText"
       @click="onClickAuthButton"
     />

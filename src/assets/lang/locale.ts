@@ -6,6 +6,7 @@ import zhTWLang from './i18ns/zh-TW.json';
 import englishLang from './i18ns/en.json';
 import japaneseLang from './i18ns/ja.json';
 import koreanLang from './i18ns/ko.json';
+import russianLang from './i18ns/ru.json';
 
 export const i18nData: LangI18nData = {
   [LangType.ZH_CN]: zhCNLang,
@@ -13,6 +14,7 @@ export const i18nData: LangI18nData = {
   [LangType.English]: englishLang,
   [LangType.Japanese]: japaneseLang,
   [LangType.Korean]: koreanLang,
+  [LangType.Russian]: russianLang,
 };
 
 export default i18nData;

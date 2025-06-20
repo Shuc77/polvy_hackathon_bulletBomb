@@ -43,7 +43,7 @@ const productTotal = ref<number>(0);
   position: absolute;
   width: 100%;
   height: 100%;
-  font-family: DINProFont;
+  font-family: DINPro-Medium;
   font-size: 12px;
   line-height: 46px;
   text-align: center;

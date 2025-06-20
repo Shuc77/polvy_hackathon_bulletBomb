@@ -37,6 +37,19 @@
             :placeholder="$lang('auth.code.placeholder')"
           />
         </form-item>
+
+        <form-item
+          v-if="needImageVerify"
+          ref="imageVerifyFormItemRef"
+          form-field="captcha"
+        >
+          <pc-form-image-verify-input
+            v-model="formData.captcha"
+            ref="imageVerifyRef"
+            :image-id.sync="formData.imageId"
+          />
+        </form-item>
+
         <form-item
           v-if="protocolContent"
           form-field="checkProtocol"
@@ -73,6 +86,7 @@ import FormSubmitButton from '@/components/common-base/form/form-submit-button.v
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
 import PcFormProtocol from '@/components/common-base/form/form-protocol/pc-form-protocol.vue';
+import PcFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/pc-form-image-verify-input.vue';
 
 import { useAuthCode } from './use-auth-code';
 
@@ -84,9 +98,12 @@ const {
   protocolContent,
   formData,
   formRules,
+  needImageVerify,
   onClickCancel,
   submitAuth,
   formItemRef,
+  imageVerifyFormItemRef,
+  imageVerifyRef,
 } = useAuthCode();
 </script>
 

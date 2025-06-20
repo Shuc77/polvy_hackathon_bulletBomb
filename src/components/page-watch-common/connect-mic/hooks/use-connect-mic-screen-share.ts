@@ -92,7 +92,7 @@ export const useConnectMicScreenShareSetting = () => {
 
   const formData = reactive({
     screenShareMode: ScreenShareMode.Detail,
-    audioMixEnabled: false,
+    audioMixEnabled: true,
   });
 
   /** 模式选项 */

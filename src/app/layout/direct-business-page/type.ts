@@ -32,6 +32,8 @@ export enum PageErrorType {
   WorkWechatBusinessError = 'WorkWechatBusinessError',
   /** 禁止访问 */
   NotAllowAccess = 'NotAllowAccess',
+  /** 不存在指定场次 */
+  TargetSessionNotExist = 'TargetSessionNotExist',
 }
 
 /**

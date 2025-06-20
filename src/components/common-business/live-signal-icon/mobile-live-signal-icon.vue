@@ -4,6 +4,9 @@
       class="c-signal-bar"
       v-for="n in barCount"
       :key="n"
+      :style="{
+        background,
+      }"
     ></div>
   </div>
 </template>
@@ -13,6 +16,7 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
 defineProps({
   barCount: PropUtils.number.def(5),
+  background: PropUtils.string.def('#fff'),
 });
 </script>
 
@@ -21,22 +25,27 @@ defineProps({
   box-sizing: border-box;
   display: inline-flex;
   align-items: flex-end;
-  width: 12px;
+  justify-content: space-between;
+  width: 11px;
   height: 12px;
   padding: 2px;
 }
 
 .c-signal-bar {
   display: flex;
-  flex: 1;
   overflow: hidden;
-  background-color: #fff;
+  background: #fff;
   border-radius: 1px;
-  animation: pulse 1.5s infinite ease-in-out;
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+.c-signal-bar:nth-child(2n + 1) {
+  width: 1px;
 }
 
 .c-signal-bar:nth-child(2n) {
-  background-color: transparent;
+  width: 2px;
+  background: transparent !important;
 }
 /* 定义动画关键帧 */
 @keyframes pulse {

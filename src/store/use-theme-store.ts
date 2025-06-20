@@ -6,6 +6,7 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useLayoutStore } from './use-layout-store';
+import { appendToOssProcess } from '@/hooks/business/use-resize-oss-image';
 
 /** 主题颜色模式 */
 export enum SkinColorMode {
@@ -163,12 +164,12 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
       return;
     }
 
-    let blurParams = `?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
-    if (imageVal.includes('?x-oss-process=')) {
-      blurParams = blurParams.replace('?x-oss-process=', ',');
+    if (!ambiguityVal) {
+      return imageVal;
     }
 
-    return ambiguityVal ? `${imageVal}${blurParams}` : imageVal;
+    const blurParams = `image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
+    return appendToOssProcess(imageVal, blurParams);
   });
 
   /** 竖屏背景图 */
@@ -186,12 +187,12 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
       return;
     }
 
-    let blurParams = `?x-oss-process=image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
-    if (imageVal.includes('?x-oss-process=')) {
-      blurParams = blurParams.replace('?x-oss-process=', ',');
+    if (!ambiguityVal) {
+      return imageVal;
     }
 
-    return ambiguityVal ? `${imageVal}${blurParams}` : imageVal;
+    const blurParams = `image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
+    return appendToOssProcess(imageVal, blurParams);
   });
 
   function syncThemeStore() {

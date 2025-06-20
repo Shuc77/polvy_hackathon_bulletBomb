@@ -36,6 +36,19 @@
             :placeholder="$lang('auth.code.placeholder')"
           />
         </form-item>
+
+        <form-item
+          v-if="needImageVerify"
+          ref="imageVerifyFormItemRef"
+          form-field="captcha"
+        >
+          <mobile-form-image-verify-input
+            v-model="formData.captcha"
+            ref="imageVerifyRef"
+            :image-id.sync="formData.imageId"
+          />
+        </form-item>
+
         <form-item
           v-if="protocolContent"
           form-field="checkProtocol"
@@ -67,6 +80,7 @@ import FormItem from '@/components/common-base/form/form-item.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
 import MobileFormProtocol from '@/components/common-base/form/form-protocol/mobile-form-protocol.vue';
+import MobileFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/mobile-form-image-verify-input.vue';
 
 import { useAuthCode } from './use-auth-code';
 
@@ -78,8 +92,11 @@ const {
   protocolContent,
   formData,
   formRules,
+  needImageVerify,
   submitAuth,
   formItemRef,
+  imageVerifyFormItemRef,
+  imageVerifyRef,
 } = useAuthCode();
 </script>
 

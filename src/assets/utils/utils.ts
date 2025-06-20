@@ -26,7 +26,9 @@ export function plvInterval(
   let timer: number | undefined;
   let intervalCount = 0;
 
-  const __intervalTime = typeof intervalTime === 'function' ? intervalTime() : intervalTime;
+  const getIntervalTime = () => {
+    return typeof intervalTime === 'function' ? intervalTime() : intervalTime;
+  };
 
   const innerInterval = () => {
     timer = window.setTimeout(() => {
@@ -38,7 +40,7 @@ export function plvInterval(
       } else {
         window.clearTimeout(timer);
       }
-    }, __intervalTime);
+    }, getIntervalTime());
   };
 
   if (immediate) {

@@ -94,6 +94,8 @@ export function getBrowserLang(): LangType {
       return LangType.Korean;
     } else if (/^zh(-[A-Z]+)?$/i.test(browserLang)) {
       return LangType.ZH_CN;
+    } else if (/^ru(-[A-Z]+)?$/i.test(browserLang)) {
+      return LangType.Russian;
     }
   }
   return LangType.English;

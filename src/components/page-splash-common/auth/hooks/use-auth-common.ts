@@ -112,6 +112,9 @@ export const useAuthCommon = () => {
       case AuthVerifyError.CodeError:
         failMessage.value = translate('auth.error.codeError');
         break;
+      case AuthVerifyError.CodeNeedVerify:
+        failMessage.value = translate('auth.error.codeNeedVerify');
+        break;
       case AuthVerifyError.SmsCodeError:
         failMessage.value = translate('auth.error.smsCodeError');
         break;
