@@ -208,8 +208,8 @@
         <!-- 底部控制栏右侧内容 -->
         <div class="c-portrait-carousel-main-screen__bottom__right-auto">
           <!-- 商品库入口 -->
-          <portrait-product-list-entrance
-            v-if="!isPlaybackWatchUrl && iarSdkLoaded"
+          <mobile-product-pendant
+            v-if="!isPlaybackWatchUrl && iarSdkLoaded && interactSetting.productEnabled"
             class="c-portrait-carousel-main-screen__bottom__button"
           />
 
@@ -298,7 +298,7 @@ import PortraitDonateAnimation from '@/components/page-watch-common/donate/donat
 import PortraitDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
 import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
 import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
-import PortraitProductListEntrance from '@/components/page-watch-common/interactive-receive/product/portrait-product-list-entrance.vue';
+import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
 import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
 import PortraitPlayerFullscreenButton from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-fullscreen-button.vue';
@@ -344,7 +344,7 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { announcementFunctionVisible, hasBulletin, productBubbleVisible } =
+const { announcementFunctionVisible, hasBulletin, productBubbleVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
 const { showDonateFunction, donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);

@@ -1,8 +1,10 @@
 import AlloyFinger from 'alloyfinger';
-import { nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
+import { nextTick, onMounted, ref, unref, watch } from 'vue';
 
 import { useAskStore } from '@/store/use-ask-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 /**
  * 竖屏消息区轮播 hook
@@ -10,6 +12,7 @@ import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrai
 export const useMessageCarousel = () => {
   const portraitLayoutStore = usePortraitLayoutStore();
   const askStore = useAskStore();
+  const webViewStore = useWebviewStore();
 
   const carouselRef = ref<{ $el: HTMLDivElement }>();
 
@@ -22,8 +25,11 @@ export const useMessageCarousel = () => {
     return document.documentElement.clientHeight * 0.24;
   }
 
-  function onWindowResize() {
-    carouselHeight.value = getCarouselHeight();
+  function resetCarouselHeight() {
+    // 延迟 300 毫秒，确保页面布局已更新
+    setTimeout(() => {
+      carouselHeight.value = getCarouselHeight();
+    }, 300);
   }
 
   const messageCarouselActiveIndex = ref(0);
@@ -92,13 +98,22 @@ export const useMessageCarousel = () => {
         touchMove: handleTouchMove,
       });
     });
-
-    window.addEventListener('resize', onWindowResize);
   });
 
-  onBeforeUnmount(() => {
-    window.removeEventListener('resize', onWindowResize);
-  });
+  useWindowResizeListener(() => {
+    resetCarouselHeight();
+  }, true);
+
+  if (webViewStore.isPlvWebview) {
+    watch(
+      () => webViewStore.isSmallWindow,
+      () => {
+        if (!webViewStore.isSmallWindow) {
+          resetCarouselHeight();
+        }
+      },
+    );
+  }
 
   function onMessageCarouselSlidePrevEnd() {
     portraitLayoutStore.$patch({

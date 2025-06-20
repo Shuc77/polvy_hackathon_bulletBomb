@@ -34,9 +34,9 @@ const { paramGetter } = useQueryParams();
 
 const langStore = useLangStore();
 
-window.changeLang = (lang: any) => {
-  langStore.switchLang(lang);
-};
+// window.changeLang = (lang: any) => {
+//   langStore.switchLang(lang);
+// };
 
 const watchCore = getWatchCore();
 

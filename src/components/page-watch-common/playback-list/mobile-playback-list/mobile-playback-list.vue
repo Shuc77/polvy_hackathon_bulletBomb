@@ -156,12 +156,14 @@ const debounceHandlePlaybackListScroll = debounce(handlePlaybackListScroll, 300)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 96px;
+  min-width: 96px;
   height: 40px;
+  padding: 0 8px;
   font-size: 14px;
   line-height: 40px;
   color: $--color-white;
   text-align: center;
+  white-space: nowrap;
   border-radius: 20px;
   opacity: 0.9;
   transform: translate(-50%, -50%);

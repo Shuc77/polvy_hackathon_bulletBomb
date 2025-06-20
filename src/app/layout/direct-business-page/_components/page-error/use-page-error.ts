@@ -52,7 +52,8 @@ export const usePageErrorHook = () => {
     return (
       unref(pageError).type === PageErrorType.ChannelIdError ||
       unref(pageError).type === PageErrorType.ChannelClosed ||
-      unref(pageError).type === PageErrorType.ChannelForbidden
+      unref(pageError).type === PageErrorType.ChannelForbidden ||
+      unref(pageError).type === PageErrorType.TargetSessionNotExist
     );
   });
 

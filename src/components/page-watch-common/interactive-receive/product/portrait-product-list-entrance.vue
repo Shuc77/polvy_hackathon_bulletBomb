@@ -14,13 +14,10 @@
         @click="onClickEntrance"
       ></div>
     </template>
-
-    <portrait-product-bubble :product-bubble-enable="false" />
   </div>
 </template>
 
 <script setup lang="ts">
-import PortraitProductBubble from './portrait-product-bubble.vue';
 import { useSvgaAnimation } from '@/hooks/animation/use-svga-animation';
 import shopIconUrl from './imgs/icon-shop-car.svga';
 import { ref, unref, watchEffect } from 'vue';

@@ -82,6 +82,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
       { text: 'English', lang: LangType.English },
       { text: '日本語', lang: LangType.Japanese },
       { text: '한국인', lang: LangType.Korean },
+      { text: 'Русский', lang: LangType.Russian },
     ];
   });
 

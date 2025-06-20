@@ -132,3 +132,9 @@ declare module '@polyv/polyv-ui/lib-admin/channel-cover' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+declare module '@polyv/polyv-ui/lib-admin/text-ellipsis' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

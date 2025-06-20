@@ -135,6 +135,16 @@
               <pc-iar-render-upper-player v-if="iarSdkLoaded" />
               <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded" />
               <pc-watch-layout-player-side-popup />
+              <pc-product-render v-if="iarSdkLoaded" />
+
+              <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
+              <pc-product-pendant
+                v-if="
+                  iarSdkLoaded &&
+                  interactSetting.productSuspendOnPlayerEnabled &&
+                  interactSetting.productEnabled
+                "
+              />
             </div>
           </div>
 
@@ -235,6 +245,8 @@ import PcIarRenderUpperPlayer from '@/components/page-watch-common/interactive-r
 import PcIarRenderUpperPlayerV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-upper-player-v2.vue';
 import PcWatchLayoutPlayerSidePopup from './pc-watch-layout-player-side-popup.vue';
 import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
+import PcProductRender from '@/components/page-watch-common/product/pc-product-render.vue';
+import PcProductPendant from '@/components/page-watch-common/product/product-pendant/pc-product-pendant.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -279,7 +291,7 @@ const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(us
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const PlayerControlWrapperRef = ref<HTMLDivElement>();
 
@@ -602,7 +614,7 @@ $--layout-sub-pack-up-height: 40px !default;
 
 .c-pc-watch-layout__main__player-product-bubble {
   position: absolute;
-  top: 0;
+  bottom: 36px;
   left: 0;
   width: 100%;
   height: 100%;

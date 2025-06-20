@@ -42,14 +42,6 @@
     @include generate-skin-basic-plv-ui-pc-style($--skin-configs);
     @include generate-skin-special-iar-pc-style($--skin-configs);
 
-    // 直播状态标签
-    @each $status, $color in map.get($--skin-configs, 'pc-live-status-tag:color') {
-      .pws-pc-live-status-tag-#{$status} {
-        color: $color !important;
-        border-color: $color !important;
-      }
-    }
-
     // ---------- 观看页背景 ---------- //
     .pws-pc-watch-bg {
       @include skin-setup-bg((

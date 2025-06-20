@@ -105,9 +105,11 @@
           <pc-question-answer v-if="iarSdkLoaded" />
         </pc-aside-tab-pane>
 
-        <!-- 商品库 tab -->
+        <!-- 商品库 tab，如果开了「播放器是否悬浮商品列表入口开关」，则不显示 -->
         <pc-aside-tab-pane
-          v-if="menu.menuType === ChannelMenuType.Buy"
+          v-if="
+            menu.menuType === ChannelMenuType.Buy && !interactSetting.productSuspendOnPlayerEnabled
+          "
           :key="`buy-${index}`"
           :label="menu.name"
           :name="TAB_NAME_PRODUCT"
@@ -225,7 +227,7 @@ const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,

@@ -136,12 +136,6 @@ button {
     url('fonts/ALIBABAFont.svg') format('svg');
 }
 
-@font-face {
-  font-family: DINProFont;
-  src: url('./fonts/DINPro-Bold.otf');
-  src: url('./fonts/DINPro-Medium.otf');
-}
-
 :root {
   --plv-watch-full-screen-vw: 100vw;
   --plv-watch-full-screen-vh: 100vh;

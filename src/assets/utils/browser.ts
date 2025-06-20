@@ -12,8 +12,19 @@ export const isWeixin = uaInfo.client.isWx;
 /** 是否企业微信 */
 export const isWorkWeixin = uaInfo.client.isWxWork;
 
+/** 强制使用 PC 端样式 */
+export const forcePc = /[?&]plvLayout=pc?(&|$)/.test(window.location.search);
+
+/** 强制使用移动端样式 */
+export const forceMobile = /[?&]plvLayout=mobile?(&|$)/.test(window.location.search);
+
 /** 判断 PC 端微信小程序环境 */
-export const isPcMiniProgram = (isWeixin || isWorkWeixin) && /miniprogramenv/.test(ua);
+export const isPcMiniProgram = (() => {
+  const env = isWeixin || isWorkWeixin;
+  const supportUA = /miniprogramenv/.test(ua);
+
+  return env && supportUA;
+})();
 
 function __isMobile() {
   const ua = navigator.userAgent;
@@ -53,6 +64,9 @@ export const tabletLoadDesktopTemplate =
 
 /** 是否移动端 */
 export const isMobile = (() => {
+  if (forceMobile) return true;
+  if (forcePc) return false;
+
   if (isBuildForFeedMainMode()) return true;
   if (tabletLoadDesktopTemplate) return false;
   return isMob || isPcMiniProgram; // uaInfo.isPortable || isPcMiniProgram;

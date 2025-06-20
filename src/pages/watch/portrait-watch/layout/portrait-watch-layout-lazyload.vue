@@ -11,6 +11,7 @@
     <!-- 互动功能 -->
     <portrait-iar-render v-if="iarSdkLoaded" />
     <portrait-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <portrait-product-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 邀请榜弹层 -->
     <portrait-invite-rank-popup v-if="inviteRankEnabled" />
@@ -105,6 +106,7 @@ import PortraitChatSetNick from '@/components/page-watch-common/chat/chat-set-ni
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import PortraitIarRender from '@/components/page-watch-common/interactive-receive/portrait-iar-render.vue';
 import PortraitIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/portrait-iar-render-v2.vue';
+import PortraitProductRender from '@/components/page-watch-common/product/portrait-product-render.vue';
 import PortraitInviteRankPopup from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';

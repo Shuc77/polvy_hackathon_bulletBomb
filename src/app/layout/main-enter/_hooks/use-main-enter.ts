@@ -17,6 +17,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useEmotionSetup } from './use-emotion-setup';
 import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
+import { wait } from '@/assets/utils/utils';
 
 /**
  * 页面尺寸初始化设置
@@ -150,6 +151,9 @@ export const useMainEnter = (options: {
         // 进入观看页后初始化webview
         webviewStore.initWebview();
       }
+
+      // 因为新版互动 SDK 拆分成多个以后，会出现连接聊天室后再完成初始化的情况，所以这里延迟一下，尽量让 互动 SDK 初始化完成
+      await wait(300);
 
       // 连接聊天室
       await watchAppStore.setupWatchCoreConnect();

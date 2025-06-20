@@ -48,6 +48,20 @@ export interface ProductGoodData {
   materialId?: string;
 }
 
+export interface NormalProductGoodData
+  extends Omit<ProductGoodData, 'productId' | 'realPrice' | 'features'> {
+  /** 商品 id */
+  productId: number;
+  /** 商品原价 */
+  realPrice: number;
+  /** 特色标签 */
+  features: string | string[];
+  /** 客户联系二维码 */
+  customerServiceContact?: string;
+  /** 客服方式 */
+  customerServiceType?: string;
+}
+
 /**
  * 互动接收端商品列表实例类型
  */

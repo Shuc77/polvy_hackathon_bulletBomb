@@ -6,6 +6,9 @@ import { useToastManager } from '@/hooks/components/use-toast';
 import { useLangStore } from '@/store/use-lang-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { provide, reactive, watchEffect } from 'vue';
+import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 /**
  * 互动功能全局配置注入的 key
@@ -23,6 +26,11 @@ export const useIarGlobalConfigHookV2 = () => {
 
   const { toast } = useToastManager();
 
+  const { getWeixinSdk } = useWeixinSdk();
+
+  const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
+  const { getPlvWebviewBridge } = useWebviewStore();
+
   const provideData = reactive({
     globalLang: langStore.currentLang,
     pageFullscreen: layoutStore.mobilePlayerIsPageFullscreen,
@@ -32,9 +40,20 @@ export const useIarGlobalConfigHookV2 = () => {
       toast.success(msg);
     },
     messageBox: (options: Parameters<typeof messageBox>[0]) => {
-      messageBox(options).$confirm();
+      return messageBox(options).$confirm();
     },
     getEmitter,
+    getWeixinSdk,
+    getPlvWebviewBridge,
+    isPlvWebview: () => {
+      return isPlvWebview.value;
+    },
+    getPlvWebviewSmallWindowSize: () => {
+      return {
+        width: plvWebviewDataSize.value.width,
+        height: plvWebviewDataSize.value.height,
+      };
+    },
   });
 
   watchEffect(() => {

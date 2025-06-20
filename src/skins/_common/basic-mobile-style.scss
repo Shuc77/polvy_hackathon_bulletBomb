@@ -10,38 +10,14 @@
     @include generate-skin-basic-style($--skin-configs);
     @include generate-skin-basic-iar-mobile-style($--skin-configs);
 
-    // 直播状态标签
-    @each $status, $color in map.get($--skin-configs, 'mobile-live-status-tag:color') {
-      .pws-mobile-live-status-tag-#{$status} {
-        color: $color !important;
-        border-color: $color !important;
-      }
-    }
-
-    // --------- 富文本 --------- //
-    .pws-mobile-rich-text-content {
-      color: map.get($--skin-configs, 'mobile-rich-text-content:text-color') !important;
-    }
-
     // --------- 引导页 --------- //
     .pws-mobile-splash-page {
       background-color: map.get($--skin-configs, 'mobile-splash:bg-color') !important;
-    }
-    .pws-mobile-splash-page-live-count-down-wrap {
-      background-color: map.get(
-        $--skin-configs,
-        'mobile-splash-live-count-down-wrap:bg-color'
-      ) !important;
     }
 
     // --------- 页脚 --------- //
     .pws-mobile-page-footer {
       color: map.get($--skin-configs, 'mobile-page-footer:text-color') !important;
-    }
-
-    // --------- 直播预约 ---------- //
-    .pws-mobile-live-booking-button {
-      background-color: map.get($--skin-configs, 'mobile-live-booking-button:bg-color') !important;
     }
 
     // --------- 倒计时 ---------- //
@@ -67,27 +43,6 @@
           'mobile-count-down-square-item-dot:bg-color'
         ) !important;
       }
-    }
-
-    // --------- 基础信息 ---------- //
-    .pws-mobile-basic-info-channel-title {
-      color: map.get($--skin-configs, 'mobile-basic-info-channel-title:text-color') !important;
-    }
-    .pws-mobile-basic-info-start-time {
-      color: map.get($--skin-configs, 'mobile-basic-info-start-time:text-color') !important;
-    }
-    .pws-mobile-basic-info-page-view {
-      color: map.get($--skin-configs, 'mobile-basic-info-page-view:text-color') !important;
-      border-color: map.get($--skin-configs, 'main-border-color') !important;
-    }
-    .pws-mobile-basic-info-author {
-      border-color: map.get($--skin-configs, 'main-border-color') !important;
-    }
-    .pws-mobile-basic-info-publisher {
-      color: map.get($--skin-configs, 'mobile-basic-info-publisher:text-color') !important;
-    }
-    .pws-mobile-basic-info-like {
-      color: map.get($--skin-configs, 'mobile-basic-info-like:text-color') !important;
     }
 
     // --------- 关注 --------- //

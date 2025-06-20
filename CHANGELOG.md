@@ -4,6 +4,62 @@
 
 ---
 
+## v2.4.0(2025-06-20)
+
+### Bug Fixes
+
+- 修复开通素材库后，观看页无法看到背景图的问题
+- 修复通过商品库大小卡片下单后，没有退款入口的问题
+- 修复移动端竖屏下无法显示商品大卡片推送的问题
+- 修复从保利威 IOS-Webview 小窗后重新进入观看页后，聊天室区域被压缩的问题
+
+### Features
+
+- 新增俄语 `Russian` 语种
+- 支持通过获取 url 中的 `plvLayout` 参数来强制观看页使用 PC 布局还是移动端布局
+- 新增通过 `targetSessionId` 参数来支持指定目标场次功能，并增加对应的缺省页
+- 新增企微和用户体系冲突的错误页
+- 新增"密码观看"观看条件对应"图形验证码"校验逻辑
+
+### Styles
+
+- 不再使用 DIN 相关字体，替换成 D-DIN-PRO 字体
+- 根据新的设计稿优化引导页(splash)
+
+### Code Refactoring
+
+- 后续将通过 `@polyv/product-ui` 来处理 `interactions-receive-sdk-ui-default` 中的商品库功能
+- 完善聊天室列表加载逻辑，并优化聊天压缩消息处理逻辑，将逻辑聚合到底层 sdk 中
+
+### Optimizes
+
+- 优化邀请榜判断列表中的用户是否为当前观众的逻辑
+- 一系列小的更改
+
+### Build System
+
+#### SDK Update
+
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20250612`
+- 更新 `@polyv/polyv-ui` 版本至 `4.7.0`
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20250612`
+- 更新 `@polyv/iar` 相关 UI 层 SDK，具体如下：
+
+```sh
+"@polyv/iar-check-in-ui": "^2.5.0-rc-20250612.1",
+"@polyv/iar-coupon-ui": "^2.5.0-rc-20250612.1",
+"@polyv/iar-lottery-ui": "^2.5.0-rc-20250612.1",
+"@polyv/iar-lucky-lottery-ui": "^2.5.0-rc-20250612.1",
+"@polyv/iar-questionnaire-ui": "^2.5.0-rc-20250612.1",
+"@polyv/iar-reward-receive-ui": "^2.5.0-rc-20250612.1",
+```
+
+#### SDK Add
+
+- 新增 `@polyv/product-ui`，版本为 `rc-20250612`
+
+---
+
 ## v2.3.0(2025-05-23)
 
 ### Bug Fixes
@@ -11,7 +67,7 @@
 - 修复通过特殊观看条件授权进入观看页后，没有隐藏用户体系相关功能(优惠券)的问题
 - 修复移动端端正常延迟播放器设置面板遮挡问题
 - 修复素材库视频回放没有响应后台配置，展示精彩看点的问题
-- 修复平板模式下进入观看页，在根据PC布局且不允许暂停直播的配置下，无法播放视频的问题
+- 修复平板模式下进入观看页，在根据 PC 布局且不允许暂停直播的配置下，无法播放视频的问题
 
 ### Features
 

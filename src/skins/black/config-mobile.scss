@@ -2,27 +2,11 @@
 
 // 皮肤 Mobile 端页面配置
 $--skin-page-mobile-configs: (
-  // 富文本字体色
-  'mobile-rich-text-content:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-
   // 引导页背景色
   'mobile-splash:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
-  // 引导页倒计时外层背景色
-  'mobile-splash-live-count-down-wrap:bg-color': map.get($--skin-basic-configs, 'sub-bg-color'),
 
   // 页脚字体色
   'mobile-page-footer:text-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.6),
-
-  // 基础信息频道标题字体色
-  'mobile-basic-info-channel-title:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-  // 基础信息开始时间字体色
-  'mobile-basic-info-start-time:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-  // 基础信息页面浏览次数字体色
-  'mobile-basic-info-page-view:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-  // 基础信息主持人字体色
-  'mobile-basic-info-publisher:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-  // 基础信息点赞数字体色
-  'mobile-basic-info-like:text-color': map.get($--skin-basic-configs, 'main-text-color'),
 
   // 倒计时方块背景色
   'mobile-count-down-square-item:bg-color': #141518,
@@ -34,9 +18,6 @@ $--skin-page-mobile-configs: (
   'mobile-count-down-square-item-word:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   // 倒计时方块边框色
   'mobile-count-down-square-item:border-color': $--color-black,
-
-  // 直播预约按钮背景色
-  'mobile-live-booking-button:bg-color': map.get($--skin-basic-configs, 'primary-color'),
 
   // 关注按钮背景色
   'mobile-follow-button:bg-color': map.get($--skin-basic-configs, 'sub-primary-color'),

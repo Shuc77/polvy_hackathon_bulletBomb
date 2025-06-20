@@ -2,6 +2,7 @@
 /**
  * @file polyv-ui PC 端组件引入与导出入口
  */
+import '@polyv/polyv-ui/lib-admin/theme/front-din-pro.css';
 import './cover-styles.scss';
 
 import '@polyv/polyv-ui/lib-front/theme/like.css';

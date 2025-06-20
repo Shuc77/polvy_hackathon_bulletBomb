@@ -31,9 +31,12 @@
       <!-- 倒计时 + 预约 -->
       <div
         v-if="showLiveCountDown"
-        class="c-mobile-splash__main__header pws-mobile-splash-page-live-count-down-wrap"
+        class="c-mobile-splash__main__header pws-dark-white-bg-10 pws-light-white-bg-40"
       >
-        <mobile-live-count-down />
+        <mobile-live-count-down
+          :show-title="showLiveBookingButton"
+          theme="number-square"
+        />
         <mobile-live-booking-button
           v-if="showLiveBookingButton"
           class="c-mobile-splash__main__header__booking"
@@ -139,10 +142,11 @@ const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTr
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   min-height: 56px;
-  padding: 8px 16px;
+  padding: 12px;
+  margin: 16px 16px 0;
   text-align: center;
+  border-radius: 8px;
 }
 .c-mobile-splash__main__header__booking {
   margin-left: auto;

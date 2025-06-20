@@ -22,7 +22,22 @@
         </div>
         <div class="c-pc-splash__header__main">
           <!-- 频道标题 -->
-          <h1 class="c-pc-splash__header__title">{{ channelTitle }}</h1>
+          <plv-text-ellipsis
+            class="c-pc-splash__header__title"
+            :max-row="3"
+            :line-height="36"
+          >
+            {{ channelTitle }}
+
+            <template #suffix>
+              <!-- 直播状态 -->
+              <normal-status-tag
+                class="c-pc-splash__header__status__tag"
+                force-dark
+              />
+            </template>
+          </plv-text-ellipsis>
+
           <!-- 主持人 -->
           <div class="c-pc-splash__header__author">
             <img
@@ -57,9 +72,6 @@
               {{ $lang('watch.liveTime') }}：{{ liveStartTimeText }}
             </span>
 
-            <!-- 直播状态 -->
-            <pc-status-tag class="c-pc-splash__header__status__tag g-vmid" />
-
             <!-- 直播预约 -->
             <pc-live-booking-button
               v-if="showLiveBookingButton"
@@ -71,6 +83,7 @@
           <pc-live-count-down
             v-if="showLiveCountDown"
             class="c-pc-splash__header__countdown"
+            theme="number-square"
           />
 
           <!-- 观看条件 -->
@@ -134,11 +147,12 @@ import PcLiveBookingButton from '@/components/common-business/live-booking/pc-li
 import PcLiveCountDown from '@/components/common-business/live-count-down/pc-live-count-down.vue';
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
-import PcStatusTag from '@/components/common-business/status-tag/pc-status-tag.vue';
+import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
 import { PcIconPeople } from '@/components/component-icons/pc/map';
 import PcAuth from '@/components/page-splash-common/auth/pc-auth.vue';
 import { usePopper } from '@/hooks/components/use-popper';
 
+import { PlvTextEllipsis } from '@/plugins/polyv-ui/admin-import';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useAuthStore } from '@/store/use-auth-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -246,27 +260,23 @@ $--splash-header-content-height: 406px;
 }
 
 .c-pc-splash__header__title {
-  margin-top: -4px;
-  font-size: 32px;
-  line-height: 1.5;
+  font-size: 26px;
   color: $--color-white;
   word-break: break-word;
-  @include multiline-text(5);
 }
 
 .c-pc-splash__header__author {
   display: flex;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 .c-pc-splash__header__author__icon {
   display: flex;
   width: 24px;
   height: 24px;
-  margin-right: 8px;
-  font-size: 20px !important;
-  line-height: 20px;
+  margin-right: 2px;
+  font-size: 24px !important;
   border-radius: 50%;
 }
 
@@ -274,6 +284,7 @@ $--splash-header-content-height: 406px;
   display: inline-block;
   max-width: 100%;
   line-height: 20px;
+  color: rgba(#fff, 0.6);
 }
 
 .c-pc-splash__header__author__publisher__panel {
@@ -293,21 +304,23 @@ $--splash-header-content-height: 406px;
 .c-pc-splash__header__status {
   display: flex;
   align-items: center;
-  margin-top: 32px;
+  margin-top: 25px;
 }
 .c-pc-splash__header__status__time {
   font-size: 16px;
+  color: rgba(#fff, 0.6);
   white-space: nowrap;
 }
 .c-pc-splash__header__status__tag {
-  margin-left: 12px;
+  margin-left: 4px;
+  transform: translateY(-2px);
 }
 .c-pc-splash__header__status__booking {
   margin-left: 24px;
 }
 
 .c-pc-splash__header__countdown {
-  margin-top: 14px;
+  margin-top: 24px;
 }
 
 .c-pc-splash__header__auth,
@@ -331,11 +344,6 @@ $--splash-header-content-height: 406px;
   text-shadow: none;
 }
 
-@media (max-width: 1280px) {
-  .c-pc-splash__header__title {
-    font-size: 26px;
-  }
-}
 @media (max-width: 1679px) {
   .c-pc-splash__header__inner {
     min-height: 360px;

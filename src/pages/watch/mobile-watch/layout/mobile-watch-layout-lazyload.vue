@@ -5,6 +5,7 @@
     <!-- 互动功能 -->
     <mobile-iar-render v-if="iarSdkLoaded" />
     <mobile-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <mobile-product-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
 
     <!-- 连麦挂件 -->
     <mobile-connect-mic-pendant
@@ -100,6 +101,7 @@ import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
 import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
+import MobileProductRender from '@/components/page-watch-common/product/mobile-product-render.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';

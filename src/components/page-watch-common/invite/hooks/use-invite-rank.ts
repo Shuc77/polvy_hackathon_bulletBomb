@@ -4,7 +4,6 @@ import debounce from 'lodash-es/debounce';
 import { computed, ref, unref } from 'vue';
 
 import { useInviteStore } from '@/store/use-invite-store';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 
 import { translate } from '@/assets/lang';
@@ -47,6 +46,7 @@ export const useInviteRankHook = () => {
       nickname: '--',
       inviteNum: 0,
       openId: Math.random().toString(),
+      me: false,
       isFake: true,
     })),
   );
@@ -72,7 +72,6 @@ export const useInviteRankHook = () => {
   /** 是否加载接口失败 */
   const isLoadFailed = ref(false);
 
-  const viewerStore = useViewerStore();
   const { invitePosterEnabled } = storeDefinitionToRefs(useInviteStore);
   /** 是否显示底部信息 */
   const identityStore = useIdentityStore();
@@ -114,7 +113,7 @@ export const useInviteRankHook = () => {
 
   /** 判断是否为当前用户 */
   function isCurrentViewer(item: InviteRankItem) {
-    return item.openId === viewerStore.openId;
+    return item.me;
   }
 
   /** 初始化邀请榜数据 */

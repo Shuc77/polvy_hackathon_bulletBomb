@@ -14,7 +14,8 @@ export const usePlayerStreamStopText = () => {
     // 是否开启回放
     const enabledPlayback = watchCore.channel.getEnablePlayback();
     // 是否显示回放待生成文本，规则：上一次推流时间大于0，且回放开启
-    const isShowWaitPlaybackText = lastPushStreamTime > 0 && enabledPlayback;
+    const isShowWaitPlaybackText =
+      !watchCore.inTargetSession() && lastPushStreamTime > 0 && enabledPlayback;
     // 回放待生成文本
     const noLiveText = isShowWaitPlaybackText
       ? translate('player.streamStop.waitPlayback')

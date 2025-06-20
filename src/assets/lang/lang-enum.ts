@@ -16,4 +16,6 @@ export enum LangType {
   Japanese = 'ja',
   /** 韩语 */
   Korean = 'ko',
+  /** 俄语 */
+  Russian = 'ru',
 }

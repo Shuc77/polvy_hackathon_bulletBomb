@@ -55,6 +55,10 @@ const buttonClass = computed(() => {
     classes.push('pws-normal-button-aside-menu');
   }
 
+  if (type === ButtonType.Gray) {
+    classes.push('pws-dark-white-bg-20 pws-light-black-bg-20');
+  }
+
   if (props.size) {
     classes.push(`${clsPrefix}--${props.size}`);
   }
@@ -118,6 +122,14 @@ const buttonClass = computed(() => {
   &.is-disabled {
     color: $--color-white;
     opacity: 0.5;
+  }
+}
+
+.c-normal-button--gray {
+  color: $--color-white;
+
+  &.is-disabled {
+    color: $--color-white;
   }
 }
 

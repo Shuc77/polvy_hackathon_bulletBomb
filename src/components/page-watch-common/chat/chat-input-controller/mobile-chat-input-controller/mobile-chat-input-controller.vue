@@ -40,9 +40,9 @@
         ></div>
 
         <!-- 商品库入口 -->
-        <mobile-product-list-entrance
+        <mobile-product-pendant
           v-if="interactSetting.productEnabled && iarSdkLoaded"
-          class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--product"
+          class="c-mobile-chat-input-controller__btn-product"
         />
 
         <!-- 点赞 -->
@@ -68,7 +68,7 @@ import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { useGlobalInject } from '@/app/use-global-inject';
-import MobileProductListEntrance from '@/components/page-watch-common/interactive-receive/product/mobile-product-list-entrance.vue';
+import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const props = defineProps({
@@ -144,9 +144,7 @@ defineExpose(chatInputInstance);
   background-image: url(../imgs/icon-gift.png);
 }
 
-.c-mobile-chat-input-controller__btn--product {
-  background-image: url(../imgs/icon-product.png);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
+.c-mobile-chat-input-controller__btn-product {
+  margin: 0 12px;
 }
 </style>

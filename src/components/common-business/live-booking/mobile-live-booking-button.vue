@@ -10,26 +10,37 @@
       'c-mobile-live-booking-button--other-live': isOtherLive,
     }"
   >
+    <div
+      v-if="buttonPosition === 'splash' && isShowBookingCount && !isOtherLive"
+      class="c-mobile-live-booking-button__text pws-dark-white-color-80 pws-light-black-color-40"
+    >
+      {{ $lang('liveBooking.booked') }} {{ wxBookingCount }} {{ $lang('base.people') }}
+    </div>
+
     <normal-button
       class="c-mobile-live-booking-button__button pws-mobile-live-booking-button"
       :size="buttonSize"
-      :type="buttonType"
+      :type="innerButtonType"
       block
       @click="onClickButton"
     >
       <div class="c-mobile-live-booking-button__button__top">
-        <mobile-icon-booking
-          v-if="!isLiveBooking && !isOtherLive"
+        <mobile-icon-check
+          v-if="isLiveBooking"
           class="c-mobile-live-booking-button__button__top__icon"
         />
         <mobile-icon-bell
-          v-if="isOtherLive"
+          v-else-if="isOtherLive"
+          class="c-mobile-live-booking-button__button__top__icon"
+        />
+        <mobile-icon-booking
+          v-else
           class="c-mobile-live-booking-button__button__top__icon"
         />
         <span>{{ buttonText }}</span>
       </div>
       <div
-        v-if="isShowBookingCount && !isOtherLive"
+        v-if="isShowBookingCount && !isOtherLive && buttonPosition !== 'splash'"
         class="c-mobile-live-booking-button__button__bottom"
       >
         {{ wxBookingCount }} {{ $lang('base.people') }}
@@ -65,7 +76,11 @@ import { translate } from '@/assets/lang';
 import { computed, ref, unref } from 'vue';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
 
-import { MobileIconBooking, MobileIconBell } from '@/components/component-icons/mobile/map';
+import {
+  MobileIconBooking,
+  MobileIconBell,
+  MobileIconCheck,
+} from '@/components/component-icons/mobile/map';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import MobileLiveBookingFormPopup from './mobile-live-booking-form-popup.vue';
@@ -133,7 +148,17 @@ const buttonSize = computed(() => {
   if (unref(buttonPosition) === 'corner') {
     return ButtonSize.XMini;
   }
+  if (unref(buttonPosition) === 'splash') {
+    return ButtonSize.Mini;
+  }
   return ButtonSize.Default;
+});
+
+const innerButtonType = computed(() => {
+  if (isLiveBooking.value) {
+    return ButtonType.Gray;
+  }
+  return props.buttonType;
 });
 
 /** 按钮文本 */
@@ -212,6 +237,12 @@ async function onClickSmsButton() {
 </script>
 
 <style lang="scss">
+.c-mobile-live-booking-button__text {
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: right;
+}
 .c-mobile-live-booking-button__button {
   display: flex;
   flex-direction: column;
@@ -243,7 +274,6 @@ async function onClickSmsButton() {
 
 .c-mobile-live-booking-button--splash {
   .c-mobile-live-booking-button__button {
-    width: 80px;
     min-width: 80px;
     padding: 0;
   }
@@ -257,7 +287,7 @@ async function onClickSmsButton() {
 
 .c-mobile-live-booking-button--corner {
   .c-mobile-live-booking-button__button {
-    width: 60px;
+    min-width: 60px;
     white-space: nowrap;
   }
 }
