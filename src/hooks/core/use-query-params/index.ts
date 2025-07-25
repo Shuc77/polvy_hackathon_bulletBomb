@@ -41,14 +41,22 @@ export const useQueryParams = (opts?: {
   }
 
   /** 设置 queryParams */
-  function __setQueryParams(params: UniversalParams<string | string[] | undefined>) {
+  function __setQueryParams(
+    params: UniversalParams<string | string[] | undefined>,
+    options?: { reset: boolean },
+  ) {
+    const { reset = false } = options || {};
     const plvWatchApp = getPolyvWatchApp();
 
     if (!plvWatchApp) {
       throw new Error('__setQueryParams error for plvWatchApp');
     }
 
-    plvWatchApp.setQueryParams(params);
+    if (reset) {
+      plvWatchApp.resetQueryParams(params);
+    } else {
+      plvWatchApp.setQueryParams(params);
+    }
   }
 
   /**
@@ -241,7 +249,7 @@ export const useQueryParams = (opts?: {
       delete urlParams[key];
     }
 
-    __setQueryParams(urlParams);
+    __setQueryParams(urlParams, { reset: true });
 
     const url = appendToURL(getLocationPathName(), getQueryParams());
     replaceHistoryState({ url });

@@ -42,12 +42,12 @@ const { statusTagText, liveStatus } = useStatusTag({
 }
 
 $--status-configs: (
-  'unStart' #3f76fc,
-  'waiting' #3f76fc,
-  'live' #eb4747,
+  'unStart' #23aa4f,
+  'waiting' #23aa4f,
+  'live' #ff5252,
   'end' #898989,
   'playback' #3f76fc,
-  'stop' #eb4747
+  'stop' #ff5252
 );
 
 @each $status, $color in $--status-configs {

@@ -1,5 +1,4 @@
-import { useGlobalInject } from '@/app/use-global-inject';
-import { isSupportWebp } from '@/assets/utils/image';
+import { ossCompress } from '@polyv/utils/es/image';
 import { appendUrl } from '@/assets/utils/url';
 
 export function appendToOssProcess(url: string, additionalParams: string) {
@@ -18,8 +17,6 @@ export function appendToOssProcess(url: string, additionalParams: string) {
 }
 
 export const useResizeOssImage = () => {
-  const { getWatchCore } = useGlobalInject();
-
   /**
    * 重置 oss 的图片尺寸
    * @param url 图片地址
@@ -27,46 +24,22 @@ export const useResizeOssImage = () => {
    * @param height 高度
    */
   function resizeOSSImg(url: string, width?: number, height?: number): string {
+    if (!url) {
+      return url;
+    }
+
+    if (!width && !height) {
+      console.warn('需要指定图片的宽度或者高度才能进行调整');
+      return url;
+    }
+
     try {
-      if (!url) {
-        return url;
-      }
-
-      if (!width && !height) {
-        console.warn('需要指定图片的宽度或者高度才能进行调整');
-        return url;
-      }
-
-      const a = document.createElement('a');
-      a.href = url;
-
-      const host = a.host.toLowerCase();
-      const search = a.search;
-
-      const watchCore = getWatchCore();
-      const staticDomain = watchCore.domain.getDomainInfo().staticDomain;
-
-      if (!staticDomain.includes(host) || search) {
-        return url;
-      }
-
-      let result = url + '?x-oss-process=image/resize,mfit';
-
-      if (width) {
-        result += ',w_' + Math.round(width);
-      }
-
-      if (height) {
-        result += ',h_' + Math.round(height);
-      }
-
-      if (isSupportWebp) {
-        result += '/format,webp';
-      }
-
-      result += ',limit_1';
-      return result;
+      return ossCompress(url, {
+        width,
+        height,
+      });
     } catch (error) {
+      console.warn(error);
       return url;
     }
   }

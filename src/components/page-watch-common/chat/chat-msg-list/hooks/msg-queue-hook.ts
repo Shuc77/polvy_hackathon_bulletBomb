@@ -4,12 +4,11 @@ import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { RenderPosition } from '@just4/virtual-list/types';
-import { ChatEvents, ChatMsgSource, ChatMsgType } from '@polyv/live-watch-sdk';
+import { ChatEvents, ChatMsgSource, ChatMsgType, plvInterval } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useContractHistory, useContractQueue } from './contract-history-hook';
 import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions } from './types';
-import { plvInterval } from '@/assets/utils/utils';
 
 export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
   const { getWatchCore } = useGlobalInject();

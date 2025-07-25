@@ -1,7 +1,7 @@
 <!-- @file PC 端表单组件：短信验证码输入框 -->
 <template>
   <div class="c-pc-form-sms-verify-input">
-    <pc-form-input
+    <form-input
       v-bind="attrs"
       :placeholder="inputPlaceholder"
       :maxlength="4"
@@ -18,7 +18,7 @@
       >
         {{ sendText }}
       </div>
-    </pc-form-input>
+    </form-input>
 
     <div
       v-if="slideVerifyVisible && validType === SmsValidType.Slider"
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { useAttrs } from 'vue';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import PcFormSlideVerify from '@/components/common-base/form/form-slide-verify/pc-form-slide-verify.vue';
 import {
   formSmsVerifyInputProps,
@@ -86,6 +86,6 @@ const {
   width: 100%;
   padding: 8px;
   background: $--color-white;
-  box-shadow: $--shadow-popper;
+  box-shadow: $--popper-shadow;
 }
 </style>

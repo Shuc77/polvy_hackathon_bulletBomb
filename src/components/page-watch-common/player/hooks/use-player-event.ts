@@ -163,6 +163,13 @@ export const usePlayerEvent = () => {
     });
   }
 
+  /** 使用fullscreen api 全屏change事件，需后台配置增强全屏功能的开关后，此事件回调才会生效 */
+  function onPlayerFullscreenChange(
+    data: PlayerEventsRelations[PlayerEvents.PlayerFullscreenChange],
+  ) {
+    document.body.classList.toggle('g-page-player-system-fullscreen', data.isFullscreen);
+  }
+
   /** 绑定播放器事件 */
   function bindPlayerEvents() {
     unbindPlayerEvents();
@@ -179,6 +186,7 @@ export const usePlayerEvent = () => {
       PlayerEvents.PlayerUIControlDisplay,
       onSdkPlayerUIControlVisible,
     );
+    watchCore.player.eventEmitter.on(PlayerEvents.PlayerFullscreenChange, onPlayerFullscreenChange);
   }
 
   /** 解绑播放器事件 */
@@ -194,6 +202,10 @@ export const usePlayerEvent = () => {
     watchCore.player.eventEmitter.off(
       PlayerEvents.PlayerUIControlDisplay,
       onSdkPlayerUIControlVisible,
+    );
+    watchCore.player.eventEmitter.off(
+      PlayerEvents.PlayerFullscreenChange,
+      onPlayerFullscreenChange,
     );
   }
 

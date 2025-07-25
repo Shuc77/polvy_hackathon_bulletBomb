@@ -1,21 +1,17 @@
 <!-- @file 移动端更多面板节点 -->
 <template>
-  <li
+  <div
     class="c-mobile-more-item"
-    :class="{
-      'c-mobile-more-item--dotted': dotted,
-    }"
     @click="emit('click')"
   >
-    <div
-      class="c-mobile-more-item__icon"
-      :class="{
-        [`c-mobile-more-item__icon--${icon}`]: true,
-      }"
-    ></div>
+    <component
+      v-if="iconComp"
+      class="c-mobile-more-item__icon-comp"
+      :is="iconComp"
+    />
 
-    <div class="c-mobile-more-item__text pws-more-panel-text">{{ text }}</div>
-  </li>
+    <div class="c-mobile-more-item__text">{{ text }}</div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -24,11 +20,9 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
 defineProps({
   /** 图片 */
-  icon: PropUtils.string.isRequired,
+  iconComp: PropUtils.icon(),
   /** 文字 */
   text: PropUtils.string.isRequired,
-  /** 是否显示红点，默认：false */
-  dotted: PropUtils.bool.def(false),
 });
 
 const emit = defineEmits({
@@ -44,94 +38,22 @@ const emit = defineEmits({
   align-items: center;
   justify-content: center;
   width: 25%;
-  margin-top: 24px;
+  height: 76px;
 }
 
-.c-mobile-more-item__icon {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  margin-bottom: 8px;
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-.c-mobile-more-item__icon--profile {
-  background-image: url(./imgs/icon-menu-profile.png);
-}
-.c-mobile-more-item__icon--only-special {
-  background-image: url(./imgs/icon-menu-only-sp-mob.png);
-}
-.c-mobile-more-item__icon--look-all {
-  background-image: url(./imgs/icon-menu-show-all-mob.png);
-}
-.c-mobile-more-item__icon--send-image {
-  background-image: url(./imgs/icon-menu-img-mob.png);
-}
-.c-mobile-more-item__icon--announcement {
-  background-image: url(./imgs/icon-menu-announcement-mob.png);
-}
-.c-mobile-more-item__icon--feedback {
-  background-image: url(./imgs/icon-menu-feedback.png);
-}
-.c-mobile-more-item__icon--score {
-  background-image: url(./imgs/icon-menu-score-redpack.png);
-}
-.c-mobile-more-item__icon--hide-donate {
-  background-image: url(./imgs/icon-menu-animation-hide-mob.png);
-}
-.c-mobile-more-item__icon--show-donate {
-  background-image: url(./imgs/icon-menu-animation-show-mob.png);
-}
-.c-mobile-more-item__icon--set-nick {
-  background-image: url(./imgs/icon-menu-set-nick.png);
-}
-.c-mobile-more-item__icon--language {
-  background-image: url(./imgs/icon-menu-lang-mob.png);
-}
-.c-mobile-more-item__icon--send-redpack {
-  background-image: url(./imgs/icon-menu-redenvelope-mob.png);
-}
-.c-mobile-more-item__icon--withdraw {
-  background-image: url(./imgs/icon-menu-withdraw-mob.png);
-}
-.c-mobile-more-item__icon--message {
-  background-image: url(./imgs/icon-menu-msg.png);
-}
-.c-mobile-more-item__icon--bind-mobile {
-  background-image: url(./imgs/icon-menu-bind-mobile.png);
-}
-.c-mobile-more-item__icon--my-reward {
-  background-image: url(./imgs/icon-menu-my-reward-mob.png);
-}
-
-.c-mobile-more-item__icon--pip {
-  background-image: url(./imgs/icon-pip.png);
-}
-
-.c-mobile-more-item__icon--playback-setting {
-  background-image: url(./imgs/icon-playback-setting.png);
-}
-
-.c-mobile-more-item__icon--coupon {
-  background-image: url(./imgs/icon-menu-coupon.png);
+.c-mobile-more-item__icon-comp {
+  display: flex;
+  margin-bottom: 5px;
+  font-size: 30px;
+  color: rgba(#000, 0.8);
 }
 
 .c-mobile-more-item__text {
   width: 100%;
   font-size: 12px;
   line-height: 18px;
+  color: rgba(#000, 0.6);
   text-align: center;
   @include singleline-text;
-}
-
-.c-mobile-more-item--dotted .c-mobile-more-item__icon::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 6px;
-  height: 6px;
-  content: '';
-  background: #ff3d00;
-  border-radius: 50%;
 }
 </style>

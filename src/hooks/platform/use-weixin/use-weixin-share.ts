@@ -2,30 +2,15 @@ import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { appendUrl, fitProtocol } from '@/assets/utils/url';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
-import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useShareStore } from '@/store/use-share-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useWeixinStore } from '@/store/use-weixin-store';
+import { WxShareUrlParams, useWeixinStore } from '@/store/use-weixin-store';
 import { LoggerName, YN } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@utils-ts/boolean';
 import { computed, unref } from 'vue';
 import { useWeixinSdk } from './use-weixin-sdk';
-
-/** 微信分享地址中附带的参数 */
-interface WxShareUrlParams {
-  /** 企微邀请的员工 id */
-  wxInviteId?: string;
-  /** 邀请人 id */
-  invitePosterId?: string;
-  /** 回放分享-回放 Id */
-  playBackVid?: string;
-  /** 一客一码--销售邀请的客户id */
-  inviteCustomerId?: string;
-  /** 邀请观看--分销员/邀请人id */
-  inviteWatchSaleId?: string;
-}
 
 /**
  * @hook 微信分享
@@ -36,39 +21,11 @@ export const useWeixinShare = () => {
   const themeStore = useThemeStore();
   const shareStore = useShareStore();
   const weixinStore = useWeixinStore();
-  const inviteStore = useInviteStore();
   const playbackStore = usePlaybackStore();
   const watchAppStore = useWatchAppStore();
 
   const { getWatchCore } = useMultiPolyvWatchApp();
   const watchCore = getWatchCore();
-
-  /** 微信分享地址上需要携带的参数 */
-  const wxShareUrlParams = computed(() => {
-    const params: WxShareUrlParams = {};
-
-    // 企微邀请的员工 id
-    if (inviteStore.wxInviteId) {
-      params.wxInviteId = inviteStore.wxInviteId;
-    }
-
-    // 针对开启邀请的频道添加邀请参数到微信分享 url
-    if (inviteStore.invitePosterId) {
-      params.invitePosterId = inviteStore.invitePosterId;
-    }
-
-    // 一客一码--销售邀请的客户id
-    if (shareStore.saleInviteCustomerId) {
-      params.inviteCustomerId = shareStore.saleInviteCustomerId;
-    }
-
-    // 邀请观看--分销员/邀请人id
-    if (shareStore.inviteWatchSaleId) {
-      params.inviteWatchSaleId = shareStore.inviteWatchSaleId;
-    }
-
-    return params;
-  });
 
   /** 微信分享中的分享标题 */
   const wxShareTitle = computed(() => {
@@ -92,18 +49,15 @@ export const useWeixinShare = () => {
 
   /** 微信分享中的分享地址 */
   const wxShareUrl = computed(() => {
-    const shareInfo = weixinStore.wxShareInfo;
-
     if (watchAppStore.isPlaybackWatchUrl) {
       return watchCore.domain.processRandomHostname(window.location.href);
     }
 
-    // 使用后台设置的自定义微信分享地址
-    if (ynToBool(shareInfo.isUseWxShareUrl, YN.N)) {
-      return shareInfo.wxShareUrl;
+    if (weixinStore.wxCustomShareUrl) {
+      return weixinStore.wxCustomShareUrl;
     }
 
-    const url = appendUrl<WxShareUrlParams>(window.location.href, unref(wxShareUrlParams), {
+    const url = appendUrl<WxShareUrlParams>(window.location.href, weixinStore.wxShareUrlParams, {
       forbiddenFields: ['snapshotPage'],
     });
     return watchCore.domain.processRandomHostname(url);
@@ -136,7 +90,11 @@ export const useWeixinShare = () => {
         console.info('Wx sdk: updateAppMessageShareData success');
       },
       fail(e) {
-        console.info('updateAppMessageShareData shareOptions', JSON.stringify(shareOptions));
+        console.info(
+          'updateAppMessageShareData shareOptions',
+          JSON.stringify(shareOptions),
+          JSON.stringify(e),
+        );
         watchCore.logger.error(
           LoggerName.Weixin,
           'update-app-message-share-fail',
@@ -152,7 +110,11 @@ export const useWeixinShare = () => {
         console.info('Wx sdk: updateTimelineShareData success');
       },
       fail(e) {
-        console.info('updateTimelineShareData shareOptions', JSON.stringify(shareOptions));
+        console.info(
+          'updateTimelineShareData shareOptions',
+          JSON.stringify(shareOptions),
+          JSON.stringify(e),
+        );
         watchCore.logger.error(LoggerName.Weixin, 'update-timeline-share-fail', JSON.stringify(e));
       },
     });
@@ -256,7 +218,6 @@ export const useWeixinShare = () => {
   }
 
   return {
-    wxShareUrlParams,
     wxShareUrl,
     hideWeixinShare,
     configureWeixinShare,

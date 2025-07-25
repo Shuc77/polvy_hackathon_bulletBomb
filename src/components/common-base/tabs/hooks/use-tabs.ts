@@ -27,6 +27,11 @@ import {
 import { isTabPaneInstance } from './use-tab-pane';
 import { useGlobalInject } from '@/app/use-global-inject';
 
+export const generateHackWeixinBtnId = (menuName: string | number, needSelectorKey?: boolean) => {
+  const id = `plv-watch-menu-hack-weixin-btn-${menuName}`;
+  return needSelectorKey ? `#${id}` : id;
+};
+
 export const tabsProps = () => ({
   /** 激活的面板 name */
   value: PropUtils.oneOfType<TabNameType>([String, Number]).def(''),

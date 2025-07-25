@@ -222,6 +222,7 @@ const realTimeContents = computed(() => {
   margin-left: 2px;
   font-size: 12px;
   line-height: 18px;
+  white-space: nowrap;
 }
 .c-count-down__number-square.is-pc {
   .c-count-down__number-square__item__count {

@@ -1,133 +1,203 @@
 <!-- @file 移动端更多面板 -->
 <template>
-  <ul class="c-mobile-more-panel pws-mobile-more-panel">
-    <!-- 个人中心 -->
-    <more-item
-      v-if="identitySetting.profileEnabled"
-      icon="profile"
-      :text="$lang('identitySetting.profile')"
-      @click="onClickProfile"
-    />
+  <div class="c-mobile-more-panel">
+    <div class="c-mobile-more-panel__title">{{ $lang('more.base') }}</div>
 
-    <!-- 只看主持人 -->
-    <more-item
-      v-if="onlySpecialMsgWidgetVisible && chatMenuData.visible"
-      :icon="onlySpecialMsg ? 'look-all' : 'only-special'"
-      :text="onlySpecialMsg ? $lang('chat.lookAll') : $lang('chat.onlyHost')"
-      @click="onClickOnlySpecialMsg"
-    />
+    <div class="c-mobile-more-panel__list">
+      <!-- 只看主持人 -->
+      <more-item
+        v-if="onlySpecialMsgWidgetVisible && chatMenuData.visible"
+        :icon-comp="onlySpecialMsg ? MobileOriginIconMoreOnlySpecial : MobileOriginIconMoreLookAll"
+        :text="$lang('chat.onlyHost')"
+        @click="onClickOnlySpecialMsg"
+      />
 
-    <!-- 发送图片 -->
-    <more-item
-      v-if="chatSetting.viewerSendImgEnabled && chatMenuData.visible"
-      icon="send-image"
-      :text="$lang('chat.sendImage')"
-      @click="onClickSendImage"
-    />
+      <!-- 发送图片 -->
+      <more-item
+        v-if="chatSetting.viewerSendImgEnabled && chatMenuData.visible"
+        :icon-comp="MobileIconMorePicture"
+        :text="$lang('chat.sendImage')"
+        @click="onClickSendImage"
+      />
 
-    <!-- 发红包 -->
-    <more-item
-      v-if="sendRedpackVisible && chatMenuData.visible"
-      icon="send-redpack"
-      :text="$lang('redpack.name')"
-      @click="onClickSendRedpack"
-    />
+      <!-- 语言切换 -->
+      <more-item
+        v-if="langSwitchEnabled"
+        :icon-comp="MobileIconMoreLanguage"
+        :text="$lang('base.changeLang')"
+        @click="onClickLanguageSwitch"
+      />
 
-    <!-- 提现 -->
-    <more-item
-      v-if="withdrawVisible && chatMenuData.visible"
-      icon="withdraw"
-      :text="$lang('withdraw.name')"
-      @click="onClickWithdraw"
-    />
+      <!-- 修改昵称 -->
+      <more-item
+        v-if="canSetNick"
+        :icon-comp="MobileIconMoreSetNick"
+        :text="$lang('chat.setNick')"
+        @click="onClickSetNick"
+      />
 
-    <!-- 公告 -->
-    <more-item
-      v-if="announcementFunctionVisible"
-      icon="announcement"
-      :text="$lang('interact.announcement.title')"
-      @click="onClickAnnouncement"
-    />
+      <!-- 投诉反馈 -->
+      <more-item
+        v-if="feedbackMenuVisible"
+        :icon-comp="MobileIconMoreFeedback"
+        :text="$lang('interact.feedback.title')"
+        @click="onClickFeedback"
+      />
 
-    <!-- 语言切换 -->
-    <more-item
-      v-if="langSwitchEnabled"
-      icon="language"
-      :text="$lang('base.changeLang')"
-      @click="onClickLanguageSwitch"
-    />
+      <!-- 绑定手机号 -->
+      <more-item
+        v-if="bindMobileVisible"
+        :icon-comp="MobileIconMoreBindMobile"
+        :text="$lang('identityInfo.bindMobile')"
+        @click="onClickBindMobile"
+      />
 
-    <!-- 修改昵称 -->
-    <more-item
-      v-if="canSetNick"
-      icon="set-nick"
-      :text="$lang('chat.setNick')"
-      @click="onClickSetNick"
-    />
+      <!-- 小窗播放 -->
+      <more-item
+        v-if="pictureInPictureEnabled"
+        :icon-comp="MobileIconMorePip"
+        :text="$lang('player.pictureInPicture.title')"
+        @click="onClickPIP"
+      />
 
-    <!-- 任务奖励 -->
-    <more-item
-      icon="my-reward"
-      :text="$lang('taskActivity.myReward')"
-      @click="onClickMyReward"
-    />
+      <!-- 播放设置 -->
+      <more-item
+        v-if="pictureInPictureEnabled"
+        :icon-comp="MobileIconMorePlaybackSetting"
+        :text="$lang('player.pictureInPicture.playbackSetting')"
+        @click="onClickPlaybackSetting"
+      />
 
-    <!-- 积分记录 -->
-    <more-item
-      v-if="scoreRedpackEnabled && chatMenuData.visible"
-      icon="score"
-      :text="$lang('interact.scoreRecord.title')"
-      @click="onClickScoreRecord"
-    />
+      <!-- 音视频切换 -->
+      <more-item
+        v-if="playerModeSwitcherVisible && isPortraitWatchLayout"
+        :icon-comp="isAudioPlayerMode ? MobileIconMoreVideo : MobileIconMoreAudio"
+        :text="isAudioPlayerMode ? $lang('player.mode.video') : $lang('player.mode.audio')"
+        @click="onClickPlayMode"
+      />
 
-    <!-- 打赏特效开关 -->
-    <more-item
-      v-if="showDonateGifts && chatMenuData.visible"
-      :icon="donateAnimationVisible ? 'show-donate' : 'hide-donate'"
-      :text="donateAnimationVisible ? $lang('donate.hideAnimation') : $lang('donate.showAnimation')"
-      @click="toggleDonateAnimationVisible"
-    />
+      <!-- 线路设置 -->
+      <more-item
+        v-if="lineSettingVisible && isPortraitWatchLayout"
+        :icon-comp="MobileIconMoreLineSetting"
+        :text="$lang('player.lineSetting')"
+        @click="onClickLineSetting"
+      />
 
-    <!-- 投诉反馈 -->
-    <more-item
-      v-if="feedbackMenuVisible"
-      icon="feedback"
-      :text="$lang('interact.feedback.title')"
-      @click="onClickFeedback"
-    />
+      <!-- 清晰度设置 -->
+      <more-item
+        v-if="qualitySettingVisible && isPortraitWatchLayout"
+        :icon-comp="MobileIconMoreQualitySetting"
+        :text="$lang('player.qualitySetting')"
+        @click="onClickQualitySetting"
+      />
 
-    <!-- 绑定手机号 -->
-    <more-item
-      v-if="bindMobileVisible"
-      icon="bind-mobile"
-      :text="$lang('identityInfo.bindMobile')"
-      @click="onClickBindMobile"
-    />
+      <!-- 倍速设置 -->
+      <more-item
+        v-if="rateSettingVisible && isPortraitWatchLayout"
+        :icon-comp="MobileIconMoreRateSetting"
+        :text="$lang('player.rate')"
+        @click="onClickRateSetting"
+      />
 
-    <!-- 小窗播放 -->
-    <more-item
-      v-if="pictureInPictureEnabled"
-      icon="pip"
-      :text="$lang('player.pictureInPicture.title')"
-      @click="onClickPIP"
-    />
+      <!-- 延迟模式 -->
+      <more-item
+        v-if="latencyModeSettingVisible && isPortraitWatchLayout"
+        :icon-comp="MobileIconMoreLatencySetting"
+        :text="$lang('player.latencyMode.name')"
+        @click="onClickLatencySwitch"
+      />
 
-    <!-- 播放设置 -->
-    <more-item
-      v-if="pictureInPictureEnabled"
-      icon="playback-setting"
-      :text="$lang('player.pictureInPicture.playbackSetting')"
-      @click="onClickPlaybackSetting"
-    />
+      <!-- 问答 -->
+      <more-item
+        v-if="qaMenuData.visible && isPortraitWatchLayout"
+        :icon-comp="MobileIconMoreQuestionAnswer"
+        :text="$lang('menu.tabName.qa')"
+        @click="onClickQuestionAnswer"
+      />
 
-    <!-- 优惠券 -->
-    <more-item
-      v-if="couponPendantVisible"
-      icon="coupon"
-      :text="$lang('interact.coupon.title')"
-      @click="onClickCoupon"
-    />
-  </ul>
+      <!-- 切换双流/切换流多轨 -->
+      <more-item
+        v-if="supportMultiStreamTrack && isPortraitWatchLayout"
+        :icon-comp="
+          isMultiLanguageTrack ? MobileIconMoreStreamTrack : MobileIconMoreStreamTrackNormal
+        "
+        :text="
+          isMultiLanguageTrack ? $lang('player.streamTrack') : $lang('player.streamTrack.normal')
+        "
+        @click="onClickSwitchStream"
+      />
+    </div>
+
+    <div class="c-mobile-more-panel__title">{{ $lang('more.interactive') }}</div>
+
+    <div class="c-mobile-more-panel__list">
+      <!-- 个人中心 -->
+      <more-item
+        v-if="identitySetting.profileEnabled"
+        :icon-comp="MobileIconMoreProfile"
+        :text="$lang('identitySetting.profile')"
+        @click="onClickProfile"
+      />
+
+      <!-- 发红包 -->
+      <more-item
+        v-if="sendRedpackVisible && chatMenuData.visible && !isPortraitWatchLayout"
+        :icon-comp="MobileIconMoreSendRedpack"
+        :text="$lang('redpack.name')"
+        @click="onClickSendRedpack"
+      />
+
+      <!-- 任务奖励 -->
+      <more-item
+        :icon-comp="MobileIconMoreMyReward"
+        :text="$lang('taskActivity.myReward')"
+        @click="onClickMyReward"
+      />
+
+      <!-- 提现 -->
+      <more-item
+        v-if="withdrawVisible && chatMenuData.visible"
+        :icon-comp="MobileIconMoreWithdraw"
+        :text="$lang('withdraw.name')"
+        @click="onClickWithdraw"
+      />
+
+      <!-- 积分记录 -->
+      <more-item
+        v-if="scoreRedpackEnabled && chatMenuData.visible"
+        :icon-comp="MobileIconMoreScore"
+        :text="$lang('interact.scoreRecord.title')"
+        @click="onClickScoreRecord"
+      />
+
+      <!-- 打赏特效开关 -->
+      <more-item
+        v-if="showDonateGifts && (chatMenuData.visible || isPortraitWatchLayout)"
+        :icon-comp="
+          donateAnimationVisible ? MobileOriginIconMoreShowDonate : MobileOriginIconMoreHideDonate
+        "
+        :text="$lang('donate.showAnimation')"
+        @click="toggleDonateAnimationVisible"
+      />
+
+      <!-- 优惠券 -->
+      <more-item
+        v-if="couponPendantVisible"
+        :icon-comp="MobileIconMoreCoupon"
+        :text="$lang('interact.coupon.title')"
+        @click="onClickCoupon"
+      />
+
+      <!-- 公告 -->
+      <more-item
+        v-if="announcementFunctionVisible"
+        :icon-comp="MobileIconMoreAnnouncement"
+        :text="$lang('interact.announcement.title')"
+        @click="onClickAnnouncement"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -149,6 +219,42 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { useDonateAnimationVisible } from '@/components/page-watch-common/donate/donate-animation/use-donate-animation';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { watch } from 'vue';
+import {
+  MobileIconMoreAnnouncement,
+  MobileIconMoreAudio,
+  MobileIconMoreBindMobile,
+  MobileIconMoreCoupon,
+  MobileIconMoreFeedback,
+  MobileIconMoreLanguage,
+  MobileIconMoreLatencySetting,
+  MobileIconMoreLineSetting,
+  MobileIconMoreMyReward,
+  MobileIconMorePicture,
+  MobileIconMorePip,
+  MobileIconMorePlaybackSetting,
+  MobileIconMoreProfile,
+  MobileIconMoreQualitySetting,
+  MobileIconMoreQuestionAnswer,
+  MobileIconMoreRateSetting,
+  MobileIconMoreScore,
+  MobileIconMoreSendRedpack,
+  MobileIconMoreSetNick,
+  MobileIconMoreStreamTrack,
+  MobileIconMoreStreamTrackNormal,
+  MobileIconMoreVideo,
+  MobileIconMoreWithdraw,
+} from '@/components/component-icons/mobile/map';
+import {
+  MobileOriginIconMoreHideDonate,
+  MobileOriginIconMoreLookAll,
+  MobileOriginIconMoreOnlySpecial,
+  MobileOriginIconMoreShowDonate,
+} from '@/components/component-icons/mobile-origin/map';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { usePlayerControl } from '../../player/hooks/use-player-control';
+import { usePlayerStore } from '@/store/use-player-store';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useStreamTrack } from '../../player/player-stream-track/use-stream-track';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -169,19 +275,37 @@ const chatStore = useChatStore();
 const { onlySpecialMsg, chatSetting, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 const { toggleOnlySpecialMsg } = chatStore;
 
+const viewerStore = useViewerStore();
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { sendRedpackVisible, scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
 
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
-const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
+
+const { chatMenuData, qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { identitySetting, bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
 const { toSmallWindow } = useWebviewStore();
 
+const { isMultiLanguageTrack } = useStreamTrack();
+
 const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
+
+const playerStore = usePlayerStore();
+const { isAudioPlayerMode } = storeDefinitionToRefs(usePlayerStore);
+
+const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
+
+const {
+  lineSettingVisible,
+  qualitySettingVisible,
+  rateSettingVisible,
+  latencyModeSettingVisible,
+  playerModeSwitcherVisible,
+} = usePlayerControl();
 
 const watchCore = getWatchCore();
 
@@ -291,6 +415,64 @@ function onClickCoupon() {
   closeMore();
 }
 
+/** 点击播放模式 */
+function onClickPlayMode() {
+  playerStore.$patch({
+    isAudioPlayerMode: !playerStore.isAudioPlayerMode,
+  });
+  closeMore();
+}
+
+/** 点击线路切换 */
+function onClickLineSetting() {
+  closeMore();
+  getEmitter().emit(appEvents.portrait.OpenLineSettingPopup, {
+    _visible: true,
+    _useTransition: false,
+  });
+}
+
+/** 点击清晰度切换 */
+function onClickQualitySetting() {
+  closeMore();
+  getEmitter().emit(appEvents.portrait.OpenQualitySettingPopup, {
+    _visible: true,
+    _useTransition: false,
+  });
+}
+
+/** 点击倍速设置 */
+function onClickRateSetting() {
+  closeMore();
+  getEmitter().emit(appEvents.portrait.OpenRateSettingPopup, {
+    _visible: true,
+    _useTransition: false,
+  });
+}
+
+/** 点击延迟模式 */
+function onClickLatencySwitch() {
+  getEmitter().emit(appEvents.portrait.OpenLatencySwitchPopup, true);
+  closeMore();
+}
+
+/** 点击问答 */
+function onClickQuestionAnswer() {
+  const checkResult = viewerStore.checkNeedRealNameAuth();
+  if (checkResult) {
+    return;
+  }
+
+  getEmitter().emit(appEvents.interaction.OpenQuestionAnswer, true);
+  closeMore();
+}
+
+/** 点击切换语言流 */
+function onClickSwitchStream() {
+  getEmitter().emit(appEvents.portrait.OpenLangStreamPopup, true);
+  closeMore();
+}
+
 watch(isSmallWindow, pip => {
   if (pip) closeMore();
 });
@@ -299,11 +481,24 @@ watch(isSmallWindow, pip => {
 <style lang="scss">
 .c-mobile-more-panel {
   box-sizing: border-box;
+  max-height: 492px;
+  padding-top: 4px;
+  padding-bottom: 24px;
+  overflow-y: auto;
+  background: #f7f8fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.c-mobile-more-panel__title {
+  padding: 16px 16px 0;
+  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 17px;
+  color: rgba(#000000, 0.4);
+}
+
+.c-mobile-more-panel__list {
   display: flex;
   flex-wrap: wrap;
-  max-height: 280px;
-  padding: 0 24px 30px;
-  overflow-y: auto;
-  border-radius: 8px 8px 0 0;
 }
 </style>

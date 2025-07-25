@@ -12,7 +12,7 @@
         :submit-action="submitForm"
       >
         <form-item form-field="amount">
-          <mobile-form-number-input
+          <form-number-input
             v-model="formData.amount"
             :input-title="$lang('redpack.send.sum')"
             :input-title-width="68"
@@ -23,7 +23,7 @@
         </form-item>
 
         <form-item form-field="count">
-          <mobile-form-number-input
+          <form-number-input
             v-model="formData.count"
             :input-title="$lang('redpack.send.num')"
             :input-title-width="68"
@@ -34,7 +34,7 @@
         </form-item>
 
         <form-item>
-          <mobile-form-input
+          <form-input
             v-model="formData.greeting"
             :placeholder="$lang('redpack.blessing.placeholder')"
             :maxlength="20"
@@ -66,8 +66,8 @@ import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
-import MobileFormNumberInput from '@/components/common-base/form/form-number-input/mobile-form-number-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
+import FormNumberInput from '@/components/common-base/form/form-number-input/form-number-input.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';

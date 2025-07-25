@@ -5,63 +5,74 @@
       class="c-mobile-invite-rank__list"
       @scroll="handleScroll"
     >
-      <div>
+      <div class="c-mobile-invite-rank__list__inner">
         <mobile-invite-activity-banner v-if="inviteActivityEnabled" />
-
-        <div class="c-mobile-invite-rank__list__title pws-mobile-invite-rank__list__title">
-          <span v-if="inviteListSettingInfo.inviteListDisplayType === 'partial'">
-            {{ $lang('invite.rank') }}
-          </span>
-          <span>{{ $lang('invite.rank.people.number') }}</span>
-        </div>
-
-        <!-- 前三名 -->
-        <invite-rank-item
-          v-for="(item, index) in realTopThreeRankItems"
-          :rank="index + 1"
-          :is-current="isCurrentViewer(item)"
-          :item="item"
-          :key="item.openId"
+        <mobile-invite-popup-title
+          v-else
+          :title="$lang('invite.rank.title')"
         />
 
-        <!-- 除开前三名的列表 -->
-        <invite-rank-item
-          v-for="(item, index) in rankList"
-          :rank="index + 4"
-          :is-current="isCurrentViewer(item)"
-          :item="item"
-          :key="item.openId"
-        />
-        <div
-          v-if="isLoading"
-          class="c-mobile-invite-rank__list--loading"
-        >
-          <list-loading />
-        </div>
-        <div
-          v-else-if="isNoMore"
-          class="c-mobile-invite-rank__list__nomore pws-mobile-invite-rank__nomore"
-        >
-          {{
-            inviteListSettingInfo.inviteListDisplayType === 'partial'
-              ? onlyTopLimitTips
-              : $lang('invite.rank.no.more')
-          }}
-        </div>
-        <div
-          v-else-if="isLoadFailed"
-          class="c-mobile-invite-rank__list__failed .pws-mobile-invite-rank__failed"
-        >
-          {{ $lang('invite.rank.loaded.failed') }}
+        <div class="c-mobile-invite-rank__list__content">
+          <!-- 前三名 -->
+          <div class="c-mobile-invite-rank__top-three">
+            <mobile-invite-rank-top-three
+              :data="topThreeRankItems[1]"
+              :is-current="isCurrentViewer(topThreeRankItems[1])"
+              order="second"
+            />
+            <mobile-invite-rank-top-three
+              :data="topThreeRankItems[0]"
+              :is-current="isCurrentViewer(topThreeRankItems[0])"
+              order="first"
+            />
+            <mobile-invite-rank-top-three
+              :data="topThreeRankItems[2]"
+              :is-current="isCurrentViewer(topThreeRankItems[2])"
+              order="third"
+            />
+          </div>
+
+          <div class="c-mobile-invite-rank__list__title">
+            <span>{{ $lang('invite.rank') }}</span>
+            <span>{{ $lang('invite.rank.people.number') }}</span>
+          </div>
+
+          <!-- 除开前三名的列表 -->
+          <invite-rank-item
+            v-for="(item, index) in rankList"
+            :rank="index + 4"
+            :is-current="isCurrentViewer(item)"
+            :item="item"
+            :key="item.openId"
+          />
+          <div
+            v-if="isLoading"
+            class="c-mobile-invite-rank__list--loading"
+          >
+            <list-loading />
+          </div>
+          <div
+            v-else-if="isNoMore"
+            class="c-mobile-invite-rank__list__nomore"
+          >
+            {{
+              inviteListSettingInfo.inviteListDisplayType === 'partial'
+                ? onlyTopLimitTips
+                : $lang('invite.rank.no.more')
+            }}
+          </div>
+          <div
+            v-else-if="isLoadFailed"
+            class="c-mobile-invite-rank__list__failed"
+          >
+            {{ $lang('invite.rank.loaded.failed') }}
+          </div>
         </div>
       </div>
     </section>
 
     <!-- 我的排名信息 -->
-    <section
-      v-if="showBottomInfo"
-      class="c-mobile-invite-rank__me pws-mobile-invite-rank-bottom"
-    >
+    <section class="c-mobile-invite-rank__me">
       <mobile-invite-activity-will-end-tip
         v-if="inviteActivityWillEndTipVisible"
         class="c-mobile-invite-rank__invite-activity-will-end-tip"
@@ -74,7 +85,10 @@
       >
         <div class="c-mobile-invite-rank__me__info">
           <p class="c-mobile-invite-rank__me__info__nick">
-            {{ currentRankInfo.nickname }}
+            <span class="g-singleline">{{ currentRankInfo.nickname }}</span>
+            <span class="c-mobile-invite-rank__me-label">
+              <span>{{ $lang('invite.rank.me') }}</span>
+            </span>
           </p>
           <p
             class="c-mobile-invite-rank__me__info__margin"
@@ -113,6 +127,8 @@ import InviteEntryCapsule from '../mobile-invite-poster-entry/mobile-invite-post
 import InviteRankItem from './mobile-invite-rank-item.vue';
 import MobileInviteActivityBanner from '../mobile-invite-activity/mobile-invite-activity-banner/mobile-invite-activity-banner.vue';
 import MobileInviteActivityWillEndTip from '../mobile-invite-activity/mobile-invite-activity-will-end-tip/mobile-invite-activity-will-end-tip.vue';
+import MobileInvitePopupTitle from './mobile-invite-popup-title.vue';
+import MobileInviteRankTopThree from './mobile-invite-rank-top-three.vue';
 
 import { useInviteRankHook } from '../hooks/use-invite-rank';
 
@@ -127,15 +143,14 @@ const props = defineProps({
 
 const {
   currentRankInfo,
-  realTopThreeRankItems,
   rankList,
   isLoading,
   isNoMore,
   isLoadFailed,
   inviteListSettingInfo,
   onlyTopLimitTips,
+  topThreeRankItems,
 
-  showBottomInfo,
   currentDes,
   invitePosterEnabled,
 
@@ -173,6 +188,7 @@ watch(
   display: flex;
   flex-direction: column;
   height: 100%;
+  background: #ffeae4;
 }
 
 .c-mobile-invite-rank__list {
@@ -181,17 +197,56 @@ watch(
   overflow-y: auto;
 }
 
+.c-mobile-invite-rank__list__inner {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding-top: 16px;
+  background-image: url(./imgs/rank-bg.png);
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.c-mobile-invite-rank__list__content {
+  position: relative;
+  padding-top: 20px;
+  margin: 16px;
+  background: linear-gradient(180deg, rgba(255, 238, 236, 0.98) 0%, rgba(255, 254, 255, 0.8) 10%);
+  border: 1px solid #fefdfd;
+  border-radius: 16px;
+
+  &::before {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    width: 289px;
+    height: 102px;
+    pointer-events: none;
+    content: '';
+    user-select: none;
+    background-image: url(./imgs/bg-star.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transform: translateX(-50%);
+  }
+}
+
+.c-mobile-invite-rank__top-three {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 30px;
+  margin-bottom: 8px;
+}
+
 .c-mobile-invite-rank__list__title {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   display: flex;
   justify-content: space-between;
   height: 40px;
   padding: 0 16px;
   font-size: 14px;
   line-height: 40px;
-  color: #adadc0;
+  color: rgba(#000, 0.4);
 }
 
 .c-mobile-invite-rank__list__nomore,
@@ -211,35 +266,63 @@ watch(
   position: absolute;
   right: 8px;
   bottom: 56px;
-  @include iphone-x-b(90px);
+  @include iphone-x-b(80px);
+}
+
+.c-mobile-invite-rank__me-label {
+  display: inline-block;
+  height: 16px;
+  padding: 0 3px;
+  margin-left: 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ff5252;
+  vertical-align: middle;
+  background: rgba(#ff5252, 0.1);
+  border-radius: 2px;
+
+  span {
+    zoom: 0.83;
+  }
 }
 
 .c-mobile-invite-rank__me {
   z-index: 10;
+  box-sizing: border-box;
   flex-shrink: 0;
   width: 100%;
+  padding-top: 6px;
+  padding-right: 16px;
+  padding-left: 12px;
   word-wrap: break-word;
-  background: #292b32;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
   @include iphone-x-pb(16px);
 }
 .c-mobile-invite-rank__me__info {
   flex: 1;
   margin-right: 8px;
+  overflow: hidden;
 }
 .c-mobile-invite-rank__me__info__nick {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
   font-size: 14px;
+  color: rgba(#000, 0.8);
   word-break: break-word;
 }
 
 .c-mobile-invite-rank__me__info__margin {
   margin-top: 4px;
   font-size: 12px;
+  color: rgba(#000, 0.6);
   word-break: break-word;
 }
 
 .c-mobile-invite-rank__me__info__detail-btn {
   position: relative;
-  color: #3082fe;
+  color: #ff5252;
 }
 
 .c-mobile-invite-rank__me__info__icon-right {

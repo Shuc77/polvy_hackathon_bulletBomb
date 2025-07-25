@@ -58,6 +58,8 @@ export interface ChannelStoreState {
   managerBulletinMarqueeEnabled: Ref<boolean>;
   /** 是否支持渲染管理员公告跑马灯 */
   managerBulletinMarqueeRenderEnabled: ComputedRef<boolean>;
+  /** 是否压缩直播介绍中的内容图片 */
+  compressImageEnabled: Ref<boolean>;
 }
 
 export interface ChannelStoreActions {
@@ -155,6 +157,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     return true;
   });
 
+  /** 是否压缩直播介绍中的内容图片 */
+  const compressImageEnabled = ref(true);
+
   /** 同步频道 Store 数据 */
   function syncChannelStore(): void {
     const watchCore = watchAppStore.getWatchCore();
@@ -167,6 +172,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     teacherInfo.value = watchCore.channel.getTeacherInfo();
     onlineListEnabled.value = watchCore.channel.getOnlineListEnabled();
     managerBulletinMarqueeEnabled.value = watchCore.channel.getManagerBulletinMarqueeEnabled();
+    compressImageEnabled.value = watchCore.channel.getCompressImageEnabled();
 
     streamTrackConfig.value = watchCore.channel.getChannelStreamTrackConfig();
     audioMode.value = watchCore.channel.getAudioMode();
@@ -194,6 +200,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     onlineListEnabled,
     managerBulletinMarqueeEnabled,
     managerBulletinMarqueeRenderEnabled,
+    compressImageEnabled,
 
     streamTrackConfig,
     supportMultiStreamTrack,

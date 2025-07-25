@@ -1,11 +1,11 @@
-import { computed, ComputedRef, onBeforeMount, ref, unref, watch } from 'vue';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import type { AreaData, AreaPickerComponent } from '@/plugins/polyv-ui/types';
-import { formCommonProps, useFormCommonValidate } from '../hooks/use-form-common';
 import { isMobile } from '@/assets/utils/browser';
+import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { getSelectData, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
+import type { AreaData, AreaPickerComponent } from '@/plugins/polyv-ui/types';
 import { useCommonStore } from '@/store/use-common-store';
+import { computed, ComputedRef, onBeforeMount, ref, unref, watch } from 'vue';
+import { formCommonProps, useFormCommonValidate } from '../hooks/use-form-common';
 
 export const formAreaPickerProps = () => ({
   ...formCommonProps(),

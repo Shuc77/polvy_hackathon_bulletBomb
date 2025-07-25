@@ -22,6 +22,8 @@ export const tabPaneProps = () => ({
   showReminder: PropUtils.bool.def(false),
   /** 红点显示改为 "新消息" */
   showNewMessage: PropUtils.bool.def(false),
+  /** 需要 hack 注入微信按钮 */
+  hackWeixinBtn: PropUtils.bool.def(false),
 });
 
 /**
@@ -35,8 +37,16 @@ export const isTabPaneInstance = (instance: unknown): instance is TabPaneInstanc
 
 export const useTabPane = (options: { props: VueProps<typeof tabPaneProps> }) => {
   const { props } = options;
-  const { label, subLabel, name, lazyLoad, switchToRefresh, showReminder, showNewMessage } =
-    useProps(props);
+  const {
+    label,
+    subLabel,
+    name,
+    lazyLoad,
+    switchToRefresh,
+    showReminder,
+    showNewMessage,
+    hackWeixinBtn,
+  } = useProps(props);
   const { currentTabName, currentTabIndex, prevTabIndex } = useTabsInject();
 
   /** 当前面板是否显示 */
@@ -63,6 +73,7 @@ export const useTabPane = (options: { props: VueProps<typeof tabPaneProps> }) =>
       name: unref(name),
       showReminder: unref(showReminder),
       showNewMessage: unref(showNewMessage),
+      hackWeixinBtn: unref(hackWeixinBtn),
     };
   }
 

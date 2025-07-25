@@ -16,7 +16,7 @@
           form-field="nickname"
           :show-error-message="false"
         >
-          <mobile-form-input
+          <form-input
             v-model="formData.nickname"
             :maxlength="nickMaxLength"
             :placeholder="$lang('chat.setNick.placeholder')"
@@ -43,7 +43,7 @@ import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import { useChatSetNick } from './use-chat-set-nick';
 
 const {

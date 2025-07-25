@@ -112,7 +112,10 @@
               :name="ChannelMenuType.Desc"
               lazy-load
             >
-              <pc-rich-text-render :html-content="channelDescription" />
+              <pc-rich-text-render
+                :html-content="channelDescription"
+                :should-compress-imgs="compressImageEnabled"
+              />
             </pc-normal-tab-pane>
           </template>
         </pc-normal-tabs>
@@ -155,6 +158,7 @@ import { usePopper } from '@/hooks/components/use-popper';
 import { PlvTextEllipsis } from '@/plugins/polyv-ui/admin-import';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useAuthStore } from '@/store/use-auth-store';
+import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
@@ -180,6 +184,8 @@ const {
 } = storeDefinitionToRefs(useChannelInfoStore);
 
 const { hasSplash } = storeDefinitionToRefs(useThemeStore);
+
+const { compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
 
 const {
   referenceRef: publisherReferenceRef,

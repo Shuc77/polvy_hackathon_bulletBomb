@@ -3,7 +3,10 @@
   <div
     v-if="mainText || translatedText"
     class="c-player-replay-subtitle"
-    :style="`bottom: ${bottom}px`"
+    :style="{
+      bottom: `${bottom}px`,
+      fontSize: `${fontsize}`,
+    }"
   >
     <p
       v-show="mainReplaySubtitleShow"
@@ -190,7 +193,6 @@ onBeforeUnmount(() => {
   width: max-content;
   max-width: 90%;
   padding: 8px 20px;
-  font-size: v-bind(fontsize);
   line-height: 1.5;
   color: #fff;
   text-align: left;

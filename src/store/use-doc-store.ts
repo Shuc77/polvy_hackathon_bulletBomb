@@ -3,7 +3,6 @@ import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
-import { usePlaybackStore } from './use-playback-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useFeedInjectStore } from './use-feed-inject-store';
@@ -40,7 +39,6 @@ export interface DocStore extends DocStoreState, DocStoreActions {}
 export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
-  const playbackStore = usePlaybackStore();
   const feedInjectStore = useFeedInjectStore();
 
   /** 配置是否使用文档 */
@@ -48,8 +46,9 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
 
   /** 能否创建文档 */
   const canRenderDoc = computed(() => {
-    // 移动端下，只有在直播中或处于回放状态才能显示
-    if (isMobile && !(channelStore.liveStatus === LiveStatus.Live || playbackStore.isPlaybacking)) {
+    // 移动端下，只有在直播中、直播暂停、处于回放状态才能显示
+    const supportStatus = [LiveStatus.Live, LiveStatus.Playback, LiveStatus.Stop];
+    if (isMobile && !supportStatus.includes(channelStore.liveStatus)) {
       return false;
     }
 

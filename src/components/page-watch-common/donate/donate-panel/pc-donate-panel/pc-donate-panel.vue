@@ -219,7 +219,7 @@ function onClickItem(event: Event, good: DonateGoodInfo) {
   padding: 24px 0;
   background: #fff;
   border-radius: 2px;
-  box-shadow: $--shadow-popper;
+  box-shadow: $--popper-shadow;
 }
 
 .c-pc-donate-panel__good__select-count__close {

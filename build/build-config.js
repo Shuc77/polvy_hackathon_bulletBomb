@@ -49,6 +49,9 @@ const buildMode = process.env.VUE_APP_BUILD_MODE;
 /** sdk 注入模式 */
 const inSdkInjectMode = (exports.inSdkInjectMode = buildMode === 'SDK_INJECT');
 
+/** 是否为静态打包构建模式 */
+const isStaticBuildMode = (exports.isStaticBuildMode = buildMode === 'STATIC');
+
 /** 是否提取 index-webpack-assets */
 let extractIndexWebpackAssetsEnabled = !!inSdkInjectMode;
 exports.extractIndexWebpackAssetsEnabled = extractIndexWebpackAssetsEnabled;
@@ -139,6 +142,8 @@ exports.defineConstants = {
   ENABLE_RUNTIME_PUBLIC_PATH: JSON.stringify(enableRuntimePublicPath),
   /** 构建环境 */
   BUILD_ENV: JSON.stringify(process.env.BUILD_ENV),
+  /** 是否为静态打包构建模式 */
+  IS_STATIC_BUILD_MODE: JSON.stringify(isStaticBuildMode),
 };
 
 /** ts 配置文件 */

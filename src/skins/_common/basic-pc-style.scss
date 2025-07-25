@@ -224,6 +224,10 @@
         color: map.get($--skin-configs, 'subtitle:text-color') !important;
         background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
       }
+      .c-pc-subtitle-hover-control__top {
+        color: map.get($--skin-configs, 'subtitle:text-color') !important;
+        background: map.get($--skin-configs, 'subtitle-select-body:bg-color') !important;
+      }
     }
 
     .pws-pc-subtitle__content-skin {

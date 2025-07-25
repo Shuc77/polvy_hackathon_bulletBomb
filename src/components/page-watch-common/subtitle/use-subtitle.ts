@@ -19,6 +19,8 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { SubtitleSelectOptionItem } from './mobile-subtitle-select/use-subtitle-select';
 
+import { useSubtitleDetached } from './use-subtitle-detached';
+
 /**
  * 实时字幕列表 hook
  * @hook
@@ -88,8 +90,21 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
       }
     },
   );
+  const { setDefaultSlots, scrollToBottomDetached, showDetachedWindow } = useSubtitleDetached();
 
   function addSubtitleListener() {
+    if (showDetachedWindow.value) {
+      const scrollEl = document.querySelector('.pc-subtitle-detached-dialog__content--scroll');
+      if (!scrollEl) return;
+      scrollEl.addEventListener('scroll', e => {
+        const el = e.target as HTMLElement;
+        const scrollEl = el.querySelector('.c-subtitle__scroll');
+        if (scrollEl && scrollEl.clientHeight < el.offsetHeight) return;
+        isBottom.value = el.scrollHeight - el.offsetHeight - el.scrollTop <= 70;
+      });
+      return;
+    }
+
     if (!subtitleScroll.value) return;
 
     subtitleScroll.value.addEventListener('scroll', e => {
@@ -104,6 +119,10 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     if (!isBottom.value && check) return;
     // 变成异步任务，先让eventListener检查
     setTimeout(() => {
+      if (showDetachedWindow.value) {
+        scrollToBottomDetached();
+        return;
+      }
       if (!subtitleScroll.value) return;
       subtitleScroll.value.scrollTo(0, subtitleScroll.value.scrollHeight);
     }, 0);
@@ -139,6 +158,21 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
         firstToSubtitle();
         isScrollToBottom.value = true;
       }
+    },
+  );
+
+  watch(
+    () => showDetachedWindow.value,
+    val => {
+      if (val) {
+        nextTick(() => {
+          firstToSubtitle();
+          isScrollToBottom.value = true;
+        });
+      }
+      nextTick(() => {
+        scrollToBottom(false);
+      });
     },
   );
 
@@ -224,6 +258,8 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
       bindSubtitleEvent();
       getSubtitleList();
       nextTick(() => {
+        // 设置默认的字幕容器
+        setDefaultSlots(subtitleScroll.value);
         subtitleScroll.value?.scrollTo({
           top: subtitleScroll.value.offsetHeight,
         });

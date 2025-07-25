@@ -64,7 +64,7 @@ const {
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
-const { getStreamStopText } = usePlayerStreamStopText();
+const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText();
 
 const { playerContainer } = usePlayerMain({
   initPlayerOptions: () => {
@@ -78,6 +78,7 @@ const { playerContainer } = usePlayerMain({
         streamStop: require('../../imgs/player-no-live.png'),
         audioMode: require('../../imgs/player-audio-mode.png'),
       },
+      directPlayCutOff: isEnableDirectPlayCutOff.value,
     };
   },
 });

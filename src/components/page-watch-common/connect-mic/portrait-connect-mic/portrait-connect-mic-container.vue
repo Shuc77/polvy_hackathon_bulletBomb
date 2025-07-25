@@ -18,6 +18,7 @@
           v-if="masterMicItem"
           :key="`master-stream-${masterMicItem.streamId}`"
           :mic-item="masterMicItem"
+          :fit-type="connectMicFitType"
         />
       </div>
       <div
@@ -27,7 +28,10 @@
         :class="[`c-portrait-mic-container__item-${index + 1}`]"
         :style="calcItemWidth"
       >
-        <portrait-connect-mic-user-item :mic-item="micItem" />
+        <portrait-connect-mic-user-item
+          :mic-item="micItem"
+          :fit-type="connectMicFitType"
+        />
       </div>
     </div>
   </div>
@@ -50,7 +54,8 @@ const { pageClientHeight, pageClientWidth } = usePageStore();
 
 const containerHeight = Math.ceil((pageClientWidth * 16) / 9 / 3);
 
-const { filterConnectMicList, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+const { filterConnectMicList, masterMicItem, connectMicFitType } =
+  storeDefinitionToRefs(useConnectMicStore);
 const { portraitDocWrapHeight } = storeDefinitionToRefs(usePortraitLayoutStore);
 const canMove = ref(false);
 // 实时移动的距离

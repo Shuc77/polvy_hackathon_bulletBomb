@@ -3,11 +3,32 @@
   <div class="c-pc-form-select">
     <div
       ref="referenceRef"
+      class="c-pc-form-select__reference"
+    >
+      <form-input
+        :value="inputValue"
+        :placeholder="inputPlaceholder"
+        readonly
+        :clearabled="false"
+      >
+        <template #suffix>
+          <pc-icon-arrow-down
+            class="c-pc-form-select__body__icon"
+            :class="{
+              'is-open': popperVisible,
+            }"
+          />
+        </template>
+      </form-input>
+    </div>
+    <!-- <div
+      ref="referenceRef"
       class="c-pc-form-select__body"
-      :class="{
-        'c-pc-form-select__body--open': popperVisible,
-        'c-pc-form-select__body--error': formItemIsError,
-      }"
+      :class="[
+        {
+          'c-pc-form-select__body--open': popperVisible,
+        },
+      ]"
     >
       <input
         type="text"
@@ -17,49 +38,52 @@
         readonly
       />
       <pc-icon-arrow-down class="c-pc-form-select__body__icon" />
-    </div>
+    </div> -->
 
     <transition name="fade">
       <div
         ref="popperRef"
         v-show="popperVisible"
-        class="c-pc-form-select__options"
+        class="c-pc-form-select__options-wrapper"
       >
-        <!-- 搜索 -->
-        <div
-          v-if="searchEnabled"
-          class="c-pc-form-select__options__search"
-        >
-          <pc-form-input
-            v-model="searchKeyword"
-            :placeholder="$lang('base.searchKeyword')"
-            :size="FormSize.Small"
-            clearabled
+        <div class="c-pc-form-select__options">
+          <!-- 搜索 -->
+          <div
+            v-if="searchEnabled"
+            class="c-pc-form-select__options__search"
           >
-            <template #suffix>
-              <pc-icon-search class="c-pc-form-select__options__search__icon" />
-            </template>
-          </pc-form-input>
-        </div>
+            <form-input
+              v-model="searchKeyword"
+              :placeholder="$lang('base.searchKeyword')"
+              :size="FormSize.Small"
+              clearabled
+              :validate-form="false"
+            >
+              <template #suffix>
+                <pc-icon-search class="c-pc-form-select__options__search__icon" />
+              </template>
+            </form-input>
+          </div>
 
-        <div
-          v-if="optionList.length === 0"
-          class="c-pc-form-select__options__empty"
-        >
-          {{ $lang('base.emptyOptions') }}
-        </div>
+          <div
+            v-if="optionList.length === 0"
+            class="c-pc-form-select__options__empty"
+          >
+            {{ $lang('base.emptyOptions') }}
+          </div>
 
-        <div
-          v-for="(option, index) in optionList"
-          class="c-pc-form-select__options__item"
-          :key="index"
-          @click="onClickOption(option)"
-        >
-          <pc-form-checkbox
-            v-if="multiple"
-            :checked="isSelectedOption(option.value)"
-          />
-          <span class="c-pc-form-select__options__item__text">{{ option.label }}</span>
+          <div
+            v-for="(option, index) in optionList"
+            class="c-pc-form-select__options__item"
+            :key="index"
+            @click="onClickOption(option)"
+          >
+            <pc-form-checkbox
+              v-if="multiple"
+              :checked="isSelectedOption(option.value)"
+            />
+            <span class="c-pc-form-select__options__item__text">{{ option.label }}</span>
+          </div>
         </div>
       </div>
     </transition>
@@ -68,7 +92,7 @@
 
 <script setup lang="ts">
 import { PcIconArrowDown, PcIconSearch } from '@/components/component-icons/pc/map';
-import PcFormInput from '../form-input/pc-form-input.vue';
+import FormInput from '../form-input/form-input.vue';
 import PcFormCheckbox from '../form-checkbox/pc-form-checkbox.vue';
 import { formSelectProps, formSelectEmits, useFormSelect } from './use-form-select';
 import { FormSize } from '../types/enums';
@@ -82,6 +106,7 @@ const emit = defineEmits(formSelectEmits());
 const { referenceRef, popperRef, popperVisible, hidePopper } = usePopper({
   placement: 'bottom-start',
   followReferenceWidth: true,
+  popperOffset: [0, 10],
 });
 
 const {
@@ -93,7 +118,6 @@ const {
   searchKeyword,
   onClickOption,
   isSelectedOption,
-  formItemIsError,
   blurToValidateItem,
   focusToRemoveError,
 } = useFormSelect({
@@ -118,58 +142,41 @@ watch(
 </script>
 
 <style lang="scss">
-.c-pc-form-select {
-  display: flex;
-}
-.c-pc-form-select__body {
-  position: relative;
-  box-sizing: border-box;
-  display: flex;
-  flex: 1;
-  align-items: center;
-  height: $--form-input-height;
-  overflow: hidden;
+.c-pc-form-select__reference {
   cursor: pointer;
-  background: $--form-input-bg;
-  border: 1px solid $--form-input-border-color;
-  border-radius: 2px;
 }
-
-.c-pc-form-select__body__input {
-  @include clear-input-style;
-  box-sizing: border-box;
-  display: block;
-  flex: 1;
-  height: 100%;
-  padding: $--form-input-padding;
-  font-size: $--form-input-font-size;
-  color: $--font-color-primary;
-  cursor: inherit;
-  background: none;
-}
-
 .c-pc-form-select__body__icon {
   display: flex;
   margin-right: 8px;
   font-size: 16px !important;
-  color: #9e9e9e;
+  color: inherit;
+  opacity: 0.6;
   transition: 0.3s;
-}
 
-.c-pc-form-select__body--open {
-  .c-pc-form-select__body__icon {
+  &.is-open {
     transform: rotateZ(180deg);
   }
 }
 
-.c-pc-form-select__body--error {
-  background: #ffe9e9;
-  border-color: #ff5722;
+.c-pc-form-select__options-wrapper {
+  overflow: hidden;
+  background: $--color-white;
+  border-radius: $--popper-border-radius;
+  box-shadow: $--popper-shadow;
+}
+
+.c-pc-form-select__options {
+  box-sizing: border-box;
+  max-height: 200px;
+  padding: 8px;
+  overflow-y: auto;
+  @include scroll-style;
 }
 
 .c-pc-form-select__options__search {
-  padding: 8px;
+  margin-bottom: 8px;
 }
+
 .c-pc-form-select__options__search__icon {
   margin-right: 8px;
   font-size: 12px;
@@ -183,28 +190,26 @@ watch(
   text-align: center;
 }
 
-.c-pc-form-select__options {
-  max-height: 200px;
-  overflow-y: auto;
-  background: $--color-white;
-  border: 1px solid $--form-input-border-color;
-  border-radius: 2px;
-  @include scroll-style;
-}
-
 .c-pc-form-select__options__item {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 40px;
-  padding: 0 16px;
+  min-height: 44px;
+  padding: 0 12px;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 22px;
+  color: rgba(#000, 0.6);
   cursor: pointer;
   user-select: none;
+  border-radius: 8px;
+
+  & + & {
+    margin-top: 3px;
+  }
 }
 .c-pc-form-select__options__item:hover {
-  background: $--color-primary-light-8;
+  color: rgba(#000, 0.8);
+  background: #f2f3f5;
 }
 .c-pc-form-select__options__item__text {
   flex: 1;

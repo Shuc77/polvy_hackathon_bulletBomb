@@ -3,7 +3,7 @@
   <div
     class="c-pc-ai-assistant-msg-container"
     :class="{
-      'c-pc-ai-assistant-msg-container--special pws-chat-msg-container-special': isAIUser,
+      'c-pc-ai-assistant-msg-container--special': isAIUser,
       'c-pc-ai-assistant-msg-container__align-right': msgPosition === 'right',
     }"
   >
@@ -13,10 +13,14 @@
       <div class="c-pc-ai-assistant-msg-container__content__inner">
         <div
           v-if="bubbleModel"
-          class="c-pc-ai-assistant-msg-container__content__bubble pws-chat-msg-bubble"
+          class="c-pc-ai-assistant-msg-container__content__bubble"
           :class="{
             'c-pc-ai-assistant-msg-container__content__bubble__align-right':
               msgPosition === 'right',
+            'pws-ai-msg-bubble-color': isAIUser,
+            'pws-primary-text-color': !isAIUser,
+            'pws-dark-basic-bg-20': !isAIUser,
+            'pws-light-basic-bg-20': !isAIUser,
           }"
           :style="bubbleStyle"
         >
@@ -38,10 +42,14 @@
       <div class="c-pc-ai-assistant-msg-container__content__inner">
         <div
           v-if="bubbleModel"
-          class="c-pc-ai-assistant-msg-container__content__bubble pws-chat-msg-bubble"
+          class="c-pc-ai-assistant-msg-container__content__bubble"
           :class="{
             'c-pc-ai-assistant-msg-container__content__bubble__align-right':
               msgPosition === 'right',
+            'pws-ai-msg-bubble-color': isAIUser,
+            'pws-primary-text-color': !isAIUser,
+            'pws-dark-basic-bg-20': !isAIUser,
+            'pws-light-basic-bg-20': !isAIUser,
           }"
           :style="bubbleStyle"
         >

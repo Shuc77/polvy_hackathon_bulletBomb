@@ -9,4 +9,7 @@ export enum PlayButtonMode {
 
 export const usePlayerPlayButtonProps = () => ({
   mode: PropUtils.enum<PlayButtonMode>().def(PlayButtonMode.Default),
+  visible: PropUtils.bool.def(false),
+  /** 是否使用简单显示模式，使用后按钮根据props.visible状态显示，不依赖store状态 */
+  simpleVisibleMode: PropUtils.bool.def(false),
 });

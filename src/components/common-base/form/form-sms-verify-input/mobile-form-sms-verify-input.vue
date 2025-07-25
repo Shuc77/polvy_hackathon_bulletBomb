@@ -1,7 +1,7 @@
 <!-- @file 移动端表单组件：短信验证码输入框 -->
 <template>
   <div class="c-mobile-form-sms-verify-input">
-    <mobile-form-input
+    <form-input
       v-bind="attrs"
       :placeholder="inputPlaceholder"
       :maxlength="4"
@@ -19,7 +19,7 @@
       >
         {{ sendText }}
       </div>
-    </mobile-form-input>
+    </form-input>
 
     <div
       v-if="slideVerifyVisible"
@@ -31,12 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import { useAttrs } from 'vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import MobileFormSlideVerify from '@/components/common-base/form/form-slide-verify/mobile-form-slide-verify.vue';
+import { useAttrs } from 'vue';
 import {
-  formSmsVerifyInputProps,
   formSmsVerifyInputEmits,
+  formSmsVerifyInputProps,
   useSmsVerifyInput,
 } from './use-sms-verify-input';
 

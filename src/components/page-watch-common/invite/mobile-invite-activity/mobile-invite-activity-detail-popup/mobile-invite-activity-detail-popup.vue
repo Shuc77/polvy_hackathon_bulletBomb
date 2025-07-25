@@ -5,9 +5,22 @@
     class="c-mobile-invite-activity-detail-popup"
     :visible.sync="popupVisible"
     fill-body-section
-    :title="$lang('invite.activity.detail.popup.title')"
+    :show-header="false"
     append-to-body
+    :content-style="{
+      borderRadius: '16px 16px 0 0',
+      overflow: 'hidden',
+    }"
+    content-background="#ffeae4"
   >
+    <div
+      class="c-mobile-invite-activity-detail-popup__back"
+      @click="close"
+    >
+      <mobile-icon-arrow-left />
+    </div>
+
+    <mobile-invite-popup-title :title="$lang('invite.activity.detail.popup.title')" />
     <div class="c-mobile-invite-activity-detail-popup__content">
       <!-- 活动介绍 -->
       <div
@@ -53,6 +66,7 @@
           </button>
         </div>
       </div>
+
       <!-- 奖励说明 -->
       <div class="c-mobile-invite-activity-detail-popup__content-card">
         <mobile-invite-activity-title-widget
@@ -111,10 +125,15 @@ import { useInviteStore } from '@/store/use-invite-store';
 import MobilePopup from '@/components/common-base/popup';
 import MobileRichTextRender from '@/components/common-base/rich-text-render/mobile-rich-text-render.vue';
 import MobileInviteActivityTitleWidget from '../mobile-invite-activity-title-widget.vue';
-import { MobileIconArrowDown, MobileIconArrowUp } from '@/components/component-icons/mobile/map';
+import {
+  MobileIconArrowDown,
+  MobileIconArrowUp,
+  MobileIconArrowLeft,
+} from '@/components/component-icons/mobile/map';
 import { useFoldToggleBehavior, FoldToggleState } from '@/hooks/behaviors/use-fold-toggle';
 import { defaultPrizeImage } from '../_hooks/use-invite-prize-receive';
 import { useGlobalInject } from '@/app/use-global-inject';
+import MobileInvitePopupTitle from '../../mobile-invite-rank/mobile-invite-popup-title.vue';
 
 const { getWatchCore } = useGlobalInject();
 
@@ -154,6 +173,10 @@ const popupVisible = ref(false);
 /** 首次渲染标识位 */
 const firstPaint = ref(false);
 
+function close() {
+  popupVisible.value = false;
+}
+
 useEventBusListener(appEvents.invite.OpenInviteActivityDetailPopup, () => {
   popupVisible.value = true;
 
@@ -172,18 +195,38 @@ useEventBusListener(appEvents.invite.OpenInviteActivityDetailPopup, () => {
 </script>
 
 <style lang="scss">
-$--invite-activity-banner-bg-height: 163px;
-
 .c-mobile-invite-activity-detail-popup {
   .c-mobile-popup__body {
-    background: #ffebd4;
+    position: relative;
+    padding-top: 16px;
+    background-image: url(../../mobile-invite-rank/imgs/rank-bg.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+  }
+}
+.c-mobile-invite-activity-detail-popup__back {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  background: rgba(#000, 0.2);
+  border-radius: 50%;
+  span {
+    display: flex;
+    font-size: 20px;
   }
 }
 .c-mobile-invite-activity-detail-popup__content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 12px;
+  padding: 16px;
 }
 
 .c-mobile-invite-activity-introduce__content {
@@ -198,6 +241,15 @@ $--invite-activity-banner-bg-height: 163px;
 }
 .c-mobile-invite-activity-introduce__content__rich-text {
   .c-mobile-rich-text-render__content {
+    font-size: 14px;
+    line-height: 20px;
+
+    p {
+      margin: 0;
+    }
+  }
+  .c-mobile-rich-text-render__content {
+    padding: 0;
     margin: 0;
     color: #666;
   }
@@ -242,7 +294,7 @@ $--invite-activity-banner-bg-height: 163px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 94%;
+  width: 100%;
   padding: 12px 16px;
   margin-bottom: 12px;
   overflow: hidden;

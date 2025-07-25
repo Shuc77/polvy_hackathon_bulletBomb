@@ -61,7 +61,7 @@ const props = defineProps({
 
 const iconFontSize = computed(() => `${props.fontSize}px`);
 
-const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+const { askMenuData, chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const portraitLayoutStore = usePortraitLayoutStore();
 
@@ -72,6 +72,10 @@ const { askReminderVisible } = storeDefinitionToRefs(useAskStore);
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 function onClickIcon(name: PortraitChatTabName) {
+  if (name === PortraitChatTabName.Chat && !chatMenuData.value.visible) {
+    return;
+  }
+
   portraitLayoutStore.$patch({
     portraitMessageTabCurrentName: name,
   });

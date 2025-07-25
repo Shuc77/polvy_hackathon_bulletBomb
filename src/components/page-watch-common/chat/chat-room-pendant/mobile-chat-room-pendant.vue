@@ -103,11 +103,10 @@
             class="c-mobile-chat-room-pendant__item"
           />
 
-          <!-- 商品库卡片气泡 -->
-          <mobile-product-bubble
+          <!-- 商品库小卡片 -->
+          <mobile-product-small-card
             v-if="mobileChatTabHasBeenShowed"
-            :product-dialog-enable="false"
-            class="c-mobile-chat-room-pendant__item"
+            class="c-mobile-chat-room-pendant__product-small-card"
           />
         </template>
       </template>
@@ -131,7 +130,7 @@ import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobil
 import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
 import MobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
-import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
+import MobileProductSmallCard from '@/components/page-watch-common/product/product-small-card/mobile-product-small-card.vue';
 import MobileFeedbackPendant from '@/components/page-watch-common/interactive-receive/feedback/mobile-feedback-pendant.vue';
 import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
@@ -202,5 +201,9 @@ const renderParent = computed<string | HTMLElement>(() => {
   z-index: $--zIndex-pendant;
   transform: rotate(0deg);
   transform-origin: bottom right;
+}
+
+.c-mobile-chat-room-pendant__product-small-card {
+  transform: translateX(-70px);
 }
 </style>

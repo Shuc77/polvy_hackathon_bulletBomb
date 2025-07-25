@@ -13,6 +13,8 @@ export interface TabPaneDataItem {
   showReminder: boolean;
   /** 红点显示改为 "新消息" */
   showNewMessage: boolean;
+  /** 需要 hack 注入微信按钮 */
+  hackWeixinBtn: boolean;
 }
 
 export interface TabsInstance {

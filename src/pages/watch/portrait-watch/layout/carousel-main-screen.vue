@@ -72,6 +72,12 @@
           class="c-portrait-carousel-main-screen__top-right__item"
         />
 
+        <!-- 文档位置切换 -->
+        <portrait-doc-side-switch
+          v-if="portraitDocSideSwitchVisible"
+          class="c-portrait-carousel-main-screen__top-right__item"
+        />
+
         <!-- 文档开关 -->
         <portrait-doc-switch
           v-if="canRenderDoc"
@@ -84,6 +90,12 @@
     <boundary-wrap seat="right">
       <!-- 全屏按钮 -->
       <portrait-player-fullscreen-button v-if="portraitPlayerFullscreenBtnVisible" />
+    </boundary-wrap>
+
+    <!-- 顶部绝对定位的内容 -->
+    <boundary-wrap seat="top">
+      <!-- 播放监测提示，切换最优线路或清晰度 -->
+      <portrait-player-loading-detection />
     </boundary-wrap>
 
     <!-- 底部内容 -->
@@ -110,7 +122,9 @@
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__item--pointer-event"
         @click="onClickPlayerRegion"
       >
-        <portrait-ask-tips v-if="portraitMessageTabCurrentName === PortraitChatTabName.Ask" />
+        <portrait-ask-tips
+          v-if="portraitMessageTabCurrentName === PortraitChatTabName.Ask && watchPageChatConnected"
+        />
 
         <div
           class="c-portrait-carousel-main-screen__carousel__wrap"
@@ -119,6 +133,7 @@
           }"
         >
           <plv-carousel
+            v-if="chatMenuData.visible || (askMenuData.visible && watchPageChatConnected)"
             ref="carouselRef"
             class="c-portrait-carousel-main-screen__carousel"
             :style="{
@@ -129,7 +144,7 @@
             @slide-next-end="onMessageCarouselSlideNextEnd"
           >
             <!-- 聊天消息区 -->
-            <plv-carousel-item>
+            <plv-carousel-item v-if="chatMenuData.visible">
               <portrait-chat-msg-list v-if="chatRoomVisible" />
             </plv-carousel-item>
 
@@ -141,7 +156,7 @@
 
           <!-- 轮播屏指示器 -->
           <div
-            v-if="askMenuData.visible"
+            v-if="askMenuData.visible && chatMenuData.visible"
             class="c-portrait-carousel-main-screen__indicator"
           >
             <div
@@ -294,6 +309,7 @@ import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-li
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
 import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
+import PortraitDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/portrait-doc-side-switch.vue';
 import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
 import PortraitDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
 import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
@@ -312,6 +328,7 @@ import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/c
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import PortraitRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
+import PortraitPlayerLoadingDetection from '@/components/page-watch-common/player/player-loading-detection/portrait-player-detection.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -342,7 +359,7 @@ const { isPlaybackWatchUrl, watchPageChatConnected } = storeDefinitionToRefs(use
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
-const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+const { askMenuData, chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { announcementFunctionVisible, hasBulletin, productBubbleVisible, interactSetting } =
   storeDefinitionToRefs(useInteractReceiveStore);
@@ -371,6 +388,7 @@ const {
   portraitPlayerIsPageFullscreen,
   portraitMessageInputVisible,
   portraitOnlineListEntranceVisible,
+  portraitDocSideSwitchVisible,
 } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 /**
@@ -558,10 +576,15 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
 
 .c-portrait-carousel-main-screen__bottom__button {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  margin-left: 16px;
+  width: 36px;
+  height: 36px;
+  margin-left: 12px;
   background-size: 100% 100%;
+
+  .plv-like-button__content {
+    width: 36px !important;
+    height: 36px !important;
+  }
 }
 
 .c-portrait-carousel-main-screen__bottom__button--donate {
@@ -598,7 +621,7 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   padding-right: 54px;
 
   &.c-portrait-carousel-main-screen__carousel__wrap__bubble {
-    padding-right: 118px;
+    padding-right: 120px;
   }
 }
 

@@ -54,3 +54,4 @@ export { default as PcIconVideoCall } from './icons/video-call';
 export { default as PcIconVoiceCall } from './icons/voice-call';
 export { default as PcIconWarningRoundFill } from './icons/warning-round-fill';
 export { default as PcIconWatchDuration } from './icons/watch-duration';
+export { default as PcIconHoverControl } from './icons/hover-control';

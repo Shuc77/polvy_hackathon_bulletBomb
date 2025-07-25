@@ -133,20 +133,6 @@
       ) !important;
     }
 
-    // --------- 菜单 --------- //
-    .pws-mobile-more-button {
-      background-color: map.get($--skin-configs, 'mobile-more-button:bg-color') !important;
-      &::after {
-        background-image: url(map.get($--skin-configs, 'mobile-more-button:icon-image')) !important;
-      }
-    }
-    .pws-mobile-more-panel {
-      background-color: map.get($--skin-configs, 'mobile-more-panel:bg-color') !important;
-    }
-    .pws-more-panel-text {
-      color: map.get($--skin-configs, 'mobile-more-panel:text-color') !important;
-    }
-
     // --------- 打赏 --------- //
     .pws-mobile-donate-button {
       background-color: map.get($--skin-configs, 'mobile-donate-button:bg-color') !important;
@@ -209,28 +195,6 @@
     }
     .pws-mobile-donate-cash-custom-cash {
       color: map.get($--skin-configs, 'mobile-donate-panel-custom-cash:text-color') !important;
-    }
-    .pws-mobile-donate-custom-cash-input {
-      .pws-mobile-form-input-main {
-        background-color: map.get(
-          $--skin-configs,
-          'mobile-donate-custom-cash-input:bg-color'
-        ) !important;
-        border: none;
-      }
-      .pws-mobile-form-input-main-title {
-        color: map.get(
-          $--skin-configs,
-          'mobile-donate-custom-cash-input-title:text-color'
-        ) !important;
-      }
-      .pws-mobile-form-input-main-input {
-        color: map.get($--skin-configs, 'mobile-donate-custom-cash-input:text-color') !important;
-        &::placeholder {
-          color: inherit;
-          opacity: 0.7;
-        }
-      }
     }
     .pws-mobile-donate-custom-cash-random {
       color: map.get($--skin-configs, 'mobile-donate-custom-cash-random:text-color') !important;
@@ -361,41 +325,9 @@
       background: map.get($--skin-configs, 'primary-color') !important;
     }
 
-    // 邀请有礼活动 banner 底部背景图
-    .pws-invite-activity-banner__bottom-bg {
-      background-image: url(map.get($--skin-configs, 'mobile-invite-activity-banner:bottom-bg'));
-    }
-
     // 邀请榜相关
-    .pws-mobile-invite-rank__list__title {
-      color: map.get($--skin-configs, 'describe-text-color') !important;
-      background-color: map.get($--skin-configs, 'mobile-invite-rank-bottom:bg-color');
-    }
-    .pws-mobile-invite-rank__list__item {
-      color: map.get($--skin-configs, 'describe-text-color') !important;
-    }
-    .pws-mobile-invite-rank__nomore {
-      color: map.get($--skin-configs, 'describe-text-color') !important;
-    }
-    .pws-mobile-invite-rank__failed {
-      color: map.get($--skin-configs, 'describe-text-color') !important;
-    }
     .pws-mobile-invite-rank__not__info {
       color: map.get($--skin-configs, 'describe-text-color') !important;
-    }
-    .pws-mobile-invite-rank__list__item__nick-me {
-      color: map.get($--skin-basic-configs, 'main-highlight-text-color');
-    }
-    .pws-mobile-invite-rank-bottom {
-      background-color: map.get($--skin-configs, 'mobile-invite-rank-bottom:bg-color');
-    }
-
-    // 邀请海报相关
-    .pws-mobile-invite-poster-entry-capsule {
-      @if map.has-key($--skin-configs, 'mobile-invite-poster-entry-capsule:text-color') {
-        color: map.get($--skin-configs, 'mobile-invite-poster-entry-capsule:text-color');
-      }
-      background: map.get($--skin-configs, 'mobile-invite-poster-entry-capsule:bg-color');
     }
 
     // -------- 弹幕边框 -------- //

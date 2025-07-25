@@ -13,4 +13,8 @@ export function bindTaskActivityEvents(watchCore: PolyvWatchCore) {
   watchCore.taskActivity.eventEmitter.on(TaskActivityEvents.TaskActivityDataUpdate, () => {
     taskActivityStore.syncTaskActivityStore();
   });
+
+  watchCore.taskActivity.eventEmitter.on(TaskActivityEvents.GetBaseDataError, ({ activityId }) => {
+    taskActivityStore.updateTaskActivityGetBaseDataError({ activityId });
+  });
 }

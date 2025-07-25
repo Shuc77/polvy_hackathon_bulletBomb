@@ -1,7 +1,7 @@
 <!-- @file 移动端表单组件：手机输入框 -->
 <template>
   <div class="c-mobile-form-phone-input">
-    <mobile-form-input
+    <form-input
       ref="inputRef"
       v-bind="attrs"
       type="number"
@@ -20,7 +20,7 @@
         {{ areaCode }}
         <mobile-icon-arrow-down class="c-mobile-form-phone-input__area-code__icon" />
       </div>
-    </mobile-form-input>
+    </form-input>
 
     <mobile-popup
       :visible.sync="areaCodeVisible"
@@ -45,7 +45,7 @@
 <script setup lang="ts">
 import { ref, useAttrs } from 'vue';
 import { MobileIconArrowDown } from '@/components/component-icons/mobile/map';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import MobilePhoneCode from '@/components/common-base/phone-code/mobile-phone-code.vue';
 import {
@@ -85,7 +85,7 @@ const {
 .c-mobile-form-phone-input__area-code {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   width: 70px;
   height: 100%;
   font-size: 16px;

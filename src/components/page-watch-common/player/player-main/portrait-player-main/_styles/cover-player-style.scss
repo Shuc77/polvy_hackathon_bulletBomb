@@ -38,6 +38,11 @@
     z-index: initial;
   }
 
+  // 隐藏播放缓冲切换提示
+  .plv-live-detection {
+    display: none !important;
+  }
+
 
   // ------ 点播 ------ //
   .plv-player-big-play-btn {

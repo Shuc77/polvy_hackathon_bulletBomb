@@ -41,6 +41,10 @@ export interface ProductGoodData {
   coverList: string[];
   /** 是否开价 */
   openPriceEnable?: string;
+  /** 原价类型 */
+  originalPriceType?: string;
+  /** 自定义原价 */
+  customOriginalPrice?: string;
 
   /** 扩展信息 */
   ext?: string;

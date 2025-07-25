@@ -3,6 +3,7 @@
  */
 import { appendToURL, IQSStringifyOptions, parse } from '@just4/querystring';
 import { changeProtocol } from '@utils-ts/net';
+import { isString } from 'lodash-es';
 
 /**
  * 将 url 修改成当前访问协议/补全协议头
@@ -56,4 +57,37 @@ export function appendUrl<T extends object>(
 export function openLink(href?: string) {
   if (!href) return;
   window.open(href, '_blank');
+}
+
+/**
+ * 为保利威重定向 url 增加自定义参数
+ */
+export function appendRedirectUrlParams<T extends object>(
+  url: string,
+  query: T,
+  options?: Readonly<IQSStringifyOptions> & {
+    /** 禁止的参数 */
+    forbiddenFields: string[];
+  },
+): string {
+  if (!url.includes('common/redirect')) return url;
+
+  const urlInstance = new URL(url);
+  const searchParams = parse(urlInstance.search && urlInstance.search.slice(1));
+  const targetUrl = searchParams.url;
+
+  if (!targetUrl || !isString(targetUrl)) return url;
+
+  const newTargetUrl = appendUrl(
+    targetUrl,
+    {
+      ...query,
+    },
+    options,
+  );
+
+  return appendToURL(`${urlInstance.origin}${urlInstance.pathname}`, {
+    ...searchParams,
+    url: newTargetUrl,
+  });
 }

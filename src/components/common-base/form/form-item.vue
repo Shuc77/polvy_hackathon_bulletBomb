@@ -119,12 +119,6 @@ defineExpose(formItemInstance);
   .c-form-item__content {
     width: 100%;
   }
-
-  &.c-form-item--mobile {
-    .c-form-item__label {
-      padding: 0 16px;
-    }
-  }
 }
 
 .c-form-item__content__error {
@@ -136,12 +130,5 @@ defineExpose(formItemInstance);
   padding-top: 5px;
   font-size: 12px;
   color: $--font-color-error;
-}
-
-.c-form-item--mobile {
-  .c-form-item__content__error {
-    padding-right: 16px;
-    padding-left: 16px;
-  }
 }
 </style>

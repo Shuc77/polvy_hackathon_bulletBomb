@@ -26,7 +26,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <pc-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :maxlength="20"
                   :placeholder="item.tips"
@@ -42,7 +42,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <pc-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :maxlength="50"
@@ -58,7 +58,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <pc-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :maxlength="100"
@@ -128,7 +128,7 @@
                 v-if="imageVerifyInputEnabled"
                 :key="`image-code-${index}`"
               >
-                <pc-form-image-verify-input
+                <form-image-verify-input
                   ref="imageVerifyInputRef"
                   v-model="formData.imageCaptcha"
                   :image-id.sync="formData.imageId"
@@ -163,7 +163,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <pc-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   @input="onEmailChange"
@@ -253,10 +253,10 @@
 import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import PcFormSelect from '@/components/common-base/form/form-select/pc-form-select.vue';
 import PcFormPhoneInput from '@/components/common-base/form/form-phone-input/pc-form-phone-input.vue';
-import PcFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/pc-form-image-verify-input.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
 import PcFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/pc-form-sms-verify-input.vue';
 import PcFormProtocol from '@/components/common-base/form/form-protocol/pc-form-protocol.vue';
 import PcFormUploadImage from '@/components/common-base/form/form-upload-image/form-upload-image.vue';

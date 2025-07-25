@@ -33,9 +33,9 @@ const switchVisible = computed<boolean>(() => {
   top: 18px;
   right: 18px;
   z-index: 400;
-  width: 40px;
-  height: 40px;
-  background-image: url(./side.png);
+  width: 30px;
+  height: 20px;
+  background-image: url(./icon-doc-switch.png);
   background-size: 100% 100%;
 }
 </style>

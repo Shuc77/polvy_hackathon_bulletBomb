@@ -81,7 +81,9 @@ export const useClickOutside = (
     }
     isListen = true;
     const evtName = isMac ? 'click' : 'mouseup';
-    document.addEventListener(evtName, handleDocumentClick);
+    document.addEventListener(evtName, handleDocumentClick, {
+      capture: true,
+    });
   };
 
   /** 取消监听 */

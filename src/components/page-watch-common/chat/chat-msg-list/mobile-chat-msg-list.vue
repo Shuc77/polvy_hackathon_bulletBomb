@@ -59,7 +59,7 @@ const { containerRef, scrollToNew } = useChatMsgList({
 
 .c-mobile-chat-msg-list--bubble-visible {
   .c-mobile-chat-msg-list__container {
-    padding-right: 132px;
+    padding-right: 138px;
   }
 }
 

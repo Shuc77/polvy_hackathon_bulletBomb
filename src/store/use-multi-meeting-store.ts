@@ -12,6 +12,8 @@ import { useWatchAppStore } from './use-watch-app-store';
 export interface MultiMeetingStoreState {
   /** 分会场开关 */
   multiMeetingEnabled: Ref<boolean>;
+  /** 分会场入口名称 */
+  multiMeetingEntranceName: Ref<string>;
   /** 分会场最大数量 */
   multiMeetingMaxCount: Ref<number>;
   /** 分会场模板 */
@@ -45,6 +47,9 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
 
     /** 分会场开关 */
     const multiMeetingEnabled = ref(__multiMeetingSetting.multiMeetingEnabled);
+
+    /** 分会场入口名称 */
+    const multiMeetingEntranceName = ref(__multiMeetingSetting.multiMeetingEntranceName);
 
     /** 分会场最大数量 */
     const multiMeetingMaxCount = ref(__multiMeetingSetting.multiMeetingMaxCount);
@@ -94,12 +99,14 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
       const multiSetting = watchCore.multiMeeting.getMultiMeetingSetting();
 
       multiMeetingEnabled.value = multiSetting.multiMeetingEnabled;
+      multiMeetingEntranceName.value = multiSetting.multiMeetingEntranceName;
       multiMeetingMaxCount.value = multiSetting.multiMeetingMaxCount;
       multiMeetingListLayout.value = multiSetting.multiMeetingListLayout;
     }
 
     return {
       multiMeetingEnabled,
+      multiMeetingEntranceName,
       multiMeetingMaxCount,
       multiMeetingListLayout,
       multiMeetingLiveStatus,

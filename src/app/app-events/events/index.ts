@@ -11,6 +11,7 @@ import { connectMicEvents } from './connectMic';
 import { portraitEvents } from './portrait';
 import { withdrawEvents } from './withdraw';
 import { iarEvents } from './iar';
+import { productEvents } from './product';
 
 /**
  * 给模块事件加上模块名限定，如 chat 模块 { ALTER_MSG: 'ALTER_MSG' } -> { ALTER_MSG: 'chat.ALTER_MSG' }
@@ -48,4 +49,5 @@ export const events = {
   finance: generateRealEvents('finance', financeEvents),
   connectMic: generateRealEvents('connectMic', connectMicEvents),
   iar: generateRealEvents('iar', iarEvents),
+  product: generateRealEvents('product', productEvents),
 };

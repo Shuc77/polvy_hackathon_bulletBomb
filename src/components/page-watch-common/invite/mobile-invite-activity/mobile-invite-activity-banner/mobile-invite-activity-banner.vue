@@ -3,20 +3,18 @@
 <template>
   <div class="c-mobile-invite-activity-banner">
     <!-- 背景图 -->
-    <div
+    <img
+      v-if="isChineseLang"
       class="c-mobile-invite-activity-banner__bg"
-      :class="{
-        'c-mobile-invite-activity-banner__bg--zh_cn': isChineseLang,
-        'c-mobile-invite-activity-banner__bg--en': !isChineseLang,
-      }"
-    ></div>
+      src="../imgs/banner-bg.png"
+    />
+    <img
+      v-else
+      class="c-mobile-invite-activity-banner__bg"
+      src="../imgs/banner-bg--en.png"
+    />
     <!-- 内容区 -->
-    <div
-      class="c-mobile-invite-activity-banner__content"
-      :class="{
-        'c-mobile-invite-activity-banner__content--addition-bottom': showBottomBg,
-      }"
-    >
+    <div class="c-mobile-invite-activity-banner__content">
       <list-loading v-if="loadingVisible" />
 
       <mobile-invite-activity-count-down
@@ -32,11 +30,7 @@
         class="c-mobile-invite-activity-banner__content__activity-result"
       />
     </div>
-    <!-- 底部背景图 -->
-    <div
-      v-if="showBottomBg"
-      class="c-mobile-invite-activity-banner__bottom-bg pws-invite-activity-banner__bottom-bg"
-    ></div>
+
     <!-- 奖励挂件 -->
     <div
       class="c-mobile-invite-activity-banner__pendant"
@@ -48,23 +42,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { InviteActivityStatus } from '@polyv/live-watch-sdk';
+import { computed, ref, watch } from 'vue';
 
-import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLangStore } from '@/store/use-lang-store';
+import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
 
 import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
 import MobileInviteActivityCountDown from './mobile-invite-activity-count-down.vue';
 import MobileInviteActivityResult from './mobile-invite-activity-result.vue';
-
-defineProps({
-  showBottomBg: PropUtils.bool.def(true),
-});
 
 const { isChineseLang } = storeDefinitionToRefs(useLangStore);
 
@@ -127,33 +116,16 @@ const { emitEvent: openDetailPopup } = useEventBusEmitter(
 </script>
 
 <style lang="scss">
-$--invite-activity-banner-bg-height: 163px;
-
 .c-mobile-invite-activity-banner {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  background: #ffebd4;
 }
 
 .c-mobile-invite-activity-banner__bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
   width: 100%;
-  height: $--invite-activity-banner-bg-height;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  &--zh_cn {
-    background-image: url('../imgs/banner-bg.png');
-  }
-  &--en {
-    background-image: url('../imgs/banner-bg--en.png');
-  }
 }
 
 .c-mobile-invite-activity-banner__content {
@@ -166,14 +138,9 @@ $--invite-activity-banner-bg-height: 163px;
   width: 92%;
   min-height: 50px;
   padding: 0 12px;
-  margin-top: $--invite-activity-banner-bg-height;
   background: linear-gradient(180deg, #ffeddd 0%, #fff7ec 100%);
   border: 1px solid #fff;
   border-radius: 8px;
-  &--addition-bottom {
-    min-height: 70px;
-    padding-bottom: 20px;
-  }
 }
 .c-mobile-invite-activity-banner__content__activity-result {
   margin-top: 12px;
@@ -193,27 +160,21 @@ $--invite-activity-banner-bg-height: 163px;
 
 .c-mobile-invite-activity-banner__pendant {
   position: absolute;
-  top: 30px;
+  top: 34px;
   right: 0;
   z-index: 3;
   display: flex;
   align-items: center;
   min-width: 24px;
   height: 30px;
-  padding-right: 6px;
-  padding-left: 8px;
+  padding-right: 7px;
+  padding-left: 7px;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 10px 0 0 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 20px 0 0 20px;
   > span {
     font-size: 12px;
     color: #fff;
-  }
-}
-
-@media screen and (max-width: 375px) {
-  .c-mobile-invite-activity-banner__bottom-bg {
-    height: 42px;
   }
 }
 </style>

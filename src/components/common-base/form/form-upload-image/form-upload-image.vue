@@ -97,8 +97,4 @@ const { value, maxCount, onClickUpload, onClickDelete, countTips, isMobile } = u
   font-size: 12px;
   color: #9e9e9e;
 }
-
-.c-form-upload-image--mobile {
-  padding: 0 16px;
-}
 </style>

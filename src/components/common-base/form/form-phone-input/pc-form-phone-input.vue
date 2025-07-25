@@ -1,7 +1,7 @@
 <!-- @file PC 端表单组件：手机输入框 -->
 <template>
   <div class="c-pc-form-phone-input">
-    <pc-form-input
+    <form-input
       ref="inputRef"
       v-bind="attrs"
       type="number"
@@ -20,7 +20,7 @@
         {{ areaCode }}
         <pc-icon-arrow-down class="c-pc-form-phone-input__area-code__icon" />
       </div>
-    </pc-form-input>
+    </form-input>
 
     <transition name="fade">
       <div
@@ -40,7 +40,7 @@
 <script setup lang="ts">
 import { useAttrs } from 'vue';
 import { PcIconArrowDown } from '@/components/component-icons/pc/map';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import PcPhoneCode from '@/components/common-base/phone-code/pc-phone-code.vue';
 import { usePopper } from '@/hooks/components/use-popper';
 import {

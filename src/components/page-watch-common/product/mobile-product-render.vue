@@ -14,6 +14,9 @@
 
     <!-- 商品外链弹层 -->
     <product-iframe-link-popup />
+
+    <!-- 大卡片弹层 -->
+    <product-big-card-popup />
   </div>
 </template>
 
@@ -23,6 +26,7 @@ import MobileProductDetailPopup from './product-detail-popup/mobile-product-deta
 import MobileProductOrderListPopup from './product-order-list-popup/mobile-product-order-list-popup.vue';
 import MobileProductOrderPopup from './product-order-popup/mobile-product-order-popup.vue';
 import ProductIframeLinkPopup from './product-iframe-link-popup/product-iframe-link-popup.vue';
+import ProductBigCardPopup from './product-big-card-popup/product-big-card-popup.vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 

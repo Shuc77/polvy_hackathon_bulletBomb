@@ -25,9 +25,10 @@
     <div
       v-if="canRenderDoc"
       class="c-portrait-watch-layout__doc-wrap"
-      :style="{
-        height: `${portraitDocWrapHeight}px`,
+      :class="{
+        'c-portrait-watch-layout__doc-wrap__main': isDocMainScreen,
       }"
+      :style="docStyle"
     >
       <div
         class="c-portrait-watch-layout__doc-content"
@@ -45,8 +46,9 @@
       class="c-portrait-watch-layout__carousel-wrap"
       :class="{
         'c-portrait-watch-layout__carousel-wrap__fullscreen': portraitPlayerIsPageFullscreen,
+        'c-portrait-watch-layout__carousel-wrap__hide': hideCarousel,
       }"
-      :style="carouselStyle"
+      :style="carouselStyleRender"
       ref="portraitWrap"
     >
       <portrait-watch-layout-carousel />
@@ -64,7 +66,7 @@ import PlayerTips from '@/components/page-watch-common/player/player-control/pla
 import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import PortraitWatchLayoutCarousel from './portrait-watch-layout-carousel.vue';
 
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -75,8 +77,9 @@ import { useWebviewStore } from '@/store/use-webview-store';
 
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 import { CSSProperties } from 'vue/types/jsx';
+import { MainScreenContent } from '@polyv/live-watch-sdk';
 
-const { isVerticalScreenOrientation } = storeDefinitionToRefs(useLayoutStore);
+const { isVerticalScreenOrientation, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
 const portraitLayoutStore = usePortraitLayoutStore();
 const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
@@ -84,7 +87,7 @@ const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFul
 
 const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
-const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
+const { canRenderDoc, documentSwitch } = storeDefinitionToRefs(useDocStore);
 
 const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 
@@ -121,15 +124,73 @@ const micTouchEnd = (e: TouchEvent) => {
   }
 };
 
+const isDocMainScreen = computed(() => {
+  return (
+    mainScreen.value === MainScreenContent.Doc &&
+    portraitLayoutStore.portraitDocSideSwitchVisible &&
+    !masterMicItem.value
+  );
+});
+
 const carouselStyle = computed<CSSProperties>(() => {
   if (isVerticalScreenOrientation.value) {
     return {
-      paddingTop: `${portraitDocWrapHeight.value}px`,
+      paddingTop: `${portraitDocWrapHeight.value * (isDocMainScreen.value ? 2 : 1)}px`,
     };
   } else {
     return {};
   }
 });
+
+const carouselStyleRender = ref<CSSProperties>({});
+
+// 是否暂时隐藏轮播屏
+const hideCarousel = ref(false);
+
+// 是否正在全屏或退出播放器预览
+const documentSwitchChanging = ref(false);
+
+const docStyle = computed<CSSProperties>(() => {
+  if (isDocMainScreen.value) {
+    return {
+      height: `${portraitDocWrapHeight.value}px`,
+      top: `${portraitDocWrapHeight.value}px`,
+      overflow: portraitDocWrapHeight.value === 0 ? 'hidden' : 'visible',
+    };
+  } else {
+    return {
+      height: `${portraitDocWrapHeight.value}px`,
+    };
+  }
+});
+
+watch(
+  () => documentSwitch.value,
+  () => {
+    documentSwitchChanging.value = true;
+    nextTick(() => {
+      documentSwitchChanging.value = false;
+    });
+  },
+);
+
+watch(
+  carouselStyle,
+  val => {
+    if (documentSwitchChanging.value) {
+      carouselStyleRender.value = val;
+      return;
+    }
+    hideCarousel.value = true;
+    carouselStyleRender.value = val;
+    setTimeout(() => {
+      hideCarousel.value = false;
+    }, 48);
+  },
+  {
+    immediate: true,
+  },
+);
 
 watch(
   () => masterMicItem.value,
@@ -187,6 +248,24 @@ watch(
   overflow: hidden;
   -webkit-overflow-scrolling: unset;
   transform: translate3d(0, 0, 0);
+
+  &.c-portrait-watch-layout__doc-wrap__main {
+    z-index: 11;
+    overflow: visible;
+    .c-portrait-doc {
+      overflow: visible;
+    }
+    .ppt-h5-setting-nav-mobile {
+      top: 0;
+      bottom: auto !important;
+      background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0));
+
+      .ppt-h5-setting-nav__ul {
+        top: 0;
+        bottom: auto !important;
+      }
+    }
+  }
 }
 
 .c-portrait-watch-layout__carousel-wrap {
@@ -197,6 +276,14 @@ watch(
   height: 100%;
   pointer-events: none;
   -webkit-overflow-scrolling: unset;
+  opacity: 1;
+  &:not(.c-portrait-watch-layout__carousel-wrap__hide) {
+    transition: opacity 0.3s ease-in-out;
+  }
+}
+
+.c-portrait-watch-layout__carousel-wrap__hide {
+  opacity: 0;
 }
 
 .c-portrait-watch-layout__carousel-wrap__fullscreen {

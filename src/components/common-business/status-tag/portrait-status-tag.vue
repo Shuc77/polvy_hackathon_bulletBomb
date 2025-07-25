@@ -28,7 +28,7 @@ const { statusTagText, liveStatus } = useStatusTag({
   justify-content: center;
   padding: 0 8px;
   font-size: 12px;
-  line-height: 28px;
+  line-height: 20px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 16px;

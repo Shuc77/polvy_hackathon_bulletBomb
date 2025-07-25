@@ -42,6 +42,14 @@
             v-if="masterMicItem"
             :key="`master-stream-${masterMicItem.streamId}`"
             :mic-item="masterMicItem"
+            :fit-type="connectMicFitType"
+          />
+          <player-play-button
+            v-if="isConnectMicPaused && masterMicItem"
+            :mode="PlayButtonMode.Text"
+            :visible="isConnectMicPaused"
+            :simple-visible-mode="true"
+            class="c-mobile-watch-layout__player__play-btn"
           />
           <mobile-player-main />
         </div>
@@ -145,6 +153,7 @@ import PlayerTips from '@/components/page-watch-common/player/player-control/pla
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 // import MobileWatchMenu from './mobile-watch-menu.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -167,6 +176,7 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 import { useChatStore } from '@/store/use-chat-store';
+import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
@@ -195,7 +205,8 @@ const {
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { filterConnectMicList, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+const { filterConnectMicList, masterMicItem, connectMicFitType, isConnectMicPaused } =
+  storeDefinitionToRefs(useConnectMicStore);
 
 const { canRenderPlayer, isPlayMode, playStatus } = storeDefinitionToRefs(usePlayerStore);
 const { toPlayInLimit } = usePlayerAction();

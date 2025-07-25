@@ -10,6 +10,7 @@ import { usePageStore } from './use-page-store';
 import { usePlaybackStore } from './use-playback-store';
 import { usePlayerStore } from './use-player-store';
 import { useWebviewStore } from './use-webview-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
 export enum PortraitChatTabName {
   /** 聊天室 */
@@ -46,6 +47,8 @@ export interface PortraitLayoutStoreState {
   portraitMessageInputVisible: Ref<boolean>;
   /** 竖屏在线用户列表入口是否显示 */
   portraitOnlineListEntranceVisible: ComputedRef<boolean>;
+  /** 竖屏文档位置切换按钮是否可见 */
+  portraitDocSideSwitchVisible: ComputedRef<boolean>;
 }
 
 export interface PortraitStore extends PortraitLayoutStoreState {}
@@ -63,6 +66,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     const docStore = useDocStore();
     const webviewStore = useWebviewStore();
     const chatStore = useChatStore();
+    const connectMicStore = useConnectMicStore();
 
     /** 移动端竖屏播放器是否支持全屏 */
     const portraitPlayerFullscreenEnabled = ref(true);
@@ -90,6 +94,21 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       }
 
       return portraitPlayerFullscreenEnabled.value;
+    });
+
+    /** 移动端竖屏文档位置切换按钮是否可见 */
+    const portraitDocSideSwitchVisible = computed(() => {
+      if (
+        !docStore.canRenderDoc ||
+        !playerStore.playerInited ||
+        playerStore.isPortraitResolutionRate ||
+        !playerStore.isPlayStarted ||
+        connectMicStore.masterMicItem
+      ) {
+        return false;
+      }
+
+      return true;
     });
 
     /** 竖屏轮播屏当前索引 */
@@ -177,6 +196,7 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       portraitMessageInputVisible,
       portraitOnlineListEntranceVisible,
       portraitWatchLayoutHeight,
+      portraitDocSideSwitchVisible,
     };
   },
 );

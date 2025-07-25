@@ -1,7 +1,7 @@
 <!-- @file 移动端菜单栏 Tabs 标签页 -->
 <template>
   <div class="c-mobile-menu-tabs">
-    <mobile-menu-tab-header v-show="!isEmptyMenu">
+    <mobile-menu-tab-header v-show="!isEmptyMenu || forceShowHeader">
       <template #header-suffix>
         <slot name="header-suffix"></slot>
       </template>
@@ -24,8 +24,13 @@
 import MobileMenuTabHeader from './mobile-menu-tab-header.vue';
 import { appEvents } from '@/app/app-events';
 import { tabsProps, tabsEmits, useTabs } from '../hooks/use-tabs';
+import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 
-const props = defineProps(tabsProps());
+const props = defineProps({
+  ...tabsProps(),
+  /** 强制显示头部 */
+  forceShowHeader: PropUtils.bool.def(false),
+});
 
 const emit = defineEmits(tabsEmits());
 

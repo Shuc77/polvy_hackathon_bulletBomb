@@ -96,7 +96,7 @@ export interface InteractReceiveStoreState {
   seatPosition: ComputedRef<{ row: number; column: number } | undefined>;
   /** 当前是否存在签到 */
   hasCheckIn: Ref<boolean>;
-  /** 商品库气泡是否显示 */
+  /** 商品库小卡片是否显示 */
   productBubbleVisible: Ref<boolean>;
   /** 问卷是否显示返回按钮 */
   questionnaireBackBtnVisible: Ref<boolean>;

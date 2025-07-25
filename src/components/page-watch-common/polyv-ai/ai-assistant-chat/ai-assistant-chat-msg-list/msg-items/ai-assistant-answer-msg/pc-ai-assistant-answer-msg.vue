@@ -6,7 +6,10 @@
       v-if="injectCtx.msg.content"
       class="c-pc-ai-assistant-answer-msg__content"
     >
-      <p>{{ injectCtx.msg.content }}</p>
+      <plv-markdown-render
+        class="c-pc-ai-assistant-answer-msg__content__markdown-render pws-markdown-render"
+        :content="injectCtx.msg.content"
+      ></plv-markdown-render>
     </div>
     <div
       v-else
@@ -27,7 +30,7 @@
 
 <script setup lang="ts">
 import { useAIAssistantMsgInject } from '../_hooks/use-ai-assistant-msg-common';
-
+import { PlvMarkdownRender } from '@/plugins/polyv-ui/admin-import';
 import PcAiAssistantMsgContainer from '../_msg-container/pc-ai-assistant-msg-container.vue';
 
 const injectCtx = useAIAssistantMsgInject();
@@ -50,6 +53,10 @@ const injectCtx = useAIAssistantMsgInject();
   100% {
     opacity: 1;
   }
+}
+
+.c-pc-ai-assistant-answer-msg__content__markdown-render {
+  color: inherit !important;
 }
 
 .c-pc-ai-assistant-answer-msg__dot {

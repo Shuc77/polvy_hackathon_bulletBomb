@@ -21,6 +21,7 @@
       :content-width="286"
       :form-data="formData"
       :form-rules="formRules"
+      :theme="FormTheme.Gray"
       :submit-action="submitAuth"
     >
       <template v-for="(item, index) in authInfoFields">
@@ -31,7 +32,7 @@
             :key="`name-${index}`"
             :form-field="generateFormField(index)"
           >
-            <pc-form-input
+            <form-input
               v-model.trim="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
@@ -45,7 +46,7 @@
             :key="`text-${index}`"
             :form-field="generateFormField(index)"
           >
-            <pc-form-input
+            <form-input
               v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
@@ -59,7 +60,7 @@
             :key="`number-${index}`"
             :form-field="generateFormField(index)"
           >
-            <pc-form-number-input
+            <form-number-input
               v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
@@ -103,7 +104,7 @@
             :key="`image-code-${index}`"
             label=" "
           >
-            <pc-form-image-verify-input
+            <form-image-verify-input
               ref="imageVerifyInputRef"
               v-model="formData.imageCaptcha"
               :image-id.sync="formData.imageId"
@@ -159,20 +160,21 @@
 </template>
 
 <script setup lang="ts">
-import { SmsScene } from '@polyv/live-watch-sdk';
-import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
-import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
-import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
-import PcFormNumberInput from '@/components/common-base/form/form-number-input/pc-form-number-input.vue';
-import PcFormSelect from '@/components/common-base/form/form-select/pc-form-select.vue';
+import FormNumberInput from '@/components/common-base/form/form-number-input/form-number-input.vue';
 import PcFormPhoneInput from '@/components/common-base/form/form-phone-input/pc-form-phone-input.vue';
-import PcFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/pc-form-image-verify-input.vue';
-import PcFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/pc-form-sms-verify-input.vue';
 import PcFormProtocol from '@/components/common-base/form/form-protocol/pc-form-protocol.vue';
-import { useAuthInfoForm, authInfoFormEmits } from './hooks/use-auth-info-form';
+import PcFormSelect from '@/components/common-base/form/form-select/pc-form-select.vue';
+import PcFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/pc-form-sms-verify-input.vue';
+import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import { FormTheme } from '@/components/common-base/form/types/enums';
+import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
+import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
+import { SmsScene } from '@polyv/live-watch-sdk';
+import { authInfoFormEmits, useAuthInfoForm } from './hooks/use-auth-info-form';
 
 const emit = defineEmits(authInfoFormEmits());
 

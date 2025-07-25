@@ -9,7 +9,10 @@
       >
         <div class="c-mobile-connect-mic-user-list__item-wrap">
           <div class="c-mobile-connect-mic-user-list__item-inner">
-            <mobile-connect-mic-user-item :mic-item="micItem" />
+            <mobile-connect-mic-user-item
+              :mic-item="micItem"
+              :fit-type="connectMicFitType"
+            />
           </div>
         </div>
       </div>
@@ -22,7 +25,7 @@ import MobileConnectMicUserItem from './mobile-connect-mic-user-item.vue';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-const { filterConnectMicList } = storeDefinitionToRefs(useConnectMicStore);
+const { filterConnectMicList, connectMicFitType } = storeDefinitionToRefs(useConnectMicStore);
 </script>
 
 <style lang="scss">

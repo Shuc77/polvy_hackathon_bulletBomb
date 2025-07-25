@@ -2,8 +2,8 @@
 
 <template>
   <pc-iframe-render
-    v-if="isOpenInMenu"
-    :src="props.src"
+    v-if="isOpenInMenu && iframeUrl"
+    :src="iframeUrl"
   />
   <div
     v-else
@@ -19,7 +19,12 @@ import { promoteExternalLinkProps, usePromoteExternalLinkHook } from './use-prom
 
 const props = defineProps(promoteExternalLinkProps());
 
-const { isOpenInMenu, tips } = usePromoteExternalLinkHook({ props });
+const {
+  isOpenInMenu,
+
+  iframeUrl,
+  tips,
+} = usePromoteExternalLinkHook({ props });
 </script>
 
 <style lang="scss">

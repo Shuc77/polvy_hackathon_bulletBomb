@@ -12,6 +12,7 @@
       v-else
       class="c-portrait-channel-description__content"
       :html-content="channelDescription"
+      :should-compress-imgs="compressImageEnabled"
       :follow-page-skin="false"
     />
   </div>
@@ -19,11 +20,13 @@
 
 <script setup lang="ts">
 import MobileRichTextRender from '@/components/common-base/rich-text-render/mobile-rich-text-render.vue';
+import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 const { channelDescription, channelDescriptionIsEmpty } =
   storeDefinitionToRefs(useChannelInfoStore);
+const { compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
 </script>
 
 <style lang="scss">

@@ -6,7 +6,7 @@
   >
     <template v-if="renderSlot">
       <div class="c-pc-normal-tab-pane__content">
-        <slot></slot>
+        <slot :weixin-btn-id="generateHackWeixinBtnId(props.name, true)"></slot>
       </div>
     </template>
   </div>
@@ -14,6 +14,7 @@
 
 <script setup lang="ts">
 import { tabPaneProps, useTabPane } from '../hooks/use-tab-pane';
+import { generateHackWeixinBtnId } from '../hooks/use-tabs';
 
 const props = defineProps(tabPaneProps());
 

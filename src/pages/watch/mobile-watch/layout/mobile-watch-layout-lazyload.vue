@@ -84,9 +84,6 @@
 
     <!-- 我的奖励弹层 -->
     <mobile-personal-reward-popup />
-
-    <!-- AI 看弹窗 -->
-    <mobile-playback-outline-dialog />
   </div>
 </template>
 
@@ -148,13 +145,6 @@ const MobileWithdrawDetail = defineAsyncComponent(
   () =>
     import(
       /* webpackChunkName: "mobile-withdraw-detail" */ '@/components/page-watch-common/withdraw/mobile-withdraw-detail/mobile-withdraw-detail.vue'
-    ),
-);
-
-const MobilePlaybackOutlineDialog = defineAsyncComponent(
-  () =>
-    import(
-      /* webpackChunkName: "mobile-playback-outline-dialog" */ '@/components/page-watch-common/Intelligent-playback-outline/component/mobile-playback-outline-dialog.vue'
     ),
 );
 

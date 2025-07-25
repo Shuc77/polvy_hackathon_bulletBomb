@@ -1,6 +1,6 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PolyvIarCheckIn, PolyvIarCheckInEvent } from '@polyv/live-watch-sdk';
+import { PolyvIarCheckIn } from '@polyv/live-watch-sdk';
 import { computed, onBeforeUnmount, ref } from 'vue';
 
 import { translate } from '@/assets/lang';
@@ -114,18 +114,24 @@ export const useCheckIn = () => {
 
   function listenCheckInEvents() {
     const checkInTarget = getIarTarget();
-    checkInTarget.eventEmitter.on(PolyvIarCheckInEvent.StartCheckIn, onSignIn);
-    checkInTarget.eventEmitter.on(PolyvIarCheckInEvent.StopCheckIn, onCheckInEnd);
-    checkInTarget.eventEmitter.on(PolyvIarCheckInEvent.CheckInSuccess, onCheckInEnd);
-    checkInTarget.eventEmitter.on(PolyvIarCheckInEvent.CheckInFail, beforeRemoveCheckInEntrance);
+    checkInTarget.eventEmitter.on(checkInTarget.CheckInEvent.StartCheckIn, onSignIn);
+    checkInTarget.eventEmitter.on(checkInTarget.CheckInEvent.StopCheckIn, onCheckInEnd);
+    checkInTarget.eventEmitter.on(checkInTarget.CheckInEvent.CheckInSuccess, onCheckInEnd);
+    checkInTarget.eventEmitter.on(
+      checkInTarget.CheckInEvent.CheckInFail,
+      beforeRemoveCheckInEntrance,
+    );
   }
 
   function unlistenCheckInEvents() {
     const checkInTarget = getIarTarget();
-    checkInTarget.eventEmitter.off(PolyvIarCheckInEvent.StartCheckIn, setCheckInEntrance);
-    checkInTarget.eventEmitter.off(PolyvIarCheckInEvent.StopCheckIn, onCheckInEnd);
-    checkInTarget.eventEmitter.off(PolyvIarCheckInEvent.CheckInSuccess, onCheckInEnd);
-    checkInTarget.eventEmitter.off(PolyvIarCheckInEvent.CheckInFail, beforeRemoveCheckInEntrance);
+    checkInTarget.eventEmitter.off(checkInTarget.CheckInEvent.StartCheckIn, setCheckInEntrance);
+    checkInTarget.eventEmitter.off(checkInTarget.CheckInEvent.StopCheckIn, onCheckInEnd);
+    checkInTarget.eventEmitter.off(checkInTarget.CheckInEvent.CheckInSuccess, onCheckInEnd);
+    checkInTarget.eventEmitter.off(
+      checkInTarget.CheckInEvent.CheckInFail,
+      beforeRemoveCheckInEntrance,
+    );
   }
 
   onBeforeUnmount(() => {

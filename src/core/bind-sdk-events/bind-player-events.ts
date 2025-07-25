@@ -72,4 +72,8 @@ export function bindPlayerModuleEvents(watchCore: PolyvWatchCore): void {
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerSubtitleSwitched, ({ checked }) => {
     subtitleStore.changeLocalUerSubtitlesEnable(checked);
   });
+
+  watchCore.player.eventEmitter.on(PlayerEvents.PlayerLoadingDetectionUpdate, info => {
+    playerStore.syncLoadingDetectionInfo(info);
+  });
 }

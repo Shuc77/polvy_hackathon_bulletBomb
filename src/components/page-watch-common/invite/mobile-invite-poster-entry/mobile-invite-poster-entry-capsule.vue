@@ -1,7 +1,7 @@
 <!-- @file 移动端-横屏-"去邀请"胶囊按钮入口 -->
 <template>
   <div
-    class="c-mobile-invite-poster-entry-capsule pws-mobile-invite-poster-entry-capsule"
+    class="c-mobile-invite-poster-entry-capsule"
     @click="onClickInvitePosterEntry"
   >
     {{ $lang('invite.rank.invite.btn') }}
@@ -23,6 +23,7 @@ const { onClickInvitePosterEntry } = useInvitePosterEntry();
   line-height: 32px;
   color: #fff;
   text-align: center;
+  background: linear-gradient(116deg, #ff5031 0%, #ff9e63 98%);
   border-radius: 16px;
 }
 </style>

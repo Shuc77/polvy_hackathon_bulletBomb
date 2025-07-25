@@ -1,6 +1,6 @@
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { TreeSelectDataValue } from '@/components/common-base/tree-select/mobile-tree-select.vue';
+import { TreeSelectDataValue } from '@/components/common-base/tree-select/tree-select-types';
 import { computed, ref } from 'vue';
 
 export interface SubtitleSelectOptionItem {

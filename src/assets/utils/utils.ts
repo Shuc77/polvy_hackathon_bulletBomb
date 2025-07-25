@@ -11,54 +11,6 @@ export function wait(time = 3000) {
 }
 
 /**
- * 通过 setTimeout 和递归来模拟 setInterval
- */
-export function plvInterval(
-  fn: AnyFunc,
-  intervalTime: number | (() => number),
-  options?: {
-    maxCount?: number;
-    immediate?: boolean;
-  },
-): { clear: () => void } {
-  const { maxCount = Infinity, immediate = false } = options || {};
-
-  let timer: number | undefined;
-  let intervalCount = 0;
-
-  const getIntervalTime = () => {
-    return typeof intervalTime === 'function' ? intervalTime() : intervalTime;
-  };
-
-  const innerInterval = () => {
-    timer = window.setTimeout(() => {
-      fn();
-      intervalCount++;
-
-      if (intervalCount < maxCount) {
-        innerInterval();
-      } else {
-        window.clearTimeout(timer);
-      }
-    }, getIntervalTime());
-  };
-
-  if (immediate) {
-    fn();
-  }
-  innerInterval();
-
-  return {
-    clear: () => {
-      // 处理 intervalTime 过少的情况，比如 100ms
-      window.setTimeout(() => {
-        window.clearTimeout(timer);
-      }, 0);
-    },
-  };
-}
-
-/**
  * 获取事件对象中的坐标
  * @param event 事件对象
  */
@@ -96,4 +48,11 @@ export function isInjectByExternalApp(): boolean {
 export function isBuildForFeedMainMode(): boolean {
   return process.env.VUE_APP_MAIN_MODE === 'Feed';
   // return isInjectByExternalApp() && process.env.VUE_APP_MAIN_MODE === 'Feed';
+}
+
+/**
+ * 是否为静态打包构建模式
+ */
+export function isStaticBuildMode(): boolean {
+  return !!IS_STATIC_BUILD_MODE;
 }

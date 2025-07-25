@@ -74,11 +74,17 @@ export const useAuthDirectAction = () => {
   /**
    * 重定向到独立授权失败页
    */
-  function redirectDirectFailUrl(): void {
-    watchAppStore.setPageError({
-      type: PageErrorType.DirectAuthFail,
-      title: translate('auth.error.directFail'),
-    });
+  async function redirectDirectFailUrl(): Promise<void> {
+    const watchCore = getWatchCore();
+    const result = await watchCore.auth.redirectDirectAuthFailUrl();
+
+    // 跳转不成功，没有配置错误地址，显示本地的错误页
+    if (!result) {
+      watchAppStore.setPageError({
+        type: PageErrorType.DirectAuthFail,
+        title: translate('auth.error.directFail'),
+      });
+    }
   }
 
   return {

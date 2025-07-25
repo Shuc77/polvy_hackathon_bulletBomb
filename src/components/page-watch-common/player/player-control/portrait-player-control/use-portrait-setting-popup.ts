@@ -24,10 +24,7 @@ export const usePortraitSettingPopup = (event: string) => {
 
   /** 点击返回 */
   function onClickBack() {
-    getEmitter().emit(appEvents.portrait.OpenMenuPopup, {
-      _visible: true,
-      _useTransition: false,
-    });
+    getEmitter().emit(appEvents.global.OpenMobileMorePopup);
 
     useTransition.value = false;
     setVisible(false);

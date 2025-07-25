@@ -6,7 +6,7 @@
   >
     <div class="c-pc-multi-meeting-horizontal__control">
       <span class="c-pc-multi-meeting-horizontal__control__title">
-        {{ $lang('multiMeeting.other') }}
+        {{ multiMeetingMenuData.label }}
       </span>
       <span class="c-pc-multi-meeting-horizontal__control__count">
         {{ currentMultiMeetingSeat }}/{{ totalItems }}
@@ -90,8 +90,11 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { computed, unref } from 'vue';
 import { useMultiMeeting, useMultiMeetingPage } from '../hooks/use-multi-meeting';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const { resizeOSSImg } = useResizeOssImage();
+
+const { multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { multiMeetingList, currentMultiMeetingSeat } = storeDefinitionToRefs(useMultiMeetingStore);
 

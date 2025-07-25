@@ -10,14 +10,16 @@
       class="c-mobile-form-area-picker__body"
       @click="openPicker"
     >
-      <input
-        type="text"
-        class="c-mobile-form-area-picker__body__input"
+      <form-input
         readonly
         :placeholder="inputPlaceholder"
         :value="inputValue"
-      />
-      <mobile-icon-arrow-down class="c-mobile-form-area-picker__body__icon" />
+        :clearabled="false"
+      >
+        <template #suffix>
+          <mobile-icon-arrow-down class="c-mobile-form-area-picker__body__icon" />
+        </template>
+      </form-input>
     </div>
 
     <mobile-popup
@@ -57,6 +59,7 @@
 <script setup lang="ts">
 import { MobileIconArrowDown } from '@/components/component-icons/mobile/map';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import { PlvAreaPicker } from '@/plugins/polyv-ui/mobile-import';
 import type { AreaPickerComponent } from '@/plugins/polyv-ui/types';
 import { formAreaPickerEmit, formAreaPickerProps, useFormAreaPicker } from './use-form-area-picker';
@@ -88,39 +91,12 @@ defineExpose(instance);
 </script>
 
 <style lang="scss">
-.c-mobile-form-area-picker__body {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  width: 100%;
-
-  height: map.get($--mobile-form-input-sizes, 'default', 'height');
-  color: map.get($--mobile-form-input-themes, 'default', 'font-color');
-  background: map.get($--mobile-form-input-themes, 'default', 'background');
-  border-color: map.get($--mobile-form-input-themes, 'default', 'border-color');
-  border-style: solid;
-
-  border-width: 1px;
-  border-radius: map.get($--mobile-form-input-sizes, 'default', 'radius');
-}
-
-.c-mobile-form-area-picker__body__input {
-  @include clear-input-style;
-  box-sizing: border-box;
-  display: block;
-  flex: 1;
-  height: 100%;
-
-  padding: map.get($--mobile-form-input-sizes, 'default', 'padding');
-  font-size: map.get($--mobile-form-input-sizes, 'default', 'font-size');
-  color: inherit;
-}
-
 .c-mobile-form-area-picker__body__icon {
   display: flex;
   margin-right: 16px;
   font-size: 20px !important;
-  color: #9e9e9e;
+  color: inherit;
+  opacity: 0.6;
 }
 
 .c-mobile-form-area-picker__header {
@@ -152,11 +128,5 @@ defineExpose(instance);
   font-size: 16px;
   color: $--font-color-primary;
   text-align: center;
-}
-
-.c-mobile-form-area-picker--error {
-  .c-mobile-form-area-picker__body {
-    border-color: map.get($--mobile-form-input-themes, 'error', 'border-color');
-  }
 }
 </style>

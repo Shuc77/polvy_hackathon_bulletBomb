@@ -26,6 +26,9 @@ export type PolyvProductUIType = {
   'address-list': ComponentOptions<Vue>;
   'address-edit': ComponentOptions<Vue>;
   'address-item': ComponentOptions<Vue>;
+
+  'big-card-popup': ComponentOptions<Vue>;
+  'small-card': ComponentOptions<Vue>;
 };
 
 type PolyvProductUIComponents = keyof PolyvProductUIType;
@@ -41,15 +44,15 @@ function getProductUIVersionConfig() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20250612',
+      version: 'rc-20250724',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20250612',
+      version: 'rc-20250724',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20250612',
+      version: 'dev-20250724',
     },
   };
 

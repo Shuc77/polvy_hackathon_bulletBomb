@@ -431,6 +431,7 @@ export const usePlayerAction = () => {
     layoutStore.$patch({
       mobilePlayerIsPageFullscreen: false,
     });
+
     setTimeout(() => {
       getEmitter().emit(appEvents.player.ResetUpPlayer);
     }, 0);

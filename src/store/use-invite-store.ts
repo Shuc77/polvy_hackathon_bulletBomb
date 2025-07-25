@@ -67,6 +67,8 @@ export interface InviteStoreAction {
   syncInviteActivityInfo: () => void;
   /** 同步邀请有礼中奖信息 */
   syncInvitePrizeWinnerInfo: () => Promise<void>;
+  /** 补充邀请参数到当前链接 */
+  appendInviteQueueParams: () => void;
 }
 
 export interface InviteStore extends InviteStoreState, InviteStoreAction {}
@@ -194,8 +196,20 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
 
     if (invitePosterEnabled.value) {
       invitePosterId.value = watchCore.invite.getInvitePosterId();
-      appendQueryParam({ invitePosterId: invitePosterId.value });
     }
+  }
+
+  /**
+   * 补充邀请参数到当前链接
+   */
+  function appendInviteQueueParams() {
+    const params: Parameters<typeof appendQueryParam>[0] = {};
+
+    if (invitePosterId.value) {
+      params.invitePosterId = invitePosterId.value;
+    }
+
+    appendQueryParam(params);
   }
 
   /** 同步邀请有礼活动信息 */
@@ -233,5 +247,7 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
     syncInviteInfo,
     syncInviteActivityInfo,
     syncInvitePrizeWinnerInfo,
+
+    appendInviteQueueParams,
   };
 });

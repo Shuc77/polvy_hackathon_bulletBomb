@@ -3,7 +3,7 @@
   <div
     class="c-mobile-ai-assistant-msg-container"
     :class="{
-      'c-mobile-ai-assistant-msg-container--special pws-chat-msg-container-special': isAIUser,
+      'c-mobile-ai-assistant-msg-container--special': isAIUser,
       'c-mobile-ai-assistant-msg-container__align-right': msgPosition === 'right',
     }"
   >
@@ -17,10 +17,14 @@
       >
         <div
           v-if="bubbleModel"
-          class="c-mobile-ai-assistant-msg-container__content__bubble pws-chat-msg-bubble"
+          class="c-mobile-ai-assistant-msg-container__content__bubble"
           :class="{
             'c-mobile-ai-assistant-msg-container__content__bubble__align-right':
               msgPosition === 'right',
+            'pws-ai-msg-bubble-color': isAIUser,
+            'pws-primary-text-color': !isAIUser,
+            'pws-dark-basic-bg-20': !isAIUser,
+            'pws-light-basic-bg-20': !isAIUser,
           }"
           :style="bubbleStyle"
         >
@@ -56,10 +60,14 @@
       <div class="c-mobile-ai-assistant-msg-container__content__inner">
         <div
           v-if="bubbleModel"
-          class="c-mobile-ai-assistant-msg-container__content__bubble pws-chat-msg-bubble"
+          class="c-mobile-ai-assistant-msg-container__content__bubble"
           :class="{
             'c-mobile-ai-assistant-msg-container__content__bubble__align-right':
               msgPosition === 'right',
+            'pws-ai-msg-bubble-color': isAIUser,
+            'pws-primary-text-color': !isAIUser,
+            'pws-dark-basic-bg-20': !isAIUser,
+            'pws-light-basic-bg-20': !isAIUser,
           }"
           :style="bubbleStyle"
         >
@@ -156,12 +164,12 @@ const { referenceRef, tipsVisible, onClickControl, onClickTips } = useMsgTipsCon
   }
 }
 
-.c-mobile-ai-assistant-msg-container--special {
-  .c-mobile-ai-assistant-msg-container__content__bubble {
-    color: $--color-white;
-    background-color: #5394f6;
-  }
-}
+// .c-mobile-ai-assistant-msg-container--special {
+//   .c-mobile-ai-assistant-msg-container__content__bubble {
+//     color: $--color-white;
+//     background-color: #5394f6;
+//   }
+// }
 
 .c-mobile-ai-assistant-msg-container__content__suffix {
   flex-shrink: 0;

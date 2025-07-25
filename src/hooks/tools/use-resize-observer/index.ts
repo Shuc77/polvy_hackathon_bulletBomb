@@ -1,7 +1,15 @@
 import { onBeforeUnmount, Ref, watch } from 'vue';
 import { ResizeObserver } from '@juggle/resize-observer';
 
-export const useResizeObserver = (refObj: Ref<Element | undefined>, callback: () => unknown) => {
+export const useResizeObserver = (
+  refObj: Ref<Element | undefined>,
+  callback: () => unknown,
+  options?: {
+    autoLifeCycle: boolean;
+  },
+) => {
+  const { autoLifeCycle = true } = options || {};
+
   const observer = new ResizeObserver(() => {
     callback();
   });
@@ -20,9 +28,11 @@ export const useResizeObserver = (refObj: Ref<Element | undefined>, callback: ()
     },
   );
 
-  onBeforeUnmount(() => {
-    observer.disconnect();
-  });
+  if (autoLifeCycle) {
+    onBeforeUnmount(() => {
+      observer.disconnect();
+    });
+  }
 
   return {
     observer,

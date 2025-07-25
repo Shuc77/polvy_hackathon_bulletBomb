@@ -16,6 +16,7 @@ import { useThemeStore } from './use-theme-store';
 import { usePlaybackStore } from './use-playback-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useWatchAppStore } from './use-watch-app-store';
+import { PlvShareModule } from '@polyv/live-watch-sdk';
 
 /** Web 分享平台枚举 */
 enum WebShareType {
@@ -64,6 +65,8 @@ const WebShareRedirectUrl: Record<WebShareType, string> = {
 export interface ShareStoreState {
   /** 分享按钮开关 */
   shareBtnEnabled: Ref<boolean>;
+  /** 是否允许添加自定义分享参数 */
+  customShareUrlAppendParamsEnabled: Ref<boolean>;
   /** 是否使用回放标题分享 */
   playbackShareTitleEnabled: Ref<boolean>;
   /** PC web 分享的观看地址 */
@@ -93,6 +96,8 @@ export interface ShareStoreState {
 export interface ShareStoreAction {
   /** 同步 Store 数据 */
   syncShareStore: () => void;
+  /** 补充分享参数到当前链接 */
+  appendShareQueueParams: () => void;
   /** 生成 web 分享地址 */
   composeShareUrl: <T extends WebShareType>(
     webShareType: T,
@@ -111,8 +116,14 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
   const { appendQueryParam } = useQueryParams();
 
+  /** 分享设置 */
+  const shareSetting = ref(PlvShareModule.generateDefaultShareSetting());
+
   /** 分享按钮开关 */
   const shareBtnEnabled = ref(false);
+
+  /** 是否允许添加自定义分享参数 */
+  const customShareUrlAppendParamsEnabled = ref(false);
 
   /** 是否使用回放标题分享 */
   const playbackShareTitleEnabled = ref(false);
@@ -130,6 +141,10 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
   /** PC web 分享的观看地址 */
   const shareWatchUrl = computed(() => {
+    if (shareSetting.value.isUseCustomShareUrl && !customShareUrlAppendParamsEnabled.value) {
+      return shareSetting.value.customShareUrl;
+    }
+
     const playbackShareVid = playbackStore.getPlaybackShareId();
 
     return appendToURL(
@@ -234,25 +249,41 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
   function syncShareStore() {
     const watchCore = watchAppStore.getWatchCore();
 
-    shareBtnEnabled.value = watchCore.share.getShareEnabled();
-    playbackShareTitleEnabled.value = watchCore.share.getPlaybackShareTitleEnabled();
+    const __shareSetting = watchCore.share.getShareSetting();
+
+    shareSetting.value = __shareSetting;
+    shareBtnEnabled.value = __shareSetting.shareEnabled;
+    customShareUrlAppendParamsEnabled.value = __shareSetting.customShareUrlAppendParamsEnabled;
+    playbackShareTitleEnabled.value = __shareSetting.playbackShareTitleEnabled;
+
     shareBaseWatchUrl.value = watchCore.share.getShareWatchUrl();
 
     saleInviteCustomerId.value = watchCore.saleInvite.getSaleInviteCustomerId();
-    if (saleInviteCustomerId.value) {
-      appendQueryParam({ inviteCustomerId: saleInviteCustomerId.value });
-    }
 
     inviteWatchSaleId.value = watchCore.user.getInviteWatchSaleId();
     inviteWatchInviteSalesId.value = watchCore.user.getInviteWatchInviteSalesId();
+  }
+
+  /**
+   * 补充分享参数到当前链接
+   */
+  function appendShareQueueParams() {
+    const params: Parameters<typeof appendQueryParam>[0] = {};
+
+    if (saleInviteCustomerId.value) {
+      params.inviteCustomerId = saleInviteCustomerId.value;
+    }
 
     if (inviteWatchSaleId.value) {
-      appendQueryParam({ inviteWatchSaleId: inviteWatchSaleId.value });
+      params.inviteWatchSaleId = inviteWatchSaleId.value;
     }
+
+    appendQueryParam(params);
   }
 
   return {
     shareBtnEnabled,
+    customShareUrlAppendParamsEnabled,
     playbackShareTitleEnabled,
     saleInviteCustomerId,
     inviteWatchSaleId,
@@ -268,5 +299,7 @@ export const useShareStore = defineStore<'share', ShareStore>('share', () => {
 
     syncShareStore,
     composeShareUrl,
+
+    appendShareQueueParams,
   };
 });

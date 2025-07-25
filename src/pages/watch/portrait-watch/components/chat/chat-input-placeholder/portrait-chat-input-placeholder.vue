@@ -9,7 +9,10 @@
     @click="onClickPlaceholder"
   >
     <template v-if="!playbackChapterEntranceVisible">
-      <mobile-icon-message class="c-portrait-chat-input-placeholder__icon" />
+      <mobile-icon-message
+        v-if="askMenuData.visible || chatMenuData.visible"
+        class="c-portrait-chat-input-placeholder__icon"
+      />
       <span class="c-portrait-chat-input-placeholder__text g-singleline">
         {{ portraitMessageInputPlaceholder }}
       </span>
@@ -26,6 +29,7 @@ import { MobileIconMessage } from '@/components/component-icons/mobile/map';
 import PortraitAskIcon from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-icon.vue';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
@@ -33,6 +37,8 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { computed, unref } from 'vue';
 
 const { chatInputDisabled } = storeDefinitionToRefs(useChatStore);
+
+const { chatMenuData, askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { portraitMessageInputPlaceholder, portraitMessageTabCurrentName } =
   storeDefinitionToRefs(usePortraitLayoutStore);
@@ -61,10 +67,14 @@ function onClickPlaceholder() {
 
   // 输入框禁用
   if (
-    unref(chatInputDisabled) &&
-    unref(portraitMessageTabCurrentName) === PortraitChatTabName.Chat
+    unref(portraitMessageTabCurrentName) !== PortraitChatTabName.Ask &&
+    (unref(chatInputDisabled) || !unref(chatMenuData).visible)
   ) {
-    toast.error(translate('chat.roomClosed'));
+    if (unref(chatInputDisabled)) {
+      toast.error(translate('chat.roomClosed2'));
+    } else {
+      toast.error(translate('chat.roomClosed'));
+    }
     return;
   }
 
@@ -86,7 +96,7 @@ function onClickPlaceholder() {
   width: 100%;
   max-width: 150px;
   height: 32px;
-  padding: 0 8px;
+  padding: 0 12px;
   line-height: 32px;
   background-color: rgba(#000000, 0.4);
   border-radius: 16px;

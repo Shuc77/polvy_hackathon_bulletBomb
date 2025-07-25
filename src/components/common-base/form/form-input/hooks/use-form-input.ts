@@ -20,6 +20,8 @@ export const formInputProps = () => ({
   ...formCommonProps(),
   /** 禁用输入 */
   disabled: PropUtils.bool.def(false),
+  /** 只读 */
+  readonly: PropUtils.bool.def(false),
   /** 绑定值 */
   value: PropUtils.oneOfType<InputValueType>([String, Number]).def(''),
   /** 输入框原生类型 */
@@ -62,7 +64,7 @@ export const useFormInput = (options: {
     props,
   });
 
-  const { commonClassNames } = useFormCommon({
+  const { commonClassNames, formTheme } = useFormCommon({
     props,
     classPrefix,
   });
@@ -163,6 +165,7 @@ export const useFormInput = (options: {
   return {
     inputRef,
     inputClassNames,
+    formTheme,
     isFocus,
     onInputChanged,
     onInputBlur,

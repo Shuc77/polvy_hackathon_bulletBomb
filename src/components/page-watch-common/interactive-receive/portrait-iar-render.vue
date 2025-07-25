@@ -30,11 +30,6 @@
       <portrait-product-list-popup v-if="interactSetting.productEnabled" />
       <!-- 商品详情弹层，不跟随商品库开关，因为大小卡片可以唤起详情 -->
       <portrait-product-detail-popup />
-      <!-- 大卡片弹层 -->
-      <portrait-product-bubble
-        class="c-portrait-iar-render__product-bubble"
-        :product-bubble-enable="false"
-      />
       <!-- 问卷 -->
       <mobile-questionnaire-popup />
       <!-- 红包弹窗 -->
@@ -74,7 +69,6 @@ import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
 import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
 import PortraitProductListPopup from './product/portrait-product-list-popup.vue';
 import PortraitProductDetailPopup from './product/portrait-product-detail-popup.vue';
-import PortraitProductBubble from './product/portrait-product-bubble.vue';
 import MobileQuestionnairePopup from './questionnaire/mobile-questionnaire-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
@@ -114,9 +108,3 @@ onMounted(() => {
   );
 });
 </script>
-
-<style lang="scss">
-.c-portrait-iar-render__product-bubble {
-  margin-bottom: 0;
-}
-</style>
