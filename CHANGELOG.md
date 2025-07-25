@@ -4,6 +4,86 @@
 
 ---
 
+## v2.5.0(2025-07-25)
+
+### Bug Fixes
+
+- 修复从 2.0 版本开始观看条件-独立授权/外部授权/自定义授权完成后，无法正常删除 url 敏感参数的问题
+- 修复移动端竖屏引导页多皮肤显示异常问题
+- 修复PC端播放器字幕字体大小在部分浏览器中较小的情况
+- 修复观看页获取积分异常时，没有响应后台配置文案的问题
+- 修复主动切换无延迟和正常延迟播放器时，无法正常切换的问题
+
+### Features
+
+- 支持 `@polyv/live-watch-sdk@2.5.0` 版本同步新增的功能
+- 支持渲染AI 答疑助手返回的 markdown 格式消息
+- 支持移动端横屏观看页连麦暂停显示恢复播放按钮
+- 支持移动端竖屏观看页互动聊天模块响应后台配置显隐
+- 支持移动端竖屏观看页再三分屏场景下能够进行主副屏切换
+- 支持获取任务奖励配置异常时进行提示和重试
+- 支持推广外链功能响应后台多平台链接配置
+
+### Styles
+
+- 不再依赖 `tinycolor2`，通过 `hexToRGB` 将色值转换成 `rgb`，再通过 css 的 var 语法 + rgba 方法来实现多种透明度主题色
+- 统一更多弹窗图标样式
+- 统一横竖屏观看中邀请榜页面样式
+
+### Code Refactoring
+
+- 主流程
+  - 通过 sdk-inject 构建或者 static 构建模式构建的产物，channelId 和 targetSessionId 参数不再从 pathname 中获取，统一只通过 paramGetter 获取
+  - 延迟加载微信 JS-SDK，并统一在页面 mounted 后再调用 `appendQueryParam` 拼接 url 参数，确保 wx.config 逻辑正常
+- 基础组件
+  - 表单组件
+    - 根据设计统一 PC 端和移动端表单基础组件样式
+    - 旧有表单组件会区分 pc 和 mobile 两个组件，此次改版后会统一成一个组件
+  - 其他
+    - 不再使用 tsx 语法编写组件，统一改成 template 写法
+- 业务组件
+  - 拆分 AI 看相关组件到 `@polyv/live-watch-ai-ui`，后续 AI 相关功能会在单独的 SDK 中继续迭代，**敬请期待**
+  - 商品库大小卡片组件，改为 `@polyv/product-ui` 提供
+  - 横竖屏场景样式一致的组件统一只用一个组件，比如邀请榜
+
+### Optimizes
+
+- 优化播放器区域在不同场景下的文案展示
+- 优化聊天区商品库和点赞交互
+- 优化直播断流后相关的文案
+- 优化三分屏主副屏模式切换逻辑
+- 优化三分屏回放章节组件，支持缩略图展示
+- 优化微信分享和邀请分享等逻辑，支持邀请海报自定义地址分享
+- 其他一系列小的优化
+
+### Build System
+
+- 更新 `@polyv/polyv-ui` 版本至 `4.9.0`
+- 更新 `@polyv/utils` 版本至 `2.13.0`
+- 移除 `tinycolor2`
+
+#### SDK Update
+
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20250703`
+- 更新 `@polyv/product-ui` 版本至 `rc-20250724`
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20250724`
+- 更新 `@polyv/iar` 相关 UI 层 SDK，具体如下：
+
+```sh
+"@polyv/iar-check-in-ui": "^2.5.0-rc-20250724.1",
+"@polyv/iar-coupon-ui": "^2.5.0-rc-20250724.1",
+"@polyv/iar-lottery-ui": "^2.5.0-rc-20250724.1",
+"@polyv/iar-lucky-lottery-ui": "^2.5.0-rc-20250724.1",
+"@polyv/iar-questionnaire-ui": "^2.5.0-rc-20250724.1",
+"@polyv/iar-reward-receive-ui": "^2.5.0-rc-20250724.1",
+```
+
+#### SDK Add
+
+- 新增 `@polyv/live-watch-ai-ui`，版本为 `rc-20250724`
+
+---
+
 ## v2.4.0(2025-06-20)
 
 ### Bug Fixes

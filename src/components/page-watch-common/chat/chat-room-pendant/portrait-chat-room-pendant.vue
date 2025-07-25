@@ -74,8 +74,8 @@
           class="c-portrait-chat-room-pendant__item"
         />
 
-        <!-- 商品库卡片气泡 -->
-        <portrait-product-bubble :product-dialog-enable="false" />
+        <!-- 商品库小卡片 -->
+        <mobile-product-small-card class="c-portrait-chat-room-pendant__product-small-card" />
       </template>
     </template>
   </div>
@@ -89,7 +89,7 @@ import MobileRedpackPendant from '@/components/page-watch-common/interactive-rec
 import MobileWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/mobile-welfare-lottery.vue';
 import MobileTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/mobile-topic-pk.vue';
 import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-answer.vue';
-import PortraitProductBubble from '@/components/page-watch-common/interactive-receive/product/portrait-product-bubble.vue';
+import MobileProductSmallCard from '@/components/page-watch-common/product/product-small-card/mobile-product-small-card.vue';
 import PortraitMicroActivityPendant from '@/components/page-watch-common/micro-activity/portrait-micro-activity/portrait-micro-activity-pendant.vue';
 import PortraitLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
@@ -132,5 +132,10 @@ const { isPlaybacking } = storeDefinitionToRefs(usePlaybackStore);
 
 .c-portrait-chat-room-pendant__item + .c-portrait-chat-room-pendant__item {
   margin-top: 12px;
+}
+
+.c-portrait-chat-room-pendant__product-small-card {
+  margin-bottom: 16px;
+  transform: translateX(-70px);
 }
 </style>

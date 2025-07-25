@@ -54,9 +54,13 @@ export const useImageMsg = () => {
       return chatImageUrl.value;
     }
 
+    let width: number | undefined = 240;
+    let height: number | undefined;
     const size = chatMsg.value.size;
-    const width = size && size.width ? size.width / 2 : undefined;
-    const height = size && size.height ? size.height / 2 : undefined;
+    if (size && size.height > size.width) {
+      height = width;
+      width = undefined;
+    }
 
     return resizeOSSImg(chatImageUrl.value, width, height);
   });

@@ -2,7 +2,7 @@
 <template>
   <div class="c-mobile-phone-code">
     <div class="c-mobile-phone-code__search">
-      <mobile-form-input
+      <form-input
         v-model="searchKey"
         :placeholder="$lang('form.placeholder.enterCountry')"
         :size="FormSize.Medium"
@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { FormSize } from '../form/types/enums';
 import { phoneCodeEmits, phoneCodeProps, usePhoneCode } from './use-phone-code';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 
 const emit = defineEmits(phoneCodeEmits());
 

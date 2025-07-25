@@ -4,7 +4,7 @@
     @click="showMultiMeeting"
   >
     <div class="c-portrait-multi-meeting-entrance__content">
-      {{ $lang('menu.tabName.multiMeeting') }}
+      {{ multiMeetingMenuData.label }}
     </div>
   </div>
 </template>
@@ -14,6 +14,8 @@ import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { onMounted } from 'vue';
 import { useMultiMeeting } from '../hooks/use-multi-meeting';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const { getEmitter } = useGlobalInject();
 
@@ -22,6 +24,8 @@ function showMultiMeeting() {
 }
 
 const { initMultiMeeting } = useMultiMeeting(false);
+
+const { multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 onMounted(() => {
   initMultiMeeting();

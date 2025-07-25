@@ -5,7 +5,6 @@
       v-if="!detailLoadStatus"
       :class="[
         'c-mobile-invite-detail-popup__content__bottom__button',
-        'c-mobile-invite-detail-popup__content__bottom__button--large',
         'c-mobile-invite-detail-popup__content__bottom__button--disabled',
       ]"
     >
@@ -19,10 +18,7 @@
           detailLoadStatus.type === InviteDetailLoadStatus.UnInit ||
           detailLoadStatus.type === InviteDetailLoadStatus.Error
         "
-        :class="[
-          'c-mobile-invite-detail-popup__content__bottom__button',
-          'c-mobile-invite-detail-popup__content__bottom__button--large',
-        ]"
+        :class="['c-mobile-invite-detail-popup__content__bottom__button']"
         @click="handleDownloadDetail"
       >
         <mobile-invite-detail-export-button-loading
@@ -37,7 +33,6 @@
         v-else-if="detailLoadStatus.type === InviteDetailLoadStatus.Loading"
         :class="[
           'c-mobile-invite-detail-popup__content__bottom__button',
-          'c-mobile-invite-detail-popup__content__bottom__button--large',
           'c-mobile-invite-detail-popup__content__bottom__button--disabled',
         ]"
       >
@@ -53,7 +48,6 @@
         <div
           :class="[
             'c-mobile-invite-detail-popup__content__bottom__button',
-            'c-mobile-invite-detail-popup__content__bottom__button--medium',
             'c-mobile-invite-detail-popup__content__bottom__button--operate',
           ]"
           @click="handleDownloadDetail"
@@ -67,10 +61,7 @@
         </div>
 
         <div
-          :class="[
-            'c-mobile-invite-detail-popup__content__bottom__button',
-            'c-mobile-invite-detail-popup__content__bottom__button--medium',
-          ]"
+          :class="['c-mobile-invite-detail-popup__content__bottom__button']"
           @click="handleSaveDetail"
         >
           <span>{{ $lang('invite.detail.save') }}</span>
@@ -114,26 +105,25 @@ defineExpose({
 .c-mobile-invite-detail-popup__content__bottom {
   box-sizing: border-box;
   display: flex;
+  gap: 16px;
   align-items: center;
   justify-content: space-evenly;
-  padding: 16px 0;
+  padding: 16px;
+  background: #fff;
   @include iphone-x-pb(16px);
 }
 
 .c-mobile-invite-detail-popup__content__bottom__button {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
+  height: 40px;
   font-size: 14px;
   color: #fff;
-  background: #3082fe;
+  background: linear-gradient(97deg, #ff5031 0%, #ff9e63 98%);
   border: 1px solid transparent;
   border-radius: 24px;
-}
-
-.c-mobile-invite-detail-popup__content__bottom__button--large {
-  width: 90%;
-  height: 48px;
 }
 
 .c-mobile-invite-detail-popup__content__bottom__button--medium {
@@ -142,13 +132,13 @@ defineExpose({
 }
 
 .c-mobile-invite-detail-popup__content__bottom__button--operate {
-  color: #3082fe;
+  color: #ff5252;
   background: #fff;
-  border: 1px solid #3082fe;
+  border: 1px solid #ff5252;
 }
 
 .c-mobile-invite-detail-popup__content__bottom__button--disabled {
-  background: rgba(#3082fe, 0.5);
+  background: rgba(#ff5252, 0.5);
 }
 
 .c-mobile-invite-detail-popup__content__bottom__loading {

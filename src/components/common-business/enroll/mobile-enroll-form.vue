@@ -26,7 +26,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <mobile-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :maxlength="20"
@@ -42,7 +42,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <mobile-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :maxlength="50"
@@ -58,7 +58,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <mobile-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   :maxlength="100"
@@ -130,7 +130,7 @@
                 v-if="imageVerifyInputEnabled"
                 :key="`image-code-${index}`"
               >
-                <mobile-form-image-verify-input
+                <form-image-verify-input
                   ref="imageVerifyInputRef"
                   v-model="formData.imageCaptcha"
                   :image-id.sync="formData.imageId"
@@ -165,7 +165,7 @@
                 :required="item.isRequired"
                 :form-field="item.fieldId"
               >
-                <mobile-form-input
+                <form-input
                   v-model="formData[item.fieldId]"
                   :placeholder="item.tips"
                   @input="onEmailChange"
@@ -254,10 +254,10 @@
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import MobileFormSelect from '@/components/common-base/form/form-select/mobile-form-select.vue';
 import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
-import MobileFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/mobile-form-image-verify-input.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
 import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
 import MobileFormProtocol from '@/components/common-base/form/form-protocol/mobile-form-protocol.vue';
 import MobileFormUploadImage from '@/components/common-base/form/form-upload-image/form-upload-image.vue';

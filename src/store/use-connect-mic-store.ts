@@ -6,6 +6,8 @@ import {
   ConnectMicStatus,
   ConnectMicType,
   ScreenShareInfo,
+  MixStreamRenderMode,
+  ConnectMicFitType,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -32,6 +34,8 @@ export interface ConnectMicStoreState {
   currentMicIndex: Ref<number>;
   /** 最大显示连麦序号 */
   maxMicIndex: Ref<number>;
+  /** 是否有连麦画面被暂停 */
+  isConnectMicPaused: Ref<boolean>;
   /** 当前用户是否正在连麦中 */
   isConnectMicing: ComputedRef<boolean>;
   /** 连麦挂件是否需要渲染 */
@@ -74,6 +78,8 @@ export interface ConnectMicStoreState {
   supportSetupVideo: ComputedRef<boolean>;
   /** 设备采集失败 */
   isDeviceRecoverFailed: Ref<boolean>;
+  /** 播放容器模式 */
+  connectMicFitType: Ref<ConnectMicFitType>;
 }
 
 export interface ConnectMicStoreAction {
@@ -85,6 +91,8 @@ export interface ConnectMicStoreAction {
   syncScreenShareInfo(): void;
   /** 同步连麦列表 */
   syncConnectMicList(): void;
+  /** 设置是否有连麦画面被暂停 */
+  setIsConnectMicPaused(val: boolean): void;
 }
 
 export interface ConnectMicStore extends ConnectMicStoreState, ConnectMicStoreAction {}
@@ -126,6 +134,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   /** 最大显示连麦序号 */
   const maxMicIndex = ref(50);
 
+  /** 连麦画面填充类型 */
+  const connectMicFitType = ref<ConnectMicFitType>(ConnectMicFitType.Contain);
+
   /** 当前用户是否正在连麦中 */
   const isConnectMicing = computed<boolean>(() => {
     const status = unref(connectMicStatus);
@@ -159,6 +170,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
       !(inviteStatus.value && !isConnectMicing.value)
     );
   });
+
+  /** 是否有连麦画面被暂停 */
+  const isConnectMicPaused = ref(false);
 
   /** 连麦列表 */
   const connectMicList: Ref<ConnectMicItem[]> = ref([]);
@@ -274,6 +288,11 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     networkInfo.value = info;
   }
 
+  /** 设置是否有连麦画面被暂停 */
+  function setIsConnectMicPaused(val: boolean): void {
+    isConnectMicPaused.value = val;
+  }
+
   /** 当前推流时能否设置摄像头 */
   const supportSetupVideo = computed(() => {
     // 音频连麦
@@ -299,6 +318,14 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     showJoinQueueNumberEnabled.value = connectMicInfo.showJoinQueueNumberEnabled;
     currentMicIndex.value = connectMicInfo.currentMicIndex;
     currentIsSpeaker.value = connectMicInfo.currentIsSpeaker;
+    connectMicFitType.value =
+      watchCore.channel.getMixStreamRenderMode() === MixStreamRenderMode.Cover
+        ? ConnectMicFitType.Cover
+        : ConnectMicFitType.Contain;
+
+    if (connectMicInfo.connectMicStatus === ConnectMicStatus.NotConnect) {
+      setIsConnectMicPaused(false);
+    }
   }
 
   function syncConnectMicList(): void {
@@ -317,6 +344,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     currentMicIndex,
     maxMicIndex,
     isConnectMicing,
+    isConnectMicPaused,
     connectMicPendantRenderEnabled,
     connectMicPendantVisible,
     connectMicList,
@@ -335,6 +363,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     currentIsSpeaker,
     supportSetupVideo,
     isDeviceRecoverFailed,
+    connectMicFitType,
 
     networkInfo,
     syncNetworkInfo,
@@ -344,5 +373,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
     syncConnectMicInfo,
     syncConnectMicList,
+
+    setIsConnectMicPaused,
   };
 });

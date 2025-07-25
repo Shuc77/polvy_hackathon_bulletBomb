@@ -25,7 +25,7 @@
         </form-item>
         <!-- 图片验证码 -->
         <form-item v-if="imageVerifyInputEnabled && checkedNeedSmsVerify">
-          <mobile-form-image-verify-input
+          <form-image-verify-input
             ref="imageVerifyInputRef"
             v-model="formData.imageCaptcha"
             :image-id.sync="formData.imageId"
@@ -56,7 +56,7 @@
           required
           form-field="email"
         >
-          <mobile-form-input
+          <form-input
             v-model="formData.email"
             :placeholder="enrollAuthTips"
           />
@@ -88,22 +88,22 @@
 </template>
 
 <script setup lang="ts">
-import { ButtonSize } from '@/components/common-base/normal-button/types';
-import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
 import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
-import MobileFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/mobile-form-image-verify-input.vue';
 import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
 
-import { SmsScene, EnrollAuthType } from '@polyv/live-watch-sdk';
-import { useEnrollStore } from '@/store/use-enroll-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useEnrollStore } from '@/store/use-enroll-store';
+import { EnrollAuthType, SmsScene } from '@polyv/live-watch-sdk';
 
-import { enrollLoginEmits, useEnrollInfoCheck, useEnrollLogin } from './hooks/use-enroll-login';
-import { ref } from 'vue';
 import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
+import { ref } from 'vue';
+import { enrollLoginEmits, useEnrollInfoCheck, useEnrollLogin } from './hooks/use-enroll-login';
 
 const emit = defineEmits(enrollLoginEmits());
 

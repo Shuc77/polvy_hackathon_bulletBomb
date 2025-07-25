@@ -1,4 +1,4 @@
-import { watch, onBeforeMount, onMounted } from 'vue';
+import { watch, onBeforeMount, onMounted, nextTick } from 'vue';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -17,7 +17,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useEmotionSetup } from './use-emotion-setup';
 import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
-import { wait } from '@/assets/utils/utils';
+import { useShareStore } from '@/store/use-share-store';
+import { useInviteStore } from '@/store/use-invite-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
 /**
  * 页面尺寸初始化设置
@@ -88,6 +90,9 @@ export const useMainEnter = (options: {
 
   const watchAppStore = useWatchAppStore();
   const authStore = useAuthStore();
+  const shareStore = useShareStore();
+  const inviteStore = useInviteStore();
+  const playbackStore = usePlaybackStore();
 
   const webviewStore = useWebviewStore();
 
@@ -113,8 +118,6 @@ export const useMainEnter = (options: {
 
   /** 移除 url 上的授权参数 */
   function removeUrlAuthQueryParams() {
-    removeQueryParam(['snapshotPage']);
-
     if (!authStore.isAuthorized) return;
 
     removeQueryParam(['name', 'password', ...AuthSpecialQueryParams]);
@@ -123,24 +126,41 @@ export const useMainEnter = (options: {
   usePageSizeSetup();
 
   onBeforeMount(() => {
-    removeUrlAuthQueryParams();
+    removeQueryParam(['snapshotPage']);
 
     // 设置表情解析器
     setupEmotionParser();
   });
+
+  watch(
+    () => playbackStore.currentPlaybackTarget,
+    () => {
+      if (playbackStore.currentPlaybackTarget) {
+        nextTick(() => {
+          playbackStore.appendPlaybackQueueParams();
+        });
+      }
+    },
+  );
 
   // 在 onMounted 之后触发
   async function onPageMounted() {
     console.log('[render] main-enter mounted');
     emit('page-mounted');
 
+    // 处理当前链接的参数拼接
+    removeUrlAuthQueryParams();
+    shareStore.appendShareQueueParams();
+    inviteStore.appendInviteQueueParams();
+    playbackStore.appendPlaybackQueueParams();
+
+    // 页面组件 mounted 后需要再更新一遍分享配置，确保数据正确
+    updateWeixinShareConfig();
+
     // 初始化 webview 逻辑
     if (webviewStore.isPlvWebview) {
       await webviewStore.initWebviewBridge();
     }
-
-    // 页面组件 mounted 后需要再更新一遍分享配置，确保数据正确
-    updateWeixinShareConfig();
 
     // 加载互动功能 SDK
     await loadIarSDK();
@@ -151,9 +171,6 @@ export const useMainEnter = (options: {
         // 进入观看页后初始化webview
         webviewStore.initWebview();
       }
-
-      // 因为新版互动 SDK 拆分成多个以后，会出现连接聊天室后再完成初始化的情况，所以这里延迟一下，尽量让 互动 SDK 初始化完成
-      await wait(300);
 
       // 连接聊天室
       await watchAppStore.setupWatchCoreConnect();

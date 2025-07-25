@@ -71,12 +71,6 @@ let webpackVueConfig = {
         include: srcPath,
       },
       {
-        test: /\.tsx$/,
-        use: ['babel-loader'],
-        exclude: /node_modules/,
-        include: srcPath,
-      },
-      {
         test: /\.ico$/i,
         type: 'assets/resource',
         exclude: /node_modules/,

@@ -8,7 +8,6 @@ import { LiveStatus, PlaybackMode, PlaybackTarget } from '@polyv/live-watch-sdk'
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
-import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
 
 export interface PlaybackStoreState {
   /** 当前是否正在播放回放 */
@@ -72,6 +71,8 @@ export interface PlaybackStoreActions {
   getPlaybackShareId(): string | undefined;
   /** 重置回放 Store 数据 */
   resetPlaybackStoreData(): void;
+  /** 补充回放参数到当前链接 */
+  appendPlaybackQueueParams(): void;
 }
 
 export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions {}
@@ -81,8 +82,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   const channelStore = useChannelStore();
 
   const { appendQueryParam, paramGetter } = useQueryParams();
-
-  const { updateWeixinShareConfig } = useWeixinShareConfigUpdate();
 
   /** 当前是否正在播放回放 */
   const isPlaybacking = ref(false);
@@ -279,11 +278,20 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
   function updateCurrentPlaybackTarget(target?: PlaybackTarget) {
     currentPlaybackTarget.value = target;
 
-    appendQueryParam({ playBackVid: getPlaybackShareId() });
-    updateWeixinShareConfig();
-
     const watchCore = watchAppStore.getWatchCore();
     watchCore.playback.setCurrentPlaybackTarget(target);
+  }
+
+  /** 补充回放参数到当前链接 */
+  function appendPlaybackQueueParams() {
+    const params: Parameters<typeof appendQueryParam>[0] = {};
+
+    const playbackShareId = getPlaybackShareId();
+    if (playbackShareId) {
+      params.playBackVid = playbackShareId;
+    }
+
+    appendQueryParam(params);
   }
 
   /** 初始化回放列表 */
@@ -408,5 +416,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     getPlaybackSessionId,
     getPlaybackShareId,
     resetPlaybackStoreData,
+
+    appendPlaybackQueueParams,
   };
 });

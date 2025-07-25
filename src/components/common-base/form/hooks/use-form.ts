@@ -21,7 +21,7 @@ export const formWrapProps = () => ({
   /** 表单提交方法 */
   submitAction: PropUtils.func(),
   /** 表单主题，dark-黑暗 */
-  theme: PropUtils.enum<FormTheme>(),
+  theme: PropUtils.enum<FormTheme>().def(FormTheme.Gray),
   /** label 模式，默认：inline */
   labelModel: PropUtils.oneOf(formItemLabelModels).def('inline'),
   /** 是否开启 debug 打印，默认：false */

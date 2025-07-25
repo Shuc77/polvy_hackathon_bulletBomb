@@ -86,6 +86,7 @@
                   :key="`master-stream-${masterMicItem.streamId}`"
                   :mic-item="masterMicItem"
                   :mic-info-visible="mainScreen !== MainScreenContent.Player"
+                  :fit-type="connectMicFitType"
                 />
                 <pc-player-main v-if="canRenderPlayer" />
               </div>
@@ -137,6 +138,9 @@
               <pc-watch-layout-player-side-popup />
               <pc-product-render v-if="iarSdkLoaded" />
 
+              <!-- 商品库小卡片 -->
+              <pc-product-small-card v-if="iarSdkLoaded" />
+
               <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
               <pc-product-pendant
                 v-if="
@@ -166,9 +170,6 @@
             ref="PlayerControlWrapperRef"
             class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-control"
           >
-            <div class="c-pc-watch-layout__main__player-product-bubble">
-              <pc-product-bubble v-if="iarSdkLoaded" />
-            </div>
             <transition name="fade">
               <pc-player-control
                 v-if="canRenderPlayer"
@@ -203,13 +204,22 @@
       class="c-pc-watch-layout__menu-panel-wrap"
     >
       <div class="c-pc-watch-layout__menu-panel-content g-boundary">
-        <!-- 多会场（横向布局） -->
-        <pc-multi-meeting-horizontal
-          v-if="multiMeetingEnabled && multiMeetingListLayout === MultiMeetingListLayout.Horizontal"
-        />
+        <div
+          class="c-pc-watch-layout__menu-panel-inner"
+          :class="{
+            'c-pc-watch-layout__menu-panel-inner--center': pcAsideSectionIsEmpty,
+          }"
+        >
+          <!-- 多会场（横向布局） -->
+          <pc-multi-meeting-horizontal
+            v-if="
+              multiMeetingEnabled && multiMeetingListLayout === MultiMeetingListLayout.Horizontal
+            "
+          />
 
-        <!-- 底部菜单栏 -->
-        <pc-watch-bottom-menu />
+          <!-- 底部菜单栏 -->
+          <pc-watch-bottom-menu />
+        </div>
       </div>
     </div>
 
@@ -237,7 +247,7 @@ import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
 import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
-import PcProductBubble from '@/components/page-watch-common/interactive-receive/product/pc-product-bubble.vue';
+import PcProductSmallCard from '@/components/page-watch-common/product/product-small-card/pc-product-small-card.vue';
 import PcBulletinMarquee from '@/components/page-watch-common/bulletin-marquee/pc-bulletin-marquee.vue';
 import PcChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
@@ -285,7 +295,8 @@ const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 const { mainScreen, subScreenPackUp, isFullscreen, isPcPageFullscreen, pcAsideSectionIsEmpty } =
   storeDefinitionToRefs(useLayoutStore);
 
-const { masterMicItem, isDeviceRecoverFailed } = storeDefinitionToRefs(useConnectMicStore);
+const { masterMicItem, isDeviceRecoverFailed, connectMicFitType } =
+  storeDefinitionToRefs(useConnectMicStore);
 
 const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 
@@ -601,30 +612,27 @@ $--layout-sub-pack-up-height: 40px !default;
   }
 }
 
-.c-pc-watch-layout__menu-panel-content {
+.c-pc-watch-layout__menu-panel-inner {
   box-sizing: border-box;
   padding: 0 32px;
   background-color: $--color-white;
-}
-@media (max-width: 1440px) {
-  .c-pc-watch-layout__menu-panel-content {
-    padding: 0 24px;
+
+  &.c-pc-watch-layout__menu-panel-inner--center {
+    width: $--layout-left-width-percent;
+    margin: 0 auto;
   }
 }
-
-.c-pc-watch-layout__main__player-product-bubble {
-  position: absolute;
-  bottom: 36px;
-  left: 0;
-  width: 100%;
-  height: 100%;
+@media (max-width: 1440px) {
+  .c-pc-watch-layout__menu-panel-inner {
+    padding: 0 24px;
+  }
 }
 
 .c-pc-watch-layout__main__side-popup-render {
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 20;
+  z-index: 3005;
   width: 100%;
   height: 100%;
   overflow: hidden;

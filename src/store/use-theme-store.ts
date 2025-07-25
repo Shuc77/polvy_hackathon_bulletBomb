@@ -119,8 +119,12 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
     let mode = config.mode;
 
-    // 当进入观看页时，如果是竖屏布局，且观看页已经初始化，则使用深色模式
-    if (watchAppStore.watchAppInited && layoutStore.isPortraitWatchLayout) {
+    // 当进入观看页时，如果是竖屏布局，且观看页已经初始化，且非引导页，则使用深色模式
+    if (
+      watchAppStore.watchAppInited &&
+      watchAppStore.watchPageInited &&
+      layoutStore.isPortraitWatchLayout
+    ) {
       mode = SkinColorMode.Dark;
     }
 

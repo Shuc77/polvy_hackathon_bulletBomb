@@ -14,7 +14,10 @@
           :name="ChannelMenuType.Desc"
           lazy-load
         >
-          <pc-rich-text-render :html-content="channelDescription" />
+          <pc-rich-text-render
+            :html-content="channelDescription"
+            :should-compress-imgs="compressImageEnabled"
+          />
         </pc-normal-tab-pane>
 
         <!-- 回放 -->
@@ -59,13 +62,17 @@
           :key="`iframe-${index}`"
           :label="menu.name"
           :name="menu.menuId"
-          lazy-load
+          hack-weixin-btn
         >
-          <pc-promote-external-link
-            :src="menu.content"
-            :open-type="menu.iframeOpenType"
-            :is-active="pcBottomTabCurrentName === menu.menuId"
-          />
+          <template #default="{ weixinBtnId }">
+            <pc-promote-external-link
+              :content="menu.content"
+              :link-type="menu.linkType"
+              :open-type="menu.iframeOpenType"
+              :weixin-btn-selector="weixinBtnId"
+              :is-active="pcBottomTabCurrentName === menu.menuId"
+            />
+          </template>
         </pc-normal-tab-pane>
 
         <!-- 分会场（竖向） -->
@@ -127,7 +134,7 @@ import { useQueryParams } from '@/hooks/core/use-query-params';
 const { paramGetter } = useQueryParams();
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
-const { liveStatus } = storeDefinitionToRefs(useChannelStore);
+const { liveStatus, compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
 const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 const { pcBottomTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);

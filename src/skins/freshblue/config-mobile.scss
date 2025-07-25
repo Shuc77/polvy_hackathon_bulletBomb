@@ -63,15 +63,6 @@ $--skin-page-mobile-configs: (
   // 表情选择删除按钮字体色
   'mobile-emotion-panel-del-button:text-color': $--color-white,
 
-  // 更多按钮背景色
-  'mobile-more-button:bg-color': rgba($--color-white, 0.1),
-  // 更多按钮图标图片
-  'mobile-more-button:icon-image': './imgs/pws-icon-more.png',
-  // 更多面板背景色
-  'mobile-more-panel:bg-color': #1362B4,
-  // 更多面板字体色
-  'mobile-more-panel:text-color': $--color-white,
-
   // 打赏按钮背景色
   'mobile-donate-button:bg-color': rgba($--color-white, 0.1),
   // 打赏面板背景色
@@ -112,12 +103,6 @@ $--skin-page-mobile-configs: (
   'mobile-donate-panel-point-count:text-color': $--color-white,
   // 打赏自定义金额字体色
   'mobile-donate-panel-custom-cash:text-color': rgba($--color-white, 0.7),
-  // 打赏自定义金额输入框背景色
-  'mobile-donate-custom-cash-input:bg-color': rgba($--color-white, 0.1),
-  // 打赏自定义金额输入框标题字体色
-  'mobile-donate-custom-cash-input-title:text-color': rgba($--color-white, 0.7),
-  // 打赏自定义金额输入框字体色
-  'mobile-donate-custom-cash-input:text-color': $--color-white,
   // 打赏自定义金额随机按钮字体色
   'mobile-donate-custom-cash-random:text-color': $--color-white,
 
@@ -143,13 +128,6 @@ $--skin-page-mobile-configs: (
   'mobile-multi-meeting-portrait-time:text-color': rgba(#333, 0.6),
   // 多会场竖屏 PV 字体色
   'mobile-multi-meeting-portrait-pv:text-color': rgba(#333, 0.6),
-
-  // 邀请有礼活动 banner 底部背景图
-  'mobile-invite-activity-banner:bottom-bg': './imgs/pws-mobile-invite-activity-banner-bottom-bg.png',
-  // 邀请榜底部颜色
-  'mobile-invite-rank-bottom:bg-color': #3666C0,
-  // 邀请海报入口
-  'mobile-invite-poster-entry-capsule:bg-color': map.get($--skin-basic-configs, 'primary-color'),
 
   // 移动端弹窗主体字体色
   'mobile-mobile-popup__content:text-color': map.get($--skin-basic-configs, 'main-text-color'),

@@ -28,7 +28,42 @@
         <mobile-icon-arrow-right class="c-mobile-task-activity-dialog__my__icon" />
       </div>
     </template>
-    <div class="c-mobile-task-activity-dialog__list">
+    <!-- 网络异常提示 -->
+    <div
+      v-if="isShowTaskActivityErrorPopper && !taskList.length"
+      class="c-mobile-task-activity-dialog__network-error-container"
+    >
+      <div
+        v-if="!retryLoading"
+        class="c-mobile-task-activity-dialog__network-error"
+      >
+        <div class="c-mobile-task-activity-dialog__network-error__icon"></div>
+        <div class="c-mobile-task-activity-dialog__network-error__text">
+          {{ translate('taskActivity.networkError.title') }}
+          <br />
+          {{ translate('taskActivity.networkError.tips') }}
+        </div>
+        <div
+          class="c-mobile-task-activity-dialog__network-error__btn"
+          @click="onRetryGetTaskList"
+        >
+          {{ translate('taskActivity.retry') }}
+        </div>
+      </div>
+
+      <div
+        v-if="retryLoading"
+        class="c-mobile-task-activity-dialog__network-error__loading"
+      >
+        <list-loading />
+      </div>
+    </div>
+
+    <!-- 任务列表 -->
+    <div
+      v-else
+      class="c-mobile-task-activity-dialog__list"
+    >
       <div
         v-for="item in taskList"
         :key="item.taskId"
@@ -141,6 +176,13 @@ import { TaskActivityStatus, TaskActivityType, OnlineTaskUpdateType } from '@pol
 import { formatDate } from '@utils-ts/date';
 import { useTaskActivity } from './use-task-activity';
 import { ref, onMounted } from 'vue';
+import { useTaskActivityStore } from '@/store/use-task-activity-store';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { translate } from '@/assets/lang';
+
+const { toast } = useToastManager();
 
 const {
   visible,
@@ -157,12 +199,36 @@ const {
   onlineTaskUpdateType,
 } = useTaskActivity();
 
+const { isShowTaskActivityErrorPopper, errorActivityId } =
+  storeDefinitionToRefs(useTaskActivityStore);
+
 const countDownRef = ref<InstanceType<typeof CountDown>>();
 
-onMounted(() => {
-  // 设置倒计时接口
-  console.info('countDownRef', countDownRef.value);
+const { getWatchCore } = useMultiPolyvWatchApp();
+const retryLoading = ref(false);
 
+// 重试获取任务列表
+async function onRetryGetTaskList() {
+  if (!errorActivityId.value) {
+    return;
+  }
+
+  retryLoading.value = true;
+  const watchCore = getWatchCore();
+  try {
+    await watchCore.taskActivity.setActivityId(errorActivityId.value);
+  } catch (error) {
+    toast.error(
+      `${translate('taskActivity.networkError.title')},${translate(
+        'taskActivity.networkError.tips',
+      )}`,
+    );
+  } finally {
+    retryLoading.value = false;
+  }
+}
+
+onMounted(() => {
   getOnlineTaskUpdateType();
 });
 
@@ -362,5 +428,82 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
   font-size: 12px;
   line-height: 16px;
   color: #9aa4b3;
+}
+
+.c-mobile-task-activity-dialog__network-error-container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px;
+}
+
+/* 网络异常状态样式 */
+.c-mobile-task-activity-dialog__network-error {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  min-height: 200px;
+  padding: 20px 12px;
+  padding-top: 84px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.c-mobile-task-activity-dialog__network-error__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 8px;
+  background-image: url(./images/network-error.png);
+  background-size: cover;
+}
+
+.c-mobile-task-activity-dialog__network-error__text {
+  margin-bottom: 8px;
+  font-family: 'PingFang SC', sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(0, 0, 0, 0.4); /* 中性色-浅色/中性色-黑色40%(辅助) */
+  text-align: center;
+}
+
+.c-mobile-task-activity-dialog__network-error__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 28px;
+  font-family: 'PingFang SC', sans-serif;
+  font-size: 14px;
+  line-height: 28px;
+  color: #ffffff; /* 中性色-深色/中性色-白色100%(标题) */
+  cursor: pointer;
+  background: linear-gradient(112deg, #ff5031 0%, #ff9e63 98%);
+  border-radius: 14px;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
+.c-mobile-task-activity-dialog__network-error__loading {
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #fff;
+  border-radius: 12px;
 }
 </style>

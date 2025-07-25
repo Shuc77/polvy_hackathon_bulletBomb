@@ -1,54 +1,36 @@
-<script lang="tsx">
-import { defineComponent, type InjectionKey, type ExtractPropTypes } from 'vue';
+<template>
+  <div
+    role="tablist"
+    class="c-mobile-sidebar"
+  >
+    <slot />
+  </div>
+</template>
+
+<script lang="ts" setup>
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { useChildren } from '@/hooks/core/use-vue/use-children';
+import { SIDEBAR_KEY } from './use-sidebar';
 
-export type SidebarProvide = {
-  getActive: () => number;
-  // eslint-disable-next-line no-unused-vars
-  setActive: (value: number) => void;
-};
-
-export const SIDEBAR_KEY: InjectionKey<SidebarProvide> = Symbol('MobileSidebar');
-
-export const sidebarProps = {
+const props = defineProps({
   modelValue: PropUtils.number.def(0),
+});
+const emit = defineEmits(['change', 'update:modelValue']);
+
+const { linkChildren } = useChildren(SIDEBAR_KEY);
+
+const getActive = () => +props.modelValue;
+
+const setActive = (value: number) => {
+  if (value !== getActive()) {
+    emit('update:modelValue', value);
+    emit('change', value);
+  }
 };
 
-export type SidebarProps = ExtractPropTypes<typeof sidebarProps>;
-
-export default defineComponent({
-  name: 'MobileSidebar',
-
-  props: sidebarProps,
-
-  emits: ['change', 'update:modelValue'],
-
-  setup(props, { emit, slots }) {
-    const { linkChildren } = useChildren(SIDEBAR_KEY);
-
-    const getActive = () => +props.modelValue;
-
-    const setActive = (value: number) => {
-      if (value !== getActive()) {
-        emit('update:modelValue', value);
-        emit('change', value);
-      }
-    };
-
-    linkChildren({
-      getActive,
-      setActive,
-    });
-
-    return () => (
-      <div
-        role="tablist"
-        class="c-mobile-sidebar">
-        {slots.default?.()}
-      </div>
-    );
-  },
+linkChildren({
+  getActive,
+  setActive,
 });
 </script>
 

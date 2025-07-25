@@ -15,6 +15,8 @@ import {
   PlvBarrageModule,
   PlvPlayerModule,
   PlayerResolutionRatio,
+  PlayerDetectionCbParams,
+  PlayerLoadingDetectionType,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -159,6 +161,8 @@ export interface PlayerStoreState {
   fastForwardBackwardEnabled: Ref<boolean>;
   /** 历史播放进度 */
   historyDuration: Ref<number>;
+  /** 播放缓冲监测提示信息 */
+  playerLoadingDetectionInfo: Ref<PlayerDetectionCbParams>;
 }
 
 export enum SwitchTipsStatus {
@@ -174,6 +178,8 @@ export interface PlayerStoreAction {
   syncWarmUpSetting: () => void;
   /** 同步播放器信息 */
   syncPlayerInfo: () => void;
+  /** 同步播放缓冲监测提示信息 */
+  syncLoadingDetectionInfo: (info: PlayerDetectionCbParams) => void;
 }
 
 export interface PlayerStore extends PlayerStoreState, PlayerStoreAction {}
@@ -513,6 +519,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 历史播放进度 */
   const historyDuration = ref(0);
 
+  /** 播放缓冲监测提示信息 */
+  const playerLoadingDetectionInfo = ref<PlayerDetectionCbParams>({
+    type: PlayerLoadingDetectionType.HIDE,
+  });
+
   /** 同步播放器 Store 数据 */
   function syncPlayerStore() {
     const watchCore = watchAppStore.getWatchCore();
@@ -588,7 +599,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       !webViewStore.curWebviewPageIsActive || !watchAppStore.isPageActive
         ? PlayStatus.Pause
         : playerInfo.playStatus;
-    isLowLatency.value = playerInfo.isLowLatency;
+    // isLowLatency.value = playerInfo.isLowLatency;
 
     stopLivePlayEnabled.value = playerInfo.stopLivePlayEnabled;
 
@@ -612,6 +623,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
       supportTimeAxisMark.value = playerInfo.supportTimeAxisMark;
       supportLiveTimeShift.value = playerInfo.supportLiveTimeShift;
     }
+  }
+
+  /** 同步播放缓冲监测提示信息 */
+  function syncLoadingDetectionInfo(info: PlayerDetectionCbParams): void {
+    playerLoadingDetectionInfo.value = info;
   }
 
   return {
@@ -687,6 +703,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     syncPlayerStore,
     syncWarmUpSetting,
     syncPlayerInfo,
+    syncLoadingDetectionInfo,
 
     switchQualityTipStatus,
     switchLineTipStatus,
@@ -697,5 +714,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     streamTrackKey,
     fastForwardBackwardEnabled,
     historyDuration,
+
+    playerLoadingDetectionInfo,
   };
 });

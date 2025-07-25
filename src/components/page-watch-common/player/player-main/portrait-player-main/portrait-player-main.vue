@@ -7,12 +7,11 @@
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
       'c-portrait-player-main--hide': isConnectMicing,
     }"
+    @click="handleClick"
   >
     <div
       class="c-portrait-player-main__container-wrap"
-      :style="{
-        paddingTop: `${portraitDocWrapHeight}px`,
-      }"
+      :style="playerStyle"
     >
       <div class="c-portrait-player-main__container-wrap__content">
         <div
@@ -41,6 +40,7 @@
     <player-play-button
       v-if="normalPlayButtonVisible && !isSmallWindow"
       :mode="noPauseWhenLive ? PlayButtonMode.Text : PlayButtonMode.Default"
+      :style="playerButtonStyle"
       class="c-mobile-player-main__play-btn"
     />
 
@@ -62,6 +62,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useDocStore } from '@/store/use-doc-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
@@ -72,10 +73,16 @@ import { usePortraitPlayerSize } from './use-portrait-player-size';
 import { computed, unref, onBeforeUnmount } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { useChannelStore } from '@/store/use-channel-store';
-import { LiveStatus, StreamType } from '@polyv/live-watch-sdk';
+import { LiveStatus, MainScreenContent, StreamType } from '@polyv/live-watch-sdk';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+
+const { getEmitter } = useGlobalInject();
+
+const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
 const channelStore = useChannelStore();
 
@@ -99,13 +106,50 @@ const {
   isAudioPlayerMode,
 } = storeDefinitionToRefs(usePlayerStore);
 
-const { portraitDocWrapHeight } = storeDefinitionToRefs(usePortraitLayoutStore);
+const { portraitDocWrapHeight, portraitDocSideSwitchVisible } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { normalPlayButtonVisible, noPauseWhenLive, addHistoryTipsListener } = usePlayerControl();
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
-const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
+const { isConnectMicing, masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+
+const { documentSwitch } = storeDefinitionToRefs(useDocStore);
+
+const isDocMainScreen = computed(() => {
+  return (
+    mainScreen.value === MainScreenContent.Doc &&
+    portraitDocSideSwitchVisible.value &&
+    !masterMicItem.value
+  );
+});
+
+const playerStyle = computed<CSSProperties>(() => {
+  if (!isDocMainScreen.value) {
+    return {
+      paddingTop: `${portraitDocWrapHeight.value}px`,
+    };
+  } else {
+    return {};
+  }
+});
+
+const playerButtonStyle = computed<CSSProperties>(() => {
+  if (isDocMainScreen.value && documentSwitch.value) {
+    return {
+      height: `${portraitDocWrapHeight.value}px`,
+    };
+  } else {
+    return {};
+  }
+});
+
+const handleClick = (event: MouseEvent) => {
+  if (isDocMainScreen.value) {
+    getEmitter().emit(appEvents.portrait.ClickPlayerRegion, event);
+  }
+};
 
 usePortraitClickPlayer();
 

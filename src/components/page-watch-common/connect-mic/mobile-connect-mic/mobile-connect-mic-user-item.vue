@@ -44,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import { watch } from 'vue';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
 import ConnectMicInfo from '../common/connect-mic-info.vue';
@@ -67,13 +68,34 @@ const {
   isLocal,
   isMaster,
   showShareIcon,
+  isPause,
 } = useConnectMicItem({
   props,
 });
 
 const { networkInfo } = storeDefinitionToRefs(useConnectMicStore);
+const { setIsConnectMicPaused } = useConnectMicStore();
 
 const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
+
+const checkMediaPaused = () => {
+  return (
+    wrapRef.value?.querySelector('video')?.paused && wrapRef.value?.querySelector('audio')?.paused
+  );
+};
+
+watch(
+  () => isPause.value,
+  (val: boolean) => {
+    // 部分机型（安卓微信）可能会有错误的事件触发，二次检查是否是真的被暂停了
+    if ((val && checkMediaPaused()) || !val) {
+      setIsConnectMicPaused(val);
+    }
+  },
+  {
+    immediate: true,
+  },
+);
 </script>
 
 <style lang="scss">

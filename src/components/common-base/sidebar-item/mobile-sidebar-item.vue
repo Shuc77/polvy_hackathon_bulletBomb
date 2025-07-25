@@ -1,98 +1,89 @@
-<script lang="tsx">
-import { defineComponent, type ExtractPropTypes } from 'vue';
+<script lang="ts" setup>
+import { computed } from 'vue';
 import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-
-import { SIDEBAR_KEY } from '../sidebar/mobile-sidebar.vue';
+import { SIDEBAR_KEY } from '../sidebar/use-sidebar';
 import { useParent } from '@/hooks/core/use-vue/use-parent';
 
-export const sidebarItemProps = {
+const props = defineProps({
   title: PropUtils.string,
   disabled: PropUtils.bool.def(false),
-};
-
-export type SidebarItemProps = ExtractPropTypes<typeof sidebarItemProps>;
-
-export default defineComponent({
-  name: 'MobileSideBarItem',
-
-  props: sidebarItemProps,
-
-  emits: ['click'],
-
-  setup(props, { emit, slots }) {
-    const { parent, index } = useParent(SIDEBAR_KEY);
-
-    if (!parent) {
-      return;
-    }
-
-    const onClick = () => {
-      if (props.disabled) {
-        return;
-      }
-
-      emit('click', index.value);
-      parent.setActive(index.value);
-    };
-
-    const isActiveNextSibling = () => {
-      return index.value - 1 === parent.getActive();
-    };
-
-    const isActivePreviousSibling = () => {
-      return index.value + 1 === parent.getActive();
-    };
-
-    const renderCorner = (className: string) => {
-      return (
-        <svg
-          class={className}
-          viewBox="0 0 30 30">
-          <g
-            stroke="none"
-            stroke-width="1"
-            fill="none"
-            fill-rule="evenodd">
-            <path
-              d="M30,0 C13.4314575,3.04359188e-15 -2.02906125e-15,13.4314575 0,30 L0,30 L0,0 Z"
-              fill="#fff"
-              transform="translate(15.000000, 15.000000) scale(-1, -1) translate(-15.000000, -15.000000) "
-            />
-          </g>
-        </svg>
-      );
-    };
-
-    return () => {
-      const { title, disabled } = props;
-      const selected = index.value === parent.getActive();
-
-      return (
-        <div
-          role="tab"
-          class={{
-            'c-mobile-sidebar-item': true,
-            'c-mobile-sidebar-item--select': selected,
-            'c-mobile-sidebar-item--disabled': disabled,
-          }}
-          tabindex={disabled ? undefined : 0}
-          aria-selected={selected}
-          {...{
-            on: {
-              click: onClick,
-            },
-          }}>
-          {isActiveNextSibling() &&
-            renderCorner('c-mobile-sidebar-item__corner c-mobile-sidebar-item__corner__top')}
-          {isActivePreviousSibling() &&
-            renderCorner('c-mobile-sidebar-item__corner c-mobile-sidebar-item__corner__bottom')}
-          {slots.title ? slots.title() : title}
-        </div>
-      );
-    };
-  },
 });
+
+const emit = defineEmits<{
+  (e: 'click', index: number): void;
+}>();
+
+const { parent, index } = useParent(SIDEBAR_KEY);
+
+if (!parent) {
+  // 组件未被正确嵌套，直接返回
+  // 这里不能 return，setup 必须返回一个对象或 undefined
+}
+
+const selected = computed(() => index.value === parent?.getActive());
+const isActiveNextSibling = computed(() => index.value - 1 === parent?.getActive());
+const isActivePreviousSibling = computed(() => index.value + 1 === parent?.getActive());
+
+function onClick() {
+  if (props.disabled) return;
+  emit('click', index.value);
+  parent?.setActive(index.value);
+}
 </script>
+
+<template>
+  <div
+    role="tab"
+    class="c-mobile-sidebar-item"
+    :class="{
+      'c-mobile-sidebar-item--select': selected,
+      'c-mobile-sidebar-item--disabled': props.disabled,
+    }"
+    :tabindex="props.disabled ? undefined : 0"
+    :aria-selected="selected"
+    @click="onClick"
+  >
+    <template v-if="isActiveNextSibling">
+      <svg
+        class="c-mobile-sidebar-item__corner c-mobile-sidebar-item__corner__top"
+        viewBox="0 0 30 30"
+      >
+        <g
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fill-rule="evenodd"
+        >
+          <path
+            d="M30,0 C13.4314575,3.04359188e-15 -2.02906125e-15,13.4314575 0,30 L0,30 L0,0 Z"
+            fill="#fff"
+            transform="translate(15.000000, 15.000000) scale(-1, -1) translate(-15.000000, -15.000000) "
+          />
+        </g>
+      </svg>
+    </template>
+    <template v-if="isActivePreviousSibling">
+      <svg
+        class="c-mobile-sidebar-item__corner c-mobile-sidebar-item__corner__bottom"
+        viewBox="0 0 30 30"
+      >
+        <g
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fill-rule="evenodd"
+        >
+          <path
+            d="M30,0 C13.4314575,3.04359188e-15 -2.02906125e-15,13.4314575 0,30 L0,30 L0,0 Z"
+            fill="#fff"
+            transform="translate(15.000000, 15.000000) scale(-1, -1) translate(-15.000000, -15.000000) "
+          />
+        </g>
+      </svg>
+    </template>
+    <slot name="title">{{ props.title }}</slot>
+  </div>
+</template>
 
 <style lang="scss">
 $--c-mobile-sidebar-font-size: 16px;

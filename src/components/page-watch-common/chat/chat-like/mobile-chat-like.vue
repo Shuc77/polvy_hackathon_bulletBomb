@@ -16,6 +16,8 @@
       size="36px"
       :appear-mode="upperHasIcon ? 'bottom-right' : 'bottom-center'"
       :count-formatter="shortNumber"
+      :click-button-enabled="likeSingleClickEnabled"
+      :press-hold-enabled="likeHoldEnabled"
       @click-button="onClickLike"
       @press-hold="onClickLike"
     >
@@ -49,7 +51,8 @@ const { upperHasIcon } = useProps(props);
 
 const { shortNumber } = useShortNumber();
 
-const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
+const { realtimeLikes, likeSingleClickEnabled, likeHoldEnabled } =
+  storeDefinitionToRefs(useChatStore);
 
 const { likeRef, likeIcons, isReadonlyLike, onClickLike, onClickLikeWrap } = useChatLike();
 

@@ -3,18 +3,18 @@
   <div class="c-portrait-menu-entrance">
     <div
       class="c-portrait-menu-entrance__content"
-      @click="onClickEntrance"
+      @click="onClickEntrance(true)"
     ></div>
 
-    <portrait-menu-popup />
+    <mobile-more-panel-popup />
   </div>
 </template>
 
 <script setup lang="ts">
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
-import PortraitMenuPopup from './portrait-menu-popup.vue';
+import MobileMorePanelPopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
 
-const { emitEvent: onClickEntrance } = useEventBusEmitter(appEvents.portrait.OpenMenuPopup);
+const { emitEvent: onClickEntrance } = useEventBusEmitter(appEvents.global.OpenMobileMorePopup);
 </script>
 
 <style lang="scss">

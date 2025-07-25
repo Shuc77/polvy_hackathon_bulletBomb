@@ -42,6 +42,10 @@ export interface ChatStoreState {
   isShield: Ref<boolean>;
   /** 点赞功能是否可用 */
   likeFeatureEnabled: ComputedRef<boolean>;
+  /** 单击点赞开关 */
+  likeSingleClickEnabled: ComputedRef<boolean>;
+  /** 长按点赞开关 */
+  likeHoldEnabled: ComputedRef<boolean>;
   /** 实时的点赞数 */
   realtimeLikes: Ref<number>;
   /** "只看特殊角色的消息"的控件是否展示 */
@@ -114,6 +118,16 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   /** 当前用户是否被禁言 */
   const isShield = ref(false);
 
+  /** 单击点赞开关 */
+  const likeSingleClickEnabled = computed(() => {
+    return chatSetting.value.likeSingleClickEnabled;
+  });
+
+  /** 长按点赞开关 */
+  const likeHoldEnabled = computed(() => {
+    return chatSetting.value.likeHoldEnabled;
+  });
+
   /** 点赞功能是否可用 */
   const likeFeatureEnabled = computed(() => {
     return chatSetting.value.likeEnabled && !channelStore.isSeminarChannel;
@@ -161,8 +175,13 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天室输入框占位符 */
   const chatInputPlaceholder = computed<string>(() => {
-    // 聊天室被关闭
-    if (unref(chatRoomIsClosed) || playbackStore.chatMsgReplayEnabled) {
+    // 聊天室被强制关闭
+    if (unref(chatRoomIsClosed)) {
+      return translate('chat.roomClosed2');
+    }
+
+    // 聊天区域因为业务和配置不允许发言
+    if (playbackStore.chatMsgReplayEnabled || !channelMenuStore.chatMenuData.visible) {
       return translate('chat.roomClosed');
     }
 
@@ -245,6 +264,8 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     isShield,
 
     likeFeatureEnabled,
+    likeSingleClickEnabled,
+    likeHoldEnabled,
     realtimeLikes,
 
     onlySpecialMsgWidgetVisible,

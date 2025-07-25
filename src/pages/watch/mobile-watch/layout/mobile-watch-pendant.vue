@@ -16,9 +16,12 @@
     <!-- 更多 -->
     <div
       v-if="morePendantVisible"
-      class="c-mobile-watch-pendant__item c-mobile-watch-pendant__item--more pws-mobile-more-button"
+      class="c-mobile-watch-pendant__item c-mobile-watch-pendant__item--more pws-dark-white-bg-10 pws-light-basic-bg-90 pws-dark-white-color-100 pws-light-black-color-80"
+      :style="morePendantStyle"
       @click="showMorePopup"
-    ></div>
+    >
+      <mobile-icon-more-entrance />
+    </div>
 
     <!-- 云席挂件 -->
     <mobile-seat-table-pendant
@@ -36,11 +39,12 @@ import { useInviteStore } from '@/store/use-invite-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { MobileIconMoreEntrance } from '@/components/component-icons/mobile/map';
 
 import MobileSeatTablePendant from '@/components/page-watch-common/interactive-receive/seat-table/seat-table-pendant/mobile-seat-table-pendant.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 
-import { TAB_NAME_QA, TAB_NAME_SEAT } from '@/assets/constants/tab-name';
+import { TAB_NAME_INVITE_RANK, TAB_NAME_QA, TAB_NAME_SEAT } from '@/assets/constants/tab-name';
 import { useGlobalInject } from '@/app/use-global-inject';
 
 const { mobileWatchInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
@@ -51,6 +55,17 @@ const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const morePendantVisible = computed(() => {
   return !unref(chatMenuData).visible;
+});
+
+const morePendantStyle = computed(() => {
+  const styles: Record<string, string> = {};
+
+  // 由于邀请榜菜单颜色过浅，图标必须使用深色
+  if (mobileMenuCurrentName.value === TAB_NAME_INVITE_RANK) {
+    styles.color = 'rgba(0, 0, 0, 0.8) !important';
+  }
+
+  return styles;
 });
 
 const { getEmitter } = useGlobalInject();
@@ -95,11 +110,9 @@ function showMorePopup() {
   height: 36px;
   border-radius: 50%;
 
-  &::after {
-    width: 20px;
-    height: 20px;
-    content: '';
-    background-size: 100% 100%;
+  span {
+    display: flex;
+    font-size: 36px;
   }
 }
 </style>

@@ -7,6 +7,7 @@ import { useThemeStore } from '@/store/use-theme-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { hexToRGB } from '@/assets/utils/color';
 
 /**
  * 页面皮肤 hook
@@ -250,11 +251,15 @@ export const usePageSkin = () => {
   watch(
     () => themeStore.pageSkinConfig,
     () => {
+      if (!themeStore.pageSkin) return;
+
       const rootElement = getAppRootElement();
-      const { specialColor } = themeStore.pageSkinConfig;
-      if (specialColor) {
-        rootElement.style.setProperty('--plv-watch-skin-special-color', specialColor);
-      }
+
+      let { specialColor } = themeStore.pageSkinConfig;
+      specialColor = specialColor || '#3F76FC';
+
+      const rgbColor = hexToRGB(specialColor);
+      rootElement.style.setProperty('--plv-watch-skin-special-rgb', rgbColor.join(','));
     },
     {
       immediate: true,

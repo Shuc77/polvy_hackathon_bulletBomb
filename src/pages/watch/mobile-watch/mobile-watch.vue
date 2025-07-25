@@ -49,4 +49,20 @@ const { layoutLoaded } = useLayoutLoad('mobile-watch');
 .c-mobile-watch--no-flex {
   display: block;
 }
+
+// 增强系统全屏的样式， 仅移动端生效
+.g-page-player-system-fullscreen {
+  .c-mobile-watch {
+    .c-mobile-watch-layout__player {
+      top: 0 !important;
+      z-index: 401;
+      height: 100% !important;
+    }
+
+    .c-mobile-watch-layout__player__content {
+      height: 100% !important;
+      padding-bottom: 0 !important;
+    }
+  }
+}
 </style>

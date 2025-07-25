@@ -41,11 +41,10 @@
       v-show="customVisible"
       class="c-mobile-donate-panel-cash__custom"
     >
-      <mobile-form-wrap>
-        <mobile-form-item>
-          <mobile-form-input
+      <form-wrap :theme="FormTheme.FollowSkin">
+        <form-item>
+          <form-input
             v-model="cashAmount"
-            class="c-mobile-donate-panel-cash__custom__input pws-mobile-donate-custom-cash-input"
             :placeholder="$lang('donate.placeholder')"
             :input-title="$lang('donate.custom2')"
             :size="FormSize.Medium"
@@ -58,9 +57,9 @@
                 {{ $lang('donate.random') }}
               </div>
             </template>
-          </mobile-form-input>
-        </mobile-form-item>
-      </mobile-form-wrap>
+          </form-input>
+        </form-item>
+      </form-wrap>
 
       <div class="c-mobile-donate-panel-cash__custom__button">
         <normal-button
@@ -79,13 +78,13 @@
 import { MobileIconArrowLeft } from '@/components/component-icons/mobile/map';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { useDonateCash } from '../hooks/use-donate-cash';
-import MobileFormWrap from '@/components/common-base/form/form-wrap.vue';
-import MobileFormItem from '@/components/common-base/form/form-item.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormItem from '@/components/common-base/form/form-item.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ref } from 'vue';
 import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
-import { FormSize } from '@/components/common-base/form/types/enums';
+import { FormSize, FormTheme } from '@/components/common-base/form/types/enums';
 
 import { useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

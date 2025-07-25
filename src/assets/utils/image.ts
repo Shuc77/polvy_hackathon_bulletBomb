@@ -3,19 +3,6 @@
  */
 
 /**
- * 判断浏览器是否支持webp格式
- */
-export const isSupportWebp = (() => {
-  try {
-    return (
-      document.createElement('canvas').toDataURL('image/webp').indexOf('data:image/webp') === 0
-    );
-  } catch (err) {
-    return false;
-  }
-})();
-
-/**
  * 获取图片地址的尺寸
  * @param url 图片地址
  * @returns 尺寸与图片实例

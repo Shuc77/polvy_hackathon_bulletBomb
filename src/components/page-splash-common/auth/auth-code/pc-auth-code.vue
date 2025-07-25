@@ -25,6 +25,7 @@
       <form-wrap
         :form-data="formData"
         :form-rules="formRules"
+        :theme="FormTheme.Gray"
         :content-width="320"
         :submit-action="submitAuth"
       >
@@ -32,7 +33,7 @@
           ref="formItemRef"
           form-field="code"
         >
-          <pc-form-input
+          <form-input
             v-model.trim="formData.code"
             :placeholder="$lang('auth.code.placeholder')"
           />
@@ -43,7 +44,7 @@
           ref="imageVerifyFormItemRef"
           form-field="captcha"
         >
-          <pc-form-image-verify-input
+          <form-image-verify-input
             v-model="formData.captcha"
             ref="imageVerifyRef"
             :image-id.sync="formData.imageId"
@@ -78,16 +79,17 @@
 </template>
 
 <script setup lang="ts">
-import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
-import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
-import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
 import PcFormProtocol from '@/components/common-base/form/form-protocol/pc-form-protocol.vue';
-import PcFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/pc-form-image-verify-input.vue';
+import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
+import { ButtonSize, ButtonType } from '@/components/common-base/normal-button/types';
 
+import { FormTheme } from '@/components/common-base/form/types/enums';
 import { useAuthCode } from './use-auth-code';
 
 const {

@@ -7,7 +7,7 @@
     <!-- 控制栏 -->
     <div class="c-mobile-multi-meeting-horizontal__control">
       <span class="c-mobile-multi-meeting-horizontal__control__title">
-        {{ $lang('multiMeeting.other') }}
+        {{ multiMeetingMenuData.label }}
       </span>
       <span
         class="c-mobile-multi-meeting-horizontal__control__count pws-mobile-multi-meeting-count"
@@ -87,8 +87,11 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { nextTick, ref, watch } from 'vue';
 import { useMultiMeeting } from '../hooks/use-multi-meeting';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const { resizeOSSImg } = useResizeOssImage();
+
+const { multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { multiMeetingList, multiMeetingTotal, currentMultiMeetingSeat } =
   storeDefinitionToRefs(useMultiMeetingStore);

@@ -20,9 +20,9 @@
         bubbleBgClass,
         {
           'c-portrait-msg-container__bubble--hide-bubble-style': hideBubbleStyle && msgRelaxMode,
+          'pws-special-bg-color-30': isSpecialUser,
         },
       ]"
-      :style="bubbleBgStyle"
     >
       <slot name="msg-header"></slot>
 
@@ -57,7 +57,6 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
-import tinycolor from 'tinycolor2';
 import { ChatMessageLayout } from '@polyv/live-watch-sdk';
 import { useChatStore } from '@/store/use-chat-store';
 
@@ -94,7 +93,7 @@ const { isSpecialUser, hideUserAvatar } = useChatMsgUserInject();
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { pageSkinColorMode, pageSkinConfig } = storeDefinitionToRefs(useThemeStore);
+const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
 
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
@@ -133,18 +132,6 @@ function onContextMenu(event: MouseEvent) {
   emit('bubble-contextmenu', event);
 }
 
-const bubbleBgStyle = computed(() => {
-  const styles: Record<string, string> = {};
-
-  if (isSpecialUser.value) {
-    const colorInstance = tinycolor(pageSkinConfig.value.specialColor);
-    colorInstance.setAlpha(0.3);
-    styles.background = colorInstance.toRgbString();
-  }
-
-  return styles;
-});
-
 const bubbleBgClass = computed(() => {
   if (isSpecialUser.value) {
     return '';
@@ -154,10 +141,9 @@ const bubbleBgClass = computed(() => {
     case SkinColorMode.Dark:
       return isPortraitWatchLayout.value ? 'pws-dark-basic-bg-20' : 'pws-dark-basic-bg-10';
     case SkinColorMode.Light:
+    default:
       return 'pws-light-basic-bg-20';
   }
-
-  return '';
 });
 </script>
 

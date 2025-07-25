@@ -6,6 +6,7 @@
     :style="{
       bottom: `${bottom}px`,
       height: `${subtitleHeight}px`,
+      fontSize: `${fontsize}`,
     }"
   >
     <div
@@ -79,7 +80,6 @@ onBeforeUnmount(() => {
   z-index: 8;
   width: 80%;
   overflow: hidden;
-  font-size: v-bind(fontsize);
   line-height: 1.5;
   color: #fff;
   text-align: left;

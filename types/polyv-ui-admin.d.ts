@@ -138,3 +138,12 @@ declare module '@polyv/polyv-ui/lib-admin/text-ellipsis' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+/**
+ * Markdown 渲染
+ */
+declare module '@polyv/polyv-ui/lib-admin/markdown-render' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

@@ -24,28 +24,33 @@ export const useMainScreen = () => {
   const layoutStore = useLayoutStore();
 
   /**
-   * 设置 PC 端默认位置
+   * 重置移动端主屏幕
    */
-  function setPcDefaultMainScreen() {
+  function __resetMobileMainScreen(opts: { ignoreFollowTeacher: boolean }) {
     const mainScreenLayoutMode = layoutStore.mainScreenLayoutMode;
 
-    if (!docStore.canRenderDoc) {
+    if (mainScreenLayoutMode === MainScreenLayoutMode.FollowTeacher && opts.ignoreFollowTeacher) {
       return;
     }
 
-    const watchCore = getWatchCore();
-    const playMode = watchCore.channel.getChannelPlayMode();
-    // 如果需要暖场，需要将主屏设置为播放器
-    if (playMode === ChannelPlayMode.Warm && channelStore.liveStatus !== LiveStatus.Live) {
-      layoutStore.$patch({
-        mainScreen: MainScreenContent.Player,
-      });
+    layoutStore.$patch({
+      mainScreen: MainScreenContent.Player,
+    });
+  }
+
+  /**
+   * 重置 PC 端主屏幕
+   */
+  function __resetPcMainScreen(opts: { ignoreFollowTeacher: boolean }) {
+    const mainScreenLayoutMode = layoutStore.mainScreenLayoutMode;
+
+    if (mainScreenLayoutMode === MainScreenLayoutMode.FollowTeacher && opts.ignoreFollowTeacher) {
       return;
     }
 
     switch (mainScreenLayoutMode) {
-      case MainScreenLayoutMode.FollowTeacher:
       case MainScreenLayoutMode.Ppt:
+      case MainScreenLayoutMode.FollowTeacher:
         layoutStore.$patch({
           mainScreen: MainScreenContent.Doc,
         });
@@ -60,10 +65,57 @@ export const useMainScreen = () => {
     }
   }
 
-  function initMainScreen() {
-    if (!isMobile) {
-      setPcDefaultMainScreen();
+  /**
+   * 重置主屏幕
+   * @param opts - 选项
+   * @param opts.ignoreFollowTeacher - 是否忽略跟随讲师模式
+   */
+  function resetMainScreen({ ignoreFollowTeacher = false } = {}) {
+    if (!docStore.canRenderDoc) {
+      layoutStore.$patch({
+        mainScreen: MainScreenContent.Player,
+      });
+      return;
     }
+
+    if (isMobile) {
+      __resetMobileMainScreen({ ignoreFollowTeacher });
+      return;
+    }
+
+    __resetPcMainScreen({ ignoreFollowTeacher });
+  }
+
+  /**
+   * 判断是否需要强制将主屏设置为播放器
+   */
+  function needForcePlayerMainScreen() {
+    const watchCore = getWatchCore();
+    const playMode = watchCore.channel.getChannelPlayMode();
+    // 如果需要暖场，需要将主屏设置为播放器
+    if (playMode === ChannelPlayMode.Warm && channelStore.liveStatus !== LiveStatus.Live) {
+      return true;
+    }
+
+    return false;
+  }
+
+  function initMainScreen() {
+    if (!docStore.canRenderDoc) {
+      layoutStore.$patch({
+        mainScreen: MainScreenContent.Player,
+      });
+      return;
+    }
+
+    if (needForcePlayerMainScreen()) {
+      layoutStore.$patch({
+        mainScreen: MainScreenContent.Player,
+      });
+      return;
+    }
+
+    resetMainScreen();
   }
 
   /** ------ 事件响应 ------ */
@@ -71,8 +123,16 @@ export const useMainScreen = () => {
   watch(
     () => channelStore.liveStatus,
     (newVal, oldVal) => {
-      if (oldVal && newVal === LiveStatus.Live) {
-        initMainScreen();
+      // 从其他状态 => 直播结束
+      if (oldVal && newVal === LiveStatus.End) {
+        resetMainScreen();
+        return;
+      }
+
+      // 从非暂停状态 => 直播开始
+      if (oldVal && oldVal !== LiveStatus.Stop && newVal === LiveStatus.Live) {
+        // 如果跟随讲师，则由 socket 处理，不需要跟随接口配置
+        resetMainScreen({ ignoreFollowTeacher: true });
       }
     },
   );
@@ -81,15 +141,14 @@ export const useMainScreen = () => {
     const mainScreenLayoutMode = layoutStore.mainScreenLayoutMode;
 
     if (!docStore.canRenderDoc) {
+      layoutStore.$patch({
+        mainScreen: MainScreenContent.Player,
+      });
       return;
     }
 
     // 针对移动端，如果后台设置非跟随讲师，则不处理事件
-    if (
-      isMobile &&
-      mainScreenLayoutMode !== MainScreenLayoutMode.FollowTeacher &&
-      channelStore.liveStatus === LiveStatus.Live
-    ) {
+    if (isMobile && mainScreenLayoutMode !== MainScreenLayoutMode.FollowTeacher) {
       return;
     }
 

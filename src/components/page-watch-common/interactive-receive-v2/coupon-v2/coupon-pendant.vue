@@ -8,7 +8,6 @@
     <iar-normal-coupon-pendant
       v-if="targetInited"
       :coupon-target="getIarTarget()"
-      :visible="couponPendantVisible"
     />
   </div>
 </template>
@@ -24,8 +23,7 @@ const { loadIarUI } = useIarUILoader('iar-coupon-ui');
 
 const { watchUserSystemEnabled } = storeDefinitionToRefs(useIdentityStore);
 
-const { couponPendantVisible, showCouponCommonList, targetInited, getIarTarget } =
-  useCouponCommonPendantV2();
+const { showCouponCommonList, targetInited, getIarTarget } = useCouponCommonPendantV2();
 
 const IarNormalCouponPendant = defineAsyncComponent(() => loadIarUI('normal-coupon-pendant'));
 </script>

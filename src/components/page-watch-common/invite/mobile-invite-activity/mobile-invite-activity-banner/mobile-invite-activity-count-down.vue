@@ -10,7 +10,7 @@
       <template v-for="(item, index) in timeContents">
         <div
           :key="`count-${index}`"
-          class="c-mobile-invite-activity-count-down__text__count"
+          class="c-mobile-invite-activity-count-down__text__count plv-font-din-pro-medium"
         >
           {{ item.text }}
         </div>

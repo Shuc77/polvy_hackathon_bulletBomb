@@ -89,7 +89,9 @@ export const useDoc = (
   /** 暂无直播状态是否显示 */
   const emptyPlaceholderVisible = computed<boolean>(() => {
     if (
-      [LiveStatus.UnStart, LiveStatus.End, LiveStatus.Waiting].includes(channelStore.liveStatus)
+      [LiveStatus.UnStart, LiveStatus.End, LiveStatus.Waiting, LiveStatus.Stop].includes(
+        channelStore.liveStatus,
+      )
     ) {
       return true;
     }

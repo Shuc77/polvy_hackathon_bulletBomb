@@ -9,7 +9,7 @@
       @touchend="onTouchEnd"
     >
       <template v-if="renderSlot">
-        <slot></slot>
+        <slot :weixin-btn-id="generateHackWeixinBtnId(props.name, true)"></slot>
       </template>
     </div>
   </transition>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { tabPaneProps, useTabPane } from '../hooks/use-tab-pane';
+import { generateHackWeixinBtnId } from '../hooks/use-tabs';
 
 const props = defineProps(tabPaneProps());
 

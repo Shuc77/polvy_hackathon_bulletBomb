@@ -16,85 +16,105 @@
           :placeholder="$lang('subtitle.change')"
         />
       </div>
-      <div
-        v-if="subtitleDisplayNumberLimitEnabled && subtitleDisplayNumber > 0"
-        class="c-pc-subtitle__limit"
-      >
-        {{ $lang('subtitle.limit', { limit: String(subtitleDisplayNumber) }) }}
-      </div>
-      <div class="c-pc-subtitle__content pws-pc-subtitle__content-skin c-subtitle__scroll">
-        <div
-          v-for="(item, index) of subtitleList"
-          :key="index"
-          class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
-        >
-          <div
-            v-if="
-              subtitleTranslateSelected.includes('all') ||
-              subtitleTranslateSelected.includes('source')
-            "
-          >
-            {{ item[liveSubtitleSourceLanguage] }}
-          </div>
-          <div
-            v-if="
-              subtitleTranslateSelected.includes('all') && item[liveSubtitleSourceTranslateLanguage]
-            "
-            class="c-pc-subtitle__content-item-line pws-pc-subtitle__content-item-line"
-          ></div>
-          <div
-            v-if="
-              (subtitleTranslateSelected.includes('all') ||
-                subtitleTranslateSelected.includes('translate')) &&
-              item[liveSubtitleSourceTranslateLanguage]
-            "
-            class="c-pc-subtitle__content-item-translate"
-            :class="{
-              'c-pc-subtitle__content-item-translate--force':
-                subtitleTranslateSelected.includes('translate'),
-            }"
-          >
-            {{ item[liveSubtitleSourceTranslateLanguage] }}
-          </div>
-        </div>
-        <div
-          v-show="
-            currentSubtitle &&
-            (subtitleTranslateSelected.includes('all') ||
-              subtitleTranslateSelected.includes('source'))
-          "
-          class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
-        >
-          <div>{{ currentSubtitle }}</div>
+      <div class="pws-pc-subtitle__top-skin c-pc-subtitle-hover-control">
+        <div class="c-pc-subtitle-hover-control__top">
+          <pc-icon-hover-control
+            class="pws-primary-text-color"
+            size="24"
+            @click="onHoverControl"
+          />
         </div>
       </div>
-      <div class="c-pc-subtitle__footer-tips pws-pc-subtitle__footer-tips">
-        <span>{{ $lang('subtitle.footer.tips') }}</span>
-      </div>
-      <div
-        v-show="hasNewMessage"
-        class="c-pc-subtitle__new pws-subtitle__new"
-        @click="scrollToBottom(false)"
-      >
-        <span>{{ $lang('subtitle.new') }}</span>
-        <pc-icon-arrow-down />
-      </div>
+
+      <custom-teleport :to="remderParent">
+        <div>
+          <div
+            v-if="subtitleDisplayNumberLimitEnabled && subtitleDisplayNumber > 0"
+            class="c-pc-subtitle__limit"
+          >
+            {{ $lang('subtitle.limit', { limit: String(subtitleDisplayNumber) }) }}
+          </div>
+          <div class="c-pc-subtitle__content pws-pc-subtitle__content-skin c-subtitle__scroll">
+            <div
+              v-for="(item, index) of subtitleList"
+              :key="index"
+              class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
+            >
+              <div
+                v-if="
+                  subtitleTranslateSelected.includes('all') ||
+                  subtitleTranslateSelected.includes('source')
+                "
+              >
+                {{ item[liveSubtitleSourceLanguage] }}
+              </div>
+              <div
+                v-if="
+                  subtitleTranslateSelected.includes('all') &&
+                  item[liveSubtitleSourceTranslateLanguage]
+                "
+                class="c-pc-subtitle__content-item-line pws-pc-subtitle__content-item-line"
+              ></div>
+              <div
+                v-if="
+                  (subtitleTranslateSelected.includes('all') ||
+                    subtitleTranslateSelected.includes('translate')) &&
+                  item[liveSubtitleSourceTranslateLanguage]
+                "
+                class="c-pc-subtitle__content-item-translate"
+                :class="{
+                  'c-pc-subtitle__content-item-translate--force':
+                    subtitleTranslateSelected.includes('translate'),
+                }"
+              >
+                {{ item[liveSubtitleSourceTranslateLanguage] }}
+              </div>
+            </div>
+            <div
+              v-show="
+                currentSubtitle &&
+                (subtitleTranslateSelected.includes('all') ||
+                  subtitleTranslateSelected.includes('source'))
+              "
+              class="c-pc-subtitle__content-item pws-pc-subtitle__content-item"
+            >
+              <div>{{ currentSubtitle }}</div>
+            </div>
+          </div>
+          <div class="c-pc-subtitle__footer-tips pws-pc-subtitle__footer-tips">
+            <span>{{ $lang('subtitle.footer.tips') }}</span>
+          </div>
+          <div
+            v-show="hasNewMessage"
+            class="c-pc-subtitle__new pws-subtitle__new"
+            @click="scrollToBottom(false)"
+          >
+            <span>{{ $lang('subtitle.new') }}</span>
+            <pc-icon-arrow-down />
+          </div>
+        </div>
+      </custom-teleport>
     </template>
     <template v-else>
       <div class="c-pc-subtitle__empty pws-subtitle__empty">{{ $lang('subtitle.empty') }}</div>
     </template>
+    <pc-subtitle-detached-window :show-detached-window.sync="showDetachedWindow" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { PlvCascaderSelect } from '@/plugins/polyv-ui/admin-import';
+import PcSubtitleDetachedWindow from './pc-subtitle-detached-window.vue';
+import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import { ref } from 'vue';
-import { PcIconArrowDown } from '@/components/component-icons/pc/map';
+import { PcIconArrowDown, PcIconHoverControl } from '@/components/component-icons/pc/map';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 
 import { useSubtitle } from '@/components/page-watch-common/subtitle/use-subtitle';
+
+import { useSubtitleDetached } from './use-subtitle-detached';
 
 const subtitleScroll = ref<HTMLElement>();
 
@@ -118,6 +138,12 @@ const {
   subtitleList,
   currentSubtitle,
 } = useSubtitle(subtitleScroll);
+
+const { remderParent, showDetachedWindow } = useSubtitleDetached();
+
+const onHoverControl = () => {
+  showDetachedWindow.value = !showDetachedWindow.value;
+};
 </script>
 
 <style lang="scss">
@@ -140,6 +166,13 @@ const {
   position: sticky;
   top: 0;
   z-index: 1;
+}
+.c-pc-subtitle-hover-control {
+  position: sticky;
+  top: 40px;
+  z-index: 1;
+  text-align: right;
+  cursor: pointer;
 }
 
 .c-pc-subtitle__new {

@@ -3,6 +3,7 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { ChapterItem } from '@polyv/live-watch-sdk';
 import { ref, watch, watchEffect } from 'vue';
+import { CSSProperties } from 'vue/types/jsx';
 import { usePlayerAction } from '../../player/hooks/use-player-action';
 
 export const useChapter = () => {
@@ -61,7 +62,21 @@ export const useChapter = () => {
     }
   });
 
+  function getChapterCoverStyle(chapterItem: ChapterItem): CSSProperties {
+    if (chapterItem.image) {
+      return {
+        backgroundImage: `url(${chapterItem.image})`,
+      };
+    } else {
+      return {
+        backgroundColor: 'rgba(255,255,255,0.4)',
+      };
+    }
+  }
+
   return {
+    getChapterCoverStyle,
+
     chapterList,
     currentIndex,
     onClickChapter,

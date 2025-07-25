@@ -31,7 +31,7 @@
             :key="`name-${index}`"
             :form-field="generateFormField(index)"
           >
-            <mobile-form-input
+            <form-input
               v-model.trim="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
@@ -45,7 +45,7 @@
             :key="`text-${index}`"
             :form-field="generateFormField(index)"
           >
-            <mobile-form-input
+            <form-input
               v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
@@ -59,7 +59,7 @@
             :key="`number-${index}`"
             :form-field="generateFormField(index)"
           >
-            <mobile-form-number-input
+            <form-number-input
               v-model="formData[generateFormField(index)]"
               :placeholder="item.placeholder"
             />
@@ -102,7 +102,7 @@
             v-if="imageVerifyInputEnabled"
             :key="`image-code-${index}`"
           >
-            <mobile-form-image-verify-input
+            <form-image-verify-input
               ref="imageVerifyInputRef"
               v-model="formData.imageCaptcha"
               :image-id.sync="formData.imageId"
@@ -152,19 +152,19 @@
 </template>
 
 <script setup lang="ts">
-import { SmsScene } from '@polyv/live-watch-sdk';
-import { ButtonSize } from '@/components/common-base/normal-button/types';
-import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
-import MobileFormNumberInput from '@/components/common-base/form/form-number-input/mobile-form-number-input.vue';
-import MobileFormSelect from '@/components/common-base/form/form-select/mobile-form-select.vue';
+import FormNumberInput from '@/components/common-base/form/form-number-input/form-number-input.vue';
 import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
-import MobileFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/mobile-form-image-verify-input.vue';
-import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
 import MobileFormProtocol from '@/components/common-base/form/form-protocol/mobile-form-protocol.vue';
-import { useAuthInfoForm, authInfoFormEmits } from './hooks/use-auth-info-form';
+import MobileFormSelect from '@/components/common-base/form/form-select/mobile-form-select.vue';
+import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
+import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
+import FormWrap from '@/components/common-base/form/form-wrap.vue';
+import { ButtonSize } from '@/components/common-base/normal-button/types';
+import { SmsScene } from '@polyv/live-watch-sdk';
+import { authInfoFormEmits, useAuthInfoForm } from './hooks/use-auth-info-form';
 
 const emit = defineEmits(authInfoFormEmits());
 

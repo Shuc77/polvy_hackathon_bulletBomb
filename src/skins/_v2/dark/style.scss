@@ -140,6 +140,33 @@
   }
 
   .pws-special-bg-color {
-    background-color: var(--plv-watch-skin-special-color);
+    background-color: rgba(var(--plv-watch-skin-special-rgb), 1);
+  }
+
+  .pws-special-bg-color-30 {
+    background-color: rgba(var(--plv-watch-skin-special-rgb), 0.3);
+  }
+
+  .pws-special-text-color {
+    color: rgba(var(--plv-watch-skin-special-rgb), 1);
+  }
+
+  // -------- AI 助手答疑 -------- //
+
+  .pws-ai-msg-bubble-color {
+    color: #1d2129;
+    background-color: #f5f5f5;
+  }
+
+  .pws-ai-assistant-msg-dot {
+    background-color: #1d2129;
+  }
+
+  .pws-markdown-render {
+    padding: 0;
+
+    a {
+      color: rgba(var(--plv-watch-skin-special-rgb), 1);
+    }
   }
 }

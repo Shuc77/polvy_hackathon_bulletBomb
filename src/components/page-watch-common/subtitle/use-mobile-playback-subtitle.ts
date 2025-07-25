@@ -4,7 +4,7 @@ import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { onBeforeMount, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
 import { translate } from '@/assets/lang';
 import { useLangStore } from '@/store/use-lang-store';
-import { TreeSelectDataValue } from '@/components/common-base/tree-select/mobile-tree-select.vue';
+import { TreeSelectDataValue } from '@/components/common-base/tree-select/tree-select-types';
 import { isString } from '@/assets/utils/string';
 import { useGlobalInject } from '@/app/use-global-inject';
 

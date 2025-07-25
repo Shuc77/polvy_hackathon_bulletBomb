@@ -344,7 +344,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
           multiMeetingStore.multiMeetingListLayout === MultiMeetingListLayout.Portrait,
         label: filterMenuTabLabel(
           ChannelMenuType.MultiMeeting,
-          translate('menu.tabName.multiMeeting'),
+          multiMeetingStore.multiMeetingEntranceName || translate('menu.tabName.multiMeeting'),
         ),
       };
     });

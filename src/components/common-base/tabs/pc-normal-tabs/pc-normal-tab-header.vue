@@ -11,6 +11,11 @@
       }"
       @click="onClickHeaderItem(paneData)"
     >
+      <div
+        v-if="isWeixin && paneData.hackWeixinBtn"
+        :id="generateHackWeixinBtnId(paneData.name)"
+        class="c-pc-normal-tab-header__hack-weixin-btn"
+      ></div>
       {{ paneData.label }}
     </div>
 
@@ -26,7 +31,9 @@
 </template>
 
 <script setup lang="ts">
+import { isWeixin } from '@/assets/utils/browser';
 import { useTabHeader } from '../hooks/use-tab-header';
+import { generateHackWeixinBtnId } from '../hooks/use-tabs';
 
 const { tabPaneData, currentTabName, currentLineRef, onClickHeaderItem, itemRef, currentLineLeft } =
   useTabHeader();
@@ -74,5 +81,15 @@ const { tabPaneData, currentTabName, currentLineRef, onClickHeaderItem, itemRef,
   border-radius: 4px;
   transition-duration: 0.3s;
   transition-property: left;
+}
+
+.c-pc-normal-tab-header__hack-weixin-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 </style>

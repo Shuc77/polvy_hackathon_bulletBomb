@@ -9,6 +9,11 @@ const uaInfo = getCurrentUAInfo();
 /** 是否微信（非企业微信） */
 export const isWeixin = uaInfo.client.isWx;
 
+/**
+ * 微信版本
+ */
+export const weixinVersion = uaInfo.client.version;
+
 /** 是否企业微信 */
 export const isWorkWeixin = uaInfo.client.isWxWork;
 

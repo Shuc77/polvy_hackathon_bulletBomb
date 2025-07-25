@@ -22,14 +22,14 @@ const { toggleDocumentSwitch } = docStore;
 <style lang="scss">
 .c-portrait-doc-switch {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 20px;
 }
 
 .c-portrait-doc-switch--open {
-  background-image: url(../imgs/icon-doc-show.png);
+  background-image: url(../imgs/icon-sub-invisible.png);
 }
 .c-portrait-doc-switch--close {
-  background-image: url(../imgs/icon-doc-hide.png);
+  background-image: url(../imgs/icon-sub-visible.png);
 }
 </style>

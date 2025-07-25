@@ -97,7 +97,7 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
   }
 
   function onCloseChatRoom() {
-    sendSystemMsg(translate('chat.roomClosed'));
+    sendSystemMsg(translate('chat.roomClosed2'));
   }
 
   onMounted(() => {

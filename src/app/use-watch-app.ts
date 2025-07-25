@@ -12,7 +12,7 @@ import { useSyncStoreForWatchApp } from '@/hooks/core/use-sync-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 import { translate } from '@/assets/lang';
-import { isMobile, isMockPc } from '@/assets/utils/browser';
+import { isIframe, isMobile, isMockPc } from '@/assets/utils/browser';
 import { loadForceAutoplay } from '@/assets/utils/video/force-autoplay';
 
 import { PageErrorType } from '@/app/layout/direct-business-page/type';
@@ -26,7 +26,11 @@ import { useGlobalInject } from './use-global-inject';
 import { useExternalContainerEffect } from './_hooks/use-external-container-effect';
 import { extractChannelAndSessionId, useQueryParams } from '@/hooks/core/use-query-params';
 import { DEFAULT_APP_UNIQUE_ID } from '@/assets/constants/defaults';
-import { isBuildForFeedMainMode, isInjectByExternalApp } from '@/assets/utils/utils';
+import {
+  isBuildForFeedMainMode,
+  isInjectByExternalApp,
+  isStaticBuildMode,
+} from '@/assets/utils/utils';
 import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/auth/hooks/use-auth-invite-watch-intercept';
 
 /**
@@ -126,7 +130,8 @@ export function createWatchApp() {
 
   /** 获取地址上的频道号 */
   function getChannelIdByUrl(): string | undefined {
-    if (isBuildForFeedMainMode() && paramGetter().channelId()) {
+    // @PLV-WARN 这两种模式下，只从 query 参数中获取
+    if (isBuildForFeedMainMode() || isStaticBuildMode()) {
       return paramGetter().channelId();
     }
 
@@ -140,7 +145,8 @@ export function createWatchApp() {
   }
 
   function getTargetSessionIdByUrl(): string | undefined {
-    if (isBuildForFeedMainMode() && paramGetter().targetSessionId()) {
+    // @PLV-WARN 这两种模式下，只从 query 参数中获取
+    if (isBuildForFeedMainMode() || isStaticBuildMode()) {
       return paramGetter().targetSessionId();
     }
 
@@ -230,9 +236,6 @@ export function createWatchApp() {
     // 安装观看页 SDK 核心
     await watchAppStore.resetUpWatchCore();
 
-    // 配置微信 SDK
-    toConfigWeixinFeature(watchCore);
-
     // 同步相关 store 数据
     syncStoreBeforeWatchAppInited();
 
@@ -278,6 +281,12 @@ export function createWatchApp() {
     const weixinResult = await useWeixinSetup();
     if (weixinResult) {
       return;
+    }
+
+    // 不在 iframe 场景下，需要配置微信 SDK
+    // 这里一定要同步，不然微信功能会有异常
+    if (!isIframe) {
+      await toConfigWeixinFeature(watchCore);
     }
 
     // 初始化完毕，设置渲染标识位

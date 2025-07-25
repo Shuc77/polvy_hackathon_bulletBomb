@@ -181,7 +181,7 @@ import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue'
 import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/pc-ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PcMemberDesc from '@/components/page-watch-common/member-list/pc-member-desc.vue';
-import PcPlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/pc-playback-outline.vue';
+import PcPlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/playback-outline.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

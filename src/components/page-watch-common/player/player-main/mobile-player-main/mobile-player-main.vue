@@ -145,7 +145,7 @@ const lowLatencyPlayerIsPageFullscreen = computed(() => {
   );
 });
 
-const { getStreamStopText } = usePlayerStreamStopText();
+const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText();
 
 const {
   playerSdkLoadError,
@@ -179,6 +179,7 @@ const { playerContainer } = usePlayerMain({
         streamStop: require('../../imgs/player-no-live.png'),
         audioMode: require('../../imgs/player-audio-mode.png'),
       },
+      directPlayCutOff: isEnableDirectPlayCutOff.value,
     };
   },
 });

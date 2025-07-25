@@ -17,7 +17,7 @@
         :submit-action="submitSetNick"
       >
         <form-item form-field="nickname">
-          <pc-form-input
+          <form-input
             v-model="formData.nickname"
             :placeholder="$lang('chat.setNick.placeholder')"
             show-word-limit
@@ -47,7 +47,7 @@ import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { useChatSetNick } from './use-chat-set-nick';
 import { PC_LAYOUT_ASIDE_WRAP } from '@/assets/constants/selector';

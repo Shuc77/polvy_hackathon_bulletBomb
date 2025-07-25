@@ -86,6 +86,12 @@ export class PolyvWatchAppClass {
     };
   }
 
+  public resetQueryParams(params: UniversalParams<string | string[] | undefined>) {
+    this.__storeMap.queryParams = {
+      ...params,
+    };
+  }
+
   public getEmitter() {
     return this.__storeMap.emitter;
   }

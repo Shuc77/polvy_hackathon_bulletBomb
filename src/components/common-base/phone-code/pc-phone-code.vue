@@ -2,7 +2,7 @@
 <template>
   <div class="c-pc-phone-code">
     <div class="c-pc-phone-code__search">
-      <pc-form-input
+      <form-input
         v-model="searchKey"
         :placeholder="$lang('form.placeholder.enterCountry')"
         :size="FormSize.Medium"
@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { FormSize } from '../form/types/enums';
 import { phoneCodeEmits, phoneCodeProps, usePhoneCode } from './use-phone-code';
-import PcFormInput from '@/components/common-base/form/form-input/pc-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 
 const emit = defineEmits(phoneCodeEmits());
 

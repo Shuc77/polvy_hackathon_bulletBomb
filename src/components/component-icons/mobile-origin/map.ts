@@ -5,6 +5,10 @@
 
 export { default as MobileOriginIconBarrageOff } from './icons/barrage-off';
 export { default as MobileOriginIconBarrageOn } from './icons/barrage-on';
+export { default as MobileOriginIconMoreHideDonate } from './icons/more-hide-donate';
+export { default as MobileOriginIconMoreLookAll } from './icons/more-look-all';
+export { default as MobileOriginIconMoreOnlySpecial } from './icons/more-only-special';
+export { default as MobileOriginIconMoreShowDonate } from './icons/more-show-donate';
 export { default as MobileOriginIconQuestion } from './icons/question';
 export { default as MobileOriginIconQuestionActive } from './icons/question-active';
 export { default as MobileOriginIconQuestionEn } from './icons/question-en';

@@ -45,6 +45,8 @@ export const useTimeAxisMarkHook = (hookOptions?: {
     return markPoint.details[0];
   }
 
+  let timeAxisMarkObserver: ResizeObserver | null = null;
+
   function syncTimeAxisMarkInfo(
     params: PlayerEventsRelations[PlayerEvents.PlayerTimeAxisMarkListChange],
   ) {
@@ -57,15 +59,26 @@ export const useTimeAxisMarkHook = (hookOptions?: {
     const containerEl = getContainerEl();
 
     if (containerEl && containerEl.clientWidth === 0) {
-      const { observer } = useResizeObserver(ref(containerEl), () => {
-        if (containerEl.clientWidth > 0) {
-          syncTimeAxisMarkInfo({
-            timeAxisMarkList: timeAxisMarkList.value,
-          });
+      const { observer } = useResizeObserver(
+        ref(containerEl),
+        () => {
+          if (containerEl.clientWidth > 0) {
+            syncTimeAxisMarkInfo({
+              timeAxisMarkList: timeAxisMarkList.value,
+            });
 
-          observer.disconnect();
-        }
-      });
+            observer.disconnect();
+          }
+        },
+        {
+          autoLifeCycle: false,
+        },
+      );
+
+      if (timeAxisMarkObserver) {
+        timeAxisMarkObserver.disconnect();
+      }
+      timeAxisMarkObserver = observer;
     }
   }
 
@@ -89,6 +102,10 @@ export const useTimeAxisMarkHook = (hookOptions?: {
       PlayerEvents.PlayerTimeAxisMarkListChange,
       syncTimeAxisMarkInfo,
     );
+
+    if (timeAxisMarkObserver) {
+      timeAxisMarkObserver.disconnect();
+    }
   });
 
   return {

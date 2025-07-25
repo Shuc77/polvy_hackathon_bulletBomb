@@ -10,6 +10,8 @@ export const richTextRenderProps = () => ({
   htmlContent: PropUtils.string.def(''),
   /** 是否跟随页面多皮肤，默认 true */
   followPageSkin: PropUtils.bool.def(true),
+  /** 是否压缩内容图片 */
+  shouldCompressImgs: PropUtils.bool.def(true),
 });
 
 export const useRichTextRender = (options: { props: VueProps<typeof richTextRenderProps> }) => {
@@ -19,7 +21,7 @@ export const useRichTextRender = (options: { props: VueProps<typeof richTextRend
 
   /** 用于渲染的富文本内容 */
   const renderHtmlContent = computed<string>(() => {
-    return resizeHtmlContentImg(props.htmlContent);
+    return props.shouldCompressImgs ? resizeHtmlContentImg(props.htmlContent) : props.htmlContent;
   });
 
   return {

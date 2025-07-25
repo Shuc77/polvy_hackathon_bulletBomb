@@ -39,8 +39,13 @@ export const useFormCommon = (options: {
     return list;
   });
 
+  const formTheme = computed(() => {
+    return props.theme || formProps?.theme;
+  });
+
   return {
     commonClassNames,
+    formTheme,
   };
 };
 

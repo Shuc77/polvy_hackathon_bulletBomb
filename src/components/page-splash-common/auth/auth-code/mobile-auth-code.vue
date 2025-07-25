@@ -31,7 +31,7 @@
           ref="formItemRef"
           form-field="code"
         >
-          <mobile-form-input
+          <form-input
             v-model.trim="formData.code"
             :placeholder="$lang('auth.code.placeholder')"
           />
@@ -42,7 +42,7 @@
           ref="imageVerifyFormItemRef"
           form-field="captcha"
         >
-          <mobile-form-image-verify-input
+          <form-image-verify-input
             v-model="formData.captcha"
             ref="imageVerifyRef"
             :image-id.sync="formData.imageId"
@@ -78,9 +78,9 @@ import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import MobileFormProtocol from '@/components/common-base/form/form-protocol/mobile-form-protocol.vue';
-import MobileFormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/mobile-form-image-verify-input.vue';
+import FormImageVerifyInput from '@/components/common-base/form/form-image-verify-input/form-image-verify-input.vue';
 
 import { useAuthCode } from './use-auth-code';
 

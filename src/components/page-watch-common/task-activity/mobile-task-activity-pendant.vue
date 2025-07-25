@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="currentActivityData"
+    v-if="isShowPendant"
     class="c-mobile-task-activity-pendant"
     :class="{
       'c-mobile-task-activity-pendant--en': currentLang !== LangType.ZH_CN,
@@ -12,6 +12,27 @@
 
     <!-- 任务活动答题弹层 -->
     <mobile-task-activity-questionnaire />
+
+    <!-- 网络异常提示 -->
+    <transition name="fade">
+      <div
+        v-if="isShowNetworkError"
+        class="c-mobile-task-activity-pendant__network-error-tip"
+      >
+        <div class="c-mobile-task-activity-pendant__network-error-tip__container">
+          <span class="c-mobile-task-activity-pendant__network-error-tip__text">
+            {{ translate('taskActivity.networkError.title') }}
+          </span>
+          <div
+            class="c-mobile-task-activity-pendant__network-error-tip__close-icon"
+            @click.stop="onCloseNetworkError"
+          >
+            <mobile-icon-close size="20" />
+          </div>
+        </div>
+        <div class="c-mobile-task-activity-pendant__network-error-tip__arrow"></div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -24,20 +45,35 @@ import MobileTaskActivityQuestionnaire from './mobile-task-activity-questionnair
 import { useLangStore } from '@/store/use-lang-store';
 import { LangType } from '@/assets/lang/lang-enum';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { computed, ref } from 'vue';
+import { MobileIconClose } from '@/components/component-icons/mobile/map';
+import { translate } from '@/assets/lang';
 
 const { getEmitter } = useGlobalInject();
 
-const { currentActivityData } = storeDefinitionToRefs(useTaskActivityStore);
+const { isShowPendant, isShowTaskActivityErrorPopper } =
+  storeDefinitionToRefs(useTaskActivityStore);
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 
+const isCloseNetworkError = ref(false);
+
+const isShowNetworkError = computed(() => {
+  return isShowTaskActivityErrorPopper.value && !isCloseNetworkError.value;
+});
+
 function onClickPendant() {
   getEmitter().emit(appEvents.global.OpenTaskActivityDialog);
+}
+
+function onCloseNetworkError() {
+  isCloseNetworkError.value = true;
 }
 </script>
 
 <style lang="scss">
 .c-mobile-task-activity-pendant {
+  position: relative;
   width: 40px;
   height: 40px;
   background-image: url(./images/pendant-icon.png);
@@ -45,5 +81,59 @@ function onClickPendant() {
 }
 .c-mobile-task-activity-pendant--en {
   background-image: url(./images/pendant-icon-en.png);
+}
+
+/* 网络异常提示样式 */
+.c-mobile-task-activity-pendant__network-error-tip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+  pointer-events: none;
+  transform: translate(-110%, -50%);
+}
+
+.c-mobile-task-activity-pendant__network-error-tip__container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  min-width: 84px;
+  height: 28px;
+  padding: 4px 8px;
+  background-color: rgba(255, 82, 82, 0.6); /* 功能色/危险色-禁用 */
+  border-radius: 4px;
+}
+
+.c-mobile-task-activity-pendant__network-error-tip__text {
+  flex: 1;
+  font-family: PingFangSC-Regular, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff; /* 中性色-深色/中性色-白色100%(标题) */
+  text-align: left;
+}
+
+.c-mobile-task-activity-pendant__network-error-tip__close-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.polyv-icon-close {
+  height: 20px;
+}
+
+.c-mobile-task-activity-pendant__network-error-tip__arrow {
+  width: 0;
+  height: 0;
+  margin-left: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid rgba(255, 82, 82, 0.6);
 }
 </style>

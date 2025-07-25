@@ -42,7 +42,7 @@ $--color-primary-light-9: get-opacity-color($--color-primary, 9);
 $--bg-color-portrait-popup: #262523 !default; // 竖屏下的弹层背景色
 
 // 字体色
-$--font-color-primary: #333333 !default; // 默认字体颜色
+$--font-color-primary: rgba(#000, 0.8) !default; // 默认字体颜色
 $--font-color-disabled: #9E9E9E !default; // 不可用
 $--font-color-info: #999999 !default; // 信息
 $--font-color-error: #ff5722 !default; // 异常
@@ -53,10 +53,13 @@ $--border-color-error: #ff5722 !default; // 异常状态边框色
 
 // 阴影
 $--shadow-dialog: 0 0 16px 0 rgba(0, 0, 0, 0.08) !default; // 对话框阴影
-$--shadow-popper: 0 6px 12px rgb(0, 0, 0, 0.1) !default; // 弹层阴影
+
+// 弹层相关
+$--popper-shadow: 0 4px 20px 0 rgba(51, 58, 71, 0.102) !default; // 弹层阴影
+$--popper-border-radius: 8px !default; // 弹层圆角
 
 // 表单相关样式变量
-$--form-input-height: 40px !default; // 输入框高度
+$--form-input-height: 44px !default; // 输入框高度
 $--form-input-height-small: 30px !default; // 输入框高度 - small
 
 $--form-input-padding: 0 16px !default; // 输入框内边距
@@ -65,7 +68,8 @@ $--form-input-padding-small: 0 8px !default; // 输入框内边距 - small
 $--form-input-font-size: 14px !default; // 输入框字体大小
 $--form-input-font-size-small: 12px !default; // 输入框字体大小 - small
 
-$--form-input-border-color: #d8d8d8 !default; // 输入框边框颜色
+$--form-input-border-radius: 8px !default; // 输入框圆角
+$--form-input-border-color: transparent !default; // 输入框边框颜色
 $--form-input-border-color-error: $--border-color-error !default; // 输入框异常边框色
 
 $--form-input-bg: $--color-white !default; // 输入框背景色
@@ -104,10 +108,16 @@ $--mobile-form-input-themes: (
     'background': #f6f6f6,
     'font-color': $--font-color-primary,
   ),
-  'dark': (
-    'border-color': #1a1b1f,
-    'background': #1a1b1f,
-    'font-color': $--color-white,
+) !default;
+
+$--form-input-themes: (
+  'gray': (
+    'border-color': #F7F8FA,
+    'background': #F7F8FA,
+  ),
+  'white': (
+    'border-color': #fff,
+    'background': #fff,
   ),
 ) !default;
 

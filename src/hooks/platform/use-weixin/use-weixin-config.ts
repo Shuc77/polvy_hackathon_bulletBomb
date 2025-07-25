@@ -13,20 +13,24 @@ export const useWeixinConfig = () => {
   const { getWeixinSdk } = useWeixinSdk();
 
   async function toConfigWeixinFeature(watchCore: PolyvWatchCore) {
-    if (!(isWeixin || isWorkWeixin)) {
-      return;
+    try {
+      if (!(isWeixin || isWorkWeixin)) {
+        return;
+      }
+
+      if (!weixinStore.wxSdkFeatureEnabled) {
+        return;
+      }
+
+      const { configureWeixinShare } = useWeixinShare();
+
+      watchCore.setWeixinSdk(getWeixinSdk);
+
+      await getWeixinSdk();
+      await configureWeixinShare();
+    } catch (error) {
+      console.error('toConfigWeixinFeature error', error);
     }
-
-    if (!weixinStore.wxSdkFeatureEnabled) {
-      return;
-    }
-
-    const { configureWeixinShare } = useWeixinShare();
-
-    watchCore.setWeixinSdk(getWeixinSdk);
-
-    await getWeixinSdk();
-    await configureWeixinShare();
   }
 
   return {

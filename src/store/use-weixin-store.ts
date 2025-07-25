@@ -6,8 +6,25 @@ import { useQueryParams } from '@/hooks/core/use-query-params';
 import { PlvWeixinModule, WeixinPayType, WxShareInfo, YN } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@utils-ts/boolean';
 import { defineStore } from 'pinia';
-import { Ref, ref } from 'vue';
+import { ComputedRef, Ref, computed, ref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
+import { appendRedirectUrlParams } from '@/assets/utils/url';
+import { useInviteStore } from './use-invite-store';
+import { useShareStore } from './use-share-store';
+
+/** 微信分享地址中附带的参数 */
+export interface WxShareUrlParams {
+  /** 企微邀请的员工 id */
+  wxInviteId?: string;
+  /** 邀请人 id */
+  invitePosterId?: string;
+  /** 回放分享-回放 Id */
+  playBackVid?: string;
+  /** 一客一码--销售邀请的客户id */
+  inviteCustomerId?: string;
+  /** 邀请观看--分销员/邀请人id */
+  inviteWatchSaleId?: string;
+}
 
 export interface WeixinStoreState {
   /** 是否使用微信 SDK 功能 */
@@ -22,6 +39,12 @@ export interface WeixinStoreState {
   workWeixinAuthorized: Ref<boolean>;
   /** 微信分享信息 */
   wxShareInfo: Ref<WxShareInfo>;
+  /** 微信分享地址上需要携带的参数 */
+  wxShareUrlParams: ComputedRef<WxShareUrlParams>;
+  /** 是否开启微信自定义分享地址参数 */
+  weixinShareCustomUrlWithParamEnabled: ComputedRef<boolean>;
+  /** 微信自定义分享地址 */
+  wxCustomShareUrl: ComputedRef<string>;
   /** 微信支付类型 */
   weixinPayType: Ref<WeixinPayType>;
   /** 是否可以在微信中重新设置昵称 */
@@ -38,6 +61,8 @@ export interface WeixinStore extends WeixinStoreState, WeixinStoreAction {}
 
 export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () => {
   const watchAppStore = useWatchAppStore();
+  const shareStore = useShareStore();
+  const inviteStore = useInviteStore();
 
   const { paramGetter } = useQueryParams();
 
@@ -59,10 +84,60 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   /** 微信分享信息 */
   const wxShareInfo = ref<WxShareInfo>({
     isUseWxShareUrl: YN.N,
+    weixinShareCustomUrlWithParamEnabled: YN.N,
     wxShareUrl: '',
     weixinShareCoverImg: '',
     shareTitle: '',
     shareDesc: '',
+  });
+
+  /** 微信分享地址上需要携带的参数 */
+  const wxShareUrlParams = computed(() => {
+    const params: WxShareUrlParams = {};
+
+    // 企微邀请的员工 id
+    if (inviteStore.wxInviteId) {
+      params.wxInviteId = inviteStore.wxInviteId;
+    }
+
+    // 针对开启邀请的频道添加邀请参数到微信分享 url
+    if (inviteStore.invitePosterId) {
+      params.invitePosterId = inviteStore.invitePosterId;
+    }
+
+    // 一客一码--销售邀请的客户id
+    if (shareStore.saleInviteCustomerId) {
+      params.inviteCustomerId = shareStore.saleInviteCustomerId;
+    }
+
+    // 邀请观看--分销员/邀请人id
+    if (shareStore.inviteWatchSaleId) {
+      params.inviteWatchSaleId = shareStore.inviteWatchSaleId;
+    }
+
+    return params;
+  });
+
+  /** 是否开启微信自定义分享地址参数 */
+  const weixinShareCustomUrlWithParamEnabled = computed(() => {
+    return ynToBool(wxShareInfo.value.weixinShareCustomUrlWithParamEnabled, YN.N);
+  });
+
+  /** 微信自定义分享地址 */
+  const wxCustomShareUrl = computed(() => {
+    const shareInfo = wxShareInfo.value;
+
+    // 使用后台设置的自定义微信分享地址
+    const isUseWxShareUrl = ynToBool(shareInfo.isUseWxShareUrl, YN.N);
+    if (!isUseWxShareUrl) return '';
+
+    if (!weixinShareCustomUrlWithParamEnabled.value) {
+      return shareInfo.wxShareUrl;
+    }
+
+    return appendRedirectUrlParams<WxShareUrlParams>(shareInfo.wxShareUrl, wxShareUrlParams.value, {
+      forbiddenFields: ['snapshotPage'],
+    });
   });
 
   /** 保存微信分享信息 */
@@ -97,7 +172,12 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
     weixinAuthorized,
     weixinWatchAuthorized,
     workWeixinAuthorized,
+
     wxShareInfo,
+    wxShareUrlParams,
+    weixinShareCustomUrlWithParamEnabled,
+    wxCustomShareUrl,
+
     weixinPayType,
     weixinResetNickEnabled,
     saveWxShareInfo,

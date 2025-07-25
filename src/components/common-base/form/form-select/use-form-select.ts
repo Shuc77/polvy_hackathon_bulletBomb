@@ -3,8 +3,8 @@ import { isArray } from '@/assets/utils/array';
 import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
 import { computed, ref } from 'vue';
-import { SelectOptionItem, SelectValueType } from './types/form-select-types';
 import { formCommonProps, useFormCommonValidate } from '../hooks/use-form-common';
+import { SelectOptionItem, SelectValueType } from './types/form-select-types';
 
 export const formSelectProps = () => ({
   ...formCommonProps(),
@@ -150,6 +150,10 @@ export const useFormSelectMobile = (options: {
 }) => {
   const { props, emit } = options;
 
+  const { blurToValidateItem } = useFormCommonValidate({
+    props,
+  });
+
   /** 选项是否显示 */
   const optionVisible = ref(false);
 
@@ -205,6 +209,8 @@ export const useFormSelectMobile = (options: {
       emit('input', selectValue.value);
       closeOption();
     }
+
+    blurToValidateItem();
   }
 
   /** 是否已选中 */

@@ -18,7 +18,7 @@
         :submit-action="handleSubmitForm"
       >
         <form-item form-field="amount">
-          <mobile-form-number-input
+          <form-number-input
             v-model="formData.amount"
             :input-title="$lang('withdraw.apply.amount')"
             :input-title-width="100"
@@ -32,11 +32,11 @@
             >
               {{ $lang('withdraw.apply.amount.all') }}
             </span>
-          </mobile-form-number-input>
+          </form-number-input>
         </form-item>
 
         <form-item style="margin-bottom: 8px">
-          <mobile-form-input
+          <form-input
             disabled
             :input-title="$lang('withdraw.apply.username')"
             :input-title-width="100"
@@ -65,9 +65,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import FormItem from '@/components/common-base/form/form-item.vue';
-import MobileFormNumberInput from '@/components/common-base/form/form-number-input/mobile-form-number-input.vue';
+import FormNumberInput from '@/components/common-base/form/form-number-input/form-number-input.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import { FormTheme } from '@/components/common-base/form/types/enums';
@@ -149,8 +149,10 @@ async function handleSubmitForm() {
   position: absolute;
   top: 0;
   right: 16px;
+  display: flex;
+  align-items: center;
+  height: 100%;
   font-size: 14px;
-  line-height: 48px;
   color: #3082fe;
 }
 

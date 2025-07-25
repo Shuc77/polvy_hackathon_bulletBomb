@@ -28,9 +28,11 @@
       >
         <!-- 更多 -->
         <div
-          class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--more pws-mobile-more-button"
+          class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--more pws-dark-white-bg-10 pws-light-basic-bg-90 pws-dark-white-color-100 pws-light-black-color-80"
           @click="showMore"
-        ></div>
+        >
+          <mobile-icon-more-entrance />
+        </div>
 
         <!-- 打赏 -->
         <div
@@ -70,6 +72,7 @@ import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
 import { useGlobalInject } from '@/app/use-global-inject';
 import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { MobileIconMoreEntrance } from '@/components/component-icons/mobile/map';
 
 const props = defineProps({
   /** 是否为纯净模式 */
@@ -137,6 +140,13 @@ defineExpose(chatInputInstance);
 
   & + & {
     margin-left: 12px;
+  }
+}
+
+.c-mobile-chat-input-controller__btn--more {
+  span {
+    display: flex;
+    font-size: 36px;
   }
 }
 

@@ -4,6 +4,7 @@
     <mobile-menu-tabs
       v-model="mobileMenuCurrentName"
       ref="mobileMenuTabsRef"
+      :force-show-header="followEnabled"
       @input="trackWatchTabChange"
     >
       <template #header-suffix>
@@ -14,12 +15,6 @@
 
       <!-- 关注弹层 -->
       <mobile-follow-layer v-if="followEnabled" />
-
-      <!-- 商品库推送气泡 -->
-      <mobile-product-bubble
-        v-if="iarSdkLoaded"
-        :product-bubble-enable="false"
-      />
 
       <!-- 课堂激励点赞动画 -->
       <motivation-like-animation
@@ -148,19 +143,23 @@
           <mobile-custom-tuwen-text-menu :html-content="menu.content" />
         </mobile-menu-tab-pane>
 
-        <!-- 推广链接 -->
+        <!-- 推广链接(需要 hackWeixinBtn，所以不能懒加载) -->
         <mobile-menu-tab-pane
           v-else-if="menu.menuType === ChannelMenuType.Iframe"
           :key="`iframe-${index}`"
           :label="menu.name"
           :name="menu.menuId"
-          lazy-load
+          hack-weixin-btn
         >
-          <mobile-promote-external-link
-            :src="menu.content"
-            :open-type="menu.iframeOpenType"
-            :is-active="mobileMenuCurrentName === menu.menuId"
-          />
+          <template #default="{ weixinBtnId }">
+            <mobile-promote-external-link
+              :content="menu.content"
+              :link-type="menu.linkType"
+              :open-type="menu.iframeOpenType"
+              :weixin-btn-selector="weixinBtnId"
+              :is-active="mobileMenuCurrentName === menu.menuId"
+            />
+          </template>
         </mobile-menu-tab-pane>
 
         <!-- 投票 -->
@@ -288,8 +287,6 @@ import MobileCustomTuwenTextMenu from '@/components/page-watch-common/custom-tuw
 import MobileDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/mobile-doc-side-switch.vue';
 import MobileFollowBtn from '@/components/page-watch-common/follow/follow-btn/mobile-follow-btn.vue';
 import MobileFollowLayer from '@/components/page-watch-common/follow/follow-layer/mobile-follow-layer.vue';
-import MobileProductBubble from '@/components/page-watch-common/interactive-receive/product/mobile-product-bubble.vue';
-// import MobileProductList from '@/components/page-watch-common/interactive-receive/product/mobile-product-list.vue';
 import MobileQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/mobile-question-answer.vue';
 import MobileTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/mobile-tuwen-live.vue';
 import MobilePromoteExternalLink from '@/components/page-watch-common/promote-external-link/mobile-promote-external-link.vue';
@@ -304,7 +301,7 @@ import MobileSeatTable from '@/components/page-watch-common/interactive-receive/
 import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/mobile-ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import MobileMemberDesc from '@/components/page-watch-common/member-list/mobile-member-desc.vue';
-import MobilePlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/mobile-playback-outline.vue';
+import MobilePlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/playback-outline.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';

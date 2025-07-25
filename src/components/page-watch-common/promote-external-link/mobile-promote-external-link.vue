@@ -2,8 +2,8 @@
 
 <template>
   <mobile-iframe-render
-    v-if="isOpenInMenu"
-    :src="props.src"
+    v-if="isOpenInMenu && iframeUrl"
+    :src="iframeUrl"
     :auto-height="true"
   />
   <div
@@ -21,7 +21,12 @@ import { promoteExternalLinkProps, usePromoteExternalLinkHook } from './use-prom
 
 const props = defineProps(promoteExternalLinkProps());
 
-const { isOpenInMenu, tips } = usePromoteExternalLinkHook({ props });
+const {
+  isOpenInMenu,
+
+  iframeUrl,
+  tips,
+} = usePromoteExternalLinkHook({ props });
 </script>
 
 <style lang="scss">

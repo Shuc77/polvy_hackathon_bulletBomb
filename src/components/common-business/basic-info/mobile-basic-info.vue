@@ -102,7 +102,10 @@
       v-if="showDesc"
       class="c-mobile-basic-info__desc"
     >
-      <mobile-rich-text-render :html-content="channelDescription" />
+      <mobile-rich-text-render
+        :html-content="channelDescription"
+        :should-compress-imgs="compressImageEnabled"
+      />
     </div>
 
     <!-- 页脚 -->
@@ -153,7 +156,7 @@ const { showPageView, showLikeCount, showDesc } = useProps(props);
 
 const { shortNumber } = useShortNumber();
 
-const { liveStatus } = storeDefinitionToRefs(useChannelStore);
+const { liveStatus, compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
 
 const {
   channelTitle,

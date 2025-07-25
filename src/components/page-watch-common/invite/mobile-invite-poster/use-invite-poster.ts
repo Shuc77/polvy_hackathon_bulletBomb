@@ -18,6 +18,7 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
 
   const channelInfoStore = useChannelInfoStore();
   const commonStore = useCommonStore();
+
   const { props } = options;
 
   const posterData = ref<InvitePosterData>();
@@ -42,13 +43,26 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
   /** 海报 base64 数据 */
   const posterBase64 = ref('');
 
+  function generateInviteWatchUrl() {
+    if (!posterData.value) {
+      return '';
+    }
+
+    const { promotion, watchParams } = posterData.value;
+    let watchUrl = promotion.watchUrl;
+
+    watchUrl = watchUrl + watchParams;
+
+    return watchUrl;
+  }
+
   function generateIframeUrl() {
     if (!posterData.value) {
       return;
     }
 
     const watchCore = getWatchCore();
-    const { promotion, watchParams } = posterData.value;
+    const { promotion } = posterData.value;
 
     const { type = 1 } = props;
 
@@ -68,7 +82,7 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
       name: channelInfoStore.channelTitle,
       publisher: channelInfoStore.channelPublisher,
       startTime,
-      watchUrl: promotion.watchUrl + watchParams,
+      watchUrl: generateInviteWatchUrl(),
       inviteCoverImage:
         promotion.inviteCoverImage || commonStore.plvDefaultResource.defaultSplashImg,
       customUserType: promotion.customUserType,

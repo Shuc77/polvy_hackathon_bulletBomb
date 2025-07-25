@@ -20,6 +20,11 @@
             }"
             @click="onClickHeaderItem(paneData)"
           >
+            <div
+              v-if="isWeixin && paneData.hackWeixinBtn"
+              :id="generateHackWeixinBtnId(paneData.name)"
+              class="c-mobile-header__hack-weixin-btn"
+            ></div>
             <span class="c-mobile-menu-tab-header__header__item__label">
               {{ paneData.label }}
 
@@ -54,7 +59,9 @@
 </template>
 
 <script setup lang="ts">
+import { isWeixin } from '@/assets/utils/browser';
 import { useTabHeader } from '../hooks/use-tab-header';
+import { generateHackWeixinBtnId } from '../hooks/use-tabs';
 
 const {
   scrollRef,
@@ -182,5 +189,15 @@ const {
 .c-mobile-menu-tab-header__content__shadow--right {
   right: 0;
   background: linear-gradient(90deg, rgba(62, 62, 78, 0) 0, rgba(62, 62, 78, 1) 100%);
+}
+
+.c-mobile-header__hack-weixin-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 </style>

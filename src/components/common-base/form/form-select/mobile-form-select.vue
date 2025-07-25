@@ -5,14 +5,16 @@
       class="c-mobile-form-select__body"
       @click="openOption"
     >
-      <input
-        type="text"
-        class="c-mobile-form-select__body__input"
-        readonly
-        :placeholder="inputPlaceholder"
+      <form-input
         :value="inputValue"
-      />
-      <mobile-icon-arrow-down class="c-mobile-form-select__body__icon" />
+        :placeholder="inputPlaceholder"
+        readonly
+        :clearabled="false"
+      >
+        <template #suffix>
+          <mobile-icon-arrow-down class="c-mobile-form-select__body__icon" />
+        </template>
+      </form-input>
     </div>
 
     <mobile-popup :visible.sync="optionVisible">
@@ -45,16 +47,17 @@
           v-if="searchEnabled"
           class="c-mobile-form-select__options__search"
         >
-          <mobile-form-input
+          <form-input
             v-model="searchKeyword"
             :placeholder="$lang('base.searchKeyword')"
             :size="FormSize.Medium"
             clearabled
+            :validate-form="false"
           >
             <template #prefix>
               <mobile-icon-search class="c-mobile-form-select__options__search__icon" />
             </template>
-          </mobile-form-input>
+          </form-input>
         </div>
 
         <div
@@ -69,11 +72,16 @@
           :key="index"
           class="c-mobile-form-select__options__item"
           :class="{
+            'is-multiple': multiple,
             'c-mobile-form-select__options__item--active': isSelectedOption(item.value),
           }"
           @click="onClickOption(item)"
         >
-          {{ item.label }}
+          <span>{{ item.label }}</span>
+          <mobile-icon-check
+            v-if="multiple && isSelectedOption(item.value)"
+            class="c-mobile-form-select__options__item__icon"
+          />
         </div>
       </div>
     </mobile-popup>
@@ -81,9 +89,13 @@
 </template>
 
 <script setup lang="ts">
-import { MobileIconArrowDown, MobileIconSearch } from '@/components/component-icons/mobile/map';
+import {
+  MobileIconArrowDown,
+  MobileIconCheck,
+  MobileIconSearch,
+} from '@/components/component-icons/mobile/map';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import { FormSize } from '../types/enums';
 import {
   formSelectProps,
@@ -120,35 +132,12 @@ watch(
 </script>
 
 <style lang="scss">
-.c-mobile-form-select__body {
-  display: flex;
-  align-items: center;
-
-  height: map.get($--mobile-form-input-sizes, 'default', 'height');
-  color: map.get($--mobile-form-input-themes, 'default', 'font-color');
-  background: map.get($--mobile-form-input-themes, 'default', 'background');
-
-  border-color: map.get($--mobile-form-input-themes, 'default', 'border-color');
-  border-radius: map.get($--mobile-form-input-sizes, 'default', 'radius');
-}
-
-.c-mobile-form-select__body__input {
-  @include clear-input-style;
-  box-sizing: border-box;
-  display: block;
-  flex: 1;
-  height: 100%;
-
-  padding: map.get($--mobile-form-input-sizes, 'default', 'padding');
-  font-size: map.get($--mobile-form-input-sizes, 'default', 'font-size');
-  color: inherit;
-}
-
 .c-mobile-form-select__body__icon {
   display: flex;
   margin-right: 16px;
   font-size: 20px !important;
-  color: #9e9e9e;
+  color: inherit;
+  opacity: 0.6;
 }
 
 .c-mobile-form-select__header {
@@ -164,6 +153,10 @@ watch(
   border-bottom: 1px solid $--border-color-primary;
 }
 
+.c-mobile-form-select__options {
+  padding: 16px;
+}
+
 .c-mobile-form-select__header__cancel {
   color: #9195a1;
 }
@@ -172,11 +165,7 @@ watch(
 }
 
 .c-mobile-form-select__options__search {
-  margin-bottom: 20px;
-}
-
-.c-mobile-form-select__options {
-  padding: 20px 24px;
+  margin-bottom: 12px;
 }
 
 .c-mobile-form-select__options__search__icon {
@@ -196,27 +185,53 @@ watch(
 .c-mobile-form-select__options__title {
   margin-bottom: 18px;
   font-size: 14px;
+  line-height: 22px;
   color: #666;
 }
 
 .c-mobile-form-select__options__item {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  min-height: 40px;
-  padding: 8px 16px;
-  margin-bottom: 20px;
-  line-height: 24px;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 42px 8px 16px;
+  margin-bottom: 8px;
+  line-height: 22px;
   color: #333;
+  text-align: center;
   background: #f6f6f6;
-  border-radius: 20px;
+  border: 1px solid transparent;
+  border-radius: 8px;
 
   &:last-of-type {
     margin-bottom: 0;
   }
+
+  &.is-multiple {
+    justify-content: flex-start;
+  }
 }
+
+.c-mobile-form-select__options__item__icon {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  display: flex;
+  font-size: 18px;
+  color: #3f76fc;
+  transform: translateY(-50%);
+}
+
 .c-mobile-form-select__options__item--active {
-  color: #3082fe;
-  background: #e0ecfe;
+  color: #3f76fc;
+  background: rgba(#3f76fc, 0.1);
+  border-color: #3f76fc;
+
+  &.is-multiple {
+    background: #f6f6f6;
+    border-color: transparent;
+  }
 }
 </style>

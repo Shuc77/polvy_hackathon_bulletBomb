@@ -4,6 +4,7 @@
     :class="{
       'c-portrait-boundary-wrap--left': seat === 'left',
       'c-portrait-boundary-wrap--right': seat === 'right',
+      'c-portrait-boundary-wrap--top': seat === 'top',
       'c-portrait-boundary-wrap--fullscreen': portraitPlayerIsPageFullscreen,
     }"
     :style="{
@@ -26,7 +27,7 @@ const { portraitPlayerIsPageFullscreen, portraitWatchLayoutHeight } =
 
 defineProps({
   /** 位置，左 or 右 */
-  seat: PropUtils.oneOf(['left', 'right'] as const).def('left'),
+  seat: PropUtils.oneOf(['left', 'right', 'top'] as const).def('left'),
 });
 </script>
 
@@ -56,6 +57,16 @@ defineProps({
     padding-top: 16px;
     padding-right: 16px;
     transform: translateX(-100%);
+  }
+}
+.c-portrait-boundary-wrap--top {
+  right: 50%;
+  .c-portrait-boundary-wrap__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>

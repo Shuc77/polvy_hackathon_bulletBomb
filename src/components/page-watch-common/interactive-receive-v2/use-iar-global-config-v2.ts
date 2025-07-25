@@ -35,6 +35,9 @@ export const useIarGlobalConfigHookV2 = () => {
     globalLang: langStore.currentLang,
     pageFullscreen: layoutStore.mobilePlayerIsPageFullscreen,
     fullscreenElement: isMobile ? undefined : PC_PLAYER_FULL_SCREEN_SELECTOR,
+    isMobile: () => {
+      return isMobile;
+    },
 
     toast: (msg: string) => {
       toast.success(msg);

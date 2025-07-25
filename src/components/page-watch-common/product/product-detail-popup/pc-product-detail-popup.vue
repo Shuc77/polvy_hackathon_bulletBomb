@@ -6,6 +6,7 @@
     class="c-pc-product-detail-popup"
   >
     <product-detail-popup
+      ref="productDetailInnerPopupRef"
       v-if="productTargetInited && paymentTargetInited"
       :product-target="getProductTarget()"
       :payment-target="getPaymentTarget()"
@@ -20,29 +21,20 @@
 
 <script setup lang="ts">
 import { ref, computed, unref, defineAsyncComponent } from 'vue';
-import { PolyvProduct, PolyvPayment } from '@polyv/live-watch-sdk';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useProductUILoader } from '../load-product-ui';
-import { useGlobalInject } from '@/app/use-global-inject';
-import { appEvents } from '@/app/app-events';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useIarTarget } from '@/components/page-watch-common/interactive-receive-v2/_hooks/use-iar-target';
-import { useIarExternalLinkParams } from '@/components/page-watch-common/interactive-receive/use-iar-external-link-params';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
-
-const { getWatchCore, getEmitter } = useGlobalInject();
+import { useProductUI } from '../hooks/use-product-ui';
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { getLinkParams } = useIarExternalLinkParams();
+const { loadProductUI } = useProductUILoader();
+
+const ProductDetailPopup = defineAsyncComponent(() => loadProductUI('product-detail-popup'));
 
 const { toPlay, toPause } = usePlayerAction();
-
-const watchCore = getWatchCore();
-
-const productUIConfig = ref({
-  getLinkParams,
-});
 
 const productDetailPopupRef = ref<HTMLElement>();
 
@@ -54,24 +46,18 @@ const popupConfig = computed(() => {
   };
 });
 
-const { targetInited: productTargetInited, getIarTarget: getProductTarget } =
-  useIarTarget<PolyvProduct>(() => {
-    return watchCore.product.getProductTarget();
-  });
+const {
+  productUIConfig,
+  productTargetInited,
+  paymentTargetInited,
 
-const { targetInited: paymentTargetInited, getIarTarget: getPaymentTarget } =
-  useIarTarget<PolyvPayment>(() => {
-    return watchCore.product.getPaymentTarget();
-  });
+  getProductTarget,
+  getPaymentTarget,
+  handleNotSupportDirectBuy,
+} = useProductUI();
 
-const { loadProductUI } = useProductUILoader();
-
-const ProductDetailPopup = defineAsyncComponent(() => loadProductUI('product-detail-popup'));
-
-/**
- * 不支持直接购买，引导扫码进入移动端
- */
-function handleNotSupportDirectBuy() {
-  getEmitter().emit(appEvents.global.OpenQrCodeShareDialog);
-}
+const productDetailInnerPopupRef = ref();
+useEventBusListener(appEvents.product.OpenProductDetailPopup, (productId: number) => {
+  productDetailInnerPopupRef.value?.open(productId);
+});
 </script>

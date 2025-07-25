@@ -1,7 +1,7 @@
 <!-- @file 播放器的播放大按钮 -->
 <template>
   <div
-    v-if="bigPlayButtonVisible"
+    v-if="visible"
     class="c-player-play-button"
   >
     <div
@@ -35,6 +35,13 @@ const { newPlayerPauseStyleEnabled } = usePlayerStore();
 
 const isTextMode = computed(() => {
   return props.mode === PlayButtonMode.Text;
+});
+
+const visible = computed(() => {
+  if (props.simpleVisibleMode) {
+    return props.visible;
+  }
+  return bigPlayButtonVisible.value;
 });
 </script>
 

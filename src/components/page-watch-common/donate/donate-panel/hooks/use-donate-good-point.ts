@@ -27,7 +27,8 @@ export const useDonateGoodPoint = () => {
       const points = await watchCore.donate.getDonateSurplusPoint();
       surplusPoint.value = points;
     } catch (e) {
-      toast.error(translate('donate.point.getFail'));
+      const err = e as Error;
+      toast.error(err.message || translate('donate.point.getFail'));
     }
   }
 

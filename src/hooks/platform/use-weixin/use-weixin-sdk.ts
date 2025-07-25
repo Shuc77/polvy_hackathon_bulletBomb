@@ -15,13 +15,16 @@ function createWxInstance() {
   const watchAppStore = useWatchAppStore();
   const { getWatchCore } = useMultiPolyvWatchApp();
 
-  return new Promise<WechatJsSdk.Wx>(resolve => {
+  return new Promise<WechatJsSdk.Wx>((resolve, reject) => {
     const watchCore = getWatchCore();
     Promise.all([
       isWorkWeixin ? loadWorkWxSdk() : loadWxSdk(),
       isWorkWeixin ? watchCore.weixin.getWorkWeixinSign() : watchCore.weixin.getWeixinSign(),
     ])
       .then(([wx, signRes]) => {
+        /** 是否已经回调 */
+        let hadCalled = false;
+
         // 保存微信分享信息
         const weixinStore = useWeixinStore();
         if (signRes) {
@@ -31,6 +34,7 @@ function createWxInstance() {
             weixinShareCoverImg: signRes.weixinShareCoverImg,
             shareTitle: signRes.shareTitle,
             shareDesc: signRes.shareDesc,
+            weixinShareCustomUrlWithParamEnabled: signRes.weixinShareCustomUrlWithParamEnabled,
           });
         }
 
@@ -45,6 +49,13 @@ function createWxInstance() {
         };
 
         console.info('wx.config', configData);
+
+        setTimeout(() => {
+          // 处理 wx-js-sdk 没有触发任何回调的问题
+          if (!hadCalled) {
+            reject(new Error('wx sdk setTimeout catch error'));
+          }
+        }, 3000);
 
         wx.config({
           appId,
@@ -68,6 +79,8 @@ function createWxInstance() {
 
         wx.error(error => {
           console.error('Wx sdk: error', error);
+          hadCalled = true;
+          reject(new Error('wx sdk config error'));
 
           const watchCore = getWatchCore();
           const logMsg = {
@@ -79,7 +92,8 @@ function createWxInstance() {
         });
 
         wx.ready(() => {
-          console.info('Wx sdk: success');
+          console.info('wx sdk: success');
+          hadCalled = true;
           resolve(wx);
 
           // 获取是否微信小程序环境
@@ -98,10 +112,13 @@ function createWxInstance() {
       })
       .catch(error => {
         console.error('createWxInstance fail', error);
+        reject(new Error('create wx sdk instance catch error'));
+
         const logMsg = {
           href: location.href,
           error: JSON.stringify(error),
         };
+
         watchCore.logger.error(
           LoggerName.Weixin,
           'create-wx-instance-fail',
@@ -130,6 +147,12 @@ function getWeixinSdkByChannelId(channelId: string): Promise<WechatJsSdk.Wx> {
 }
 
 /**
+ * 标志位
+ * @desc 只上报一次数据给到 plvLogger
+ */
+let errorLoggerOnce = false;
+
+/**
  * @hook 使用微信 JS-SDK
  */
 export const useWeixinSdk = () => {
@@ -140,12 +163,26 @@ export const useWeixinSdk = () => {
 
   /** 获取微信 js-sdk */
   const getWeixinSdk = (): Promise<WechatJsSdk.Wx | undefined> => {
-    if (!weixinStore.wxSdkFeatureEnabled) {
-      console.warn('weixin-sdk is disabled');
-      return new Promise(resolve => resolve(undefined));
-    }
+    return new Promise(resolve => {
+      if (!weixinStore.wxSdkFeatureEnabled) {
+        console.warn('weixin-sdk is disabled');
+        return resolve(undefined);
+      }
 
-    return getWeixinSdkByChannelId(channelStore.channelId);
+      getWeixinSdkByChannelId(channelStore.channelId)
+        .then(result => {
+          return resolve(result);
+        })
+        .catch(error => {
+          if (!errorLoggerOnce && window.plvLogger) {
+            window.plvLogger.error(error);
+            errorLoggerOnce = true;
+          }
+
+          console.error('getWeixinSdkByChannelId err', error);
+          return resolve(undefined);
+        });
+    });
   };
 
   /**

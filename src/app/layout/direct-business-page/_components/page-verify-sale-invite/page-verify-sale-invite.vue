@@ -48,7 +48,7 @@
               :label="getTranslateByType(item.type).label"
               :required="item.required"
             >
-              <mobile-form-input
+              <form-input
                 v-model="formData[item.type]"
                 :placeholder="getTranslateByType(item.type).placeholder"
               />
@@ -79,7 +79,7 @@ import FormItem from '@/components/common-base/form/form-item.vue';
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 import MobileFormPhoneInput from '@/components/common-base/form/form-phone-input/mobile-form-phone-input.vue';
 import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-verify-input/mobile-form-sms-verify-input.vue';
-import MobileFormInput from '@/components/common-base/form/form-input/mobile-form-input.vue';
+import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import { useVerifySaleInvite } from './use-verify-sale-invite';
 
 const {

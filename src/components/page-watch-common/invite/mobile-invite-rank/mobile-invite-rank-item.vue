@@ -2,25 +2,12 @@
 <template>
   <div
     v-if="item"
-    :class="{
-      'c-mobile-invite-rank__list__item': true,
-      'pws-mobile-invite-rank__list__item': true,
-    }"
+    class="c-mobile-invite-rank__list__item"
   >
     <!-- 排名序号 -->
-    <template v-if="rank <= 3">
-      <div
-        :class="[
-          'c-mobile-invite-rank__list__item__rank',
-          'c-mobile-invite-rank__list__item__rank--' + rank,
-        ]"
-      ></div>
-    </template>
-    <template v-else>
-      <div class="c-mobile-invite-rank__list__item__rank">
-        <span>{{ rank }}</span>
-      </div>
-    </template>
+    <div class="c-mobile-invite-rank__list__item__rank plv-font-din-pro-regular">
+      <span>{{ item.inviteNum === 0 ? '-' : rank }}</span>
+    </div>
 
     <!-- 头像 -->
     <img
@@ -33,14 +20,19 @@
     <slot>
       <p
         :class="{
-          'c-mobile-invite-rank__list__item__nick g-singleline': true,
+          'c-mobile-invite-rank__list__item__nick': true,
           'c-mobile-invite-rank__list__item__nick--me': isCurrent,
-          'pws-mobile-invite-rank__list__item__nick-me': isCurrent,
         }"
       >
-        {{ item.nickname }}{{ isCurrent ? `(${$lang('invite.rank.me')})` : '' }}
+        <span class="g-singleline">{{ item.nickname }}</span>
+        <span
+          v-if="isCurrent"
+          class="c-mobile-invite-rank__me-label"
+        >
+          <span>{{ $lang('invite.rank.me') }}</span>
+        </span>
       </p>
-      <div class="c-mobile-invite-rank__list__item__number">
+      <div class="c-mobile-invite-rank__list__item__number plv-font-din-pro-regular">
         {{ item.inviteNum }}{{ $lang('invite.rank.people') }}
       </div>
     </slot>
@@ -69,9 +61,7 @@ const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
 .c-mobile-invite-rank__list__item {
   display: flex;
   align-items: center;
-  min-height: 56px;
-  padding: 0 12px;
-  color: #adadc0;
+  height: 52px;
 
   &.c-mobile-invite-rank__list__item--me {
     .c-mobile-invite-rank__list__item__nick--me {
@@ -86,59 +76,35 @@ const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
+  width: 56px;
   height: 38px;
-  margin-right: 8px;
   font-size: 14px;
   line-height: 38px;
+  color: rgba(#000, 0.4);
   text-align: center;
   background-size: 100%;
-
-  span {
-    line-height: 1.2;
-  }
-
-  &.c-mobile-invite-rank__list__item__rank--1 {
-    background-image: url(./imgs/rank-1.png);
-
-    & + .c-mobile-invite-rank__list__item__avatar {
-      border-color: #fbc44c;
-    }
-  }
-
-  &.c-mobile-invite-rank__list__item__rank--2 {
-    background-image: url(./imgs/rank-2.png);
-
-    & + .c-mobile-invite-rank__list__item__avatar {
-      border-color: #b7cdfd;
-    }
-  }
-
-  &.c-mobile-invite-rank__list__item__rank--3 {
-    background-image: url(./imgs/rank-3.png);
-
-    & + .c-mobile-invite-rank__list__item__avatar {
-      border-color: #ffbc72;
-    }
-  }
 }
 
 .c-mobile-invite-rank__list__item__avatar {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   margin-right: 12px;
-  border: 2px solid transparent;
   border-radius: 50%;
 }
 
 .c-mobile-invite-rank__list__item__nick {
+  display: flex;
   flex: 1;
-  margin-right: 16px;
-  font-size: 16px;
-  line-height: 56px;
+  align-items: center;
+  margin-right: 32px;
+  overflow: hidden;
+  font-size: 14px;
+  color: rgba(#000, 0.8);
 }
 
 .c-mobile-invite-rank__list__item__number {
+  padding-right: 16px;
   font-size: 16px;
+  color: rgba(#000, 0.4);
 }
 </style>
