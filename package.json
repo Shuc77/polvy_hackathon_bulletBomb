@@ -72,6 +72,7 @@
     "@polyv/iar-questionnaire-ui": "^2.5.0-rc-20250724.1",
     "@polyv/iar-reward-receive-ui": "^2.5.0-rc-20250724.1",
     "@polyv/icons-cli": "1.4.0",
+    "@polyv/live-watch-ai-sdk": "^1.0.0-rc-20250724.1",
     "@polyv/live-watch-ai-ui": "1.0.0-rc-20250724.1",
     "@polyv/product-ui": "1.2.0-rc-20250724.2",
     "@types/lodash-es": "4.17.6",
