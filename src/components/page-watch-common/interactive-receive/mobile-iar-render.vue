@@ -23,7 +23,7 @@
       </template>
 
       <!-- 问卷 -->
-      <mobile-questionnaire-popup />
+      <mobile-questionnaire-popup v-if="!useV2Questionnaire" />
       <!-- 红包弹窗 -->
       <mobile-redpack-popup />
       <!-- 红包雨组件 -->
@@ -32,20 +32,12 @@
       <mobile-score-record-popup v-if="scoreRedpackEnabled" />
       <!-- 报名抽奖 -->
       <mobile-enroll-lottery-popup />
-      <!-- 商品库弹层 -->
-      <portrait-product-list-popup v-if="interactSetting.productEnabled" />
-      <!-- 商品库职位详情弹层 -->
-      <mobile-product-job-detail-popup />
       <!-- 云席相关提示弹窗 -->
       <mobile-seat-table-tips
         v-if="seatTableVisible && isMeetingSeatTableTemplate && seatTableMenuData.visible"
       />
-      <!-- 下单弹窗 -->
-      <mobile-order-popup />
       <!-- 二维码分弹窗 -->
       <mobile-qr-code-share-dialog />
-      <!-- 订单中心弹窗 -->
-      <mobile-order-center-popup />
       <!-- 优惠券弹窗 -->
       <mobile-coupon-common-popup />
       <!-- 优惠券已领取弹窗 -->
@@ -70,12 +62,8 @@ import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
 import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
-import MobileProductJobDetailPopup from './product/mobile-product-job-detail-popup.vue';
 import MobileSeatTableTips from './seat-table/seat-table-tips/mobile-seat-table-tips.vue';
-import MobileOrderPopup from './order/mobile-order-popup.vue';
-import MobileOrderCenterPopup from './order/mobile-order-center-popup.vue';
 import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
-import PortraitProductListPopup from './product/portrait-product-list-popup.vue';
 import MobileCouponCommonPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-common-popup.vue';
 import MobileCouponUserPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-user-popup.vue';
 
@@ -92,8 +80,8 @@ const {
   announcementFunctionVisible,
   seatTableVisible,
   isMeetingSeatTableTemplate,
-  interactSetting,
   useV2Lottery,
+  useV2Questionnaire,
 
   feedbackEnabled,
 } = storeDefinitionToRefs(useInteractReceiveStore);

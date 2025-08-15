@@ -1,7 +1,7 @@
 <!-- PC 商品列表弹层 -->
 <template>
   <div
-    v-if="interactSetting.productSuspendOnPlayerEnabled"
+    v-if="interactSetting.productEntryPosition === ProductEntryPosition.Player"
     ref="productListPopupRef"
     class="c-pc-product-list-popup"
   >
@@ -24,6 +24,7 @@ import { useProductUILoader } from '../load-product-ui';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProductUI } from '../hooks/use-product-ui';
+import { ProductEntryPosition } from '@polyv/live-watch-sdk';
 
 const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 

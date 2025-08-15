@@ -18,7 +18,7 @@ export const interactionEvents = {
   OpenCheckIn: 'OpenCheckIn',
   /**
    * 打开问卷弹窗
-   * @param {boolean} visible 显示状态
+   * @param {string} questionnaireId 问卷ID
    */
   OpenQuestionnaire: 'OpenQuestionnaire',
   /**

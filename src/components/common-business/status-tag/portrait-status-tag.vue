@@ -30,7 +30,7 @@ const { statusTagText, liveStatus } = useStatusTag({
   font-size: 12px;
   line-height: 20px;
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 16px;
 }
 

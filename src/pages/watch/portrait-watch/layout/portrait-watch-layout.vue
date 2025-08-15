@@ -56,6 +56,15 @@
 
     <!-- 播放器提示 -->
     <player-tips class="c-portrait-watch-layout__player-tips"></player-tips>
+
+    <!-- 评论上墙 -->
+    <transition name="fade">
+      <speak-top-business
+        class="c-portrait-watch-layout__speak-to-top"
+        v-show="portraitShowSpeakToTop"
+        layout="portrait"
+      ></speak-top-business>
+    </transition>
   </div>
 </template>
 
@@ -64,6 +73,7 @@ import PortraitConnectMicContainer from '@/components/page-watch-common/connect-
 import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
+import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { computed, nextTick, ref, watch } from 'vue';
@@ -82,8 +92,12 @@ import { MainScreenContent } from '@polyv/live-watch-sdk';
 const { isVerticalScreenOrientation, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
 const portraitLayoutStore = usePortraitLayoutStore();
-const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
-  storeDefinitionToRefs(usePortraitLayoutStore);
+const {
+  portraitDocWrapHeight,
+  portraitDocContentHeight,
+  portraitPlayerIsPageFullscreen,
+  carouselActiveIndex,
+} = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
@@ -123,6 +137,11 @@ const micTouchEnd = (e: TouchEvent) => {
     portraitMicContainer.value.onTouchEnd(e.changedTouches[0].pageY);
   }
 };
+
+// 竖屏模版是否显示评论上墙
+const portraitShowSpeakToTop = computed(() => {
+  return carouselActiveIndex.value === 1;
+});
 
 const isDocMainScreen = computed(() => {
   return (
@@ -296,5 +315,10 @@ watch(
   left: 50%;
   z-index: 2300;
   transform: translateX(-50%);
+}
+
+.c-portrait-watch-layout__speak-to-top {
+  z-index: 2200;
+  transition: all 0.3s ease-in-out;
 }
 </style>

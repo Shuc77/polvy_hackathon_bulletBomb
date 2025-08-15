@@ -29,6 +29,8 @@ export interface WxShareUrlParams {
 export interface WeixinStoreState {
   /** 是否使用微信 SDK 功能 */
   wxSdkFeatureEnabled: Ref<boolean>;
+  /** 是否支持使用企业微信相关功能 */
+  workWeixinFunctionEnabled: Ref<boolean>;
   /** 是否进入微信快照页模式 */
   isWeixinSnapshotPageMode: Ref<boolean>;
   /** 是否已进行微信授权 */
@@ -68,6 +70,9 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
 
   /** 是否使用微信 SDK 功能 */
   const wxSdkFeatureEnabled = ref(ynToBool(paramGetter().wxSdkFeatureEnabled(), YN.Y));
+
+  /** 是否支持使用企业微信相关功能 */
+  const workWeixinFunctionEnabled = ref(false);
 
   /** 是否进入微信快照页模式 */
   const isWeixinSnapshotPageMode = ref(false);
@@ -156,6 +161,8 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
   function syncWeixinStore() {
     const watchCore = watchAppStore.getWatchCore();
 
+    workWeixinFunctionEnabled.value = watchCore.weixin.getWorkWeixinFunctionEnabled();
+
     isWeixinSnapshotPageMode.value = isWeixin && watchCore.weixin.isWeixinSnapshotPageMode();
     weixinAuthorized.value = watchCore.weixin.isWeixinAuthorized();
     weixinWatchAuthorized.value = watchCore.weixin.isWeixinWatchAuthorized();
@@ -168,6 +175,7 @@ export const useWeixinStore = defineStore<'weixin', WeixinStore>('weixin', () =>
 
   return {
     wxSdkFeatureEnabled,
+    workWeixinFunctionEnabled,
     isWeixinSnapshotPageMode,
     weixinAuthorized,
     weixinWatchAuthorized,

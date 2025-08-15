@@ -116,4 +116,7 @@ export const globalEvents = {
    * 打开 AI 看 思维导图
    */
   OpenPlaybackOutlineDialog: 'OpenPlaybackOutlineDialog',
+
+  /** 打开文件管理弹窗 */
+  OpenFileManagement: 'OpenFileManagement',
 };

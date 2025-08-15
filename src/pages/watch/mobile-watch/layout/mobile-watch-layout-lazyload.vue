@@ -28,6 +28,9 @@
     <!-- 设置昵称 -->
     <mobile-chat-set-nick v-if="canSetNick" />
 
+    <!-- 文件管理 -->
+    <mobile-file-management />
+
     <!-- 切换语言弹层 -->
     <mobile-lang-switch v-if="langSwitchEnabled" />
 
@@ -95,6 +98,7 @@ import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-la
 import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
 import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
 import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
+import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
 import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';

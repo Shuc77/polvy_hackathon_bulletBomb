@@ -18,7 +18,7 @@ interface DialogConfig {
   };
 }
 const showDetachedWindow = ref(false);
-const remderParent = computed(() => {
+const renderParent = computed(() => {
   return showDetachedWindow.value
     ? dockedCaptionInventory.detachedSlots
     : dockedCaptionInventory.defaultSlots;
@@ -161,7 +161,7 @@ export const useSubtitleDetached = () => {
     initDragAndResize,
     scrollToBottomDetached,
 
-    remderParent,
+    renderParent,
     showDetachedWindow,
     dockedCaptionInventory,
   };

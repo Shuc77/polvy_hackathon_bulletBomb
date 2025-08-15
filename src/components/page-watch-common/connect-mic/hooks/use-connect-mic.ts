@@ -1,7 +1,7 @@
 import { translate } from '@/assets/lang';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { ConnectMicError, ConnectMicEvents } from '@polyv/live-watch-sdk';
+import { ConnectMicError, ConnectMicEvents, FacingMode } from '@polyv/live-watch-sdk';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useGlobalInject } from '@/app/use-global-inject';
@@ -108,6 +108,15 @@ export const useConnectMicControl = () => {
     }
   }
 
+  /** 切换前后摄像头 */
+  function toggleFacingMode() {
+    if (connectMicStore.facingMode === FacingMode.User) {
+      watchCore.connectMic.changeFacingMode(FacingMode.Environment);
+    } else {
+      watchCore.connectMic.changeFacingMode(FacingMode.User);
+    }
+  }
+
   /** 结束连麦 */
   function endConnectMic() {
     watchCore.connectMic.endConnectMic();
@@ -120,6 +129,7 @@ export const useConnectMicControl = () => {
     enabledAudio,
     disabledAudio,
     toggleAudio,
+    toggleFacingMode,
     endConnectMic,
   };
 };
@@ -182,6 +192,11 @@ export const useConnectMic = () => {
     }
   }
 
+  // 前后摄像头切换
+  function onFacingModeChange() {
+    connectMicStore.syncFacingMode();
+  }
+
   onMounted(() => {
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.TeacherHangUp, onHandUpMic);
@@ -194,6 +209,7 @@ export const useConnectMic = () => {
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
+    watchCore.connectMic.eventEmitter.on(ConnectMicEvents.FacingModeChange, onFacingModeChange);
   });
 
   onBeforeUnmount(() => {
@@ -204,5 +220,6 @@ export const useConnectMic = () => {
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.ConnectMicOverLimit, onOverLimit);
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
+    watchCore.connectMic.eventEmitter.off(ConnectMicEvents.FacingModeChange, onFacingModeChange);
   });
 };

@@ -16,8 +16,18 @@
           :placeholder="$lang('subtitle.change')"
         />
       </div>
-      <div class="pws-pc-subtitle__top-skin c-pc-subtitle-hover-control">
-        <div class="c-pc-subtitle-hover-control__top">
+      <div
+        class="pws-pc-subtitle__top-skin c-pc-subtitle-hover-control"
+        :class="{
+          'c-pc-subtitle-hover-control--alone': !subtitleTranslateEnabled,
+        }"
+      >
+        <div
+          class="c-pc-subtitle-hover-control__top"
+          :class="{
+            'c-pc-subtitle-hover-control__top--alone': !subtitleTranslateEnabled,
+          }"
+        >
           <pc-icon-hover-control
             class="pws-primary-text-color"
             size="24"
@@ -26,7 +36,7 @@
         </div>
       </div>
 
-      <custom-teleport :to="remderParent">
+      <custom-teleport :to="renderParent">
         <div>
           <div
             v-if="subtitleDisplayNumberLimitEnabled && subtitleDisplayNumber > 0"
@@ -139,7 +149,7 @@ const {
   currentSubtitle,
 } = useSubtitle(subtitleScroll);
 
-const { remderParent, showDetachedWindow } = useSubtitleDetached();
+const { renderParent, showDetachedWindow } = useSubtitleDetached();
 
 const onHoverControl = () => {
   showDetachedWindow.value = !showDetachedWindow.value;
@@ -173,6 +183,14 @@ const onHoverControl = () => {
   z-index: 1;
   text-align: right;
   cursor: pointer;
+}
+
+.c-pc-subtitle-hover-control--alone {
+  top: 0;
+}
+
+.c-pc-subtitle-hover-control__top--alone {
+  padding: 12px 0;
 }
 
 .c-pc-subtitle__new {

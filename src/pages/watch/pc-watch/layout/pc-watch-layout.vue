@@ -138,17 +138,20 @@
               <pc-watch-layout-player-side-popup />
               <pc-product-render v-if="iarSdkLoaded" />
 
-              <!-- 商品库小卡片 -->
-              <pc-product-small-card v-if="iarSdkLoaded" />
+              <!-- 播放器右下角挂件区 -->
+              <div class="c-pc-watch-layout__main__side-pendant-render">
+                <!-- 商品库小卡片 -->
+                <pc-product-small-card v-if="iarSdkLoaded" />
 
-              <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
-              <pc-product-pendant
-                v-if="
-                  iarSdkLoaded &&
-                  interactSetting.productSuspendOnPlayerEnabled &&
-                  interactSetting.productEnabled
-                "
-              />
+                <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
+                <pc-product-pendant
+                  v-if="
+                    iarSdkLoaded &&
+                    interactSetting.productEntryPosition === ProductEntryPosition.Player &&
+                    interactSetting.productEnabled
+                  "
+                />
+              </div>
             </div>
           </div>
 
@@ -274,6 +277,7 @@ import {
   MainScreenContent,
   MultiMeetingListLayout,
   MotivationLikeType,
+  ProductEntryPosition,
 } from '@polyv/live-watch-sdk';
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
@@ -637,6 +641,17 @@ $--layout-sub-pack-up-height: 40px !default;
   height: 100%;
   overflow: hidden;
   pointer-events: none;
+}
+
+.c-pc-watch-layout__main__side-pendant-render {
+  position: absolute;
+  right: 16px;
+  bottom: 60px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
 }
 
 .c-pc-watch-layout__main__other-live-booking {

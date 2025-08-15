@@ -26,8 +26,13 @@ const usePlayerSizeCompute = () => {
    * 获取视频区域高度
    */
   function getVideoAreaHeight() {
-    const topStopHeight = 51; // 设计稿如此
-    const bottomStopHeight = 218; // 设计稿如此
+    const layoutHeight = portraitLayoutStore.portraitWatchLayoutHeight;
+    const designHeight = 667;
+
+    const topStopHeight = Math.floor(layoutHeight / (designHeight / 51)); // 设计稿如此
+    const bottomStopHeight = Math.floor(layoutHeight / (designHeight / 218)); // 设计稿如此
+
+    const videoAreaHeight = layoutHeight - topStopHeight - bottomStopHeight;
 
     return {
       /** 顶部阻挡区域高度 */
@@ -35,8 +40,7 @@ const usePlayerSizeCompute = () => {
       /** 底部阻挡区域高度 */
       bottomStopHeight,
       /** 视频区域高度 */
-      videoAreaHeight:
-        portraitLayoutStore.portraitWatchLayoutHeight - topStopHeight - bottomStopHeight,
+      videoAreaHeight,
     };
   }
 

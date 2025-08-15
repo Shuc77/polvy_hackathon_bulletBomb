@@ -2,6 +2,8 @@ import { useLangStore } from '@/store/use-lang-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { provide, reactive, watchEffect } from 'vue';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 /**
  * 互动功能全局配置注入的 key
@@ -15,6 +17,8 @@ export const useIarGlobalConfigHook = () => {
   const langStore = useLangStore();
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
+  const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
+  const { getPlvWebviewBridge } = useWebviewStore();
 
   function getIarDelayTime() {
     return playbackStore.chatReplayEnabled ? 0 : playerStore.delayTime;
@@ -23,6 +27,16 @@ export const useIarGlobalConfigHook = () => {
   const provideData = reactive({
     globalLang: langStore.currentLang,
     globalDelayTime: getIarDelayTime(),
+    getPlvWebviewBridge,
+    isPlvWebview: () => {
+      return isPlvWebview.value;
+    },
+    getPlvWebviewSmallWindowSize: () => {
+      return {
+        width: plvWebviewDataSize.value.width,
+        height: plvWebviewDataSize.value.height,
+      };
+    },
   });
 
   watchEffect(() => {

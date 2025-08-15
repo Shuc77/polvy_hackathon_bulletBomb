@@ -1,7 +1,6 @@
 <!-- PC 商品详情弹层 -->
 <template>
   <div
-    v-if="interactSetting.productSuspendOnPlayerEnabled"
     ref="productDetailPopupRef"
     class="c-pc-product-detail-popup"
   >
@@ -20,15 +19,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, unref, defineAsyncComponent } from 'vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { useProductUILoader } from '../load-product-ui';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { computed, defineAsyncComponent, ref, unref } from 'vue';
 import { useProductUI } from '../hooks/use-product-ui';
-
-const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+import { useProductUILoader } from '../load-product-ui';
 
 const { loadProductUI } = useProductUILoader();
 

@@ -36,6 +36,13 @@
         @click="onClickSetNick"
       />
 
+      <!-- 文件管理 -->
+      <more-item
+        :icon-comp="MobileIconMoreFiles"
+        :text="$lang('fileManagement.title')"
+        @click="onClickFileManagement"
+      />
+
       <!-- 投诉反馈 -->
       <more-item
         v-if="feedbackMenuVisible"
@@ -83,7 +90,6 @@
         :text="$lang('player.lineSetting')"
         @click="onClickLineSetting"
       />
-
       <!-- 清晰度设置 -->
       <more-item
         v-if="qualitySettingVisible && isPortraitWatchLayout"
@@ -243,6 +249,7 @@ import {
   MobileIconMoreStreamTrackNormal,
   MobileIconMoreVideo,
   MobileIconMoreWithdraw,
+  MobileIconMoreFiles,
 } from '@/components/component-icons/mobile/map';
 import {
   MobileOriginIconMoreHideDonate,
@@ -351,6 +358,12 @@ function onClickScoreRecord() {
 /** 点击修改昵称 */
 function onClickSetNick() {
   getEmitter().emit(appEvents.chat.OpenSetNick, true);
+  closeMore();
+}
+
+/** 点击文件管理 */
+function onClickFileManagement() {
+  getEmitter().emit(appEvents.global.OpenFileManagement, true);
   closeMore();
 }
 

@@ -24,27 +24,21 @@ export const useMainScreen = () => {
   const layoutStore = useLayoutStore();
 
   /**
-   * 重置移动端主屏幕
+   * 重置主屏幕
+   * @param opts - 选项
+   * @param opts.ignoreFollowTeacher - 是否忽略跟随讲师模式
    */
-  function __resetMobileMainScreen(opts: { ignoreFollowTeacher: boolean }) {
-    const mainScreenLayoutMode = layoutStore.mainScreenLayoutMode;
-
-    if (mainScreenLayoutMode === MainScreenLayoutMode.FollowTeacher && opts.ignoreFollowTeacher) {
+  function resetMainScreen({ ignoreFollowTeacher = false } = {}) {
+    if (!docStore.canRenderDoc) {
+      layoutStore.$patch({
+        mainScreen: MainScreenContent.Player,
+      });
       return;
     }
 
-    layoutStore.$patch({
-      mainScreen: MainScreenContent.Player,
-    });
-  }
-
-  /**
-   * 重置 PC 端主屏幕
-   */
-  function __resetPcMainScreen(opts: { ignoreFollowTeacher: boolean }) {
     const mainScreenLayoutMode = layoutStore.mainScreenLayoutMode;
 
-    if (mainScreenLayoutMode === MainScreenLayoutMode.FollowTeacher && opts.ignoreFollowTeacher) {
+    if (mainScreenLayoutMode === MainScreenLayoutMode.FollowTeacher && ignoreFollowTeacher) {
       return;
     }
 
@@ -63,27 +57,6 @@ export const useMainScreen = () => {
         });
         break;
     }
-  }
-
-  /**
-   * 重置主屏幕
-   * @param opts - 选项
-   * @param opts.ignoreFollowTeacher - 是否忽略跟随讲师模式
-   */
-  function resetMainScreen({ ignoreFollowTeacher = false } = {}) {
-    if (!docStore.canRenderDoc) {
-      layoutStore.$patch({
-        mainScreen: MainScreenContent.Player,
-      });
-      return;
-    }
-
-    if (isMobile) {
-      __resetMobileMainScreen({ ignoreFollowTeacher });
-      return;
-    }
-
-    __resetPcMainScreen({ ignoreFollowTeacher });
   }
 
   /**

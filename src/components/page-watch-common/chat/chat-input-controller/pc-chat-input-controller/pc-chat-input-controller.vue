@@ -51,6 +51,13 @@
           <pc-icon-bulletin class="c-pc-msg-input-wrap__icons__item__icon" />
         </div>
 
+        <div
+          class="c-pc-msg-input-wrap__icons__item pws-pc-msg-bottom-input-wrap-item c-pc-chat-input-controller__file-button"
+          @click="onClickFile"
+        >
+          <mobile-icon-more-files></mobile-icon-more-files>
+        </div>
+
         <div style="margin-left: auto"></div>
 
         <!-- 我的奖励 -->
@@ -89,6 +96,7 @@ import { isIE } from '@/assets/utils/browser';
 
 import { useGlobalInject } from '@/app/use-global-inject';
 import { PcIconBulletin } from '@/components/component-icons/pc/map';
+import { MobileIconMoreFiles } from '@/components/component-icons/mobile/map';
 import PcDonatePanel from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-panel.vue';
 import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
@@ -152,6 +160,10 @@ function onClickDonateEnter() {
 // 点击我的奖励
 function onClickPersonalReward() {
   getEmitter().emit(appEvents.global.OpenPersonalRewardDialog);
+}
+
+function onClickFile() {
+  getEmitter().emit(appEvents.global.OpenFileManagement, true);
 }
 
 // 更多面板显示交互
@@ -252,5 +264,11 @@ function onClickAnnouncement() {
   right: 0;
   bottom: 0;
   background: inherit;
+}
+
+.c-pc-chat-input-controller__file-button {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
 }
 </style>

@@ -277,7 +277,8 @@ export const usePlayerControl = () => {
       unref(lineSettingVisible) ||
       unref(qualitySettingVisible) ||
       unref(latencyModeSettingVisible) ||
-      unref(subtitleStore.replaySubtitleVisible)
+      unref(subtitleStore.replaySubtitleVisible) ||
+      unref(subtitleStore.liveSubtitlesEnable)
     );
   });
 

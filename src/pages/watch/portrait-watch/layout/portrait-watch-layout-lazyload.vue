@@ -96,6 +96,9 @@
 
     <!-- 我的奖励弹层 -->
     <mobile-personal-reward-popup />
+
+    <!-- 文件管理 -->
+    <mobile-file-management />
   </div>
 </template>
 
@@ -132,6 +135,7 @@ import MobileMemberListRulePopup from '@/components/page-watch-common/member-lis
 import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-playback-setting.vue';
 import PortraitMultiMeetingPopup from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-popup.vue';
 import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
+import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

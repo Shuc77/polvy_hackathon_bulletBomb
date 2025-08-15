@@ -8,7 +8,7 @@ import {
 } from '@/components/page-watch-common/message-effect/type';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { ChatMsgEffectType } from '@polyv/live-watch-sdk';
+import { ChatMsgEffectType, ProductEntryPosition } from '@polyv/live-watch-sdk';
 import { computed } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
@@ -51,7 +51,7 @@ export const useEffectMsg = () => {
 
       if (!isMobile) {
         // PC 端，开启「播放器是否悬浮商品列表入口开关」，打开商品列表弹层
-        if (interactSetting.value.productSuspendOnPlayerEnabled) {
+        if (interactSetting.value.productEntryPosition === ProductEntryPosition.Player) {
           getEmitter().emit(appEvents.product.OpenProductListPopup);
           return;
         }
