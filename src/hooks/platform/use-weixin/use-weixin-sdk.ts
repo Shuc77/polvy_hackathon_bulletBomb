@@ -169,6 +169,12 @@ export const useWeixinSdk = () => {
         return resolve(undefined);
       }
 
+      // 不支持企业微信功能
+      if (isWorkWeixin && !weixinStore.workWeixinFunctionEnabled) {
+        console.warn('work weixin-sdk is disable');
+        return resolve(undefined);
+      }
+
       getWeixinSdkByChannelId(channelStore.channelId)
         .then(result => {
           return resolve(result);

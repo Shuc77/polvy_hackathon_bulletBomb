@@ -41,11 +41,11 @@ export const useWatchIdentifySDKSceneLoader = () => {
     const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20250703',
+        version: 'rc-20250814',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20250703',
+        version: 'rc-20250814',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,

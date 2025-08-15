@@ -22,7 +22,7 @@ export const useQuestionnaireEntrance = () => {
     name: 'interact.questionnaire.title',
     icon: require('./imgs/icon-questionnaire.png'),
     icon2: require('./imgs/icon-questionnaire_p.png'),
-    onClick: () => getEmitter().emit(appEvents.interaction.OpenQuestionnaire, true),
+    onClick: () => getEmitter().emit(appEvents.interaction.OpenQuestionnaire),
   };
 
   /** 设置问卷二次入口 */

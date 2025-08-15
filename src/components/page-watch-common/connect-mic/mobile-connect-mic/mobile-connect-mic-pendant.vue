@@ -84,6 +84,20 @@
         @click="toggleVideo"
       ></div>
 
+      <!-- 切换前后摄像头 -->
+      <div
+        v-if="
+          supportFacingMode &&
+          connectMicStatus === ConnectMicStatus.Connected &&
+          localConnectMicType === ConnectMicType.Video
+        "
+        class="c-mobile-connect-mic-pendant__button c-mobile-connect-mic-pendant__button--facing-mode"
+        :class="{
+          'c-mobile-connect-mic-pendant__button--facing-disabled': localIsVideoMuted,
+        }"
+        @click="toggleFacingMode"
+      ></div>
+
       <!-- 麦克风开关 -->
       <div
         v-if="connectMicStatus === ConnectMicStatus.Connected"
@@ -175,6 +189,7 @@ useAppendTo(wrapRef, getAppBodyElement());
 
 const {
   supportConnectMic,
+  supportFacingMode,
   connectMicStatus,
   connectMicType,
   localIsVideoMuted,
@@ -191,7 +206,7 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 const { applyConnectMic, cancelApplyConnectMic } = useConnectMicApply();
 
-const { endConnectMic, toggleVideo, toggleAudio } = useConnectMicControl();
+const { endConnectMic, toggleVideo, toggleAudio, toggleFacingMode } = useConnectMicControl();
 
 useConnectMic();
 
@@ -358,6 +373,13 @@ const { top } = useAsideDrag({
 }
 .c-mobile-connect-mic-pendant__button--open {
   background-image: url(../imgs/btn-set.png);
+}
+.c-mobile-connect-mic-pendant__button--facing-mode {
+  background-image: url(../imgs/btn-facingmode-user.png);
+}
+.c-mobile-connect-mic-pendant__button--facing-disabled {
+  pointer-events: none;
+  background-image: url(../imgs/btn-facingmode-environment.png);
 }
 
 .c-mobile-connect-mic-pendant__tips {

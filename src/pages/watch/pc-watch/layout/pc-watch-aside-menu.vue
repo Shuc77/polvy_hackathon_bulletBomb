@@ -108,7 +108,8 @@
         <!-- 商品库 tab，如果开了「播放器是否悬浮商品列表入口开关」，则不显示 -->
         <pc-aside-tab-pane
           v-if="
-            menu.menuType === ChannelMenuType.Buy && !interactSetting.productSuspendOnPlayerEnabled
+            menu.menuType === ChannelMenuType.Buy &&
+            interactSetting.productEntryPosition === ProductEntryPosition.MenuBar
           "
           :key="`buy-${index}`"
           :label="menu.name"
@@ -171,7 +172,7 @@ import PcChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips
 import PcChatRoom from '@/components/page-watch-common/chat/chat-room/pc-chat-room.vue';
 import PcMicroActivity from '@/components/page-watch-common/micro-activity/pc-micro-activity/pc-micro-activity.vue';
 import PcConnectMic from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic.vue';
-import PcProductList from '@/components/page-watch-common/interactive-receive/product/pc-product-list.vue';
+import PcProductList from '@/components/page-watch-common/product/product-list/pc-product-list.vue';
 import PcVotePanel from '@/components/page-watch-common/interactive-receive/vote/pc-vote-panel.vue';
 import PcMemberList from '@/components/page-watch-common/member-list/member-list.vue';
 import PcQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/pc-question-answer.vue';
@@ -206,7 +207,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useDonateStore } from '@/store/use-donate-store';
 
-import { ChannelMenuType, MotivationLikeType } from '@polyv/live-watch-sdk';
+import { ChannelMenuType, MotivationLikeType, ProductEntryPosition } from '@polyv/live-watch-sdk';
 
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';

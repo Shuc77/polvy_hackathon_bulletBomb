@@ -146,7 +146,7 @@ export function createWatchApp() {
 
   function getTargetSessionIdByUrl(): string | undefined {
     // @PLV-WARN 这两种模式下，只从 query 参数中获取
-    if (isBuildForFeedMainMode() || isStaticBuildMode()) {
+    if (isBuildForFeedMainMode() || isStaticBuildMode() || paramGetter().channelId()) {
       return paramGetter().targetSessionId();
     }
 
@@ -248,16 +248,9 @@ export function createWatchApp() {
       return;
     }
 
-    // 处理特殊授权，授权出现异常只会弹 toast，不中断页面渲染
-    const { handleSpecialAuth } = useAuthSpecial();
-    const isSpecialAuthError = await handleSpecialAuth();
-    if (isSpecialAuthError) {
-      return;
-    }
-
     // 用户系统拦截
     const { checkIdentityInfoLogin } = useUserIdentityIntercept();
-    const checkIdentityInfoLoginResult = checkIdentityInfoLogin();
+    const checkIdentityInfoLoginResult = await checkIdentityInfoLogin();
     if (checkIdentityInfoLoginResult) {
       return;
     }
@@ -266,6 +259,13 @@ export function createWatchApp() {
     const { checkSaleInvite } = useSaleInviteIntercept();
     const checkSaleInviteResult = await checkSaleInvite();
     if (checkSaleInviteResult) {
+      return;
+    }
+
+    // 处理特殊授权，授权出现异常只会弹 toast，不中断页面渲染
+    const { handleSpecialAuth } = useAuthSpecial();
+    const isSpecialAuthError = await handleSpecialAuth();
+    if (isSpecialAuthError) {
       return;
     }
 

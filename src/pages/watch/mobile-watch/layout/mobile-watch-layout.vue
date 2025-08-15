@@ -80,6 +80,13 @@
       :style="mainScreenStyles"
     >
       <mobile-count-down-layer />
+
+      <div class="c-mobile-watch-layout__top__controls">
+        <div class="c-mobile-watch-layout__top__controls__right">
+          <!-- 直播广场 -->
+          <live-square class="c-mobile-watch-layout__top-layer__live-square" />
+        </div>
+      </div>
     </div>
 
     <!-- 连麦区 -->
@@ -177,6 +184,8 @@ import SmallWindowControl from '@/components/page-watch-common/player/player-con
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 import { useChatStore } from '@/store/use-chat-store';
 import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
+import liveSquare from '@/components/page-watch-common/live-square/live-square.vue';
+import { usePageStore } from '@/store/use-page-store';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
@@ -215,6 +224,8 @@ const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
+const { pageClientWidth, pageClientHeight } = storeDefinitionToRefs(usePageStore);
+
 const layoutWrapRef = ref<HTMLDivElement>();
 const layoutTopRef = ref<HTMLDivElement>();
 const layoutBottomRef = ref<HTMLDivElement>();
@@ -229,7 +240,14 @@ useResizeObserver(layoutWrapRef, () => {
 const layoutTopDistance = computed(() => {
   if (!canRenderPlayer.value) return '0';
 
-  if (isVerticalScreenOrientation.value) return '56.25%';
+  if (isVerticalScreenOrientation.value) {
+    // FIX：在折叠屏（如华为 Mate X5）上，屏幕展开后，播放器占比过高，当出现输入法的时候，会导致页面底部没有位置显示输入框
+    // 这里处理在特定比例的页面上，播放器宽高比为 10:3，减少高度腾出位置给底部区域
+    if (pageClientWidth.value / pageClientHeight.value > 0.8) {
+      return '30%';
+    }
+    return '56.25%';
+  }
   if (isHorizontalScreenOrientation.value) return `${document.documentElement.clientHeight}px`;
   return '56.25%';
 });
@@ -439,7 +457,7 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 9;
+  z-index: 260;
   width: 100%;
   pointer-events: none;
 }
@@ -504,6 +522,23 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
 
   .c-mobile-player-main__play-btn {
     display: none;
+  }
+}
+
+.c-mobile-watch-layout__top__controls {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  margin-top: 12px;
+  pointer-events: none;
+
+  .c-mobile-watch-layout__top__controls__right {
+    margin-left: auto;
+  }
+
+  .c-mobile-watch-layout__top-layer__live-square {
+    margin-right: 12px;
+    pointer-events: initial;
   }
 }
 </style>

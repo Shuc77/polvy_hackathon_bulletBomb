@@ -8,6 +8,7 @@ import {
   ScreenShareInfo,
   MixStreamRenderMode,
   ConnectMicFitType,
+  FacingMode,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -20,6 +21,10 @@ export interface ConnectMicStoreState {
   connectMicEnabled: Ref<boolean>;
   /** 当前环境是否支持连麦 */
   supportConnectMic: Ref<boolean>;
+  /** 当前环境是否支持切换前后摄像头 */
+  supportFacingMode: Ref<boolean>;
+  /** 当前前后摄像头 */
+  facingMode: Ref<FacingMode>;
   /** 是否开启了连麦 */
   openMicStatus: Ref<boolean>;
   /** 邀请上麦状态 */
@@ -93,6 +98,8 @@ export interface ConnectMicStoreAction {
   syncConnectMicList(): void;
   /** 设置是否有连麦画面被暂停 */
   setIsConnectMicPaused(val: boolean): void;
+  /** 同步前后摄像头 */
+  syncFacingMode(): void;
 }
 
 export interface ConnectMicStore extends ConnectMicStoreState, ConnectMicStoreAction {}
@@ -112,6 +119,12 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 当前环境是否支持连麦 */
   const supportConnectMic = ref(__connectMicInfo.supportConnectMic);
+
+  /** 当前环境是否支持切换前后摄像头 */
+  const supportFacingMode = ref(__connectMicInfo.supportFacingMode);
+
+  /** 当前前后摄像头 */
+  const facingMode = ref(__connectMicInfo.facingMode);
 
   /** 是否开启了连麦 */
   const openMicStatus = ref(__connectMicInfo.openMicStatus);
@@ -318,6 +331,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     showJoinQueueNumberEnabled.value = connectMicInfo.showJoinQueueNumberEnabled;
     currentMicIndex.value = connectMicInfo.currentMicIndex;
     currentIsSpeaker.value = connectMicInfo.currentIsSpeaker;
+    facingMode.value = connectMicInfo.facingMode;
     connectMicFitType.value =
       watchCore.channel.getMixStreamRenderMode() === MixStreamRenderMode.Cover
         ? ConnectMicFitType.Cover
@@ -333,9 +347,16 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     connectMicList.value = watchCore.connectMic.getConnectMicList();
   }
 
+  function syncFacingMode(): void {
+    const watchCore = watchAppStore.getWatchCore();
+    facingMode.value = watchCore.connectMic.getConnectMicInfo().facingMode;
+  }
+
   return {
     connectMicEnabled,
     supportConnectMic,
+    supportFacingMode,
+    facingMode,
     openMicStatus,
     inviteStatus,
     connectMicType,
@@ -373,7 +394,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
     syncConnectMicInfo,
     syncConnectMicList,
-
+    syncFacingMode,
     setIsConnectMicPaused,
   };
 });

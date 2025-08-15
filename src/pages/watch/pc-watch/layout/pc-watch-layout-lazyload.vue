@@ -35,6 +35,9 @@
 
     <!-- 引导关注弹层 -->
     <pc-follow-dialog />
+
+    <!-- 文件管理 -->
+    <pc-file-management />
   </div>
 </template>
 
@@ -49,6 +52,7 @@ import PcIarRender from '@/components/page-watch-common/interactive-receive/pc-i
 import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-live-start-tips.vue';
 import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
 import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/pc-transmit-switch-tip.vue';
+import PcFileManagement from '@/components/page-watch-common/file-management/pc-file-management.vue';
 
 import PcFollowDialog from '@/components/page-watch-common/follow/follow-layer/pc-follow-dialog.vue';
 

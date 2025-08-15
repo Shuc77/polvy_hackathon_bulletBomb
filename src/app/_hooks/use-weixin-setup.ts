@@ -26,6 +26,8 @@ const useWorkWeixinSetup = async () => {
 
   const { canWorkWeixinAuthorize, redirectWorkWeixinAuthorize } = useWorkWeixinAuthorize();
 
+  console.info('[useWorkWeixinSetup] canWorkWeixinAuthorize', canWorkWeixinAuthorize);
+
   if (unref(canWorkWeixinAuthorize)) {
     await redirectWorkWeixinAuthorize({
       snsApiBase: watchCore.weixin.getWorkWeixinSnsApiBase(),

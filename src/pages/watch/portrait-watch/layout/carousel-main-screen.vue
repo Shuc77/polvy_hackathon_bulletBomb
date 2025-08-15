@@ -83,6 +83,9 @@
           v-if="canRenderDoc"
           class="c-portrait-carousel-main-screen__top-right__item"
         />
+
+        <!-- 直播广场 -->
+        <live-square class="c-portrait-carousel-main-screen__top-right__item" />
       </div>
     </boundary-wrap>
 
@@ -283,12 +286,6 @@
       <portrait-enroll />
     </div>
 
-    <!-- 评论上墙 -->
-    <speak-top-business
-      class="c-portrait-carousel-main-screen__speak-top"
-      layout="portrait"
-    ></speak-top-business>
-
     <!-- 其他直播预约 -->
     <common-other-live-booking class="c-portrait-carousel-main-screen__other-live-booking" />
   </div>
@@ -323,12 +320,12 @@ import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
 import PortraitMenuEntrance from '@/pages/watch/portrait-watch/components/menu/portrait-menu-entrance.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-online-user-capsule.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import PortraitRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
 import PortraitPlayerLoadingDetection from '@/components/page-watch-common/player/player-loading-detection/portrait-player-detection.vue';
+import LiveSquare from '@/components/page-watch-common/live-square/live-square.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -650,14 +647,14 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   }
 }
 
-.c-portrait-carousel-main-screen__speak-top {
-  z-index: 2300;
-}
-
 .c-portrait-carousel-main-screen__other-live-booking {
   position: absolute;
   top: 105px;
   left: 20px;
   z-index: 2200;
+}
+
+.c-portrait-carousel-main-screen__top-left__item__right {
+  margin-left: auto;
 }
 </style>

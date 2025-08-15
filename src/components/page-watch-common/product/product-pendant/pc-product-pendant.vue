@@ -31,14 +31,11 @@ const PcProductPendant = defineAsyncComponent(() => loadProductUI('pc-product-pe
 <style lang="scss">
 .c-pc-product-pendant {
   .plv-product-pc-pendant {
-    position: absolute;
-    right: 16px;
-    bottom: 12%;
     pointer-events: initial;
   }
 
   .plv-product-pc-pendant--collapsed {
-    right: 0;
+    transform: translateX(16px);
   }
 }
 </style>

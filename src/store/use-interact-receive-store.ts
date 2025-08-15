@@ -2,9 +2,9 @@
  * @file 互动功能接收端 store
  */
 
+import { isBoolean } from 'lodash-es';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
-import { isBoolean } from 'lodash-es';
 
 import { useChannelStore } from './use-channel-store';
 import { useLayoutStore } from './use-layout-store';
@@ -23,13 +23,12 @@ import {
   SeatTableTemplate,
 } from '@polyv/live-watch-sdk';
 
-import { useWatchAppStore } from './use-watch-app-store';
-import { useViewerStore } from './use-viewer-store';
 import { useThemeStore } from './use-theme-store';
+import { useViewerStore } from './use-viewer-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
-import { ProductGoodData } from '@/components/page-watch-common/interactive-receive/product/types/product-types';
-import { usePlaybackStore } from './use-playback-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
+import { usePlaybackStore } from './use-playback-store';
 
 /**
  * 互动功能二次入口数据
@@ -64,6 +63,8 @@ export interface InteractReceiveStoreState {
   hasBulletin: Ref<boolean>;
   /** 公告功能是否显示 */
   announcementFunctionVisible: ComputedRef<boolean>;
+  /** 是否使用 v2 版本的问答 */
+  useV2Questionnaire: ComputedRef<boolean>;
   /** 是否使用 v2 版本的抽奖 */
   useV2Lottery: ComputedRef<boolean>;
   /** 当前中奖记录列表 */
@@ -100,10 +101,6 @@ export interface InteractReceiveStoreState {
   productBubbleVisible: Ref<boolean>;
   /** 问卷是否显示返回按钮 */
   questionnaireBackBtnVisible: Ref<boolean>;
-  /** 当前商品选择的商品数据 */
-  currentProduct: Ref<ProductGoodData | undefined>;
-  /** 商品详情弹层是否可见 */
-  productDetailVisible: Ref<boolean>;
   /** 投诉反馈功能是否可见 */
   feedbackEnabled: ComputedRef<boolean>;
   /** 投诉反馈挂件是否可见 */
@@ -321,6 +318,17 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     const productBubbleVisible = ref(false);
 
+    const useV2Questionnaire = computed(() => {
+      let version = 'v2';
+
+      const queryVersion = paramGetter().questionnaireVersion();
+      if (queryVersion) {
+        version = queryVersion;
+      }
+
+      return version === 'v2';
+    });
+
     /** 问卷是否显示返回按钮 */
     const questionnaireBackBtnVisible = ref(true);
 
@@ -334,11 +342,6 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       }
       questionnaireBackBtnVisible.value = __visible;
     }
-
-    /** 当前商品选择的商品数据 */
-    const currentProduct = ref<ProductGoodData>();
-    /** 商品详情弹层是否可见 */
-    const productDetailVisible = ref(false);
 
     /** 投诉反馈功能是否可见 */
     const feedbackEnabled = computed(() => {
@@ -401,6 +404,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
       announcementTipsVisible,
       announcementFunctionVisible,
+      useV2Questionnaire,
       useV2Lottery,
       lotteryWinRecords,
       hasNotReceivedLottery,
@@ -421,9 +425,6 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       productBubbleVisible,
       questionnaireBackBtnVisible,
       setQuestionnaireBackBtnVisible,
-
-      currentProduct,
-      productDetailVisible,
 
       feedbackEnabled,
       feedbackPendantVisible,

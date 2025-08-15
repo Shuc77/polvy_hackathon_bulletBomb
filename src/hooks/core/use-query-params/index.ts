@@ -235,6 +235,8 @@ export const useQueryParams = (opts?: {
     aliPayLinkTarget: buildGetters<string>('aliPayLinkTarget'),
     /** 抽奖版本 */
     lotteryVersion: buildGetters<'v1' | 'v2'>('lotteryVersion'),
+    /** 问卷版本 */
+    questionnaireVersion: buildGetters<'v1' | 'v2'>('questionnaireVersion'),
   });
 
   /**

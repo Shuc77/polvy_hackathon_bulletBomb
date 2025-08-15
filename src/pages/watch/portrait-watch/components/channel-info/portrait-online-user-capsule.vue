@@ -32,16 +32,17 @@ function showInviteRank() {
 
 <style lang="scss">
 .portrait-online-user-capsule {
+  box-sizing: border-box;
   display: inline-flex;
   flex-shrink: 0;
   align-items: center;
-  height: 23px;
+  height: 20px;
   padding: 3px 8px;
 
   font-size: 12px;
   color: $--color-white;
   white-space: nowrap;
-  background-color: rgba(#000, 0.4);
+  background-color: rgba(#000, 0.2);
   border-radius: 18px;
 }
 </style>

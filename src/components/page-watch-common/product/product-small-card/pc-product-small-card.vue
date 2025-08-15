@@ -33,9 +33,6 @@ const {
 
 <style lang="scss">
 .c-pc-product-small-card {
-  position: absolute;
-  right: 8px;
-  bottom: 20%;
   pointer-events: initial;
 }
 </style>
