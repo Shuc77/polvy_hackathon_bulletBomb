@@ -73,7 +73,7 @@
     "@polyv/icons-cli": "1.4.0",
     "@polyv/live-watch-ai-sdk": "^1.0.0-rc-20250724.1",
     "@polyv/live-watch-ai-ui": "1.0.0-rc-20250724.1",
-    "@polyv/product-ui": "1.3.0-rc-20250814.1",
+    "@polyv/product-ui": "^1.3.0-rc-20250814.1",
     "@types/lodash-es": "4.17.6",
     "@types/socket.io-client": "1.4.36",
     "@typescript-eslint/eslint-plugin": "~7.18.0",
