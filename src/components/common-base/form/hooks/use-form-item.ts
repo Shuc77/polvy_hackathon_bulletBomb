@@ -1,6 +1,6 @@
 import { isMobile } from '@/assets/utils/browser';
 import { formatStyleSize } from '@/assets/utils/dom';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import Schema from '@/plugins/async-validator';
 import { computed, inject, InjectionKey, provide, ref, unref, watchEffect } from 'vue';
 import {

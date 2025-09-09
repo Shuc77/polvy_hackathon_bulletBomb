@@ -49,6 +49,9 @@ const buildMode = process.env.VUE_APP_BUILD_MODE;
 /** sdk 注入模式 */
 const inSdkInjectMode = (exports.inSdkInjectMode = buildMode === 'SDK_INJECT');
 
+/** 是否需要内部打包 Vue */
+const needInternalBuildVue = (exports.needInternalBuildVue = false);
+
 /** 是否为静态打包构建模式 */
 const isStaticBuildMode = (exports.isStaticBuildMode = buildMode === 'STATIC');
 
@@ -144,6 +147,8 @@ exports.defineConstants = {
   BUILD_ENV: JSON.stringify(process.env.BUILD_ENV),
   /** 是否为静态打包构建模式 */
   IS_STATIC_BUILD_MODE: JSON.stringify(isStaticBuildMode),
+  /** 是否需要内部打包 Vue 文件 */
+  NEED_INTERNAL_BUILD_VUE: JSON.stringify(needInternalBuildVue),
 };
 
 /** ts 配置文件 */

@@ -13,26 +13,7 @@
           v-for="(item, index) in pageAdvertList"
           :key="index"
         >
-          <div
-            :href="item.href"
-            class="c-pc-page-advert__item"
-            :class="{
-              'c-pc-page-advert__item--link': !!item.href,
-            }"
-            @click="openLink(item.href)"
-          >
-            <template v-if="item.advertType === PageAdvertType.Text">
-              {{ item.content }}
-            </template>
-            <template v-else>
-              <div
-                class="c-pc-page-advert__item__image"
-                :style="{
-                  backgroundImage: `url(${item.content})`,
-                }"
-              ></div>
-            </template>
-          </div>
+          <page-advert-item :advert="item" />
         </plv-carousel-item>
 
         <template #prevArrow>
@@ -58,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import { PageAdvertType } from '@polyv/live-watch-sdk';
 import {
   PcIconCloseRound,
   PcIconArrowLeft,
@@ -67,7 +47,7 @@ import {
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/pc-import';
 import { useAdvertStore } from '@/store/use-advert-store';
 import { storeToRefs } from 'pinia';
-import { openLink } from '@/assets/utils/url';
+import PageAdvertItem from './page-advert-item.vue';
 
 const advertStore = useAdvertStore();
 const { closePageAdvert } = advertStore;
@@ -124,32 +104,5 @@ const { pageAdvertVisible, pageAdvertEnabled, pageAdvertList, pageAdvertCloseVis
   font-size: 18px !important;
   color: $--color-white;
   cursor: pointer;
-}
-
-.c-pc-page-advert__item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  font-size: 16px;
-  text-decoration: none;
-  user-select: none;
-}
-
-.c-pc-page-advert__item--link {
-  cursor: pointer;
-}
-
-.c-pc-page-advert__item__image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-size: 100% 100%;
-}
-
-@media (max-width: 1280px) {
-  .c-pc-page-advert__item {
-    font-size: 14px;
-  }
 }
 </style>

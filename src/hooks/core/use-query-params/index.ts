@@ -243,7 +243,7 @@ export const useQueryParams = (opts?: {
    * 移除当前观看页地址上对应的参数
    * */
   function removeQueryParam(keys: QueryParamsKeyType[]) {
-    const urlParams = getUrlQueryParams();
+    const urlParams = getQueryParams();
     for (const key of keys) {
       if (!urlParams[key]) {
         continue;
@@ -285,6 +285,8 @@ export const useQueryParams = (opts?: {
 export type ParamGetterType = ReturnType<ReturnType<typeof useQueryParams>['paramGetter']>;
 
 export type QueryParamsKeyType = keyof ParamGetterType;
+
+export type QueryParamsHookType = ReturnType<typeof useQueryParams>;
 
 /**
  * 从 url 链接路径中提取频道号和场次 Id

@@ -1,4 +1,4 @@
-import { getRefElem } from '@/assets/utils/vue-utils';
+import { getRefElem } from '@polyv/vue-components';
 import { onBeforeUnmount, onMounted, Ref, ref } from 'vue';
 
 export interface UseAsideDragOption {

@@ -15,8 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, emitFunc } from '@polyv/vue-components';
 
 defineProps({
   /** 图片 */

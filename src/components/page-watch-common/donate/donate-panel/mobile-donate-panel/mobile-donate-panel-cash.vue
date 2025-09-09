@@ -83,12 +83,11 @@ import FormItem from '@/components/common-base/form/form-item.vue';
 import FormInput from '@/components/common-base/form/form-input/form-input.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ref } from 'vue';
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, emitFunc } from '@polyv/vue-components';
 import { FormSize, FormTheme } from '@/components/common-base/form/types/enums';
 
 import { useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
 
 const props = defineProps({
   /** 是否隐藏头部，默认：false */

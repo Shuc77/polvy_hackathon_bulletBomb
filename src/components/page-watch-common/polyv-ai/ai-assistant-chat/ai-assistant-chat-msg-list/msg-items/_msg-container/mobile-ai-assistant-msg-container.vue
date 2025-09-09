@@ -86,7 +86,7 @@
 import MobileAiAssistantMsgUser from '../_msg-user-info/mobile-ai-assistant-msg-user.vue';
 import { msgContainerProps, useMsgContainer } from './use-ai-assistant-msg-container';
 import { msgTipsControlProps, useMsgTipsControl } from './use-msg-tips-control';
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import { useAIAssistantMsgInjectInfo } from '../_hooks/use-ai-assistant-msg-inject-info';
 
 const props = defineProps({

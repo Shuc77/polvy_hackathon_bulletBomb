@@ -103,7 +103,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { isMobile } from '@/assets/utils/browser';
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import {
   countDownProps,
   countDownEmits,

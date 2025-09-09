@@ -74,11 +74,16 @@ export const useMultiPolyvWatchApp = () => {
     return watchAppStore.getPolyvWatchApp();
   }
 
+  function getAppElement() {
+    return watchAppStore.getAppElement();
+  }
+
   return {
     getWatchCore,
     getEmitter,
     getAppRootElement,
     getAppBodyElement,
+    getAppElement,
     getPolyvWatchApp,
     ...useMultiPolyvWatchAppScroll(),
     ...useMultiPolyvWatchAppTouch(),

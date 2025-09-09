@@ -46,12 +46,14 @@
     <!-- 图标广告 -->
     <pc-img-advert class="c-pc-chat-room-pendant__item" />
 
-    <!-- 点赞 -->
-    <pc-chat-like
-      v-if="likeFeatureEnabled"
-      class="c-pc-chat-room-pendant__item"
-      :upper-has-icon="hasOtherPendant"
-    />
+    <template v-if="!isPlaybackWatchUrl">
+      <!-- 点赞 -->
+      <pc-chat-like
+        v-if="likeFeatureEnabled"
+        class="c-pc-chat-room-pendant__item"
+        :upper-has-icon="hasOtherPendant"
+      />
+    </template>
   </div>
 </template>
 
@@ -77,7 +79,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useFinanceStore } from '@/store/use-finance-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 

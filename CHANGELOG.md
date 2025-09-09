@@ -4,6 +4,62 @@
 
 ---
 
+## v2.7.0(2025-09-09)
+
+### Deprecated
+
+- 删除不再需要的旧版聊天室消息组件
+
+### Bug Fixes
+
+- 修复 `sdk-inject` 和 `feed-inject` 模式运行时出现的相关报错
+
+### Features
+
+- 观看页支持直播新场次不携带 targetSessionId 时进入选择场次列表页面
+- 观看页支持用户体系游客模式
+- 观看页支持响应后台"学习激励"功能
+- 观看页支持响应后台广告设置中相关的外链配置
+- 观看页 vid 模式下支持互动重放
+- 直播预约支持响应后台自定义预约回调
+- 聊天室背景和播放器背景响应后台设置
+- 移动端竖屏新增实时字幕功能
+
+### Code Refactoring
+
+- 构建流程增加 `needInternalBuildVue` 标志位，详情请阅读 [README.md](./README.md)
+
+### Optimizes
+
+- 优化邀请观看下重复邀请时的页面提示
+- 统一和优化在不同端侧、不同延迟下播放按钮的样式和交互逻辑
+- 优化 AI看(智能大纲) 相关组件接入
+- 一系列小的更改和优化
+
+### Build System
+
+- 移除不再需要的 `vue-types`，新增 `@polyv/vue-components`，版本为 `1.0.1`
+- 移除 UI 层对 `@polyv/live-watch-ai-sdk` 的安装依赖，更新 `@polyv/live-watch-ai-ui` 版本至 `1.0.0-rc-20250904.1`
+- 更新 `@polyv/polyv-ui` 版本至 `4.11.0`
+- 更新 `@polyv/utils` 版本至 `2.14.0`
+- 更新 `@polyv/icons-cli` 版本至 `1.6.2`
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20250904`
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20250904`
+- 更新 `@polyv/product-ui` 版本至 `rc-20250904`
+- 更新 `@polyv/iar` 相关 UI 层 SDK，具体如下：
+
+```sh
+"@polyv/iar-answer-card-ui": "^2.5.0-rc-20250904.4",
+"@polyv/iar-bulletin-ui": "^2.5.0-rc-20250904.4",
+"@polyv/iar-check-in-ui": "^2.5.0-rc-20250904.4",
+"@polyv/iar-coupon-ui": "^2.5.0-rc-20250904.4",
+"@polyv/iar-lottery-ui": "^2.5.0-rc-20250904.4",
+"@polyv/iar-lucky-lottery-ui": "^2.5.0-rc-20250904.4",
+"@polyv/iar-questionnaire-ui": "^2.5.0-rc-20250904.4",
+```
+
+---
+
 ## v2.6.0(2025-08-15)
 
 ### Deprecated

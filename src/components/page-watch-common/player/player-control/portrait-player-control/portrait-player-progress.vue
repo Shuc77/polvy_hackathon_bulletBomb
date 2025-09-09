@@ -6,7 +6,7 @@
   >
     <!-- 播放暂停按钮 -->
     <div
-      v-if="playButtonVisible"
+      v-if="playerControlPlayBtnVisible"
       class="c-portrait-player-progress__button g-img-contain"
       :class="{
         'c-portrait-player-progress__button--pause': playStatus === PlayStatus.Playing,
@@ -75,7 +75,8 @@ const { portraitPlayerIsPageFullscreen } = storeDefinitionToRefs(usePortraitLayo
 
 const { toSeekVideo, toTogglePlay } = usePlayerAction();
 
-const { playbackTimeVisible, playerProgressVisible, playButtonVisible } = usePlayerControl();
+const { playbackTimeVisible, playerProgressVisible, playerControlPlayBtnVisible } =
+  usePlayerControl();
 </script>
 
 <style lang="scss">

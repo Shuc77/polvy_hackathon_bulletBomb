@@ -1,8 +1,7 @@
 import { onMounted, ref } from 'vue';
 import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 
 import { dialogPcProps } from '@/components/common-base/dialog/use-dialog';
 
@@ -19,6 +18,11 @@ export enum MessageBoxType {
   Confirm = 'Confirm',
 }
 
+export enum MessageBoxPositionType {
+  Fix = 'fix',
+  Absolute = 'absolute',
+}
+
 export const messageBoxCommonProps = () => ({
   /** 组件内部不会使用这个 props，只允许通过 $confirm 之类的实例方法来打开 */
   visible: PropUtils.bool.def(false),
@@ -28,6 +32,8 @@ export const messageBoxCommonProps = () => ({
   appendToBody: PropUtils.bool.def(true),
   /** 内容居中 */
   contentCenter: PropUtils.bool.def(false),
+  /** 定位类型 */
+  positionType: PropUtils.enum<MessageBoxPositionType>().def(MessageBoxPositionType.Fix),
 
   // =======================
 
@@ -69,7 +75,7 @@ export const useMessageBox = (options: {
   props: VueProps<typeof messageBoxCommonProps>;
   emit: VueEmit<typeof messageBoxEmits>;
 }) => {
-  const { emit } = options;
+  const { props, emit } = options;
 
   const messageBoxRef = ref();
 
@@ -89,6 +95,8 @@ export const useMessageBox = (options: {
   const resolveConfirm = ref<(value: boolean) => void>();
 
   function onCancel() {
+    if (!props.confirmButtonText) return;
+
     $close();
     emit('cancel');
     if (resolveConfirm.value) {

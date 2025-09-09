@@ -2,7 +2,7 @@
  * @file 标签页 TabPane hook
  */
 
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps } from '@polyv/vue-components';
 import { computed, onBeforeMount, ref, unref, watch } from 'vue';
 import { TabNameType, TabPaneDataItem, TabPaneInstance } from './types';
 import { useTabsInject } from './use-tabs';

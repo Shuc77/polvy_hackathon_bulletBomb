@@ -1,6 +1,12 @@
 <!-- @file 移动端底部菜单栏 -->
 <template>
   <div class="c-mobile-watch-mobile-menu">
+    <background-section
+      v-show="mobileMenuCurrentName === TAB_NAME_CHAT"
+      :background-type="themeSetting.mobileChatBackgroundType"
+      :custom-url="mobileChatRoomBgUrl"
+    />
+
     <mobile-menu-tabs
       v-model="mobileMenuCurrentName"
       ref="mobileMenuTabsRef"
@@ -87,7 +93,7 @@
 
         <!-- 问答 -->
         <mobile-menu-tab-pane
-          v-else-if="menu.menuType === ChannelMenuType.QA"
+          v-else-if="menu.menuType === ChannelMenuType.QA && !isGuest"
           :key="`qa-${index}`"
           :label="menu.name"
           :name="TAB_NAME_QA"
@@ -302,6 +308,7 @@ import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-as
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import MobileMemberDesc from '@/components/page-watch-common/member-list/mobile-member-desc.vue';
 import MobilePlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/playback-outline.vue';
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -313,6 +320,7 @@ import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 import { ChannelMenuType, LiveStatus, MainScreenContent } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
@@ -342,6 +350,7 @@ import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
 import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const { paramGetter } = useQueryParams();
 
@@ -362,6 +371,10 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { themeSetting, mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
+
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {

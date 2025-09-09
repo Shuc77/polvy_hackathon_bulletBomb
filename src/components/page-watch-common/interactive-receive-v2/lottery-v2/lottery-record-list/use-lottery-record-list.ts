@@ -1,10 +1,10 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { useLotteryRecordEntrance } from './use-lottery-record-entrance';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { type LotteryRecordInstance } from '@polyv/iar-lottery-ui';
-import { type PolyvIarLotteryRecordData } from '@polyv/live-watch-sdk';
+import { type PolyvLottery } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
-import { useGlobalInject } from '@/app/use-global-inject';
+import { useLotteryRecordEntrance } from './use-lottery-record-entrance';
 
 export const useLotteryRecordList = () => {
   const { getEmitter } = useGlobalInject();
@@ -19,7 +19,7 @@ export const useLotteryRecordList = () => {
     recordRef.value?.refreshRecord();
   });
 
-  function onRecordList(list: PolyvIarLotteryRecordData[]) {
+  function onRecordList(list: PolyvLottery.LotteryRecordData[]) {
     interactRecordStore.$patch({
       lotteryWinRecords: list,
     });

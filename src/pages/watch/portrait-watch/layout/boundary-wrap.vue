@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 

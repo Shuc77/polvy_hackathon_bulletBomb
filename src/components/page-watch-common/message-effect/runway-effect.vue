@@ -51,7 +51,7 @@
 import { useRunwayEffect } from './hooks/use-runway-effect';
 import { useEffectText } from './hooks/use-effect-text';
 import { MessageEffectType } from './type';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 

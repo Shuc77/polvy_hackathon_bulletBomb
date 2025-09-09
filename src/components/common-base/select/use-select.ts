@@ -1,7 +1,6 @@
 import { translate } from '@/assets/lang';
 import { isArray, tupleString } from '@/assets/utils/array';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { computed, ref } from 'vue';
 import { SelectOptionItem, SelectValueType } from './types/select-types';
 

@@ -1,5 +1,5 @@
 import { isMobile } from '@/assets/utils/browser';
-import { VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { VueProps } from '@polyv/vue-components';
 import Vue from 'vue';
 import MobileMessageBox from './mobile-message-box.vue';
 import PcMessageBox from './pc-message-box.vue';

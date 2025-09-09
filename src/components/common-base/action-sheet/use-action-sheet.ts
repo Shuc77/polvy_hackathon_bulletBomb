@@ -1,5 +1,4 @@
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueEmit, VueProps, emitFunc, updateModelEmit } from '@polyv/vue-components';
 import { ref, watch } from 'vue';
 import { PopupInstance } from '@/components/common-base/popup/types';
 import { popupEmits, popupProps } from '@/components/common-base/popup/use-popup';

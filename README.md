@@ -20,6 +20,20 @@
 
 > 注意，如果需要 `@polyv/live-watch-sdk` 支持其他保利威 SDK 的类型推导，请参考 `node_modules/@polyv/live-watch-sdk/package.json` 中的 `peerDependencies`，自行安装对应的 `package` 到项目的 `devDependencies` 中
 
+业务 SDK 相关的文档
+
+- [帮助中心-旧版互动功能接收端 JS-SDK](https://help.polyv.net/#/live/js/new_sdk/interactions_receive_sdk/sdk/overview)
+- [帮助中心-新版互动功能接收端 JS-SDK](https://help.polyv.net/#/live/js/new_sdk/interactions_receive_sdk_v2/introduce)
+- [帮助中心-商品 SDK](https://help.polyv.net/#/live/js/new_sdk/product_sdk/introduce)
+- 帮助中心-AI SDK 【待补充】
+
+业务 SDK 相关的开源 Demo
+
+- [开源Demo-旧版互动功能接收端开源](https://gitee.com/polyv_ef/polyv-web-interactions-receive-sdk-ui-default)
+- 开源Demo-新版互动功能接收端 JS-SDK 【待补充】
+- 开源Demo-商品 SDK 【待补充】
+- 开源Demo-AI SDK 【待补充】
+
 ## 项目运行
 
 项目运行前请**注意**
@@ -71,6 +85,16 @@ npm run build-static
 ### SDK 注入式部署
 
 如果您需要在一个 React 项目或者其他项目内集成观看页应用，您需要借助 `external/sdk-inject-project` 这个子工程，具体详情请查阅 [处理 sdk 注入项目脚本](./external/sdk-inject-project/README.md)，如有不明之处，请咨询保利威技术团队
+
+### 是否打包 Vue2.7
+
+在 `build/build-config.js` 中存在一个 `needInternalBuildVue` 标志位，如果您的接入方式满足以下任一场景，请将其设置为 `true`，以确保观看页 SDK 及其依赖的 SDK 能正常工作
+
+1、您使用正常的构建模式，但不想使用 vue 的外链的方式来全局挂载 `window.Vue`
+2、您使用 SDK 注入模式，您自身的项目使用 Vue2.7.16 以下的版本，不想被观看页 SDK 影响到自身的项目 Vue 版本
+3、您使用 SDK 注入模式，您自身的项目使用其他前端框架
+
+请注意，无论如何请确保 `window.Vue` 存在，确保 `window.Vue2Module` 存在且为 `2.7.16` 的版本。
 
 ### 其他注意事项
 

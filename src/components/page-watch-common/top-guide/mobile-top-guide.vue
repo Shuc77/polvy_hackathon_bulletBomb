@@ -38,6 +38,7 @@ const { topGuideSetting, onClickButton, guideVisible, close } = useTopGuide();
 
 <style lang="scss">
 .c-mobile-top-guide {
+  position: relative;
   display: flex;
   align-items: center;
   height: 48px;

@@ -1,4 +1,4 @@
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { computed, unref } from 'vue';
 import { FormSize, FormTheme } from '../types/enums';
 import { useFormItemInject } from './use-form-item';

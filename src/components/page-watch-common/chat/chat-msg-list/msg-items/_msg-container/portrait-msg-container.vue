@@ -49,8 +49,7 @@
 
 <script setup lang="ts">
 import { isMobile } from '@/assets/utils/browser';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, emitFunc } from '@polyv/vue-components';
 import { computed, ref } from 'vue';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

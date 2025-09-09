@@ -10,3 +10,19 @@
   }
 }
 
+.vcp-player {
+  background-color: transparent !important;
+}
+
+.vcp-player video {
+  background: transparent !important;
+}
+
+.c-mobile-player-main__container {
+  .plwrap {
+    background: none !important;
+  }
+  video {
+    background-color: transparent !important;
+  }
+}

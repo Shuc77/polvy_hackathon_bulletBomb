@@ -21,6 +21,7 @@ module.exports = {
     IN_SDK_INJECT_MODE: 'readonly',
     ENABLE_RUNTIME_PUBLIC_PATH: 'readonly',
     BUILD_ENV: 'readonly',
+    NEED_INTERNAL_BUILD_VUE: 'readonly',
   },
   rules: {
     'import/named': 'off',

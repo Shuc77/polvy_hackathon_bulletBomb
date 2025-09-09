@@ -1,5 +1,5 @@
 import { translate } from '@/assets/lang';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { AuthSettingItem, AuthType, LiveStatus } from '@polyv/live-watch-sdk';
@@ -19,7 +19,7 @@ import { useToastManager } from '@/hooks/components/use-toast';
  * 观看页条件按钮 props 配置
  */
 export const authButtonProps = () => ({
-  authItem: PropUtils.objectType<AuthSettingItem>().isRequired,
+  authItem: PropUtils.object<AuthSettingItem>().isRequired,
 });
 
 const AUTH_BUTTON_INJECT_KEY: InjectionKey<AuthButtonInject> = Symbol('authButtonInjectKey');

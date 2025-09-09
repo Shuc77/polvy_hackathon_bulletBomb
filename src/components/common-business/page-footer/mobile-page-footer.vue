@@ -2,7 +2,8 @@
 <template>
   <div
     v-if="pageFootSetting.footerEnabled"
-    class="c-mobile-page-footer pws-mobile-page-footer"
+    class="c-mobile-page-footer pws-light-black-color-40 pws-dark-white-color-80"
+    :style="props.contentStyle"
   >
     <a
       :href="pageFootSetting.footerLink"
@@ -16,7 +17,12 @@
 
 <script setup lang="ts">
 import { useGlobalInject } from '@/app/use-global-inject';
+import { PropUtils } from '@polyv/vue-components';
 import { reactive } from 'vue';
+
+const props = defineProps({
+  contentStyle: PropUtils.object().def(() => {}),
+});
 
 const { getWatchCore } = useGlobalInject();
 

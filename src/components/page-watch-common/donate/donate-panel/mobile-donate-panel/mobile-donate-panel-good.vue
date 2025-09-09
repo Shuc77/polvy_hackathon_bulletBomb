@@ -126,7 +126,7 @@ import { DonateType } from '@polyv/live-watch-sdk';
 
 import { DonateGoodInfo, useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc } from '@polyv/vue-components';
 
 const emit = defineEmits({
   /** 打开现金打赏 */

@@ -1,6 +1,6 @@
 import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { Ref, unref, watch } from 'vue';
-import { getRefElem } from '@/assets/utils/vue-utils';
+import { getRefElem } from '@polyv/vue-components';
 
 /** 弹出层层叠数 z-index 的 hook */
 const usePopperZIndex = () => {

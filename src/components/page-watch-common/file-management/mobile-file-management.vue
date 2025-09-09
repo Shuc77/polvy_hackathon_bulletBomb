@@ -88,6 +88,10 @@
         <div class="c-mobile-file-management__empty-text">
           {{ $lang('fileManagement.empty') }}
         </div>
+
+        <div class="c-mobile-file-management__empty-tips">
+          {{ $lang('fileManagement.empty.tips') }}
+        </div>
       </div>
     </div>
   </mobile-popup>
@@ -230,7 +234,14 @@ const { scrollContainerRef } = useScrollLoad(loadMoreFiles, {
 .c-mobile-file-management__empty-text {
   font-size: 14px;
   line-height: 20px;
-  color: rgba(#000000, 0.5);
+  color: rgba(#000000, 0.6);
+}
+
+.c-mobile-file-management__empty-tips {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(#000000, 0.4);
 }
 
 // 深色模式适配

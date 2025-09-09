@@ -1,6 +1,11 @@
 <!-- @file 移动端连麦用户节点 -->
 <template>
   <div class="c-mobile-connect-mic-user-item">
+    <background-section
+      :background-type="themeSetting.playerBackgroundType"
+      :custom-url="playerBgUrl"
+    />
+
     <div
       ref="wrapRef"
       class="c-mobile-connect-mic-user-item__wrap"
@@ -45,6 +50,7 @@
 
 <script setup lang="ts">
 import { watch } from 'vue';
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
 import ConnectMicInfo from '../common/connect-mic-info.vue';
@@ -54,6 +60,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { connectMicItemProps, useConnectMicItem } from '../hooks/use-connect-mic-item';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const props = defineProps(connectMicItemProps());
 
@@ -77,6 +84,8 @@ const { networkInfo } = storeDefinitionToRefs(useConnectMicStore);
 const { setIsConnectMicPaused } = useConnectMicStore();
 
 const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
+
+const { themeSetting, playerBgUrl } = storeDefinitionToRefs(useThemeStore);
 
 const checkMediaPaused = () => {
   return (
@@ -115,7 +124,16 @@ watch(
   width: 100%;
   height: 100%;
 
+  .pv-rtc-player-video {
+    background: none !important;
+
+    & > div {
+      background-color: transparent !important;
+    }
+  }
+
   video {
+    background: transparent !important;
     transform: none !important;
   }
 }

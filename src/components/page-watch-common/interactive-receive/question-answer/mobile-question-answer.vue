@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { TAB_NAME_QA } from '@/assets/constants/tab-name';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';

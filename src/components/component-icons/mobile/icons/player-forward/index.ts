@@ -11,6 +11,7 @@ export default IconBuilder(
 <svg width="${data.size}" height="${data.size}" fill="none" viewBox="0 0 26.67 28">
   <defs>
     <filter
+      id="a"
       width="30.667"
       height="30.667"
       x="-5.33"

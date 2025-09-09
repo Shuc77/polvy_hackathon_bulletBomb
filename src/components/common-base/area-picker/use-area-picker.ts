@@ -1,6 +1,5 @@
 import { ref, computed, watch, ComputedRef, unref, onBeforeMount } from 'vue';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { PropUtils, VueProps, emitFunc, updateModelEmit, VueEmit } from '@polyv/vue-components';
 import type { AreaPickerComponent } from '@/plugins/polyv-ui/types';
 import { getSelectData, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
 import { useCommonStore } from '@/store/use-common-store';

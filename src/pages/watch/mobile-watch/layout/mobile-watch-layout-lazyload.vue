@@ -4,8 +4,8 @@
   <div class="c-mobile-watch-layout-lazyload">
     <!-- 互动功能 -->
     <mobile-iar-render v-if="iarSdkLoaded" />
-    <mobile-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
-    <mobile-product-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <mobile-iar-render-v2 v-if="iarSdkLoaded" />
+    <mobile-product-render v-if="iarSdkLoaded" />
 
     <!-- 连麦挂件 -->
     <mobile-connect-mic-pendant
@@ -62,7 +62,7 @@
       <!-- 邀请有礼活动详情弹窗 -->
       <mobile-invite-activity-detail-popup />
       <!-- 邀请有礼中奖领取弹窗 -->
-      <mobile-invite-prize-receive-popup />
+      <mobile-invite-prize-receive-popup v-if="iarSdkLoaded" />
     </template>
 
     <!-- 固定的聊天消息输入框 -->
@@ -74,7 +74,7 @@
     <mobile-identity-collect-info-dialog v-if="bindMobileVisible" />
 
     <!-- 任务奖励领取弹层 -->
-    <mobile-task-reward-receive-popup />
+    <mobile-task-reward-receive-popup v-if="iarSdkLoaded" />
 
     <!-- 任务完成弹层 -->
     <mobile-task-activity-finish-dialog />
@@ -87,6 +87,15 @@
 
     <!-- 我的奖励弹层 -->
     <mobile-personal-reward-popup />
+
+    <!-- 观看/学习时长统计弹层 -->
+    <mobile-learning-stat-dialog v-if="learningStatsDialogEnabled" />
+
+    <!-- 学习详情弹层 -->
+    <mobile-learning-detail-popup v-if="learningStatsEnabled" />
+
+    <!-- 播放器设置弹层 -->
+    <portrait-player-control-popup />
   </div>
 </template>
 
@@ -118,6 +127,9 @@ import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 import MobilePlaybackSetting from '@/components/page-watch-common/player/player-control/mobile-player-control/mobile-playback-setting.vue';
 import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
+import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
+import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
+import PortraitPlayerControlPopup from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-control-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -125,13 +137,13 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIdentityStore } from '@/store/use-identity-store';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () =>
@@ -155,8 +167,6 @@ const MobileWithdrawDetail = defineAsyncComponent(
 const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
   storeDefinitionToRefs(useConnectMicStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
-
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { sendRedpackVisible } = storeDefinitionToRefs(useRedpackStore);
@@ -174,4 +184,7 @@ const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+
+const { learningStatsEnabled, learningStatsDialogEnabled } =
+  storeDefinitionToRefs(useChannelInfoStore);
 </script>

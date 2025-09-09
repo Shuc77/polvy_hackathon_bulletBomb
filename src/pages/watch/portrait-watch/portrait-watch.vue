@@ -1,9 +1,11 @@
 <!-- @file 竖屏观看页 -->
 <template>
-  <div
-    class="c-portrait-watch"
-    :style="wrapStyle"
-  >
+  <div class="c-portrait-watch">
+    <background-section
+      :background-type="themeSetting.portraitBackgroundType"
+      :custom-url="portraitPageBgUrl"
+    />
+
     <!-- 顶部引导条 -->
     <mobile-top-guide />
 
@@ -16,19 +18,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, unref } from 'vue';
-import { CSSProperties } from 'vue/types/jsx';
+import { defineAsyncComponent } from 'vue';
 
 import MobileTopGuide from '@/components/page-watch-common/top-guide/mobile-top-guide.vue';
 import PortraitWatchLayout from './layout/portrait-watch-layout.vue';
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 
 import { usePvTrack } from '@/hooks/business/use-pv-track';
+import { useLayoutLoad } from '@/hooks/core/use-layout-load';
 import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useThemeStore } from '@/store/use-theme-store';
-import { useLayoutLoad } from '@/hooks/core/use-layout-load';
-
-const { portraitPageBgUrl } = storeDefinitionToRefs(useThemeStore);
 
 const PortraitWatchLayoutLazyload = defineAsyncComponent(
   () =>
@@ -37,23 +37,13 @@ const PortraitWatchLayoutLazyload = defineAsyncComponent(
     ),
 );
 
-/** 外层样式 */
-const wrapStyle = computed(() => {
-  const style: CSSProperties = {};
-
-  if (unref(portraitPageBgUrl)) {
-    style.backgroundImage = `url(${unref(portraitPageBgUrl)})`;
-    style.backgroundSize = 'cover';
-  }
-
-  return style;
-});
-
 useWatchPage();
 
 usePvTrack('saas-web-watch-portrait');
 
 const { layoutLoaded } = useLayoutLoad('portrait-watch');
+
+const { themeSetting, portraitPageBgUrl } = storeDefinitionToRefs(useThemeStore);
 </script>
 
 <style lang="scss">

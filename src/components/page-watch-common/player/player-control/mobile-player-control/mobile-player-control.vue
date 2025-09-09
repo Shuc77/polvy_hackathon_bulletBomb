@@ -28,7 +28,7 @@
           <div class="c-mobile-player-control__inner__left">
             <!-- 暂停播放按钮 -->
             <div
-              v-if="playButtonVisible"
+              v-if="playerControlPlayBtnVisible"
               class="c-mobile-player-control__button"
               :class="{
                 'c-mobile-player-control__button--pause': playStatus === PlayStatus.Playing,
@@ -81,6 +81,12 @@
               />
             </template>
 
+            <!-- 设置面板 -->
+            <div
+              class="c-mobile-player-control__button c-mobile-player-control__button--setting"
+              @click="openMobileMorePopup"
+            ></div>
+
             <!-- 全屏按钮 -->
             <div
               v-show="!isHorizontalScreenOrientation"
@@ -114,6 +120,10 @@ import { PlayStatus } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { usePlayerControlVisible } from './_hooks/_user-player-control-visible';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { appEvents } from '@/app/app-events';
+
+const { getEmitter } = useGlobalInject();
 
 const {
   playStatus,
@@ -138,12 +148,16 @@ const {
   rtcPlayerPauseTipVisible,
   currentTimeText,
 
-  playButtonVisible,
+  playerControlPlayBtnVisible,
   refreshButtonVisible,
   barrageSettingEnabled,
 } = usePlayerControl();
 
 const { startHidePlayerControlTimer } = usePlayerControlVisible();
+
+function openMobileMorePopup() {
+  getEmitter().emit(appEvents.global.OpenMobileMorePopup);
+}
 </script>
 
 <style lang="scss">

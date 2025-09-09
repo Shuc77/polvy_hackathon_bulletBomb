@@ -8,10 +8,15 @@
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
       'c-mobile-player-main--hide': isConnectMicing,
-      'c-mobile-player-main--new-play-btn': newPlayerPauseStyleEnabled,
+      'c-mobile-player-main--hide-normal-player-btn': !isLowLatency,
     }"
     @click="onClickContainer"
   >
+    <background-section
+      :background-type="themeSetting.playerBackgroundType"
+      :custom-url="playerBgUrl"
+    />
+
     <!-- 播放器渲染容器 -->
     <div
       ref="playerContainer"
@@ -32,11 +37,7 @@
     <mobile-player-cover-img />
 
     <!-- “点击播放”播放按钮，仅用来展示  -->
-    <player-play-button
-      v-if="isLowLatency || needPlayerBtnForWarmup"
-      :mode="PlayButtonMode.Text"
-      class="c-mobile-player-main__play-btn"
-    />
+    <player-play-business-button class="c-mobile-player-main__play-btn" />
 
     <!-- 播放器顶部-左侧 访问次数 -->
     <div
@@ -89,6 +90,13 @@
       @input="handleSelectSubtitle"
     ></mobile-subtitle-select>
 
+    <!-- 弹层方式打开广告链接 -->
+    <mobile-iframe-popup
+      v-model="iframeVisible"
+      :src="iframeUrl"
+      :height="460"
+    />
+
     <!-- ========= 弹出层类型组件 End ========= -->
   </div>
 </template>
@@ -108,8 +116,7 @@ import { usePlayerMain } from '../../hooks/use-player-main';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { useMobilePlaybackSubtitle } from '../../../subtitle/use-mobile-playback-subtitle';
 
-import PlayerPlayButton from '../../common/player-play-button/player-play-button.vue';
-import { PlayButtonMode } from '../../common/player-play-button/use-player-play-button';
+import PlayerPlayBusinessButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
 import MobilePlayerCoverImg from '../../player-cover-img/mobile-player-cover-img.vue';
 import MobilePlayerControl from '../../player-control/mobile-player-control/mobile-player-control.vue';
 import MobileLowLatencySwitch from '../../player-control/mobile-player-control/mobile-low-latency-switch.vue';
@@ -119,6 +126,8 @@ import MobilePlayerTimeAxisEntrance from '../../player-time-axis-mark/mobile-pla
 import MobilePlayerTimeAxisMarkPopup from '../../player-time-axis-mark/mobile-player-time-axis-mark-popup.vue';
 import MobilePlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/mobile-player-subtitle.vue';
 import MobileSubtitleSelect from '@/components/page-watch-common/subtitle/mobile-subtitle-select/mobile-subtitle-select.vue';
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
+import MobileIframePopup from '@/components/common-base/iframe-popup/mobile-iframe-popup.vue';
 
 import { MainScreenContent, PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
@@ -127,6 +136,8 @@ import { ComponentInstance } from '@/hooks/core/use-vue';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useShortNumber } from '@/hooks/business/use-short-number';
 import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
+import { useThemeStore } from '@/store/use-theme-store';
+import { usePlayerAdvert } from '@/components/page-watch-common/player/hooks/use-player-advert';
 
 const { shortNumber } = useShortNumber();
 
@@ -155,15 +166,9 @@ const {
   logoSetting,
   barrageMobileSettingVisible,
   supportTimeAxisMark,
-  newPlayerPauseStyleEnabled,
-  isCdnWithNormalLayout,
-  existWarmUpVideo,
-  showWarmUpImg,
 } = storeDefinitionToRefs(usePlayerStore);
 
-const needPlayerBtnForWarmup = computed(() => {
-  return showWarmUpImg.value && existWarmUpVideo.value;
-});
+const { themeSetting, playerBgUrl } = storeDefinitionToRefs(useThemeStore);
 
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);
@@ -184,9 +189,9 @@ const { playerContainer } = usePlayerMain({
   },
 });
 
-const { latencyModeSettingVisible, bigPlayButtonVisible, addHistoryTipsListener } =
-  usePlayerControl();
-const { toPlay } = usePlayerAction();
+const { latencyModeSettingVisible, addHistoryTipsListener } = usePlayerControl();
+
+const { toTryPlay } = usePlayerAction();
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 const { getEmitter } = useGlobalInject();
@@ -198,15 +203,7 @@ onBeforeUnmount(() => {
 });
 
 function onClickContainer() {
-  // 点击播放器容器主要是为了展示控制栏，只有在播放按钮存在时，点击才去播放视频
-  // cdn播放器且处于横屏模板时不显示观看页大播放按钮，所以不需要调用toPlay()
-  // 存在暖场视频的情况下，需要触发 toPlay 方法
-  if (
-    bigPlayButtonVisible.value &&
-    (!isCdnWithNormalLayout.value || needPlayerBtnForWarmup.value)
-  ) {
-    toPlay();
-  }
+  toTryPlay();
   getEmitter().emit(appEvents.player.ClickMobilePlayerContainer);
 }
 
@@ -222,6 +219,8 @@ const { pbSubtitleOptions, pbSubtitleTranslateLanguage, handleSelectSubtitle } =
   });
 
 useConnectMicing();
+
+const { iframeVisible, iframeUrl } = usePlayerAdvert();
 </script>
 
 <style lang="scss">
@@ -239,6 +238,7 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
   position: absolute;
   width: 100%;
   height: 100%;
+  background: #000;
   // overflow: hidden;
 
   &.c-mobile-player-main--hide {
@@ -325,6 +325,9 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
   .c-mobile-player-main__container {
     z-index: -1;
   }
+  .c-background-section {
+    z-index: -2;
+  }
 }
 
 // 屏幕横屏
@@ -339,13 +342,12 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
   }
 }
 
-.c-mobile-player-main--new-play-btn {
+.c-mobile-player-main--hide-normal-player-btn {
   .plv-live-cover__btn,
+  .plv-live-cover__btn-new,
   .plv-live-big-play-btn,
   .plv-player-big-play-btn {
-    background: url('../../common/player-play-button/imgs/play-btn-3.svg') no-repeat;
-    background-position: center;
-    background-size: 70px;
+    display: none !important;
   }
 }
 

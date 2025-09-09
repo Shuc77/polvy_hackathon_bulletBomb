@@ -8,7 +8,7 @@
   >
     <div
       ref="containerRef"
-      class="c-mobile-chat-msg-list__container pws-main-tab-body-scrollbar"
+      class="c-mobile-chat-msg-list__container pws-main-scrollbar-color"
     ></div>
 
     <div

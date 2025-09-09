@@ -53,6 +53,7 @@ const { isTopRightStyle } = useCountDownLayer();
 
 <style lang="scss">
 .c-mobile-count-down-layout {
+  height: 100%;
   pointer-events: initial;
 }
 .c-mobile-count-down-layout__content {

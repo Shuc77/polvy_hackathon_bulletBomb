@@ -2,13 +2,11 @@
  * @file 播放器控制栏 hook
  */
 import { translate } from '@/assets/lang';
-import { isMobile, tabletLoadDesktopTemplate } from '@/assets/utils/browser';
+import { isMobile } from '@/assets/utils/browser';
 import { numberAccuracy } from '@/assets/utils/number';
-import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
-import { useFeedInjectStore } from '@/store/use-feed-inject-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
@@ -32,7 +30,6 @@ export const usePlayerControl = () => {
   const connectMicStore = useConnectMicStore();
   const docStore = useDocStore();
   const subtitleStore = useSubtitleStore();
-  const feedInjectStore = useFeedInjectStore();
 
   const { getEmitter } = useMultiPolyvWatchApp();
 
@@ -77,47 +74,50 @@ export const usePlayerControl = () => {
     return channelStore.liveStatus === LiveStatus.Playback && playerStore.playbackMultiplierEnabled;
   });
 
-  /** 是否显示暂停播放按钮 */
-  const playButtonVisible = computed<boolean>(() => {
+  /** hook 内部使用，最基础的播放器按钮判断逻辑 */
+  const __basePlayBtnVisible = computed(() => {
+    // 连麦时隐藏播放器按钮
+    if (connectMicStore.isConnectMicing) {
+      return false;
+    }
+
     return (
-      !connectMicStore.isConnectMicing && !(noPauseWhenLive.value || noPauseWhenPlayback.value)
+      // 业务逻辑支持播放
+      playerStore.isPlayMode &&
+      // 播放器初始化完毕
+      playerStore.playerInited
+    );
+  });
+
+  /** 播放器控制栏的播放按钮是否显示 */
+  const playerControlPlayBtnVisible = computed<boolean>(() => {
+    if (!__basePlayBtnVisible.value) {
+      return false;
+    }
+
+    const isNotAllowPause = noPauseWhenLive.value || noPauseWhenPlayback.value;
+
+    return !isNotAllowPause;
+  });
+
+  /** 正常情况下，大的播放按钮是否显示 */
+  const normalPlayButtonVisible = computed<boolean>(() => {
+    if (!__basePlayBtnVisible.value) {
+      return false;
+    }
+    return (
+      // 暂停中状态或者没有播放过
+      !playerStore.isPlayStarted || playerStore.playStatus === PlayStatus.Pause
     );
   });
 
   /**
-   * 是否显示大的暂停播放按钮
-   * */
-  const bigPlayButtonVisible = computed<boolean>(() => {
-    if (playerStore.onceHiddenPlayButton) {
-      return false;
-    }
+   * 是否需要显示大的暂停播放按钮-for 暖场
+   */
+  const needBigPlayerBtnForWarmup = computed(() => {
+    const isPause = playerStore.playStatus === PlayStatus.Pause;
 
-    if (isBuildForFeedMainMode() && feedInjectStore.inFirstFeedLayout) {
-      return false;
-    }
-
-    if (tabletLoadDesktopTemplate && !playerStore.isLowLatency) {
-      return false;
-    }
-
-    return (
-      playerStore.isPlayMode &&
-      playerStore.playerInited &&
-      (!playerStore.isPlayStarted || playerStore.playStatus === PlayStatus.Pause) &&
-      !connectMicStore.isConnectMicing
-    );
-  });
-
-  /** 常规的播放按钮是否显示 */
-  const normalPlayButtonVisible = computed<boolean>(() => {
-    return (
-      // 播放器初始化完毕
-      playerStore.playerInited &&
-      // 暂停中状态
-      playerStore.playStatus === PlayStatus.Pause &&
-      // 可以进行播放
-      playerStore.isPlayMode
-    );
+    return playerStore.showWarmUpImg && playerStore.existWarmUpVideo && isPause;
   });
 
   /** 是否显示手动播放提示 */
@@ -203,6 +203,9 @@ export const usePlayerControl = () => {
 
   /** 清晰度设置是否显示 */
   const qualitySettingVisible = computed<boolean>(() => {
+    if (playerStore.supportLiveTimeShift && playerStore.currentTime !== playerStore.durationTime)
+      return false;
+
     return (
       playerStore.qualityLevels.length > 1 &&
       [LiveStatus.Live, LiveStatus.Playback].includes(channelStore.liveStatus)
@@ -421,8 +424,8 @@ export const usePlayerControl = () => {
 
   return {
     playButtonTips,
-    playButtonVisible,
-    bigPlayButtonVisible,
+    playerControlPlayBtnVisible,
+    needBigPlayerBtnForWarmup,
     normalPlayButtonVisible,
     manualPlayTipsVisible,
     rtcPlayerPauseTipVisible,
@@ -460,6 +463,7 @@ export const usePlayerControl = () => {
     timeShiftReturnLiveButtonVisible,
 
     noPauseWhenLive,
+    noPauseWhenPlayback,
     fastForwardBackwardVisible,
     forwardButtonTips,
     backwardButtonTips,

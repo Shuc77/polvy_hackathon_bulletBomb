@@ -51,7 +51,7 @@ import { PcIconBooking } from '@/components/component-icons/pc/map';
 import LiveBookingFormDialog from './pc-live-booking-form-dialog.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { translate } from '@/assets/lang';
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps } from '@polyv/vue-components';
 import { computed, ref, unref } from 'vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -59,6 +59,8 @@ import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { LiveBookingFormInstance } from './types';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { MobileIconBell } from '@/components/component-icons/mobile/map';
+import { useLiveBookingCustom } from './hooks/use-live-booking-custom';
+import { debounce } from 'lodash-es';
 
 const { trackUserReservationLive } = useWatchEventTrack();
 
@@ -75,14 +77,28 @@ const props = defineProps({
 
 const { buttonStyle, buttonSize } = useProps(props);
 
-const { isSmsLiveBooking, singleOtherChannelSmsLiveBooking } =
-  storeDefinitionToRefs(useLiveBookingStore);
+const {
+  isSmsLiveBooking,
+  singleOtherChannelSmsLiveBooking,
+  singleOtherChannelCustomLiveBooking,
+  isCustomLiveBooking,
+  useCustomBooking,
+  useSmsBooking,
+  singleOtherChannelSmsLiveBookingEnable,
+  singleOtherChannelCustomLiveBookingEnable,
+} = storeDefinitionToRefs(useLiveBookingStore);
+
+const { submitLiveBookingOfCustom, cancelLiveBookingOfCustom, patchSroreOfCustom } =
+  useLiveBookingCustom({
+    otherChannelId: props.channelId,
+    singleMode: true,
+  });
 
 const isBooking = computed(() => {
   if (unref(props.isOtherLive)) {
-    return unref(singleOtherChannelSmsLiveBooking);
+    return unref(singleOtherChannelSmsLiveBooking) || unref(singleOtherChannelCustomLiveBooking);
   }
-  return unref(isSmsLiveBooking);
+  return unref(isSmsLiveBooking) || unref(isCustomLiveBooking);
 });
 
 /** 按钮文本 */
@@ -102,17 +118,60 @@ const buttonText = computed(() => {
 const bookingFormRef = ref<LiveBookingFormInstance>();
 
 /** 处理按钮点击 */
-function onClickButton() {
+const onClickButton = debounce(() => {
   const instance = unref(bookingFormRef);
 
+  const booked = unref(isBooking);
+  // 仅启用“自定义预约”模式
+  let onlyCustom = false;
+  // 其他频道预约
+  if (unref(props.isOtherLive)) {
+    onlyCustom =
+      !unref(singleOtherChannelSmsLiveBookingEnable) &&
+      unref(singleOtherChannelCustomLiveBookingEnable);
+  } else {
+    onlyCustom = unref(useCustomBooking) && !unref(useSmsBooking);
+  }
+
+  const otherSmsBooked = unref(singleOtherChannelSmsLiveBooking);
+  const otherCustomBooked = unref(singleOtherChannelCustomLiveBooking);
+
+  // 1) 已预约：按预约类型取消
+  if (booked) {
+    // 其他频道预约 取消预约
+    if (otherSmsBooked) {
+      trackUserReservationLive({ reservationType: 'code' });
+      instance?.cancelLiveBooking();
+      otherCustomBooked && patchSroreOfCustom(false);
+      return;
+    }
+    if (otherCustomBooked) {
+      cancelLiveBookingOfCustom();
+      return;
+    }
+    // 正常频道预约 取消预约
+    if (unref(isSmsLiveBooking)) {
+      trackUserReservationLive({ reservationType: 'code' });
+      instance?.cancelLiveBooking();
+      useCustomBooking && patchSroreOfCustom(false);
+      return;
+    }
+    cancelLiveBookingOfCustom();
+
+    return;
+  }
+
+  // 2) 仅启用“自定义预约”模式
+  if (onlyCustom) {
+    submitLiveBookingOfCustom();
+    return;
+  }
+
+  // 3) 其余：埋点后走短信预约表单流程
   trackUserReservationLive({ reservationType: 'code' });
 
-  if (unref(isBooking)) {
-    instance?.cancelLiveBooking();
-  } else {
-    instance?.openBookingForm();
-  }
-}
+  instance?.openBookingForm();
+}, 200);
 </script>
 
 <style lang="scss">

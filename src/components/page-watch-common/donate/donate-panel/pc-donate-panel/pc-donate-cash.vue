@@ -85,7 +85,7 @@ import { useDonateCash } from '../hooks/use-donate-cash';
 
 import { useDonateStore } from '@/store/use-donate-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc } from '@polyv/vue-components';
 
 const emit = defineEmits({
   /** 打赏完成 */

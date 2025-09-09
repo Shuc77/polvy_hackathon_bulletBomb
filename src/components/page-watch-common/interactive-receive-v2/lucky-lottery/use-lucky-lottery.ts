@@ -1,5 +1,5 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PolyvIarLuckyLottery } from '@polyv/live-watch-sdk';
+import { PolyvLuckyLottery } from '@polyv/live-watch-sdk';
 import { useIarTarget } from '../_hooks/use-iar-target';
 
 export const useLotteryTarget = () => {
@@ -7,7 +7,7 @@ export const useLotteryTarget = () => {
 
   const watchCore = getWatchCore();
 
-  const { targetInited, getIarTarget } = useIarTarget<PolyvIarLuckyLottery>(() => {
+  const { targetInited, getIarTarget } = useIarTarget<PolyvLuckyLottery.LuckyLottery>(() => {
     return watchCore.interactReceive.getLuckyLotteryV2();
   });
 

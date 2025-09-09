@@ -1,8 +1,4 @@
-import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
-import { emitFunc, updateModelEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { useLayoutStore } from '@/store/use-layout-store';
-import { computed } from 'vue';
+import { PropUtils, emitFunc, updateModelEmit } from '@polyv/vue-components';
 
 export const dialogCommonProps = () => ({
   /** 显示状态，默认：false，支持 .sync */
@@ -27,6 +23,8 @@ export const dialogPcProps = () => ({
   width: PropUtils.number.def(560),
   /** 弹层高度，默认 0  */
   height: PropUtils.number.def(0),
+  /** 圆角，默认 false */
+  round: PropUtils.bool.def(false),
   /** 点击蒙层关闭弹窗，默认：false */
   closeOnClickMask: PropUtils.bool.def(false),
   /** 窗口是否可以拖拽，默认: false */
@@ -62,16 +60,3 @@ export const dialogEmits = () => ({
   close: emitFunc<void>(),
   closed: emitFunc<void>(),
 });
-
-export const usePcDialogMountEl = () => {
-  const layoutStore = useLayoutStore();
-
-  /** 弹层渲染节点 */
-  const dialogMountEl = computed(() => {
-    return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : '';
-  });
-
-  return {
-    dialogMountEl,
-  };
-};

@@ -1,5 +1,5 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PolyvIarCoupon } from '@polyv/live-watch-sdk';
+import { type PolyvCoupon } from '@polyv/live-watch-sdk';
 import { useIarTarget } from '../../_hooks/use-iar-target';
 
 export const useCoupon = () => {
@@ -7,7 +7,7 @@ export const useCoupon = () => {
 
   const watchCore = getWatchCore();
 
-  const { targetInited, getIarTarget } = useIarTarget<PolyvIarCoupon>(() => {
+  const { targetInited, getIarTarget } = useIarTarget<PolyvCoupon.Coupon>(() => {
     return watchCore.interactReceive.getCouponV2();
   });
 

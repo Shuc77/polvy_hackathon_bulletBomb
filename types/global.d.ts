@@ -45,6 +45,9 @@ declare global {
   /** 处于 sdk-inject 构建模式下 */
   const IN_SDK_INJECT_MODE: boolean;
 
+  /** 是否需要内部打包 Vue 文件 */
+  const NEED_INTERNAL_BUILD_VUE: boolean;
+
   /** 是否启用运行时公共路径 */
   const ENABLE_RUNTIME_PUBLIC_PATH: boolean;
 

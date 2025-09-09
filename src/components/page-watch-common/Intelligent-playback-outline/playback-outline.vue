@@ -1,9 +1,11 @@
 <template>
-  <div class="c-playback-outline">
+  <div
+    v-if="providerLoaded"
+    class="c-playback-outline"
+  >
     <playback-outline
       :outline-data="outlineData"
       :show-color="false"
-      :lang="currentLang"
       @seek-video="onSeekVideo"
       @open-mind-map="openMindMap"
     />
@@ -17,10 +19,9 @@ import { useLiveWatchAIUILoader } from '@/plugins/external-lib-loaders/load-ai-u
 import { usePlaybackOutline } from './use-playback-outline';
 import { defineAsyncComponent, ref } from 'vue';
 import type { PlaybackOutlineData } from '@polyv/live-watch-sdk';
-import { useLangStore } from '@/store/use-lang-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useAIGlobalProvider } from './use-ai-global-provider';
 
-const { currentLang } = storeDefinitionToRefs(useLangStore);
+const { providerLoaded } = useAIGlobalProvider();
 
 const { outlineData, onSeekVideo } = usePlaybackOutline();
 

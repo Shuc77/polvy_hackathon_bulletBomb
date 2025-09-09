@@ -36,10 +36,24 @@ export function getEventPosition(event: MouseEvent | TouchEvent): {
 }
 
 /**
+ * 是否为本地调试模式
+ */
+export function isDevBuildMode() {
+  return process.env.NODE_ENV !== 'production';
+}
+
+/**
  * 是否被外部应用注入使用
  */
 export function isInjectByExternalApp(): boolean {
   return !!(IN_SDK_INJECT_MODE && window.PolyvWatchAppSdk);
+}
+
+/**
+ * 需要内部打包 Vue
+ */
+export function needInternalBuildVue(): boolean {
+  return NEED_INTERNAL_BUILD_VUE;
 }
 
 /**

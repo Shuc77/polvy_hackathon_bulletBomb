@@ -1,5 +1,5 @@
 import Vue, { onBeforeUnmount, onMounted, Ref } from 'vue';
-import { getRefElem } from '@/assets/utils/vue-utils';
+import { getRefElem } from '@polyv/vue-components';
 import { isFunction } from '@/assets/utils/function';
 import { isMac } from '@/assets/utils/browser';
 

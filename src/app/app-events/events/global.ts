@@ -29,6 +29,10 @@ const externalGlobalEvents = {
    * 进入第二层 Feed 布局，会触发 FeedLayoutLevelChange 回调
    */
   EnterSecondFeedLayout: 'EnterSecondFeedLayout',
+  /**
+   * 切换到 Feed 流下一个 Swiper
+   */
+  SlideToNextFeedSwiper: 'SlideToNextFeedSwiper',
 };
 
 export const globalEvents = {
@@ -119,4 +123,10 @@ export const globalEvents = {
 
   /** 打开文件管理弹窗 */
   OpenFileManagement: 'OpenFileManagement',
+
+  /** 打开学习时长统计弹窗 */
+  OpenLearningStatDialog: 'OpenLearningStatDialog',
+
+  /** 打开学习详情 */
+  OpenLearningDetail: 'OpenLearningDetail',
 };

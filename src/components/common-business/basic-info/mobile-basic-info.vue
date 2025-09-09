@@ -83,9 +83,9 @@
             <mobile-icon-like class="c-mobile-basic-info__author__like-count__icon" />
             <span>{{ realtimeLikes }}</span>
           </div>
-          <!-- 观看时长 -->
+          <!-- 观看时长/学习时长 -->
           <div
-            v-if="watchDurationEnabled"
+            v-if="learningStatsEnabled"
             class="c-mobile-basic-info__author__right-item c-mobile-basic__author__watch-duration g-text-nowrap"
           >
             <mobile-icon-watch-duration class="c-mobile-basic__author__watch-duration__icon" />
@@ -129,7 +129,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps } from '@polyv/vue-components';
 import { computed, unref } from 'vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { useChatStore } from '@/store/use-chat-store';
@@ -168,7 +168,7 @@ const {
   channelDescription,
   liveStartTimeText,
 
-  watchDurationEnabled,
+  learningStatsEnabled,
   viewerWatchDuration,
 } = storeDefinitionToRefs(useChannelInfoStore);
 

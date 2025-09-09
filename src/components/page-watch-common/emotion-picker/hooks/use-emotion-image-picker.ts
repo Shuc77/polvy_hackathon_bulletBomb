@@ -1,5 +1,5 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc, VueEmit } from '@polyv/vue-components';
 import { EmotionImageData } from '@polyv/live-watch-sdk';
 import { onMounted, ref } from 'vue';
 import { useSendMsg } from '../../chat/chat-msg-list/hooks/send-msg-hook';

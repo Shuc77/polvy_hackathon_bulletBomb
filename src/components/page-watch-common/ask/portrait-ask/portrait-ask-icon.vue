@@ -49,7 +49,7 @@ import {
 } from '@/components/component-icons/mobile-origin/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore, PortraitChatTabName } from '@/store/use-portrait-layout-store';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useAskStore } from '@/store/use-ask-store';
 import { useLangStore } from '@/store/use-lang-store';

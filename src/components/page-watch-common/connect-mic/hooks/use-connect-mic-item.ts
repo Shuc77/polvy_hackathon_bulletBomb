@@ -1,5 +1,5 @@
 import { translate } from '@/assets/lang';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps } from '@polyv/vue-components';
 import { ConnectMicItem, ConnectMicFitType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { isMobile } from '@/assets/utils/browser';

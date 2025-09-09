@@ -5,8 +5,7 @@
 import { translate } from '@/assets/lang';
 import { formCommonProps, useFormCommonValidate } from '../hooks/use-form-common';
 import { computed, ref, unref } from 'vue';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { PropUtils, VueProps, emitFunc, updateModelEmit, VueEmit } from '@polyv/vue-components';
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { FormInputInstance } from '../form-input/types/form-input-types';
 

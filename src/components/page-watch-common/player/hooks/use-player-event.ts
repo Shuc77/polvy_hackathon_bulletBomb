@@ -16,11 +16,13 @@ import { usePlayerAction } from './use-player-action';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 /**
  * 播放器相关事件 hook
  */
 export const usePlayerEvent = () => {
+  const channelInfoStore = useChannelInfoStore();
   const playerStore = usePlayerStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
@@ -48,7 +50,9 @@ export const usePlayerEvent = () => {
       toFreezePlay(true);
     }
 
-    if (!watchAppStore.isPageActive) {
+    if (watchAppStore.isPageActive) {
+      toFreezePlay(false);
+    } else {
       forcePausePlay();
     }
   }
@@ -79,13 +83,25 @@ export const usePlayerEvent = () => {
       await onClickPlaybackItem(target);
     };
 
-    // 单个回放
+    // 处理学习时长弹窗
+    if (channelInfoStore.learningStatsDialogEnabled) {
+      const videoDurationTime = watchCore.player.getDurationTime();
+      getEmitter().emit(appEvents.global.OpenLearningStatDialog, {
+        videoDurationTime,
+      });
+    }
+
+    // 单个回放-循环播放
     if (
       playbackStore.playbackMode === PlaybackMode.Single &&
       playbackStore.currentPlaybackTarget &&
-      !playbackStore.chatReplayEnabled && // 单个回放结束后，如果处于聊天重放，就不再重复播放了
       playbackStore.loopPlayEnabled
     ) {
+      // 单个回放结束后，如果处于聊天重放，就不再重复播放了
+      if (playbackStore.chatReplayEnabled) {
+        return;
+      }
+
       await toPlayTarget(playbackStore.currentPlaybackTarget);
       return;
     }

@@ -13,6 +13,7 @@ import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useIarGlobalConfigHookV2 } from '@/components/page-watch-common/interactive-receive-v2/use-iar-global-config-v2';
+import { installVueComponents } from '@/plugins/vue-components';
 
 const useWhiteListRemoveUser = () => {
   const { getWatchCore } = useMultiPolyvWatchApp();
@@ -50,6 +51,8 @@ export const useWatchPage = async () => {
   // 设置互动功能全局配置
   useIarGlobalConfigHook();
   useIarGlobalConfigHookV2();
+
+  installVueComponents();
 
   // 主副屏响应切换逻辑
   useMainScreen();

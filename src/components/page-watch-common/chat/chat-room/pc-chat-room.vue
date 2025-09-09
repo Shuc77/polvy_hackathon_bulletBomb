@@ -25,14 +25,14 @@
       <pc-chat-msg-list />
 
       <!-- 右下角挂件 -->
-      <pc-chat-room-pendant v-if="!isPlaybackWatchUrl" />
+      <pc-chat-room-pendant />
 
       <!-- 打赏 svga 特效 -->
       <pc-donate-svga-animation v-if="donateAnimationVisible" />
     </div>
 
     <!-- 互动二次入口 -->
-    <pc-interactive-entrance v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <pc-interactive-entrance v-if="iarSdkLoaded" />
 
     <!-- 消息引用 -->
     <pc-chat-msg-quote />
@@ -40,8 +40,8 @@
     <!-- 底部输入框 -->
     <pc-chat-input-controller v-if="chatInputControllerEnable" />
 
-    <!-- 报名观看（参与互动时机） -->
-    <pc-enroll v-if="needEnrollByChat" />
+    <!-- 报名观看以及游客登录（参与互动时机） -->
+    <pc-enroll v-if="isGuest || needEnrollByChat" />
   </div>
 </template>
 
@@ -58,17 +58,17 @@ import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
 import PcRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useDonateStore } from '@/store/use-donate-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
 const { announcementFunctionVisible, iarSdkLoaded } =
   storeDefinitionToRefs(useInteractReceiveStore);

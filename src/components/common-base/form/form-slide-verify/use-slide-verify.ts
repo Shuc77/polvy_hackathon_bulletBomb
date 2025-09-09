@@ -7,8 +7,7 @@ import { randomStr } from '@utils-ts/string';
 import { onMounted } from 'vue';
 import { useLangStore } from '@/store/use-lang-store';
 import { LangType } from '@/assets/lang/lang-enum';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useGlobalInject } from '@/app/use-global-inject';
 
 export interface SlideVerifyData {
@@ -20,7 +19,7 @@ export interface SlideVerifyData {
 
 export const formSlideVerifyProps = () => ({
   /** 绑定的验证值 */
-  value: PropUtils.objectType<SlideVerifyData>(),
+  value: PropUtils.object<SlideVerifyData>(),
 });
 
 export const formSlideVerifyEmits = () => ({

@@ -15,11 +15,6 @@
       background-color: map.get($--skin-configs, 'mobile-splash:bg-color') !important;
     }
 
-    // --------- 页脚 --------- //
-    .pws-mobile-page-footer {
-      color: map.get($--skin-configs, 'mobile-page-footer:text-color') !important;
-    }
-
     // --------- 倒计时 ---------- //
     .pws-mobile-count-down-square-item {
       background-color: map.get(

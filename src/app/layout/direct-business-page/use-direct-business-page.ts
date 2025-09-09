@@ -26,7 +26,13 @@ export const useDirectBusinessPage = () => {
     return directBusinessPageType.value === DirectBusinessPageType.WorkWechatFriend;
   });
 
+  /** 场次选择页面 */
+  const isSessionSelectPage = computed(() => {
+    return directBusinessPageType.value === DirectBusinessPageType.SessionSelectPage;
+  });
+
   return {
+    isSessionSelectPage,
     isWorkWechatFriendPage,
     isVerifySaleInvitePage,
     isWatchIdentifyPage,

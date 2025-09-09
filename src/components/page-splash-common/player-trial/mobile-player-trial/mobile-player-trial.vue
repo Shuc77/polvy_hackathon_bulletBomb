@@ -19,7 +19,7 @@ import { ChannelTrialInfo } from '@polyv/live-watch-sdk';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { translate } from '@/assets/lang';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 import { useToastManager } from '@/hooks/components/use-toast';
 import { usePlayerTrialMain } from '../_hooks/use-player-trial-main';
@@ -27,7 +27,7 @@ import { usePlayerTrialMain } from '../_hooks/use-player-trial-main';
 const { toast } = useToastManager();
 
 const props = defineProps({
-  trialInfo: PropUtils.objectType<ChannelTrialInfo>().isRequired,
+  trialInfo: PropUtils.object<ChannelTrialInfo>().isRequired,
 });
 
 const { playerContainer } = usePlayerTrialMain({

@@ -180,9 +180,14 @@ onMounted(() => {
   }
 });
 
-watch(liveStatus, () => {
-  if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
-    pcBottomMenuRef.value?.setDefaultTabName('');
-  }
-});
+watch(
+  () => liveStatus.value,
+  () => {
+    if (!pcBottomMenuRef.value) return;
+
+    if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
+      pcBottomMenuRef.value.setDefaultTabName('');
+    }
+  },
+);
 </script>

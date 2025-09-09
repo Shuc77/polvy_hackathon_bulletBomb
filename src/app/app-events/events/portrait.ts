@@ -62,4 +62,9 @@ export const portraitEvents = {
    * 打开多会场弹窗
    */
   OpenPortraitMultiMeeting: 'OpenPortraitMultiMeeting',
+  /**
+   * 打开字幕设置弹窗
+   * @param {boolean} visible 显示状态，默认：true
+   */
+  OpenSubtitleSettingPopup: 'OpenSubtitleSettingPopup',
 };

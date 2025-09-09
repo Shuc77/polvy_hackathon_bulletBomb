@@ -44,15 +44,15 @@ function getProductUIVersionConfig() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20250814',
+      version: 'rc-20250904',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20250814',
+      version: 'rc-20250904',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20250814',
+      version: 'dev-20250904',
     },
   };
 

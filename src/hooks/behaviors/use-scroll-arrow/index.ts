@@ -58,7 +58,9 @@ export const useHorizontalScrollArrow = () => {
     scrollRef.value.scrollLeft = scrollRef.value.scrollWidth;
   }
 
-  useWindowResizeListener(resetArrowVisible, true);
+  useWindowResizeListener(resetArrowVisible, {
+    autoListen: true,
+  });
 
   return {
     scrollRef,

@@ -3,6 +3,7 @@ import { useTabsInject } from './use-tabs';
 import { useLangStore } from '@/store/use-lang-store';
 import { TabPaneDataItem } from './types';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
+import { isIOS } from '@/assets/utils/browser';
 
 export const useTabHeader = (
   options: {
@@ -93,11 +94,16 @@ export const useTabHeader = (
     }
   }
 
-  useWindowResizeListener(() => {
-    setTimeout(() => {
-      computeCurrentLineLeft();
-    }, 5);
-  }, true);
+  useWindowResizeListener(
+    () => {
+      setTimeout(() => {
+        computeCurrentLineLeft();
+      }, 5);
+    },
+    {
+      autoListen: true,
+    },
+  );
 
   watch(
     () => [unref(currentTabIndex), unref(tabPaneData), langStore.currentLang],
@@ -110,6 +116,14 @@ export const useTabHeader = (
       immediate: true,
     },
   );
+
+  if (isIOS) {
+    onMounted(() => {
+      setTimeout(() => {
+        computeCurrentLineLeft();
+      }, 200);
+    });
+  }
 
   return {
     scrollRef,

@@ -22,7 +22,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { statusTagProps, useStatusTag } from './use-status-tag';
 import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
 import { computed } from 'vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import MobileLiveSignalIcon from '../live-signal-icon/mobile-live-signal-icon.vue';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 
@@ -58,6 +58,7 @@ const isDarkStyle = computed(() => {
   font-style: normal;
   white-space: nowrap;
   vertical-align: middle;
+  cursor: default;
   border-radius: 2px;
 
   span {

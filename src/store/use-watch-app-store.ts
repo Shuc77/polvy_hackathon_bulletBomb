@@ -33,7 +33,7 @@ import { useMultiMeetingRedirect } from '@/components/page-watch-common/multi-me
 
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
-import { useQueryParams } from '@/hooks/core/use-query-params';
+import { QueryParamsHookType, useQueryParams } from '@/hooks/core/use-query-params';
 import { GlobalInjectType, useGlobalInject } from '@/app/use-global-inject';
 import { useWebviewStore } from './use-webview-store';
 import { useFeedInjectStore } from './use-feed-inject-store';
@@ -107,7 +107,11 @@ export interface WatchAppStoreActions {
   toUnlockDrag(): void;
 }
 
-export interface WatchAppStore extends WatchAppStoreState, WatchAppStoreActions, GlobalInjectType {}
+export interface WatchAppStore
+  extends WatchAppStoreState,
+    WatchAppStoreActions,
+    GlobalInjectType,
+    QueryParamsHookType {}
 
 export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp', () => {
   const { getWatchCore, getEmitter } = useGlobalInject();
@@ -500,5 +504,6 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     toUnlockDrag,
 
     ...useGlobalInject(),
+    ...useQueryParams(),
   };
 });

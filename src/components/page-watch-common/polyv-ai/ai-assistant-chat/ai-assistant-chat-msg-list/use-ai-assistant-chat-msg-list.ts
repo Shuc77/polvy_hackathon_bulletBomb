@@ -1,5 +1,4 @@
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { PropUtils, emitFunc, VueEmit } from '@polyv/vue-components';
 
 import { ScrollListInstance, useScrollList } from '@/hooks/behaviors/use-scroll-list';
 

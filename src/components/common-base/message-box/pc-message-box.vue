@@ -2,6 +2,7 @@
 
 <template>
   <pc-dialog
+    ref="dialogRef"
     v-bind="pcDialogProps"
     :visible.sync="innerVisible"
     :mount-el="dialogMountEl"
@@ -48,9 +49,9 @@
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
 import { computed } from 'vue';
-import { usePcDialogMountEl } from '../dialog/use-dialog';
 
 import { messageBoxPcProps, messageBoxEmits, useMessageBox } from './use-message-box';
+import { useComputePcDialogForPlayer } from '@/hooks/business/use-compute-pc-dialog-for-player/use-compute-pc-dialog-for-player';
 
 const props = defineProps(messageBoxPcProps());
 const emit = defineEmits(messageBoxEmits());
@@ -77,7 +78,7 @@ const {
   onConfirm,
 } = useMessageBox({ props, emit });
 
-const { dialogMountEl } = usePcDialogMountEl();
+const { dialogRef, dialogMountEl } = useComputePcDialogForPlayer();
 
 defineExpose(messageBoxInstance);
 </script>

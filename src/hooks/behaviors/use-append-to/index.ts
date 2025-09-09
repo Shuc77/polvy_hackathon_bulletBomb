@@ -1,4 +1,4 @@
-import { getRefElem } from '@/assets/utils/vue-utils';
+import { getRefElem } from '@polyv/vue-components';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { usePageSkin } from '@/skins/use-page-skin';
 import { $ } from '@just4/dom';

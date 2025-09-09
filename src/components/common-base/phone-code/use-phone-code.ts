@@ -3,8 +3,7 @@
  */
 
 import { isUndefined } from 'lodash-es';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { computed, ref, unref } from 'vue';
 import { useLangStore } from '@/store/use-lang-store';
 import zhCodeList from './phone-code-data';

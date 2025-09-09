@@ -1,4 +1,4 @@
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { ref, unref, watch } from 'vue';

@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import ConnectMicrophone from './connect-microphone.vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 defineProps({
   /** 昵称 */

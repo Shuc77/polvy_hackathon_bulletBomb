@@ -1,6 +1,6 @@
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc, VueEmit } from '@polyv/vue-components';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { AuthInfoType } from '@polyv/live-watch-sdk';

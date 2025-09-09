@@ -10,6 +10,8 @@ export enum DirectBusinessPageType {
   InviteWatchAuditing = 'InviteWatchAuditing',
   /** 添加企微好友 */
   WorkWechatFriend = 'WorkWechatFriend',
+  /** 场次选择页面 */
+  SessionSelectPage = 'SessionSelectPage',
 }
 
 /** 页面异常状态类型 */
@@ -26,6 +28,8 @@ export enum PageErrorType {
   ExternalAuthFail = 'ExternalAuthFail',
   /** 独立授权失败 */
   DirectAuthFail = 'DirectAuthFail',
+  /** 授权过期 */
+  AuthExpired = 'AuthExpired',
   /** 未知错误 */
   UnknownError = 'UnknownError',
   /** 企微业务错误 */
@@ -73,4 +77,7 @@ export type DirectBusinessPageData =
         desc?: string;
         href?: string;
       };
+    }
+  | {
+      pageType: DirectBusinessPageType.SessionSelectPage;
     };

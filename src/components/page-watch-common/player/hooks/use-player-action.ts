@@ -20,7 +20,7 @@ export const usePlayerAction = () => {
 
   const { getWatchCore, getEmitter } = useMultiPolyvWatchApp();
 
-  const { playButtonVisible, bigPlayButtonVisible } = usePlayerControl();
+  const { noPauseWhenLive, noPauseWhenPlayback, playerProgressVisible } = usePlayerControl();
 
   /**
    * 是否不允许处理
@@ -28,6 +28,12 @@ export const usePlayerAction = () => {
   function isNotAllowAction(): boolean {
     return !playerStore.isPlayMode || !playerStore.playerInited;
   }
+
+  function isNotAllowPause(): boolean {
+    return noPauseWhenLive.value || noPauseWhenPlayback.value;
+  }
+
+  // ========= 播放相关 ==========
 
   /** 播放 */
   function toPlay(): void {
@@ -44,6 +50,15 @@ export const usePlayerAction = () => {
     getWatchCore().player.play();
   }
 
+  /** 如果当前是暂停则调用播放 */
+  function toTryPlay() {
+    if (playerStore.playStatus === PlayStatus.Pause) {
+      toPlay();
+    }
+  }
+
+  // ========= 暂停相关 ==========
+
   /** 暂停 */
   function toPause(): void {
     if (isNotAllowAction()) {
@@ -51,6 +66,17 @@ export const usePlayerAction = () => {
     }
 
     getWatchCore().player.pause();
+  }
+
+  /**
+   * 不显示大播放按钮，并且不显示左下角播放暂停按钮，暂停操作失效
+   * */
+  function toPauseInLimit(): void {
+    if (isNotAllowPause()) {
+      return;
+    }
+
+    toPause();
   }
 
   /** 停止拉流 */
@@ -80,16 +106,20 @@ export const usePlayerAction = () => {
     }
   }
 
+  // ========= 播放暂停相关 ==========
+
   /** 冻结视频的播放 */
   function toFreezePlay(isFreeze: boolean) {
     getWatchCore().player.freezePlay(isFreeze);
   }
 
-  /** 如果当前是暂停则调用播放 */
-  function toTryPlay() {
-    if (playerStore.playStatus === PlayStatus.Pause) {
-      toPlay();
+  /** 刷新 */
+  function toRefresh(): void {
+    if (isNotAllowAction()) {
+      return;
     }
+
+    getWatchCore().player.refresh();
   }
 
   /** 切换播放状态 */
@@ -108,76 +138,20 @@ export const usePlayerAction = () => {
    * 3.竖屏双击屏幕
    * */
   function toTogglePlayInLimit(): void {
-    const { playButtonVisible, bigPlayButtonVisible } = usePlayerControl();
-
     // 播放不受限制
     if (playerStore.playStatus === PlayStatus.Pause) {
       toPlay();
       return;
     }
 
-    if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
+    if (isNotAllowPause()) {
       return;
     }
 
     toTogglePlay();
   }
 
-  /**
-   * 快进
-   * @param time 快进时间，默认：15
-   */
-  function fastForward(time = 15) {
-    let currentTime = playerStore.currentTime + time;
-    if (currentTime > playerStore.durationTime) {
-      currentTime = playerStore.durationTime - 1;
-    }
-
-    getWatchCore().player.seekVideo(currentTime);
-  }
-
-  /**
-   * 快退
-   * @param time 快退时间，默认：15
-   */
-  function fastBackward(time = 15) {
-    let currentTime = playerStore.currentTime - time;
-    if (currentTime < 0) {
-      currentTime = 0;
-    }
-    getWatchCore().player.seekVideo(currentTime);
-  }
-
-  /**
-   * 不显示大播放按钮，并且不显示左下角播放暂停按钮，播放操作失效
-   * */
-  function toPlayInLimit(): void {
-    if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
-      return;
-    }
-
-    toPlay();
-  }
-
-  /**
-   * 不显示大播放按钮，并且不显示左下角播放暂停按钮，暂停操作失效
-   * */
-  function toPauseInLimit(): void {
-    if (!bigPlayButtonVisible.value && !playButtonVisible.value) {
-      return;
-    }
-
-    toPause();
-  }
-
-  /** 刷新 */
-  function toRefresh(): void {
-    if (isNotAllowAction()) {
-      return;
-    }
-
-    getWatchCore().player.refresh();
-  }
+  // ========= 音量相关 ==========
 
   /** 防抖设置音量 */
   const setVolumeDebounce = debounce((volume: number) => {
@@ -198,13 +172,6 @@ export const usePlayerAction = () => {
     setVolumeDebounce(volume);
   }
 
-  /** 切换显示/隐藏弹幕移动端设置弹窗 */
-  function toToggleBarrageMobileSettingVisible(toShow: boolean) {
-    playerStore.$patch({
-      barrageMobileSettingVisible: toShow,
-    });
-  }
-
   /**
    * 递增音量
    * @param diff 增加的音量，默认：0.05
@@ -221,6 +188,15 @@ export const usePlayerAction = () => {
   function toReductionVolume(diff = 0.05) {
     const currentVolume = playerStore.currentVolume - diff;
     toChangeVolume(currentVolume);
+  }
+
+  // ========= 弹幕相关 ==========
+
+  /** 切换显示/隐藏弹幕移动端设置弹窗 */
+  function toToggleBarrageMobileSettingVisible(toShow: boolean) {
+    playerStore.$patch({
+      barrageMobileSettingVisible: toShow,
+    });
   }
 
   /** 切换弹幕显示 */
@@ -263,16 +239,22 @@ export const usePlayerAction = () => {
     getWatchCore().player.setBarrageLocation(index);
   }
 
-  let lineSwitchingTimer: NodeJS.Timeout;
-  let lineFinishTimer: NodeJS.Timeout;
+  // ========= 多线路相关 ==========
+
+  let lineSwitchingTimer: number | undefined;
+  let lineFinishTimer: number | undefined;
 
   function handleLineChange() {
-    clearTimeout(lineSwitchingTimer);
-    playerStore.switchLineTipStatus = SwitchTipsStatus.Finish;
+    window.clearTimeout(lineSwitchingTimer);
+    playerStore.$patch({
+      switchLineTipStatus: SwitchTipsStatus.Finish,
+    });
 
-    lineFinishTimer = setTimeout(() => {
+    lineFinishTimer = window.setTimeout(() => {
       if (playerStore.switchLineTipStatus === SwitchTipsStatus.Finish) {
-        playerStore.switchLineTipStatus = SwitchTipsStatus.Hide;
+        playerStore.$patch({
+          switchLineTipStatus: SwitchTipsStatus.Hide,
+        });
       }
     }, 3000);
   }
@@ -280,16 +262,22 @@ export const usePlayerAction = () => {
   function listenLineChangeToShowTips(line: number) {
     const playerModule = getWatchCore().player;
 
-    clearTimeout(lineSwitchingTimer);
-    clearTimeout(lineFinishTimer);
-    playerStore.switchLineTipStatus = SwitchTipsStatus.Switching;
-    playerStore.switchLineLevel = line;
+    window.clearTimeout(lineSwitchingTimer);
+    window.clearTimeout(lineFinishTimer);
+
+    playerStore.$patch({
+      switchLineTipStatus: SwitchTipsStatus.Switching,
+      switchLineLevel: line,
+    });
+
     playerModule.eventEmitter.off(PlayerEvents.LineChange, handleLineChange);
     playerModule.eventEmitter.once(PlayerEvents.LineChange, handleLineChange);
 
-    lineSwitchingTimer = setTimeout(() => {
+    lineSwitchingTimer = window.setTimeout(() => {
       if (playerStore.switchLineTipStatus === SwitchTipsStatus.Switching) {
-        playerStore.switchLineTipStatus = SwitchTipsStatus.Hide;
+        playerStore.$patch({
+          switchLineTipStatus: SwitchTipsStatus.Hide,
+        });
       }
     }, 3000);
   }
@@ -301,17 +289,24 @@ export const usePlayerAction = () => {
     toTryPlay();
   }
 
-  let levelSwitchingTimer: NodeJS.Timeout;
-  let levelFinishTimer: NodeJS.Timeout;
+  // ========= 清晰度相关 ==========
+
+  let levelSwitchingTimer: number | undefined;
+  let levelFinishTimer: number | undefined;
 
   function handleQualityLevelChange() {
-    clearTimeout(levelSwitchingTimer);
-    playerStore.switchQualityTipStatus = SwitchTipsStatus.Finish;
-    playerStore.switchQualityLevel = getWatchCore().player.getCurrentQualityLevel();
+    window.clearTimeout(levelSwitchingTimer);
 
-    levelFinishTimer = setTimeout(() => {
+    playerStore.$patch({
+      switchQualityTipStatus: SwitchTipsStatus.Finish,
+      switchQualityLevel: getWatchCore().player.getCurrentQualityLevel(),
+    });
+
+    levelFinishTimer = window.setTimeout(() => {
       if (playerStore.switchQualityTipStatus === SwitchTipsStatus.Finish) {
-        playerStore.switchQualityTipStatus = SwitchTipsStatus.Hide;
+        playerStore.$patch({
+          switchQualityTipStatus: SwitchTipsStatus.Hide,
+        });
       }
     }, 3000);
   }
@@ -319,16 +314,22 @@ export const usePlayerAction = () => {
   function listenLevelChangeToShowTips(level: number) {
     const playerModule = getWatchCore().player;
 
-    clearTimeout(levelSwitchingTimer);
-    clearTimeout(levelFinishTimer);
-    playerStore.switchQualityTipStatus = SwitchTipsStatus.Switching;
-    playerStore.switchQualityLevel = level;
+    window.clearTimeout(levelSwitchingTimer);
+    window.clearTimeout(levelFinishTimer);
+
+    playerStore.$patch({
+      switchQualityTipStatus: SwitchTipsStatus.Switching,
+      switchQualityLevel: level,
+    });
+
     playerModule.eventEmitter.off(PlayerEvents.QualityLevelChange, handleQualityLevelChange);
     playerModule.eventEmitter.once(PlayerEvents.QualityLevelChange, handleQualityLevelChange);
 
-    levelSwitchingTimer = setTimeout(() => {
+    levelSwitchingTimer = window.setTimeout(() => {
       if (playerStore.switchQualityTipStatus === SwitchTipsStatus.Switching) {
-        playerStore.switchQualityTipStatus = SwitchTipsStatus.Hide;
+        playerStore.$patch({
+          switchQualityTipStatus: SwitchTipsStatus.Hide,
+        });
       }
     }, 3000);
   }
@@ -340,16 +341,15 @@ export const usePlayerAction = () => {
     toTryPlay();
   }
 
+  // ========= 倍速相关 ==========
+
   /** 切换倍速 */
   function toChangeRate(rate: number): void {
     getWatchCore().player.changeRate(rate);
     toTryPlay();
   }
 
-  /** 返回直播 */
-  function toReturnLive() {
-    toSeekVideo(-1);
-  }
+  // ========= 播放进度相关 ==========
 
   /** 设置播放进度 */
   function toSeekVideo(time: number): void {
@@ -378,7 +378,6 @@ export const usePlayerAction = () => {
    * 不显示进度条，键盘左右按键seek对应失效
    */
   function toForwardVideoInLimit() {
-    const { playerProgressVisible } = usePlayerControl();
     if (!playerProgressVisible.value) return;
 
     toForwardVideo();
@@ -403,11 +402,12 @@ export const usePlayerAction = () => {
    * 不显示进度条，键盘左右按键seek对应失效
    */
   function toBackOffVideoInLimit() {
-    const { playerProgressVisible } = usePlayerControl();
     if (!playerProgressVisible.value) return;
 
     toBackOffVideo();
   }
+
+  // ========= 其他相关的业务 ==========
 
   /** 重新播放 */
   function toRestart(): void {
@@ -415,11 +415,9 @@ export const usePlayerAction = () => {
     toPlay();
   }
 
-  /** 切换移动端播放器页面全屏 */
-  function toToggleMobilePageFullscreen() {
-    layoutStore.$patch({
-      mobilePlayerIsPageFullscreen: !layoutStore.mobilePlayerIsPageFullscreen,
-    });
+  /** 直播时移-返回直播 */
+  function toReturnLive() {
+    toSeekVideo(-1);
   }
 
   /** 切换无延迟播放 */
@@ -437,40 +435,55 @@ export const usePlayerAction = () => {
     }, 0);
   }
 
+  /** 切换移动端播放器页面全屏 */
+  function toToggleMobilePageFullscreen() {
+    layoutStore.$patch({
+      mobilePlayerIsPageFullscreen: !layoutStore.mobilePlayerIsPageFullscreen,
+    });
+  }
+
   return {
     toPlay,
+    toTryPlay,
+
     toPause,
+    toPauseInLimit,
     toStop,
     forcePausePlay,
-    toTogglePlay,
+
+    toFreezePlay,
     toRefresh,
+    toTogglePlay,
+    toTogglePlayInLimit,
+
     toChangeVolume,
-    toToggleBarrageMobileSettingVisible,
     toIncreaseVolume,
     toReductionVolume,
+
+    toToggleBarrageMobileSettingVisible,
     toToggleBarrageShow,
     toChangeBarrageSpeed,
     toChangeBarrageSize,
     toChangeBarrageAlpha,
     toChangeBarrageLocation,
+
     toChangeLine,
+
     toChangeQualityLevel,
+    listenLevelChangeToShowTips,
+
     toChangeRate,
-    toReturnLive,
+
     toSeekVideo,
     toForwardVideo,
-    toBackOffVideo,
-    toRestart,
-    toToggleMobilePageFullscreen,
-    toSetLowLowLatency,
-    toTogglePlayInLimit,
-    toPlayInLimit,
-    toPauseInLimit,
     toForwardVideoInLimit,
+    toBackOffVideo,
     toBackOffVideoInLimit,
-    toFreezePlay,
-    listenLevelChangeToShowTips,
-    fastForward,
-    fastBackward,
+
+    toRestart,
+    toReturnLive,
+    toSetLowLowLatency,
+
+    toToggleMobilePageFullscreen,
   };
 };

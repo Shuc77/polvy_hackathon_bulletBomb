@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { translate } from '@/assets/lang';
 import { computed, ref, unref } from 'vue';
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps } from '@polyv/vue-components';
 
 import {
   MobileIconBooking,
@@ -93,6 +93,9 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useLiveBookingWx } from './hooks/use-live-booking-wx';
 import { LiveBookingFormInstance } from './types';
+import { useLiveBookingCustom } from './hooks/use-live-booking-custom';
+
+import { debounce } from 'lodash-es';
 
 const { trackUserReservationLive } = useWatchEventTrack();
 
@@ -109,7 +112,9 @@ const props = defineProps({
 
 const { buttonPosition } = useProps(props);
 
-const { subscribeRef, wxSubmitLiveBooking, wxCancelLiveBooking } = useLiveBookingWx();
+const { subscribeRef, wxSubmitLiveBooking, wxCancelLiveBooking } = useLiveBookingWx({
+  otherChannelId: props.channelId,
+});
 
 const {
   isLiveBooking: isNormalLiveBooking,
@@ -119,13 +124,29 @@ const {
   wxBookingCountVisible,
   isOtherLiveBooking,
   singleOtherChannelBookingConfig,
+  singleOtherChannelSmsLiveBooking,
+  singleOtherChannelCustomLiveBooking,
+  isCustomLiveBooking,
+  useCustomBooking,
+  useSmsBooking,
+  isSmsLiveBooking,
+  isWxLiveBooking,
+  singleOtherChannelSmsLiveBookingEnable,
+  singleOtherChannelCustomLiveBookingEnable,
+  singleOtherChannelWxLiveBooking,
 } = storeDefinitionToRefs(useLiveBookingStore);
+
+const { submitLiveBookingOfCustom, cancelLiveBookingOfCustom, patchSroreOfCustom } =
+  useLiveBookingCustom({
+    otherChannelId: props.channelId,
+    singleMode: true,
+  });
 
 const isLiveBooking = computed(() => {
   if (unref(props.isOtherLive)) {
     return unref(isOtherLiveBooking);
   }
-  return unref(isNormalLiveBooking);
+  return unref(isNormalLiveBooking) || unref(isCustomLiveBooking);
 });
 
 const useWxBooking = computed(() => {
@@ -198,26 +219,98 @@ const bookingFormRef = ref<LiveBookingFormInstance>();
 const bookingCancelTipsRef = ref<MessageBoxInstance>();
 
 /** 处理按钮点击 */
-async function onClickButton() {
-  if (unref(useWxBooking)) {
-    onClickWxButton();
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const onClickButton = debounce(async () => {
+  const booked = unref(isLiveBooking);
+  // 仅启用“自定义预约”模式
+  let onlyCustom = false;
+  // 其他频道预约
+  if (unref(props.isOtherLive)) {
+    onlyCustom =
+      !unref(singleOtherChannelSmsLiveBookingEnable) &&
+      unref(singleOtherChannelCustomLiveBookingEnable) &&
+      !unref(useSingleWxBooking);
   } else {
-    onClickSmsButton();
+    onlyCustom = unref(useCustomBooking) && !unref(useSmsBooking) && !unref(useWxBooking);
   }
-}
+
+  const smsBooking = unref(isSmsLiveBooking);
+  const wxBooking = unref(isWxLiveBooking);
+  const otherSmsBooked = unref(singleOtherChannelSmsLiveBooking);
+  const otherCustomBooked = unref(singleOtherChannelCustomLiveBooking);
+  const otherWxBooked = unref(singleOtherChannelWxLiveBooking);
+  const smsInstance = unref(bookingFormRef);
+  const wxFirst = unref(useWxBooking);
+  // 当已经存在预约时，按照预约类型取消
+  if (booked) {
+    if (otherWxBooked) {
+      const res = await bookingCancelTipsRef.value?.$confirm();
+      if (res) {
+        trackUserReservationLive({ reservationType: 'official_account' });
+        wxCancelLiveBooking();
+        otherCustomBooked && patchSroreOfCustom(false);
+      }
+      return;
+    }
+    // 其他频道预约 取消预约
+    if (otherSmsBooked) {
+      const res = await bookingCancelTipsRef.value?.$confirm();
+      if (res) {
+        smsInstance?.cancelLiveBooking();
+        otherCustomBooked && patchSroreOfCustom(false);
+      }
+      return;
+    }
+    if (otherCustomBooked) {
+      const res = await bookingCancelTipsRef.value?.$confirm();
+      if (res) {
+        cancelLiveBookingOfCustom();
+      }
+      return;
+    }
+    // 正常频道预约 取消预约
+    if (wxBooking) {
+      const res = await bookingCancelTipsRef.value?.$confirm();
+      if (res) {
+        trackUserReservationLive({ reservationType: 'official_account' });
+        wxCancelLiveBooking();
+        useCustomBooking.value && patchSroreOfCustom(false);
+      }
+      return;
+    }
+    if (smsBooking) {
+      const res = await bookingCancelTipsRef.value?.$confirm();
+      if (res) {
+        smsInstance?.cancelLiveBooking();
+        useCustomBooking.value && patchSroreOfCustom(false);
+      }
+      return;
+    }
+    const res = await bookingCancelTipsRef.value?.$confirm();
+    if (res) {
+      cancelLiveBookingOfCustom();
+    }
+    return;
+  }
+
+  // 当只有自定义预约时，执行自定义预约
+  if (onlyCustom) {
+    submitLiveBookingOfCustom();
+    return;
+  }
+  // 当有微信预约时，优先微信预约
+  if (wxFirst) {
+    onClickWxButton();
+    return;
+  }
+  // 当微信预约和短信预约同时启用时，不执行短信预约
+  onClickSmsButton();
+}, 300);
 
 /** 处理微信预约点击 */
 async function onClickWxButton() {
   trackUserReservationLive({ reservationType: 'official_account' });
-
-  if (unref(isLiveBooking)) {
-    const res = await bookingCancelTipsRef.value?.$confirm();
-    if (res) {
-      wxCancelLiveBooking({ otherChannelId: props.channelId });
-    }
-  } else {
-    wxSubmitLiveBooking({ otherChannelId: props.channelId });
-  }
+  wxSubmitLiveBooking();
 }
 
 /** 处理短信预约点击 */
@@ -225,14 +318,7 @@ async function onClickSmsButton() {
   const instance = unref(bookingFormRef);
 
   trackUserReservationLive({ reservationType: 'code' });
-  if (unref(isLiveBooking)) {
-    const res = await bookingCancelTipsRef.value?.$confirm();
-    if (res) {
-      instance?.cancelLiveBooking();
-    }
-  } else {
-    instance?.openBookingForm();
-  }
+  instance?.openBookingForm();
 }
 </script>
 
@@ -295,7 +381,7 @@ async function onClickSmsButton() {
 .c-mobile-live-booking-button--other-live {
   .c-mobile-live-booking-button__button {
     width: auto;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     line-height: 25px;
     color: #3f76fc;

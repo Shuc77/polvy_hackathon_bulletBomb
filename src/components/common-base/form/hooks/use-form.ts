@@ -1,6 +1,5 @@
 import { useVue } from '@/hooks/core/use-vue';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { ComputedRef, inject, InjectionKey, provide, Ref, ref, unref } from 'vue';
 import { FormTheme } from '../types/enums';

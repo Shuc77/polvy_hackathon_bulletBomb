@@ -1,6 +1,11 @@
 <!-- @file PC 端连麦用户节点 -->
 <template>
   <div class="c-pc-connect-mic-user-item">
+    <background-section
+      :background-type="themeSetting.playerBackgroundType"
+      :custom-url="playerBgUrl"
+    />
+
     <div
       ref="wrapRef"
       class="c-pc-connect-mic-user-item__wrap"
@@ -66,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
@@ -81,6 +87,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const props = defineProps(connectMicItemProps());
 
@@ -107,6 +114,8 @@ const { screenShareInfo, networkInfo } = storeDefinitionToRefs(useConnectMicStor
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
 const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
+
+const { playerBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
 </script>
 
 <style lang="scss">
@@ -126,7 +135,16 @@ const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
   width: 100%;
   height: 100%;
 
+  .pv-rtc-player-video {
+    background: none !important;
+
+    & > div {
+      background-color: transparent !important;
+    }
+  }
+
   video {
+    background: transparent !important;
     transform: none !important;
   }
 }

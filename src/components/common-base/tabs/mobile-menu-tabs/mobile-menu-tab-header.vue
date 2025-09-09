@@ -1,6 +1,6 @@
 <!-- @file 移动端底部 Tabs 标签头部 -->
 <template>
-  <div class="c-mobile-menu-tab-header pws-main-tab-header">
+  <div class="c-mobile-menu-tab-header">
     <div class="c-mobile-menu-tab-header__content">
       <div
         ref="scrollRef"
@@ -85,7 +85,6 @@ const {
   width: 100%;
   height: 40px;
   cursor: pointer;
-  background: #3e3e4e;
 }
 
 .c-mobile-menu-tab-header__content {

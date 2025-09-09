@@ -4,7 +4,7 @@
   <div class="c-pc-watch-layout-lazyload">
     <!-- 互动功能渲染入口 -->
     <pc-iar-render v-if="iarSdkLoaded" />
-    <pc-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <pc-iar-render-v2 v-if="iarSdkLoaded" />
 
     <!-- 商品库大卡片弹层 -->
     <pc-product-big-card-popup v-if="iarSdkLoaded" />
@@ -38,6 +38,9 @@
 
     <!-- 文件管理 -->
     <pc-file-management />
+
+    <!-- 观看/学习时长统计弹层 -->
+    <pc-learning-stat-dialog v-if="learningStatsDialogEnabled" />
   </div>
 </template>
 
@@ -55,21 +58,22 @@ import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-
 import PcFileManagement from '@/components/page-watch-common/file-management/pc-file-management.vue';
 
 import PcFollowDialog from '@/components/page-watch-common/follow/follow-layer/pc-follow-dialog.vue';
+import PcLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/pc-learning-stat-dialog.vue';
 
 import PcProductBigCardPopup from '@/components/page-watch-common/product/product-big-card-popup/product-big-card-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+
+const { learningStatsDialogEnabled } = storeDefinitionToRefs(useChannelInfoStore);
 </script>

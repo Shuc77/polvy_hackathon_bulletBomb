@@ -1,6 +1,7 @@
 <!-- @file PC 端优惠券已领取弹窗 -->
 <template>
   <pc-dialog
+    ref="dialogRef"
     class="c-pc-coupon-user-dialog"
     :mount-el="dialogMountEl"
     :title="couponUserListTitle"
@@ -15,13 +16,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue';
+import { defineAsyncComponent } from 'vue';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 
-import { useLayoutStore } from '@/store/use-layout-store';
-import { PC_PLAYER_FULL_SCREEN_SELECTOR } from '@/assets/constants/selector';
 import { useCouponUserList } from './hooks/use-coupon-user-list-v2';
 import { useIarUILoader } from '../_load-iar-ui-v2';
+import { useComputePcDialogForPlayer } from '@/hooks/business/use-compute-pc-dialog-for-player/use-compute-pc-dialog-for-player';
 
 const { loadIarUI } = useIarUILoader('iar-coupon-ui');
 
@@ -33,12 +33,7 @@ const {
   couponUserListRef,
 } = useCouponUserList();
 
-const layoutStore = useLayoutStore();
-
-/** 弹层渲染节点 */
-const dialogMountEl = computed(() => {
-  return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : '';
-});
+const { dialogRef, dialogMountEl } = useComputePcDialogForPlayer();
 
 const IarNormalCouponUserList = defineAsyncComponent(() => loadIarUI('normal-coupon-user-list'));
 </script>

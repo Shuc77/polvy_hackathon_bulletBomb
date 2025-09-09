@@ -1,48 +1,39 @@
 <!-- @file 移动端互动功能接收端弹窗组件渲染入口 -->
 <template>
   <div class="c-mobile-iar-render">
-    <template v-if="isPlaybackWatchUrl">
-      <!-- 反馈 -->
-      <mobile-feedback-popup v-if="feedbackEnabled" />
-    </template>
-    <template v-else>
-      <!-- 公告 -->
-      <mobile-announcement-popup v-if="announcementFunctionVisible" />
-      <!-- 答题卡 -->
-      <mobile-answer-card-popup />
-      <!-- 签到 -->
-      <mobile-check-in-popup />
-      <!-- 反馈 -->
-      <mobile-feedback-popup v-if="feedbackEnabled" />
+    <!-- 公告 -->
+    <mobile-announcement-popup v-if="announcementFunctionVisible" />
 
-      <template v-if="!useV2Lottery">
-        <!-- 抽奖动画 -->
-        <mobile-lottery-animation />
-        <!-- 抽奖结果弹层 -->
-        <mobile-lottery-result-popup />
-      </template>
+    <!-- 反馈 -->
+    <mobile-feedback-popup v-if="feedbackEnabled" />
 
-      <!-- 问卷 -->
-      <mobile-questionnaire-popup v-if="!useV2Questionnaire" />
-      <!-- 红包弹窗 -->
-      <mobile-redpack-popup />
-      <!-- 红包雨组件 -->
-      <mobile-redpack-rain />
-      <!-- 积分红包记录弹层 -->
-      <mobile-score-record-popup v-if="scoreRedpackEnabled" />
-      <!-- 报名抽奖 -->
-      <mobile-enroll-lottery-popup />
-      <!-- 云席相关提示弹窗 -->
-      <mobile-seat-table-tips
-        v-if="seatTableVisible && isMeetingSeatTableTemplate && seatTableMenuData.visible"
-      />
-      <!-- 二维码分弹窗 -->
-      <mobile-qr-code-share-dialog />
-      <!-- 优惠券弹窗 -->
-      <mobile-coupon-common-popup />
-      <!-- 优惠券已领取弹窗 -->
-      <mobile-coupon-user-popup />
+    <template v-if="!useV2Lottery">
+      <!-- 抽奖动画 -->
+      <mobile-lottery-animation />
+      <!-- 抽奖结果弹层 -->
+      <mobile-lottery-result-popup />
     </template>
+
+    <!-- 问卷 -->
+    <mobile-questionnaire-popup v-if="!useV2Questionnaire" />
+    <!-- 红包弹窗 -->
+    <mobile-redpack-popup />
+    <!-- 红包雨组件 -->
+    <mobile-redpack-rain />
+    <!-- 积分红包记录弹层 -->
+    <mobile-score-record-popup v-if="scoreRedpackEnabled" />
+    <!-- 报名抽奖 -->
+    <mobile-enroll-lottery-popup />
+    <!-- 云席相关提示弹窗 -->
+    <mobile-seat-table-tips
+      v-if="seatTableVisible && isMeetingSeatTableTemplate && seatTableMenuData.visible"
+    />
+    <!-- 二维码分弹窗 -->
+    <mobile-qr-code-share-dialog />
+    <!-- 优惠券弹窗 -->
+    <mobile-coupon-common-popup />
+    <!-- 优惠券已领取弹窗 -->
+    <mobile-coupon-user-popup />
   </div>
 </template>
 
@@ -52,8 +43,6 @@ import { $ } from '@just4/dom';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
-import MobileAnswerCardPopup from './answer-card/mobile-answer-card-popup.vue';
-import MobileCheckInPopup from '../interactive-receive-v2/check-in-v2/mobile-check-in-popup.vue';
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
 import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
 import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
@@ -70,9 +59,6 @@ import MobileCouponUserPopup from '@/components/page-watch-common/interactive-re
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   isIarFullScreen,

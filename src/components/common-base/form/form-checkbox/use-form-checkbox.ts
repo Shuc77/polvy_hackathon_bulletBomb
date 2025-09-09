@@ -1,5 +1,4 @@
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { emitFunc, updateModelEmit, VueEmit, PropUtils, VueProps } from '@polyv/vue-components';
 import { computed, unref } from 'vue';
 
 export const formCheckboxProps = () => ({

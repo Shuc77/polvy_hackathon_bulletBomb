@@ -76,6 +76,7 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
     trackUserConfirmReservationLive({ reservationType: 'code' });
 
     const watchCore = getWatchCore();
+    // 当存在自定义预约+短信预约时，在短信提醒成功后，后端会自动调用自定义预约接口，所以这里不需要再调用一次
     const result = await watchCore.liveBooking.submitSmsLiveBooking({
       phoneNumber: bookingFormData.phoneNumber,
       areaCode: bookingFormData.areaCode,
@@ -111,6 +112,7 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
   /** 取消预约 */
   async function cancelLiveBooking() {
     const watchCore = getWatchCore();
+    // 当存在自定义预约+短信预约时，在短信提醒成功后，后端会自动调用自定义预约接口，所以这里不需要再调用一次
     const result = await watchCore.liveBooking.cancelSmsLiveBooking({
       phoneNumber: bookingFormData.phoneNumber,
       areaCode: bookingFormData.areaCode,

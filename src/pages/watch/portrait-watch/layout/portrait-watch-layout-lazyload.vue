@@ -10,8 +10,8 @@
 
     <!-- 互动功能 -->
     <portrait-iar-render v-if="iarSdkLoaded" />
-    <portrait-iar-render-v2 v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
-    <portrait-product-render v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <portrait-iar-render-v2 v-if="iarSdkLoaded" />
+    <portrait-product-render v-if="iarSdkLoaded" />
 
     <!-- 邀请榜弹层 -->
     <portrait-invite-rank-popup v-if="inviteRankEnabled" />
@@ -70,14 +70,14 @@
       <!-- 邀请有礼活动详情弹窗 -->
       <mobile-invite-activity-detail-popup />
       <!-- 邀请有礼中奖领取弹窗 -->
-      <mobile-invite-prize-receive-popup />
+      <mobile-invite-prize-receive-popup v-if="iarSdkLoaded" />
     </template>
 
     <!-- 绑定用户身份信息弹层 -->
     <mobile-identity-collect-info-dialog v-if="bindMobileVisible" />
 
     <!-- 任务奖励领取弹层 -->
-    <mobile-task-reward-receive-popup />
+    <mobile-task-reward-receive-popup v-if="iarSdkLoaded" />
 
     <!-- 任务完成弹层 -->
     <mobile-task-activity-finish-dialog />
@@ -99,6 +99,12 @@
 
     <!-- 文件管理 -->
     <mobile-file-management />
+
+    <!-- 观看/学习时长统计弹层 -->
+    <mobile-learning-stat-dialog v-if="learningStatsDialogEnabled" />
+
+    <!-- 学习详情弹层 -->
+    <mobile-learning-detail-popup v-if="learningStatsEnabled" />
   </div>
 </template>
 
@@ -136,6 +142,8 @@ import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player
 import PortraitMultiMeetingPopup from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-popup.vue';
 import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
 import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
+import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
+import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -145,15 +153,13 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
@@ -183,4 +189,7 @@ const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
 const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
+
+const { learningStatsEnabled, learningStatsDialogEnabled } =
+  storeDefinitionToRefs(useChannelInfoStore);
 </script>

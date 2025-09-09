@@ -31,7 +31,7 @@ export interface PlayerStoreState {
   playerEnabled: Ref<boolean>;
   /** 能否创建播放器 */
   canRenderPlayer: ComputedRef<boolean>;
-  /** 是否处于可播放的模式 */
+  /** 业务逻辑支持播放的模式 */
   isPlayMode: ComputedRef<boolean>;
   /** 播放器 sdk 加载失败 */
   playerSdkLoadError: Ref<boolean>;
@@ -41,7 +41,10 @@ export interface PlayerStoreState {
   isPlayStarted: Ref<boolean>;
   /** 当前播放状态 */
   playStatus: Ref<PlayStatus>;
-  /** 隐藏播放按钮一次 */
+  /**
+   * 隐藏播放按钮一次
+   * @desc 为了不让 feed 流页面下滑的时候看到播放按钮
+   */
   onceHiddenPlayButton: Ref<boolean>;
   /** 播放器暖场设置 */
   warmUpSetting: Ref<PlayerWarmUpSetting>;
@@ -382,7 +385,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 弹幕设置是否显示 */
   const barrageMobileSettingVisible = ref(false);
 
-  /** 是否处于一个可播放的模式 */
+  /** 业务逻辑支持播放的模式 */
   const isPlayMode = computed<boolean>(() => {
     if (!playerEnabled.value) return false;
 

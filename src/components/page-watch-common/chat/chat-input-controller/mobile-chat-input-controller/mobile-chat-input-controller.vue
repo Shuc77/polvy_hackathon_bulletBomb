@@ -68,7 +68,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useGlobalInject } from '@/app/use-global-inject';
 import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';

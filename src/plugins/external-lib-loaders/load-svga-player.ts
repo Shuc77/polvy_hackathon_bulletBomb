@@ -15,11 +15,11 @@ export interface SVGASdk {
   Parser: typeof SVGAParser;
 }
 
-declare global {
-  interface Window {
-    SVGA?: SVGASdk;
-  }
-}
+// declare global {
+//   interface Window {
+//     SVGA?: SVGASdk;
+//   }
+// }
 
 let svgaPlayerLoader: Promise<SVGASdk> | undefined;
 

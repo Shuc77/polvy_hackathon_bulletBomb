@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import PortraitMsgUserActor from '../_msg-user-actor/msg-user-actor.vue';
 import { useMsgUserInfo } from './use-msg-user-info';
 

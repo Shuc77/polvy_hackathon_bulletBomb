@@ -38,7 +38,13 @@ const watchCore = getWatchCore();
 const inviteWatchAuthInfo = ref<InviteWatchAuthInfo>();
 
 onBeforeMount(async () => {
-  const saleId = paramGetter().inviteWatchSaleId();
+  const paramSaleId = paramGetter().inviteWatchSaleId();
+
+  // 获取邀请观看上级邀请员的 inviteWatchSaleId
+  const inviteWatchInviteSalesId = watchCore.user.getInviteWatchInviteSalesId();
+
+  // 存在上级邀请员，则使用上级邀请员id，否则使用传入的saleId
+  const saleId = inviteWatchInviteSalesId || paramSaleId;
 
   if (!saleId) return;
 

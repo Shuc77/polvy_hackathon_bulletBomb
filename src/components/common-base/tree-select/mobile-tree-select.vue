@@ -52,7 +52,7 @@ import { ref, computed } from 'vue';
 
 import MobileSidebar from '../sidebar/mobile-sidebar.vue';
 import MobileSidebarItem from '../sidebar-item/mobile-sidebar-item.vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { MobileIconCheck } from '@/components/component-icons/mobile/map';
 import { TreeSelectItem, TreeSelectChild, TreeSelectDataValue } from './tree-select-types';
 

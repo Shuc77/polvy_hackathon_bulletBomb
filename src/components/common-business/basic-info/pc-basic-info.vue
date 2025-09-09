@@ -87,9 +87,9 @@
 
         <!--  =========== 右侧  =========== -->
 
-        <!-- 观看时长 -->
+        <!-- 观看时长/学习时长 -->
         <div
-          v-if="watchDurationEnabled"
+          v-if="learningStatsEnabled"
           class="c-pc-basic-info__main__bottom__watch-duration"
         >
           <pc-icon-watch-duration class="c-pc-basic-info__main__bottom__watch-duration__icon" />
@@ -209,7 +209,7 @@ const {
   pageViewCount,
   pvShowEnabled,
 
-  watchDurationEnabled,
+  learningStatsEnabled,
   viewerWatchDuration,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
@@ -380,6 +380,7 @@ $--basic-logo-size: 50px;
   height: 20px;
   line-height: 20px;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .c-pc-basic-info__main__bottom__share__icon {

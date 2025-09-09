@@ -1,7 +1,6 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePlayerAction } from '../../../hooks/use-player-action';
-import { PlayStatus } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount } from 'vue';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
@@ -30,7 +29,7 @@ export const checkDomClick = (event: MouseEvent, dom: Element) => {
  */
 export const usePortraitClickPlayer = () => {
   const playerStore = usePlayerStore();
-  const { toPlayInLimit, toPauseInLimit } = usePlayerAction();
+  const { toTryPlay, toPauseInLimit } = usePlayerAction();
   const { noPauseWhenLive } = usePlayerControl();
   const { getAppRootElement } = useMultiPolyvWatchApp();
 
@@ -61,18 +60,19 @@ export const usePortraitClickPlayer = () => {
       return;
     }
 
-    // 当前处于暂停状态，触发播放
-    if (playerStore.isPlayMode && playerStore.playStatus === PlayStatus.Pause) {
-      toPlayInLimit();
+    // 点击的是暖场图片的区域
+    const warmupImgElem = getAppRootElement().querySelector('[data-warmup-img]') ?? undefined;
+    if (
+      warmupImgElem &&
+      checkDomClick(event, warmupImgElem) &&
+      playerStore.warmUpSetting.warmUpHref
+    ) {
+      openUrl(playerStore.warmUpSetting.warmUpHref);
+      toTryPlay();
       return;
     }
 
-    // 点击的是暖场图片的区域
-    const warmupImgElem = getAppRootElement().querySelector('[data-warmup-img]') ?? undefined;
-    if (warmupImgElem && checkDomClick(event, warmupImgElem)) {
-      openUrl(playerStore.warmUpSetting.warmUpHref);
-      return;
-    }
+    toTryPlay();
 
     clickCount++;
     // 双击了播放器区域，暂停播放

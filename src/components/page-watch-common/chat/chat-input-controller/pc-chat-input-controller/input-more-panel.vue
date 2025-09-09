@@ -42,15 +42,28 @@
       <pc-icon-bind-mobile class="c-pc-chat-input-controller__more-panel__icon" />
       {{ $lang('identityInfo.bindMobile') }}
     </div>
+
+    <!-- 文件管理 -->
+    <div
+      class="c-pc-chat-input-controller__more-panel__item pws-pc-more-panel-item"
+      @click="onClickFileManagement"
+    >
+      <pc-icon-more-files class="c-pc-chat-input-controller__more-panel__icon" />
+      {{ $lang('fileManagement.title') }}
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc } from '@polyv/vue-components';
 import PcFormCheckbox from '@/components/common-base/form/form-checkbox/pc-form-checkbox.vue';
-import { PcIconSetNick, PcIconBindMobile } from '@/components/component-icons/pc/map';
+import {
+  PcIconSetNick,
+  PcIconBindMobile,
+  PcIconMoreFiles,
+} from '@/components/component-icons/pc/map';
 import { useDonateAnimationVisible } from '@/components/page-watch-common/donate/donate-animation/use-donate-animation';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -92,6 +105,12 @@ function onClickSetNick() {
 
 function onClickBindMobile() {
   getEmitter().emit(appEvents.global.OpenBindIdentityInfoDialog);
+  emit('close');
+}
+
+/** 点击文件管理 */
+function onClickFileManagement() {
+  getEmitter().emit(appEvents.global.OpenFileManagement, true);
   emit('close');
 }
 </script>

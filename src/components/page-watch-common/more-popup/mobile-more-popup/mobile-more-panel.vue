@@ -92,7 +92,7 @@
       />
       <!-- 清晰度设置 -->
       <more-item
-        v-if="qualitySettingVisible && isPortraitWatchLayout"
+        v-if="qualitySettingVisible"
         :icon-comp="MobileIconMoreQualitySetting"
         :text="$lang('player.qualitySetting')"
         @click="onClickQualitySetting"
@@ -138,6 +138,13 @@
     <div class="c-mobile-more-panel__title">{{ $lang('more.interactive') }}</div>
 
     <div class="c-mobile-more-panel__list">
+      <!-- 实时字幕 -->
+      <more-item
+        v-if="subtitleRealTimeEnabled && isPortraitWatchLayout && liveSubtitlesEnable"
+        :icon-comp="MobileIconMoreSubtitle"
+        :text="$lang('player.subtitle.text')"
+        @click="onClickSubtitle"
+      />
       <!-- 个人中心 -->
       <more-item
         v-if="identitySetting.profileEnabled"
@@ -202,13 +209,21 @@
         :text="$lang('interact.announcement.title')"
         @click="onClickAnnouncement"
       />
+
+      <!-- 我的学习 -->
+      <more-item
+        v-if="learningStatsEnabled"
+        :icon-comp="MobileIconWatchDuration"
+        :text="$lang('learningDetail.name')"
+        @click="onClickLearningDetail"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import MoreItem from './mobile-more-item.vue';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc } from '@polyv/vue-components';
 import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { storeToRefs } from 'pinia';
@@ -247,9 +262,11 @@ import {
   MobileIconMoreSetNick,
   MobileIconMoreStreamTrack,
   MobileIconMoreStreamTrackNormal,
+  MobileIconMoreSubtitle,
   MobileIconMoreVideo,
   MobileIconMoreWithdraw,
   MobileIconMoreFiles,
+  MobileIconWatchDuration,
 } from '@/components/component-icons/mobile/map';
 import {
   MobileOriginIconMoreHideDonate,
@@ -261,7 +278,9 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerControl } from '../../player/hooks/use-player-control';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useStreamTrack } from '../../player/player-stream-track/use-stream-track';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -290,6 +309,10 @@ const { sendRedpackVisible, scoreRedpackEnabled } = storeDefinitionToRefs(useRed
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
+
+const { learningStatsEnabled } = storeDefinitionToRefs(useChannelInfoStore);
+
+const { subtitleRealTimeEnabled, liveSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
 
 const { chatMenuData, qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -340,6 +363,12 @@ function onClickOnlySpecialMsg() {
 /** 点击公告 */
 function onClickAnnouncement() {
   getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
+  closeMore();
+}
+
+/** 点击我的学习 */
+function onClickLearningDetail() {
+  getEmitter().emit(appEvents.global.OpenLearningDetail, true);
   closeMore();
 }
 
@@ -483,6 +512,12 @@ function onClickQuestionAnswer() {
 /** 点击切换语言流 */
 function onClickSwitchStream() {
   getEmitter().emit(appEvents.portrait.OpenLangStreamPopup, true);
+  closeMore();
+}
+
+/** 点击实时字幕 */
+function onClickSubtitle() {
+  getEmitter().emit(appEvents.portrait.OpenSubtitleSettingPopup, true);
   closeMore();
 }
 

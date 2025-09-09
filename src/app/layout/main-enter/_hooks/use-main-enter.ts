@@ -1,30 +1,34 @@
-import { watch, onBeforeMount, onMounted, nextTick } from 'vue';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { watch, onBeforeMount, nextTick } from 'vue';
+import { emitFunc, VueEmit } from '@polyv/vue-components';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
-
 import { usePageStore } from '@/store/use-page-store';
 import { useAuthStore } from '@/store/use-auth-store';
-
-import { useQueryParams } from '@/hooks/core/use-query-params';
-import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hooks/use-auth-special';
-import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
-import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
-import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
-import { useWebviewStore } from '@/store/use-webview-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useEmotionSetup } from './use-emotion-setup';
-import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
-import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useShareStore } from '@/store/use-share-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+
+import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
+import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
+import { useWeixinShareConfigUpdate } from '@/hooks/platform/use-weixin/use-weixin-config';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { AuthSpecialQueryParams } from '@/components/page-splash-common/auth/hooks/use-auth-special';
+
+import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
+
+import { useGlobalInject } from '@/app/use-global-inject';
+import { DirectBusinessPageType } from '@/app/layout/direct-business-page/type';
+import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
+import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
+import { useEmotionSetup } from './use-emotion-setup';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 /**
  * 页面尺寸初始化设置
  */
-const usePageSizeSetup = () => {
+export const usePageSizeSetup = () => {
   const pageStore = usePageStore();
   const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
@@ -46,13 +50,15 @@ const usePageSizeSetup = () => {
     }, 300);
   });
 
-  onMounted(() => {
-    savePageSize();
-  });
-
-  useWindowResizeListener(() => {
-    savePageSize();
-  }, true);
+  useWindowResizeListener(
+    () => {
+      savePageSize();
+    },
+    {
+      autoListen: true,
+      immediately: true,
+    },
+  );
 
   if (tabletLoadDesktopTemplate) {
     useScreenOrientHook({
@@ -80,6 +86,8 @@ export const useMainEnter = (options: {
   const { emit, watchLoader } = options;
   const { removeQueryParam } = useQueryParams();
 
+  const { getWatchCore } = useGlobalInject();
+
   const { loadIarSDK } = useIarSetup();
 
   const { setupEmotionParser } = useEmotionSetup();
@@ -87,6 +95,8 @@ export const useMainEnter = (options: {
   const { setupConnectMic } = useConnectMicSetup();
 
   const { updateWeixinShareConfig } = useWeixinShareConfigUpdate();
+
+  const watchCore = getWatchCore();
 
   const watchAppStore = useWatchAppStore();
   const authStore = useAuthStore();
@@ -96,6 +106,27 @@ export const useMainEnter = (options: {
 
   const webviewStore = useWebviewStore();
 
+  const { isGuest } = storeDefinitionToRefs(useIdentityStore);
+
+  /**
+   * 拦截观看页页面初始化
+   * @desc 存在需要拦截的情况下，拦截器内部会自行处理，调用方需要终止初始化函数继续执行
+   * @returns 是否需要拦截
+   * */
+  function interceptWatchPageLoad() {
+    const needTargetSession = watchCore.channel.getTargetSessionEnabled();
+    const inTargetSession = watchCore.inTargetSession();
+
+    if (needTargetSession && !inTargetSession) {
+      watchAppStore.setDirectBusinessPage({
+        pageType: DirectBusinessPageType.SessionSelectPage,
+      });
+      return true;
+    }
+
+    return false;
+  }
+
   watch(
     () => watchAppStore.shouldShowSplash,
     async newVal => {
@@ -104,6 +135,9 @@ export const useMainEnter = (options: {
       }
 
       if (newVal === false) {
+        const needIntercept = interceptWatchPageLoad();
+        if (needIntercept) return;
+
         if (watchLoader) {
           await watchLoader();
         }
@@ -162,8 +196,10 @@ export const useMainEnter = (options: {
       await webviewStore.initWebviewBridge();
     }
 
-    // 加载互动功能 SDK
-    await loadIarSDK();
+    // 加载互动功能 SDK, 游客登录不需加载
+    if (!isGuest.value) {
+      await loadIarSDK();
+    }
 
     // 处理需要等观看页加载完后的逻辑
     if (watchAppStore.watchPageInited) {
@@ -172,13 +208,14 @@ export const useMainEnter = (options: {
         webviewStore.initWebview();
       }
 
-      // 连接聊天室
-      await watchAppStore.setupWatchCoreConnect();
-
-      // 延迟设置连麦功能
-      setTimeout(() => {
-        setupConnectMic();
-      }, 0);
+      // 连接聊天室以及初始化连麦，游客登录不需连接聊天室和连麦
+      if (!isGuest.value) {
+        await watchAppStore.setupWatchCoreConnect();
+        // 延迟设置连麦功能
+        setTimeout(() => {
+          setupConnectMic();
+        }, 0);
+      }
     }
   }
 

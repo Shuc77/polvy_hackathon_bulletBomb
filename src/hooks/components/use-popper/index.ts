@@ -4,7 +4,7 @@
 import { $ } from '@just4/dom';
 import { ref, unref, watchEffect } from 'vue';
 
-import { getRefElem } from '@/assets/utils/vue-utils';
+import { getRefElem } from '@polyv/vue-components';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 import { useAutoTopmostToShow } from '@/hooks/components/use-popper/use-auto-topmost-show';
 

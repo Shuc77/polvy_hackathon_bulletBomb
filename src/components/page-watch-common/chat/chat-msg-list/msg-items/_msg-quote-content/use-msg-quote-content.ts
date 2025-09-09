@@ -1,4 +1,4 @@
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { ChatMsgQuoteType, ChatMsgSource } from '@polyv/live-watch-sdk';
 import { computed } from 'vue';
 

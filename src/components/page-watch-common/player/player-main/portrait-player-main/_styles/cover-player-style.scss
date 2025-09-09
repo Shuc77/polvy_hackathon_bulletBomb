@@ -4,6 +4,10 @@
   // 覆盖背景图
   .plwrap {
     background: none !important;
+
+    video {
+      background-color: transparent !important;
+    }
   }
 
   // 隐藏自带的播放按钮
@@ -54,4 +58,12 @@
   .plv-live-player-cutOff {
     z-index: initial;
   }
+}
+
+.vcp-player {
+  background-color: transparent !important;
+}
+
+.vcp-player video {
+  background: transparent !important;
 }

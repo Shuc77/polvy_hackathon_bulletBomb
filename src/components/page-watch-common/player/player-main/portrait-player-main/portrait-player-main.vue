@@ -7,7 +7,7 @@
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
       'c-portrait-player-main--hide': isConnectMicing,
     }"
-    @click="handleClick"
+    @click="onClickContainer"
   >
     <div
       class="c-portrait-player-main__container-wrap"
@@ -32,17 +32,12 @@
 
         <!-- 播放器封面图 -->
         <portrait-player-cover-img />
+
+        <!-- 播放按钮 -->
+        <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
+        <player-business-play-button :style="playerButtonStyle" />
       </div>
     </div>
-
-    <!-- 播放按钮 -->
-    <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
-    <player-play-button
-      v-if="normalPlayButtonVisible && !isSmallWindow"
-      :mode="noPauseWhenLive ? PlayButtonMode.Text : PlayButtonMode.Default"
-      :style="playerButtonStyle"
-      class="c-mobile-player-main__play-btn"
-    />
 
     <!-- 暂无直播占位面板 -->
     <portrait-none-live-panel v-if="noneLiveVisible" />
@@ -53,11 +48,10 @@
 </template>
 
 <script setup lang="ts">
-import { PlayButtonMode } from '../../common/player-play-button/use-player-play-button';
 import PortraitNoneLivePanel from '../../common/none-live-panel/portrait-none-live-panel.vue';
 import PortraitPlayerCoverImg from '../../player-cover-img/portrait-player-cover-img.vue';
 import SmallWindowControl from '../../player-control/common-player-control/small-window-control.vue';
-import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
+import PlayerBusinessPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
@@ -109,7 +103,7 @@ const {
 const { portraitDocWrapHeight, portraitDocSideSwitchVisible } =
   storeDefinitionToRefs(usePortraitLayoutStore);
 
-const { normalPlayButtonVisible, noPauseWhenLive, addHistoryTipsListener } = usePlayerControl();
+const { addHistoryTipsListener } = usePlayerControl();
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
@@ -135,17 +129,7 @@ const playerStyle = computed<CSSProperties>(() => {
   }
 });
 
-const playerButtonStyle = computed<CSSProperties>(() => {
-  if (isDocMainScreen.value && documentSwitch.value) {
-    return {
-      height: `${portraitDocWrapHeight.value}px`,
-    };
-  } else {
-    return {};
-  }
-});
-
-const handleClick = (event: MouseEvent) => {
+const onClickContainer = (event: MouseEvent) => {
   if (isDocMainScreen.value) {
     getEmitter().emit(appEvents.portrait.ClickPlayerRegion, event);
   }
@@ -165,6 +149,17 @@ onBeforeUnmount(() => {
 });
 
 const { playerContainerStyle } = usePortraitPlayerSize();
+
+const playerButtonStyle = computed<CSSProperties>(() => {
+  if (isDocMainScreen.value && documentSwitch.value) {
+    return {
+      ...playerContainerStyle.value,
+      height: `${portraitDocWrapHeight.value}px`,
+    };
+  } else {
+    return playerContainerStyle.value;
+  }
+});
 
 const allPlayerContainerStyle = computed<CSSProperties>(() => {
   const style = {

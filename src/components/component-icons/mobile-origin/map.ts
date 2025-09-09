@@ -5,6 +5,7 @@
 
 export { default as MobileOriginIconBarrageOff } from './icons/barrage-off';
 export { default as MobileOriginIconBarrageOn } from './icons/barrage-on';
+export { default as MobileOriginIconLearningDuration } from './icons/learning-duration';
 export { default as MobileOriginIconMoreHideDonate } from './icons/more-hide-donate';
 export { default as MobileOriginIconMoreLookAll } from './icons/more-look-all';
 export { default as MobileOriginIconMoreOnlySpecial } from './icons/more-only-special';

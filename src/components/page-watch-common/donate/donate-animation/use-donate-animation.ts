@@ -1,6 +1,6 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';

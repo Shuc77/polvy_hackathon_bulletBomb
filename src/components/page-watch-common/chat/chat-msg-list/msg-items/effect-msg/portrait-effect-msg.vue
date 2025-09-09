@@ -47,8 +47,6 @@ const { getEffectText, getNicknameCountText } = useEffectText();
 </script>
 
 <style lang="scss">
-@import '../_styles/vars.scss';
-
 .c-portrait-effect-msg__inner {
   &.c-portrait-effect-msg__inner--ProductClick,
   &.c-portrait-effect-msg__inner--ProductBuy {

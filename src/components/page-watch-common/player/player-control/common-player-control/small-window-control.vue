@@ -86,7 +86,7 @@ function onClickClose() {
   z-index: 999;
   width: 32px;
   height: 32px;
-  background-image: url(../../common/player-play-button/imgs/play-btn-2.png);
+  background-image: url(./imgs/play-btn.png);
   transform: translate(-50%, -50%);
 }
 </style>

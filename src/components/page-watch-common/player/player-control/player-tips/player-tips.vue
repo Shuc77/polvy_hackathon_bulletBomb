@@ -76,7 +76,7 @@ import { usePlayerControl } from '@/components/page-watch-common/player/hooks/us
 import { useNetworkStatus } from '@/components/page-watch-common/player/hooks/use-network-status';
 import { useWeakNetworkSwitch } from '@/components/page-watch-common/player/player-control/weak-network-switch-tips/use-weak-network-switch';
 import WeakNetworkSwitchTips from '../weak-network-switch-tips/weak-network-switch-tips.vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 import { isMobile } from '@/assets/utils/browser';
 import { useWebPageFullscreen } from '@/components/page-watch-common/player/hooks/use-web-page-fullscreen';

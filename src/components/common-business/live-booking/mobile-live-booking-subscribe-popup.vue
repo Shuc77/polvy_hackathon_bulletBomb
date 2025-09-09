@@ -40,7 +40,7 @@ import NormalButton from '@/components/common-base/normal-button/normal-button.v
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { SubscribeInstance } from './types';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 const props = defineProps({
   /** 是否是其他频道预约 */

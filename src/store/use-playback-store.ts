@@ -129,7 +129,6 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
    * 是否支持重放场景
    */
   const __supportReplay = computed(() => {
-    if (watchAppStore.isPlaybackWatchUrl) return false;
     if (channelStore.liveStatus === LiveStatus.Live) return false;
 
     return true;
