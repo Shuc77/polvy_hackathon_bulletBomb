@@ -2,13 +2,12 @@
  * @file 短信验证码输入框 hook
  */
 
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { translate } from '@/assets/lang';
 import { validateImageCaptcha, validatePhoneNumber } from '@/assets/utils/validate';
 import { computed, ref, unref, watchEffect } from 'vue';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import {
   SmsScene,
   SmsValidType,

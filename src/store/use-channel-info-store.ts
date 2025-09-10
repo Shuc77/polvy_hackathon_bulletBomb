@@ -16,8 +16,11 @@ import { htmlStr2Text } from '@/assets/utils/string';
 import {
   ChannelBasicInfo,
   ChannelCountdownSetting,
+  ChannelWatchDurationSetting,
+  ChannelWatchDurationType,
   LiveStatus,
   PageViewShowLocation,
+  PlvChannelModule,
 } from '@polyv/live-watch-sdk';
 import { formatDate } from '@utils-ts/date';
 import { defineStore } from 'pinia';
@@ -60,10 +63,12 @@ export interface ChannelInfoStoreState {
   /** 是否显示直播倒计时 */
   showLiveCountDown: ComputedRef<boolean>;
 
-  /** 观看时长开关 */
-  watchDurationEnabled: Ref<boolean>;
+  /** 学习时长开关 */
+  learningStatsEnabled: ComputedRef<boolean>;
   /** 观看时长，单位分钟 */
   viewerWatchDuration: Ref<number>;
+  /** 学习时长统计弹窗是否可用 */
+  learningStatsDialogEnabled: ComputedRef<boolean>;
 }
 
 export interface ChannelInfoStoreAction {
@@ -253,11 +258,49 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       return Date.now() < liveStartTimeVal;
     });
 
-    /** 观看时长开关 */
-    const watchDurationEnabled = ref(false);
+    /** 观看时长配置 */
+    const watchDurationSetting = ref<ChannelWatchDurationSetting>(
+      PlvChannelModule.generateDefaultWatchDurationSetting(),
+    );
+
+    /** 学习时长开关 */
+    const learningStatsEnabled = computed(() => {
+      const { watchDurationEnabled, watchDurationType } = watchDurationSetting.value;
+
+      if (watchDurationType === ChannelWatchDurationType.LivePlayback) {
+        return watchDurationEnabled;
+      }
+
+      if (
+        watchDurationType === ChannelWatchDurationType.Live &&
+        channelStore.liveStatus === LiveStatus.Live
+      ) {
+        return watchDurationEnabled;
+      }
+
+      if (
+        watchDurationType === ChannelWatchDurationType.Playback &&
+        channelStore.liveStatus === LiveStatus.Playback
+      ) {
+        return watchDurationEnabled;
+      }
+
+      return false;
+    });
 
     /** 观看时长，单位分钟 */
     const viewerWatchDuration = ref(0);
+
+    /** 学习时长统计弹窗是否可用 */
+    const learningStatsDialogEnabled = computed(() => {
+      const { watchDurationEnabled, watchDurationType } = watchDurationSetting.value;
+
+      return (
+        watchDurationEnabled &&
+        watchDurationType === ChannelWatchDurationType.Playback &&
+        channelStore.liveStatus === LiveStatus.Playback
+      );
+    });
 
     /** 刷新频道信息 */
     function syncChannelInfo(): void {
@@ -284,8 +327,7 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
 
       countdownSetting.value = watchCore.channel.getCountdownSetting();
 
-      const watchDurationSetting = watchCore.channel.getWatchDurationSetting();
-      watchDurationEnabled.value = watchDurationSetting.watchDurationEnabled;
+      watchDurationSetting.value = watchCore.channel.getWatchDurationSetting();
     }
 
     return {
@@ -308,8 +350,9 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       liveStartTimeText,
       showLiveCountDown,
 
-      watchDurationEnabled,
+      learningStatsEnabled,
       viewerWatchDuration,
+      learningStatsDialogEnabled,
 
       syncChannelInfo,
     };

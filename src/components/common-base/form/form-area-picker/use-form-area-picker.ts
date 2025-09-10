@@ -1,6 +1,5 @@
 import { isMobile } from '@/assets/utils/browser';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { getSelectData, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
 import type { AreaData, AreaPickerComponent } from '@/plugins/polyv-ui/types';
 import { useCommonStore } from '@/store/use-common-store';

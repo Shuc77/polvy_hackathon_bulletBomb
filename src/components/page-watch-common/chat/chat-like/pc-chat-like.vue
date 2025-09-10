@@ -40,7 +40,7 @@ import { chatLikeProps, useChatLike } from './_hooks/use-chat-like';
 
 import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import { useShortNumber } from '@/hooks/business/use-short-number';
 
 const { shortNumber } = useShortNumber();

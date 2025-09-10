@@ -1,4 +1,4 @@
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { computed } from 'vue';
 

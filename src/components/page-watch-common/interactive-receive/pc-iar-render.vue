@@ -1,17 +1,9 @@
 <!-- @file PC 端互动功能接收端弹窗组件渲染入口 -->
 <template>
   <div class="c-pc-iar-render">
-    <template v-if="isPlaybackWatchUrl">
-      <!-- 举报/投诉反馈 -->
-      <pc-feedback-dialog v-if="feedbackEnabled" />
-    </template>
-    <template v-else>
+    <template>
       <!-- 公告 -->
       <pc-announcement-dialog v-if="announcementFunctionVisible" />
-      <!-- 答题卡 -->
-      <pc-answer-card-dialog />
-      <!-- 快速答题卡 -->
-      <pc-quick-answer-card-dialog />
       <!-- 签到 -->
       <pc-check-in-dialog />
       <!-- 反馈 -->
@@ -41,8 +33,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import PcAnnouncementDialog from './announcement/pc-announcement-dialog.vue';
-import PcAnswerCardDialog from './answer-card/pc-answer-card-dialog.vue';
-import PcQuickAnswerCardDialog from './answer-card/pc-quick-answer-card-dialog.vue';
 import PcCheckInDialog from '../interactive-receive-v2/check-in-v2/pc-check-in-dialog.vue';
 import PcFeedbackDialog from './feedback/pc-feedback-dialog.vue';
 import PcLotteryAnimation from './lottery/pc-lottery-animation.vue';
@@ -54,9 +44,6 @@ import PcEnrollLotteryDialog from './enroll-lottery/pc-enroll-lottery-dialog.vue
 import PcQrCodeShareDialog from '../../common-business/qrcode-share-dialog/pc-qrcode-share-dialog.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { announcementFunctionVisible, feedbackEnabled, useV2Lottery, useV2Questionnaire } =
   storeDefinitionToRefs(useInteractReceiveStore);

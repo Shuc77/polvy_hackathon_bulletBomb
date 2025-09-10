@@ -13,28 +13,37 @@ import { installI18n } from '@/assets/lang';
 import '@/assets/styles/animation.scss';
 import '@/assets/utils/ie-polyfill/index.js';
 import { DEFAULT_APP_UNIQUE_ID } from '@/assets/constants/defaults';
-import { isInjectByExternalApp } from '@/assets/utils/utils';
+import { isDevBuildMode, isInjectByExternalApp, needInternalBuildVue } from '@/assets/utils/utils';
 
 /**
  * 注册 Vue 相关逻辑
+ *
+ * @warn 由于观看页 SDK 支持被容器注入使用，所以大致会有 4 种场景
+ *
+ * 1、SaaS 通用场景： 容器和观看页 SDK 都使用 Vue2.7 版本，且都使用外链
+ * 2、SDK 注入场景 A： 容器使用 Vue2.6 外链，观看页 SDK 使用 Vue2.7 内部打包
+ * 3、SDK 注入场景 B: 容器不使用 Vue2.6 外链，自身构建打包或者使用第三方框架，观看页 SDK 使用 Vue2.7 内部打包
+ * 4、SDK 注入场景 C: 容器不使用 Vue2.6 外链，自身构建打包或者使用第三方框架，观看页 SDK 使用 Vue2.7 外链
  */
 const installVue = () => {
-  /**
-   * 互动功能通过 umd 引入，需要获取 window 的 Vue 对象
-   * dev 环境下 vue 使用 esModule 引入，不会挂载到 window
-   * 因此在 window 没有 Vue 的情况下手动挂载一次
-   */
-  // if (!window.Vue && process.env.NODE_ENV !== 'production') {
-  //   loadScript('https://s4.videocc.net/library/vue/2.x/vue-2.7.16.runtime.min.js')
-  //     // eslint-disable-next-line
-  //     .then(() => {
-  //       window.Vue.config.devtools = true;
-  //     });
-  // }
+  // 处理 SaaS 通用场景
+  if (window.Vue && window.Vue.version === '2.7.16') {
+    (window.Vue2Module as unknown) = window.Vue;
+  }
 
-  if (!window.Vue && process.env.NODE_ENV !== 'production') {
-    (window.Vue as unknown) = Vue;
+  // 本地调试挂载全局 Vue 对象，让底层 SDK 的 UI 能够正常实例化
+  // 非 SaaS 通用场景的情况，也需要挂载 window.Vue2Module
+  if (isDevBuildMode() || needInternalBuildVue()) {
+    if (!window.Vue) {
+      (window.Vue as unknown) = Vue;
+    }
     (window.Vue2Module as unknown) = Vue2Module;
+  }
+
+  if (!window.Vue2Module) {
+    console.error(
+      '异常场景!!! 请确认 needInternalBuildVue 标志位，确保 window.Vue2Module 和 window.Vue 正常设置',
+    );
   }
 
   Vue.config.productionTip = false;

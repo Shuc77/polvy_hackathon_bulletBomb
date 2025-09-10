@@ -1,5 +1,5 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc, VueEmit } from '@polyv/vue-components';
 import { onMounted, ref, unref } from 'vue';
 
 export const emotionFacePickerEmits = () => ({

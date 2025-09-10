@@ -1,4 +1,4 @@
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { computed, ref, watch } from 'vue';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 import { useVue } from '@/hooks/core/use-vue';
@@ -49,9 +49,14 @@ export const usePlayerSubtitle = (options: { props: VueProps<typeof useSubtitleP
     fontsizeNumber.value = Number(tempSize.toFixed(2));
   };
 
-  useWindowResizeListener(() => {
-    reCalcFontSize();
-  }, true);
+  useWindowResizeListener(
+    () => {
+      reCalcFontSize();
+    },
+    {
+      autoListen: true,
+    },
+  );
 
   const mountedEl = (selector: string) => {
     const $el = document.querySelector(selector);

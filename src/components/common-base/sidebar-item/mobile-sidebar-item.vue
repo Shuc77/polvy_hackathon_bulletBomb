@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { SIDEBAR_KEY } from '../sidebar/use-sidebar';
 import { useParent } from '@/hooks/core/use-vue/use-parent';
 

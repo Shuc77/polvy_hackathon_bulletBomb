@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps } from '@polyv/vue-components';
 
 const props = defineProps({
   /** 是否 sip 电话连麦 */

@@ -2,7 +2,6 @@
 import { translate } from '@/assets/lang';
 import { DEFAULT_PHONE_NUMBER_AREA_CODE } from '@/assets/constants/defaults';
 import { validatePhoneNumber } from '@/assets/utils/validate';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
 import { useDialogTipsUtils } from '@/components/common-base/dialog/use-dialog-tips';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
@@ -18,7 +17,7 @@ import {
 import { computed, reactive } from 'vue';
 import { useCommonStore } from '@/store/use-common-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useEnrollSms } from './use-enroll-sms';
 import { useGlobalInject } from '@/app/use-global-inject';
 

@@ -2,7 +2,7 @@
  * @file 自定义 vue3 的 teleport
  */
 import { useVue } from '@/hooks/core/use-vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, watch } from 'vue';
 import { $ } from '@just4/dom';
 

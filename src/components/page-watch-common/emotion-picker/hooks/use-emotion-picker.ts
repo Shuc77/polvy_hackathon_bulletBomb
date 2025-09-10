@@ -1,5 +1,4 @@
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { onBeforeMount, ref } from 'vue';
 import { EmotionImageData } from '@polyv/live-watch-sdk';
 

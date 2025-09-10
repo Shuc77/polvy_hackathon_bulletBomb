@@ -1,10 +1,11 @@
 <template>
   <div class="p-watch-identify">
-    <!-- <div ref="renderContainer"></div> -->
     <watch-identify-login-page
+      v-show="pageVisible"
       :lang="langStore.currentLang"
       :get-watch-identify-core="getWatchIdentifyCore"
       @success="onLoginSuccess"
+      @guest-login-success="onGuestLoginSuccess"
       :direct-auth-params="{
         externalViewerId: paramGetter().externalViewerId(),
         nickname: paramGetter().nickname(),
@@ -22,23 +23,55 @@
 <script lang="ts" setup>
 import { useWatchIdentifySDKSceneLoader } from '@/plugins/external-lib-loaders/load-watch-identify-ui-default';
 import { isMobile } from '@/assets/utils/browser';
-import { defineComponent } from 'vue';
+import { defineComponent, ref, onBeforeMount } from 'vue';
 import { useLangStore } from '@/store/use-lang-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useChannelStore } from '@/store/use-channel-store';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { messageBox, MessageBoxPositionType } from '@/components/common-base/message-box';
+import { translate } from '@/assets/lang';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
-const { getWatchCore } = useGlobalInject();
+const { getWatchCore, getEmitter } = useGlobalInject();
 const { redirectToErrorVerify } = useErrorVerify();
 const { paramGetter } = useQueryParams();
-
+const identityStore = useIdentityStore();
+const channelStore = useChannelStore();
 const langStore = useLangStore();
 
-// window.changeLang = (lang: any) => {
-//   langStore.switchLang(lang);
-// };
-
 const watchCore = getWatchCore();
+
+const isFeedMainMode = isBuildForFeedMainMode();
+
+const pageVisible = ref(true);
+
+const emitter = getEmitter();
+
+let loginDialogVisible = false;
+
+async function handleLoginDialog(): Promise<boolean> {
+  if (loginDialogVisible) return false;
+  loginDialogVisible = true;
+  const res = await messageBox({
+    content: translate('auth.login.tips.ppt'),
+    confirmButtonText: translate('auth.login.button'),
+    contentCenter: true,
+    cancelButtonText: translate('auth.login.tips.continue'),
+    positionType: MessageBoxPositionType.Absolute,
+  }).$confirm();
+  loginDialogVisible = false;
+  if (res) {
+    pageVisible.value = true;
+    return true;
+  } else {
+    emitter.emit(appEvents.global.SlideToNextFeedSwiper);
+  }
+
+  return false;
+}
 
 function getWatchIdentifyCore() {
   return watchCore.identity.getIdentifyCore();
@@ -49,10 +82,31 @@ function onLoginSuccess() {
   window.location.reload();
 }
 
+function onGuestLoginSuccess() {
+  if (!identityStore.checkAllowUseGuest()) {
+    identityStore.resetGuest();
+    return;
+  }
+
+  // 当前已经是游客状态代表已经进入过主页面，无需再刷新，继续走登录流程
+  if (identityStore.isGuest) {
+    identityStore.resetGuest();
+  } else {
+    pageVisible.value = false;
+    window.location.reload();
+  }
+}
+
 function onLoginFail() {
   redirectToErrorVerify({
     errorType: ErrorVerifyType.AuthFail,
   });
+}
+
+function onPageActive() {
+  if (channelStore.isPptChannel && isFeedMainMode) {
+    handleLoginDialog();
+  }
 }
 
 const { getMobilePolyvWatchIdentifySDKSceneComponent, getPcPolyvWatchIdentifySDKSceneComponent } =
@@ -66,6 +120,15 @@ const WatchIdentifyLoginPage = defineComponent(() => {
     getPcPolyvWatchIdentifySDKSceneComponent('PcWatchIdentifyLoginPage');
 
   return isMobile ? MobileWatchIdentifyLoginPage() : PcWatchIdentifyLoginPage();
+});
+
+useEventBusListener(appEvents.global.PageActive, onPageActive);
+
+onBeforeMount(() => {
+  if (channelStore.isPptChannel && isFeedMainMode) {
+    pageVisible.value = false;
+    handleLoginDialog();
+  }
 });
 </script>
 

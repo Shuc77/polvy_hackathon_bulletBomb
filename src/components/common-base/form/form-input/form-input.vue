@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { PcIconCloseRoundFill } from '@/components/component-icons/pc/map';
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import { formInputEmits, formInputProps, useFormInput } from './hooks/use-form-input';
 import { FormTheme } from '../types/enums';
 

@@ -10,7 +10,9 @@ export default IconBuilder(
   (data) => `
 <svg width="${data.size}" height="${data.size}" fill="none" viewBox="0 0 26 26">
   <defs>
-    <clipPath><rect width="24" height="24" x="1" y="1" rx="0" /></clipPath>
+    <clipPath id="master_svg0_492_1565">
+      <rect width="24" height="24" x="1" y="1" rx="0" />
+    </clipPath>
   </defs>
   <g>
     <g><rect width="26" height="26" x="0" y="0" fill="none" rx="0" /></g>

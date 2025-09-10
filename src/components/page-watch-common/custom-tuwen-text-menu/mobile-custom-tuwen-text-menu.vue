@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import MobileRichTextRender from '@/components/common-base/rich-text-render/mobile-rich-text-render.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 defineProps({
   /** 图文内容 */

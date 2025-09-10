@@ -44,6 +44,7 @@ export const usePageErrorHook = () => {
       PageErrorType.ExternalAuthFail,
       PageErrorType.DirectAuthFail,
       PageErrorType.ExternalAuthFail,
+      PageErrorType.AuthExpired,
     ];
     return authErrorTypes.includes(unref(pageError).type);
   });

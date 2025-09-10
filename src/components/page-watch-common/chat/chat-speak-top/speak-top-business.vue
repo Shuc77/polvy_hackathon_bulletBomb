@@ -55,7 +55,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useWebPageFullscreen } from '@/components/page-watch-common/player/hooks/use-web-page-fullscreen';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { tupleString } from '@/assets/utils/array';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/pc-import';
 

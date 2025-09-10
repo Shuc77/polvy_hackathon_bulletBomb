@@ -10,9 +10,11 @@ import { setActivePinia } from 'pinia';
 import { watch } from 'vue';
 import { appEvents, useEventBusListener } from '../app-events';
 import { useBrowserIcon, useBrowserTitle } from './use-global-style';
+import { usePlayerStore } from '@/store/use-player-store';
 
 const useExternalContainerEffectMain = () => {
   const watchAppStore = useWatchAppStore();
+  const playerStore = usePlayerStore();
 
   const { getPolyvWatchApp, getSocket } = watchAppStore;
 
@@ -41,8 +43,10 @@ const useExternalContainerEffectMain = () => {
     setBrowserTitle();
 
     setTimeout(() => {
-      toFreezePlay(false);
-      toPlay();
+      if (playerStore.playerInited) {
+        toFreezePlay(false);
+        toPlay();
+      }
     }, 100);
 
     if (!watchAppStore.isLiveWatchConnected) {

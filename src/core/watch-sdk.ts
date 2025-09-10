@@ -60,6 +60,10 @@ export function initWatchSdk(appConfig: AppConfig): PolyvWatchCore {
     const userId = data.user?.userId;
     const actor = data.user?.actor;
 
+    if (watchCore.isPlaybackWatchByVid() && data.isChatReplayMsg) {
+      return true;
+    }
+
     if (
       chatStore.onlySpecialMsg &&
       !watchCore?.user.isSpecialUserType(userType, actor) &&

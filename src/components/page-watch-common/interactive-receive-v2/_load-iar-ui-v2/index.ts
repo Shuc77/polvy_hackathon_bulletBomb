@@ -43,7 +43,7 @@ export const useIarUILoader = <T extends IarUIType>(iarUIType: T) => {
             if (window[globalVariable]) {
               resolve(window[globalVariable]);
             } else {
-              reject(new Error(`loadIarUI fail, window.PolyvIRScene is undefined`));
+              reject(new Error(`loadIarUI fail, window.${globalVariable} is undefined`));
             }
           } catch (e) {
             reject(e);

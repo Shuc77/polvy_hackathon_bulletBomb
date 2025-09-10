@@ -4,11 +4,18 @@ import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { RenderPosition } from '@just4/virtual-list/types';
-import { ChatEvents, ChatMsgSource, ChatMsgType, plvInterval } from '@polyv/live-watch-sdk';
+import {
+  ChatEvents,
+  ChatEventsRelations,
+  ChatMsgSource,
+  ChatMsgType,
+  plvInterval,
+} from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useContractHistory, useContractQueue } from './contract-history-hook';
 import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions } from './types';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
   const { getWatchCore } = useGlobalInject();
@@ -16,6 +23,7 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
   const chatStore = useChatStore();
   const chatMsgStore = useChatMsgStore();
   const playbackStore = usePlaybackStore();
+  const watchAppStore = useWatchAppStore();
 
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { contractMsgQueue } = useContractQueue();
@@ -154,8 +162,12 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
     }
   }
 
-  function onChatMsg(evt: { chatMsg: ChatMsgType }) {
+  function onChatMsg(evt: ChatEventsRelations[ChatEvents.ChatMessage]) {
     const chatMsg = evt.chatMsg;
+
+    if (watchAppStore.isPlaybackWatchUrl && evt.isChatReplayMsg) {
+      return;
+    }
 
     // 对于仅看主持人，非特殊身份，非自己发言的全部过滤掉
     if (chatStore.onlySpecialMsg && isNotSpecialMsg(chatMsg)) {

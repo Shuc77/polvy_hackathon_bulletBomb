@@ -1,6 +1,6 @@
 import { translate } from '@/assets/lang';
 import { openLink } from '@/assets/utils/url';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { ChannelMenuIframeOpenType, plvInterval, plvParseJson } from '@polyv/live-watch-sdk';
 import { computed, onMounted, ref, watch } from 'vue';
 import {

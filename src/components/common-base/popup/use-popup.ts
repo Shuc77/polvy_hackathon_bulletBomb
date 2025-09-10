@@ -7,8 +7,7 @@ import { Transform } from '@/plugins/alloy-finger/transform';
 
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, updateModelEmit, VueEmit } from '@polyv/vue-components';
 import { isUndefined } from 'lodash-es';
 
 import { CSSProperties } from 'vue/types/jsx';
@@ -41,7 +40,7 @@ export const popupProps = () => ({
   /** 蒙层透明度，默认：0.6 */
   maskOpacity: PropUtils.number.def(0.6),
   /** 弹层主体样式 */
-  contentStyle: PropUtils.objectType<CSSProperties>().def({}),
+  contentStyle: PropUtils.object<CSSProperties>().def({}),
   /** 弹层主题 class */
   contentClass: PropUtils.string,
   /** 是否使用弹出层管理器，集中控制弹窗层级，默认：true */

@@ -116,9 +116,14 @@ export const useMessageCarousel = () => {
     },
   );
 
-  useWindowResizeListener(() => {
-    resetCarouselHeight();
-  }, true);
+  useWindowResizeListener(
+    () => {
+      resetCarouselHeight();
+    },
+    {
+      autoListen: true,
+    },
+  );
 
   if (webViewStore.isPlvWebview) {
     watch(

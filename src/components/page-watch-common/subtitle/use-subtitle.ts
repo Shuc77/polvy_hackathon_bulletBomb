@@ -21,25 +21,10 @@ import { SubtitleSelectOptionItem } from './mobile-subtitle-select/use-subtitle-
 
 import { useSubtitleDetached } from './use-subtitle-detached';
 
-/**
- * 实时字幕列表 hook
- * @hook
- */
-export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
-  const { getWatchCore } = useGlobalInject();
-
+export const useSubtitleSelected = () => {
   const subtitleStore = useSubtitleStore();
-  const {
-    liveSubtitleSourceLanguage,
-    liveSubtitleSourceTranslateLanguage,
+  const { liveSubtitleSourceTranslateLanguage } = storeDefinitionToRefs(useSubtitleStore);
 
-    liveSubtitleSourceTranslateLanguageOptions,
-    liveSubtitleSourceLanguageOptions,
-    subtitleDisplayNumber,
-    subtitleDisplayNumberLimitEnabled,
-  } = storeDefinitionToRefs(useSubtitleStore);
-
-  /** 用户选择的翻译的类型 */
   const subtitleTranslateSelected = ref<
     ['all' | 'source' | 'translate', SubtitleSourceTranslateLanguage | undefined]
   >(['all', liveSubtitleSourceTranslateLanguage.value]);
@@ -50,6 +35,37 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
       subtitleStore.changeLiveSubtitleSourceTranslateLanguage(lang);
     }
   });
+
+  return {
+    subtitleTranslateSelected,
+  };
+};
+
+/**
+ * 实时字幕列表 hook
+ * @hook
+ */
+export const useSubtitle = (
+  subtitleScroll: Ref<HTMLElement | undefined>,
+  options?: {
+    /** 滚动底部判断阈值 */
+    scrollBottomThreshold?: number;
+  },
+) => {
+  const { getWatchCore } = useGlobalInject();
+
+  const watchCore = getWatchCore();
+
+  const {
+    liveSubtitleSourceLanguage,
+
+    liveSubtitleSourceTranslateLanguageOptions,
+    liveSubtitleSourceLanguageOptions,
+    subtitleDisplayNumber,
+    subtitleDisplayNumberLimitEnabled,
+  } = storeDefinitionToRefs(useSubtitleStore);
+
+  const { subtitleTranslateSelected } = useSubtitleSelected();
 
   /** 可以选择的翻译选项 */
   const subtitleTranslateOptions = computed<SubtitleSelectOptionItem[]>(() => {
@@ -71,6 +87,8 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
       },
     ];
   });
+
+  const _translateDelay = 500;
 
   /** 临时的实时字幕 */
   const currentSubtitle = ref('');
@@ -107,12 +125,21 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
     if (!subtitleScroll.value) return;
 
-    subtitleScroll.value.addEventListener('scroll', e => {
+    const threshold = options?.scrollBottomThreshold ?? 70;
+
+    function handleScroll(e: Event) {
       const el = e.target as HTMLElement;
       const scrollEl = el.querySelector('.c-subtitle__scroll');
       if (scrollEl && scrollEl.clientHeight < el.offsetHeight) return;
-      isBottom.value = el.scrollHeight - el.offsetHeight - el.scrollTop <= 70;
-    });
+      isBottom.value = el.scrollHeight - el.offsetHeight - el.scrollTop <= threshold;
+    }
+
+    subtitleScroll.value.addEventListener('scroll', handleScroll);
+
+    // 返回清理函数
+    return () => {
+      subtitleScroll.value?.removeEventListener('scroll', handleScroll);
+    };
   }
 
   function scrollToBottom(check = true) {
@@ -124,6 +151,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
         return;
       }
       if (!subtitleScroll.value) return;
+
       subtitleScroll.value.scrollTo(0, subtitleScroll.value.scrollHeight);
     }, 0);
   }
@@ -187,7 +215,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   );
 
   function getSubtitleList() {
-    const watchCore = getWatchCore();
     subtitleList.value = cloneDeep(watchCore.subtitle.getSubtitlesList());
     spliceSubtitle();
   }
@@ -209,11 +236,23 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
     if (!isBottom.value) hasNewMessage.value = true;
   }
 
-  function onSubtitleTranslate(data: SubtitleTranslate) {
+  function onSubtitleTranslate(data: SubtitleTranslate & { retryCount?: number }) {
+    const { retryCount = 0 } = data;
     const index = subtitleList.value.findIndex(item => item.index === data.index);
     if (index >= 0) {
       set(subtitleList.value[index], data.language, data.result);
       scrollToBottom();
+    } else {
+      if (retryCount > 1) {
+        return;
+      }
+
+      setTimeout(() => {
+        onSubtitleTranslate({
+          ...data,
+          retryCount: retryCount + 1,
+        });
+      }, _translateDelay);
     }
   }
 
@@ -228,8 +267,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   }
 
   function bindSubtitleEvent() {
-    const watchCore = getWatchCore();
-
     watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
     watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
@@ -240,8 +277,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   }
 
   function unbindSubtitleEvent() {
-    const watchCore = getWatchCore();
-
     watchCore.subtitle.eventEmitter.off(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitle.eventEmitter.off(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
     watchCore.subtitle.eventEmitter.off(SubtitleEvents.SubtitleListReset, onResetSubtitleList);
@@ -252,7 +287,6 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
   }
 
   onMounted(() => {
-    const watchCore = getWatchCore();
     // eslint-disable-next-line promise/prefer-await-to-then
     watchCore.subtitle.initSubtitleList().finally(() => {
       bindSubtitleEvent();
@@ -280,5 +314,7 @@ export const useSubtitle = (subtitleScroll: Ref<HTMLElement | undefined>) => {
 
     subtitleList,
     currentSubtitle,
+
+    firstToSubtitle,
   };
 };

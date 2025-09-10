@@ -3,7 +3,7 @@
   <div
     class="c-mobile-enroll"
     :class="{
-      'c-mobile-enroll--chat': needEnrollByChat,
+      'c-mobile-enroll--chat': needEnrollByChat || isGuest,
     }"
   >
     <!-- 入口的触发按钮 -->
@@ -18,7 +18,6 @@
 
     <!-- 聊天室中的触发区域 -->
     <div
-      v-if="needEnrollByChat"
       class="c-mobile-enroll__chat"
       @click="onClickEnter"
     ></div>
@@ -33,12 +32,13 @@ import NormalButton from '@/components/common-base/normal-button/normal-button.v
 import MobileEnrollPopup from './mobile-enroll-popup.vue';
 
 import { useEnrollStore } from '@/store/use-enroll-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { useEnrollEnter } from './hooks/use-enroll-enter';
 
 const { needEnrollByEnter, needEnrollByChat, entranceText } = storeDefinitionToRefs(useEnrollStore);
-
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 const { dialogRef, onClickEnter } = useEnrollEnter();
 </script>
 

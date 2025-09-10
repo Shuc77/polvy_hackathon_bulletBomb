@@ -1,4 +1,4 @@
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { ref } from 'vue';
 
 export const chatErrorTipsProps = () => ({

@@ -24,8 +24,6 @@ export interface PolyvIRSceneEntrance {
 
   // PC 端下才有的
   PcBulletin: PolyvIRSceneComponentOption;
-  PcAnswerCard: PolyvIRSceneComponentOption;
-  PcQuickAnswer: PolyvIRSceneComponentOption;
   PcCheckIn: PolyvIRSceneComponentOption;
   PcEnrollLottery: PolyvIRSceneComponentOption;
   PcFeedBack: PolyvIRSceneComponentOption;
@@ -47,8 +45,6 @@ export interface PolyvIRSceneEntrance {
   // 移动端下才有的
   MobileBulletin: PolyvIRSceneComponentOption;
   MobileAnnouncementBar: PolyvIRSceneComponentOption;
-  MobileAnswerCard: PolyvIRSceneComponentOption;
-  MobileQuickAnswer: PolyvIRSceneComponentOption;
   MobileCheckIn: PolyvIRSceneComponentOption;
   MobileEnrollLottery: PolyvIRSceneComponentOption;
   MobileFeedBack: PolyvIRSceneComponentOption;

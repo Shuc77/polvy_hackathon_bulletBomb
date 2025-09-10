@@ -50,7 +50,7 @@
 
             <!-- 侧边菜单栏 -->
             <div class="c-pc-watch-layout__main__right__content__inner">
-              <pc-watch-aside-menu />
+              <pc-watch-aside-menu v-if="layoutLoaded" />
             </div>
           </div>
 
@@ -133,20 +133,21 @@
           <!-- 播放器侧边 - 互动功能渲染入口 -->
           <div class="c-pc-watch-layout__main-layer">
             <div class="c-pc-watch-layout__main__side-popup-render">
-              <pc-iar-render-upper-player v-if="iarSdkLoaded" />
-              <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded" />
-              <pc-watch-layout-player-side-popup />
-              <pc-product-render v-if="iarSdkLoaded" />
+              <pc-iar-render-upper-player v-if="iarSdkLoaded && layoutLoaded" />
+              <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded && layoutLoaded" />
+              <pc-watch-layout-player-side-popup v-if="iarSdkLoaded && layoutLoaded" />
+              <pc-product-render />
 
               <!-- 播放器右下角挂件区 -->
               <div class="c-pc-watch-layout__main__side-pendant-render">
                 <!-- 商品库小卡片 -->
-                <pc-product-small-card v-if="iarSdkLoaded" />
+                <pc-product-small-card v-if="iarSdkLoaded && layoutLoaded" />
 
                 <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
                 <pc-product-pendant
                   v-if="
                     iarSdkLoaded &&
+                    layoutLoaded &&
                     interactSetting.productEntryPosition === ProductEntryPosition.Player &&
                     interactSetting.productEnabled
                   "
@@ -283,6 +284,9 @@ import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useChatStore } from '@/store/use-chat-store';
+import { useLayoutLoad } from '@/hooks/core/use-layout-load';
+
+const { layoutLoaded } = useLayoutLoad('pc-watch-layout');
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 

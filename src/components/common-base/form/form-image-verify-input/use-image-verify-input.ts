@@ -1,7 +1,6 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, updateModelEmit, VueEmit } from '@polyv/vue-components';
 import { computed, onMounted, ref, watch } from 'vue';
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { ImageVerifyInputInstance } from './type';

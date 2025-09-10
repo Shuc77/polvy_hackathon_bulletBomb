@@ -10,6 +10,9 @@
       ref="messageBoxRef"
       v-show="innerVisible"
       class="c-mobile-message-box"
+      :class="{
+        'c-mobile-message-box--absolute': props.positionType === MessageBoxPositionType.Absolute,
+      }"
     >
       <div
         class="c-mobile-message-box__bg"
@@ -24,7 +27,14 @@
         </div>
         <div class="c-mobile-message-box__body">
           <div
-            v-if="props.content"
+            v-if="slots.content"
+            ref="messageBoxContentRef"
+            class="c-mobile-message-box__content"
+          >
+            <slot name="content"></slot>
+          </div>
+          <div
+            v-else-if="props.content"
             v-html="props.content"
             ref="messageBoxContentRef"
             class="c-mobile-message-box__content"
@@ -53,10 +63,18 @@
 
 <script lang="ts" setup>
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
-import { messageBoxMobileProps, messageBoxEmits, useMessageBox } from './use-message-box';
+import {
+  messageBoxMobileProps,
+  messageBoxEmits,
+  useMessageBox,
+  MessageBoxPositionType,
+} from './use-message-box';
+import { useSlots } from 'vue';
 
 const props = defineProps(messageBoxMobileProps());
 const emit = defineEmits(messageBoxEmits());
+
+const slots = useSlots();
 
 const {
   messageBoxInstance,
@@ -89,6 +107,9 @@ defineExpose(messageBoxInstance);
   justify-content: center;
   width: 100%;
   height: 100%;
+  &.c-mobile-message-box--absolute {
+    position: absolute;
+  }
 }
 .c-mobile-message-box__bg {
   position: absolute;

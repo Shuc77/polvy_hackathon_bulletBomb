@@ -78,9 +78,9 @@ import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types'
 
 import { dialogPcProps, dialogEmits } from '../use-dialog';
 import { usePageSkin } from '@/skins/use-page-skin';
-import { useGlobalInject } from '@/app/use-global-inject';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
-const { getAppRootElement, getAppBodyElement, getAppElement } = useGlobalInject();
+const { getAppRootElement, getAppBodyElement, getAppElement } = useMultiPolyvWatchApp();
 
 const { getSkinClassName } = usePageSkin();
 
@@ -120,6 +120,9 @@ const dialogStyle = computed(() => {
   };
   if (props.height) {
     style.height = `${props.height}px`;
+  }
+  if (props.round) {
+    style.borderRadius = '16px';
   }
   return style;
 });

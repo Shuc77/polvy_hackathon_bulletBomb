@@ -1,18 +1,13 @@
 <template>
-  <iar-reward-receive
+  <pwc-reward-receive-popup
     :receive-data="receiveData"
     :submit-action="submitTaskReceive"
   />
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
+import { PwcRewardReceivePopup } from '@polyv/vue-components';
 import { useTaskRewardReceive } from './hooks/use-task-reward-receive';
-import { useIarUILoader } from '../interactive-receive-v2/_load-iar-ui-v2';
-
-const { loadIarUI } = useIarUILoader('iar-reward-receive-ui');
-
-const IarRewardReceive = defineAsyncComponent(() => loadIarUI('reward-receive'));
 
 const { receiveData, submitTaskReceive } = useTaskRewardReceive();
 </script>

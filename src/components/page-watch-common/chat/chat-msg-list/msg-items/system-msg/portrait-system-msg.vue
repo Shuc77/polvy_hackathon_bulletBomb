@@ -21,15 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useSystemMsg } from './use-system-msg';
 
 const { chatMsg } = useSystemMsg();
-
-onMounted(() => {
-  console.warn('chatMsg', chatMsg);
-});
 </script>
 
 <style lang="scss">

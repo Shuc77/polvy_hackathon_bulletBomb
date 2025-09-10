@@ -63,7 +63,7 @@
 
           <!-- 暂停播放按钮 -->
           <div
-            v-if="playButtonVisible"
+            v-if="playerControlPlayBtnVisible"
             class="c-pc-player-control__button"
             :class="{
               'c-pc-player-control__button--pause': playStatus === PlayStatus.Playing,
@@ -254,7 +254,7 @@ const {
   playbackTimeVisible,
   playerProgressVisible,
   playButtonTips,
-  playButtonVisible,
+  playerControlPlayBtnVisible,
   refreshButtonVisible,
   volumeSettingVisible,
   rateSettingVisible,

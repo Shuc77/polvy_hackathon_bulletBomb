@@ -1,7 +1,7 @@
 /**
  * @file 皮肤主题 store
  */
-import { ChannelWatchPageSkin, PlvChannelModule } from '@polyv/live-watch-sdk';
+import { ChannelThemeSetting, ChannelWatchPageSkin, PlvChannelModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
@@ -24,6 +24,8 @@ export interface SkinConfig {
 }
 
 export interface ThemeStore {
+  /** 皮肤主题设置 */
+  themeSetting: Ref<ChannelThemeSetting>;
   /** 观看页皮肤 */
   pageSkin: Ref<ChannelWatchPageSkin | undefined>;
   /** 当前皮肤的配置 */
@@ -44,18 +46,12 @@ export interface ThemeStore {
   mobileSplashLargeImg: Ref<string>;
   /** PC 端观看页背景图 */
   pcWatchBackgroundImage: Ref<string | undefined>;
-  /** 移动端聊天室背景图 */
-  mobileChatBackgroundImage: Ref<string | undefined>;
-  /** 移动端聊天室背景图模糊度 */
-  mobileChatBackgroundImageAmbiguity: Ref<number | undefined>;
   /** 移动端聊天室背景图地址 */
   mobileChatRoomBgUrl: ComputedRef<string | undefined>;
-  /** 竖屏背景图 */
-  portraitBackgroundImage: Ref<string | undefined>;
-  /** 竖屏背景图模糊度 */
-  portraitBackgroundImageAmbiguity: Ref<number | undefined>;
   /** 竖屏背景图地址 */
   portraitPageBgUrl: ComputedRef<string | undefined>;
+  /** 播放器背景图地址 */
+  playerBgUrl: ComputedRef<string | undefined>;
   /** 同步皮肤主题 store */
   syncThemeStore(): void;
 }
@@ -65,6 +61,8 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   const watchAppStore = useWatchAppStore();
   const layoutStore = useLayoutStore();
   const __themeSetting = PlvChannelModule.generateDefaultThemeSetting();
+
+  const themeSetting = ref(__themeSetting);
 
   /** 观看页皮肤 */
   const pageSkin = ref<ChannelWatchPageSkin>();
@@ -153,16 +151,10 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   /** PC 端观看页背景图 */
   const pcWatchBackgroundImage = ref<string>();
 
-  /** 聊天室背景图 */
-  const mobileChatBackgroundImage = ref<string>();
-
-  /** 聊天室背景图模糊 */
-  const mobileChatBackgroundImageAmbiguity = ref<number>();
-
   /** 移动端聊天室背景地址 */
   const mobileChatRoomBgUrl = computed<string | undefined>(() => {
-    const imageVal = unref(mobileChatBackgroundImage);
-    const ambiguityVal = unref(mobileChatBackgroundImageAmbiguity);
+    const imageVal = unref(themeSetting).mobileChatBackgroundImage;
+    const ambiguityVal = unref(themeSetting).mobileChatBackgroundImageAmbiguity;
 
     if (!imageVal) {
       return;
@@ -176,16 +168,27 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     return appendToOssProcess(imageVal, blurParams);
   });
 
-  /** 竖屏背景图 */
-  const portraitBackgroundImage = ref<string>();
-
-  /** 竖屏背景图透明度，0 ～ 100 */
-  const portraitBackgroundImageAmbiguity = ref<number>();
-
   /** 竖屏背景地址 */
   const portraitPageBgUrl = computed<string | undefined>(() => {
-    const imageVal = unref(portraitBackgroundImage);
-    const ambiguityVal = unref(portraitBackgroundImageAmbiguity);
+    const imageVal = unref(themeSetting).portraitBackgroundImage;
+    const ambiguityVal = unref(themeSetting).portraitBackgroundImageAmbiguity;
+
+    if (!imageVal) {
+      return;
+    }
+
+    if (!ambiguityVal) {
+      return imageVal;
+    }
+
+    const blurParams = `image/blur,r_${ambiguityVal},s_${ambiguityVal}`;
+    return appendToOssProcess(imageVal, blurParams);
+  });
+
+  /** 播放器背景图地址 */
+  const playerBgUrl = computed<string | undefined>(() => {
+    const imageVal = unref(themeSetting).playerBackgroundImage;
+    const ambiguityVal = unref(themeSetting).playerBackgroundImageAmbiguity;
 
     if (!imageVal) {
       return;
@@ -201,25 +204,23 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
   function syncThemeStore() {
     const watchCore = watchAppStore.getWatchCore();
-    const themeSetting = watchCore.channel.getThemeSetting();
+    const setting = watchCore.channel.getThemeSetting();
+    themeSetting.value = setting;
 
-    pageSkin.value = themeSetting.pageSkin;
+    pageSkin.value = setting.pageSkin;
 
-    browserFavIcon.value = themeSetting.browserFavIcon;
-    channelCoverImg.value = themeSetting.channelCoverImg;
-    splashImg.value = themeSetting.splashImg;
-    splashImgBackgroundId.value = themeSetting.splashImgBackgroundId;
+    browserFavIcon.value = setting.browserFavIcon;
+    channelCoverImg.value = setting.channelCoverImg;
+    splashImg.value = setting.splashImg;
+    splashImgBackgroundId.value = setting.splashImgBackgroundId;
 
-    mobileSplashLargeImg.value = themeSetting.mobileSplashLargeImg;
+    mobileSplashLargeImg.value = setting.mobileSplashLargeImg;
 
-    pcWatchBackgroundImage.value = themeSetting.pcWatchBackgroundImage;
-    mobileChatBackgroundImage.value = themeSetting.mobileChatBackgroundImage;
-    mobileChatBackgroundImageAmbiguity.value = themeSetting.mobileChatBackgroundImageAmbiguity;
-    portraitBackgroundImage.value = themeSetting.portraitBackgroundImage;
-    portraitBackgroundImageAmbiguity.value = themeSetting.portraitBackgroundImageAmbiguity;
+    pcWatchBackgroundImage.value = setting.pcWatchBackgroundImage;
   }
 
   return {
+    themeSetting,
     pageSkin,
     pageSkinConfig,
     pageSkinColorMode,
@@ -230,12 +231,9 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     hasSplash,
     mobileSplashLargeImg,
     pcWatchBackgroundImage,
-    mobileChatBackgroundImage,
-    mobileChatBackgroundImageAmbiguity,
     mobileChatRoomBgUrl,
-    portraitBackgroundImage,
-    portraitBackgroundImageAmbiguity,
     portraitPageBgUrl,
+    playerBgUrl,
     syncThemeStore,
   };
 });

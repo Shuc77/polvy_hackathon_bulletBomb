@@ -20,7 +20,7 @@
 import { ref } from 'vue';
 import MobileDonatePanelGood from './mobile-donate-panel-good.vue';
 import MobileDonatePanelCash from './mobile-donate-panel-cash.vue';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc } from '@polyv/vue-components';
 
 const emit = defineEmits({
   /** 打赏完成 */

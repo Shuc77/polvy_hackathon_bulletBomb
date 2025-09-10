@@ -23,20 +23,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, nextTick } from 'vue';
-import {
-  PC_MAIN_PLAYER_SELECTOR,
-  PC_PLAYER_FULL_SCREEN_SELECTOR,
-} from '@/assets/constants/selector';
 import PcDialog from '@/components/common-base/dialog/pc-dialog/pc-dialog.vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useAnnouncement } from './hooks/use-announcement';
-import { useLayoutStore } from '@/store/use-layout-store';
-import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types';
+import { useComputePcDialogForPlayer } from '@/hooks/business/use-compute-pc-dialog-for-player/use-compute-pc-dialog-for-player';
 
 const IarPcBulletin = getIarComponent('PcBulletin');
-// 弹层实例
-const dialogRef = ref<DialogInstance>();
 
 const {
   announcementRef,
@@ -49,24 +41,11 @@ const {
   onCloseDialog,
   onHasBulletin,
 } = useAnnouncement();
-const layoutStore = useLayoutStore();
-/** 弹层渲染节点 */
-const dialogMountEl = computed(() => {
-  return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : '';
-});
 
-const positionComputedElem = computed(() => {
-  return layoutStore.isFullscreen ? PC_PLAYER_FULL_SCREEN_SELECTOR : PC_MAIN_PLAYER_SELECTOR;
-});
-watch(
-  () => layoutStore.isFullscreen,
-  () => {
-    nextTick(() => {
-      if (dialogRef.value) {
-        dialogRef.value.setMountEl();
-        dialogRef.value.handleDocumentEventToReset();
-      }
-    });
-  },
-);
+const {
+  dialogRef,
+
+  dialogMountEl,
+  positionComputedElem,
+} = useComputePcDialogForPlayer();
 </script>

@@ -99,9 +99,16 @@ export const useInviteStore = defineStore<'invite', InviteStore>('invite', () =>
   /** 邀请榜配置开关 */
   const inviteRankConfigEnabled = ref(true);
 
-  /** 邀请榜开关 */
+  /**
+   * 邀请榜开关
+   * 游客状态下开关为关
+   */
   const inviteRankEnabled = computed(() => {
-    return inviteRankConfigEnabled.value && channelMenuStore.inviteRankMenuData.visible;
+    return (
+      inviteRankConfigEnabled.value &&
+      channelMenuStore.inviteRankMenuData.visible &&
+      !identityStore.isGuest
+    );
   });
 
   /** 邀请明细开关 */

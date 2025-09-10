@@ -1,4 +1,4 @@
-import { SimilarResponsive } from '@/assets/utils/vue-utils';
+import { SimilarResponsive } from '@polyv/vue-components';
 import { Countdown, IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
 import { computed, isRef, onUnmounted, ref, unref } from 'vue';
 

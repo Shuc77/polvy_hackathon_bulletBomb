@@ -122,10 +122,10 @@ function onCloseNetworkError() {
   justify-content: center;
   pointer-events: auto;
   cursor: pointer;
-}
 
-.polyv-icon-close {
-  height: 20px;
+  .polyv-icon-close {
+    height: 20px;
+  }
 }
 
 .c-mobile-task-activity-pendant__network-error-tip__arrow {

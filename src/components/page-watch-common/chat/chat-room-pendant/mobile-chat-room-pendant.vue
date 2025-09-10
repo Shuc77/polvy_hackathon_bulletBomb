@@ -9,106 +9,95 @@
         'c-mobile-chat-room-pendant--screen__horizontal': isHorizontalScreenOrientation,
       }"
     >
-      <template v-if="isPlaybackWatchUrl">
-        <template v-if="iarSdkLoaded">
-          <!-- 投诉反馈 -->
-          <mobile-feedback-pendant
-            v-if="feedbackPendantVisible"
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
+      <template v-if="iarSdkLoaded">
+        <!-- 风险测评 -->
+        <risk-evaluation-entrance
+          v-if="riskEvaluationEntranceEnabled"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 卡片推送 -->
+        <mobile-push-card
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 红包 -->
+        <mobile-redpack-pendant class="c-mobile-chat-room-pendant__item" />
+
+        <!-- 邀请海报 -->
+        <mobile-invite-poster-entry
+          v-if="mobileChatInvitePendantVisible"
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 报名抽奖 -->
+        <mobile-enroll-lottery-pendant
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 话题 PK -->
+        <mobile-topic-pk
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <template v-if="useV2Lottery">
+          <!-- 抽奖 -->
+          <lottery-pendant-v2 class="c-mobile-chat-room-pendant__item" />
         </template>
+        <template v-else>
+          <!-- 抽奖 -->
+          <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
+          <!-- 条件抽奖 -->
+          <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
+        </template>
+
+        <!-- 平台抽奖 -->
+        <mobile-lucky-lottery-pendant class="c-mobile-chat-room-pendant__item" />
+
+        <!-- 抢答 -->
+        <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
+
+        <!-- 任务活动 -->
+        <mobile-task-activity-pendant
+          v-if="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 优惠券 -->
+        <mobile-coupon-pendant
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
+
+        <!-- 情绪反馈 -->
+        <mobile-emotional-feedback
+          v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
       </template>
-      <template v-else>
-        <template v-if="iarSdkLoaded">
-          <!-- 风险测评 -->
-          <risk-evaluation-entrance
-            v-if="riskEvaluationEntranceEnabled"
-            class="c-mobile-chat-room-pendant__item"
-          />
 
-          <!-- 卡片推送 -->
-          <mobile-push-card
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
+      <!-- 图标广告 -->
+      <mobile-img-advert class="c-mobile-chat-room-pendant__item" />
 
-          <!-- 红包 -->
-          <mobile-redpack-pendant class="c-mobile-chat-room-pendant__item" />
+      <!-- 产品设计的图标顺序，所以这里再多加了一个 v-if 处理 -->
+      <template v-if="iarSdkLoaded">
+        <!-- 投诉反馈 -->
+        <mobile-feedback-pendant
+          v-if="feedbackPendantVisible"
+          v-show="!isPageFullscreenOrHorizontalScreen"
+          class="c-mobile-chat-room-pendant__item"
+        />
 
-          <!-- 邀请海报 -->
-          <mobile-invite-poster-entry
-            v-if="mobileChatInvitePendantVisible"
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-
-          <!-- 报名抽奖 -->
-          <mobile-enroll-lottery-pendant
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-
-          <!-- 话题 PK -->
-          <mobile-topic-pk
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-
-          <template v-if="useV2Lottery">
-            <!-- 抽奖 -->
-            <lottery-pendant-v2 class="c-mobile-chat-room-pendant__item" />
-          </template>
-          <template v-else>
-            <!-- 抽奖 -->
-            <mobile-lottery-pendant class="c-mobile-chat-room-pendant__item" />
-            <!-- 条件抽奖 -->
-            <mobile-welfare-lottery class="c-mobile-chat-room-pendant__item" />
-          </template>
-
-          <!-- 平台抽奖 -->
-          <mobile-lucky-lottery-pendant class="c-mobile-chat-room-pendant__item" />
-
-          <!-- 抢答 -->
-          <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
-
-          <!-- 任务活动 -->
-          <mobile-task-activity-pendant
-            v-if="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-
-          <!-- 优惠券 -->
-          <mobile-coupon-pendant
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-
-          <!-- 情绪反馈 -->
-          <mobile-emotional-feedback
-            v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-        </template>
-
-        <!-- 图标广告 -->
-        <mobile-img-advert class="c-mobile-chat-room-pendant__item" />
-
-        <template v-if="iarSdkLoaded">
-          <!-- 投诉反馈 -->
-          <mobile-feedback-pendant
-            v-if="feedbackPendantVisible"
-            v-show="!isPageFullscreenOrHorizontalScreen"
-            class="c-mobile-chat-room-pendant__item"
-          />
-
-          <!-- 商品库小卡片 -->
-          <mobile-product-small-card
-            v-if="mobileChatTabHasBeenShowed"
-            class="c-mobile-chat-room-pendant__product-small-card"
-          />
-        </template>
+        <!-- 商品库小卡片 -->
+        <mobile-product-small-card
+          v-if="mobileChatTabHasBeenShowed"
+          class="c-mobile-chat-room-pendant__product-small-card"
+        />
       </template>
     </div>
   </custom-teleport>

@@ -119,7 +119,7 @@ import { PlvCollapseTransition } from '@/plugins/polyv-ui/admin-import';
 import { msgInputWrapProps, msgInputWrapEmits, useMsgInputWrap } from '../use-msg-input-wrap';
 import { computed, onMounted, ref, unref, watch } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { appEvents } from '@/app/app-events';

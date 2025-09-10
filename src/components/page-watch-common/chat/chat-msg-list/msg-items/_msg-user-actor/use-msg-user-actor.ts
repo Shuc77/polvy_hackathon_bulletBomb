@@ -1,6 +1,6 @@
 import { ChatUserType } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 
 export const msgUserActorProps = () => ({
   actor: PropUtils.string.def(''),

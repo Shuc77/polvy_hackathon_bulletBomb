@@ -1,7 +1,7 @@
 <!-- @file 移动端-邀请有礼活动中奖领取弹窗 -->
 
 <template>
-  <iar-reward-receive
+  <pwc-reward-receive-popup
     :receive-data="receiveData"
     :submit-action="submitTaskReceive"
   />
@@ -16,25 +16,19 @@ import {
   InvitePrizeReceiveType,
   InvitePrizeWinnerInfo,
 } from '@polyv/live-watch-sdk';
-import { defineAsyncComponent, onMounted, ref } from 'vue';
-
-import { useIarUILoader } from '@/components/page-watch-common/interactive-receive-v2/_load-iar-ui-v2';
-
+import { PwcRewardReceivePopup } from '@polyv/vue-components';
+import { onMounted, ref } from 'vue';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
+import { useToastManager } from '@/hooks/components/use-toast';
+import { useInviteStore } from '@/store/use-invite-store';
 import type {
   RewardReceiveData,
   RewardReceiveFormItem,
   RewardReceiveFormType,
   RewardReceiveSubmitAction,
-} from '@polyv/iar-reward-receive-ui';
+} from '@polyv/vue-components';
 import { useInvitePrizeReceive } from '../_hooks/use-invite-prize-receive';
-import { useGlobalInject } from '@/app/use-global-inject';
-import { useInviteStore } from '@/store/use-invite-store';
-import { useToastManager } from '@/hooks/components/use-toast';
-
-const { loadIarUI } = useIarUILoader('iar-reward-receive-ui');
-
-const IarRewardReceive = defineAsyncComponent(() => loadIarUI('reward-receive'));
 
 const { toast } = useToastManager();
 

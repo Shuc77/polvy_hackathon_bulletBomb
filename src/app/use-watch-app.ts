@@ -38,10 +38,7 @@ import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/aut
  * @desc 存在需要拦截的情况下，拦截器内部会自行处理，调用方需要终止初始化函数继续执行
  * @returns 是否需要拦截
  * */
-const useInterceptWatchAppInit = async (opts: {
-  channelId: string;
-  targetSessionId?: string;
-}): Promise<boolean> => {
+const useInterceptWatchAppInit = async (): Promise<boolean> => {
   const watchAppStore = useWatchAppStore();
   const watchCore = watchAppStore.getWatchCore();
 
@@ -86,17 +83,6 @@ const useInterceptWatchAppInit = async (opts: {
     return true;
   }
 
-  // 需要指定场次才能观看
-  const targetSessionEnabled = watchCore.channel.getTargetSessionEnabled();
-  if (targetSessionEnabled && !opts.targetSessionId) {
-    watchAppStore.setPageError({
-      type: PageErrorType.TargetSessionNotExist,
-      title: translate('pageError.targetSession.notExist.title'),
-      desc: translate('pageError.targetSession.notExist.desc'),
-    });
-    return true;
-  }
-
   // 处理企业微信和用户体系冲突
   if (watchCore.weixin.limitEnterpriseWatchByConflictIdentityInfo()) {
     watchAppStore.setPageError({
@@ -131,7 +117,7 @@ export function createWatchApp() {
   /** 获取地址上的频道号 */
   function getChannelIdByUrl(): string | undefined {
     // @PLV-WARN 这两种模式下，只从 query 参数中获取
-    if (isBuildForFeedMainMode() || isStaticBuildMode()) {
+    if (isInjectByExternalApp() || isStaticBuildMode()) {
       return paramGetter().channelId();
     }
 
@@ -146,7 +132,7 @@ export function createWatchApp() {
 
   function getTargetSessionIdByUrl(): string | undefined {
     // @PLV-WARN 这两种模式下，只从 query 参数中获取
-    if (isBuildForFeedMainMode() || isStaticBuildMode() || paramGetter().channelId()) {
+    if (isInjectByExternalApp() || isStaticBuildMode() || paramGetter().channelId()) {
       return paramGetter().targetSessionId();
     }
 
@@ -240,10 +226,7 @@ export function createWatchApp() {
     syncStoreBeforeWatchAppInited();
 
     /** 需要拦截观看页应用初始化 */
-    const needInterceptWatchAppInit = await useInterceptWatchAppInit({
-      channelId,
-      targetSessionId,
-    });
+    const needInterceptWatchAppInit = await useInterceptWatchAppInit();
     if (needInterceptWatchAppInit) {
       return;
     }

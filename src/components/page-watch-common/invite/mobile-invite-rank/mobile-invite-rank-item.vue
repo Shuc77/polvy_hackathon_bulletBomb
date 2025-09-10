@@ -41,13 +41,13 @@
 
 <script setup lang="ts">
 import { InviteRankItem } from '@polyv/live-watch-sdk';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useCommonStore } from '@/store/use-common-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 defineProps({
   /** 邀请榜节点 */
-  item: PropUtils.objectType<InviteRankItem>().isRequired,
+  item: PropUtils.object<InviteRankItem>().isRequired,
   /** 该节点的排名数 */
   rank: PropUtils.number.isRequired,
   /** 是否为我自己 */

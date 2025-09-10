@@ -39,13 +39,13 @@
 
 <script setup lang="ts">
 import { InviteRankItem } from '@polyv/live-watch-sdk';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { tupleString } from '@/assets/utils/array';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useCommonStore } from '@/store/use-common-store';
 
 defineProps({
-  data: PropUtils.objectType<InviteRankItem>().isRequired,
+  data: PropUtils.object<InviteRankItem>().isRequired,
   order: PropUtils.oneOf(tupleString('first', 'second', 'third')).def('first'),
   isCurrent: PropUtils.bool,
 });

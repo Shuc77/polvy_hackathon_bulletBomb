@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps } from '@polyv/vue-components';
 import FixedWebShare from './fixed-web-share.vue';
 import FixedBackTop from './fixed-back-top.vue';
 import { useShareStore } from '@/store/use-share-store';

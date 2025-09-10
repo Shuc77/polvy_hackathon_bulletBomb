@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useChildren } from '@/hooks/core/use-vue/use-children';
 import { SIDEBAR_KEY } from './use-sidebar';
 

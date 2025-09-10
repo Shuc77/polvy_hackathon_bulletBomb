@@ -10,7 +10,7 @@ import { ValidatorRules } from '@/plugins/async-validator';
 
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
+import { emitFunc, VueEmit } from '@polyv/vue-components';
 
 import { useAuthStore } from '@/store/use-auth-store';
 

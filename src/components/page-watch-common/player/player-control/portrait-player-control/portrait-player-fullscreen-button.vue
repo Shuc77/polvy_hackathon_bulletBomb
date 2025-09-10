@@ -25,7 +25,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
 import { usePortraitPlayerSize } from '@/components/page-watch-common/player/player-main/portrait-player-main/use-portrait-player-size';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useGlobalInject } from '@/app/use-global-inject';
 
 defineProps({

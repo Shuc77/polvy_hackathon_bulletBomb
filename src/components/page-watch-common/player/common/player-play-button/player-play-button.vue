@@ -1,21 +1,21 @@
 <!-- @file 播放器的播放大按钮 -->
 <template>
-  <div
-    v-if="visible"
-    class="c-player-play-button"
-  >
+  <div class="c-player-play-button">
     <div
       v-if="isTextMode"
       class="c-player-play-button__mode--text"
     >
-      <img src="./imgs/play-btn-prefix.gif" />
-      <span>{{ $lang('player.play.button.text') }}</span>
+      <div class="c-player-play-button__mode__prefix-icon">
+        <img src="./imgs/play-btn-prefix.gif" />
+      </div>
+
+      <span class="c-player-play-button__mode__text">{{ $lang('player.play.button.text') }}</span>
     </div>
     <div
       v-else
       class="c-player-play-button__mode--default"
       :class="{
-        'c-player-play-button__mode--play-btn3': newPlayerPauseStyleEnabled,
+        'c-player-play-button__mode--default-new-skin': isDefaultNewSkin,
       }"
     ></div>
   </div>
@@ -23,25 +23,17 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
-import { usePlayerStore } from '@/store/use-player-store';
 
 import { usePlayerPlayButtonProps, PlayButtonMode } from './use-player-play-button';
 
 const props = defineProps(usePlayerPlayButtonProps());
 
-const { bigPlayButtonVisible } = usePlayerControl();
-const { newPlayerPauseStyleEnabled } = usePlayerStore();
-
 const isTextMode = computed(() => {
   return props.mode === PlayButtonMode.Text;
 });
 
-const visible = computed(() => {
-  if (props.simpleVisibleMode) {
-    return props.visible;
-  }
-  return bigPlayButtonVisible.value;
+const isDefaultNewSkin = computed(() => {
+  return props.mode === PlayButtonMode.DefaultNewSkin;
 });
 </script>
 
@@ -56,6 +48,52 @@ const visible = computed(() => {
   pointer-events: none;
   cursor: pointer;
   background: rgba(#000, 0);
+}
+
+.c-player-play-button__mode__prefix-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(180deg, #f93942 0%, #fd5962 100%);
+  border-radius: 100%;
+
+  img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.c-player-play-button__mode__text {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding-right: 4px;
+}
+
+.c-player-play-button__mode--text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  min-width: 116px;
+  height: 36px;
+  font-size: 14px;
+  font-weight: 400;
+  color: $--color-white;
+  letter-spacing: 0;
+  white-space: nowrap;
+  pointer-events: none;
+
+  background: rgba(0, 0, 0, 0.14);
+  border: 1px solid rgba(#fff, 0.6);
+  border-radius: 20px;
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(10px);
 }
 
 .c-player-play-button__mode--default {
@@ -79,37 +117,9 @@ const visible = computed(() => {
   }
 }
 
-.c-player-play-button__mode--text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 40px;
-  padding: 0 16px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 40px;
-  color: $--color-white;
-  letter-spacing: 0;
-  white-space: nowrap;
-
-  background: rgba(#000000, 0.8);
-  border: 1px solid rgba(#fff, 0.6);
-  border-radius: 20.5px;
-  transform: translate(-50%, -50%);
-
-  img {
-    width: 24px;
-    height: 24px;
-    margin-top: -8px;
-    margin-right: 4px;
-  }
-}
-
-.c-player-play-button__mode--play-btn3 {
-  width: 70px;
-
+.c-player-play-button__mode--default-new-skin {
   &::after {
-    background-image: url(./imgs/play-btn-3.svg);
+    background-image: url(./imgs/play-btn-new-skin.png);
     background-size: 100% 100%;
   }
 }

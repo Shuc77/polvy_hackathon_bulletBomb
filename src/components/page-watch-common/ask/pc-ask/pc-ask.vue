@@ -32,6 +32,8 @@
         @click-input-wrap="checkNeedRealNameAuth"
       />
     </div>
+    <!-- 报名观看以及游客登录（参与互动时机） -->
+    <pc-enroll v-if="isGuest" />
   </div>
 </template>
 
@@ -42,17 +44,20 @@ import { isIE } from '@/assets/utils/browser';
 
 import PcAskMsgList from '../ask-msg-list/pc-ask-msg-list.vue';
 import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
+import PcEnroll from '@/components/common-business/enroll/pc-enroll.vue';
 import { useAsk } from '../hooks/use-ask';
 import { useAskSend } from '../hooks/use-ask-send';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
 const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 const { checkNeedRealNameAuth } = useViewerStore();
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 

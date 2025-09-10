@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 defineProps({
   /** 是否关闭麦克风，默认：false */

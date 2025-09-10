@@ -57,8 +57,7 @@
 
 <script setup lang="ts">
 import { generateRandomInteger, numberToFixed } from '@/assets/utils/number';
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, emitFunc } from '@polyv/vue-components';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useLangStore } from '@/store/use-lang-store';

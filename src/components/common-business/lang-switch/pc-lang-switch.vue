@@ -51,7 +51,7 @@ import { PcIconLang, PcIconArrowDown } from '@/components/component-icons/pc/map
 import { LangSwitchItem, useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-import { PropUtils, useProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps } from '@polyv/vue-components';
 import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
 import { usePopper } from '@/hooks/components/use-popper';
 

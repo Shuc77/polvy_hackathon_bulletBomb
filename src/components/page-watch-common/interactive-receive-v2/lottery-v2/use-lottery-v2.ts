@@ -1,12 +1,12 @@
-import { useGlobalInject } from '@/app/use-global-inject';
-import { PolyvIarLottery } from '@polyv/live-watch-sdk';
-import { useIarTarget } from '../_hooks/use-iar-target';
-import type { LotteryConfig } from '@polyv/iar-lottery-ui';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { appEvents } from '@/app/app-events';
-import { storeToRefs } from 'pinia';
+import { useGlobalInject } from '@/app/use-global-inject';
 import { useEnrollStore } from '@/store/use-enroll-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import type { LotteryConfig } from '@polyv/iar-lottery-ui';
+import { type PolyvLottery } from '@polyv/live-watch-sdk';
+import { storeToRefs } from 'pinia';
 import { useSendMsg } from '../../chat/chat-msg-list/hooks/send-msg-hook';
+import { useIarTarget } from '../_hooks/use-iar-target';
 
 export const useLotteryTarget = () => {
   const interactReceiveStore = useInteractReceiveStore();
@@ -20,7 +20,7 @@ export const useLotteryTarget = () => {
 
   const watchCore = getWatchCore();
 
-  const { targetInited, getIarTarget } = useIarTarget<PolyvIarLottery>(() => {
+  const { targetInited, getIarTarget } = useIarTarget<PolyvLottery.Lottery>(() => {
     return watchCore.interactReceive.getLotteryV2();
   });
 

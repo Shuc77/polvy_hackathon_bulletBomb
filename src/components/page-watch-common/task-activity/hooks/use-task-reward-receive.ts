@@ -6,7 +6,7 @@ import type {
   RewardReceiveFormItem,
   RewardReceiveFormType,
   RewardReceiveSubmitAction,
-} from '@polyv/iar-reward-receive-ui';
+} from '@polyv/vue-components';
 import {
   RewardAcceptFormItem,
   RewardAcceptFormType,

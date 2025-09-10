@@ -1,21 +1,9 @@
 <!-- @file 竖屏端互动功能接收端弹窗组件渲染入口 -->
 <template>
   <div class="c-portrait-iar-render">
-    <template v-if="isPlaybackWatchUrl">
-      <!-- 举报/投诉反馈 -->
-      <mobile-feedback-popup v-if="feedbackEnabled" />
-    </template>
-    <template v-else>
-      <!-- 快速答题卡 -->
-      <div class="c-portrait-iar-render__quick-answer-card">
-        <mobile-quick-answer-card />
-      </div>
+    <template>
       <!-- 公告 -->
       <mobile-announcement-popup v-if="announcementFunctionVisible" />
-      <!-- 答题卡 -->
-      <mobile-answer-card-popup />
-      <!-- 签到 -->
-      <portrait-check-in-popup />
       <!--  举报/投诉反馈 -->
       <mobile-feedback-popup v-if="feedbackEnabled" />
 
@@ -51,9 +39,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
-import MobileAnswerCardPopup from './answer-card/mobile-answer-card-popup.vue';
-import MobileQuickAnswerCard from './answer-card/mobile-quick-answer-card.vue';
-import PortraitCheckInPopup from '../interactive-receive-v2/check-in-v2/portrait-check-in-popup.vue';
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
 import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
 import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
@@ -71,9 +56,6 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   announcementFunctionVisible,

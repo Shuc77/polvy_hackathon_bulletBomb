@@ -5,6 +5,7 @@
     <page-verify-sale-invite v-else-if="isVerifySaleInvitePage" />
     <page-invite-watch-auditing v-else-if="isInviteWatchAuditingPage" />
     <page-work-wechat-friend v-else-if="isWorkWechatFriendPage" />
+    <page-session-select v-else-if="isSessionSelectPage" />
     <!-- 默认是错误页 -->
     <page-error-pc-default v-else-if="!isMobileErrorPage" />
     <page-error-mobile-default v-else />
@@ -16,6 +17,7 @@ import PageWatchIdentify from './_components/page-watch-identify/page-watch-iden
 import PageVerifySaleInvite from './_components/page-verify-sale-invite/page-verify-sale-invite.vue';
 import PageInviteWatchAuditing from './_components/page-invite-watch-auditing/page-invite-watch-auditing.vue';
 import PageWorkWechatFriend from './_components/page-work-wechat-friend/page-work-wechat-friend.vue';
+import PageSessionSelect from './_components/page-session-select/page-session-select.vue';
 
 import PageErrorPcDefault from './_components/page-error/page-error-pc-default.vue';
 import PageErrorMobileDefault from './_components/page-error/page-error-mobile-default.vue';
@@ -31,6 +33,7 @@ const {
   isVerifySaleInvitePage,
   isInviteWatchAuditingPage,
   isWorkWechatFriendPage,
+  isSessionSelectPage,
 } = useDirectBusinessPage();
 </script>
 

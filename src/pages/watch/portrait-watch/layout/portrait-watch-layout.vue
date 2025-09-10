@@ -65,6 +65,9 @@
         layout="portrait"
       ></speak-top-business>
     </transition>
+
+    <!-- 字幕管理 -->
+    <portrait-subtitle-manager />
   </div>
 </template>
 
@@ -74,6 +77,7 @@ import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
+import PortraitSubtitleManager from '@/components/page-watch-common/subtitle/portrait-subtitle-manager/portrait-subtitle-manager.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { computed, nextTick, ref, watch } from 'vue';

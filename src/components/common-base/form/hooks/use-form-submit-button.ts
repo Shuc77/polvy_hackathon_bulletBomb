@@ -2,7 +2,7 @@ import { ref, unref, watch, computed, nextTick } from 'vue';
 import { useFormWrapInject, useFormWrapPropsInject } from './use-form';
 import debounce from 'lodash-es/debounce';
 import { normalButtonProps } from '../../normal-button/use-normal-button';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 
 export const formSubmitButtonProps = () => ({
   ...normalButtonProps(),

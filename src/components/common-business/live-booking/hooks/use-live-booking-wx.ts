@@ -1,11 +1,11 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { SubmitWxLiveBookingOptions, CancelWxLiveBookingOptions } from '@polyv/live-watch-sdk';
+import { WxLiveBookingOptions } from '@polyv/live-watch-sdk';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { ref } from 'vue';
 import { SubscribeInstance } from '../types';
 import { useLiveBookingFail } from './use-live-booking-fail';
 
-export const useLiveBookingWx = () => {
+export const useLiveBookingWx = (options?: WxLiveBookingOptions) => {
   const { getWatchCore } = useGlobalInject();
   const { toastBookingFail } = useLiveBookingFail();
 
@@ -14,8 +14,9 @@ export const useLiveBookingWx = () => {
   const subscribeRef = ref<SubscribeInstance>();
 
   /** 提交微信预约 */
-  async function wxSubmitLiveBooking(options?: SubmitWxLiveBookingOptions) {
+  async function wxSubmitLiveBooking() {
     const watchCore = getWatchCore();
+    // 当存在自定义预约+短信预约时，在短信提醒成功后，后端会自动调用自定义预约接口，所以这里不需要再调用一次
     const result = await watchCore.liveBooking.submitWxLiveBooking(options);
 
     if (result.success) {
@@ -41,7 +42,9 @@ export const useLiveBookingWx = () => {
 
       // 未关注，弹出二维码弹层
       if (!isWxSubscribed) {
-        subscribeRef.value?.openPopup();
+        // 预约成功若服务端配置了二维码，则弹出配置二维码
+        const imgUrl = result?.wxOfficialAccountQRCodeUrl ?? undefined;
+        subscribeRef.value?.openPopup(imgUrl);
       }
     } else {
       toastBookingFail(result.failReason);
@@ -49,8 +52,9 @@ export const useLiveBookingWx = () => {
   }
 
   /** 取消微信预约 */
-  async function wxCancelLiveBooking(options?: CancelWxLiveBookingOptions) {
+  async function wxCancelLiveBooking() {
     const watchCore = getWatchCore();
+    // 当存在自定义预约+短信预约时，在短信提醒成功后，后端会自动调用自定义预约接口，所以这里不需要再调用一次
     const result = await watchCore.liveBooking.cancelWxLiveBooking(options);
 
     if (result.success) {

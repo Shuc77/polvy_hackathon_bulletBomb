@@ -46,10 +46,24 @@ export interface LiveBookingStoreState {
   singleOtherChannelBookingConfig: Ref<OtherChannelBookingConfigItem | null>;
   /** 是否是其他直播预约 */
   isOtherLiveBooking: ComputedRef<boolean>;
+  /** 当前下一场其他直播是否已开启自定义预约(单个直播情况) */
+  singleOtherChannelSmsLiveBookingEnable: ComputedRef<boolean>;
   /** 当前下一场其他直播是否已短信预约(单个直播情况) */
   singleOtherChannelSmsLiveBooking: ComputedRef<boolean>;
   /** 单场其他直播预约是否使用微信预约 */
   useSingleWxBooking: ComputedRef<boolean>;
+  /** 是否使用短信预约 */
+  useSmsBooking: ComputedRef<boolean>;
+  /** 是否使用自定义预约 */
+  useCustomBooking: ComputedRef<boolean>;
+  /** 是否已自定义预约 */
+  isCustomLiveBooking: Ref<boolean>;
+  /** 当前下一场其他直播是否已开启自定义预约(单个直播情况) */
+  singleOtherChannelCustomLiveBookingEnable: ComputedRef<boolean>;
+  /** 当前下一场其他直播是否已自定义预约 */
+  singleOtherChannelCustomLiveBooking: ComputedRef<boolean>;
+  /** 当前下一场其他直播是否已微信预约(单个直播情况) */
+  singleOtherChannelWxLiveBooking: ComputedRef<boolean>;
 }
 
 export interface LiveBookingStoreAction {
@@ -98,20 +112,52 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
     /** 微信公众号图片 */
     const wxMpImageUrl = ref(__liveBookingConfig.wxMpImageUrl);
 
-    /** 其他直播预约配置 */
+    /** 是否开启了自定义预约 */
+    const customBookingEnabled = ref(__liveBookingConfig.customBookingEnabled);
+    /** 是否已自定义预约 */
+    const isCustomLiveBooking = ref(__liveBookingConfig.isCustomLiveBooking);
+
+    /** 下一场直播预约配置 */
     const otherChannelBookingConfig = ref<OtherChannelBookingConfig>([]);
 
     /** 当前下一场其他直播配置(目前只有单个直播配置) */
     const singleOtherChannelBookingConfig = ref<OtherChannelBookingConfigItem | null>(null);
+
+    /** 当前下一场其他直播是否已微信预约 */
+    const singleOtherChannelWxLiveBooking = computed<boolean>(() => {
+      return singleOtherChannelBookingConfig.value?.isWxLiveBooking || false;
+    });
 
     /** 当前下一场其他直播是否已短信预约 */
     const singleOtherChannelSmsLiveBooking = computed<boolean>(() => {
       return singleOtherChannelBookingConfig.value?.isSmsLiveBooking || false;
     });
 
+    /** 当前下一场其他直播是否已自定义预约 */
+    const singleOtherChannelCustomLiveBooking = computed<boolean>(() => {
+      return singleOtherChannelBookingConfig.value?.isCustomLiveBooking || false;
+    });
+    /** 单场其他直播预约是否开启了短信预约 */
+    const singleOtherChannelSmsLiveBookingEnable = computed<boolean>(() => {
+      return singleOtherChannelBookingConfig.value?.smsBookingEnabled || false;
+    });
+    /** 单场其他直播预约是否开启了自定义预约 */
+    const singleOtherChannelCustomLiveBookingEnable = computed<boolean>(() => {
+      return singleOtherChannelBookingConfig.value?.customBookingEnabled || false;
+    });
+
     /** 是否使用微信预约 */
     const useWxBooking = computed<boolean>(() => {
       return isMobile && isWeixin && !isWorkWeixin && unref(wxBookingEnabled);
+    });
+    /** 是否使用自定义预约 */
+    const useCustomBooking = computed<boolean>(() => {
+      return unref(customBookingEnabled);
+    });
+
+    /** 是否使用短信预约 */
+    const useSmsBooking = computed<boolean>(() => {
+      return !useWxBooking.value && unref(smsBookingEnabled);
     });
 
     /** 其他直播预约是否使用微信预约 */
@@ -130,14 +176,26 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
         return false;
       }
 
-      return unref(useSingleWxBooking)
-        ? unref(singleOtherChannelBookingConfig.value.isWxLiveBooking)
-        : unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking);
+      if (unref(useSingleWxBooking)) {
+        return unref(singleOtherChannelBookingConfig.value.isWxLiveBooking);
+      }
+      if (unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking)) {
+        return unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking);
+      }
+
+      return unref(singleOtherChannelBookingConfig.value.isCustomLiveBooking);
     });
 
     /** 是否已预约直播 */
     const isLiveBooking = computed<boolean>(() => {
-      return unref(useWxBooking) ? unref(isWxLiveBooking) : unref(isSmsLiveBooking);
+      if (unref(useWxBooking)) {
+        return unref(isWxLiveBooking);
+      }
+      if (unref(isSmsLiveBooking)) {
+        return unref(isSmsLiveBooking);
+      }
+
+      return unref(isCustomLiveBooking);
     });
 
     /** 是否显示直播预约按钮 */
@@ -156,7 +214,7 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
         return false;
       }
 
-      return unref(useWxBooking) || unref(smsBookingEnabled);
+      return unref(useWxBooking) || unref(smsBookingEnabled) || unref(customBookingEnabled);
     });
 
     /** 是否允许预约下一场其他直播 */
@@ -180,7 +238,11 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
         return false;
       }
 
-      return unref(useSingleWxBooking) || unref(config.smsBookingEnabled);
+      return (
+        unref(useSingleWxBooking) ||
+        unref(config.smsBookingEnabled) ||
+        unref(config.customBookingEnabled)
+      );
     });
 
     /** 同步直播预约 Store 数据 */
@@ -199,7 +261,11 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
       wxBookingCount.value = liveBookingConfig.wxBookingCount;
       wxMpImageUrl.value = liveBookingConfig.wxMpImageUrl;
 
+      customBookingEnabled.value = liveBookingConfig.customBookingEnabled;
+      isCustomLiveBooking.value = liveBookingConfig.isCustomLiveBooking;
+
       otherChannelBookingConfig.value = watchCore.liveBooking.getOtherLiveBookingConfig();
+      console.log('otherChannelBookingConfig', otherChannelBookingConfig.value);
 
       if (otherChannelBookingConfig.value.length > 0) {
         singleOtherChannelBookingConfig.value = otherChannelBookingConfig.value[0] || null;
@@ -227,6 +293,18 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
       isOtherLiveBooking,
       singleOtherChannelSmsLiveBooking,
       useSingleWxBooking,
+
+      singleOtherChannelWxLiveBooking,
+
+      // 短信预约
+      useSmsBooking,
+      singleOtherChannelSmsLiveBookingEnable,
+
+      // 自定义预约
+      useCustomBooking,
+      isCustomLiveBooking,
+      singleOtherChannelCustomLiveBooking,
+      singleOtherChannelCustomLiveBookingEnable,
     };
   },
 );

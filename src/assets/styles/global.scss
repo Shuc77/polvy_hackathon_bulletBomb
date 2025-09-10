@@ -99,6 +99,10 @@ button {
   background-size: contain;
 }
 
+.g-pointer-events-initial {
+  pointer-events: initial;
+}
+
 /* 半透明遮罩层 */
 .g-mask {
   position: fixed;

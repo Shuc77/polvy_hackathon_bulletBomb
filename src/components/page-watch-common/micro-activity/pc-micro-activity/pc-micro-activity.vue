@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useShareStore } from '@/store/use-share-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { onMounted, ref, watch } from 'vue';

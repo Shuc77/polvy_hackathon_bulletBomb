@@ -21,7 +21,13 @@ export const useAuthInviteWatchIntercept = () => {
         return false;
       }
 
-      if (!opts.saleId) {
+      // 获取邀请观看上级邀请员的 inviteWatchSaleId
+      const inviteWatchInviteSalesId = watchCore.user.getInviteWatchInviteSalesId();
+
+      // 存在上级邀请员，则使用上级邀请员id，否则使用传入的saleId
+      const saleId = inviteWatchInviteSalesId || opts.saleId;
+
+      if (!saleId) {
         watchAppStore.setPageError({
           type: PageErrorType.UnknownError,
           desc: translate('inviteWatch.notAllow.tips'),
@@ -30,7 +36,7 @@ export const useAuthInviteWatchIntercept = () => {
       }
 
       const verifyResult = await watchCore.auth.verifyInviteWatchAuth({
-        saleId: opts.saleId,
+        saleId,
       });
       if (verifyResult.success) {
         // 无需审核，刷新页面获取最新的邀请信息

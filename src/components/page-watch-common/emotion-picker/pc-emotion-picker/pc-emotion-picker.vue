@@ -58,7 +58,7 @@
 import { useLangStore } from '@/store/use-lang-store';
 import PcEmotionFacePicker from './pc-emotion-face-picker.vue';
 import PcEmotionImagePicker from './pc-emotion-image-picker.vue';
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import {
   emotionPickerEmits,
   emotionPickerProps,

@@ -3,7 +3,7 @@
  */
 
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useChatStore } from '@/store/use-chat-store';
 import { useViewerStore } from '@/store/use-viewer-store';

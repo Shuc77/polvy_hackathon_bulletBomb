@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import {

@@ -12,7 +12,7 @@ import {
   PcIconBarrageLocalFull,
 } from '@/components/component-icons/pc/map';
 
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { tupleString } from '@/assets/utils/array';
 
 defineProps(

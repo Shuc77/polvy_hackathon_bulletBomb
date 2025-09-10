@@ -44,7 +44,7 @@
             />
             <!-- 互动二次入口 -->
             <portrait-interactive-entrance
-              v-if="!isPlaybackWatchUrl && iarSdkLoaded"
+              v-if="iarSdkLoaded"
               class="c-portrait-carousel-main-screen__top-left__item__children"
             />
           </div>
@@ -245,7 +245,7 @@
           />
           <!-- 点赞 -->
           <portrait-chat-like
-            v-if="likeFeatureEnabled && !isPlaybacking"
+            v-if="!isPlaybackWatchUrl && likeFeatureEnabled && !isPlaybacking"
             class="c-portrait-carousel-main-screen__bottom__button"
           />
         </div>
@@ -278,9 +278,9 @@
       <motivation-like-animation />
     </div>
 
-    <!-- 报名观看（参与互动时机） -->
+    <!-- 报名观看以及游客登录（参与互动时机） -->
     <div
-      v-if="needEnrollByChat"
+      v-if="isGuest || needEnrollByChat"
       class="c-portrait-carousel-main-screen__enroll-wrap"
     >
       <portrait-enroll />
@@ -345,6 +345,7 @@ import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrai
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const PortraitAsk = defineAsyncComponent(() => {
   return import(
@@ -417,6 +418,8 @@ const portraitChatCloseTipsVisible = computed(() => {
 });
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
+
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const { emitEvent: onClickDonateEntrance } = useEventBusEmitter(appEvents.donate.OpenDonatePopup);
 

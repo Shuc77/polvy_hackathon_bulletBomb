@@ -135,7 +135,7 @@ import { useInviteRankHook } from '../hooks/use-invite-rank';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInviteStore } from '@/store/use-invite-store';
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 const props = defineProps({
   isActive: PropUtils.bool.def(false),

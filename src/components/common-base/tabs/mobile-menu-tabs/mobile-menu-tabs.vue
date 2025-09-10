@@ -7,7 +7,7 @@
       </template>
     </mobile-menu-tab-header>
 
-    <div class="c-mobile-menu-tabs__body pws-main-tab-body">
+    <div class="c-mobile-menu-tabs__body">
       <div
         v-if="isEmptyMenu"
         class="c-mobile-menu-tabs__empty pws-main-tab-empty"
@@ -24,7 +24,7 @@
 import MobileMenuTabHeader from './mobile-menu-tab-header.vue';
 import { appEvents } from '@/app/app-events';
 import { tabsProps, tabsEmits, useTabs } from '../hooks/use-tabs';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 const props = defineProps({
   ...tabsProps(),

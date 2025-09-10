@@ -1,15 +1,15 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PolyvIarCheckIn } from '@polyv/live-watch-sdk';
+import { type PolyvCheckIn } from '@polyv/live-watch-sdk';
 import { computed, onBeforeUnmount, ref } from 'vue';
 
 import { translate } from '@/assets/lang';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 import { useIarTarget } from '../../_hooks/use-iar-target';
 import { useCheckInEntrance } from './use-check-in-entrance';
-import { usePlaybackStore } from '@/store/use-playback-store';
 
 export const useCheckIn = () => {
   const interactReceiveStore = useInteractReceiveStore();
@@ -25,7 +25,7 @@ export const useCheckIn = () => {
 
   const watchCore = getWatchCore();
 
-  const { targetInited, getIarTarget } = useIarTarget<PolyvIarCheckIn>(() => {
+  const { targetInited, getIarTarget } = useIarTarget<PolyvCheckIn.CheckIn>(() => {
     return watchCore.interactReceive.getCheckInV2();
   }, listenCheckInEvents);
 

@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import CountDown from '@/components/common-base/count-down/count-down.vue';
 import { countdownThemes } from '@/components/common-base/count-down/types';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';

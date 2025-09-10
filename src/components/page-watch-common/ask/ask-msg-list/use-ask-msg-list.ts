@@ -1,6 +1,5 @@
 import { TAB_NAME_ASK } from '@/assets/constants/tab-name';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, emitFunc, VueEmit } from '@polyv/vue-components';
 import { ScrollListInstance, useScrollList } from '@/hooks/behaviors/use-scroll-list';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { AskMsgType } from '@polyv/live-watch-sdk';

@@ -14,6 +14,15 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import {
+  isBuildForFeedMainMode,
+  isInjectByExternalApp,
+  isStaticBuildMode,
+} from '@/assets/utils/utils';
+import { appendToURL } from '@just4/querystring';
+import { extractChannelAndSessionId } from '@/hooks/core/use-query-params';
+import { useIdentityStore } from '@/store/use-identity-store';
+import { destroyWatchSdk } from '../watch-sdk';
 
 export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
   const watchAppStore = useWatchAppStore();
@@ -21,6 +30,63 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
   const channelStore = useChannelStore();
   const channelInfoStore = useChannelInfoStore();
   const ChannelMenuStore = useChannelMenuStore();
+  const identityStore = useIdentityStore();
+
+  /**
+   * 存在错误的 targetSessionId 时，需要跳转回到场次选择页
+   */
+  function redirect2NormalWatchPage(): boolean {
+    const { origin, pathname } = window.location;
+    const searchParams = watchAppStore.getQueryParams();
+
+    // 暂时不处理信息流模式
+    if (isBuildForFeedMainMode()) {
+      console.error('not support');
+      return false;
+    }
+
+    /** 非 SaaS 正常观看页使用场景 */
+    const isNotSaasPage =
+      isInjectByExternalApp() || isStaticBuildMode() || watchAppStore.paramGetter().channelId();
+    if (isNotSaasPage) {
+      const redirectUrl = appendToURL(
+        `${origin}${pathname}`,
+        {
+          ...searchParams,
+          targetSessionId: undefined,
+        },
+        {
+          ignoreEmpty: true,
+        },
+      );
+      window.location.href = redirectUrl;
+      return true;
+    }
+
+    // SaaS 正常观看页使用场景
+    const { channelId, targetSessionId } = extractChannelAndSessionId();
+    if (!channelId || !targetSessionId) {
+      console.error('异常情况，不处理');
+      return false;
+    }
+
+    // pathname = /watch/channelId/sessionId
+    const pathnameList = pathname.split('/');
+    pathnameList.splice(-1);
+    const newPathname = pathnameList.join('/');
+    const redirectUrl = appendToURL(
+      `${origin}${newPathname}`,
+      {
+        ...searchParams,
+        targetSessionId: undefined,
+      },
+      {
+        ignoreEmpty: true,
+      },
+    );
+    window.location.href = redirectUrl;
+    return true;
+  }
 
   // 处理频道模块安装失败
   watchCore.channel.eventEmitter.on(ChannelEvents.ChannelSetupFail, async ({ failReason }) => {
@@ -60,12 +126,31 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
       return;
     }
 
+    if (failReason === ChannelSetupFailReason.NotAvailableSession) {
+      const redirected = redirect2NormalWatchPage();
+      if (redirected) {
+        return;
+      }
+    }
+
     watchAppStore.setPageError({
       type: PageErrorType.UnknownError,
       title: translate('pageError.channel.unknowError'),
       desc: translate('pageError.channel.feedback'),
       reloadBtnVisible: true,
     });
+  });
+
+  watchCore.channel.eventEmitter.on(ChannelEvents.AuthExpired, () => {
+    watchAppStore.setPageError({
+      type: PageErrorType.AuthExpired,
+      title: translate('pageError.authExpired.title'),
+      reloadBtnVisible: true,
+    });
+
+    setTimeout(() => {
+      destroyWatchSdk();
+    }, 0);
   });
 
   watchCore.channel.eventEmitter.on(ChannelEvents.LiveStatusChange, ({ liveStatus }) => {
@@ -84,7 +169,11 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
 
     if (liveStatus === LiveStatus.Live) {
       console.log('直播开始');
-      if (channelStore.isSeminarChannel && !channelStore.privateSeminarChannel) {
+      if (
+        channelStore.isSeminarChannel &&
+        !channelStore.privateSeminarChannel &&
+        !identityStore.isGuest
+      ) {
         watchAppStore.setupWatchCoreConnect();
       }
       const emitter = watchAppStore.getPolyvWatchApp()?.getEmitter();

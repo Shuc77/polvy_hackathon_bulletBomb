@@ -89,72 +89,15 @@
     color: map.get($--skin-configs, 'chat-msg-user-special-nickname:text-color') !important;
   }
 
-  // 聊天消息用户头衔
-  .pws-chat-msg-user-actor {
-    color: map.get($--skin-configs, 'chat-msg-user-actor:text-color') !important;
-    background-color: map.get($--skin-configs, 'chat-msg-user-actor:bg-color') !important;
-  }
-
   // 聊天消息用户设置昵称图标
   .pws-chat-msg-user-set-nick-icon {
     color: map.get($--skin-configs, 'chat-msg-user-set-nick-icon:text-color') !important;
-  }
-
-  // 聊天消息时间
-  .pws-chat-msg-time {
-    color: map.get($--skin-configs, 'chat-msg-time:text-color') !important;
-  }
-
-  .pws-chat-msg-list-tips {
-    color: map.get($--skin-configs, 'chat-msg-list-tips:text-color') !important;
-  }
-
-  // 聊天消息气泡
-  .pws-chat-msg-bubble {
-    color: map.get($--skin-configs, 'chat-msg-bubble:text-color') !important;
-    background-color: map.get($--skin-configs, 'chat-msg-bubble:bg-color') !important;
-  }
-  .pws-chat-msg-container-special .pws-chat-msg-bubble {
-    color: map.get($--skin-configs, 'chat-msg-bubble-special:text-color') !important;
-    background-color: map.get($--skin-configs, 'chat-msg-bubble-special:bg-color') !important;
-  }
-
-  // 聊天消息回复内容
-  .pws-chat-msg-quote-content {
-    color: map.get($--skin-configs, 'chat-msg-quote-content:text-color') !important;
-    border-bottom-color: map.get($--skin-configs, 'chat-msg-quote-content:border-color') !important;
-  }
-  .pws-chat-msg-container-special .pws-chat-msg-quote-content {
-    color: map.get($--skin-configs, 'chat-msg-special-quote-content:text-color') !important;
-    border-bottom-color: map.get($--skin-configs, 'chat-msg-special-quote-content:border-color') !important;
   }
 
   // 聊天引用回复消息
   .pws-chat-quote-msg {
     color: map.get($--skin-configs, 'chat-quote-msg:text-color') !important;
     background-color: map.get($--skin-configs, 'chat-quote-msg:bg-color') !important;
-  }
-
-  // 聊天消息翻译完成
-  .pws-chat-msg-translate-finish {
-    color: map.get($--skin-configs, 'chat-msg-translate-finish:text-color') !important;
-  }
-  .pws-chat-msg-container-special .pws-chat-msg-translate-finish {
-    color: map.get($--skin-configs, 'chat-msg-translate-finish-special:text-color') !important;
-  }
-
-  // 文本消息
-  .pws-chat-speak-msg-control {
-    color: rgba(map.get($--skin-configs, 'chat-msg-bubble:text-color'), 0.8) !important;
-  }
-  .pws-chat-speak-msg-control-item::before {
-    border-color: rgba(map.get($--skin-configs, 'chat-msg-bubble:text-color'), 0.3) !important;
-  }
-  .pws-chat-msg-container-special .pws-chat-speak-msg-control {
-    color: rgba(map.get($--skin-configs, 'chat-msg-bubble-special:text-color'), 0.8) !important;
-    .pws-chat-speak-msg-control-item::before {
-      border-color: rgba(map.get($--skin-configs, 'chat-msg-bubble-special:text-color'), 0.3) !important;
-    }
   }
 
   // 聊天室更多消息
@@ -165,33 +108,6 @@
       color: map.get($--skin-configs, 'chat-msg-more-button--hover:text-color');
       background-color: map.get($--skin-configs, 'chat-msg-more-button--hover:bg-color');
     }
-  }
-
-  // 打赏消息
-  .pws-chat-reward-msg {
-    color: map.get($--skin-configs, 'chat-reward-msg:text-color') !important;
-  }
-
-  // 自定义消息
-  .pws-chat-customer-msg {
-    color: map.get($--skin-configs, 'chat-customer-msg:text-color') !important;
-  }
-
-  // 红包领取消息
-  .pws-chat-redpaper-receive-msg {
-    color: map.get($--skin-configs, 'chat-redpaper-receive-msg:text-color') !important;
-    background-color: map.get($--skin-configs, 'chat-redpaper-receive-msg:bg-color') !important;
-  }
-
-  // 系统消息
-  .pws-chat-system-msg {
-    color: map.get($--skin-configs, 'chat-system-msg:text-color') !important;
-  }
-
-  // 课堂激励消息
-  .pws-chat-motivation-like-msg {
-    color: map.get($--skin-configs, 'chat-motivation-like-msg:text-color') !important;
-    background: map.get($--skin-configs, 'chat-motivation-like-msg:bg') !important;
   }
 
   // --------- 提问 ---------- //

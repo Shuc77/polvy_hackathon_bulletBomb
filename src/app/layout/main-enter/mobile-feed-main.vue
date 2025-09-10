@@ -30,7 +30,7 @@
     <!-- <mobile-risk-evaluation v-if="iarSdkLoaded" /> -->
     <!-- <risk-evaluation-redirect-dialog /> -->
     <!-- 风险确认函 -->
-    <!-- <mobile-risk-confirm-letter /> -->
+    <mobile-risk-confirm-letter />
   </div>
 </template>
 
@@ -38,7 +38,7 @@
 import { MobileWatchLayout } from '@polyv/live-watch-sdk';
 import { defineAsyncComponent, onMounted } from 'vue';
 
-// import MobileRiskConfirmLetter from '@/components/common-business/risk-confirm-letter/mobile-risk-confirm-letter.vue';
+import MobileRiskConfirmLetter from '@/components/common-business/risk-confirm-letter/mobile-risk-confirm-letter.vue';
 // import {
 //   MobileRiskEvaluation,
 //   RiskEvaluationRedirectDialog,

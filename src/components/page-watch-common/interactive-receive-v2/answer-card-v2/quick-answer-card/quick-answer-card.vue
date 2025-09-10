@@ -1,0 +1,63 @@
+<template>
+  <div
+    v-if="answerCardTargetInited && questionnaireTargetInited"
+    class="c-quick-answer-card"
+    :class="{
+      'is-portrait': isPortraitWatchLayout,
+      'is-normal': isMobile && !isPortraitWatchLayout,
+    }"
+  >
+    <iar-quick-answer-card
+      class="g-pointer-events-initial"
+      :answer-card-target="getAnswerCardTarget()"
+      :questionnaire-target="getQuestionnaireTarget()"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { defineAsyncComponent } from 'vue';
+import { useIarUILoader } from '../../_load-iar-ui-v2';
+import { useQuestionnaireTarget } from '../../questionnaire-v2/hooks/use-questionnaire-v2';
+import { useAnswerCardTarget } from '../hooks/use-answer-card';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { isMobile } from '@/assets/utils/browser';
+
+const { loadIarUI } = useIarUILoader('iar-answer-card-ui');
+
+const IarQuickAnswerCard = defineAsyncComponent(() => loadIarUI('quick-answer-card'));
+
+const { targetInited: answerCardTargetInited, getIarTarget: getAnswerCardTarget } =
+  useAnswerCardTarget();
+
+const { targetInited: questionnaireTargetInited, getIarTarget: getQuestionnaireTarget } =
+  useQuestionnaireTarget();
+
+const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
+</script>
+
+<style lang="scss">
+.c-quick-answer-card {
+  position: relative;
+  z-index: 120;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  pointer-events: none;
+
+  &.is-portrait {
+    position: absolute;
+    top: 46px;
+    left: 0;
+  }
+
+  &.is-normal {
+    position: absolute;
+    top: 36px;
+    left: 0;
+  }
+}
+</style>

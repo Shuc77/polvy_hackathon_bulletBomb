@@ -1,5 +1,4 @@
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { computed, ref, unref } from 'vue';
 import { InputValueType } from '../form-input/hooks/use-form-input';
 import { FormInputInstance } from '../form-input/types/form-input-types';

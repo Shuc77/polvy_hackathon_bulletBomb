@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import { PcIconClose, PcIconWarningRoundFill } from '@/components/component-icons/pc/map';
 import { chatErrorTipsProps, useChatErrorTips } from './use-chat-error-tips';
 

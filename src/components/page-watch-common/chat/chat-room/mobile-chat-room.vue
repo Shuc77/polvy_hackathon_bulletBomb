@@ -1,23 +1,27 @@
 <!-- @file 移动端聊天室 -->
 <template>
-  <div
-    class="c-mobile-chat-room"
-    :style="{
-      backgroundImage: mobileChatRoomBgUrl ? `url(${mobileChatRoomBgUrl})` : '',
-    }"
-  >
+  <div class="c-mobile-chat-room">
     <!-- 聊天室顶部固定区域 -->
-    <div
-      class="c-mobile-chat-room__topic pws-main-tab-body"
-      :style="{
-        backgroundImage: mobileChatRoomBgUrl ? `url(${mobileChatRoomBgUrl})` : '',
-      }"
-    >
+    <div class="c-mobile-chat-room__topic pws-main-tab-body">
+      <div
+        class="c-mobile-chat-room__topic__bg"
+        :style="{
+          height: `${mobileLayoutBottomHeight}px`,
+        }"
+      >
+        <background-section
+          :background-type="themeSetting.mobileChatBackgroundType"
+          :custom-url="mobileChatRoomBgUrl"
+        />
+      </div>
+
       <!-- 置顶公告 -->
-      <mobile-announcement-top
+      <div
         v-if="announcementFunctionVisible && iarSdkLoaded"
-        class="c-mobile-chat-room__topic__item c-mobile-chat-room__topic__announcement"
-      />
+        class="c-mobile-chat-room__topic__item"
+      >
+        <mobile-announcement-top class="c-mobile-chat-room__topic__announcement" />
+      </div>
 
       <!-- 跑道消息 -->
       <mobile-runway-effect class="c-mobile-chat-room__topic__item" />
@@ -42,13 +46,13 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <mobile-interactive-entrance v-if="!isPlaybackWatchUrl && iarSdkLoaded" />
+    <mobile-interactive-entrance v-if="iarSdkLoaded" />
 
     <!-- 底部输入框 -->
     <mobile-chat-input-controller v-if="chatInputControllerEnable" />
 
-    <!-- 报名观看（参与互动时机） -->
-    <mobile-enroll v-if="needEnrollByChat" />
+    <!-- 报名观看以及游客登录（参与互动时机） -->
+    <mobile-enroll v-if="isGuest || needEnrollByChat" />
   </div>
 </template>
 
@@ -62,6 +66,7 @@ import MobileInteractiveEntrance from '@/components/page-watch-common/interactiv
 import MobileRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import MobileChatMsgList from '../chat-msg-list/mobile-chat-msg-list.vue';
 import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant.vue';
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -69,20 +74,23 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useIdentityStore } from '@/store/use-identity-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
 const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
-
 const { iarSdkLoaded, announcementFunctionVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
+const { mobileChatRoomBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
+
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
+
+const { mobileLayoutBottomHeight } = storeDefinitionToRefs(useLayoutStore);
 </script>
 
 <style lang="scss">
@@ -103,16 +111,32 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
   left: 0;
   z-index: 10;
   width: 100%;
-  padding: 0 0 12px;
+  // padding: 0 0 12px;
+  overflow: hidden;
   pointer-events: none;
   background-repeat: no-repeat;
   background-size: 100%;
   -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 1) 8px);
 
+  .c-mobile-chat-room__topic__bg {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    z-index: 10;
+    width: 100%;
+  }
+
   .c-mobile-chat-room__topic__item {
+    position: relative;
+    z-index: 20;
     margin-top: 4px;
+
     &:empty {
       display: none;
+    }
+
+    &:last-of-type {
+      padding-bottom: 12px;
     }
   }
 

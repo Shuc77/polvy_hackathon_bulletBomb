@@ -33,7 +33,7 @@ export const useIdentityCollectInfo = () => {
     // 信息流场景下不需要通过观看页来自动打开
     if (isBuildForFeedMainMode()) {
       autoOpen.value = false;
-      renderEnabled.value = true;
+      renderEnabled.value = false;
       return;
     }
 

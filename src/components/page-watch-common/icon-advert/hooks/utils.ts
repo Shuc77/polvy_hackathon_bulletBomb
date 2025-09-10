@@ -1,3 +1,7 @@
+import type { IconAdvertItem } from '@polyv/live-watch-sdk';
+import { AdvertHrefType } from '@polyv/live-watch-sdk';
+import { LinkType } from '@polyv/utils/es/external-link';
+
 /** @file 关于h5跳转微信的一些能力函数 */
 const ua = navigator.userAgent.toLowerCase();
 /**
@@ -25,4 +29,22 @@ export const compareVersions = (version1: string, version2: string) => {
     }
   }
   return segA.length - segB.length;
+};
+
+export const convertIconAdvertItemToLinkData = (iconAdvert: IconAdvertItem) => {
+  return {
+    linkType:
+      iconAdvert.hrefType === AdvertHrefType.COMMON ? LinkType.Normal : LinkType.MultiPlatform,
+    jumpWay: iconAdvert.jumpWay,
+    link: iconAdvert.advertHref || '',
+    pcLink: iconAdvert.pcLink || '',
+    mobileLink: iconAdvert.mobileLink || '',
+    androidLink: '',
+    iosLink: '',
+    otherLink: '',
+    mobileAppLink: iconAdvert.mobileAppLink || '',
+    wxMiniprogramAppId: iconAdvert.wxMiniprogramAppId || '',
+    wxMiniprogramOriginalId: iconAdvert.wxMiniprogramOriginalId || '',
+    wxMiniprogramLink: iconAdvert.wxMiniprogramLink || '',
+  };
 };

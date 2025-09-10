@@ -6,9 +6,22 @@ import { debounce } from 'lodash-es';
  */
 export const useWindowResizeListener = (
   callback: () => unknown,
-  autoListen = false,
-  debounceTime = 0,
+  opts?: {
+    /** 是否自动监听，默认 false */
+    autoListen?: boolean;
+    /** 自动监听后立即执行回调，默认 false */
+    immediately?: boolean;
+    /** 回调防抖时长，默认不防抖 */
+    debounceTime?: number;
+  },
 ) => {
+  const {
+    autoListen = false,
+    immediately = false,
+
+    debounceTime = 0,
+  } = opts || {};
+
   const debounceFunc = debounceTime === 0 ? callback : debounce(callback, debounceTime);
 
   /** 监听 resize 事件 */
@@ -25,6 +38,9 @@ export const useWindowResizeListener = (
   if (autoListen) {
     onMounted(() => {
       bindWindowResize();
+      if (immediately) {
+        callback();
+      }
     });
   }
 

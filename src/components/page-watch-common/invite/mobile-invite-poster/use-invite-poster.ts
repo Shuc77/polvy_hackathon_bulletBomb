@@ -1,5 +1,5 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps } from '@polyv/vue-components';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useCommonStore } from '@/store/use-common-store';
 import { InvitePosterData, YN } from '@polyv/live-watch-sdk';

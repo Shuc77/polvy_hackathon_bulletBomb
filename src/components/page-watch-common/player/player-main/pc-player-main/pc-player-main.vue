@@ -4,9 +4,14 @@
     class="c-pc-player-main"
     :class="{
       'c-pc-player-main__hide': isConnectMicing,
-      'c-pc-player-main--new-play-btn': newPlayerPauseStyleEnabled,
+      'c-pc-player-main--hide-normal-player-btn': !isLowLatency,
     }"
   >
+    <background-section
+      :background-type="themeSetting.playerBackgroundType"
+      :custom-url="playerBgUrl"
+    />
+
     <!-- 播放器渲染容器 -->
     <div
       ref="playerContainer"
@@ -28,10 +33,17 @@
     <pc-player-cover-img />
 
     <!-- 视频区播放按钮，仅用来展示 -->
-    <player-play-button :mode="noPauseWhenLive ? PlayButtonMode.Text : PlayButtonMode.Default" />
+    <player-play-business-button />
 
     <!-- 播放器字幕区 -->
     <player-subtitle />
+
+    <!-- 弹层方式打开广告链接 -->
+    <pc-iframe-popup
+      v-model="iframeVisible"
+      :src="iframeUrl"
+      :height="720"
+    />
   </div>
 </template>
 
@@ -39,30 +51,33 @@
 import { usePlayerMain } from '@/components/page-watch-common/player/hooks/use-player-main';
 
 import PcPlayerCoverImg from '@/components/page-watch-common/player/player-cover-img/pc-player-cover-img.vue';
-import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
-import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
+import PlayerPlayBusinessButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
 import PcPlayerLogo from '@/components/page-watch-common/player/player-logo/pc-player-logo.vue';
 import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/pc-player-subtitle.vue';
+import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
+import PcIframePopup from '@/components/common-base/iframe-popup/pc-iframe-popup.vue';
 
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
-import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
+import { usePlayerAdvert } from '@/components/page-watch-common/player/hooks/use-player-advert';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const {
   playerSdkLoadError,
 
   isLowLatency,
   logoSetting,
-  newPlayerPauseStyleEnabled,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
+
+const { playerBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
 
 const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText();
 
@@ -83,13 +98,13 @@ const { playerContainer } = usePlayerMain({
   },
 });
 
-const { noPauseWhenLive } = usePlayerControl();
-
 usePlayerKeyboard(playerContainer);
 
 const { toTogglePlayInLimit } = usePlayerAction();
 
 useConnectMicing();
+
+const { iframeVisible, iframeUrl } = usePlayerAdvert();
 </script>
 
 <style lang="scss">
@@ -142,7 +157,7 @@ useConnectMicing();
   transform: translate(-50%, -50%);
 }
 
-.c-pc-player-main--new-play-btn {
+.c-pc-player-main--hide-normal-player-btn {
   .pv-video-player {
     .pv-icon-btn-play {
       opacity: 0;

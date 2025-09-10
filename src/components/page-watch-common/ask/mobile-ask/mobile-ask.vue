@@ -30,12 +30,15 @@
         @click-input-wrap="checkNeedRealNameAuth"
       />
     </div>
+    <!-- 游客登录 -->
+    <mobile-enroll v-if="isGuest" />
   </div>
 </template>
 
 <script setup lang="ts">
 import MobileAskMsgList from '../ask-msg-list/mobile-ask-msg-list.vue';
 import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mobile-msg-input-wrap/mobile-msg-input-wrap.vue';
+import MobileEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import { useAsk } from '../hooks/use-ask';
 import { useAskSend } from '../hooks/use-ask-send';
 import { ref } from 'vue';
@@ -43,11 +46,13 @@ import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
 const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 const { checkNeedRealNameAuth } = useViewerStore();
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 

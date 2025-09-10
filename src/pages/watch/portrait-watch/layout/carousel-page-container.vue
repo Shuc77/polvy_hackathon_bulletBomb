@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { appEvents } from '@/app/app-events';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { ref } from 'vue';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useFeedInjectStore } from '@/store/use-feed-inject-store';

@@ -30,7 +30,7 @@ import PlayerReplaySubtitle from './_components/player-replay-subtitle.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { MOBILE_LIVE_PLAYER_INNER_WRAP } from '@/assets/constants/selector';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { usePlayerStore } from '@/store/use-player-store';
 
 const props = defineProps({

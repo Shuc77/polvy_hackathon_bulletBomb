@@ -20,6 +20,8 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { getForceAutoResult } from '@/assets/utils/video/force-autoplay';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { debounce } from 'lodash-es';
+import { useWeixinButton } from '@/hooks/platform/use-weixin/use-weixin-button';
+import { isMobile } from '@/assets/utils/browser';
 
 export type InitPlayerOptions = Omit<SetupPlayerOptions, 'container'>;
 
@@ -41,6 +43,8 @@ export const usePlayerMain = ({
   const langStore = useLangStore();
   const layoutStore = useLayoutStore();
   const forceAutoPlayRs = getForceAutoResult();
+
+  const { checkWxMiniProgramWebview, supportWxOpenLaunchWebApp } = useWeixinButton();
 
   /** 播放器渲染容器 */
   const playerContainer = ref<HTMLDivElement>();
@@ -139,71 +143,87 @@ export const usePlayerMain = ({
   }
 
   /** 初始化播放器 */
-  const initPlayer: () => void = debounce(async () => {
-    const container = unref(playerContainer);
-    if (!container) {
-      return;
-    }
+  const initPlayer: () => void = debounce(
+    async () => {
+      console.info('initPlayer');
+      const container = unref(playerContainer);
+      if (!container) {
+        return;
+      }
 
-    if (!playerStore.playerEnabled) return;
+      if (!playerStore.playerEnabled) return;
 
-    playerStore.$patch({
-      playerInited: false,
-      isPlayStarted: false,
-      playerControlVisible: false,
-      sdkPlayerUIControlVisible: false,
-    });
-    playbackStore.$patch({
-      isPlaybacking: false,
-    });
-
-    let playerOptions: SetupPlayerOptions = {
-      container,
-      lowLatency: playerStore.isLowLatency,
-      language: langStore.currentLang.toString(),
-      streamTrackKey: playerStore.streamTrackKey,
-      languageStreamEnabled: true,
-      autoChangePlayback: false, // @PLV-WARN 默认不要更改该选项配置，如果业务上需要直播结束后自动切换回放，请先咨询保利威工作人员
-    };
-
-    // 其他参数
-    if (typeof initPlayerOptions === 'function') {
-      playerOptions = {
-        ...playerOptions,
-        ...initPlayerOptions(),
-      };
-    } else {
-      playerOptions = {
-        ...playerOptions,
-        ...initPlayerOptions,
-      };
-    }
-
-    // 获取回放参数
-    const playbackOptions = await getPlayerPlaybackOptions();
-    if (playbackOptions) {
-      playerOptions.playbackOptions = playbackOptions;
-    } else {
-      await getPushStreamInfo();
-    }
-
-    if (forceAutoPlayRs) {
-      playerOptions.extraPlayerOptions = Object.assign(playerOptions.extraPlayerOptions || {}, {
-        customVideoElement: forceAutoPlayRs.media,
+      playerStore.$patch({
+        playerInited: false,
+        isPlayStarted: false,
+        playerControlVisible: false,
+        sdkPlayerUIControlVisible: false,
       });
-    }
-
-    const watchCore = getWatchCore();
-    await watchCore.player.setupPlayer(playerOptions);
-
-    bindPlayerEvents();
-
-    if (watchCore.player.supportPlaybackVideo().support) {
       playbackStore.$patch({
-        isPlaybacking: true,
+        isPlaybacking: false,
       });
-    }
-  }, 300);
+
+      let playerOptions: SetupPlayerOptions = {
+        container,
+        lowLatency: playerStore.isLowLatency,
+        language: langStore.currentLang.toString(),
+        streamTrackKey: playerStore.streamTrackKey,
+        languageStreamEnabled: true,
+        autoChangePlayback: false, // @PLV-WARN 默认不要更改该选项配置，如果业务上需要直播结束后自动切换回放，请先咨询保利威工作人员
+      };
+
+      // 其他参数
+      if (typeof initPlayerOptions === 'function') {
+        playerOptions = {
+          ...playerOptions,
+          ...initPlayerOptions(),
+        };
+      } else {
+        playerOptions = {
+          ...playerOptions,
+          ...initPlayerOptions,
+        };
+      }
+
+      // 获取回放参数
+      const playbackOptions = await getPlayerPlaybackOptions();
+      if (playbackOptions) {
+        playerOptions.playbackOptions = playbackOptions;
+      } else {
+        await getPushStreamInfo();
+      }
+
+      if (forceAutoPlayRs) {
+        playerOptions.extraPlayerOptions = Object.assign(playerOptions.extraPlayerOptions || {}, {
+          customVideoElement: forceAutoPlayRs.media,
+        });
+      }
+
+      const isWxMiniProgramWebview = await checkWxMiniProgramWebview();
+      const isWeixinEnv = !isWxMiniProgramWebview && supportWxOpenLaunchWebApp.value;
+      console.info('isMobile', isMobile);
+      console.info('isWeixinEnv', isWeixinEnv);
+      // 微信环境下，片头广告和暂停广告使用播放器内部实现
+      if (isMobile && isWeixinEnv) {
+        playerOptions.customAdvertClick = false;
+      }
+
+      const watchCore = getWatchCore();
+      await watchCore.player.setupPlayer(playerOptions);
+
+      bindPlayerEvents();
+
+      if (watchCore.player.supportPlaybackVideo().support) {
+        playbackStore.$patch({
+          isPlaybacking: true,
+        });
+      }
+    },
+    300,
+    {
+      leading: true,
+    },
+  );
 
   /** 销毁播放器 */
   function destroyPlayer(): void {

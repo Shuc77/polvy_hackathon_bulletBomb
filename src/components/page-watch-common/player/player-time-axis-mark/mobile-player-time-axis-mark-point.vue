@@ -40,8 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, emitFunc } from '@polyv/vue-components';
 
 import {
   TimeAxisMarkMergedListItem,

@@ -1,8 +1,7 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { isMobile } from '@/assets/utils/browser';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { computed, unref } from 'vue';
 

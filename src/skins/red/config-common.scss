@@ -123,43 +123,13 @@ $--skin-page-common-configs: (
   'chat-msg-user-nickname:text-color': map.get($--skin-basic-configs, 'main-text-color'),
   // 聊天消息特殊身份昵称字体色
   'chat-msg-user-special-nickname:text-color': map.get($--skin-basic-configs, 'main-highlight-text-color'),
-  // 聊天消息用户头衔背景色
-  'chat-msg-user-actor:bg-color': map.get($--skin-basic-configs, 'sub-primary-color'),
-  // 聊天消息用户头衔字体色
-  'chat-msg-user-actor:text-color': #630000,
   // 聊天消息用户设置昵称图标字体色
   'chat-msg-user-set-nick-icon:text-color': map.get($--skin-basic-configs, 'main-highlight-text-color'),
-  // 聊天消息时间字体色
-  'chat-msg-time:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
-  // 聊天提示文案字体色
-  'chat-msg-list-tips:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
 
-  // 聊天消息气泡背景色
-  'chat-msg-bubble:bg-color': #ffefd7,
-  // 聊天消息气泡字体色
-  'chat-msg-bubble:text-color': #830b0b,
-  // 聊天消息特殊身份气泡背景色
-  'chat-msg-bubble-special:bg-color': #ffd892,
-  // 聊天消息特殊身份气泡字体色
-  'chat-msg-bubble-special:text-color': #830b0b,
-
-  // 聊天消息回复内容字体色
-  'chat-msg-quote-content:text-color': rgba(#830b0b, 0.8),
-  // 聊天消息回复内容边框色
-  'chat-msg-quote-content:border-color': rgba(#830b0b, 0.2),
-  // 聊天消息特殊身份回复内容字体色
-  'chat-msg-special-quote-content:text-color': rgba(#830b0b, 0.8),
-  // 聊天消息特殊身份回复内容字体色
-  'chat-msg-special-quote-content:border-color': rgba(#830b0b, 0.2),
   // 聊天回复引用背景色
   'chat-quote-msg:bg-color': #721a1a,
   // 聊天回复引用字体色
   'chat-quote-msg:text-color': map.get($--skin-basic-configs, 'main-text-color'),
-
-  // 聊天消息翻译成功提示字体色
-  'chat-msg-translate-finish:text-color': rgba(#830b0b, 0.6),
-  // 聊天消息特殊身份翻译成功提示字体色
-  'chat-msg-translate-finish-special:text-color': rgba(#830b0b, 0.6),
 
   // 聊天室更多消息按钮背景色
   'chat-msg-more-button:bg-color': map.get($--skin-basic-configs, 'primary-color'),
@@ -169,21 +139,6 @@ $--skin-page-common-configs: (
   'chat-msg-more-button--hover:bg-color': map.get($--skin-basic-configs, 'primary-color'),
   // 聊天室更多消息按钮 hover 字体色
   'chat-msg-more-button--hover:text-color': #ffffff,
-
-  // 打赏消息字体色
-  'chat-reward-msg:text-color': rgba($--color-white, 0.6),
-  // 自定义消息字体色
-  'chat-customer-msg:text-color': rgba($--color-white, 0.6),
-  // 红包领取消息背景色
-  'chat-redpaper-receive-msg:bg-color': rgba($--color-black, 0.3),
-  // 红包领取消息字体色
-  'chat-redpaper-receive-msg:text-color': $--color-white,
-  // 系统消息字体色
-  'chat-system-msg:text-color': rgba($--color-white, 0.6),
-  // 课堂激励消息字体色
-  'chat-motivation-like-msg:text-color': rgba($--color-white, 0.6),
-  // 课堂激励消息背景色
-  'chat-motivation-like-msg:bg': rgba(0, 0, 0, 0.1),
 
   // 章节字体色
   'chapter-item:text-color': map.get($--skin-basic-configs, 'main-text-color'),

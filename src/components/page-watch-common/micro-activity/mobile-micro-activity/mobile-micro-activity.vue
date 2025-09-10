@@ -17,7 +17,7 @@ import { nextTick, ref, unref, watch, onMounted } from 'vue';
 import { $ } from '@just4/dom';
 import { storeToRefs } from 'pinia';
 
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useMicroActivityHook } from '../hooks/use-micro-activity';

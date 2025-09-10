@@ -1,4 +1,4 @@
-import { VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { VueProps } from '@polyv/vue-components';
 import { ChatMsgType, ChatMsgQuoteType } from '@polyv/live-watch-sdk';
 import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
 import { ChatMsgItemCategory, chatMsgItemProps } from '../use-chat-msg-item';

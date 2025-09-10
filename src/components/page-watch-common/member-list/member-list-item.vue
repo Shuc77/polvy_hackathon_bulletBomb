@@ -26,7 +26,7 @@
 <script setup lang="ts">
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 import UserActor from '@/components/page-watch-common/chat/chat-msg-list/msg-items/_msg-user-actor/msg-user-actor.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useCommonStore } from '@/store/use-common-store';
@@ -43,7 +43,7 @@ const { plvDefaultResource } = storeDefinitionToRefs(useCommonStore);
 const viewerStore = useViewerStore();
 
 const props = defineProps({
-  member: PropUtils.objectType<MemberInfo>().def(),
+  member: PropUtils.object<MemberInfo>().def(),
 });
 
 /** 获取展示的成员名称 */

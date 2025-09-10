@@ -5,9 +5,6 @@ $--skin-page-mobile-configs: (
   // 引导页背景色
   'mobile-splash:bg-color': map.get($--skin-basic-configs, 'main-bg-color'),
 
-  // 页脚字体色
-  'mobile-page-footer:text-color': rgba(map.get($--skin-basic-configs, 'main-text-color'), 0.6),
-
   // 倒计时方块背景色
   'mobile-count-down-square-item:bg-color': #004285,
   // 倒计时方块远点背景色

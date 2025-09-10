@@ -1,6 +1,12 @@
 import { isDesktopIPad } from '@/assets/utils/browser';
-import { emitFunc, updateModelEmit, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import {
+  PropUtils,
+  useProps,
+  VueProps,
+  emitFunc,
+  updateModelEmit,
+  VueEmit,
+} from '@polyv/vue-components';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { throttle } from 'lodash-es';
 import { ref, computed, unref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue';

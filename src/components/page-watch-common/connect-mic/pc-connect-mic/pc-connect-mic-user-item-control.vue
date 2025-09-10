@@ -37,8 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { emitFunc } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, emitFunc } from '@polyv/vue-components';
 import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

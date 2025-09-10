@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import PcAiAssistantMsgUser from '../_msg-user-info/pc-ai-assistant-msg-user.vue';
 import { msgContainerProps, useMsgContainer } from './use-ai-assistant-msg-container';
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import { useAIAssistantMsgInjectInfo } from '../_hooks/use-ai-assistant-msg-inject-info';
 
 const props = defineProps(msgContainerProps());

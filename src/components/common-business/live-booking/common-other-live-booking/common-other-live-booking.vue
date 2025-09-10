@@ -51,7 +51,8 @@ const startTime = computed(() => singleOtherChannelBookingConfig.value?.startTim
 const isBooked = computed(
   () =>
     singleOtherChannelBookingConfig.value?.isSmsLiveBooking ||
-    singleOtherChannelBookingConfig.value?.isWxLiveBooking,
+    singleOtherChannelBookingConfig.value?.isWxLiveBooking ||
+    singleOtherChannelBookingConfig.value?.isCustomLiveBooking,
 );
 const channelId = computed(() => singleOtherChannelBookingConfig.value?.channelId ?? '');
 

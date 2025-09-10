@@ -1,6 +1,5 @@
 import { appEvents } from '@/app/app-events';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { computed, ref, unref, watch } from 'vue';

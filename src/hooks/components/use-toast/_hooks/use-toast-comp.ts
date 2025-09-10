@@ -1,7 +1,6 @@
 import { useVue } from '@/hooks/core/use-vue';
 import { getElement } from '@/assets/utils/dom';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { FormatProps, PropUtils, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { FormatProps, PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { useAutoTopmostToShow } from '@/hooks/components/use-popper/use-auto-topmost-show';
 import { ToastInstance, ToastType } from '../_toast_type';

@@ -2,7 +2,7 @@
 <template>
   <div
     ref="layoutWrapRef"
-    class="c-mobile-watch-layout"
+    class="c-mobile-watch-layout pws-main-tab-body"
   >
     <div class="c-mobile-watch-layout__page-notices">
       <!-- 发起转播频道被踢出提示 -->
@@ -47,9 +47,6 @@
           <player-play-button
             v-if="isConnectMicPaused && masterMicItem"
             :mode="PlayButtonMode.Text"
-            :visible="isConnectMicPaused"
-            :simple-visible-mode="true"
-            class="c-mobile-watch-layout__player__play-btn"
           />
           <mobile-player-main />
         </div>
@@ -127,9 +124,7 @@
       class="c-mobile-watch-layout__bottom"
     >
       <!-- 快速答题卡 -->
-      <div class="c-mobile-watch-layout__quick-answer-card">
-        <mobile-quick-answer-card v-if="iarSdkLoaded" />
-      </div>
+      <quick-answer-card v-if="iarSdkLoaded" />
 
       <!-- 菜单栏 -->
       <mobile-watch-menu />
@@ -144,12 +139,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, ref, unref, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, ref, unref, watch } from 'vue';
 
 import MobileConnectMicUserItem from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-item.vue';
 import MobileConnectMicUserList from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-list.vue';
 import MobileDoc from '@/components/page-watch-common/doc/mobile-doc.vue';
-import MobileQuickAnswerCard from '@/components/page-watch-common/interactive-receive/answer-card/mobile-quick-answer-card.vue';
+import QuickAnswerCard from '@/components/page-watch-common/interactive-receive-v2/answer-card-v2/quick-answer-card/quick-answer-card.vue';
 import MobilePlayerMain from '@/components/page-watch-common/player/player-main/mobile-player-main/mobile-player-main.vue';
 import MobileCountDownLayer from '@/components/page-watch-common/count-down-layer/mobile-count-down-layer.vue';
 import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
@@ -171,7 +166,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { TAB_NAME_CHAT, TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 
-import { MainScreenContent, MultiMeetingListLayout, PlayStatus } from '@polyv/live-watch-sdk';
+import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
@@ -217,8 +212,8 @@ const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 const { filterConnectMicList, masterMicItem, connectMicFitType, isConnectMicPaused } =
   storeDefinitionToRefs(useConnectMicStore);
 
-const { canRenderPlayer, isPlayMode, playStatus } = storeDefinitionToRefs(usePlayerStore);
-const { toPlayInLimit } = usePlayerAction();
+const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
+const { toTryPlay } = usePlayerAction();
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
@@ -294,10 +289,7 @@ async function computedLayoutSize() {
 }
 
 function onClickPlayerRegion() {
-  // 当前处于暂停状态，触发播放
-  if (isPlayMode.value && playStatus.value === PlayStatus.Pause) {
-    toPlayInLimit();
-  }
+  toTryPlay();
 }
 
 watch(
@@ -324,15 +316,18 @@ watch(isSmallWindow, () => {
 
 useEventBusListener(appEvents.global.MobileLayoutComputedSize, computedLayoutSize);
 
+// 小窗播放按钮点击处理
 useEventBusListener(appEvents.portrait.ClickPlayerRegion, onClickPlayerRegion);
 
-useWindowResizeListener(() => {
-  computedLayoutSize();
-}, true);
-
-onMounted(() => {
-  computedLayoutSize();
-});
+useWindowResizeListener(
+  () => {
+    computedLayoutSize();
+  },
+  {
+    autoListen: true,
+    immediately: true,
+  },
+);
 
 const $stopWatch = watch(mobileMenuCurrentName, () => {
   if (mobileMenuCurrentName.value === TAB_NAME_CHAT) {
@@ -462,17 +457,6 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   pointer-events: none;
 }
 
-.c-mobile-watch-layout__quick-answer-card {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 120;
-  width: 100%;
-  overflow: auto;
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-}
-
 .c-mobile-watch-layout__doc--page-fullscreen {
   position: fixed !important;
   top: 0 !important;
@@ -518,10 +502,6 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
     > div:not(.plv-player-video__wrap, .plv-player-cover) {
       display: none !important;
     }
-  }
-
-  .c-mobile-player-main__play-btn {
-    display: none;
   }
 }
 

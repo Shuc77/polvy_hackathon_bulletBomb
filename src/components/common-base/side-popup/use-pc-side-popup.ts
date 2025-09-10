@@ -1,5 +1,11 @@
-import { VueEmit, emitFunc, updateModelEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, VueProps, useProps } from '@/assets/utils/vue-utils/props-utils';
+import {
+  PropUtils,
+  VueProps,
+  useProps,
+  emitFunc,
+  updateModelEmit,
+  VueEmit,
+} from '@polyv/vue-components';
 import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { computed, nextTick, ref, watch } from 'vue';
 import type { PcSidePopupInstance } from './type';

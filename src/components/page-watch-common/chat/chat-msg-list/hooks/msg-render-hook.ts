@@ -98,7 +98,7 @@ export const useMsgRender = (
           return h(
             'div',
             {
-              class: 'c-chat-msg-list__tips pws-chat-msg-list-tips',
+              class: 'c-chat-msg-list__tips pws-secondary-text-color',
             },
             `${translate('chat.norMore')}`,
           );
@@ -119,7 +119,7 @@ export const useMsgRender = (
           return h(
             'div',
             {
-              class: 'c-chat-msg-list__tips pws-chat-msg-list-tips',
+              class: 'c-chat-msg-list__tips pws-secondary-text-color',
             },
             `${translate('chat.empty')}`,
           );
@@ -149,7 +149,7 @@ export const useMsgRender = (
         return h(
           'div',
           {
-            class: 'c-chat-msg-list__tips pws-chat-msg-list-tips',
+            class: 'c-chat-msg-list__tips pws-secondary-text-color',
           },
           `${translate('chat.loadError')}`,
         );

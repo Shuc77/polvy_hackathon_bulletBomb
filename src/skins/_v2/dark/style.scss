@@ -151,6 +151,12 @@
     color: rgba(var(--plv-watch-skin-special-rgb), 1);
   }
 
+  .pws-main-scrollbar-color {
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(#000, 0.1);
+    }
+  }
+
   // -------- AI 助手答疑 -------- //
 
   .pws-ai-msg-bubble-color {

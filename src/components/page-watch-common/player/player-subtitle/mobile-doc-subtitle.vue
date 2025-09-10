@@ -29,7 +29,7 @@ import PlayerReplaySubtitle from './_components/player-replay-subtitle.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { MOBILE_DOC_PPT_INNER } from '@/assets/constants/selector';
-import { PropUtils } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils } from '@polyv/vue-components';
 
 defineProps({
   /** 挂载选择器 */

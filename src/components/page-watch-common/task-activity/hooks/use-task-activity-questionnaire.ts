@@ -2,7 +2,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { useToastManager } from '@/hooks/components/use-toast';
-import { PolyvIarQuestionnaireData, PolyvIarSubmitAnswerData } from '@polyv/live-watch-sdk';
+import { PolyvQuestionnaire } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
 
 export const useTaskActivityQuestionnaire = () => {
@@ -15,7 +15,7 @@ export const useTaskActivityQuestionnaire = () => {
   const currentTaskId = ref<number>();
 
   /** 当前显示的问卷数据 */
-  const currentQuestionnaire = ref<PolyvIarQuestionnaireData>();
+  const currentQuestionnaire = ref<PolyvQuestionnaire.QuestionnaireData>();
 
   const questionnaireVisible = ref(false);
 
@@ -26,7 +26,7 @@ export const useTaskActivityQuestionnaire = () => {
     questionnaireVisible.value = true;
   }
 
-  async function onSubmitData(data: PolyvIarSubmitAnswerData[]) {
+  async function onSubmitData(data: PolyvQuestionnaire.SubmitAnswerData[]) {
     if (!currentTaskId.value || !currentQuestionnaire.value) {
       return;
     }

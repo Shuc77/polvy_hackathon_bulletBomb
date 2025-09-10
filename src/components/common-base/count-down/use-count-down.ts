@@ -1,6 +1,5 @@
 import { translate } from '@/assets/lang';
-import { emitFunc, VueEmit } from '@/assets/utils/vue-utils/emit-utils';
-import { PropUtils, useProps, VueProps } from '@/assets/utils/vue-utils/props-utils';
+import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
 import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
 import { computed, unref, watch } from 'vue';

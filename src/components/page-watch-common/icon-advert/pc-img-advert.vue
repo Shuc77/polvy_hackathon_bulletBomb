@@ -1,26 +1,33 @@
 <!-- @file pc端图标广告 -->
 <template>
-  <div
-    class="c-pc-img-advert"
-    v-if="imgAdvertEnabled && imgAdvertVisible && imgAdvertList.length"
-  >
-    <div class="c-pc-icon-advert__content__image">
-      <img
-        draggable="false"
-        onselectstart="return false"
-        :src="iconAdvert.advertImage"
-        @click="openLink(iconAdvert.pcLink || iconAdvert.advertHref)"
-      />
-    </div>
+  <div>
     <div
-      class="c-pc-icon-advert__content__close__box"
-      v-if="imgCloseVisible"
+      class="c-pc-img-advert"
+      v-if="imgAdvertEnabled && imgAdvertVisible && imgAdvertList.length"
     >
-      <mobile-icon-close
-        class="c-pc-icon-advert__content__close"
-        @click="closeImgAdvert"
-      />
+      <div class="c-pc-icon-advert__content__image">
+        <img
+          draggable="false"
+          onselectstart="return false"
+          :src="iconAdvert.advertImage"
+          @click="handleAdvertClick"
+        />
+      </div>
+      <div
+        class="c-pc-icon-advert__content__close__box"
+        v-if="imgCloseVisible"
+      >
+        <mobile-icon-close
+          class="c-pc-icon-advert__content__close"
+          @click="closeImgAdvert"
+        />
+      </div>
     </div>
+    <pc-iframe-popup
+      v-model="iframeVisible"
+      :src="iframeUrl"
+      :height="720"
+    />
   </div>
 </template>
 
@@ -29,7 +36,9 @@ import { useAdvertStore } from '@/store/use-advert-store';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { MobileIconClose } from '@/components/component-icons/mobile/map';
-import { openLink } from '@/assets/utils/url';
+import { useAdvert } from '@/hooks/business/use-advert';
+import { convertIconAdvertItemToLinkData } from './hooks/utils';
+import PcIframePopup from '@/components/common-base/iframe-popup/pc-iframe-popup.vue';
 
 const advertStore = useAdvertStore();
 const { closeImgAdvert } = advertStore;
@@ -38,8 +47,15 @@ const { imgAdvertEnabled, imgAdvertVisible, imgAdvertList, imgCloseVisible } =
   storeToRefs(advertStore);
 
 const iconAdvert = computed(() => imgAdvertList.value[0]);
+
+const { iframeVisible, iframeUrl, handleAdvertClick } = useAdvert({
+  getLinkData: () => {
+    if (!iconAdvert.value) return null;
+    return convertIconAdvertItemToLinkData(iconAdvert.value);
+  },
+});
 </script>
--
+
 <style lang="scss">
 .c-pc-img-advert {
   position: relative;

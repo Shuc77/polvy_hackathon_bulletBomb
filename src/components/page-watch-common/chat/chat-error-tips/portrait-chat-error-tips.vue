@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { useProps } from '@/assets/utils/vue-utils/props-utils';
+import { useProps } from '@polyv/vue-components';
 import { chatErrorTipsProps } from './use-chat-error-tips';
 
 const props = defineProps(chatErrorTipsProps());
