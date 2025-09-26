@@ -7,15 +7,6 @@
     <!-- 反馈 -->
     <mobile-feedback-popup v-if="feedbackEnabled" />
 
-    <template v-if="!useV2Lottery">
-      <!-- 抽奖动画 -->
-      <mobile-lottery-animation />
-      <!-- 抽奖结果弹层 -->
-      <mobile-lottery-result-popup />
-    </template>
-
-    <!-- 问卷 -->
-    <mobile-questionnaire-popup v-if="!useV2Questionnaire" />
     <!-- 红包弹窗 -->
     <mobile-redpack-popup />
     <!-- 红包雨组件 -->
@@ -44,9 +35,6 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
-import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
-import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
-import MobileQuestionnairePopup from './questionnaire/mobile-questionnaire-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
 import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
@@ -66,8 +54,6 @@ const {
   announcementFunctionVisible,
   seatTableVisible,
   isMeetingSeatTableTemplate,
-  useV2Lottery,
-  useV2Questionnaire,
 
   feedbackEnabled,
 } = storeDefinitionToRefs(useInteractReceiveStore);

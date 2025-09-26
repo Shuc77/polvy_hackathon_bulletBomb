@@ -15,7 +15,10 @@ export const useUserIdentityIntercept = () => {
     let needLogin = watchCore.identity.checkIdentityLogin();
     // 游客登录由 UI 层自行限制
     if (identityStore.isGuest) {
-      const allowGuest = identityStore.checkAllowUseGuest() && !watchAppStore.shouldShowSplash;
+      const allowGuest =
+        identityStore.checkAllowUseGuest() &&
+        !identityStore.allowToVerifyDirectAuth() &&
+        !watchAppStore.shouldShowSplash;
       needLogin = !allowGuest;
     }
 

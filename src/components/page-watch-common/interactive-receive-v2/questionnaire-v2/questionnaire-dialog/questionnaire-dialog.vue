@@ -10,9 +10,9 @@
 import { defineAsyncComponent, ref } from 'vue';
 import { useIarUILoader } from '../../_load-iar-ui-v2';
 import { useQuestionnaireTarget } from '../hooks/use-questionnaire-v2';
-import { useQuestionnaireEntrance } from '@/components/page-watch-common/interactive-receive/questionnaire/hooks/use-questionnaire-entrance';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import type { QuestionnaireDialogInstance } from '@polyv/iar-questionnaire-ui';
+import { useQuestionnaireEntrance } from '../hooks/use-questionnaire-entrance';
 
 const { loadIarUI } = useIarUILoader('iar-questionnaire-ui');
 

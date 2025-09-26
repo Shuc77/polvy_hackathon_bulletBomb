@@ -34,7 +34,7 @@
       <!-- 移动端底部菜单栏顶部固定区域 -->
       <div class="c-mobile-watch-mobile-menu__topic">
         <!-- 聊天室连接异常提示 -->
-        <mobile-chat-connect-error-tips class="c-mobile-watch-mobile-menu__topic-item" />
+        <!-- <mobile-chat-connect-error-tips class="c-mobile-watch-mobile-menu__topic-item" /> -->
       </div>
 
       <!-- 文档位置切换按钮 -->
@@ -253,6 +253,21 @@
         >
           <mobile-playback-outline />
         </mobile-menu-tab-pane>
+
+        <!-- 多会场列表（竖向） for 主会场 -->
+        <mobile-menu-tab-pane
+          v-if="
+            menu.menuType === ChannelMenuType.MultiMeeting &&
+            multiMeetingMenuData.visible &&
+            !isSubChannel
+          "
+          :key="`MultiMeeting-${index}`"
+          :label="menu.name"
+          :name="TAB_NAME_MULTI_MEETING"
+          lazy-load
+        >
+          <mobile-multi-meeting-portrait />
+        </mobile-menu-tab-pane>
       </template>
 
       <!-- 回放章节 -->
@@ -266,16 +281,15 @@
         </mobile-menu-tab-pane>
       </template>
 
-      <!-- 分会场（竖向） -->
-      <template v-if="multiMeetingMenuData.visible">
-        <mobile-menu-tab-pane
-          :label="multiMeetingMenuData.label"
-          :name="TAB_NAME_MULTI_MEETING"
-          lazy-load
-        >
-          <mobile-multi-meeting-portrait />
-        </mobile-menu-tab-pane>
-      </template>
+      <!-- 多会场列表（竖向） for 分会场 -->
+      <mobile-menu-tab-pane
+        v-if="multiMeetingMenuData.visible && isSubChannel"
+        :label="multiMeetingMenuData.label"
+        :name="TAB_NAME_MULTI_MEETING"
+        lazy-load
+      >
+        <mobile-multi-meeting-portrait />
+      </mobile-menu-tab-pane>
     </mobile-menu-tabs>
   </div>
 </template>
@@ -286,7 +300,7 @@ import MobileMenuTabs from '@/components/common-base/tabs/mobile-menu-tabs/mobil
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
 import MobileAsk from '@/components/page-watch-common/ask/mobile-ask/mobile-ask.vue';
 import MobileChapter from '@/components/page-watch-common/chapter/mobile-chapter.vue';
-import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
+// import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import MobileChatRoom from '@/components/page-watch-common/chat/chat-room/mobile-chat-room.vue';
 import MobileChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/chat-close-tips.vue';
 import MobileCustomTuwenTextMenu from '@/components/page-watch-common/custom-tuwen-text-menu/mobile-custom-tuwen-text-menu.vue';
@@ -304,10 +318,10 @@ import MobilePlaybackList from '@/components/page-watch-common/playback-list/mob
 import MobileMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-portrait.vue';
 import MobileSubtitle from '@/components/page-watch-common/subtitle/mobile-subtitle.vue';
 import MobileSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/mobile-seat-table.vue';
-import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/mobile-ai-assistant-chat.vue';
+import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import MobileMemberDesc from '@/components/page-watch-common/member-list/mobile-member-desc.vue';
-import MobilePlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/playback-outline.vue';
+import MobilePlaybackOutline from '@/components/page-watch-common/polyv-ai/ai-summary/playback-outline.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -358,7 +372,8 @@ const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutSto
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+const { channelMenus, multiMeetingMenuData, isSubChannel } =
+  storeDefinitionToRefs(useChannelMenuStore);
 
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 
@@ -391,7 +406,9 @@ const { trackWatchTabChange } = useWatchEventTrack();
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: mobileMenuCurrentName,
 });
+
 const mobileMenuTabsRef = ref<TabsInstance>();
+
 onMounted(async () => {
   await nextTick();
   const playBackVid = paramGetter().playBackVid();
@@ -400,6 +417,11 @@ onMounted(async () => {
       item => item.menuType === ChannelMenuType.Previous,
     );
     if (hasPlayBack === -1) return;
+
+    if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
+      return;
+    }
+
     mobileMenuTabsRef.value?.setDefaultTabName(TAB_NAME_PLAYBACK);
   }
 });

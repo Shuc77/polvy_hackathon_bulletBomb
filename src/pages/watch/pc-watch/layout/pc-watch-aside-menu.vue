@@ -19,7 +19,7 @@
       <!-- PC 端观看页侧边菜单栏顶部固定区域 -->
       <div class="c-pc-watch-aside-menu__topic">
         <!-- 聊天室连接异常提示 -->
-        <pc-chat-connect-error-tips class="c-pc-watch-aside-menu__topic-item" />
+        <!-- <pc-chat-connect-error-tips class="c-pc-watch-aside-menu__topic-item" /> -->
       </div>
 
       <!-- 连麦 tab -->
@@ -109,6 +109,7 @@
         <pc-aside-tab-pane
           v-if="
             menu.menuType === ChannelMenuType.Buy &&
+            interactSetting.productEnabled &&
             interactSetting.productEntryPosition === ProductEntryPosition.MenuBar
           "
           :key="`buy-${index}`"
@@ -167,7 +168,7 @@
 <script setup lang="ts">
 import PcAsideTabPane from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-tab-pane.vue';
 import PcAsideTabs from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-tabs.vue';
-import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
+// import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
 import PcChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/chat-close-tips.vue';
 import PcChatRoom from '@/components/page-watch-common/chat/chat-room/pc-chat-room.vue';
 import PcMicroActivity from '@/components/page-watch-common/micro-activity/pc-micro-activity/pc-micro-activity.vue';
@@ -179,10 +180,10 @@ import PcQuestionAnswer from '@/components/page-watch-common/interactive-receive
 import PcAsk from '@/components/page-watch-common/ask/pc-ask/pc-ask.vue';
 import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
 import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
-import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/pc-ai-assistant-chat.vue';
+import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PcMemberDesc from '@/components/page-watch-common/member-list/pc-member-desc.vue';
-import PcPlaybackOutline from '@/components/page-watch-common/Intelligent-playback-outline/playback-outline.vue';
+import PcPlaybackOutline from '@/components/page-watch-common/polyv-ai/ai-summary/playback-outline.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

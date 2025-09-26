@@ -20,16 +20,8 @@
       <!-- 话题 PK -->
       <pc-topic-pk class="c-pc-chat-room-pendant__item" />
 
-      <template v-if="useV2Lottery">
-        <!-- 抽奖 -->
-        <lottery-pendant-v2 class="c-pc-chat-room-pendant__item" />
-      </template>
-      <template v-else>
-        <!-- 抽奖 -->
-        <pc-lottery-pendant class="c-pc-chat-room-pendant__item" />
-        <!-- 条件抽奖 -->
-        <pc-welfare-lottery class="c-pc-chat-room-pendant__item" />
-      </template>
+      <!-- 抽奖 -->
+      <lottery-pendant-v2 class="c-pc-chat-room-pendant__item" />
 
       <!-- 抢答 -->
       <pc-rush-answer class="c-pc-chat-room-pendant__item" />
@@ -42,6 +34,9 @@
         v-if="!likeFeatureEnabled && chatSetting.emotionalFeedbackEnabled"
         class="c-pc-chat-room-pendant__item"
       />
+
+      <!-- 平台抽奖 -->
+      <pc-lucky-lottery-pendant class="c-pc-chat-room-pendant__item" />
     </template>
     <!-- 图标广告 -->
     <pc-img-advert class="c-pc-chat-room-pendant__item" />
@@ -60,25 +55,24 @@
 <script setup lang="ts">
 import { computed, unref } from 'vue';
 
+import PcCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import PcLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/pc/pc-lucky-lottery-pendant.vue';
 import PcEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import PcPushCard from '@/components/page-watch-common/interactive-receive/push-card/pc-push-card.vue';
 import PcRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
-import PcWelfareLottery from '@/components/page-watch-common/interactive-receive/welfare-lottery/pc-welfare-lottery.vue';
-import PcLotteryPendant from '@/components/page-watch-common/interactive-receive/lottery/lottery-pendant.vue';
 import PcTopicPk from '@/components/page-watch-common/interactive-receive/topic-pk/pc-topic-pk.vue';
+import LotteryPendantV2 from '../../interactive-receive-v2/lottery-v2/lottery-pendant/lottery-pendant.vue';
 import PcRushAnswer from '../../interactive-receive/rush-answer/pc-rush-answer.vue';
 import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedback.vue';
-import PcCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
-import LotteryPendantV2 from '../../interactive-receive-v2/lottery-v2/lottery-pendant/lottery-pendant.vue';
 
-import PcChatLike from '../chat-like/pc-chat-like.vue';
 import PcImgAdvert from '@/components/page-watch-common/icon-advert/pc-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
+import PcChatLike from '../chat-like/pc-chat-like.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useFinanceStore } from '@/store/use-finance-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
@@ -95,7 +89,6 @@ const {
   lotteryPendantVisible,
   rushAnswerPendantVisible,
   couponPendantVisible,
-  useV2Lottery,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 /** 点赞上方是否有其他挂件 */

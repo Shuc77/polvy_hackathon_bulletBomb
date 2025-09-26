@@ -1,23 +1,13 @@
-import {
-  PolyvAIAssistantChatStatus,
-  PolyvAIAssistantConfig,
-  PolyvAIModule,
-} from '@polyv/live-watch-sdk';
+import { PolyvAIAssistantConfig, PolyvAIModule } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, Ref, ref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
 
 export interface PolyvAIStore {
-  /** AI 助手相关配置 */
-  AIAssistantConfig: Ref<PolyvAIAssistantConfig>;
+  /** AI SDK 核心已安装 */
+  watchAICoreSetuped?: Ref<boolean>;
   /** AI 助手是否可用 */
   AIAssistantEnabled: ComputedRef<boolean>;
-  /** AI 助手答疑聊天区是否可见 */
-  AIAssistantChatVisible: ComputedRef<boolean>;
-  /** AI 助手答疑聊天区输入框是否禁用 */
-  AIAssistantChatInputDisabled: ComputedRef<boolean>;
-  /** AI 助手聊天状态 */
-  AIAssistantChatStatus: Ref<PolyvAIAssistantChatStatus>;
   /** 同步 PolyvAI 存储数据 */
   syncPolyvAIStore: () => void;
 }
@@ -27,6 +17,9 @@ export interface PolyvAIStore {
  */
 export const usePolyvAIStore = defineStore<'polyvAI', PolyvAIStore>('polyvAI', () => {
   const watchAppStore = useWatchAppStore();
+
+  /** AI SDK 核心已安装 */
+  const watchAICoreSetuped = ref(false);
 
   /** 是否支持 AI 助手聊天 */
   const supportAIAssistantChat = ref(false);
@@ -38,21 +31,12 @@ export const usePolyvAIStore = defineStore<'polyvAI', PolyvAIStore>('polyvAI', (
 
   /** AI 助手是否可用 */
   const AIAssistantEnabled = computed(() => {
-    return supportAIAssistantChat.value && AIAssistantConfig.value.aiAssistantEnabled;
+    return (
+      watchAICoreSetuped.value &&
+      supportAIAssistantChat.value &&
+      AIAssistantConfig.value.aiAssistantEnabled
+    );
   });
-
-  /** AI 助手答疑聊天区是否可见 */
-  const AIAssistantChatVisible = computed(() => {
-    return AIAssistantConfig.value.aiAssistantId !== -1;
-  });
-
-  /** AI 助手答疑聊天区输入框是否禁用 */
-  const AIAssistantChatInputDisabled = computed(() => {
-    return AIAssistantConfig.value.aiAssistantExpired;
-  });
-
-  /**  AI 助手聊天状态 */
-  const AIAssistantChatStatus = ref<PolyvAIAssistantChatStatus>(PolyvAIAssistantChatStatus.Wait);
 
   /**
    * 同步 PolyvAI 存储数据
@@ -68,12 +52,9 @@ export const usePolyvAIStore = defineStore<'polyvAI', PolyvAIStore>('polyvAI', (
   }
 
   return {
-    AIAssistantConfig,
-    AIAssistantEnabled,
+    watchAICoreSetuped,
 
-    AIAssistantChatVisible,
-    AIAssistantChatInputDisabled,
-    AIAssistantChatStatus,
+    AIAssistantEnabled,
 
     syncPolyvAIStore,
   };

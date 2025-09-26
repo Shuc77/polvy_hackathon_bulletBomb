@@ -2,7 +2,10 @@
   <div class="c-chat-speak-top">
     <div class="c-chat-speak-top__content">
       <span class="c-chat-speak-top__title">{{ message.nick }}：</span>
-      <span v-html="message.content"></span>
+      <span
+        class="c-chat-speak-top__message"
+        v-html="message.content"
+      ></span>
     </div>
   </div>
 </template>
@@ -30,6 +33,9 @@ defineProps({
 .c-chat-speak-top__title {
   font-size: 12px;
   color: #ffd16b;
+}
+.c-chat-speak-top__message {
+  font-weight: 500;
 }
 
 .c-chat-speak-top__content {

@@ -4,19 +4,24 @@
     class="c-portrait-system-msg"
     hide-user-info
   >
-    <span
+    <div
       v-if="chatMsg.type === 'chat-room-introduction'"
-      class="c-portrait-system-msg-prefix pws-light-black-bg-10 pws-dark-white-bg-20"
+      class="c-portrait-system-msg-prefix-container"
     >
-      <span>{{ $lang('base.notice') }}</span>
-    </span>
-    <span
-      :class="{
-        'c-portrait-system-msg__text': true,
-        'pws-secondary-text-color': !chatMsg.type,
-      }"
-      >{{ chatMsg.content }}</span
+      <span class="c-portrait-system-msg-prefix pws-light-black-bg-10 pws-dark-white-bg-20">
+        <span>{{ $lang('base.notice') }}</span>
+      </span>
+    </div>
+    <div
+      v-else
+      class="c-portrait-system-msg-prefix-container"
     >
+      <span class="c-portrait-system-msg-prefix pws-light-black-bg-10 pws-dark-white-bg-20">
+        <span>{{ $lang('base.system.msg.prefix') }}</span>
+      </span>
+    </div>
+
+    <span class="c-portrait-system-msg__text">{{ chatMsg.content }}</span>
   </portrait-msg-container>
 </template>
 
@@ -28,6 +33,11 @@ const { chatMsg } = useSystemMsg();
 </script>
 
 <style lang="scss">
+.c-portrait-system-msg-prefix-container {
+  display: inline-flex;
+  transform: translateY(-1px);
+}
+
 .c-portrait-system-msg-prefix {
   box-sizing: border-box;
   display: inline-flex;

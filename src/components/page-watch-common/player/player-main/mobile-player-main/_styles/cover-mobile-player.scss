@@ -19,7 +19,7 @@
 }
 
 .c-mobile-player-main__container {
-  .plwrap {
+  .plwrap:not(.plv-live-fullscreen--landscape) {
     background: none !important;
   }
   video {

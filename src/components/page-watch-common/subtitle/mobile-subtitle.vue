@@ -85,7 +85,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import MobileSubtitleSelect from './mobile-subtitle-select/mobile-subtitle-select.vue';
 
 import { MobileIconArrowDown } from '@/components/component-icons/mobile/map';
@@ -115,7 +115,12 @@ const {
 
   subtitleList,
   currentSubtitle,
+  updateMobileSubtitleSkinShow,
 } = useSubtitle(subtitleScroll);
+
+onMounted(() => {
+  updateMobileSubtitleSkinShow();
+});
 </script>
 
 <style lang="scss">

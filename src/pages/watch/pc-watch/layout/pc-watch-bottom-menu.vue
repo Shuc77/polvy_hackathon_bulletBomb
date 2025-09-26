@@ -11,7 +11,7 @@
           v-if="menu.menuType === ChannelMenuType.Desc"
           :key="`decs-${index}`"
           :label="menu.name"
-          :name="ChannelMenuType.Desc"
+          :name="menu.menuUniqueKey"
           lazy-load
         >
           <pc-rich-text-render
@@ -28,7 +28,7 @@
           "
           :key="`playback-${index}`"
           :label="menu.name"
-          :name="TAB_NAME_PLAYBACK"
+          :name="menu.menuUniqueKey"
           lazy-load
         >
           <pc-playback-list />
@@ -39,7 +39,7 @@
           v-if="menu.menuType === ChannelMenuType.Text"
           :key="`text-${index}`"
           :label="menu.name"
-          :name="menu.menuId"
+          :name="menu.menuUniqueKey"
           lazy-load
         >
           <pc-rich-text-render :html-content="menu.content" />
@@ -50,7 +50,7 @@
           v-if="menu.menuType === ChannelMenuType.Tuwen"
           :key="`tuwen-${index}`"
           :label="menu.name"
-          :name="TAB_NAME_TUWEN_LIVE"
+          :name="menu.menuUniqueKey"
           lazy-load
         >
           <pc-tuwen-live v-if="iarSdkLoaded" />
@@ -61,7 +61,7 @@
           v-if="menu.menuType === ChannelMenuType.Iframe"
           :key="`iframe-${index}`"
           :label="menu.name"
-          :name="menu.menuId"
+          :name="menu.menuUniqueKey"
           hack-weixin-btn
         >
           <template #default="{ weixinBtnId }">
@@ -75,12 +75,12 @@
           </template>
         </pc-normal-tab-pane>
 
-        <!-- 分会场（竖向） -->
+        <!-- 多会场列表（竖向） for 主会场 -->
         <pc-normal-tab-pane
-          v-if="menu.menuType === ChannelMenuType.MultiMeeting"
+          v-if="menu.menuType === ChannelMenuType.MultiMeeting && !isSubChannel"
           :key="`multi-meeting-${index}`"
           :label="menu.name"
-          :name="TAB_NAME_MULTI_MEETING"
+          :name="menu.menuUniqueKey"
           lazy-load
         >
           <pc-multi-meeting-portrait />
@@ -91,18 +91,28 @@
           v-if="menu.menuType === ChannelMenuType.Seat"
           :key="`seat-${index}`"
           :label="menu.name"
-          :name="TAB_NAME_SEAT"
+          :name="menu.menuUniqueKey"
           lazy-load
         >
           <pc-seat-table />
         </pc-normal-tab-pane>
       </template>
+
+      <!-- 多会场列表（竖向） for 分会场 -->
+      <pc-normal-tab-pane
+        v-if="multiMeetingMenuData.visible && isSubChannel"
+        :label="multiMeetingMenuData.label"
+        :name="TAB_NAME_MULTI_MEETING"
+        lazy-load
+      >
+        <pc-multi-meeting-portrait />
+      </pc-normal-tab-pane>
     </pc-normal-tabs>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, unref, onMounted, ref, watch } from 'vue';
+import { computed, unref, onMounted, ref, watch, nextTick } from 'vue';
 
 import {
   TAB_NAME_PLAYBACK,
@@ -128,41 +138,50 @@ import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
-import { randomStr } from '@utils-ts/string';
 import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useLangStore } from '@/store/use-lang-store';
 
 const { paramGetter } = useQueryParams();
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
 const { liveStatus, compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
-const { channelMenus, multiMeetingMenuData } = storeDefinitionToRefs(useChannelMenuStore);
+const { channelMenus, multiMeetingMenuData, isSubChannel } =
+  storeDefinitionToRefs(useChannelMenuStore);
 const { pcBottomTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { currentLang } = storeDefinitionToRefs(useLangStore);
+
+type BottomMenuItem = ChannelMenuItem & { menuUniqueKey: string };
 
 /** 底部菜单栏列表 */
-const bottomMenuList = computed<ChannelMenuItem[]>(() => {
+const bottomMenuList = computed<BottomMenuItem[]>(() => {
   // 需要保留展示的菜单类型
-  const remainTypes = [
-    ChannelMenuType.Desc,
-    ChannelMenuType.Previous,
-    ChannelMenuType.Text,
-    ChannelMenuType.Tuwen,
-    ChannelMenuType.Iframe,
-    ChannelMenuType.Seat,
-  ];
+  const remainTypeConfig: { [key: string]: string | null } = {
+    [ChannelMenuType.Desc]: ChannelMenuType.Desc,
+    [ChannelMenuType.Previous]: TAB_NAME_PLAYBACK,
+    [ChannelMenuType.Text]: null,
+    [ChannelMenuType.Tuwen]: TAB_NAME_TUWEN_LIVE,
+    [ChannelMenuType.Iframe]: null,
+    [ChannelMenuType.Seat]: TAB_NAME_SEAT,
+  };
 
-  const menus = unref(channelMenus).filter(menu => {
-    return remainTypes.includes(menu.menuType);
-  });
-
-  // 如需显示分会场(竖向)，则默认放在最后一个
-  if (unref(multiMeetingMenuData).visible) {
-    menus.push({
-      menuId: randomStr(8),
-      menuType: ChannelMenuType.MultiMeeting,
-      name: unref(multiMeetingMenuData).label,
-    });
+  if (multiMeetingMenuData.value.visible) {
+    remainTypeConfig[ChannelMenuType.MultiMeeting] = TAB_NAME_MULTI_MEETING;
   }
+
+  const remainTypes = Object.keys(remainTypeConfig);
+
+  // 这里要先从 channelMenus 去过滤，才能确保菜单顺序和后台配置的一致
+  const menus: BottomMenuItem[] = unref(channelMenus)
+    .filter(menu => {
+      return remainTypes.includes(menu.menuType);
+    })
+    .map(i => {
+      return {
+        ...i,
+        menuUniqueKey: remainTypeConfig[i.menuType] || i.menuId,
+      };
+    });
 
   return menus;
 });
@@ -176,9 +195,28 @@ onMounted(() => {
       item => item.menuType === ChannelMenuType.Previous,
     );
     if (hasPlayBack === -1) return;
+
+    if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {
+      return;
+    }
+
     pcBottomMenuRef.value?.setDefaultTabName(TAB_NAME_PLAYBACK);
   }
 });
+
+watch(
+  () => currentLang.value,
+  () => {
+    nextTick(() => {
+      const existItem = bottomMenuList.value.find(
+        i => i.menuUniqueKey === pcBottomTabCurrentName.value,
+      );
+      if (!existItem) {
+        pcBottomMenuRef.value?.setDefaultTabName('');
+      }
+    });
+  },
+);
 
 watch(
   () => liveStatus.value,

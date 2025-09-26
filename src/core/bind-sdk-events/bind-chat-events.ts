@@ -1,3 +1,4 @@
+import { translate } from '@/assets/lang';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useChatStore } from '@/store/use-chat-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -30,6 +31,8 @@ export function bindChatModuleEvents(watchCore: PolyvWatchCore): void {
     chatStore.$patch({
       connectError: false,
     });
+
+    watchCore.chat.sendSystemMsg(translate('chat.reconnect.tip'));
 
     if (!watchAppStore.watchPageChatConnected) {
       watchAppStore.$patch({

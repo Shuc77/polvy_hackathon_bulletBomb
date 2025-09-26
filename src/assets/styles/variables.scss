@@ -14,6 +14,8 @@ $--zIndex-max-top: 99999;
 $--zIndex-top: 10001;
 // 一般挂件的 z-index
 $--zIndex-pendant: 2002;
+// 弹窗的基础层级
+$--zIndex-dialog-base: 3000;
 
 $--color-white: #FFFFFF !default; // 白色
 $--color-black: #000000 !default; // 黑色

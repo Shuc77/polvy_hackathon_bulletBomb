@@ -14,7 +14,6 @@
     <!-- 字幕设置弹窗 -->
     <portrait-subtitle-setting
       :visible.sync="subtitleSettingVisible"
-      @update-subtitle-display-mode="handleUpdateSubtitleDisplayMode"
       @close="handleSettingClose"
       @enable-subtitle-float="handleEnableSubtitleFloat"
     />
@@ -44,7 +43,8 @@ import { appEvents } from '@/app/app-events/use-app-events';
 
 const { getEmitter } = useGlobalInject();
 
-const { localUerSubtitlesEnable, liveSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
+const { localUerSubtitlesEnable, liveSubtitlesEnable, subtitleDisplayMode } =
+  storeDefinitionToRefs(useSubtitleStore);
 
 // 浮窗显示状态
 const subtitleFloatVisible = ref(false);
@@ -53,9 +53,6 @@ const subtitleSettingVisible = ref(false);
 
 /** 取消预约提示弹层实例 */
 const subtitleCloseTipsRef = ref<MessageBoxInstance>();
-
-// 字幕显示模式
-const subtitleDisplayMode = ref<'source' | 'translate' | 'all'>('all');
 
 // 监听字幕开关状态 - 只有用户主动启用时才显示浮窗
 watch(
@@ -101,11 +98,6 @@ const handleEnableSubtitleFloat = () => {
 // 监听打开字幕设置事件
 const handleOpenSubtitleSetting = () => {
   subtitleSettingVisible.value = true;
-};
-
-// 更新字幕显示模式
-const handleUpdateSubtitleDisplayMode = (mode: 'source' | 'translate' | 'all') => {
-  subtitleDisplayMode.value = mode;
 };
 
 onMounted(() => {

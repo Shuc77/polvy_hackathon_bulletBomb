@@ -19,41 +19,29 @@ export interface PolyvIRSceneEntrance {
   RedEnvelopePendant: PolyvIRSceneComponentOption;
   RedEnvelopeEntrance: PolyvIRSceneComponentOption;
   EvaluationPendant: PolyvIRSceneComponentOption;
-  LotteryPendant: PolyvIRSceneComponentOption;
   ProductDetail: PolyvIRSceneComponentOption;
 
   // PC 端下才有的
   PcBulletin: PolyvIRSceneComponentOption;
-  PcCheckIn: PolyvIRSceneComponentOption;
   PcEnrollLottery: PolyvIRSceneComponentOption;
   PcFeedBack: PolyvIRSceneComponentOption;
-  PcOnLottery: PolyvIRSceneComponentOption;
-  PcLotteryRecord: PolyvIRSceneComponentOption;
-  PcLotteryEnd: PolyvIRSceneComponentOption;
   PcProduct: PolyvIRSceneComponentOption;
   PcQuestionAnswer: PolyvIRSceneComponentOption;
-  PcQuestionnarie: PolyvIRSceneComponentOption;
   PcRedEnvelope: PolyvIRSceneComponentOption;
   PcRedpackRain: PolyvIRSceneComponentOption;
   PcEvaluationQuestionnaire: PolyvIRSceneComponentOption;
   PcTopic: PolyvIRSceneComponentOption;
   PcTuwen: PolyvIRSceneComponentOption;
   PcVote: PolyvIRSceneComponentOption;
-  PcWelfareLottery: PolyvIRSceneComponentOption;
   PcRushAnswer: PolyvIRSceneComponentOption;
 
   // 移动端下才有的
   MobileBulletin: PolyvIRSceneComponentOption;
   MobileAnnouncementBar: PolyvIRSceneComponentOption;
-  MobileCheckIn: PolyvIRSceneComponentOption;
   MobileEnrollLottery: PolyvIRSceneComponentOption;
   MobileFeedBack: PolyvIRSceneComponentOption;
-  MobileOnLottery: PolyvIRSceneComponentOption;
-  MobileLotteryRecord: PolyvIRSceneComponentOption;
-  MobileLotteryEnd: PolyvIRSceneComponentOption;
   MobileProduct: PolyvIRSceneComponentOption;
   MobileQuestionAnswer: PolyvIRSceneComponentOption;
-  MobileQuestionnarie: PolyvIRSceneComponentOption;
   MobileRedEnvelope: PolyvIRSceneComponentOption;
   MobileRedpackRain: PolyvIRSceneComponentOption;
   MobileEvaluationQuestionnaire: PolyvIRSceneComponentOption;
@@ -61,7 +49,6 @@ export interface PolyvIRSceneEntrance {
   MobileTopic: PolyvIRSceneComponentOption;
   MobileTuwen: PolyvIRSceneComponentOption;
   MobileVote: PolyvIRSceneComponentOption;
-  MobileWelfareLottery: PolyvIRSceneComponentOption;
   MobileRushAnswer: PolyvIRSceneComponentOption;
   MobileSeatTableMeeting: PolyvIRSceneComponentOption;
   MobileSeatTableVertical: PolyvIRSceneComponentOption;

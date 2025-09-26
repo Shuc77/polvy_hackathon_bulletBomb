@@ -14,7 +14,6 @@ import {
   AnnouncementTipsStatus,
   getStorageTipsStatus,
 } from '@/components/page-watch-common/interactive-receive/announcement/hooks/use-announcement-tips';
-import { LotteryRecordData } from '@/components/page-watch-common/interactive-receive/lottery/types/lottery-types';
 import {
   ChannelWatchPageSkin,
   InteractSetting,
@@ -27,7 +26,6 @@ import { useThemeStore } from './use-theme-store';
 import { useViewerStore } from './use-viewer-store';
 import { useWatchAppStore } from './use-watch-app-store';
 
-import { useQueryParams } from '@/hooks/core/use-query-params';
 import { usePlaybackStore } from './use-playback-store';
 
 /**
@@ -48,6 +46,16 @@ export interface InteractiveEntranceData {
   onClick: () => void;
 }
 
+/**
+ * 中奖记录数据类型
+ */
+export interface LotteryRecordData {
+  /** 是否已提交 */
+  received: boolean;
+  /** 是否中奖 */
+  isWinner: boolean;
+}
+
 export interface InteractReceiveStoreState {
   /** 互动 SDK 加载完成，注意不一定加载成功 */
   iarSdkLoaded: Ref<boolean>;
@@ -63,10 +71,6 @@ export interface InteractReceiveStoreState {
   hasBulletin: Ref<boolean>;
   /** 公告功能是否显示 */
   announcementFunctionVisible: ComputedRef<boolean>;
-  /** 是否使用 v2 版本的问答 */
-  useV2Questionnaire: ComputedRef<boolean>;
-  /** 是否使用 v2 版本的抽奖 */
-  useV2Lottery: ComputedRef<boolean>;
   /** 当前中奖记录列表 */
   lotteryWinRecords: Ref<LotteryRecordData[]>;
   /** 是否存在未提交的中奖记录 */
@@ -147,8 +151,6 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
     const viewerStore = useViewerStore();
     const playbackStore = usePlaybackStore();
 
-    const { paramGetter } = useQueryParams();
-
     /** 互动 SDK 加载完成，注意不一定加载成功 */
     const iarSdkLoaded = ref(false);
 
@@ -202,19 +204,6 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       if (channelStore.isSeminarChannel) return false;
 
       return true;
-    });
-
-    const useV2Lottery = computed(() => {
-      let version = 'v1';
-
-      const queryVersion = paramGetter().lotteryVersion();
-      if (queryVersion) {
-        version = queryVersion;
-      } else {
-        version = interactSetting.value.lotteryVersion;
-      }
-
-      return version === 'v2';
     });
 
     /** 当前中奖记录列表 */
@@ -318,17 +307,6 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     const productBubbleVisible = ref(false);
 
-    const useV2Questionnaire = computed(() => {
-      let version = 'v2';
-
-      const queryVersion = paramGetter().questionnaireVersion();
-      if (queryVersion) {
-        version = queryVersion;
-      }
-
-      return version === 'v2';
-    });
-
     /** 问卷是否显示返回按钮 */
     const questionnaireBackBtnVisible = ref(true);
 
@@ -404,8 +382,6 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
       announcementTipsVisible,
       announcementFunctionVisible,
-      useV2Questionnaire,
-      useV2Lottery,
       lotteryWinRecords,
       hasNotReceivedLottery,
       pushCardPendantVisible,

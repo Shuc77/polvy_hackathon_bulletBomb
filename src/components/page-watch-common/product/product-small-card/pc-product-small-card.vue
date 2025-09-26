@@ -2,7 +2,7 @@
 <template>
   <div class="c-pc-product-small-card">
     <pc-product-small-card
-      v-if="productTargetInited && paymentTargetInited"
+      v-if="productTargetInited && paymentTargetInited && interactSetting.productEnabled"
       :product-target="getProductTarget()"
       :payment-target="getPaymentTarget()"
       :product-config="productUIConfig"
@@ -13,8 +13,11 @@
 
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProductUILoader } from '../load-product-ui';
 import { useProductUI } from '../hooks/use-product-ui';
+
+const { interactSetting } = useInteractReceiveStore();
 
 const { loadProductUI } = useProductUILoader();
 

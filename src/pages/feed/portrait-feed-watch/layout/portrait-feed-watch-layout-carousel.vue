@@ -78,8 +78,9 @@ onBeforeMount(() => {
   height: 100%;
   color: $--color-white;
   pointer-events: initial;
-}
-.c-portrait-watch-layout-carousel__main {
-  overflow: visible;
+
+  .c-portrait-watch-layout-carousel__main {
+    overflow: visible;
+  }
 }
 </style>

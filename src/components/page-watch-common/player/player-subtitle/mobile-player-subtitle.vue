@@ -3,7 +3,7 @@
 <template>
   <!-- 直播实时字幕  -->
   <player-live-subtitle
-    v-if="liveSubtitlesEnable"
+    v-if="liveSubtitlesShow"
     :full-screen-selector="fullScreenSelector"
     :selector="selector"
     :bottom="16"
@@ -38,7 +38,7 @@ const props = defineProps({
   selector: PropUtils.string.def(MOBILE_LIVE_PLAYER_INNER_WRAP),
 });
 
-const { liveSubtitlesEnable, replaySubtitleVisible } = storeDefinitionToRefs(useSubtitleStore);
+const { liveSubtitlesShow, replaySubtitleVisible } = storeDefinitionToRefs(useSubtitleStore);
 
 const playerStore = usePlayerStore();
 

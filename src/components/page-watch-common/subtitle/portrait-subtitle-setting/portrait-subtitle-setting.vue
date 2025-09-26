@@ -123,12 +123,7 @@ const props = defineProps<{
   visible: boolean;
 }>();
 
-const emit = defineEmits([
-  'close',
-  'update:visible',
-  'enable-subtitle-float',
-  'update-subtitle-display-mode',
-]);
+const emit = defineEmits(['close', 'update:visible', 'enable-subtitle-float']);
 
 const subtitleStore = useSubtitleStore();
 const {
@@ -150,7 +145,10 @@ const isVisible = computed({
 
 // 本地字幕开关状态
 const localSubtitlesEnabled = ref(localUerSubtitlesEnable.value);
-const bilingualEnabled = ref(true);
+// 双语开关状态（基于显示模式）
+const { subtitleDisplayMode } = storeDefinitionToRefs(useSubtitleStore);
+// 根据显示模式初始化双语开关状态
+const bilingualEnabled = ref(subtitleDisplayMode.value === 'all');
 
 // 语言选择弹窗状态
 const languageSelectorVisible = ref(false);
@@ -175,7 +173,7 @@ watch(localUerSubtitlesEnable, newVal => {
 });
 
 function updateSubtitleDisplayMode(mode: 'source' | 'translate' | 'all') {
-  emit('update-subtitle-display-mode', mode);
+  subtitleStore.changeSubtitleDisplayMode(mode);
 }
 
 const handleClose = () => {
@@ -191,7 +189,8 @@ const handleToggleSubtitle = (enabled: boolean) => {
 };
 
 const handleToggleBilingual = (enabled: boolean) => {
-  updateSubtitleDisplayMode(enabled ? 'all' : 'translate');
+  const newMode = enabled ? 'all' : 'translate';
+  updateSubtitleDisplayMode(newMode);
 };
 
 const handleOpenLanguageSelector = () => {
@@ -205,7 +204,7 @@ const handleCloseLanguageSelector = () => {
 const handleSelectOriginal = () => {
   // 选择原文时更新 subtitleTranslateSelected
   subtitleTranslateSelected.value = ['source', liveSubtitleSourceLanguage.value];
-  // 关闭双语显示
+
   updateSubtitleDisplayMode('source');
 
   bilingualEnabled.value = false;
@@ -214,15 +213,13 @@ const handleSelectOriginal = () => {
 };
 
 const handleLanguageChange = (language: string) => {
-  // 更新 subtitleTranslateSelected
-  if (bilingualEnabled.value) {
-    subtitleTranslateSelected.value = ['all', language as SubtitleSourceTranslateLanguage];
-    updateSubtitleDisplayMode('all');
-  } else {
-    subtitleTranslateSelected.value = ['translate', language as SubtitleSourceTranslateLanguage];
-    updateSubtitleDisplayMode('translate');
+  let changeMode = subtitleDisplayMode.value;
+
+  if (changeMode === 'source' || changeMode === 'translate') {
+    changeMode = 'translate';
   }
 
+  subtitleTranslateSelected.value = [changeMode, language as SubtitleSourceTranslateLanguage];
   // 选择后关闭弹窗
   languageSelectorVisible.value = false;
 };

@@ -4,13 +4,18 @@
     v-if="connectErrorVisible"
     class="c-pc-chat-connect-error-tips"
   >
-    {{ $lang('chat.connectError.tips3') }}
-    <span
-      class="c-pc-chat-connect-error-tips__hightlight"
-      @click="onConfirm"
-    >
-      {{ $lang('chat.connectError.tips4') }}
-    </span>
+    <template v-if="displayMode === 'auto'">
+      {{ errorTipsText }}
+    </template>
+    <template v-else>
+      {{ $lang('chat.connectError.tips3') }}
+      <span
+        class="c-pc-chat-connect-error-tips__hightlight"
+        @click="onConfirm"
+      >
+        {{ $lang('chat.connectError.tips4') }}
+      </span>
+    </template>
   </pc-page-notice>
 </template>
 
@@ -18,7 +23,7 @@
 import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
 import { useChatConnectError } from '../use-chat-connect-error';
 
-const { connectErrorVisible, onConfirm } = useChatConnectError();
+const { displayMode, connectErrorVisible, errorTipsText, onConfirm } = useChatConnectError();
 </script>
 
 <style lang="scss">

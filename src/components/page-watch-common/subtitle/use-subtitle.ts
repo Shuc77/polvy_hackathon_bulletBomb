@@ -8,6 +8,7 @@ import {
   SubtitlesListItem,
   SubtitleSliceType,
   SubtitleSourceTranslateLanguage,
+  PlayerEvents,
 } from '@polyv/live-watch-sdk';
 
 import { translate } from '@/assets/lang';
@@ -20,19 +21,42 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { SubtitleSelectOptionItem } from './mobile-subtitle-select/use-subtitle-select';
 
 import { useSubtitleDetached } from './use-subtitle-detached';
+import { setSubtitleSettings } from './subtitle-settings-storage';
 
 export const useSubtitleSelected = () => {
   const subtitleStore = useSubtitleStore();
-  const { liveSubtitleSourceTranslateLanguage } = storeDefinitionToRefs(useSubtitleStore);
+  const { liveSubtitleSourceTranslateLanguage, subtitleDisplayMode } =
+    storeDefinitionToRefs(useSubtitleStore);
 
   const subtitleTranslateSelected = ref<
     ['all' | 'source' | 'translate', SubtitleSourceTranslateLanguage | undefined]
-  >(['all', liveSubtitleSourceTranslateLanguage.value]);
+  >([subtitleDisplayMode.value, liveSubtitleSourceTranslateLanguage.value]);
 
   watch(subtitleTranslateSelected, () => {
     const [type, lang] = subtitleTranslateSelected.value;
-    if (type !== 'source' && lang && lang !== liveSubtitleSourceTranslateLanguage.value) {
-      subtitleStore.changeLiveSubtitleSourceTranslateLanguage(lang);
+    // 更新显示模式
+    subtitleStore.changeSubtitleDisplayMode(type);
+    // 更新翻译语言
+    if (lang && lang !== liveSubtitleSourceTranslateLanguage.value) {
+      if (type !== 'source') {
+        subtitleStore.changeLiveSubtitleSourceTranslateLanguage(lang);
+      } else {
+        // type 为 source, 本地存储翻译语言，但是不需要触发changeLiveSubtitleSourceTranslateLanguage
+        setSubtitleSettings({ translateLanguage: lang });
+      }
+    }
+  });
+
+  watch(liveSubtitleSourceTranslateLanguage, newLang => {
+    if (subtitleTranslateSelected.value[1] !== newLang) {
+      subtitleTranslateSelected.value = [subtitleDisplayMode.value, newLang];
+    }
+  });
+
+  // 监听 store 中的显示模式变化，同步到本地选择
+  watch(subtitleDisplayMode, newMode => {
+    if (subtitleTranslateSelected.value[0] !== newMode) {
+      subtitleTranslateSelected.value = [newMode, liveSubtitleSourceTranslateLanguage.value];
     }
   });
 
@@ -53,12 +77,10 @@ export const useSubtitle = (
   },
 ) => {
   const { getWatchCore } = useGlobalInject();
-
   const watchCore = getWatchCore();
-
   const {
     liveSubtitleSourceLanguage,
-
+    liveSubtitlesShow,
     liveSubtitleSourceTranslateLanguageOptions,
     liveSubtitleSourceLanguageOptions,
     subtitleDisplayNumber,
@@ -266,6 +288,18 @@ export const useSubtitle = (
     scrollToBottom();
   }
 
+  /**
+   * 更新横屏移动端播放器实时字幕开关状态
+   */
+  function updateMobileSubtitleSkinShow() {
+    const { getWatchCore } = useGlobalInject();
+    const watchCore = getWatchCore();
+
+    watchCore.player.eventEmitter.on(PlayerEvents.PlayerSetupPanelSkinInit, () => {
+      watchCore.player.changeSubtitleSkinShow(true, liveSubtitlesShow.value);
+    });
+  }
+
   function bindSubtitleEvent() {
     watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleRealTimeCC, onSubtitleRealTimeCC);
     watchCore.subtitle.eventEmitter.on(SubtitleEvents.SubtitleTranslate, onSubtitleTranslate);
@@ -308,6 +342,7 @@ export const useSubtitle = (
   return {
     hasNewMessage,
     scrollToBottom,
+    updateMobileSubtitleSkinShow,
 
     subtitleTranslateSelected,
     subtitleTranslateOptions,

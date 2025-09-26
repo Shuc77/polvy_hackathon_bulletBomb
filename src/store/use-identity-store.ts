@@ -2,9 +2,11 @@ import {
   AuthType,
   IdentitySetting,
   IdentityUnionInfo,
+  IdentityDirectAuthParams,
   PlvIdentityModule,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
@@ -29,12 +31,18 @@ export interface IdentityStore {
   resetGuest(): void;
   /** 检查是否允许使用游客登录 */
   checkAllowUseGuest(): boolean;
+  /** 获取独立授权参数 */
+  getDirectAuthParams(): IdentityDirectAuthParams;
+  /** 允许验证独立授权 */
+  allowToVerifyDirectAuth(): boolean;
 }
 
 export const useIdentityStore = defineStore<'identity', IdentityStore>('identity', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const authStore = useAuthStore();
+
+  const { paramGetter } = useQueryParams();
 
   /** 用户系统开关 */
   const watchUserSystemEnabled = ref(false);
@@ -87,6 +95,23 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
     isGuest.value = false;
   }
 
+  function getDirectAuthParams(): IdentityDirectAuthParams {
+    return {
+      externalViewerId: paramGetter().externalViewerId() || '',
+      nickname: paramGetter().nickname() || '',
+      ts: paramGetter().ts() as unknown as number,
+      param4: paramGetter().param4(),
+      param5: paramGetter().param5(),
+      sign: paramGetter().sign() || '',
+      avatar: paramGetter().avatar(),
+    };
+  }
+
+  function allowToVerifyDirectAuth() {
+    const watchCore = watchAppStore.getWatchCore();
+    return watchCore.identity.allowToVerifyDirectAuth(getDirectAuthParams());
+  }
+
   return {
     watchUserSystemEnabled,
     isGuest,
@@ -97,5 +122,7 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
     syncIdentityStore,
     resetGuest,
     checkAllowUseGuest,
+    getDirectAuthParams,
+    allowToVerifyDirectAuth,
   };
 });

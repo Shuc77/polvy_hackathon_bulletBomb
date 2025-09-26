@@ -44,8 +44,24 @@
       v-if="pvShowEnabled && pageViewCountLocation === PageViewShowLocation.Player"
       v-show="playerControlVisible || sdkPlayerUIControlVisible"
       class="c-mobile-player-main__pv"
+      :class="{
+        'c-mobile-player-main__pv--landscape-fix': isLowLatency,
+      }"
     >
       {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
+    </div>
+
+    <!-- webview场景下网页全屏时的返回按钮 -->
+    <div
+      v-if="showWebviewBackButton"
+      v-show="playerControlVisible || sdkPlayerUIControlVisible"
+      class="c-mobile-player-main__webview-back"
+      :class="{
+        'c-mobile-player-main__webview-back--lowLatency': isLowLatency,
+      }"
+      @click="exitFullscreen"
+    >
+      <mobile-icon-arrow-left />
     </div>
 
     <!-- 播放器顶部-右侧 延迟模式切换 -->
@@ -109,6 +125,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerControl } from '../../hooks/use-player-control';
@@ -138,6 +155,7 @@ import { useShortNumber } from '@/hooks/business/use-short-number';
 import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
 import { useThemeStore } from '@/store/use-theme-store';
 import { usePlayerAdvert } from '@/components/page-watch-common/player/hooks/use-player-advert';
+import { MobileIconArrowLeft } from '@/components/component-icons/mobile/map';
 
 const { shortNumber } = useShortNumber();
 
@@ -173,6 +191,8 @@ const { themeSetting, playerBgUrl } = storeDefinitionToRefs(useThemeStore);
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);
 
+const { isPlvWebview } = storeDefinitionToRefs(useWebviewStore);
+
 const { playerContainer } = usePlayerMain({
   initPlayerOptions: () => {
     return {
@@ -191,8 +211,18 @@ const { playerContainer } = usePlayerMain({
 
 const { latencyModeSettingVisible, addHistoryTipsListener } = usePlayerControl();
 
-const { toTryPlay } = usePlayerAction();
+const { toTryPlay, toExitWebPageFullscreen } = usePlayerAction();
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
+
+// 计算是否显示webview返回按钮
+const showWebviewBackButton = computed(() => {
+  return mobilePlayerIsPageFullscreen.value && isPlvWebview.value;
+});
+
+// 退出全屏
+function exitFullscreen() {
+  toExitWebPageFullscreen();
+}
 
 const { getEmitter } = useGlobalInject();
 
@@ -296,6 +326,38 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
   opacity: 0.7;
 }
 
+.c-mobile-player-main__webview-back {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+
+  font-size: 28px;
+  color: #fff;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  transform: rotate(90deg);
+
+  .polyv-icon-arrow-left {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.c-mobile-player-main__webview-back--lowLatency {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  transform: none;
+}
+
 // 正常延迟播放器全屏
 .c-mobile-player-main--normal-player-fullscreen {
   .plv-live-fullscreen--landscape {
@@ -361,5 +423,11 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 
 .c-mobile-player-playback-subtitle-select {
   display: none;
+}
+
+.c-mobile-player-main--page-fullscreen {
+  .c-mobile-player-main__pv--landscape-fix {
+    left: 60px;
+  }
 }
 </style>

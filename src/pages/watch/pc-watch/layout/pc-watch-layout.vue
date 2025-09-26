@@ -71,6 +71,12 @@
         >
           <div class="c-pc-watch-layout__main__fullscreen-wrap__height"></div>
 
+          <!-- 左侧主体固定区域  -->
+          <div class="c-pc-watch-layout__main__topic">
+            <!-- 聊天室连接异常提示 -->
+            <pc-chat-connect-error-tips />
+          </div>
+
           <!-- 播放器层 -->
           <div
             :class="{
@@ -235,6 +241,7 @@
 <script setup lang="ts">
 import { $ } from '@just4/dom';
 import { onMounted, ref, watch } from 'vue';
+import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
 import PcBasicInfo from '@/components/common-business/basic-info/pc-basic-info.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
 import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
@@ -448,6 +455,21 @@ $--layout-sub-pack-up-height: 40px !default;
   }
 }
 
+.c-pc-watch-layout__main__topic {
+  position: absolute;
+  top: 8%;
+  left: 0;
+  z-index: $--zIndex-dialog-base;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: $--layout-left-width-percent;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
 .c-pc-watch-layout__main__player-wrap {
   position: absolute;
   top: 0;
@@ -535,6 +557,10 @@ $--layout-sub-pack-up-height: 40px !default;
 
 .c-pc-watch-layout__main__fullscreen-wrap--fullscreened {
   pointer-events: initial;
+
+  .c-pc-watch-layout__main__topic {
+    width: 100%;
+  }
 
   .c-pc-watch-layout__main-layer {
     width: 100%;

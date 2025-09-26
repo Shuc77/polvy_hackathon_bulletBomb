@@ -3,17 +3,19 @@ import { useToastManager } from '@/hooks/components/use-toast';
 import { translate } from '@/assets/lang';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
-import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { YN } from '@polyv/live-watch-sdk';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 互动功能安装 hook
  */
 export const useIarSetup = () => {
-  const { getWatchCore } = useMultiPolyvWatchApp();
+  const { getWatchCore } = useGlobalInject();
   const { paramGetter } = useQueryParams();
 
   const { toast } = useToastManager();
+
+  const watchCore = getWatchCore();
 
   const interactReceiveStore = useInteractReceiveStore();
 
@@ -24,8 +26,6 @@ export const useIarSetup = () => {
     }
 
     try {
-      const watchCore = getWatchCore();
-
       await Promise.all([
         watchCore.interactReceive.setupIarCore(), // 安装互动功能逻辑层
         loadIarUI(), // 加载互动功能 UI 组件

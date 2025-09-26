@@ -19,7 +19,7 @@ interface MicroActivityHookOption {
   /** 全屏消息事件钩子 */
   fullScreenMessageHandler?: IframeMessageHandleCb<HxcGeneralIframeEventData>;
   /** 返回首页事件钩子 */
-  backHomeMessageHandler?: IframeMessageHandleCb<HxcGeneralIframeEventData>;
+  halfScreenMessageHandler?: IframeMessageHandleCb<HxcGeneralIframeEventData>;
   /** 不支持 PC 端访问事件钩子 */
   onlyMobileMessageHandler?: IframeMessageHandleCb<HxcGeneralIframeEventData>;
   /** 强制全屏事件钩子 */
@@ -33,7 +33,7 @@ export const useMicroActivityHook = (hookOptions: MicroActivityHookOption) => {
 
   const {
     fullScreenMessageHandler = () => {},
-    backHomeMessageHandler = () => {},
+    halfScreenMessageHandler = () => {},
     onlyMobileMessageHandler = () => {},
     forceFullScreenMessageHandler = () => {},
   } = hookOptions;
@@ -80,17 +80,17 @@ export const useMicroActivityHook = (hookOptions: MicroActivityHookOption) => {
     const eventType = eventData.type;
 
     switch (eventType) {
-      case MicroActivityIframeEventType.HXC_FULL_SCREEN:
+      case MicroActivityIframeEventType.HXC_RESTORE_DEFAULT:
         fullScreenMessageHandler(eventData);
         break;
-      case MicroActivityIframeEventType.HXC_BACK_HOME:
-        backHomeMessageHandler(eventData);
-        break;
-      case MicroActivityIframeEventType.HXC_ONLY_MOBILE:
-        onlyMobileMessageHandler(eventData);
+      case MicroActivityIframeEventType.HXC_DISABLE_PAGE_SCROLL:
+        halfScreenMessageHandler(eventData);
         break;
       case MicroActivityIframeEventType.HXC_FORCE_FULL_SCREEN:
         forceFullScreenMessageHandler(eventData);
+        break;
+      case MicroActivityIframeEventType.HXC_ONLY_MOBILE:
+        onlyMobileMessageHandler(eventData);
         break;
       case MicroActivityIframeEventType.HXC_REQUEST_DEVICE_PERMISSION:
         requestDevicePermissionHandler(eventData);

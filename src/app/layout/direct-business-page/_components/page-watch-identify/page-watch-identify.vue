@@ -6,15 +6,7 @@
       :get-watch-identify-core="getWatchIdentifyCore"
       @success="onLoginSuccess"
       @guest-login-success="onGuestLoginSuccess"
-      :direct-auth-params="{
-        externalViewerId: paramGetter().externalViewerId(),
-        nickname: paramGetter().nickname(),
-        ts: paramGetter().ts(),
-        param4: paramGetter().param4(),
-        param5: paramGetter().param5(),
-        sign: paramGetter().sign(),
-        avatar: paramGetter().avatar(),
-      }"
+      :direct-auth-params="identityStore.getDirectAuthParams()"
       @fail="onLoginFail"
     />
   </div>
@@ -28,7 +20,6 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useChannelStore } from '@/store/use-channel-store';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { messageBox, MessageBoxPositionType } from '@/components/common-base/message-box';
@@ -37,7 +28,6 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 
 const { getWatchCore, getEmitter } = useGlobalInject();
 const { redirectToErrorVerify } = useErrorVerify();
-const { paramGetter } = useQueryParams();
 const identityStore = useIdentityStore();
 const channelStore = useChannelStore();
 const langStore = useLangStore();
