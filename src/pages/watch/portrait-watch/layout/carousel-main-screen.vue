@@ -74,7 +74,7 @@
 
         <!-- 文档位置切换 -->
         <portrait-doc-side-switch
-          v-if="portraitDocSideSwitchVisible"
+          v-if="portraitDocSideSwitchVisible && !isBuildForFeedMainMode()"
           class="c-portrait-carousel-main-screen__top-right__item"
         />
 
@@ -97,8 +97,12 @@
 
     <!-- 顶部绝对定位的内容 -->
     <boundary-wrap seat="top">
-      <!-- 播放监测提示，切换最优线路或清晰度 -->
-      <portrait-player-loading-detection />
+      <div class="c-portrait-carousel-main-screen__top-center">
+        <!-- 聊天室连接异常提示 -->
+        <mobile-chat-connect-error-tips />
+        <!-- 播放监测提示，切换最优线路或清晰度 -->
+        <portrait-player-loading-detection />
+      </div>
     </boundary-wrap>
 
     <!-- 底部内容 -->
@@ -326,6 +330,7 @@ import PortraitRunwayEffect from '@/components/page-watch-common/message-effect/
 import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
 import PortraitPlayerLoadingDetection from '@/components/page-watch-common/player/player-loading-detection/portrait-player-detection.vue';
 import LiveSquare from '@/components/page-watch-common/live-square/live-square.vue';
+import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -455,6 +460,19 @@ const handleTouchEnd = (event: TouchEvent) => {
 
 <style lang="scss">
 $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
+
+.c-portrait-carousel-main-screen__top-center {
+  position: absolute;
+  top: 88px;
+  left: 50%;
+  z-index: $--zIndex-dialog-base;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: calc(var(--plv-watch-full-screen-vw) - 32px);
+  transform: translateX(-50%);
+}
 
 .c-portrait-carousel-main-screen__top-left__item {
   display: flex;

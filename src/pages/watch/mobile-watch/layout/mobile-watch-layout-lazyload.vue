@@ -22,9 +22,6 @@
     <!--  取消关联转播提示 -->
     <mobile-transmit-switch-tip />
 
-    <!-- 聊天室连接失败提示 -->
-    <mobile-chat-connect-error-dialog />
-
     <!-- 设置昵称 -->
     <mobile-chat-set-nick v-if="canSetNick" />
 
@@ -104,7 +101,6 @@ import { defineAsyncComponent } from 'vue';
 
 import MobileWatchPendant from './mobile-watch-pendant.vue';
 import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
-import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
 import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
 import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
 import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';

@@ -18,6 +18,8 @@ export interface MultiMeetingStoreState {
   multiMeetingMaxCount: Ref<number>;
   /** 分会场模板 */
   multiMeetingListLayout: Ref<MultiMeetingListLayout>;
+  /** 是否为分会场（非主会场） */
+  isSubChannel: Ref<boolean>;
   /** 分会场频道状态 */
   multiMeetingLiveStatus: Ref<MultiMeetingLiveStatusData[]>;
   /** 分会场列表 */
@@ -56,6 +58,9 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
 
     /** 分会场模板 */
     const multiMeetingListLayout = ref(__multiMeetingSetting.multiMeetingListLayout);
+
+    /** 是否为分会场（非主会场） */
+    const isSubChannel = ref(__multiMeetingSetting.isSubChannel);
 
     /** 分会场频道状态 */
     const multiMeetingLiveStatus = ref<MultiMeetingLiveStatusData[]>([]);
@@ -102,6 +107,7 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
       multiMeetingEntranceName.value = multiSetting.multiMeetingEntranceName;
       multiMeetingMaxCount.value = multiSetting.multiMeetingMaxCount;
       multiMeetingListLayout.value = multiSetting.multiMeetingListLayout;
+      isSubChannel.value = multiSetting.isSubChannel;
     }
 
     return {
@@ -109,6 +115,7 @@ export const useMultiMeetingStore = defineStore<'multiMeeting', MultiMeetingStor
       multiMeetingEntranceName,
       multiMeetingMaxCount,
       multiMeetingListLayout,
+      isSubChannel,
       multiMeetingLiveStatus,
       multiMeetingList,
       multiMeetingTotal,

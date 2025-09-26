@@ -261,5 +261,25 @@
       border: solid 1px $--skin-primary-color !important;
       border-radius: 4px !important;
     }
+
+    // --------- AI 答疑 - 消息输入框 --------- //
+    .pws-mobile-chat-msg-input {
+      background-color: map.get($--skin-configs, 'mobile-msg-input:bg-color') !important;
+    }
+    .pws-mobile-chat-msg-input-textarea {
+      color: map.get($--skin-configs, 'mobile-msg-input:text-color') !important;
+      &::placeholder {
+        color: map.get($--skin-configs, 'mobile-msg-input-placeholder:text-color') !important;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: map.get($--skin-configs, 'mobile-msg-input:scrollbar-color') !important;
+      }
+    }
+    .pws-mobile-msg-input-suffix-icon {
+      color: map.get($--skin-configs, 'mobile-msg-input-suffix-icon:text-color') !important;
+    }
+    .pws-mobile-msg-send-button {
+      color: map.get($--skin-configs, 'mobile-msg-send-button:text-color') !important;
+    }
   }
 }

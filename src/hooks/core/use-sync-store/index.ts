@@ -21,7 +21,6 @@ import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useAdvertStore } from '@/store/use-advert-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
-import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useShareStore } from '@/store/use-share-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
@@ -117,7 +116,6 @@ export const useSyncStoreForWatchPage = () => {
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
   const pageAdvertStore = useAdvertStore();
-  const polyvAIStore = usePolyvAIStore();
 
   const viewerStore = useViewerStore();
   const subtitleStore = useSubtitleStore();
@@ -141,7 +139,6 @@ export const useSyncStoreForWatchPage = () => {
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
     pageAdvertStore.syncAdvertStore();
-    polyvAIStore.syncPolyvAIStore();
     webviewStore.syncWebviewInfo();
 
     /**
@@ -157,6 +154,8 @@ export const useSyncStoreForWatchPage = () => {
     // 直播实时字幕 || 存在回放字幕
     if (subtitleStore.subtitleRealTimeEnabled || subtitleStore.replaySubtitleList.length) {
       subtitleStore.initSubtitleSourceTranslateLanguageOptionMap();
+      // 在确认有字幕功能后，从本地存储初始化字幕设置
+      subtitleStore.initSubtitleSettingsFromStorage();
     }
   }
 

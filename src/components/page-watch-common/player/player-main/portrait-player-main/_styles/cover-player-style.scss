@@ -2,7 +2,7 @@
 .c-portrait-player-main__container {
   // ------ CDN ------ //
   // 覆盖背景图
-  .plwrap {
+  .plwrap:not(.plv-live-fullscreen--landscape) {
     background: none !important;
 
     video {

@@ -233,10 +233,6 @@ export const useQueryParams = (opts?: {
     inviteWatchSaleId: buildGetters<string>('inviteWatchSaleId'),
     /** 支付宝支付跳转方式 target */
     aliPayLinkTarget: buildGetters<string>('aliPayLinkTarget'),
-    /** 抽奖版本 */
-    lotteryVersion: buildGetters<'v1' | 'v2'>('lotteryVersion'),
-    /** 问卷版本 */
-    questionnaireVersion: buildGetters<'v1' | 'v2'>('questionnaireVersion'),
   });
 
   /**

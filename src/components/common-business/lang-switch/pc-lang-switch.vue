@@ -87,7 +87,7 @@ useClickOutside([langRef], () => {
 </script>
 
 <style lang="scss">
-$--lang-width: 120px !default;
+$--lang-width: 106px !default;
 $--light-bg-color: #ededef !default;
 $--light-bg-active-color: #d6dff1 !default;
 $--light-font-color: $--font-color-primary !default;
@@ -105,7 +105,7 @@ $--light-font-active-color: #3082fe !default;
   box-sizing: border-box;
   display: block;
   width: $--lang-width;
-  padding: 0 30px 0 8px;
+  padding: 0 0 0 26px;
   line-height: 20px;
   cursor: pointer;
   user-select: none;
@@ -114,7 +114,7 @@ $--light-font-active-color: #3082fe !default;
 .c-pc-lang-switch__content__prefix-icon {
   position: absolute;
   top: 50%;
-  left: -18px;
+  left: 0;
   display: flex;
   font-size: 16px !important;
   transform: translateY(-50%);

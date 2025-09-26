@@ -33,6 +33,7 @@
       <div class="c-pc-personal-reward-popup__inner">
         <pc-task-reward-list v-if="currentType === 'task-activity'" />
         <pc-lottery-record-list v-show="currentType === 'lottery'" />
+        <pc-lucky-lottery-prize-list v-show="currentType === 'lucky-lottery'" />
       </div>
     </div>
   </pc-side-popup>
@@ -43,6 +44,7 @@ import { LangType } from '@/assets/lang/lang-enum';
 import PcSidePopup from '@/components/common-base/side-popup/pc-side-popup.vue';
 import PcLotteryRecordList from '../interactive-receive-v2/lottery-v2/lottery-record-list/pc-lottery-record-list.vue';
 import PcTaskRewardList from '../task-activity/pc-task-reward-list.vue';
+import PcLuckyLotteryPrizeList from '../interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-prize-list.vue';
 import { usePersonalReward } from './use-personal-reward';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';

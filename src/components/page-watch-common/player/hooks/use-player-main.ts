@@ -17,6 +17,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { usePlayerEvent } from './use-player-event';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { getLatencySettings } from '../latency-settings-storage';
 import { getForceAutoResult } from '@/assets/utils/video/force-autoplay';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { debounce } from 'lodash-es';
@@ -241,8 +242,11 @@ export const usePlayerMain = ({
         supportLowLatency,
       });
       if (channelStore.liveStatus === LiveStatus.Live && supportLowLatency) {
+        // 从 localStorage 读取用户之前的延迟设置
+        const { isLowLatency: savedLatencyMode } = getLatencySettings();
+
         playerStore.$patch({
-          isLowLatency: true,
+          isLowLatency: savedLatencyMode,
         });
       }
 
@@ -276,9 +280,17 @@ export const usePlayerMain = ({
   onMounted(() => {
     const watchCore = getWatchCore();
     const supportLowLatency = watchCore.player.supportLowLatency().support;
+
+    // 从 localStorage 读取用户之前的延迟设置，如果没有则默认为支持时开启无延迟
+    let initialLatencyMode = supportLowLatency;
+    if (supportLowLatency) {
+      const { isLowLatency: savedLatencyMode } = getLatencySettings();
+      initialLatencyMode = savedLatencyMode;
+    }
+
     playerStore.$patch({
       supportLowLatency,
-      isLowLatency: supportLowLatency,
+      isLowLatency: initialLatencyMode,
     });
 
     initPlayer();

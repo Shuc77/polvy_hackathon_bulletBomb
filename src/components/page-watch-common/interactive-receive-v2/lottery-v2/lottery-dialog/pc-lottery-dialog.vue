@@ -10,7 +10,6 @@
       :lottery-target="getIarTarget()"
       :lottery-config="lotteryConfig"
       :receive-popup-config="receivePopupConfig"
-      :dialog-renders="dialogRenders"
     />
   </div>
 </template>
@@ -27,7 +26,7 @@ const IarLotteryDialog = defineAsyncComponent(() => loadIarUI('lottery-dialog'))
 
 const { targetInited, getIarTarget, lotteryConfig } = useLotteryTarget();
 
-const { dialogRenders, dialogRef } = useLotteryDialog();
+const { dialogRef } = useLotteryDialog();
 
 const dialogWrapRef = ref<HTMLElement>();
 

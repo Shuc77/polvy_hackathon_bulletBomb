@@ -4,7 +4,16 @@
     ref="layoutWrapRef"
     class="c-mobile-watch-layout pws-main-tab-body"
   >
-    <div class="c-mobile-watch-layout__page-notices">
+    <div
+      class="c-mobile-watch-layout__page-notices"
+      :class="{
+        'c-mobile-watch-layout__page-notices--page-fullscreen':
+          mobilePlayerIsPageFullscreen && !isHorizontalScreenOrientation,
+      }"
+    >
+      <!-- 聊天室连接异常提示 -->
+      <mobile-chat-connect-error-tips />
+
       <!-- 发起转播频道被踢出提示 -->
       <mobile-page-notice
         v-if="chatExited"
@@ -153,6 +162,7 @@ import MobilePlayerStreamTrack from '@/components/page-watch-common/player/playe
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
+import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
@@ -205,6 +215,7 @@ const {
   mobileLayoutBottomHeight,
   mobileLayoutBottomTop,
   mobileDocIsPageFullscreen,
+  mobilePlayerIsPageFullscreen,
 } = storeDefinitionToRefs(useLayoutStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
@@ -351,23 +362,32 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
 
 .c-mobile-watch-layout__page-notices {
   position: absolute;
-  top: 8px;
-  right: 12px;
-  left: 12px;
-  z-index: 100;
+  top: 18px;
+  right: 28px;
+  left: 28px;
+  z-index: $--zIndex-dialog-base;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
   pointer-events: none;
+}
 
-  .c-mobile-page-notice {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
+.c-mobile-watch-layout__page-notices--page-fullscreen {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 
-  &:empty {
-    display: none;
-  }
+  justify-content: flex-start;
+  width: 100vh;
+  max-width: 100vh;
+  height: 100vw;
+  max-height: 100vw;
+  margin: auto;
+  transform: translate(-50vw) rotate(90deg);
+  transform-origin: center;
 }
 
 .c-mobile-watch-layout__top {
@@ -376,7 +396,7 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
     display: block;
     width: 100%;
     height: 0;
-    /* stylelint-disable-next-line */
+    /* stylelint-disable-next-line value-keyword-case */
     padding-bottom: v-bind(layoutTopDistance);
     pointer-events: none;
     content: '';

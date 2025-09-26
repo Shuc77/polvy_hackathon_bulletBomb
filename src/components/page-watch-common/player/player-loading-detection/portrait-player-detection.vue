@@ -55,9 +55,6 @@ const {
 
 <style lang="scss" scoped>
 .c-loading-detection {
-  position: absolute;
-  top: 88px;
-  left: 50%;
   display: flex;
   gap: 4px;
   align-items: center;
@@ -66,8 +63,7 @@ const {
   color: #fff;
   white-space: nowrap;
   background: rgba(#000, 0.8);
-  border-radius: 20px;
-  transform: translateX(-50%);
+  border-radius: 8px;
 }
 
 .c-loading-detection__button {

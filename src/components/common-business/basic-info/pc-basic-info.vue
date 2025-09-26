@@ -90,7 +90,7 @@
         <!-- 观看时长/学习时长 -->
         <div
           v-if="learningStatsEnabled"
-          class="c-pc-basic-info__main__bottom__watch-duration"
+          class="c-pc-basic-info__main__bottom__watch-duration c-pc-basic-info__main__bottom__item-gap"
         >
           <pc-icon-watch-duration class="c-pc-basic-info__main__bottom__watch-duration__icon" />
           {{ $lang('watch.duration.learnTime', { duration: String(viewerWatchDuration) }) }}
@@ -99,7 +99,7 @@
         <!-- 举报反馈 -->
         <div
           v-if="feedbackEnabled"
-          class="c-pc-basic-info__main__bottom__feedback"
+          class="c-pc-basic-info__main__bottom__feedback c-pc-basic-info__main__bottom__item-gap"
           @click="onClickFeedback"
         >
           <pc-icon-feedback class="c-pc-basic-info__main__bottom__feedback__icon" />
@@ -109,7 +109,7 @@
         <!-- 分享 -->
         <div
           v-if="shareBtnEnabled"
-          class="c-pc-basic-info__main__bottom__share-wrap"
+          class="c-pc-basic-info__main__bottom__share-wrap c-pc-basic-info__main__bottom__item-gap"
         >
           <div
             ref="shareReferenceRef"
@@ -132,7 +132,7 @@
         <!-- 语言切换 -->
         <div
           v-if="langSwitchEnabled && !supportMultiStreamTrack"
-          class="c-pc-basic-info__main__bottom__lang-switch"
+          class="c-pc-basic-info__main__bottom__lang-switch c-pc-basic-info__main__bottom__item-gap"
         >
           <pc-lang-switch theme="dark" />
         </div>
@@ -140,7 +140,7 @@
         <!-- 双语流切换 -->
         <div
           v-if="supportMultiStreamTrack"
-          class="c-pc-basic-info__main__bottom__stream-track"
+          class="c-pc-basic-info__main__bottom__stream-track c-pc-basic-info__main__bottom__item-gap"
         >
           <pc-stream-track />
         </div>
@@ -343,14 +343,16 @@ $--basic-logo-size: 50px;
   box-shadow: 0 0 12px 0 rgba(#000, 0.1);
 }
 
+.c-pc-basic-info__main__bottom__item-gap + .c-pc-basic-info__main__bottom__item-gap {
+  margin-left: 28px;
+}
+
 .c-pc-basic-info__main__bottom__watch-duration {
   display: flex;
   align-items: center;
   height: 20px;
-  margin-right: 28px;
   white-space: nowrap;
 }
-
 .c-pc-basic-info__main__bottom__watch-duration__icon {
   display: flex;
   margin-right: 6px;
@@ -361,7 +363,6 @@ $--basic-logo-size: 50px;
   display: flex;
   align-items: center;
   height: 20px;
-  margin-right: 28px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -371,9 +372,6 @@ $--basic-logo-size: 50px;
   font-size: 18px;
 }
 
-.c-pc-basic-info__main__bottom__share-wrap {
-  margin-right: 44px;
-}
 .c-pc-basic-info__main__bottom__share {
   display: flex;
   align-items: center;
@@ -392,9 +390,9 @@ $--basic-logo-size: 50px;
 .c-pc-basic-info__main__bottom__lang-switch {
   height: 20px;
 }
+
 .c-pc-basic-info__main__bottom__stream-track {
   display: flex;
   align-items: center;
-  height: 20px;
 }
 </style>

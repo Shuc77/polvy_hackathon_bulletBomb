@@ -16,9 +16,6 @@
     <!-- 邀请榜弹层 -->
     <portrait-invite-rank-popup v-if="inviteRankEnabled" />
 
-    <!-- 聊天室连接失败提示 -->
-    <mobile-chat-connect-error-dialog />
-
     <!-- 打赏弹层 -->
     <mobile-donate-popup v-if="showDonateFunction" />
 
@@ -126,7 +123,6 @@ import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/component
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
 import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
 
-import MobileChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/mobile-chat-connect-error-dialog.vue';
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
 import PortraitPlayerControlPopup from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-control-popup.vue';

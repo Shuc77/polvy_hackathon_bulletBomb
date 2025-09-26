@@ -1,7 +1,11 @@
 <!-- 移动端小卡片弹层 -->
 <template>
   <mobile-product-small-card
-    v-if="productTargetInited && paymentTargetInited"
+    v-if="
+      productTargetInited &&
+      paymentTargetInited &&
+      interactReceiveStore.interactSetting.productEnabled
+    "
     :product-target="getProductTarget()"
     :payment-target="getPaymentTarget()"
     :product-config="productUIConfig"

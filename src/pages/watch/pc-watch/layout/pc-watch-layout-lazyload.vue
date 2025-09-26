@@ -9,9 +9,6 @@
     <!-- 商品库大卡片弹层 -->
     <pc-product-big-card-popup v-if="iarSdkLoaded" />
 
-    <!-- 聊天室连接失败提示 -->
-    <pc-chat-connect-error-dialog />
-
     <!-- 直播开始倒计时提示 -->
     <pc-live-start-tips />
 
@@ -47,7 +44,6 @@
 <script setup lang="ts">
 import PcIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/pc-identity-collect-info-dialog.vue';
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
-import PcChatConnectErrorDialog from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-dialog/pc-chat-connect-error-dialog.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-chat-set-nick.vue';
 import PcIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-v2.vue';

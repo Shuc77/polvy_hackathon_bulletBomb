@@ -1,6 +1,7 @@
 import { translate } from '@/assets/lang';
 import { useChatStore } from '@/store/use-chat-store';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { generateRandomInteger } from '@/assets/utils/number';
 
 /**
  * 聊天室连接失败 hook
@@ -11,21 +12,30 @@ export const useChatConnectError = () => {
   /** 连接失败提示是否显示 */
   const connectErrorVisible = ref(false);
 
+  const displayMode = ref<'auto' | 'manual'>('manual');
+
+  function changeManualDisplayMode() {
+    if (connectErrorVisible.value) {
+      displayMode.value = 'manual';
+    }
+  }
+
   watch(
     () => chatStore.connectError,
     () => {
       connectErrorVisible.value = chatStore.connectError;
+
+      displayMode.value = 'auto';
+      if (connectErrorVisible.value) {
+        // 30s-35s 检查，如果还是显示连麦失败，引导用户手动刷新
+        const waitTime = generateRandomInteger(30, 35);
+        setTimeout(() => {
+          changeManualDisplayMode();
+        }, waitTime * 1000);
+      }
     },
+    { immediate: true },
   );
-
-  onMounted(() => {
-    connectErrorVisible.value = chatStore.connectError;
-  });
-
-  /** 提示文案 */
-  const errorDialogContentText = computed(() => {
-    return translate('chat.connectError.tips1');
-  });
 
   const errorTipsText = computed(() => {
     return translate('chat.connectError.tips2');
@@ -43,8 +53,8 @@ export const useChatConnectError = () => {
   }
 
   return {
+    displayMode,
     connectErrorVisible,
-    errorDialogContentText,
     errorTipsText,
     onConfirm,
     onCancel,

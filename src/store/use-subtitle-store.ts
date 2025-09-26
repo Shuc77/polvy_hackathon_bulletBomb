@@ -12,11 +12,13 @@ import {
   YN,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
-import { computed, ComputedRef, ref, Ref } from 'vue';
+import { computed, ComputedRef, ref, Ref, watch } from 'vue';
 import { useChannelStore } from './use-channel-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useLangStore } from './use-lang-store';
 import { usePlaybackStore } from './use-playback-store';
+import { getSubtitleSettings, setSubtitleSettings } from '@/components/page-watch-common/subtitle/subtitle-settings-storage';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 export interface SubtitleStoreState {
   /** 实时字幕开关 */
@@ -27,8 +29,12 @@ export interface SubtitleStoreState {
   subtitlesTeacherEnable: Ref<boolean>;
   /** 本地实时字幕是否开启 */
   localUerSubtitlesEnable: Ref<boolean>;
+  /** 字幕显示模式 */
+  subtitleDisplayMode: Ref<'all' | 'source' | 'translate'>;
   /** 实时字幕是否可用 */
   liveSubtitlesEnable: ComputedRef<boolean>;
+  /** 仅控制字幕界面的展示 */
+  liveSubtitlesShow: ComputedRef<boolean>;
   /** 原声语言 */
   liveSubtitleSourceLanguage: Ref<SubtitleSourceLanguage>;
   /** 翻译语言 */
@@ -73,6 +79,10 @@ export interface SubtitleStoreAction {
   changeSubtitlesTeacherEnable: (enable: boolean) => void;
   /** 改变本地实时字幕开启状态 */
   changeLocalUerSubtitlesEnable: (enable: boolean) => void;
+  /** 改变字幕显示模式 */
+  changeSubtitleDisplayMode: (mode: 'all' | 'source' | 'translate') => void;
+  /** 初始化存储的字幕设置 */
+  initSubtitleSettingsFromStorage: () => void;
   /** 改变回放主字幕是否显示 */
   changeMainReplaySubtitleShow: (show: boolean) => void;
   /** 改变回放副字幕是否显示 */
@@ -105,6 +115,9 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
   /** 本地实时字幕是否开启 */
   const localUerSubtitlesEnable = ref(true);
 
+  /** 字幕显示模式 */
+  const subtitleDisplayMode = ref<'all' | 'source' | 'translate'>('all');
+
   /**
    * 改变讲师实时字幕状态
    */
@@ -117,6 +130,8 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
    */
   function changeLocalUerSubtitlesEnable(enable: boolean): void {
     localUerSubtitlesEnable.value = enable;
+    // 保存到本地存储
+    setSubtitleSettings({ subtitleEnabled: enable });
   }
 
   /** 直播实时字幕是否可用 */
@@ -126,6 +141,13 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
       subtitlesTeacherEnable.value &&
       channelStore.liveStatus === LiveStatus.Live
     );
+  });
+
+  /**
+   * 仅控制字幕界面的展示
+   */
+  const liveSubtitlesShow = computed(() => {
+    return liveSubtitlesEnable.value && localUerSubtitlesEnable.value;
   });
 
   /** 原声语言 */
@@ -284,6 +306,66 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
     const watchCore = watchAppStore.getWatchCore();
     watchCore.subtitle.updateLiveSubtitleTranslateLanguage(lang);
     syncSubtitleConfig();
+    // 保存到本地存储
+    setSubtitleSettings({ translateLanguage: lang });
+  }
+
+  /**
+   * 改变字幕显示模式
+   */
+  function changeSubtitleDisplayMode(mode: 'all' | 'source' | 'translate'): void {
+    subtitleDisplayMode.value = mode;
+    // 保存到本地存储
+    setSubtitleSettings({ displayMode: mode });
+  }
+
+  /**
+   * 初始化存储的字幕设置
+   */
+  function initSubtitleSettingsFromStorage(): void {
+    const settings = getSubtitleSettings();
+    localUerSubtitlesEnable.value = settings.subtitleEnabled;
+    subtitleDisplayMode.value = settings.displayMode;
+
+    // 验证存储的翻译语言是否在当前可用选项中, 原声字幕不验证
+    if (settings.translateLanguage && subtitleDisplayMode.value !== 'source') {
+      const isLanguageAvailable = liveSubtitleSourceTranslateLanguages.value.includes(
+        settings.translateLanguage,
+      );
+
+      if (isLanguageAvailable) {
+        // 监听聊天室连接状态，连接成功后再设置翻译语言
+        const { watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
+
+        if (watchPageChatConnected.value) {
+          // 聊天室已连接，直接设置翻译语言
+          applyStoredTranslateLanguage(settings.translateLanguage);
+        } else {
+          // 监听聊天室连接状态变化
+          const stopWatching = watch(watchPageChatConnected, connected => {
+            if (connected) {
+              // 调试时发现watchPageChatConnected true时， 聊天室才发login事件，避免意外影响，故延迟一点时间后再发切换语言的事件
+              setTimeout(() => {
+                applyStoredTranslateLanguage(settings.translateLanguage);
+              }, 100); // 停止监听
+              stopWatching();
+            }
+          });
+        }
+      }
+    }
+
+    if (settings.translateLanguage && subtitleDisplayMode.value === 'source') {
+      liveSubtitleSourceTranslateLanguage.value = settings.translateLanguage;
+    }
+  }
+
+  /**
+   * 应用存储的翻译语言设置
+   */
+  function applyStoredTranslateLanguage(translateLanguage: SubtitleSourceTranslateLanguage): void {
+    liveSubtitleSourceTranslateLanguage.value = translateLanguage;
+    changeLiveSubtitleSourceTranslateLanguage(translateLanguage);
   }
 
   return {
@@ -291,10 +373,14 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
     subtitleTranslateEnabled,
     subtitlesTeacherEnable,
     localUerSubtitlesEnable,
+    subtitleDisplayMode,
     changeSubtitlesTeacherEnable,
     changeLocalUerSubtitlesEnable,
+    changeSubtitleDisplayMode,
+    initSubtitleSettingsFromStorage,
 
     liveSubtitlesEnable,
+    liveSubtitlesShow,
     liveSubtitleSourceLanguage,
     liveSubtitleSourceTranslateLanguage,
     liveSubtitleSourceTranslateLanguages,

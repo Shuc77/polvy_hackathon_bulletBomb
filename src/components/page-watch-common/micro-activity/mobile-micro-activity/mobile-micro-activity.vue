@@ -58,8 +58,13 @@ const originBodyHeight = ref(0);
 const originIframeHeight = ref(0);
 /** 用于展示的 iframe 高度 */
 const displayIframeHeight = ref('100%');
-/**  记录上一次 iframe 改变后的高度 */
+/** 记录上一次 iframe 改变后的高度 */
 const lastIframeHeight = ref(0);
+/**
+ * 是否需要在激活后支持页面全屏展示
+ * @desc 虽然 iframe 默认用当前 Dom 的高度渲染，但在组件激活时需要根据相关的事件，判断当前是否要全屏展示，默认要全屏展示
+ */
+const needAutoFullHandlerTrigger = ref(true);
 
 const {
   microActivityIframeRef,
@@ -68,7 +73,7 @@ const {
   updateIframeUrl,
 } = useMicroActivityHook({
   fullScreenMessageHandler,
-  backHomeMessageHandler,
+  halfScreenMessageHandler,
   forceFullScreenMessageHandler,
 });
 
@@ -90,7 +95,9 @@ watch(
             // originBodyHeight.value = document.body.clientHeight;
             originBodyHeight.value = mobileWatchLayoutHeight.value;
 
-            fullScreenMessageHandler(); // 默认要全屏展示
+            if (needAutoFullHandlerTrigger.value) {
+              fullScreenMessageHandler();
+            }
           } else {
             updateScreenDomHeight(lastIframeHeight.value);
           }
@@ -148,14 +155,22 @@ function updateScreenDomHeight(height: number) {
 }
 
 function fullScreenMessageHandler() {
-  if (!props.isActive) return;
+  needAutoFullHandlerTrigger.value = true;
+
+  if (!props.isActive) {
+    return;
+  }
 
   const height = window.innerHeight;
   updateScreenDomHeight(height);
 }
 
-function backHomeMessageHandler() {
-  if (!props.isActive) return;
+function halfScreenMessageHandler() {
+  needAutoFullHandlerTrigger.value = false;
+
+  if (!props.isActive) {
+    return;
+  }
 
   recoverScreenDomHeight();
   lastIframeHeight.value = 0;

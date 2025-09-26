@@ -9,6 +9,7 @@ import { usePlayerStore, SwitchTipsStatus } from '@/store/use-player-store';
 import { PlayStatus, PlayerEvents } from '@polyv/live-watch-sdk';
 import debounce from 'lodash-es/debounce';
 import { usePlayerControl } from './use-player-control';
+import { setLatencySettings } from '../latency-settings-storage';
 
 /**
  * 播放器操作 hook
@@ -430,6 +431,9 @@ export const usePlayerAction = () => {
       mobilePlayerIsPageFullscreen: false,
     });
 
+    // 保存延迟选项到 localStorage
+    setLatencySettings({ isLowLatency });
+
     setTimeout(() => {
       getEmitter().emit(appEvents.player.ResetUpPlayer);
     }, 0);
@@ -440,6 +444,15 @@ export const usePlayerAction = () => {
     layoutStore.$patch({
       mobilePlayerIsPageFullscreen: !layoutStore.mobilePlayerIsPageFullscreen,
     });
+  }
+
+  /** 退出网页全屏 */
+  function toExitWebPageFullscreen() {
+    if (playerStore.isLowLatency) {
+      toToggleMobilePageFullscreen();
+    } else {
+      getWatchCore().player.exitWebPageFullScreen();
+    }
   }
 
   return {
@@ -485,5 +498,6 @@ export const usePlayerAction = () => {
     toSetLowLowLatency,
 
     toToggleMobilePageFullscreen,
+    toExitWebPageFullscreen,
   };
 };

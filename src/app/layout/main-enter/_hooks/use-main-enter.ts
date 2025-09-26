@@ -24,6 +24,7 @@ import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
 import { useEmotionSetup } from './use-emotion-setup';
 import { useIdentityStore } from '@/store/use-identity-store';
+import { useWatchAICoreSetup } from './use-watch-ai-core-setup';
 
 /**
  * 页面尺寸初始化设置
@@ -89,6 +90,8 @@ export const useMainEnter = (options: {
   const { getWatchCore } = useGlobalInject();
 
   const { loadIarSDK } = useIarSetup();
+
+  const { loadWatchAICore } = useWatchAICoreSetup();
 
   const { setupEmotionParser } = useEmotionSetup();
 
@@ -198,6 +201,7 @@ export const useMainEnter = (options: {
 
     // 加载互动功能 SDK, 游客登录不需加载
     if (!isGuest.value) {
+      loadWatchAICore();
       await loadIarSDK();
     }
 

@@ -1,8 +1,5 @@
 <template>
-  <div
-    v-if="providerLoaded"
-    class="c-playback-outline"
-  >
+  <div class="c-playback-outline">
     <playback-outline
       :outline-data="outlineData"
       :show-color="false"
@@ -19,9 +16,9 @@ import { useLiveWatchAIUILoader } from '@/plugins/external-lib-loaders/load-ai-u
 import { usePlaybackOutline } from './use-playback-outline';
 import { defineAsyncComponent, ref } from 'vue';
 import type { PlaybackOutlineData } from '@polyv/live-watch-sdk';
-import { useAIGlobalProvider } from './use-ai-global-provider';
+import { useAIGlobalProvider } from '../use-ai-global-provider';
 
-const { providerLoaded } = useAIGlobalProvider();
+useAIGlobalProvider();
 
 const { outlineData, onSeekVideo } = usePlaybackOutline();
 

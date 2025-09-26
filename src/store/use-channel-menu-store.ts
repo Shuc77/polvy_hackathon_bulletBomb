@@ -59,6 +59,8 @@ export interface ChannelMenuStoreState {
   multiMeetingMenuData: ComputedRef<MenuDataType>;
   /** 云席菜单信息 */
   seatTableMenuData: ComputedRef<MenuDataType>;
+  /** 当前频道是否分会场（非主会场） */
+  isSubChannel: ComputedRef<boolean>;
 }
 
 export interface ChannelMenuStoreAction {
@@ -345,8 +347,13 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         label: filterMenuTabLabel(
           ChannelMenuType.MultiMeeting,
           multiMeetingStore.multiMeetingEntranceName || translate('menu.tabName.multiMeeting'),
-        ),
+        )
       };
+    });
+
+    /** 是否分会场（非主会场） */
+    const isSubChannel = computed<boolean>(() => {
+      return multiMeetingStore.isSubChannel;
     });
 
     /** 云席菜单信息 */
@@ -374,6 +381,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
       microActivityMenuData,
       multiMeetingMenuData,
       seatTableMenuData,
+      isSubChannel,
 
       addChannelMenu,
       removeChannelMenu,

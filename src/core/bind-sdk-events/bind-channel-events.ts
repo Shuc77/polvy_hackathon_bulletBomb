@@ -23,6 +23,7 @@ import { appendToURL } from '@just4/querystring';
 import { extractChannelAndSessionId } from '@/hooks/core/use-query-params';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { destroyWatchSdk } from '../watch-sdk';
+import { generateRandomInteger } from '@/assets/utils/number';
 
 export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
   const watchAppStore = useWatchAppStore();
@@ -228,10 +229,8 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
     // 从测试模式变成非测试模式的情况
     if (!inTestMode) {
       setTimeout(() => {
-        emitter.emit(appEvents.player.ResetUpPlayer);
-        emitter.emit(appEvents.doc.ResetUpDoc);
-        emitter.emit(appEvents.connectMic.ResetUpConnectMic);
-      }, 3 * 1000);
+        window.location.reload();
+      }, generateRandomInteger(3, 10) * 1000);
     }
   });
 

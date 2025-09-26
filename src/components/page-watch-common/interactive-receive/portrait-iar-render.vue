@@ -7,15 +7,6 @@
       <!--  举报/投诉反馈 -->
       <mobile-feedback-popup v-if="feedbackEnabled" />
 
-      <template v-if="!useV2Lottery">
-        <!-- 抽奖动画 -->
-        <mobile-lottery-animation />
-        <!-- 抽奖结果弹层 -->
-        <mobile-lottery-result-popup />
-      </template>
-
-      <!-- 问卷 -->
-      <mobile-questionnaire-popup v-if="!useV2Questionnaire" />
       <!-- 红包弹窗 -->
       <mobile-redpack-popup />
       <!-- 红包雨组件 -->
@@ -37,32 +28,27 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
-import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
-import MobileLotteryAnimation from './lottery/mobile-lottery-animation.vue';
-import MobileLotteryResultPopup from './lottery/mobile-lottery-result-popup.vue';
-import MobileQuestionnairePopup from './questionnaire/mobile-questionnaire-popup.vue';
-import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
-import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
-import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
-import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
-import PortraitQuestionAnswer from './question-answer/portrait-question-answer.vue';
-import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
 import MobileCouponCommonPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-common-popup.vue';
 import MobileCouponUserPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-user-popup.vue';
+import { onMounted } from 'vue';
+import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
+import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
+import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
+import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
+import PortraitQuestionAnswer from './question-answer/portrait-question-answer.vue';
+import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
+import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
+import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 
 const {
   announcementFunctionVisible,
-  useV2Lottery,
 
   feedbackEnabled,
-  useV2Questionnaire,
 } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);

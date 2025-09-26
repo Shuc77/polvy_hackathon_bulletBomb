@@ -75,6 +75,8 @@ const { visible: showTips, close: onClickClose } = useSimpleVisible(true);
 }
 
 .c-pc-page-notice__close {
+  width: 16px;
+  height: 16px;
   margin-left: auto;
   font-size: 16px;
   cursor: pointer;

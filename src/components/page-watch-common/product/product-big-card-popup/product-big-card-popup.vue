@@ -1,7 +1,7 @@
 <!-- 大卡片弹层 -->
 <template>
   <product-big-card-popup
-    v-if="productTargetInited && paymentTargetInited"
+    v-if="productTargetInited && paymentTargetInited && interactSetting.productEnabled"
     :product-target="getProductTarget()"
     :payment-target="getPaymentTarget()"
     :product-config="productUIConfig"
@@ -13,6 +13,9 @@
 import { defineAsyncComponent } from 'vue';
 import { useProductUILoader } from '../load-product-ui';
 import { useProductUI } from '../hooks/use-product-ui';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+
+const { interactSetting } = useInteractReceiveStore();
 
 const { loadProductUI } = useProductUILoader();
 

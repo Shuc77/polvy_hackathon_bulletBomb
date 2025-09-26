@@ -1,7 +1,7 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { ref, watch } from 'vue';
-import { usePlayerAction } from '../player/hooks/use-player-action';
+import { usePlayerAction } from '../../player/hooks/use-player-action';
 import type { PlaybackOutlineData } from '@polyv/live-watch-sdk';
 
 export const usePlaybackOutline = () => {
@@ -20,12 +20,12 @@ export const usePlaybackOutline = () => {
    */
   async function getOutlineData() {
     const playbackTarget = playbackStore.currentPlaybackTarget;
-    if (!playbackTarget || !playbackTarget?.outline?.outlineUrl) {
+    if (!playbackTarget || !playbackTarget.outline?.outlineUrl) {
       outlineData.value = undefined;
       return;
     }
 
-    const data = await watchCore.playback.getOutlineList(playbackTarget?.outline?.outlineUrl);
+    const data = await watchCore.playback.getOutlineList(playbackTarget.outline.outlineUrl);
     outlineData.value = data;
   }
 

@@ -10,6 +10,13 @@
 
       <!-- 抽奖弹层 -->
       <pc-lottery-dialog />
+
+      <!-- 平台抽奖列表弹层 -->
+      <pc-lucky-lottery-list-popup />
+      <!-- 平台抽奖详情弹层 -->
+      <pc-lucky-lottery-detail-popup />
+      <!-- 平台抽奖领取弹层 -->
+      <pc-lucky-lottery-receive-popup />
     </div>
   </div>
 </template>
@@ -18,6 +25,9 @@
 import QuickAnswerCard from './answer-card-v2/quick-answer-card/quick-answer-card.vue';
 import PcCouponCommonSidePopup from '../interactive-receive-v2/coupon-v2/pc-coupon-common-side-popup.vue';
 import PcLotteryDialog from '@/components/page-watch-common/interactive-receive-v2/lottery-v2/lottery-dialog/pc-lottery-dialog.vue';
+import PcLuckyLotteryListPopup from './lucky-lottery/pc/pc-lucky-lottery-list-popup.vue';
+import PcLuckyLotteryDetailPopup from './lucky-lottery/pc/pc-lucky-lottery-detail-popup.vue';
+import PcLuckyLotteryReceivePopup from './lucky-lottery/pc/pc-lucky-lottery-receive-popup.vue';
 </script>
 
 <style lang="scss">
