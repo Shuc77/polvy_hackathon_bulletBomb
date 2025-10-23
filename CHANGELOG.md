@@ -4,6 +4,49 @@
 
 ---
 
+## v2.9.0(2025-10-23)
+
+### Bug Fixes
+
+- 修复竖屏观看页观看导播台推流的场景，错误使用视频当前的分辨率去计算播放器尺寸，而不是使用导播台推流分辨率去计算的问题
+- 修复管理后台关闭商品列表开关，观看页无法看到大小卡片的问题
+- 修复创建频道后开启测试模式，观看页展示【回放待生成】状态的问题
+- 修复观看页超过发言限制字数后的输入问题
+
+### Features
+
+- 新增移动端竖屏观看页使用回放字幕和相关设置
+- 新增移动端竖屏直播间退出清屏操作按钮
+- 支持在用户体系下，游客能够正常查看聊天室消息，只在参与互动的时候才引导登录
+- 支持在用户体系下，游客登录不再跳转页面，而是在弹窗中执行登录
+- 支持响应后台个人奖励开关配置
+- 支持 PC 端观看页的个人奖励面板中展示幸运抽奖记录
+
+### Styles
+
+- 优化聊天室消息引用回复时的气泡样式
+
+### Code Refactoring
+
+- 统一用 `useInterruptUserClick` hooks 来处理观看页大部分区域点击拦截行为
+- 接入新版聊天室 SDK UI 组件，通过拼接观看链接参数`chatUIVersion=v2` 的参数即可使用，后续稳定后会删除观看页内置的聊天室相关组件
+- 支持通过拼接观看链接参数 `useAICompleteFeature=Y` 来启用 AI-SDK 的全部功能
+
+### Build System
+
+- 新增 `@polyv/chat` 和 `@polyv/chat-ui`，版本为 `rc-20251023`
+- 更改 `@polyv/icons-vue` 为 `@polyv/icons-vue-middle`，版本号调整为 `1.3.0`
+- 更新 `@polyv/icons-cli` 版本至 `1.7.0`
+- 更新 `@polyv/polyv-ui` 版本至 `4.13.0`
+- 更新 `@polyv/vue-components` 版本至 `1.2.1`
+- 更新 `@polyv/live-watch-ai-ui` 版本至 `rc-20251023`
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20251023`
+- 更新 `@polyv/product-ui` 版本至 `rc-20251023`
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20251023`
+- 更新 `@polyv/iar` 相关 UI 层 SDK, 版本至 `rc-20251023`
+
+---
+
 ## v2.8.0(2025-09-26)
 
 ### Deprecated

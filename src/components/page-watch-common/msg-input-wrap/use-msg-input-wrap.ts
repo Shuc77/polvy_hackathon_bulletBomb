@@ -1,7 +1,5 @@
-import { appEvents } from '@/app/app-events';
 import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { computed, ref, unref, watch } from 'vue';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { useMsgInputController } from './use-msg-input-controller';
@@ -12,8 +10,6 @@ import { WatchSdkLangEnum } from '@polyv/live-watch-sdk';
 export const msgInputWrapProps = () => ({
   /** 占位符 */
   placeholder: PropUtils.string,
-  /** 是否禁用设置昵称 */
-  disabledSetNick: PropUtils.bool.def(false),
   /** 是否禁用输入框 */
   disabledInput: PropUtils.bool.def(false),
   /** 是否禁用发送按钮 */
@@ -70,11 +66,10 @@ export const useMsgInputWrap = (options: {
   props: VueProps<typeof msgInputWrapProps>;
   emit: VueEmit<typeof msgInputWrapEmits>;
 }) => {
-  const { getEmitter, getWatchCore } = useGlobalInject();
+  const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
 
-  const viewerStore = useViewerStore();
   /** 消息输入框控制器 */
   const msgInputController = useMsgInputController();
 
@@ -120,10 +115,7 @@ export const useMsgInputWrap = (options: {
     if (props.disabledEmotionPicker) {
       return;
     }
-    if (!viewerStore.hasNickname) {
-      getEmitter().emit(appEvents.chat.OpenSetNick, true);
-      return;
-    }
+
     toggleEmotionPanel();
   }
 
@@ -145,10 +137,6 @@ export const useMsgInputWrap = (options: {
   function onClickSendImage() {
     emit('click-send-image-enter');
     if (props.disabledSendImage) {
-      return;
-    }
-    if (!viewerStore.hasNickname) {
-      getEmitter().emit(appEvents.chat.OpenSetNick, true);
       return;
     }
     emit('click-send-image');

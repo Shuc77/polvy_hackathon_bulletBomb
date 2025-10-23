@@ -2,12 +2,18 @@
 <template>
   <mobile-popup
     :visible.sync="isVisible"
-    :title="$lang('portrait.subtitle.setting.title')"
+    :title="
+      isLiveMode ? $lang('portrait.subtitle.setting.title') : $lang('player.replaySubtitle.text')
+    "
     position="bottom"
     @close="handleClose"
     content-background="#f6f7f9"
   >
-    <div class="c-portrait-subtitle-setting">
+    <!-- 直播模式 -->
+    <div
+      v-if="isLiveMode"
+      class="c-portrait-subtitle-setting"
+    >
       <!-- 实时字幕总开关 -->
       <div class="c-portrait-subtitle-setting__item">
         <div class="c-portrait-subtitle-setting__label">{{ $lang('player.subtitle.text') }}</div>
@@ -29,7 +35,7 @@
           {{ $lang('portrait.subtitle.setting.language') }}
         </div>
         <div class="c-portrait-subtitle-setting__language-value">
-          {{ currentLanguageLabel }}
+          {{ currentLiveLanguageLabel }}
           <mobile-icon-arrow-right />
         </div>
       </div>
@@ -51,10 +57,56 @@
         </div>
       </div>
     </div>
+    <!-- 回放模式 -->
+    <div
+      v-else
+      class="c-portrait-subtitle-setting c-portrait-subtitle-setting--replay"
+    >
+      <div
+        class="c-portrait-subtitle-setting__item"
+        v-if="replayOriginalLanguageExist"
+      >
+        <mobile-form-checkbox
+          :checked="mainReplaySubtitleShow"
+          @change="handleChangeMainReplaySubtitle"
+        >
+          <span class="c-portrait-subtitle-setting__checkbox-label">
+            {{ $lang('subtitle.source') }}
+          </span>
+        </mobile-form-checkbox>
+        <div class="c-portrait-subtitle-setting__value">
+          {{ replayOriginalLanguageLabel }}
+        </div>
+      </div>
 
-    <!-- 字幕语言选择弹窗 -->
+      <div
+        class="c-portrait-subtitle-setting__item c-portrait-subtitle-setting__item--space-between"
+        v-if="replaySubtitleSourceTranslateLanguageOptions.length > 0"
+      >
+        <mobile-form-checkbox
+          :checked="subReplaySubtitleShow"
+          @change="handleChangeSubReplaySubtitle"
+        >
+          <span class="c-portrait-subtitle-setting__checkbox-label">
+            {{ $lang('subtitle.translate') }}
+          </span>
+        </mobile-form-checkbox>
+
+        <div
+          class="c-portrait-subtitle-setting__language-value"
+          :class="{ 'is-disabled': !replaySubtitleSourceTranslateLanguageOptions.length }"
+          @click="handleOpenReplayLanguageSelector"
+        >
+          {{ currentReplayLanguageLabel }}
+          <mobile-icon-arrow-right />
+        </div>
+      </div>
+    </div>
+
+    <!-- 实时字幕语言选择弹窗 -->
     <mobile-popup
-      :visible.sync="languageSelectorVisible"
+      v-if="isLiveMode"
+      :visible.sync="liveLanguageSelectorVisible"
       :title="$lang('portrait.subtitle.setting.language')"
       position="bottom"
       @close="handleCloseLanguageSelector"
@@ -103,6 +155,36 @@
         </div>
       </div>
     </mobile-popup>
+
+    <!-- 回放字幕语言选择弹窗 -->
+    <mobile-popup
+      v-else
+      :visible.sync="replayLanguageSelectorVisible"
+      :title="$lang('portrait.subtitle.setting.language')"
+      position="bottom"
+      @close="handleCloseReplayLanguageSelector"
+    >
+      <div class="c-portrait-subtitle-language-selector">
+        <div class="c-portrait-subtitle-language-selector__list">
+          <div
+            v-for="option in replaySubtitleSourceTranslateLanguageOptions"
+            :key="option.value"
+            class="c-portrait-subtitle-language-selector__item"
+            :class="{
+              'c-portrait-subtitle-language-selector__item--active':
+                option.value === curSelectedReplaySubtitleItemId,
+            }"
+            @click="handleReplayLanguageChange(option.value)"
+          >
+            <span>{{ option.label }}</span>
+            <mobile-icon-check
+              v-if="option.value === curSelectedReplaySubtitleItemId"
+              class="c-portrait-subtitle-language-selector__check"
+            />
+          </div>
+        </div>
+      </div>
+    </mobile-popup>
   </mobile-popup>
 </template>
 
@@ -112,6 +194,7 @@ import type { SubtitleSourceTranslateLanguage } from '@polyv/live-watch-sdk';
 import { translate } from '@/assets/lang';
 
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
+import MobileFormCheckbox from '@/components/common-base/form/form-checkbox/mobile-form-checkbox.vue';
 import { PlvSwitch } from '@/plugins/polyv-ui/mobile-import';
 import { MobileIconArrowRight, MobileIconCheck } from '@/components/component-icons/mobile/map';
 
@@ -121,17 +204,23 @@ import { useSubtitleSelected } from '../use-subtitle';
 
 const props = defineProps<{
   visible: boolean;
+  mode: 'live' | 'replay';
 }>();
 
 const emit = defineEmits(['close', 'update:visible', 'enable-subtitle-float']);
 
 const subtitleStore = useSubtitleStore();
 const {
-  // subtitleRealTimeEnabled,
   subtitleTranslateEnabled,
   localUerSubtitlesEnable,
   liveSubtitleSourceLanguage,
   liveSubtitleSourceTranslateLanguageOptions,
+  subtitleDisplayMode,
+  mainReplaySubtitleShow,
+  subReplaySubtitleShow,
+  replaySubtitleSourceLanguageOptions,
+  replaySubtitleSourceTranslateLanguageOptions,
+  curSelectedReplaySubtitleItemId,
 } = storeDefinitionToRefs(useSubtitleStore);
 
 const { subtitleTranslateSelected } = useSubtitleSelected();
@@ -143,18 +232,19 @@ const isVisible = computed({
   },
 });
 
+const isLiveMode = computed(() => props.mode === 'live');
+
 // 本地字幕开关状态
 const localSubtitlesEnabled = ref(localUerSubtitlesEnable.value);
 // 双语开关状态（基于显示模式）
-const { subtitleDisplayMode } = storeDefinitionToRefs(useSubtitleStore);
-// 根据显示模式初始化双语开关状态
 const bilingualEnabled = ref(subtitleDisplayMode.value === 'all');
 
 // 语言选择弹窗状态
-const languageSelectorVisible = ref(false);
+const liveLanguageSelectorVisible = ref(false);
+const replayLanguageSelectorVisible = ref(false);
 
-// 当前选中语言的显示文本
-const currentLanguageLabel = computed(() => {
+// 当前选中语言的显示文本（直播）
+const currentLiveLanguageLabel = computed(() => {
   const [type, language] = subtitleTranslateSelected.value;
 
   if (type === 'source') {
@@ -167,10 +257,34 @@ const currentLanguageLabel = computed(() => {
   return currentOption?.label;
 });
 
+const replayOriginalLanguageLabel = computed(() => {
+  return replaySubtitleSourceLanguageOptions.value[0]?.label || '--';
+});
+
+/** 回放字幕是否有原始语言 */
+const replayOriginalLanguageExist = computed(() => {
+  return replaySubtitleSourceLanguageOptions.value.length > 0;
+});
+
+const currentReplayLanguageLabel = computed(() => {
+  const currentOption = replaySubtitleSourceTranslateLanguageOptions.value.find(
+    option => option.value === curSelectedReplaySubtitleItemId.value,
+  );
+  return currentOption?.label || '--';
+});
+
 // 监听本地开关状态变化
 watch(localUerSubtitlesEnable, newVal => {
   localSubtitlesEnabled.value = newVal;
 });
+
+watch(
+  () => props.mode,
+  () => {
+    liveLanguageSelectorVisible.value = false;
+    replayLanguageSelectorVisible.value = false;
+  },
+);
 
 function updateSubtitleDisplayMode(mode: 'source' | 'translate' | 'all') {
   subtitleStore.changeSubtitleDisplayMode(mode);
@@ -194,22 +308,18 @@ const handleToggleBilingual = (enabled: boolean) => {
 };
 
 const handleOpenLanguageSelector = () => {
-  languageSelectorVisible.value = true;
+  liveLanguageSelectorVisible.value = true;
 };
 
 const handleCloseLanguageSelector = () => {
-  languageSelectorVisible.value = false;
+  liveLanguageSelectorVisible.value = false;
 };
 
 const handleSelectOriginal = () => {
-  // 选择原文时更新 subtitleTranslateSelected
   subtitleTranslateSelected.value = ['source', liveSubtitleSourceLanguage.value];
-
   updateSubtitleDisplayMode('source');
-
   bilingualEnabled.value = false;
-  // 关闭弹窗
-  languageSelectorVisible.value = false;
+  liveLanguageSelectorVisible.value = false;
 };
 
 const handleLanguageChange = (language: string) => {
@@ -220,8 +330,36 @@ const handleLanguageChange = (language: string) => {
   }
 
   subtitleTranslateSelected.value = [changeMode, language as SubtitleSourceTranslateLanguage];
-  // 选择后关闭弹窗
-  languageSelectorVisible.value = false;
+  liveLanguageSelectorVisible.value = false;
+};
+
+const handleChangeMainReplaySubtitle = (checked: boolean) => {
+  subtitleStore.changeMainReplaySubtitleShow(checked);
+};
+
+const handleChangeSubReplaySubtitle = (checked: boolean) => {
+  if (!replaySubtitleSourceTranslateLanguageOptions.value.length) return;
+
+  subtitleStore.changeSubReplaySubtitleShow(checked);
+  if (checked) {
+    replayLanguageSelectorVisible.value = true;
+  }
+};
+
+const handleOpenReplayLanguageSelector = () => {
+  if (!replaySubtitleSourceTranslateLanguageOptions.value.length) return;
+  replayLanguageSelectorVisible.value = true;
+};
+
+const handleCloseReplayLanguageSelector = () => {
+  replayLanguageSelectorVisible.value = false;
+};
+
+const handleReplayLanguageChange = (languageId: string) => {
+  subtitleStore.$patch({
+    curSelectedReplaySubtitleItemId: String(languageId),
+  });
+  replayLanguageSelectorVisible.value = false;
 };
 </script>
 
@@ -233,19 +371,27 @@ const handleLanguageChange = (language: string) => {
   border-radius: 12px;
 }
 
+.c-portrait-subtitle-setting--replay {
+  .c-portrait-subtitle-setting__item {
+    padding: 12px 0;
+    border-bottom: none;
+  }
+}
+
 .c-portrait-subtitle-setting__item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
 
   &:last-child {
     border-bottom: none;
   }
+}
 
-  &:nth-child(2) {
-    border-top: 1px solid #f0f0f0;
-  }
+.c-portrait-subtitle-setting__item--space-between {
+  gap: 12px;
 }
 
 .c-portrait-subtitle-setting__label {
@@ -254,8 +400,30 @@ const handleLanguageChange = (language: string) => {
   color: #333333;
 }
 
+.c-portrait-subtitle-setting__checkbox-label {
+  font-size: 16px;
+  color: #333333;
+}
+
+.c-portrait-subtitle-setting__checkbox--disabled {
+  opacity: 0.5;
+}
+
 .c-portrait-subtitle-setting__control {
   flex-shrink: 0;
+}
+
+.c-portrait-subtitle-setting__value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 56px;
+  margin-left: auto;
+  font-size: 16px;
+  color: #666666;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .c-portrait-subtitle-setting__language-selector {
@@ -271,13 +439,27 @@ const handleLanguageChange = (language: string) => {
   display: flex;
   gap: 8px;
   align-items: center;
+  justify-content: space-between;
+  margin-left: auto;
   font-size: 16px;
   color: #666666;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
 
   svg {
     width: 16px;
     height: 16px;
     color: #999999;
+  }
+
+  &.is-disabled {
+    color: #b6b6c4;
+    cursor: not-allowed;
+
+    svg {
+      color: #ccccd9;
+    }
   }
 }
 
@@ -285,17 +467,6 @@ const handleLanguageChange = (language: string) => {
 .c-portrait-subtitle-language-selector {
   padding: 0;
   background: #ffffff;
-}
-
-.c-portrait-subtitle-language-selector__section {
-  padding: 16px 20px 8px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.c-portrait-subtitle-language-selector__section-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: #999999;
 }
 
 .c-portrait-subtitle-language-selector__list {

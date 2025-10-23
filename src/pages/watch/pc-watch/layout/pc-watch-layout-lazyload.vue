@@ -22,13 +22,16 @@
     <pc-page-fixed-widgets hide-web-share />
 
     <!-- 聊天消息全文弹层 -->
-    <pc-chat-full-message />
+    <pc-chat-full-message v-if="!isChatUIV2" />
 
     <!-- 实名认证弹层 -->
     <pc-real-name-dialog />
 
     <!-- 绑定用户信息 -->
     <pc-identity-collect-info-dialog v-if="bindMobileVisible" />
+
+    <!-- 用户体系登录弹层 -->
+    <pc-identity-login-dialog-render v-if="needIdentityGuestForceLogin" />
 
     <!-- 引导关注弹层 -->
     <pc-follow-dialog />
@@ -43,6 +46,8 @@
 
 <script setup lang="ts">
 import PcIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/pc-identity-collect-info-dialog.vue';
+import PcIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/pc-identity-login-dialog-render.vue';
+
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-chat-set-nick.vue';
@@ -64,12 +69,15 @@ import { useIdentityStore } from '@/store/use-identity-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useChatStore } from '@/store/use-chat-store';
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs(useIdentityStore);
 
 const { learningStatsDialogEnabled } = storeDefinitionToRefs(useChannelInfoStore);
+
+const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 </script>

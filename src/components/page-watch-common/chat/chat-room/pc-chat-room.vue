@@ -22,7 +22,10 @@
     <!-- 聊天消息列表区域 -->
     <div class="c-pc-chat-room__msg-list">
       <!-- 消息列表 -->
-      <pc-chat-msg-list />
+      <pc-chat-msg-list v-if="!isChatUIV2" />
+      <chat-loader-helper v-else>
+        <chat-msg-list-v2 />
+      </chat-loader-helper>
 
       <!-- 右下角挂件 -->
       <pc-chat-room-pendant />
@@ -34,14 +37,20 @@
     <!-- 互动二次入口 -->
     <pc-interactive-entrance v-if="iarSdkLoaded" />
 
-    <!-- 消息引用 -->
-    <pc-chat-msg-quote />
-
     <!-- 底部输入框 -->
-    <pc-chat-input-controller v-if="chatInputControllerEnable" />
+    <template v-if="chatInputControllerEnable">
+      <template v-if="!isChatUIV2">
+        <!-- 消息引用 -->
+        <pc-chat-msg-quote />
+        <pc-chat-input-controller />
+      </template>
+      <chat-loader-helper v-else>
+        <pc-message-input-v2 />
+      </chat-loader-helper>
+    </template>
 
     <!-- 报名观看以及游客登录（参与互动时机） -->
-    <pc-enroll v-if="isGuest || needEnrollByChat" />
+    <pc-enroll v-if="needEnrollByChat" />
   </div>
 </template>
 
@@ -54,6 +63,9 @@ import PcAnnouncementTop from '@/components/page-watch-common/interactive-receiv
 import PcInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/pc-interactive-entrance.vue';
 import PcChatInputController from '../chat-input-controller/pc-chat-input-controller/pc-chat-input-controller.vue';
 import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
+import ChatMsgListV2 from '../../chat-v2/chat-msg-list/index.vue';
+import PcMessageInputV2 from '../../chat-v2/message-input/pc-message-input.vue';
+import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
 import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
 import PcRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
@@ -62,13 +74,10 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useDonateStore } from '@/store/use-donate-store';
-import { useIdentityStore } from '@/store/use-identity-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { isGuest } = storeDefinitionToRefs(useIdentityStore);
-
-const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { announcementFunctionVisible, iarSdkLoaded } =
   storeDefinitionToRefs(useInteractReceiveStore);

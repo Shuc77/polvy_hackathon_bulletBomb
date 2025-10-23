@@ -111,8 +111,10 @@ export interface InteractReceiveStoreState {
   feedbackPendantVisible: ComputedRef<boolean>;
   /** 投诉反馈菜单是否可见 */
   feedbackMenuVisible: ComputedRef<boolean>;
+  /** 个人奖励入口是否显示 */
+  personalRewardEntranceVisible: ComputedRef<boolean>;
   /** 优惠券挂件是否显示 */
-  couponPendantVisible: Ref<boolean>;
+  couponPendantVisible: ComputedRef<boolean>;
   /** 优惠券待领取列表是否显示 */
   couponCommonListVisible: Ref<boolean>;
   /** 优惠券已领取列表是否显示 */
@@ -342,6 +344,11 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       );
     });
 
+    /** 个人奖励入口是否显示 */
+    const personalRewardEntranceVisible = computed(() => {
+      return interactSetting.value.personalRewardEnabled;
+    });
+
     /** 优惠券挂件是否显示 */
     const couponPendantVisible = computed(() => {
       return interactSetting.value.couponEnabled;
@@ -405,6 +412,8 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       feedbackEnabled,
       feedbackPendantVisible,
       feedbackMenuVisible,
+
+      personalRewardEntranceVisible,
 
       couponPendantVisible,
       couponCommonListVisible,

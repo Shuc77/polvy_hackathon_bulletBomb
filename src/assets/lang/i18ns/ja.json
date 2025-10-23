@@ -49,6 +49,7 @@
   "auth.enter": "ライブに入る",
   "auth.login.button": "ログイン",
   "auth.login.tips": "インタラクションに参加するには、ログインしてください",
+  "auth.login.tips.look": "ログイン後にのみ閲覧可能です",
   "auth.login.tips.ppt": "ライブを視聴するには、ログインしてください",
   "auth.login.tips.continue": "続けて視聴",
   "ask.input.placeholder": "質問を開始",
@@ -882,5 +883,7 @@
   "portrait.subtitle.setting.original": "オリジナル字幕",
   "portrait.subtitle.close.tips.title": "閉じる",
   "portrait.subtitle.close.tips.content": "閉じると「マイナビ-インタラクティブツール-リアルタイム字幕」で開くことができます",
-  "portrait.subtitle.float.guide.tips": "サイドバーをドラッグして位置を移動できます"
+  "portrait.subtitle.float.guide.tips": "サイドバーをドラッグして位置を移動できます",
+
+  "portrait.exit.clear.screen.btn.text": "クリアスクリーンから退出"
 }

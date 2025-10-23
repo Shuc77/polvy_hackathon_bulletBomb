@@ -7,6 +7,7 @@ import { type PolyvLottery } from '@polyv/live-watch-sdk';
 import { storeToRefs } from 'pinia';
 import { useSendMsg } from '../../chat/chat-msg-list/hooks/send-msg-hook';
 import { useIarTarget } from '../_hooks/use-iar-target';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 export const useLotteryTarget = () => {
   const interactReceiveStore = useInteractReceiveStore();
@@ -17,6 +18,8 @@ export const useLotteryTarget = () => {
   const { sendSpeakMsg } = useSendMsg();
 
   const { getWatchCore, getEmitter } = useGlobalInject();
+
+  const { toInterruptUserClick } = useInterruptUserClick();
 
   const watchCore = getWatchCore();
 
@@ -35,10 +38,21 @@ export const useLotteryTarget = () => {
       getEmitter().emit(appEvents.interaction.OpenQuestionnaire, questionnaireId);
     },
     beforeJoinLottery: async () => {
+      // 需要先拦截用户操作
+      const res = toInterruptUserClick({
+        triggerSource: 'before-join-lottery',
+        ignoreSetNick: true,
+      });
+      if (res) {
+        return false;
+      }
+
+      // 需要先报名
       if (enrollStore.needEnrollByChat) {
         getEmitter().emit(appEvents.global.OpenEnrollDialog);
         return false;
       }
+
       return true;
     },
     customSendComment: options => {

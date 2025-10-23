@@ -7,7 +7,7 @@ module.exports = [
   {
     resourcesDir: './icon-svgs/pc',
     outDir: './src/components/component-icons/pc',
-    libraryType: 'vue',
+    libraryType: 'vue-middle',
     iconMap: './src/components/component-icons/pc/map.ts',
     convertColorMode: 'all',
     mapExportPrefix: 'PcIcon',
@@ -18,7 +18,7 @@ module.exports = [
   {
     resourcesDir: './icon-svgs/mobile',
     outDir: './src/components/component-icons/mobile',
-    libraryType: 'vue',
+    libraryType: 'vue-middle',
     iconMap: './src/components/component-icons/mobile/map.ts',
     convertColorMode: 'all',
     mapExportPrefix: 'MobileIcon',
@@ -29,7 +29,7 @@ module.exports = [
   {
     resourcesDir: './icon-svgs/pc-origin',
     outDir: './src/components/component-icons/pc-origin',
-    libraryType: 'vue',
+    libraryType: 'vue-middle',
     iconMap: './src/components/component-icons/pc-origin/map.ts',
     mapExportPrefix: 'PcOriginIcon',
     demoHtml: './icon-svgs/demo/icon-demo-pc-origin.html',
@@ -40,7 +40,7 @@ module.exports = [
   {
     resourcesDir: './icon-svgs/mobile-origin',
     outDir: './src/components/component-icons/mobile-origin',
-    libraryType: 'vue',
+    libraryType: 'vue-middle',
     iconMap: './src/components/component-icons/mobile-origin/map.ts',
     mapExportPrefix: 'MobileOriginIcon',
     demoHtml: './icon-svgs/demo/icon-demo-mobile-origin.html',

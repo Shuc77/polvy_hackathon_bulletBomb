@@ -61,9 +61,9 @@ export const usePopper = (options: UsePopperOptions = {}) => {
   // 获取节点信息
   function getElement() {
     return {
-      referenceElem: getRefElem(referenceRef),
-      popperElem: getRefElem(popperRef),
-      inputElem: getRefElem(inputRef),
+      referenceElem: getRefElem(referenceRef) as HTMLElement | undefined,
+      popperElem: getRefElem(popperRef) as HTMLElement | undefined,
+      inputElem: getRefElem(inputRef) as HTMLElement | undefined,
     };
   }
 

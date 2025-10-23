@@ -2,23 +2,29 @@
 <template>
   <div
     class="c-portrait-subtitle-manager"
-    v-if="liveSubtitlesEnable"
+    v-if="liveSubtitlesEnable || replaySubtitleVisible"
   >
     <!-- 字幕浮窗 -->
     <portrait-subtitle-float
+      v-if="liveSubtitlesEnable"
       :visible.sync="subtitleFloatVisible"
       :display-mode="subtitleDisplayMode"
       @close="handleFloatClose"
     />
 
+    <!-- 回放字幕浮层 -->
+    <portrait-replay-subtitle v-if="replaySubtitleVisible" />
+
     <!-- 字幕设置弹窗 -->
     <portrait-subtitle-setting
       :visible.sync="subtitleSettingVisible"
+      :mode="subtitleSettingMode"
       @close="handleSettingClose"
       @enable-subtitle-float="handleEnableSubtitleFloat"
     />
 
     <mobile-message-box
+      v-if="liveSubtitlesEnable"
       ref="subtitleCloseTipsRef"
       content-center
       :title="$lang('portrait.subtitle.close.tips.title')"
@@ -35,6 +41,7 @@ import { ref, watch, onMounted } from 'vue';
 import PortraitSubtitleFloat from '../portrait-subtitle-float/portrait-subtitle-float.vue';
 import PortraitSubtitleSetting from '../portrait-subtitle-setting/portrait-subtitle-setting.vue';
 import { MobileMessageBox, MessageBoxInstance } from '@/components/common-base/message-box';
+import PortraitReplaySubtitle from '../portrait-replay-subtitle/portrait-replay-subtitle.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
@@ -43,13 +50,15 @@ import { appEvents } from '@/app/app-events/use-app-events';
 
 const { getEmitter } = useGlobalInject();
 
-const { localUerSubtitlesEnable, liveSubtitlesEnable, subtitleDisplayMode } =
+const { localUerSubtitlesEnable, liveSubtitlesEnable, subtitleDisplayMode, replaySubtitleVisible } =
   storeDefinitionToRefs(useSubtitleStore);
 
 // 浮窗显示状态
 const subtitleFloatVisible = ref(false);
 // 设置弹窗显示状态
 const subtitleSettingVisible = ref(false);
+// 设置弹窗模式
+const subtitleSettingMode = ref<'live' | 'replay'>('live');
 
 /** 取消预约提示弹层实例 */
 const subtitleCloseTipsRef = ref<MessageBoxInstance>();
@@ -96,7 +105,18 @@ const handleEnableSubtitleFloat = () => {
 };
 
 // 监听打开字幕设置事件
-const handleOpenSubtitleSetting = () => {
+const handleOpenSubtitleSetting = (payload?: { mode?: 'live' | 'replay' } | boolean) => {
+  let targetMode: 'live' | 'replay';
+  if (typeof payload === 'object' && payload?.mode) {
+    targetMode = payload.mode;
+  } else {
+    targetMode = liveSubtitlesEnable.value ? 'live' : 'replay';
+  }
+
+  if (targetMode === 'live' && !liveSubtitlesEnable.value) return;
+  if (targetMode === 'replay' && !replaySubtitleVisible.value) return;
+
+  subtitleSettingMode.value = targetMode;
   subtitleSettingVisible.value = true;
 };
 

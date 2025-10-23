@@ -166,6 +166,8 @@ export interface PlayerStoreState {
   historyDuration: Ref<number>;
   /** 播放缓冲监测提示信息 */
   playerLoadingDetectionInfo: Ref<PlayerDetectionCbParams>;
+  /** 是否有导播台竖屏流适配类 */
+  hasGuidePortraitStreamFitClass: ComputedRef<boolean>;
 }
 
 export enum SwitchTipsStatus {
@@ -281,6 +283,18 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 暖场大封面 */
   const warmUpLargeCover = computed(() => {
     return warmUpSetting.value.warmUpLargeImg || '';
+  });
+
+  /** 是否有导播台竖屏流适配类 */
+  const hasGuidePortraitStreamFitClass = computed(() => {
+    return (
+      channelStore.liveStatus === LiveStatus.Live && // 直播中
+      channelStore.isNewGuideStream && // 是导播台的流
+      layoutStore.isPortraitWatchLayout && // 是竖屏布局
+      !!resolutionWidth.value &&
+      !!resolutionHeight.value &&
+      resolutionWidth.value < resolutionHeight.value // 是竖屏流
+    );
   });
 
   /** 暖场渲染图片，既作为暖场图，又作为暖场视频的封面图 */
@@ -719,5 +733,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     historyDuration,
 
     playerLoadingDetectionInfo,
+    hasGuidePortraitStreamFitClass,
   };
 });

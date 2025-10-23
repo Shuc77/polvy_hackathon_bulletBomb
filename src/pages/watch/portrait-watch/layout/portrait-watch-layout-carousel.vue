@@ -23,7 +23,10 @@
 
       <!-- 空白屏 -->
       <plv-carousel-item>
-        <carousel-page-container click-for-player />
+        <carousel-page-container
+          click-for-player
+          is-blank-screen
+        />
       </plv-carousel-item>
     </plv-carousel>
   </div>

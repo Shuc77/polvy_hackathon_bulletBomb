@@ -5,6 +5,7 @@ import { type LotteryRecordInstance } from '@polyv/iar-lottery-ui';
 import { type PolyvLottery } from '@polyv/live-watch-sdk';
 import { ref } from 'vue';
 import { useLotteryRecordEntrance } from './use-lottery-record-entrance';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 export const useLotteryRecordList = () => {
   const { getEmitter } = useGlobalInject();
@@ -12,6 +13,8 @@ export const useLotteryRecordList = () => {
   const interactRecordStore = useInteractReceiveStore();
 
   const { setLotteryRecordEntrance, removeLotteryRecordEntrance } = useLotteryRecordEntrance();
+
+  const { toInterruptUserClick } = useInterruptUserClick();
 
   const recordRef = ref<LotteryRecordInstance>();
 
@@ -32,6 +35,15 @@ export const useLotteryRecordList = () => {
   }
 
   function onShow() {
+    // 需要先拦截用户操作
+    const res = toInterruptUserClick({
+      triggerSource: 'show-lottery-list',
+      ignoreSetNick: true,
+    });
+    if (res) {
+      return false;
+    }
+
     getEmitter().emit(appEvents.global.OpenPersonalRewardDialog, 'lottery');
   }
 

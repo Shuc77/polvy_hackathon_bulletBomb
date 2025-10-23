@@ -36,8 +36,8 @@
 import { fitProtocol } from '@/assets/utils/url';
 import { clickImgToPreview } from '@/hooks/components/use-image-preview';
 import { ChatMsgSource } from '@polyv/live-watch-sdk';
-import { msgQuoteContentProps, useMsgQuoteContent } from './use-msg-quote-content';
 import { useQuoteSpeakContentParse } from '../speak-msg/use-speak-msg';
+import { msgQuoteContentProps, useMsgQuoteContent } from './use-msg-quote-content';
 
 const { parseQuoteSpeakContent } = useQuoteSpeakContentParse();
 
@@ -51,10 +51,26 @@ const { quoteNick } = useMsgQuoteContent({ props });
   // border-bottom: 1px solid rgba(#fff, 0.08);
   position: relative;
   padding-bottom: 4px;
+  padding-left: 6px;
   margin-bottom: 4px;
   font-size: 12px;
   line-height: 22px;
   @include pseudo-border-bottom;
+
+  &::after {
+    position: absolute;
+    top: 4px;
+    bottom: 8px;
+    left: 0;
+    width: 2px;
+    content: '';
+    background-color: rgba(var(--plv-watch-skin-special-rgb), 1);
+    border-radius: 2px;
+  }
+}
+
+.c-portrait-msg-quote-content__nick {
+  color: rgba(var(--plv-watch-skin-special-rgb), 1);
 }
 
 .c-portrait-msg-quote-content__main {

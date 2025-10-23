@@ -22,24 +22,16 @@
 </template>
 
 <script setup lang="ts">
-import { appEvents } from '@/app/app-events';
-import { useGlobalInject } from '@/app/use-global-inject';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { unref } from 'vue';
 
 const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
 
-const { getEmitter } = useGlobalInject();
+const { toInterruptUserClick } = useInterruptUserClick();
 
 function onClickSetNick() {
-  if (!unref(hasNickname)) {
-    getEmitter().emit(appEvents.chat.OpenSetNick, true);
-    return;
-  }
-
-  const viewerStore = useViewerStore();
-  viewerStore.checkNeedRealNameAuth();
+  toInterruptUserClick({ triggerSource: 'set-nick', ignoreSetNick: false });
 }
 </script>
 

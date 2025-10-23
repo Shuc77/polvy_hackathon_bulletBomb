@@ -27,8 +27,8 @@ import MobileQuestionAnswer from './mobile-question-answer.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useQuestionAnswer } from './hooks/use-question-answer';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const { visible, setVisible } = useSimpleVisible();
 
@@ -38,10 +38,10 @@ const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
 const { questionAnswerSdk, onPreviewImage } = useQuestionAnswer();
 
+const { needInterruptUserClick } = useInterruptUserClick();
+
 useEventBusListener(appEvents.interaction.OpenQuestionAnswer, (_visible = true) => {
-  const viewerStore = useViewerStore();
-  const checkResult = viewerStore.checkNeedRealNameAuth();
-  if (_visible && checkResult) {
+  if (_visible && needInterruptUserClick.value) {
     return;
   }
   setVisible(_visible);

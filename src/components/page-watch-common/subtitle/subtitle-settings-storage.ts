@@ -14,6 +14,12 @@ export interface SubtitleSettingsStorage {
   translateLanguage: SubtitleSourceTranslateLanguage;
   /** 显示模式: 'all' | 'source' | 'translate' */
   displayMode: 'all' | 'source' | 'translate';
+  /** 竖屏回放主字幕开关状态 */
+  portraitReplayMainEnabled: boolean;
+  /** 竖屏回放副字幕开关状态 */
+  portraitReplaySubEnabled: boolean;
+  /** 竖屏回放已选翻译字幕Id */
+  portraitReplaySubtitleId: string;
 }
 
 /**
@@ -30,6 +36,9 @@ const DEFAULT_SETTINGS: SubtitleSettingsStorage = {
   subtitleEnabled: false,
   translateLanguage: '' as SubtitleSourceTranslateLanguage,
   displayMode: 'all',
+  portraitReplayMainEnabled: true,
+  portraitReplaySubEnabled: true,
+  portraitReplaySubtitleId: '',
 };
 
 /**

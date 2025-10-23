@@ -1,12 +1,11 @@
-import type { IconCommonProps } from '@polyv/icons-vue/common/interfaces';
-import type { IconComponentOption } from '@polyv/icons-vue/icon-builder';
+import type { IconComponentOption } from '@polyv/icons-vue-middle/icon-builder';
 import Vue from 'vue';
 import { CombinedVueInstance } from 'vue/types/vue';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ContextMenuData<ExtData = any> {
   hidden?: boolean;
-  getIcon?: () => IconComponentOption<IconCommonProps>;
+  getIcon?: () => IconComponentOption;
   content: string;
   onClick: (menuItem: ContextMenuData<ExtData>) => void;
   /** 额外携带数据 */

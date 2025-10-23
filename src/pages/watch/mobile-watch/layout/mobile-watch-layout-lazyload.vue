@@ -41,7 +41,7 @@
     <mobile-withdraw-detail v-if="withdrawVisible" />
 
     <!-- 聊天消息全文弹层 -->
-    <mobile-chat-full-message />
+    <mobile-chat-full-message v-if="!isChatUIV2" />
 
     <!-- 更多弹层 -->
     <mobile-more-popup />
@@ -63,12 +63,20 @@
     </template>
 
     <!-- 固定的聊天消息输入框 -->
-    <mobile-chat-input-controller-fixed
-      v-if="interactSetting.seatTableEnabled && chatInputControllerEnable"
-    />
+    <template v-if="chatInputControllerEnable">
+      <!-- 聊天消息输入框弹层 -->
+      <chat-loader-helper v-if="isChatUIV2">
+        <mobile-chat-message-input-popup />
+      </chat-loader-helper>
+      <!-- 仅云席开启后可用 -->
+      <mobile-chat-input-controller-fixed v-else-if="interactSetting.seatTableEnabled" />
+    </template>
 
     <!-- 绑定用户身份信息弹层 -->
     <mobile-identity-collect-info-dialog v-if="bindMobileVisible" />
+
+    <!-- 用户体系登录弹层 -->
+    <mobile-identity-login-dialog-render v-if="needIdentityGuestForceLogin" />
 
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup v-if="iarSdkLoaded" />
@@ -118,6 +126,10 @@ import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invi
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
+import MobileIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
+import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-message-input-popup.vue';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
@@ -175,11 +187,11 @@ const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
 const { inviteDetailEnabled, inviteActivityEnabled } = storeDefinitionToRefs(useInviteStore);
 
-const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs(useIdentityStore);
 
 const { learningStatsEnabled, learningStatsDialogEnabled } =
   storeDefinitionToRefs(useChannelInfoStore);

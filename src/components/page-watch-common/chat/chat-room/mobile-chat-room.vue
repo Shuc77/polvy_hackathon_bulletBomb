@@ -36,7 +36,10 @@
     <!-- 聊天消息列表区域 -->
     <div class="c-mobile-chat-room__msg-list">
       <!-- 消息列表 -->
-      <mobile-chat-msg-list />
+      <mobile-chat-msg-list v-if="!isChatUIV2" />
+      <chat-loader-helper v-else>
+        <chat-msg-list-v2 />
+      </chat-loader-helper>
 
       <!-- 右下角挂件 -->
       <mobile-chat-room-pendant />
@@ -49,10 +52,15 @@
     <mobile-interactive-entrance v-if="iarSdkLoaded" />
 
     <!-- 底部输入框 -->
-    <mobile-chat-input-controller v-if="chatInputControllerEnable" />
+    <template v-if="chatInputControllerEnable">
+      <mobile-chat-input-controller v-if="!isChatUIV2" />
+      <chat-loader-helper v-else>
+        <mobile-message-input-v2 />
+      </chat-loader-helper>
+    </template>
 
     <!-- 报名观看以及游客登录（参与互动时机） -->
-    <mobile-enroll v-if="isGuest || needEnrollByChat" />
+    <mobile-enroll v-if="needEnrollByChat" />
   </div>
 </template>
 
@@ -67,6 +75,9 @@ import MobileRunwayEffect from '@/components/page-watch-common/message-effect/ru
 import MobileChatMsgList from '../chat-msg-list/mobile-chat-msg-list.vue';
 import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
+import ChatMsgListV2 from '../../chat-v2/chat-msg-list/index.vue';
+import MobileMessageInputV2 from '../../chat-v2/message-input/mobile-message-input.vue';
+import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -74,12 +85,11 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { useIdentityStore } from '@/store/use-identity-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { iarSdkLoaded, announcementFunctionVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
@@ -87,8 +97,6 @@ const { iarSdkLoaded, announcementFunctionVisible } =
 const { mobileChatRoomBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
-
-const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const { mobileLayoutBottomHeight } = storeDefinitionToRefs(useLayoutStore);
 </script>

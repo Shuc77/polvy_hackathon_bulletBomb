@@ -24,6 +24,7 @@ export { default as PcIconChatError } from './icons/chat-error';
 export { default as PcIconChatLoading } from './icons/chat-loading';
 export { default as PcIconCheck } from './icons/check';
 export { default as PcIconCheckRoundFill } from './icons/check-round-fill';
+export { default as PcIconCheckbox } from './icons/checkbox';
 export { default as PcIconClose } from './icons/close';
 export { default as PcIconCloseRound } from './icons/close-round';
 export { default as PcIconCloseRoundFill } from './icons/close-round-fill';

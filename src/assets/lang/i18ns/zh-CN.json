@@ -49,6 +49,7 @@
   "auth.enter": "进入直播",
   "auth.login.button": "去登录",
   "auth.login.tips": "登录后才可参与互动",
+  "auth.login.tips.look": "登录后才可查看",
   "auth.login.tips.ppt": "登录后才可观看直播",
   "auth.login.tips.continue": "继续浏览",
   "ask.input.placeholder": "发起提问",
@@ -863,7 +864,7 @@
   "personalReward.myReward": "我的奖励",
   "personalReward.taskEnter": "任务奖励",
   "personalReward.luckyLotteryEnter": "幸运抽奖",
-  "personalReward.lotteryEnter": "抽奖",
+  "personalReward.lotteryEnter": "互动抽奖",
   "personalReward.withdraw": "红包提现",
   "player.streamStop.waitPlayback": "回放待生成",
   "player.loading.detection.button": "点击切换",
@@ -882,5 +883,7 @@
   "portrait.subtitle.setting.original": "原文(不翻译)",
   "portrait.subtitle.close.tips.title": "确认要关闭吗？",
   "portrait.subtitle.close.tips.content": "关闭后可在「更多-互动工具-实时字幕」中开启",
-  "portrait.subtitle.float.guide.tips": "手指拖拽侧边区域，可移动位置"
+  "portrait.subtitle.float.guide.tips": "手指拖拽侧边区域，可移动位置",
+
+  "portrait.exit.clear.screen.btn.text": "退出清屏"
 }

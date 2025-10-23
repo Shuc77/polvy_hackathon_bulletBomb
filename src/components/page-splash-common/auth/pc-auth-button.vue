@@ -10,7 +10,7 @@
       @click="onClickAuthButton"
     />
 
-    <!-- 无条件观看 -->
+    <!-- 无条件观看/公开观看 -->
     <pc-auth-none v-if="currentAuthType === AuthType.None" />
     <!-- 白名单观看 -->
     <pc-auth-phone v-if="currentAuthType === AuthType.Phone" />

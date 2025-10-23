@@ -145,6 +145,13 @@
         :text="$lang('player.subtitle.text')"
         @click="onClickSubtitle"
       />
+      <!-- 回放字幕 -->
+      <more-item
+        v-if="replaySubtitleVisible && isPortraitWatchLayout && !liveSubtitlesEnable"
+        :icon-comp="MobileIconMoreSubtitle"
+        :text="$lang('player.replaySubtitle.text')"
+        @click="onClickReplaySubtitle"
+      />
       <!-- 个人中心 -->
       <more-item
         v-if="identitySetting.profileEnabled"
@@ -163,9 +170,10 @@
 
       <!-- 任务奖励 -->
       <more-item
+        v-if="personalRewardEntranceVisible"
         :icon-comp="MobileIconMoreMyReward"
         :text="$lang('taskActivity.myReward')"
-        @click="onClickMyReward"
+        @click="onClickPersonalReward"
       />
 
       <!-- 提现 -->
@@ -281,6 +289,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useStreamTrack } from '../../player/player-stream-track/use-stream-track';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -288,8 +297,12 @@ const emit = defineEmits({
 
 const { getEmitter, getWatchCore } = useGlobalInject();
 
-const { announcementFunctionVisible, feedbackMenuVisible, couponPendantVisible } =
-  storeDefinitionToRefs(useInteractReceiveStore);
+const {
+  announcementFunctionVisible,
+  feedbackMenuVisible,
+  couponPendantVisible,
+  personalRewardEntranceVisible,
+} = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
@@ -301,7 +314,6 @@ const chatStore = useChatStore();
 const { onlySpecialMsg, chatSetting, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
 const { toggleOnlySpecialMsg } = chatStore;
 
-const viewerStore = useViewerStore();
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { sendRedpackVisible, scoreRedpackEnabled } = storeDefinitionToRefs(useRedpackStore);
@@ -312,7 +324,8 @@ const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
 const { learningStatsEnabled } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { subtitleRealTimeEnabled, liveSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
+const { subtitleRealTimeEnabled, liveSubtitlesEnable, replaySubtitleVisible } =
+  storeDefinitionToRefs(useSubtitleStore);
 
 const { chatMenuData, qaMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -336,6 +349,8 @@ const {
   latencyModeSettingVisible,
   playerModeSwitcherVisible,
 } = usePlayerControl();
+
+const { toInterruptUserClick } = useInterruptUserClick();
 
 const watchCore = getWatchCore();
 
@@ -386,6 +401,11 @@ function onClickScoreRecord() {
 
 /** 点击修改昵称 */
 function onClickSetNick() {
+  const result = toInterruptUserClick({ triggerSource: 'set-nick', ignoreSetNick: false });
+  if (result) {
+    return;
+  }
+
   getEmitter().emit(appEvents.chat.OpenSetNick, true);
   closeMore();
 }
@@ -410,12 +430,6 @@ function onClickSendRedpack() {
 
 /** 点击发送图片 */
 function onClickSendImage() {
-  const viewerStore = useViewerStore();
-  const checkRealName = viewerStore.checkNeedRealNameAuth();
-  if (checkRealName) {
-    return;
-  }
-
   getEmitter().emit(appEvents.chat.ToSendImage);
   closeMore();
 }
@@ -433,7 +447,12 @@ function onClickBindMobile() {
 }
 
 /** 点击任务奖励 */
-function onClickMyReward() {
+function onClickPersonalReward() {
+  const result = toInterruptUserClick({ triggerSource: 'personal-reward', ignoreSetNick: true });
+  if (result) {
+    return;
+  }
+
   getEmitter().emit(appEvents.global.OpenPersonalRewardDialog);
   closeMore();
 }
@@ -453,6 +472,11 @@ function onClickPlaybackSetting() {
 
 /** 点击优惠券 */
 function onClickCoupon() {
+  const result = toInterruptUserClick({ triggerSource: 'coupon-pendant', ignoreSetNick: true });
+  if (result) {
+    return;
+  }
+
   getEmitter().emit(appEvents.interaction.OpenCouponUserList, true);
   closeMore();
 }
@@ -500,8 +524,8 @@ function onClickLatencySwitch() {
 
 /** 点击问答 */
 function onClickQuestionAnswer() {
-  const checkResult = viewerStore.checkNeedRealNameAuth();
-  if (checkResult) {
+  const result = toInterruptUserClick({ triggerSource: 'iar-qa', ignoreSetNick: true });
+  if (result) {
     return;
   }
 
@@ -517,7 +541,13 @@ function onClickSwitchStream() {
 
 /** 点击实时字幕 */
 function onClickSubtitle() {
-  getEmitter().emit(appEvents.portrait.OpenSubtitleSettingPopup, true);
+  getEmitter().emit(appEvents.portrait.OpenSubtitleSettingPopup, { mode: 'live' });
+  closeMore();
+}
+
+/** 点击回放字幕 */
+function onClickReplaySubtitle() {
+  getEmitter().emit(appEvents.portrait.OpenSubtitleSettingPopup, { mode: 'replay' });
   closeMore();
 }
 

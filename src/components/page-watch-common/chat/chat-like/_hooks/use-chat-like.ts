@@ -6,10 +6,10 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { PropUtils } from '@polyv/vue-components';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useChatStore } from '@/store/use-chat-store';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { ChatEvents, ChatEventsRelations } from '@polyv/live-watch-sdk';
 import { computed, onBeforeMount, onBeforeUnmount, onMounted } from 'vue';
 import { useLikeAnimation } from './use-like-animation';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 /**
  * 点赞气泡图标列表
@@ -35,8 +35,9 @@ export const chatLikeProps = () => ({
 export const useChatLike = () => {
   const { getWatchCore } = useGlobalInject();
 
+  const { needInterruptUserClick, toInterruptUserClick } = useInterruptUserClick();
+
   const chatStore = useChatStore();
-  const viewerStore = useViewerStore();
 
   /** 上一刻的点击时间 */
   let lastClickTime = Date.now();
@@ -45,6 +46,8 @@ export const useChatLike = () => {
 
   /** 处理点击事件 */
   function onClickLike() {
+    if (needInterruptUserClick.value) return;
+
     const now = Date.now();
 
     if (now - lastClickTime > 200) {
@@ -55,8 +58,7 @@ export const useChatLike = () => {
   }
 
   function onClickLikeWrap() {
-    const viewerStore = useViewerStore();
-    viewerStore.checkNeedRealNameAuth();
+    toInterruptUserClick({ triggerSource: 'like', ignoreSetNick: true });
   }
 
   const { trackUserClickLike } = useWatchEventTrack();
@@ -103,7 +105,7 @@ export const useChatLike = () => {
 
   /** 点赞是否只读 */
   const isReadonlyLike = computed(() => {
-    return viewerStore.needRealNameAuth;
+    return needInterruptUserClick.value;
   });
 
   onMounted(() => {

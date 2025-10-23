@@ -4,6 +4,7 @@
     <pc-product-pendant
       v-if="targetInited"
       :product-target="getProductTarget()"
+      :before-click-interrupt="beforeClickInterrupt"
     />
   </div>
 </template>
@@ -14,6 +15,7 @@ import { PolyvProduct } from '@polyv/live-watch-sdk';
 import { useProductUILoader } from '../load-product-ui';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useIarTarget } from '@/components/page-watch-common/interactive-receive-v2/_hooks/use-iar-target';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const { getWatchCore } = useGlobalInject();
 
@@ -26,6 +28,12 @@ const { targetInited, getIarTarget: getProductTarget } = useIarTarget<PolyvProdu
 const { loadProductUI } = useProductUILoader();
 
 const PcProductPendant = defineAsyncComponent(() => loadProductUI('pc-product-pendant'));
+
+const { toInterruptUserClick } = useInterruptUserClick();
+
+function beforeClickInterrupt() {
+  return toInterruptUserClick({ triggerSource: 'pc-product-pendant', ignoreSetNick: true });
+}
 </script>
 
 <style lang="scss">

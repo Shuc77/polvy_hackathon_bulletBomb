@@ -38,7 +38,7 @@
     <portrait-chat-input-controller v-if="chatInputControllerEnable" />
 
     <!-- 聊天消息全文弹层 -->
-    <portrait-chat-full-message />
+    <portrait-chat-full-message v-if="!isChatUIV2" />
 
     <!-- 播放器设置弹层 -->
     <portrait-player-control-popup />
@@ -73,6 +73,9 @@
     <!-- 绑定用户身份信息弹层 -->
     <mobile-identity-collect-info-dialog v-if="bindMobileVisible" />
 
+    <!-- 用户体系登录弹层 -->
+    <mobile-identity-login-dialog-render v-if="needIdentityGuestForceLogin" />
+
     <!-- 任务奖励领取弹层 -->
     <mobile-task-reward-receive-popup v-if="iarSdkLoaded" />
 
@@ -102,6 +105,14 @@
 
     <!-- 学习详情弹层 -->
     <mobile-learning-detail-popup v-if="learningStatsEnabled" />
+
+    <!-- 更多弹层 -->
+    <mobile-more-panel-popup />
+
+    <!-- 聊天消息输入框弹层 -->
+    <chat-loader-helper v-if="isChatUIV2">
+      <mobile-chat-message-input-popup />
+    </chat-loader-helper>
   </div>
 </template>
 
@@ -122,6 +133,8 @@ import MobileWithdrawDetail from '@/components/page-watch-common/withdraw/mobile
 import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/components/playback-chapter-popup/portrait-playback-chapter-popup.vue';
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
 import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
+import MobileMorePanelPopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
+import MobileIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
 
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
@@ -140,6 +153,8 @@ import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-r
 import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
 import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
+import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-message-input-popup.vue';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -157,7 +172,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
-const { chatInputControllerEnable } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { inviteRankEnabled, inviteDetailEnabled, inviteActivityEnabled } =
   storeDefinitionToRefs(useInviteStore);
@@ -182,7 +197,7 @@ const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
+const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs(useIdentityStore);
 
 const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 

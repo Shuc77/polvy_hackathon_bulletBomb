@@ -12,17 +12,23 @@ export const useUserIdentityIntercept = () => {
   const watchCore = getWatchCore();
 
   async function checkIdentityInfoLogin() {
-    let needLogin = watchCore.identity.checkIdentityLogin();
-    // 游客登录由 UI 层自行限制
-    if (identityStore.isGuest) {
+    // 检查是否需要用户信息登录
+    let needIdentityLogin = watchCore.identity.checkIdentityLogin();
+
+    // UI 层自行限制游客身份是否能正常进入观看页
+    if (!needIdentityLogin && identityStore.isGuest) {
       const allowGuest =
         identityStore.checkAllowUseGuest() &&
         !identityStore.allowToVerifyDirectAuth() &&
         !watchAppStore.shouldShowSplash;
-      needLogin = !allowGuest;
+
+      // 如果不允许游客身份登录，则强制正式用户登录
+      if (!allowGuest) {
+        needIdentityLogin = true;
+      }
     }
 
-    if (needLogin) {
+    if (needIdentityLogin) {
       watchAppStore.setDirectBusinessPage({
         pageType: DirectBusinessPageType.WatchIdentity,
       });
@@ -33,6 +39,10 @@ export const useUserIdentityIntercept = () => {
     if (identityStore.isGuest) {
       return false;
     }
+
+    // ====
+    // 剩余流程会尽量先补充好用户信息
+    // ====
 
     const needWorkWechatAuth = watchCore.identity.checkWorkWxSnsApiBaseEnabled();
 

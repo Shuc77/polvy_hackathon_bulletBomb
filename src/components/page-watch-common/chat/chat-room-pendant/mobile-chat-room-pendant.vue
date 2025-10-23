@@ -151,7 +151,7 @@ const renderParent = computed<string | HTMLElement>(() => {
   right: 16px;
   bottom: 5px;
   z-index: $--zIndex-pendant;
-  width: 40px;
+  width: $pendant-size;
 }
 
 .c-mobile-chat-room-pendant__item + .c-mobile-chat-room-pendant__item {

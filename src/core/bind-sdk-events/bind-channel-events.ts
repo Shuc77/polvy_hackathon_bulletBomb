@@ -21,7 +21,6 @@ import {
 } from '@/assets/utils/utils';
 import { appendToURL } from '@just4/querystring';
 import { extractChannelAndSessionId } from '@/hooks/core/use-query-params';
-import { useIdentityStore } from '@/store/use-identity-store';
 import { destroyWatchSdk } from '../watch-sdk';
 import { generateRandomInteger } from '@/assets/utils/number';
 
@@ -31,7 +30,6 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
   const channelStore = useChannelStore();
   const channelInfoStore = useChannelInfoStore();
   const ChannelMenuStore = useChannelMenuStore();
-  const identityStore = useIdentityStore();
 
   /**
    * 存在错误的 targetSessionId 时，需要跳转回到场次选择页
@@ -170,11 +168,7 @@ export function bindChannelModuleEvents(watchCore: PolyvWatchCore): void {
 
     if (liveStatus === LiveStatus.Live) {
       console.log('直播开始');
-      if (
-        channelStore.isSeminarChannel &&
-        !channelStore.privateSeminarChannel &&
-        !identityStore.isGuest
-      ) {
+      if (channelStore.isSeminarChannel && !channelStore.privateSeminarChannel) {
         watchAppStore.setupWatchCoreConnect();
       }
       const emitter = watchAppStore.getPolyvWatchApp()?.getEmitter();

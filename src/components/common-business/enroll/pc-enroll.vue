@@ -3,7 +3,7 @@
   <div
     class="c-pc-enroll"
     :class="{
-      'c-pc-enroll--chat': needEnrollByChat || isGuest,
+      'c-pc-enroll--chat': needEnrollByChat,
     }"
   >
     <!-- 入口的触发按钮 -->
@@ -32,14 +32,12 @@ import NormalButton from '@/components/common-base/normal-button/normal-button.v
 
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useIdentityStore } from '@/store/use-identity-store';
 
 import { useEnrollEnter } from './hooks/use-enroll-enter';
 
 import PcEnrollDialog from './pc-enroll-dialog.vue';
 
 const { needEnrollByEnter, needEnrollByChat, entranceText } = storeDefinitionToRefs(useEnrollStore);
-const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 const { dialogRef, onClickEnter } = useEnrollEnter();
 </script>
 

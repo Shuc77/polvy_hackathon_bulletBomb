@@ -58,7 +58,10 @@
     <player-tips class="c-portrait-watch-layout__player-tips"></player-tips>
 
     <!-- 评论上墙 -->
-    <transition name="fade">
+    <transition
+      v-if="!isChatUIV2"
+      name="fade"
+    >
       <speak-top-business
         class="c-portrait-watch-layout__speak-to-top"
         v-show="portraitShowSpeakToTop"
@@ -92,6 +95,7 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 import { CSSProperties } from 'vue/types/jsx';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
+import { useChatStore } from '@/store/use-chat-store';
 
 const { isVerticalScreenOrientation, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -106,6 +110,8 @@ const {
 const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc, documentSwitch } = storeDefinitionToRefs(useDocStore);
+
+const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
 

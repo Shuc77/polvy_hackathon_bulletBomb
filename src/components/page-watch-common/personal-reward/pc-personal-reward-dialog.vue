@@ -17,18 +17,20 @@
       </div>
     </template>
     <div class="c-pc-personal-reward-popup__content">
-      <!-- <div class="c-pc-personal-reward-popup__switch">
-        <span
-          v-for="(item, index) in rewardTypes"
-          :key="index"
-          :class="{
-            'is-active': item.type === currentType,
-          }"
-          @click="currentType = item.type"
-        >
-          {{ item.text }}
-        </span>
-      </div> -->
+      <div class="c-pc-personal-reward-popup__switch-container">
+        <div class="c-pc-personal-reward-popup__switch">
+          <span
+            v-for="(item, index) in rewardTypes"
+            :key="index"
+            :class="{
+              'is-active': item.type === currentType,
+            }"
+            @click="currentType = item.type"
+          >
+            {{ item.text }}
+          </span>
+        </div>
+      </div>
 
       <div class="c-pc-personal-reward-popup__inner">
         <pc-task-reward-list v-if="currentType === 'task-activity'" />
@@ -51,7 +53,7 @@ import { useLangStore } from '@/store/use-lang-store';
 
 const { currentLang } = storeDefinitionToRefs(useLangStore);
 
-const { visible, currentType } = usePersonalReward();
+const { visible, rewardTypes, currentType } = usePersonalReward();
 </script>
 
 <style lang="scss">
@@ -118,10 +120,26 @@ const { visible, currentType } = usePersonalReward();
   height: 100%;
 }
 
-.c-pc-personal-reward-popup__switch {
+.c-pc-personal-reward-popup__switch-container {
+  box-sizing: border-box;
   display: flex;
+  padding: 0 12px;
+  margin-bottom: 16px;
+}
+
+.c-pc-personal-reward-popup__switch {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 16px 24px 0;
+  padding: 4px;
+  background: linear-gradient(
+    97deg,
+    rgba(254, 150, 104, 0.2) 0%,
+    rgba(254, 63, 82, 0.2) 49%,
+    rgba(255, 86, 145, 0.2) 100%
+  );
+  border-radius: 8px;
 
   span {
     box-sizing: border-box;
@@ -129,19 +147,17 @@ const { visible, currentType } = usePersonalReward();
     align-items: center;
     justify-content: center;
     min-width: 72px;
-    height: 24px;
-    padding: 0 8px;
-    margin-right: 12px;
+    height: 22px;
+    padding: 2px 12px;
     font-size: 12px;
     color: #666666;
+    color: #8e1e33;
     cursor: pointer;
-    background: #fff8f8;
-    border: 1px solid #fff8f8;
-    border-radius: 12px;
 
     &.is-active {
-      color: #fe3f52;
-      border-color: #fe3f52;
+      background: #fff5fb;
+      border: 1px solid #fff8f8;
+      border-radius: 6px;
     }
   }
 }

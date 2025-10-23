@@ -49,6 +49,7 @@
   "auth.enter": "Enter",
   "auth.login.button": "Go to login",
   "auth.login.tips": "Please login to participate in interaction",
+  "auth.login.tips.look": "Only viewable after logging in",
   "auth.login.tips.ppt": "Please login to watch the live stream",
   "auth.login.tips.continue": "Continue browsing",
   "ask.input.placeholder": "Initiate a question",
@@ -882,5 +883,7 @@
   "portrait.subtitle.setting.original": "Original Subtitles",
   "portrait.subtitle.close.tips.title": "Confirm to close?",
   "portrait.subtitle.close.tips.content": "Close it in \"More-Interactive Tools-Real-Time Subtitles\" to open it",
-  "portrait.subtitle.float.guide.tips": "Drag the side area with your finger to move it"
+  "portrait.subtitle.float.guide.tips": "Drag the side area with your finger to move it",
+
+  "portrait.exit.clear.screen.btn.text": "Exit clear screen"
 }

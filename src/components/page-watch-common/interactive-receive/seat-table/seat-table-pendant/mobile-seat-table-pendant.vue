@@ -94,7 +94,7 @@ function onClickChat() {
 <style lang="scss">
 .c-mobile-seat-table-pendant {
   z-index: 10;
-  width: 40px;
+  width: 36px;
   padding-top: 17px;
   background: #fff;
   border-radius: 20px;
@@ -102,7 +102,7 @@ function onClickChat() {
   transition: all 0.3s ease;
 
   &.c-mobile-seat-table-pendant--close {
-    height: 40px;
+    height: 36px;
     padding-top: 0;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -138,8 +138,8 @@ function onClickChat() {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: $pendant-size;
+  height: $pendant-size;
   font-size: 16px;
   color: #333;
 }

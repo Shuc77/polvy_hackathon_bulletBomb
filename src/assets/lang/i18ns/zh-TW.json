@@ -49,6 +49,7 @@
   "auth.enter": "進入直播",
   "auth.login.button": "去登入",
   "auth.login.tips": "登入後才可參與互動",
+  "auth.login.tips.look": "登入後才可查看",
   "auth.login.tips.ppt": "登入後才可觀看直播",
   "auth.login.tips.continue": "繼續瀏覽",
   "ask.input.placeholder": "發起提問",
@@ -851,7 +852,7 @@
   "effect.peopleCount": "等{count}人",
   "personalReward.myReward": "我的獎勵",
   "personalReward.taskEnter": "任務獎勵",
-  "personalReward.lotteryEnter": "抽獎",
+  "personalReward.lotteryEnter": "互動‌抽獎",
   "personalReward.withdraw": "紅包提現",
   "chat.connectError.tips3": "聊天室連接失敗，請",
   "chat.connectError.tips4": "刷新重試",
@@ -874,7 +875,7 @@
   "taskActivity.networkError.tips": "無法獲取任務信息",
   "taskActivity.retry": "重試",
   "more.base": "基础功能",
-  "more.interactive": "互动工具",
+  "more.interactive": "互動‌工具",
 
   "portrait.subtitle.setting.title": "字幕设置",
   "portrait.subtitle.setting.language": "字幕语言",
@@ -882,5 +883,7 @@
   "portrait.subtitle.setting.original": "原文(不翻译)",
   "portrait.subtitle.close.tips.title": "確認要關閉嗎？",
   "portrait.subtitle.close.tips.content": "關閉後可在「更多-互動工具-實時字幕」中開啟",
-  "portrait.subtitle.float.guide.tips": "手指拖拽側邊區域，可移動位置"
+  "portrait.subtitle.float.guide.tips": "手指拖拽側邊區域，可移動位置",
+
+  "portrait.exit.clear.screen.btn.text": "退出清屏"
 }

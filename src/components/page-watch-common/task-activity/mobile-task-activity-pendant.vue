@@ -74,8 +74,8 @@ function onCloseNetworkError() {
 <style lang="scss">
 .c-mobile-task-activity-pendant {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: $pendant-size;
+  height: $pendant-size;
   background-image: url(./images/pendant-icon.png);
   background-size: contain;
 }

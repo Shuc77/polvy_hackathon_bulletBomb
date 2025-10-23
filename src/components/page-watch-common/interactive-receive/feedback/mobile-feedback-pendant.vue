@@ -20,8 +20,8 @@ function onClickFeedback() {
 
 <style lang="scss">
 .c-mobile-feedback-pendant {
-  width: 40px;
-  height: 40px;
+  width: $pendant-size;
+  height: $pendant-size;
   background-image: url(./images/icon-feedback.png);
   background-repeat: no-repeat;
   background-size: 100%;
