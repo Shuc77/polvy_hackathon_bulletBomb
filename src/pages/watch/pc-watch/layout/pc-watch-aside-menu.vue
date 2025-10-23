@@ -96,7 +96,7 @@
 
         <!-- 问答 tab -->
         <pc-aside-tab-pane
-          v-if="menu.menuType === ChannelMenuType.QA && !isGuest"
+          v-if="menu.menuType === ChannelMenuType.QA"
           :key="`qa-${index}`"
           :label="menu.name"
           :name="TAB_NAME_QA"
@@ -207,7 +207,6 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useDonateStore } from '@/store/use-donate-store';
-import { useIdentityStore } from '@/store/use-identity-store';
 
 import { ChannelMenuType, MotivationLikeType, ProductEntryPosition } from '@polyv/live-watch-sdk';
 
@@ -231,8 +230,6 @@ const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
-
-const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,

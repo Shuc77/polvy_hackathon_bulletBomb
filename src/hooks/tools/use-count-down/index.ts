@@ -1,12 +1,11 @@
-import { SimilarResponsive } from '@polyv/vue-components';
 import { Countdown, IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
-import { computed, isRef, onUnmounted, ref, unref } from 'vue';
+import { computed, isRef, onUnmounted, Ref, ref, unref } from 'vue';
 
 export interface UseSecondCountDownOptions {
   /** 总秒数，单位秒 */
-  second?: SimilarResponsive<number | undefined>;
+  second?: Ref<number | undefined> | number | undefined;
   /** 结束的时间戳 */
-  endTimestamp?: SimilarResponsive<number | undefined>;
+  endTimestamp?: Ref<number | undefined> | number | undefined;
   /** 倒计时剩余时间改变回调 */
   onCountDownChange?: (surplusData: CountDownSurplusData) => void;
   /** 倒计时结束回调 */

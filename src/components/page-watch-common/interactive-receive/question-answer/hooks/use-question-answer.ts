@@ -6,6 +6,7 @@ import { previewImage } from '@/hooks/components/use-image-preview';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 /**
  * @hook 互动-问答
@@ -14,7 +15,9 @@ export const useQuestionAnswer = () => {
   const interactReceiveStore = useInteractReceiveStore();
   const viewerStore = useViewerStore();
 
-  const { getEmitter, getWatchCore } = useGlobalInject();
+  const { getWatchCore } = useGlobalInject();
+
+  const { needInterruptUserClick, toInterruptUserClick } = useInterruptUserClick();
 
   const watchCore = getWatchCore();
   const questionAnswerSdk = watchCore.interactReceive.getQuestionAnswer();
@@ -23,11 +26,7 @@ export const useQuestionAnswer = () => {
    * 处理设置昵称
    */
   function onSetNick() {
-    const checkResult = viewerStore.checkNeedRealNameAuth();
-    if (checkResult) {
-      return;
-    }
-    getEmitter().emit(appEvents.chat.OpenSetNick, true);
+    toInterruptUserClick({ triggerSource: 'iar-qa', ignoreSetNick: false });
   }
 
   const innerHasNickname = computed(() => {
@@ -35,7 +34,7 @@ export const useQuestionAnswer = () => {
       return false;
     }
 
-    return !viewerStore.needRealNameAuth;
+    return !needInterruptUserClick.value;
   });
 
   /**

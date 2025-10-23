@@ -17,7 +17,10 @@ import { useChannelStore } from './use-channel-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useLangStore } from './use-lang-store';
 import { usePlaybackStore } from './use-playback-store';
-import { getSubtitleSettings, setSubtitleSettings } from '@/components/page-watch-common/subtitle/subtitle-settings-storage';
+import {
+  getSubtitleSettings,
+  setSubtitleSettings,
+} from '@/components/page-watch-common/subtitle/subtitle-settings-storage';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 export interface SubtitleStoreState {

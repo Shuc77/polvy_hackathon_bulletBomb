@@ -3,6 +3,7 @@
  */
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useSendMsg } from '@/components/page-watch-common/chat/chat-msg-list/hooks/send-msg-hook';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { ChatMsgRedpaperType } from '@polyv/live-watch-sdk';
@@ -32,6 +33,8 @@ export const useRedpackStatus = () => {
  */
 export const useRedpack = () => {
   const { getEmitter, getWatchCore } = useGlobalInject();
+
+  const { sendSpeakMsg } = useSendMsg();
 
   const interactReceiveStore = useInteractReceiveStore();
 
@@ -102,7 +105,11 @@ export const useRedpack = () => {
   /** 处理口令红包领取 */
   function onPasswordReceived(pwd: string) {
     // 发送口令到聊天室
-    pwd && getEmitter().emit(appEvents.chat.SendMessageToChat, pwd);
+    if (pwd) {
+      sendSpeakMsg({
+        content: pwd,
+      });
+    }
   }
 
   return {

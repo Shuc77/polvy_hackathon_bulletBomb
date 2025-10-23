@@ -14,6 +14,7 @@ export { default as MobileIconBooking } from './icons/booking';
 export { default as MobileIconChat } from './icons/chat';
 export { default as MobileIconCheck } from './icons/check';
 export { default as MobileIconCheckRoundFill } from './icons/check-round-fill';
+export { default as MobileIconClearScreen } from './icons/clear-screen';
 export { default as MobileIconClose } from './icons/close';
 export { default as MobileIconCloseRound } from './icons/close-round';
 export { default as MobileIconCloseRoundBgGrey } from './icons/close-round-bg-grey';

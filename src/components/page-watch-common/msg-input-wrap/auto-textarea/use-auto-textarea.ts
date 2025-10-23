@@ -65,7 +65,7 @@ export const useAutoTextarea = (options: {
   emit: VueEmit<typeof autoTextareaEmits>;
 }) => {
   const { props, emit } = options;
-  const { value, maxlength, lineHeight, fontSize, placeholder } = useProps(props);
+  const { value, lineHeight, fontSize, placeholder } = useProps(props);
 
   const textareaRef = ref<HTMLTextAreaElement>();
 
@@ -101,11 +101,7 @@ export const useAutoTextarea = (options: {
 
   /** 输入框真实 value */
   const realValue = computed(() => {
-    let valueText = unref(value) || '';
-    if (unref(maxlength)) {
-      valueText = valueText.slice(0, unref(maxlength));
-    }
-    return valueText;
+    return unref(value) || '';
   });
 
   /**

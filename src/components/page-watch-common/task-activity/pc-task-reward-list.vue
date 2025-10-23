@@ -101,7 +101,7 @@ const { getTaskReachText, getTaskRewardText } = useTaskActivityText();
   position: relative;
   box-sizing: border-box;
   height: 100%;
-  padding: 0 24px;
+  padding: 0 12px;
   overflow-y: auto;
 }
 .c-pc-task-reward-list__item {
@@ -190,9 +190,9 @@ const { getTaskReachText, getTaskRewardText } = useTaskActivityText();
 .c-pc-task-reward-list__empty {
   position: absolute;
   top: 0;
-  right: 24px;
+  right: 12px;
   bottom: 24px;
-  left: 24px;
+  left: 12px;
   z-index: 40;
   display: flex;
   flex-direction: column;

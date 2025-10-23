@@ -21,7 +21,7 @@
     >
       <!-- 提问图标 -->
       <portrait-ask-icon
-        v-if="!chatInputDisabled"
+        v-if="!chatInputDisabled && !isChatUIV2"
         slot="input-prefix"
         class="c-portrait-chat-input-controller__question-icon"
       />
@@ -51,6 +51,8 @@ const inputWrapRef = ref<HTMLDivElement>();
 const portraitLayoutStore = usePortraitLayoutStore();
 
 const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
+
+const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { getWatchCore } = useGlobalInject();
 
@@ -95,6 +97,13 @@ const {
 });
 
 useEventBusListener(appEvents.chat.FocusToChatInput, async () => {
+  setInputVisible(true);
+  await nextTick();
+
+  focusMsgInput();
+});
+
+useEventBusListener(appEvents.chat.FocusToPortraitAskInput, async () => {
   setInputVisible(true);
   await nextTick();
 

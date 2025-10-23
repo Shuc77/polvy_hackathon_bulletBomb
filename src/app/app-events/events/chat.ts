@@ -3,31 +3,15 @@
  */
 
 export const chatEvents = {
-  /** 重建聊天列表 */
+  /**
+   * 重建聊天列表
+   */
   ResetUpChatMsgList: 'ResetUpChatMsgList',
-  /**
-   * 滚动到最新的消息
-   */
-  ScrollToNew: 'ScrollToNew',
-  /**
-   * 发送消息到聊天室
-   * @param {string} content 消息文本
-   */
-  SendMessageToChat: 'SendMessageToChat',
   /**
    * 打开设置昵称
    * @param {boolean} visible 显示状态
    */
   OpenSetNick: 'OpenSetNick',
-  /**
-   * 将聊天室输入框聚焦
-   */
-  FocusToChatInput: 'FocusToChatInput',
-  /**
-   * 显示完整消息
-   * @param {string} content 完整的消息内容
-   */
-  ShowFullMessage: 'ShowFullMessage',
   /**
    * 触发发送图片
    */
@@ -36,6 +20,24 @@ export const chatEvents = {
    * 显示移动端固定输入框
    */
   ShowMobileFixedChatInput: 'ShowMobileFixedChatInput',
+
+  /**
+   * 显示完整消息
+   * @param {string} content 完整的消息内容
+   */
+  ShowFullMessage: 'ShowFullMessage',
+  /**
+   * 将聊天室输入框聚焦
+   */
+  FocusToChatInput: 'FocusToChatInput',
+  /**
+   * 将竖屏提问区输入框聚焦
+   */
+  FocusToPortraitAskInput: 'FocusToPortraitAskInput',
+  /**
+   * 滚动到最新的消息
+   */
+  ScrollToNew: 'ScrollToNew',
   /**
    * 替换聊天消息
    */

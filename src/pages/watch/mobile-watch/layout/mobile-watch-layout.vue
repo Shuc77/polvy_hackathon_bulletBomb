@@ -120,9 +120,15 @@
 
     <!-- 评论上墙 -->
     <speak-top-business
+      v-if="!isChatUIV2"
       class="c-mobile-watch-layout__speak-to-top"
       layout="mobile"
-    ></speak-top-business>
+    />
+    <chat-loader-helper v-else>
+      <toping-msg
+        class="c-mobile-watch-layout__speak-to-top c-mobile-watch-layout__speak-to-top-v2"
+      />
+    </chat-loader-helper>
 
     <!-- 其他直播预约 -->
     <common-other-live-booking class="c-mobile-watch-layout__other-live-booking" />
@@ -166,7 +172,8 @@ import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat
 import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
-// import MobileWatchMenu from './mobile-watch-menu.vue';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
 
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -198,7 +205,7 @@ const MobileWatchMenu = defineAsyncComponent(
 
 const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
-const { chatExited } = storeDefinitionToRefs(useChatStore);
+const { chatExited, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
@@ -488,6 +495,14 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
 
 .c-mobile-watch-layout__speak-to-top {
   z-index: 2300;
+}
+.c-mobile-watch-layout__speak-to-top-v2 {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 335px;
+  pointer-events: initial;
+  transform: translateX(-50%);
 }
 
 .c-mobile-watch-layout__other-live-booking {

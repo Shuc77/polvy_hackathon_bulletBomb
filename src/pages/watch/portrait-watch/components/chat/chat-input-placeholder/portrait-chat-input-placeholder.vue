@@ -27,13 +27,13 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { MobileIconMessage } from '@/components/component-icons/mobile/map';
 import PortraitAskIcon from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-icon.vue';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { computed, unref } from 'vue';
 
 const { chatInputDisabled } = storeDefinitionToRefs(useChatStore);
@@ -43,25 +43,24 @@ const { chatMenuData, askMenuData } = storeDefinitionToRefs(useChannelMenuStore)
 const { portraitMessageInputPlaceholder, portraitMessageTabCurrentName } =
   storeDefinitionToRefs(usePortraitLayoutStore);
 
-const { hasNickname } = storeDefinitionToRefs(useViewerStore);
-
-const { isPlaybacking, playbackListVisible, chapterVisible } =
-  storeDefinitionToRefs(usePlaybackStore);
+const { playbackListVisible, chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const playbackChapterEntranceVisible = computed<boolean>(() => {
-  return isPlaybacking.value && (unref(playbackListVisible) || unref(chapterVisible));
+  return unref(playbackListVisible) || unref(chapterVisible);
 });
 
 const { getEmitter } = useGlobalInject();
 
 const { toast } = useToastManager();
 
-function onClickPlaceholder() {
-  const viewerStore = useViewerStore();
+const { toInterruptUserClick } = useInterruptUserClick();
 
-  // 实名认证
-  const checkResult = viewerStore.checkNeedRealNameAuth();
-  if (checkResult) {
+function onClickPlaceholder() {
+  const result = toInterruptUserClick({
+    triggerSource: 'chat-input-placeholder',
+    ignoreSetNick: false,
+  });
+  if (result) {
     return;
   }
 
@@ -75,12 +74,6 @@ function onClickPlaceholder() {
     } else {
       toast.error(translate('chat.roomClosed'));
     }
-    return;
-  }
-
-  // 未设置昵称
-  if (!unref(hasNickname)) {
-    getEmitter().emit(appEvents.chat.OpenSetNick, true);
     return;
   }
 

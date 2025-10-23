@@ -110,7 +110,7 @@ const hasOtherPendant = computed<boolean>(() => {
   position: absolute;
   right: 12px;
   bottom: 21px;
-  width: 40px;
+  width: $pendant-size;
 }
 
 .c-pc-chat-room-pendant__item:empty {

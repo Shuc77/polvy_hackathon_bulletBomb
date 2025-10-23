@@ -19,13 +19,15 @@ export interface IdentityStore {
   identityUnionInfo: Ref<IdentityUnionInfo | undefined>;
   /** 身份设置 */
   identitySetting: Ref<IdentitySetting>;
-  /** 绑定手机号是否显示 */
+  /** 绑定用户手机号是否显示 */
   bindMobileVisible: ComputedRef<boolean>;
+  /** 是否需要游客强制登录 （游客转正式用户） */
+  needIdentityGuestForceLogin: ComputedRef<boolean>;
   /** 当前用户标签 id 列表 */
   currentLabelIds: ComputedRef<number[]>;
   /** 同步 Store 数据 */
   syncIdentityStore(): void;
-  /** 当前用户是否是游客登录 */
+  /** 当前用户是否是游客 */
   isGuest: Ref<boolean>;
   /** 重置当前用户游客身份 */
   resetGuest(): void;
@@ -47,6 +49,7 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
   /** 用户系统开关 */
   const watchUserSystemEnabled = ref(false);
 
+  /** 当前用户是否是游客 */
   const isGuest = ref(false);
 
   /** 用户身份唯一信息 */
@@ -54,11 +57,26 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
 
   const identitySetting = ref(PlvIdentityModule.generateDefaultIdentitySetting());
 
+  /**
+   * 绑定用户手机号是否显示
+   */
   const bindMobileVisible = computed(() => {
     if (!unref(watchUserSystemEnabled)) {
       return false;
     }
+
+    if (isGuest.value) {
+      return false;
+    }
+
     return !unref(identityUnionInfo)?.phoneNumber;
+  });
+
+  /**
+   * 是否需要游客强制登录 （游客登录成正式用户）
+   */
+  const needIdentityGuestForceLogin = computed(() => {
+    return isGuest.value && watchUserSystemEnabled.value;
   });
 
   /**
@@ -73,6 +91,7 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
     if (!authStore.hasAuth(AuthType.None)) {
       return false;
     }
+
     if (channelStore.isPptChannel || channelStore.isSeminarChannel) {
       return false;
     }
@@ -118,6 +137,7 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
     identityUnionInfo,
     identitySetting,
     bindMobileVisible,
+    needIdentityGuestForceLogin,
     currentLabelIds,
     syncIdentityStore,
     resetGuest,

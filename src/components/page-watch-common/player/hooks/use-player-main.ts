@@ -14,6 +14,7 @@ import {
   PlayStatus,
   SetupPlayerOptions,
   SetupPlayerPlaybackOptions,
+  YN,
 } from '@polyv/live-watch-sdk';
 import { usePlayerEvent } from './use-player-event';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -122,6 +123,9 @@ export const usePlayerMain = ({
    */
   async function getPushStreamInfo() {
     if (channelStore.liveStatus !== LiveStatus.Live) {
+      channelStore.$patch({
+        isNewGuideStream: false,
+      });
       return;
     }
 
@@ -137,8 +141,12 @@ export const usePlayerMain = ({
 
       channelStore.$patch({
         currentStreamType: pushInfo.streamType,
+        isNewGuideStream: pushInfo.isNewGuide === YN.Y,
       });
     } catch (error) {
+      channelStore.$patch({
+        isNewGuideStream: false,
+      });
       console.error('getPushStreamInfo', error);
     }
   }

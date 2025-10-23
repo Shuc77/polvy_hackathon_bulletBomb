@@ -93,7 +93,7 @@
 
         <!-- 问答 -->
         <mobile-menu-tab-pane
-          v-else-if="menu.menuType === ChannelMenuType.QA && !isGuest"
+          v-else-if="menu.menuType === ChannelMenuType.QA"
           :key="`qa-${index}`"
           :label="menu.name"
           :name="TAB_NAME_QA"
@@ -334,7 +334,6 @@ import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useIdentityStore } from '@/store/use-identity-store';
 
 import { ChannelMenuType, LiveStatus, MainScreenContent } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onMounted, ref, unref, watch } from 'vue';
@@ -388,8 +387,6 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { themeSetting, mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
-
-const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {

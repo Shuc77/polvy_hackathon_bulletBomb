@@ -103,8 +103,8 @@ watch(
     cursor: pointer;
     border-radius: 4px;
     img {
-      width: 40px;
-      height: 40px;
+      width: $pendant-size;
+      height: $pendant-size;
     }
   }
   .c-mobile-icon-advert__content__close__box {

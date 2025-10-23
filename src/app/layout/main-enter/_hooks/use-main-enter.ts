@@ -199,11 +199,8 @@ export const useMainEnter = (options: {
       await webviewStore.initWebviewBridge();
     }
 
-    // 加载互动功能 SDK, 游客登录不需加载
-    if (!isGuest.value) {
-      loadWatchAICore();
-      await loadIarSDK();
-    }
+    loadWatchAICore();
+    await loadIarSDK();
 
     // 处理需要等观看页加载完后的逻辑
     if (watchAppStore.watchPageInited) {
@@ -212,14 +209,14 @@ export const useMainEnter = (options: {
         webviewStore.initWebview();
       }
 
-      // 连接聊天室以及初始化连麦，游客登录不需连接聊天室和连麦
-      if (!isGuest.value) {
-        await watchAppStore.setupWatchCoreConnect();
-        // 延迟设置连麦功能
-        setTimeout(() => {
+      // 连接聊天室以及初始化连麦，游客登录不需连麦
+      await watchAppStore.setupWatchCoreConnect();
+      // 延迟设置连麦功能
+      setTimeout(() => {
+        if (!isGuest.value) {
           setupConnectMic();
-        }, 0);
-      }
+        }
+      }, 0);
     }
   }
 

@@ -30,7 +30,6 @@
         <div
           v-if="!hasNickname"
           class="c-mobile-msg-input-wrap__input__set-nick"
-          @click="openSetNick"
         ></div>
 
         <mobile-auto-textarea
@@ -122,8 +121,6 @@ import { CSSProperties } from 'vue/types/jsx';
 import { PropUtils } from '@polyv/vue-components';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { appEvents } from '@/app/app-events';
-import { useGlobalInject } from '@/app/use-global-inject';
 
 const props = defineProps({
   ...msgInputWrapProps(),
@@ -225,12 +222,6 @@ const showSendBtn = computed(() => {
   return isInputFocus.value;
 });
 
-const { getEmitter } = useGlobalInject();
-
-function openSetNick() {
-  getEmitter().emit(appEvents.chat.OpenSetNick, true);
-}
-
 defineExpose(msgInputWrapInstance);
 </script>
 
@@ -250,9 +241,10 @@ defineExpose(msgInputWrapInstance);
   box-sizing: border-box;
   display: flex;
   flex-shrink: 0;
+  gap: 12px;
   align-items: center;
   width: 100%;
-  padding: 8px 15px 24px;
+  padding: 8px 16px 24px;
 
   &.c-mobile-msg-input-wrap__main--multi-row {
     align-items: flex-end;
@@ -267,7 +259,6 @@ defineExpose(msgInputWrapInstance);
   position: relative;
   flex: 1;
   min-height: $--mobile-msg-input-wrap-base-height;
-  margin-right: 12px;
 }
 
 .c-mobile-msg-input-wrap__input__set-nick {

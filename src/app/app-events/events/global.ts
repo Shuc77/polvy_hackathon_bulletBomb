@@ -129,4 +129,7 @@ export const globalEvents = {
 
   /** 打开学习详情 */
   OpenLearningDetail: 'OpenLearningDetail',
+
+  /** 打开用户体系登录弹窗 */
+  OpenIdentityLoginDialog: 'OpenIdentityLoginDialog',
 };

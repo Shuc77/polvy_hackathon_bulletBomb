@@ -15,8 +15,8 @@ const { onClickInvitePosterEntry } = useInvitePosterEntry();
 <style lang="scss">
 .c-mobile-invite-poster-entry {
   z-index: 1;
-  width: 40px;
-  height: 40px;
+  width: $pendant-size;
+  height: $pendant-size;
   background-color: transparent;
   background-image: url(./imgs/invite-poster-entry.png);
   background-repeat: no-repeat;

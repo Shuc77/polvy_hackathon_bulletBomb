@@ -6,6 +6,7 @@
       'c-portrait-player-main--none-live': noneLiveVisible,
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
       'c-portrait-player-main--hide': isConnectMicing,
+      'c-portrait-player-main--guide-portrait-stream-fit': hasGuidePortraitStreamFitClass,
     }"
     @click="onClickContainer"
   >
@@ -98,6 +99,7 @@ const {
   resolutionWidth,
   resolutionHeight,
   isAudioPlayerMode,
+  hasGuidePortraitStreamFitClass,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { portraitDocWrapHeight, portraitDocSideSwitchVisible } =
@@ -332,6 +334,12 @@ useConnectMicing();
 .c-portrait-player-main--hide-loading {
   .vcp-loading {
     display: none !important;
+  }
+}
+
+.c-portrait-player-main--guide-portrait-stream-fit {
+  .plvideo video {
+    object-fit: cover;
   }
 }
 </style>

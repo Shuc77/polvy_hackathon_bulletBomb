@@ -92,7 +92,7 @@ function onClickIcon(name: PortraitChatTabName) {
   display: flex;
   align-items: center;
   /* stylelint-disable-next-line */
-  font-size: v-bind(iconFontSize);
+  font-size: v-bind(iconFontSize) !important;
   color: $--color-white;
 }
 .c-portrait-ask-icon__news {

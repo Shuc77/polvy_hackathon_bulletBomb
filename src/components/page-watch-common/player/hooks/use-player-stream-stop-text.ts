@@ -13,12 +13,12 @@ export const usePlayerStreamStopText = () => {
   // 是否显示回放待生成
   const getIsShowWaitPlaybackText = (): boolean => {
     const isPrivateSeminarChannel = channelStore.privateSeminarChannel;
-    const lastPushStreamTime = watchCore.channel.getLastPushStreamTime();
+    const showPlaybackWaitTextEnabled = watchCore.channel.getShowPlaybackWaitTextEnabled();
     const enabledPlayback = watchCore.channel.getEnablePlayback();
     const inTargetSession = watchCore.inTargetSession();
 
     return (
-      !inTargetSession && lastPushStreamTime > 0 && enabledPlayback && !isPrivateSeminarChannel
+      !inTargetSession && showPlaybackWaitTextEnabled && enabledPlayback && !isPrivateSeminarChannel
     );
   };
 

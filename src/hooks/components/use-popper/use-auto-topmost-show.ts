@@ -5,9 +5,11 @@ import { getRefElem } from '@polyv/vue-components';
 /** 弹出层层叠数 z-index 的 hook */
 const usePopperZIndex = () => {
   /** 设置弹出层元素到最顶层 */
-  const setTopmostElem = (elemRef: RefOrElement) => {
+  const setTopmostElem = (elemRef: RefOrElement<HTMLElement | undefined>) => {
     const elem = getRefElem(elemRef);
-    elem && PlvPopperManager.openPopper(elem);
+    if (elem instanceof HTMLElement) {
+      PlvPopperManager.openPopper(elem);
+    }
   };
 
   return {
@@ -20,7 +22,10 @@ const usePopperZIndex = () => {
  * @param visibleRef 显隐响应式
  * @param elemRef 弹出层节点响应式
  */
-export const useAutoTopmostToShow = (visibleRef: Ref<boolean>, elemRef: RefOrElement) => {
+export const useAutoTopmostToShow = (
+  visibleRef: Ref<boolean>,
+  elemRef: RefOrElement<HTMLElement | undefined>,
+) => {
   const { setTopmostElem } = usePopperZIndex();
 
   watch(

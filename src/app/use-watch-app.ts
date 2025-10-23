@@ -166,7 +166,7 @@ export function createWatchApp() {
     // 不是外部注入构建模式 ||  feed 流主页面
     const useShareAuthToken = !existExternalUniqueId || isBuildForFeedMainMode();
 
-    // 初始化观看页 SDK
+    // 初始化观看页 SDK，创建观看核心实例
     const watchCore = initWatchSdk({
       uniqueId: existExternalUniqueId ? uniqueId : undefined,
       useShareAuthToken,
@@ -219,7 +219,9 @@ export function createWatchApp() {
       },
     });
 
-    // 安装观看页 SDK 核心
+    // @PLV-WARN 需要通过 appId 授权时，可以在此处补充对应的逻辑
+
+    // 安装观看页 SDK 核心实例
     await watchAppStore.resetUpWatchCore();
 
     // 同步相关 store 数据

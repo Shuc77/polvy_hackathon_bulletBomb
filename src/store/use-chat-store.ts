@@ -20,10 +20,14 @@ import { usePlaybackStore } from './use-playback-store';
 import { useViewerStore } from './use-viewer-store';
 import { useChannelStore } from './use-channel-store';
 import { useWatchAppStore } from './use-watch-app-store';
+import { useIdentityStore } from './use-identity-store';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 export interface ChatStoreState {
   /** 聊天室设置信息 */
   chatSetting: Ref<ChatSetting>;
+  /** 是否使用 v2 版本的聊天室 UI */
+  isChatUIV2: ComputedRef<boolean>;
   /** 聊天室是否显示 */
   chatRoomVisible: ComputedRef<boolean>;
   /** 配置是否启用聊天列表 */
@@ -81,14 +85,29 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const channelMenuStore = useChannelMenuStore();
+  const identityStore = useIdentityStore();
   const viewerStore = useViewerStore();
   const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
+  const { paramGetter } = useQueryParams();
 
   const { redirectToErrorVerify } = useErrorVerify();
 
   /** 聊天室设置信息 */
   const chatSetting = ref<ChatSetting>(PlvChatModule.generateDefaultChatSetting());
+
+  /** 是否使用 v2 版本的聊天室 UI */
+  const isChatUIV2 = computed(() => {
+    if (playbackStore.chatMsgReplayEnabled) {
+      return false;
+    }
+
+    if (paramGetter().chatUIVersion()) {
+      return paramGetter().chatUIVersion() === 'v2';
+    }
+
+    return chatSetting.value.chatUIVersion === 'v2';
+  });
 
   /** 聊天室是否显示 */
   const chatRoomVisible = computed(() => {
@@ -140,7 +159,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
    * "只看特殊角色的消息"的控件是否展示
    * */
   const onlySpecialMsgWidgetVisible = computed(() => {
-    if (playbackStore.chatReplayEnabled) return false;
+    if (playbackStore.chatMsgReplayEnabled) return false;
 
     return !chatSetting.value.filterManagerMsgEnabled;
   });
@@ -160,10 +179,16 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   const chatInputControllerEnable = computed(() => {
     if (watchAppStore.isPlaybackWatchUrl || chatExited.value) return false;
 
+    // 研讨会相关
     if (
       channelStore.privateSeminarChannel ||
       (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
     ) {
+      return false;
+    }
+
+    // 直播间长时间未使用
+    if (!chatRoomVisible.value) {
       return false;
     }
 
@@ -208,11 +233,12 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 是否禁用聊天室输入框 */
   const chatInputDisabled = computed<boolean>(() => {
-    // 聊天室被关闭 || 聊天重放 || 需要实名认证
+    // 聊天室被关闭 || 聊天重放 || 需要实名认证 || 游客登录
     if (
       unref(chatRoomIsClosed) ||
       playbackStore.chatMsgReplayEnabled ||
-      viewerStore.needRealNameAuth
+      viewerStore.needRealNameAuth ||
+      identityStore.needIdentityGuestForceLogin
     ) {
       return true;
     }
@@ -253,6 +279,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   return {
     chatSetting,
+    isChatUIV2,
     chatRoomVisible,
     chatMsgListEnabled,
 

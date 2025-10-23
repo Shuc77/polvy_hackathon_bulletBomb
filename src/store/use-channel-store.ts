@@ -46,6 +46,8 @@ export interface ChannelStoreState {
   teacherInfo: Ref<TeacherInfoType | undefined>;
   /** 当前直播推流类型 */
   currentStreamType: Ref<StreamType | undefined>;
+  /** 是否导播台推流 */
+  isNewGuideStream: Ref<boolean>;
   /** 流多轨配置 */
   streamTrackConfig: Ref<ChannelStreamTrackConfig | undefined>;
   /** 是否支持流多轨 */
@@ -123,6 +125,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
   /** 当前直播推流类型 */
   const currentStreamType = ref<StreamType>();
+  /** 是否导播台推流 */
+  const isNewGuideStream = ref(false);
 
   /** 流多轨配置 */
   const streamTrackConfig = ref<ChannelStreamTrackConfig>();
@@ -197,6 +201,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isCustomLiveAudioMode,
     teacherInfo,
     currentStreamType,
+    isNewGuideStream,
     onlineListEnabled,
     managerBulletinMarqueeEnabled,
     managerBulletinMarqueeRenderEnabled,

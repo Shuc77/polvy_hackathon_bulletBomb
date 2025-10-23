@@ -5,4 +5,5 @@
 
 export { default as PcOriginIconBarrageOff } from './icons/barrage-off';
 export { default as PcOriginIconBarrageOn } from './icons/barrage-on';
+export { default as PcOriginIconCheckbox } from './icons/checkbox';
 export { default as PcOriginIconReturnLive } from './icons/return-live';

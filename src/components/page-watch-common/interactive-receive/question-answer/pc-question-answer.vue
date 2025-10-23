@@ -11,7 +11,7 @@
     />
 
     <div
-      v-if="!hasNickname || needRealNameAuth"
+      v-if="!hasNickname || needInterruptUserClick"
       class="c-pc-question-answer__set-nick"
     >
       <pc-set-nick-placeholder />
@@ -30,12 +30,15 @@ import { unref } from 'vue';
 import { getIarComponent } from '@/components/page-watch-common/interactive-receive/load-iar-ui';
 import { useQuestionAnswer } from './hooks/use-question-answer';
 import { useChatStore } from '@/store/use-chat-store';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const IarPcQuestionAnswer = getIarComponent('PcQuestionAnswer');
 
 const { questionAnswerSdk, onPreviewImage } = useQuestionAnswer();
 
-const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
+const { hasNickname } = storeDefinitionToRefs(useViewerStore);
+
+const { needInterruptUserClick } = useInterruptUserClick();
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 

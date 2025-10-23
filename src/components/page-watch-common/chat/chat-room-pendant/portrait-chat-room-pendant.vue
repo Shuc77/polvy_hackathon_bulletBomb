@@ -105,7 +105,7 @@ const { isPlaybacking } = storeDefinitionToRefs(usePlaybackStore);
   position: absolute;
   right: 13px;
   bottom: 6px;
-  width: 40px;
+  width: $pendant-size;
 }
 
 .c-portrait-chat-room-pendant__item + .c-portrait-chat-room-pendant__item {

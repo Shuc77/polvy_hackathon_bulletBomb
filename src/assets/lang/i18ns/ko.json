@@ -49,6 +49,7 @@
   "auth.enter": "라이브 입장",
   "auth.login.button": "로그인",
   "auth.login.tips": "상호 작용에 참여하려면 로그인하세요",
+  "auth.login.tips.look": "로그인 후에만 볼 수 있습니다",
   "auth.login.tips.ppt": "라이브를 시청하려면 로그인하세요",
   "auth.login.tips.continue": "계속 시청",
   "ask.input.placeholder": "질문 시작",
@@ -882,5 +883,7 @@
   "portrait.subtitle.setting.original": "원본 자막",
   "portrait.subtitle.close.tips.title": "확인하여 닫기",
   "portrait.subtitle.close.tips.content": "확인하여 닫기 후 \"더보기-인터랙티브 도구-실시간 자막\"에서 열 수 있습니다",
-  "portrait.subtitle.float.guide.tips": "손가락으로 측면 영역을 끌어 이동할 수 있습니다"
+  "portrait.subtitle.float.guide.tips": "손가락으로 측면 영역을 끌어 이동할 수 있습니다",
+
+  "portrait.exit.clear.screen.btn.text": "화면 지우기 나가기"
 }

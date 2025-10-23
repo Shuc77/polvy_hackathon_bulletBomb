@@ -22,18 +22,18 @@
         :image-paste-input-enabled="imagePasteInputEnabled"
         :placeholder="askInputPlaceholder"
         :disabled-input="inputDisabled"
-        :disabled-emotion-picker="needRealNameAuth"
-        :disabled-send-image="needRealNameAuth"
+        :disabled-emotion-picker="needInterruptUserClick"
+        :disabled-send-image="needInterruptUserClick"
         @submit="onSubmitMessage"
         @system-msg="onSendSystemMsg"
         @click-send-image="onClickSendImage"
-        @click-image-emotion-enter="checkNeedRealNameAuth"
-        @click-send-image-enter="checkNeedRealNameAuth"
-        @click-input-wrap="checkNeedRealNameAuth"
+        @click-image-emotion-enter="onClickInputWrap"
+        @click-send-image-enter="onClickInputWrap"
+        @click-input-wrap="onClickInputWrap"
       />
     </div>
-    <!-- 报名观看以及游客登录（参与互动时机） -->
-    <pc-enroll v-if="isGuest" />
+    <!-- 报名观看（参与互动时机） -->
+    <pc-enroll />
   </div>
 </template>
 
@@ -49,17 +49,14 @@ import { useAsk } from '../hooks/use-ask';
 import { useAskSend } from '../hooks/use-ask-send';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { useChatStore } from '@/store/use-chat-store';
-import { useIdentityStore } from '@/store/use-identity-store';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const askMsgListRef = ref<AskMsgListInstance>();
 
-const { needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
-const { checkNeedRealNameAuth } = useViewerStore();
-const { isGuest } = storeDefinitionToRefs(useIdentityStore);
-
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
+
+const { needInterruptUserClick, toInterruptUserClick } = useInterruptUserClick();
 
 const {
   askMsgRenderList,
@@ -74,6 +71,9 @@ const {
 } = useAsk({
   askMsgListRef,
 });
+function onClickInputWrap() {
+  toInterruptUserClick({ triggerSource: 'ask-input', ignoreSetNick: false });
+}
 
 /** 是否使用图片粘贴输入框 */
 const imagePasteInputEnabled = computed(() => {

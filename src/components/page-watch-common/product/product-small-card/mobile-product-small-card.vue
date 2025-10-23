@@ -4,11 +4,12 @@
     v-if="
       productTargetInited &&
       paymentTargetInited &&
-      interactReceiveStore.interactSetting.productEnabled
+      interactReceiveStore.interactSetting.liveProductEnabled
     "
     :product-target="getProductTarget()"
     :payment-target="getPaymentTarget()"
     :product-config="productUIConfig"
+    :before-click-interrupt="beforeClickInterrupt"
     @not-support-direct-buy="handleNotSupportDirectBuy"
     @small-card-visible-change="onSmallCardVisibleChange"
   />
@@ -19,6 +20,7 @@ import { defineAsyncComponent } from 'vue';
 import { useProductUILoader } from '../load-product-ui';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useProductUI } from '../hooks/use-product-ui';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const { loadProductUI } = useProductUILoader();
 
@@ -40,5 +42,11 @@ const interactReceiveStore = useInteractReceiveStore();
  */
 function onSmallCardVisibleChange(visible: boolean) {
   interactReceiveStore.productBubbleVisible = visible;
+}
+
+const { toInterruptUserClick } = useInterruptUserClick();
+
+function beforeClickInterrupt() {
+  return toInterruptUserClick({ triggerSource: 'mobile-product-small-card', ignoreSetNick: true });
 }
 </script>

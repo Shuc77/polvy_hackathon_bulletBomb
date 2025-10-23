@@ -54,8 +54,8 @@ const { yesRef, noRef, onClickIcon } = useEmotionalFeedback();
 .c-pc-emotional-feedback__icon {
   position: relative;
   z-index: 2;
-  width: 40px;
-  height: 40px;
+  width: $pendant-size;
+  height: $pendant-size;
   cursor: pointer;
 }
 

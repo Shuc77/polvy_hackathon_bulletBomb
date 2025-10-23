@@ -1,12 +1,12 @@
 import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useChatStore } from '@/store/use-chat-store';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { ChatMsgQuoteOriginType } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
 import { ChatMsgItemCategory } from '../use-chat-msg-item';
 import { useChatMsgDataInject } from './chat-msg-data-hook';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 /**
  * 聊天消息回复 hook
@@ -15,9 +15,10 @@ import { useChatMsgDataInject } from './chat-msg-data-hook';
 export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType>) => {
   const chatStore = useChatStore();
   const watchAppStore = useWatchAppStore();
-  const viewerStore = useViewerStore();
 
   const { getEmitter } = useGlobalInject();
+
+  const { toInterruptUserClick } = useInterruptUserClick();
 
   const { category } = useChatMsgDataInject<ChatMsgQuoteOriginType>();
 
@@ -41,9 +42,9 @@ export const useChatMsgQuote = (chatMsgRef: ResponsiveRef<ChatMsgQuoteOriginType
 
   /** 点击回复 */
   function onClickQuote() {
-    // 未设置昵称
-    if (!viewerStore.hasNickname) {
-      getEmitter().emit(appEvents.chat.OpenSetNick, true);
+    // 处理用户拦截点击逻辑
+    const result = toInterruptUserClick({ triggerSource: 'chat-quote', ignoreSetNick: false });
+    if (result) {
       return;
     }
 

@@ -12,9 +12,9 @@ import { uuidV4 } from '@utils-ts/string';
 
 import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
-import { useViewerStore } from '@/store/use-viewer-store';
 import { translate } from '@/assets/lang';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 /**
  * 倒序查找数组
@@ -43,7 +43,8 @@ export const useAsk = (options: UseAskOptions) => {
 
   const channelStore = useChannelStore();
   const askStore = useAskStore();
-  const viewerStore = useViewerStore();
+
+  const { needInterruptUserClick } = useInterruptUserClick();
 
   /** 页数，默认为 0，请求接口时会自动加 1 */
   const pageNumber = ref(0);
@@ -61,7 +62,7 @@ export const useAsk = (options: UseAskOptions) => {
 
   /** 输入框是否禁用 */
   const inputDisabled = computed(() => {
-    return viewerStore.needRealNameAuth;
+    return needInterruptUserClick.value;
   });
 
   /** 提问区输入框占位符 */

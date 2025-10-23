@@ -14,18 +14,16 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { useViewerStore } from '@/store/use-viewer-store';
 import MobileDonatePanel from './mobile-donate-panel.vue';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const { visible, setVisible, close: closeDonate } = useSimpleVisible(false);
 
+const { needInterruptUserClick } = useInterruptUserClick();
+
 useEventBusListener(appEvents.donate.OpenDonatePopup, (_visible = true) => {
-  if (_visible) {
-    const viewerStore = useViewerStore();
-    const checkRealName = viewerStore.checkNeedRealNameAuth();
-    if (checkRealName) {
-      return;
-    }
+  if (_visible && needInterruptUserClick.value) {
+    return;
   }
 
   setVisible(_visible);

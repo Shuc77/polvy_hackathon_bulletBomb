@@ -49,6 +49,7 @@
   "auth.enter": "Войти в трансляцию",
   "auth.login.button": "Войти",
   "auth.login.tips": "Войдите, чтобы участвовать в общении",
+  "auth.login.tips.look": "Доступно для просмотра только после входа",
   "auth.login.tips.ppt": "Войдите, чтобы участвовать в общении",
   "auth.login.tips.continue": "Продолжить просмотр",
   "ask.input.placeholder": "Задать вопрос",
@@ -882,5 +883,7 @@
   "portrait.subtitle.setting.original": "Оригинальные субтитры",
   "portrait.subtitle.close.tips.title": "Подтвердить закрытие?",
   "portrait.subtitle.close.tips.content": "Закройте его в \"Больше-Интерактивные инструменты-Субтитры в реальном времени\" для открытия",
-  "portrait.subtitle.float.guide.tips": "Перетащите область боковой панели, чтобы переместить ее"
+  "portrait.subtitle.float.guide.tips": "Перетащите область боковой панели, чтобы переместить ее",
+
+  "portrait.exit.clear.screen.btn.text": "Выйти из очистки экрана"
 }

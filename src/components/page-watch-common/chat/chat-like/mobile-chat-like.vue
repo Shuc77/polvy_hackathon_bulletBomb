@@ -67,6 +67,7 @@ function getScopeCount(scope: any) {
   position: relative;
   z-index: 0;
   box-sizing: border-box;
+  display: flex;
   text-align: center;
 }
 .c-mobile-chat-like__button {

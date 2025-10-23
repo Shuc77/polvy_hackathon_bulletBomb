@@ -1,12 +1,15 @@
 <!-- @file 移动端横屏-AI助手答疑面板 -->
 
 <template>
-  <div class="c-ai-assistant-chat-wrapper">
+  <div
+    class="c-ai-assistant-chat-wrapper"
+    v-if="renderEnabled"
+  >
     <ai-assistant-chat
       ref="assistantChatRef"
       direction="column"
-      :audio-recognize-enabled="false"
-      :digital-enabled="false"
+      :audio-recognize-enabled="useAICompleteFeature"
+      :digital-enabled="useAICompleteFeature"
     />
   </div>
 </template>
@@ -18,8 +21,16 @@ import { useAIGlobalProvider } from '../use-ai-global-provider';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { TAB_NAME_AI_ASSISTANT } from '@/assets/constants/tab-name';
 import type { AiAssistantChat as AiAssistantChatType } from '@polyv/live-watch-ai-ui';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { ynToBool } from '@polyv/utils/es/boolean';
+import { YN } from '@polyv/live-watch-sdk';
 
+const { paramGetter } = useQueryParams();
 const { watchAICore, watchCore } = useAIGlobalProvider();
+
+const renderEnabled = ref(false);
+
+const useAICompleteFeature = ref(ynToBool(paramGetter().useAICompleteFeature(), YN.N));
 
 const { loadLiveWatchAIUIComponent } = useLiveWatchAIUILoader();
 
@@ -48,15 +59,26 @@ watch(
 onBeforeMount(async () => {
   if (!watchAICore) return;
 
-  const { aiAssistantId, aiAssistantName } = watchCore.polyvAI.getChannelRelatedAIAssistantInfo();
+  const { aiAssistantId, aiAssistantName, aiAssistantCode } =
+    watchCore.polyvAI.getChannelRelatedAIAssistantInfo();
 
-  watchAICore.aiAssistant.setupAIAssistant(
-    {
-      aiAssistantId,
-      aiAssistantName,
-    },
-    { independent: false },
-  );
+  watchAICore.aiAssistant.setupAIAssistant({
+    aiAssistantCode,
+    aiAssistantId,
+    aiAssistantName,
+  });
+
+  const AISdk = await watchCore.sdkLoader.getWatchAISdk();
+  if (useAICompleteFeature.value) {
+    watchAICore.aiAssistant.eventEmitter.on(
+      AISdk.AIAssistantEvents.AIAssistantChatSetupedComplete,
+      () => {
+        renderEnabled.value = true;
+      },
+    );
+  } else {
+    renderEnabled.value = true;
+  }
 });
 </script>
 

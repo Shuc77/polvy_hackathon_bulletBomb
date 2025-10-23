@@ -13,7 +13,7 @@
       render-suffix-slot
       @system-msg="onSendSystemMsg"
       @submit="onSubmitMessage"
-      @click-input-wrap="checkNeedRealNameAuth"
+      @click-input-wrap="onClickInputWrap"
     >
       <template
         v-if="!isPureness"
@@ -27,52 +27,36 @@
         #suffix
       >
         <!-- 更多 -->
-        <div
-          class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--more pws-dark-white-bg-10 pws-light-basic-bg-90 pws-dark-white-color-100 pws-light-black-color-80"
-          @click="showMore"
-        >
-          <mobile-icon-more-entrance />
-        </div>
+        <mobile-more-entrance />
 
         <!-- 打赏 -->
-        <div
-          v-if="showDonateFunction"
-          class="c-mobile-chat-input-controller__btn c-mobile-chat-input-controller__btn--donate pws-mobile-donate-button"
-          @click="showDonate"
-        ></div>
+        <mobile-donate-entrance />
 
         <!-- 商品库入口 -->
-        <mobile-product-pendant
-          v-if="interactSetting.productEnabled && iarSdkLoaded"
-          class="c-mobile-chat-input-controller__btn-product"
-        />
+        <mobile-product-pendant v-if="interactSetting.productEnabled && iarSdkLoaded" />
 
         <!-- 点赞 -->
-        <mobile-chat-like
-          v-if="likeFeatureEnabled"
-          class="c-mobile-chat-input-controller__btn"
-        />
+        <mobile-chat-like v-if="likeFeatureEnabled" />
       </template>
     </mobile-msg-input-wrap>
   </div>
 </template>
 
 <script setup lang="ts">
-import MobileChatMsgQuote from '@/components/page-watch-common/chat/chat-msg-quote/mobile-chat-msg-quote.vue';
-import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mobile-msg-input-wrap/mobile-msg-input-wrap.vue';
 import MobileChatLike from '@/components/page-watch-common/chat/chat-like/mobile-chat-like.vue';
+import MobileChatMsgQuote from '@/components/page-watch-common/chat/chat-msg-quote/mobile-chat-msg-quote.vue';
+import MobileDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/mobile-donate-entrance.vue';
+import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
+import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mobile-msg-input-wrap/mobile-msg-input-wrap.vue';
+import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useDonateStore } from '@/store/use-donate-store';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { useChatStore } from '@/store/use-chat-store';
-import { useChatInputController } from '../hooks/use-chat-input-controller';
-import { useViewerStore } from '@/store/use-viewer-store';
-import { PropUtils } from '@polyv/vue-components';
-import { useGlobalInject } from '@/app/use-global-inject';
-import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { MobileIconMoreEntrance } from '@/components/component-icons/mobile/map';
+import { PropUtils } from '@polyv/vue-components';
+import { useChatInputController } from '../hooks/use-chat-input-controller';
 
 const props = defineProps({
   /** 是否为纯净模式 */
@@ -81,10 +65,7 @@ const props = defineProps({
   isAlwayActive: PropUtils.bool.def(false),
 });
 
-const { getEmitter } = useGlobalInject();
-
-const viewerStore = useViewerStore();
-const checkNeedRealNameAuth = viewerStore.checkNeedRealNameAuth;
+const { toInterruptUserClick } = useInterruptUserClick();
 
 const {
   onSubmitMessage,
@@ -97,6 +78,10 @@ const {
   autoListen: !props.isPureness,
 });
 
+function onClickInputWrap() {
+  toInterruptUserClick({ triggerSource: 'chat-input', ignoreSetNick: false });
+}
+
 if (!props.isPureness) {
   useEventBusListener(appEvents.chat.FocusToChatInput, () => {
     focusMsgInput();
@@ -106,55 +91,7 @@ if (!props.isPureness) {
 const { chatInputPlaceholder, chatInputDisabled, chatSetting, likeFeatureEnabled } =
   storeDefinitionToRefs(useChatStore);
 
-const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
-
 const { interactSetting, iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
-
-function showMore() {
-  getEmitter().emit(appEvents.global.OpenMobileMorePopup, true);
-}
-
-function showDonate() {
-  getEmitter().emit(appEvents.donate.OpenDonatePopup, true);
-}
 
 defineExpose(chatInputInstance);
 </script>
-
-<style lang="scss">
-.c-mobile-chat-input-controller__btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  min-width: 36px;
-  height: 36px;
-  border-radius: 50%;
-
-  &::after {
-    width: 20px;
-    height: 20px;
-    content: '';
-    background-size: 100% 100%;
-  }
-
-  & + & {
-    margin-left: 12px;
-  }
-}
-
-.c-mobile-chat-input-controller__btn--more {
-  span {
-    display: flex;
-    font-size: 36px;
-  }
-}
-
-.c-mobile-chat-input-controller__btn--donate::after {
-  background-image: url(../imgs/icon-gift.png);
-}
-
-.c-mobile-chat-input-controller__btn-product {
-  margin: 0 12px;
-}
-</style>

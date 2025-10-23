@@ -143,22 +143,21 @@
               <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded && layoutLoaded" />
               <pc-watch-layout-player-side-popup v-if="iarSdkLoaded && layoutLoaded" />
               <pc-product-render />
+            </div>
+            <!-- 播放器右下角挂件区 -->
+            <div class="c-pc-watch-layout__main__side-pendant-render">
+              <!-- 商品库小卡片 -->
+              <pc-product-small-card v-if="iarSdkLoaded && layoutLoaded" />
 
-              <!-- 播放器右下角挂件区 -->
-              <div class="c-pc-watch-layout__main__side-pendant-render">
-                <!-- 商品库小卡片 -->
-                <pc-product-small-card v-if="iarSdkLoaded && layoutLoaded" />
-
-                <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
-                <pc-product-pendant
-                  v-if="
-                    iarSdkLoaded &&
-                    layoutLoaded &&
-                    interactSetting.productEntryPosition === ProductEntryPosition.Player &&
-                    interactSetting.productEnabled
-                  "
-                />
-              </div>
+              <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
+              <pc-product-pendant
+                v-if="
+                  iarSdkLoaded &&
+                  layoutLoaded &&
+                  interactSetting.productEntryPosition === ProductEntryPosition.Player &&
+                  interactSetting.productEnabled
+                "
+              />
             </div>
           </div>
 
@@ -200,7 +199,16 @@
             :enable-types="[MotivationLikeType.Mic]"
           />
 
-          <speak-top-business layout="pc"></speak-top-business>
+          <!-- 置顶消息 -->
+          <speak-top-business
+            v-if="!isChatUIV2"
+            layout="pc"
+          />
+          <chat-loader-helper v-else>
+            <div class="c-pc-watch-layout__main-layer">
+              <toping-msg class="c-pc-watch-layout__main__toping-msg" />
+            </div>
+          </chat-loader-helper>
 
           <!-- 其他直播预约 -->
           <common-other-live-booking class="c-pc-watch-layout__main__other-live-booking" />
@@ -292,12 +300,14 @@ import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-conn
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutLoad } from '@/hooks/core/use-layout-load';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
 
 const { layoutLoaded } = useLayoutLoad('pc-watch-layout');
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
-const { chatExited } = storeDefinitionToRefs(useChatStore);
+const { chatExited, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { canRenderPlayer, switchQualityTipStatus, showControl } =
   storeDefinitionToRefs(usePlayerStore);
@@ -666,7 +676,7 @@ $--layout-sub-pack-up-height: 40px !default;
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 3005;
+  z-index: 3000;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -677,7 +687,7 @@ $--layout-sub-pack-up-height: 40px !default;
   position: absolute;
   right: 16px;
   bottom: 60px;
-  z-index: 1000;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -705,5 +715,14 @@ $--layout-sub-pack-up-height: 40px !default;
     left: 0;
     width: 100%;
   }
+}
+
+.c-pc-watch-layout__main__toping-msg {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 450px;
+  pointer-events: initial;
+  transform: translateX(-50%);
 }
 </style>

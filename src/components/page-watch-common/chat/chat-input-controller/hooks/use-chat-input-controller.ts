@@ -11,6 +11,8 @@ import { useToastManager } from '@/hooks/components/use-toast';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 export interface ChatInputInstance {
   /** 聚焦输入框 */
@@ -27,6 +29,7 @@ export const useChatInputController = (options?: {
   // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const { getEmitter, getWatchCore } = useGlobalInject();
+  const { toInterruptUserClick } = useInterruptUserClick();
 
   const { toast } = useToastManager();
 
@@ -40,6 +43,8 @@ export const useChatInputController = (options?: {
     insertLocalImageMsg: insertChatLocalImageMsg,
     sendSystemMsg: sendChatSystemMsg,
   } = useSendMsg();
+
+  const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
   /** 消息输入框 */
   const msgInputWrapRef = ref<MsgInputWrapInstance>();
@@ -118,6 +123,15 @@ export const useChatInputController = (options?: {
 
   /** 点击发送图片 */
   async function onClickSendImage() {
+    if (isChatUIV2.value) {
+      return;
+    }
+
+    const result = toInterruptUserClick({ triggerSource: 'send-image', ignoreSetNick: false });
+    if (result) {
+      return;
+    }
+
     const watchCore = getWatchCore();
 
     const imageChatMsgQueueMap: { [imageId: string]: ChatMsgImageType } = {};

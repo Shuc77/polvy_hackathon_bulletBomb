@@ -71,6 +71,7 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { storeToRefs } from 'pinia';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 const emit = defineEmits({
   /** 关闭 */
@@ -90,6 +91,8 @@ const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
 const { bindMobileVisible } = storeDefinitionToRefs(useIdentityStore);
 
+const { toInterruptUserClick } = useInterruptUserClick();
+
 function onClickSpecialMsg() {
   chatStore.toggleOnlySpecialMsg();
 }
@@ -99,6 +102,11 @@ function onClickDonateAnimation() {
 }
 
 function onClickSetNick() {
+  const result = toInterruptUserClick({ triggerSource: 'set-nick', ignoreSetNick: false });
+  if (result) {
+    return;
+  }
+
   getEmitter().emit(appEvents.chat.OpenSetNick, true);
   emit('close');
 }

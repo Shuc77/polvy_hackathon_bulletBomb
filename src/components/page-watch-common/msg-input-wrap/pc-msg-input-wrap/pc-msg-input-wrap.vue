@@ -34,7 +34,7 @@
         }"
         @click="onClickEmotionPickerBtn"
       >
-        <pc-icon-emotion class="c-pc-msg-input-wrap__icons__item__icon" />
+        <pc-icon-emotion />
       </div>
 
       <!-- 上传图片 -->
@@ -46,7 +46,7 @@
         }"
         @click="onClickSendImage"
       >
-        <pc-icon-pic class="c-pc-msg-input-wrap__icons__item__icon" />
+        <pc-icon-pic />
       </div>
 
       <!-- 图标区插槽 -->
@@ -155,10 +155,6 @@ const emit = defineEmits(msgInputWrapEmits());
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
 
 const needSetNick = computed(() => {
-  if (props.disabledSetNick) {
-    return false;
-  }
-
   return !hasNickname.value;
 });
 
@@ -248,6 +244,7 @@ $--chat-input-bg: #3e3e4e;
 
 .c-pc-msg-input-wrap__icons {
   display: flex;
+  gap: 12px;
   align-items: center;
   height: $--chat-input-icon-height;
   margin-bottom: 12px;
@@ -259,12 +256,11 @@ $--chat-input-bg: #3e3e4e;
 
 .c-pc-msg-input-wrap__icons__item {
   position: relative;
-  margin-right: 12px;
   color: #e4e4e4;
   cursor: pointer;
   transition: all ease-in-out 0.1s;
 
-  .c-pc-msg-input-wrap__icons__item__icon {
+  .polyv-icon {
     display: flex;
     font-size: 20px !important;
   }
@@ -293,8 +289,8 @@ $--chat-input-bg: #3e3e4e;
 }
 
 @media screen and (max-width: 1680px) {
-  .c-pc-msg-input-wrap__icons__item {
-    margin-right: 10px;
+  .c-pc-msg-input-wrap__icons {
+    gap: 10px;
   }
 }
 

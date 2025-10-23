@@ -17,7 +17,7 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
 
   const watchCore = getWatchCore();
   const chatMsgStore = useChatMsgStore();
-  const { sendSystemMsg, sendSpeakMsg } = useSendMsg();
+  const { sendSystemMsg } = useSendMsg();
 
   /**
    * 替换消息对象
@@ -110,15 +110,6 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
     watchCore.chat.eventEmitter.off(ChatEvents.CloseChatRoom, onCloseChatRoom);
   });
 
-  /** -------------- 发送聊天消息 -------------- */
-  function onSendMessageToChat(content: string): void {
-    sendSpeakMsg({
-      content,
-    });
-  }
-  useEventBusListener(appEvents.chat.SendMessageToChat, onSendMessageToChat);
-
   /** -------------- 特效消息处理 -------------- */
-
   useMessageEffect();
 };

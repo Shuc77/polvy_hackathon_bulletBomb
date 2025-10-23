@@ -1,6 +1,7 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlayerStore } from '@/store/use-player-store';
-import { PlayerEvents } from '@polyv/live-watch-sdk';
+import { useChannelStore } from '@/store/use-channel-store';
+import { PlayerEvents, VideoSize } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, Ref, unref } from 'vue';
 
 /** 获取视频宽度 */
@@ -32,6 +33,7 @@ export const useResolutionSize = (options: {
 
   const { playerContainer } = options;
   const playerStore = usePlayerStore();
+  const channelStore = useChannelStore();
 
   /** 获取 video 节点 */
   function getVideoElement(): HTMLVideoElement | null {
@@ -41,6 +43,13 @@ export const useResolutionSize = (options: {
     }
 
     return containerElem.querySelector('video');
+  }
+
+  function onGuideStreamVideoSizeChange(data: VideoSize) {
+    playerStore.$patch({
+      resolutionWidth: data.width,
+      resolutionHeight: data.height,
+    });
   }
 
   /** 重试定时器 */
@@ -76,6 +85,11 @@ export const useResolutionSize = (options: {
       );
     };
 
+    if (unref(channelStore.isNewGuideStream)) {
+      removeEventListener();
+      return;
+    }
+
     const videoInfo = watchCore.player.getPlayerVideoInfo();
     const videoWidth = videoInfo.videoWidth || 0;
     const videoHeight = videoInfo.videoHeight || 0;
@@ -95,6 +109,11 @@ export const useResolutionSize = (options: {
    * 刷新 video 标签的 videoWidth、videoHeight，改变视频流尺寸
    */
   function refreshResolutionByVideoSize(videoElem: HTMLVideoElement) {
+    if (unref(channelStore.isNewGuideStream)) {
+      removeRetryTimer();
+      return;
+    }
+
     const videoWidth = getVideoWidth(videoElem);
     const videoHeight = getVideoHeight(videoElem);
 
@@ -124,6 +143,11 @@ export const useResolutionSize = (options: {
   }
 
   function refreshResolution() {
+    if (unref(channelStore.isNewGuideStream)) {
+      removeRetryTimer();
+      return;
+    }
+
     const videoElem = getVideoElement();
     if (!videoElem) {
       return;
@@ -141,6 +165,10 @@ export const useResolutionSize = (options: {
 
   onMounted(() => {
     watchCore.player.eventEmitter.on(PlayerEvents.PlayerPlaying, refreshResolution);
+    watchCore.player.eventEmitter.on(
+      PlayerEvents.GuideStreamVideoSizeChange,
+      onGuideStreamVideoSizeChange,
+    );
 
     // 新增通过timeupdate事件获取视频信息刷新视频流尺寸， 旧逻辑保留
     watchCore.player.eventEmitter.on(
