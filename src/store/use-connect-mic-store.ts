@@ -25,6 +25,8 @@ export interface ConnectMicStoreState {
   supportFacingMode: Ref<boolean>;
   /** 当前前后摄像头 */
   facingMode: Ref<FacingMode>;
+  /** 是否开启镜像 */
+  mirrorEnabled: Ref<boolean>;
   /** 是否开启了连麦 */
   openMicStatus: Ref<boolean>;
   /** 邀请上麦状态 */
@@ -125,6 +127,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 当前前后摄像头 */
   const facingMode = ref(__connectMicInfo.facingMode);
+
+  /** 是否开启镜像 */
+  const mirrorEnabled = ref(__connectMicInfo.mirrorEnabled);
 
   /** 是否开启了连麦 */
   const openMicStatus = ref(__connectMicInfo.openMicStatus);
@@ -332,6 +337,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     currentMicIndex.value = connectMicInfo.currentMicIndex;
     currentIsSpeaker.value = connectMicInfo.currentIsSpeaker;
     facingMode.value = connectMicInfo.facingMode;
+    mirrorEnabled.value = connectMicInfo.mirrorEnabled;
     connectMicFitType.value =
       watchCore.channel.getMixStreamRenderMode() === MixStreamRenderMode.Cover
         ? ConnectMicFitType.Cover
@@ -357,6 +363,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     supportConnectMic,
     supportFacingMode,
     facingMode,
+    mirrorEnabled,
     openMicStatus,
     inviteStatus,
     connectMicType,

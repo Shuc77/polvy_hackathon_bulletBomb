@@ -95,6 +95,7 @@
                 'c-mobile-player-control__button--fullscreen': !mobilePlayerIsPageFullscreen,
                 'c-mobile-player-control__button--fullscreen-exit': mobilePlayerIsPageFullscreen,
               }"
+              data-testid="plv-player-fullscreen-toggle-btn"
               @click="toToggleMobilePageFullscreen"
             ></div>
           </div>

@@ -16,6 +16,7 @@
     <div
       ref="playerContainer"
       class="c-pc-player-main__container"
+      data-testid="plv-player-container"
       @click="toTogglePlayInLimit"
     ></div>
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
-import { getChatUIV2Pkg } from '@/plugins/external-lib-loaders/load-chat-ui-v2';
+import { PolyvChatUIPkgType, getChatUIV2Pkg } from '@/plugins/external-lib-loaders/load-chat-ui-v2';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
@@ -16,6 +16,9 @@ import {
   useMessageLayout,
 } from './other';
 import { useChatTarget } from './use-chat-target';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useDonateStore } from '@/store/use-donate-store';
+import { storeToRefs } from 'pinia';
 
 export const useChatUIGlobalProvide = () => {
   const { getWatchCore } = useGlobalInject();
@@ -23,12 +26,21 @@ export const useChatUIGlobalProvide = () => {
 
   const { isMobile } = useBrowser();
 
-  const { chatSetting, onlySpecialMsgWidgetVisible } = storeDefinitionToRefs(useChatStore);
+  const { chatSetting, onlySpecialMsgWidgetVisible, likeSingleClickEnabled, likeHoldEnabled } =
+    storeDefinitionToRefs(useChatStore);
   const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
   const { needHideUserActor } = storeDefinitionToRefs(useViewerStore);
+  const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);
+  const donateStore = useDonateStore();
+  const { showDonateGifts } = storeToRefs(donateStore);
 
   const { getHideSources } = useHideChatMsg();
-  const { getMessageLayout, getShowUserAvatar } = useMessageLayout();
+  const {
+    getMessageLayout,
+    getShowUserAvatar,
+    getMessageHorizontalSpacing,
+    getMessageContainerBoundaryPadding,
+  } = useMessageLayout();
   const { getCopySpeakEnabled } = useCopySpeakMsg();
   const { getChatInputPlaceholder, getDisabledInput } = useChatMessageInput();
   const { clickMsgCallback } = useClickMsgCallback();
@@ -54,24 +66,8 @@ export const useChatUIGlobalProvide = () => {
         translateEnabled: chatSetting.value.chatTranslateEnabled,
         copySpeakEnabled: getCopySpeakEnabled(),
         quoteEnabled: chatSetting.value.quoteReplyEnabled,
-        messageHorizontalSpacing: isPortraitWatchLayout.value
-          ? {
-              left: 0,
-              right: 0,
-            }
-          : {
-              left: 16,
-              right: 64,
-            },
-        messageContainerBoundaryPadding: isMobile
-          ? {
-              top: 0,
-              bottom: 0,
-            }
-          : {
-              top: 16,
-              bottom: 16,
-            },
+        messageHorizontalSpacing: getMessageHorizontalSpacing(),
+        messageContainerBoundaryPadding: getMessageContainerBoundaryPadding(),
         messageControlInteraction: isMobile ? 'bubble' : 'context-menu',
         onlySpecialMsgEnabled: onlySpecialMsgWidgetVisible.value,
         customMessageRender: {
@@ -89,10 +85,39 @@ export const useChatUIGlobalProvide = () => {
         sendImageEnabled: chatSetting.value.viewerSendImgEnabled,
       };
     },
+    getLikeConfig: () => {
+      return {
+        clickEnabled: likeSingleClickEnabled.value,
+        holdEnabled: likeHoldEnabled.value,
+        countPosition: isMobile ? 'top' : 'bottom',
+        triggerSize: isMobile ? 36 : 40,
+      };
+    },
+    getSpecialEffectConfig: () => {
+      return {
+        switchEnabled: showDonateGifts.value,
+        defaultVisible: true,
+        visibleChangeCallback: visible => {
+          donateStore.$patch({
+            donateAnimationVisible: visible,
+          });
+        },
+      };
+    },
+    getAnimationVisible: () => {
+      return !isGoOnRedpackRain.value;
+    },
     interceptClick: triggerSource => {
+      let ignoreSetNick = false;
+
+      const ignoreSetNickSource: PolyvChatUIPkgType.InterceptTriggerSource[] = ['chat-like'];
+      if (ignoreSetNickSource.includes(triggerSource)) {
+        ignoreSetNick = true;
+      }
+
       return toInterruptUserClick({
         triggerSource,
-        ignoreSetNick: false,
+        ignoreSetNick,
       });
     },
   });

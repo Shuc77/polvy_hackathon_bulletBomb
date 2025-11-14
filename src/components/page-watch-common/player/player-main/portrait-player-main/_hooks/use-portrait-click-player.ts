@@ -93,4 +93,8 @@ export const usePortraitClickPlayer = () => {
   });
 
   useEventBusListener(appEvents.portrait.ClickPlayerRegion, onClickPlayerRegion);
+
+  return {
+    onClickPlayerRegion,
+  };
 };

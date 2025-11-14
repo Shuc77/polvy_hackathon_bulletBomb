@@ -117,6 +117,11 @@ export const useConnectMicControl = () => {
     }
   }
 
+  /** 切换镜像 */
+  function toggleMirror(enabled?: boolean) {
+    watchCore.connectMic.toggleMirror(enabled);
+  }
+
   /** 结束连麦 */
   function endConnectMic() {
     watchCore.connectMic.endConnectMic();
@@ -130,6 +135,7 @@ export const useConnectMicControl = () => {
     disabledAudio,
     toggleAudio,
     toggleFacingMode,
+    toggleMirror,
     endConnectMic,
   };
 };

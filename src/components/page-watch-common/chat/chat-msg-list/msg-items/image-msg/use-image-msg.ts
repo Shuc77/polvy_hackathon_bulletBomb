@@ -1,10 +1,8 @@
-import { isMobile } from '@/assets/utils/browser';
 import { fitProtocol } from '@/assets/utils/url';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { previewImage } from '@/hooks/components/use-image-preview';
 import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, ref, unref } from 'vue';
-import { CSSProperties } from 'vue/types/jsx';
 import { useChatMsgComputedInject } from '../_hooks/chat-msg-computed-hook';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 
@@ -14,19 +12,6 @@ export interface ImageSizeType {
 }
 
 const recordImageSize: UniversalParams<ImageSizeType | undefined> = {};
-
-// 图片最小显示宽度
-const minPicWidth = isMobile ? 48 : 44;
-// 图片最小高度
-const minPicHeight = isMobile ? 48 : 25;
-// 图片最大显示宽度
-const maxPicWidth = isMobile ? 250 : 258;
-// 图片最大显示高度
-const maxPicHeight = isMobile ? 140 : 144;
-// 纵向超长图比例(高/宽)
-const portraitLongPicRatio = 2.25;
-// 横向超长图比例(高/宽)
-const landscapeLongPicRatio = 0.14;
 
 export const useImageMsg = () => {
   const { chatMsg } = useChatMsgDataInject<ChatMsgImageType>();
@@ -40,6 +25,13 @@ export const useImageMsg = () => {
     return fitProtocol(chatMsg.value.imageUrl, ['blob']);
   });
 
+  const imageId = ref(chatMsg.value.imageId);
+
+  /** 图片宽高 */
+  const imageSize = ref<ImageSizeType | undefined>(
+    recordImageSize[imageId.value] ?? chatMsg.value.size,
+  );
+
   /** 本地图片占位图 */
   const localImagePlaceholder = computed(() => {
     if (chatMsg.value.isLocal && chatMsg.value.isSended) {
@@ -48,113 +40,105 @@ export const useImageMsg = () => {
     return undefined;
   });
 
+  /** 是否长图 */
+  const isLargeImage = computed(() => {
+    return !!imageSize.value && imageSize.value.height / imageSize.value.width >= 3;
+  });
+
+  const imageBoundSize = computed(() => {
+    let minWidth = 50;
+    const minHeight = 50;
+    const maxWidth = 150;
+    const maxHeight = 200;
+
+    if (isLargeImage.value) {
+      minWidth = 80;
+    }
+
+    return {
+      minWidth,
+      minHeight,
+      maxWidth,
+      maxHeight,
+    };
+  });
+
+  const imageBoundStyle = computed(() => {
+    return {
+      minWidth: `${imageBoundSize.value.minWidth}px`,
+      maxWidth: `${imageBoundSize.value.maxWidth}px`,
+      minHeight: `${imageBoundSize.value.minHeight}px`,
+      maxHeight: `${imageBoundSize.value.maxHeight}px`,
+    };
+  });
+
   /** 图片地址 */
   const imageUrl = computed(() => {
     if (chatMsg.value.isLocal && !chatMsg.value.isSended) {
       return chatImageUrl.value;
     }
 
-    let width: number | undefined = 240;
+    const { minWidth, minHeight, maxWidth, maxHeight } = imageBoundSize.value;
+
+    let width: number | undefined;
     let height: number | undefined;
+
     const size = chatMsg.value.size;
-    if (size && size.height > size.width) {
-      height = width;
-      width = undefined;
+    if (size) {
+      if (size.height > size.width) {
+        // 竖向图片
+        height = Math.min(size.height, maxHeight);
+      } else {
+        // 横向图片
+        width = Math.min(size.width, maxWidth);
+      }
+
+      const prop = size.width / size.height;
+      // 高度实际渲染的宽度小于最小宽度时，宽度取最小宽度，高度不限制
+      if (height && height * prop < minWidth) {
+        width = minWidth;
+        height = undefined;
+      }
+      // 宽度实际渲染的高度小于最小高度时，高度取最小高度，宽度不限制
+      if (width && width / prop < minHeight) {
+        height = minHeight;
+        width = undefined;
+      }
     }
 
-    return resizeOSSImg(chatImageUrl.value, width, height);
-  });
-
-  /** 图片宽高 */
-  const imageSize = ref<ImageSizeType | undefined>(
-    recordImageSize[imageUrl.value] ?? chatMsg.value.size,
-  );
-
-  /** 图片高宽比 */
-  const imageRatio = computed(() => {
-    if (!imageSize.value) {
-      return 72 / 128;
+    if (width) {
+      width = width * 2;
     }
-    return imageSize.value.height / imageSize.value.width;
-  });
+    if (height) {
+      height = height * 2;
+    }
 
-  /** 图片外层样式 */
-  const wrapStyle = ref<UniversalParams<string>>({});
-  /** 图片样式 */
-  const imageStyle = ref<UniversalParams<string>>({});
+    if (width || height) {
+      return resizeOSSImg(chatImageUrl.value, width, height);
+    }
+
+    return chatImageUrl.value;
+  });
 
   /** 是否加载完成 */
   const isLoaded = ref(false);
 
-  /** 计算样式 */
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  function computedStyle() {
-    if (!imageSize.value) {
-      return;
-    }
-    const { width: imageWidth, height: imageHeight } = imageSize.value;
-    const ratio = imageHeight / imageWidth;
-
-    const _wrapStyle: CSSProperties = {};
-    const _imageStyle: CSSProperties = {};
-
-    if (ratio > 1) {
-      // 纵向图片
-      if (ratio > portraitLongPicRatio) {
-        // 图片纵向超长
-        if (imageHeight >= minPicHeight && imageHeight <= maxPicHeight) {
-          _imageStyle.height = `${imageHeight}px`;
-        }
-
-        if (imageWidth >= minPicWidth && imageWidth <= maxPicWidth) {
-          _imageStyle.width = `${imageWidth}px`;
-        }
-      }
-      _imageStyle.maxWidth = `${maxPicWidth}px`;
-      _imageStyle.maxHeight = `${maxPicHeight}px`;
-    } else {
-      // 横向图片
-      if (ratio < landscapeLongPicRatio) {
-        // 图片横向超长
-        if (imageHeight >= minPicHeight && imageHeight <= maxPicHeight) {
-          _imageStyle.height = `${imageHeight}px`;
-        }
-
-        if (imageWidth >= minPicWidth && imageWidth <= maxPicWidth) {
-          _imageStyle.width = `${imageWidth}px`;
-        }
-
-        _imageStyle.maxWidth = `${maxPicWidth}px`;
-        _imageStyle.maxHeight = `${maxPicHeight}px`;
-      } else {
-        _imageStyle.maxWidth = '100%';
-        _imageStyle.maxHeight = `${maxPicHeight}px`;
-      }
-    }
-
-    _wrapStyle.maxWidth = `${maxPicWidth}px`;
-    _wrapStyle.maxHeight = `${maxPicHeight}px`;
-    _imageStyle.minWidth = `${minPicWidth}px`;
-    _imageStyle.minHeight = `${minPicHeight}px`;
-
-    wrapStyle.value = _wrapStyle as UniversalParams<string>;
-    imageStyle.value = _imageStyle as UniversalParams<string>;
-  }
-  computedStyle();
-
   /** 处理图片加载完成 */
   async function onImageLoad() {
+    if (isLoaded.value) {
+      return;
+    }
+
     const imageElem = unref(imageRef);
     if (!imageElem) return;
 
-    imageSize.value = {
-      width: imageElem.width,
-      height: imageElem.height,
-    };
-
-    recordImageSize[unref(imageUrl)] = imageSize.value;
-
-    computedStyle();
+    if (!imageSize.value) {
+      imageSize.value = {
+        width: imageElem.width,
+        height: imageElem.height,
+      };
+      recordImageSize[unref(imageId)] = imageSize.value;
+    }
 
     isLoaded.value = true;
 
@@ -180,18 +164,14 @@ export const useImageMsg = () => {
 
   return {
     chatMsg,
-    minPicWidth,
-    minPicHeight,
-    maxPicWidth,
-    maxPicHeight,
-    wrapStyle,
-    imageStyle,
     imageRef,
     imageSize,
     imageUrl,
     localImagePlaceholder,
     isLoaded,
-    imageRatio,
+    isLargeImage,
+    imageBoundSize,
+    imageBoundStyle,
     onImageLoad,
     onClickImage,
   };

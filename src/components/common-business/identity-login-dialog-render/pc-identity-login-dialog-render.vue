@@ -10,11 +10,13 @@
       :confirm-button-text="$lang('auth.login.button')"
       :cancel-button-text="$lang('base.cancel')"
       :position-type="positionType"
+      :confirm-button-weixin-id="weixinBtnSelectorId"
     />
     <!-- 用户体系登录弹层 -->
     <watch-identify-login-content
       :visible="contentDialogVisible"
       display-mode="popup"
+      @guest-auth-success="setupLinkData"
       @popup-close="closeContentDialog"
     />
   </div>
@@ -27,6 +29,9 @@ import WatchIdentifyLoginContent from './watch-identify-login-content.vue';
 import { useIdentityLoginDialogRender } from './use-identity-login-dialog-render';
 
 const {
+  setupLinkData,
+  weixinBtnSelectorId,
+
   messageBoxRef,
   messageBoxContent,
   positionType,

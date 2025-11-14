@@ -21,6 +21,7 @@
     <div
       ref="playerContainer"
       class="c-mobile-player-main__container"
+      data-testid="plv-player-container"
     ></div>
 
     <div

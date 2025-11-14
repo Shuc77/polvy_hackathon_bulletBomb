@@ -1,11 +1,10 @@
 <template>
-  <mobile-popup
+  <pwc-popup
     class="c-mobile-normal-questionnaire-popup"
-    fill-body-section
-    :update-on-resize="true"
-    :force-horizontal-screen="mobilePlayerIsPageFullscreen"
+    v-model="questionnaireVisible"
+    fill-body
+    :body-max-height="0.7"
     :show-header="false"
-    :visible.sync="questionnaireVisible"
   >
     <iar-normal-questionnaire
       v-if="targetInited"
@@ -13,13 +12,11 @@
       :questionnaire-data="currentQuestionnaire"
       @submit="onSubmitData"
     />
-  </mobile-popup>
+  </pwc-popup>
 </template>
 
 <script setup lang="ts">
-import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useLayoutStore } from '@/store/use-layout-store';
+import { PwcPopup } from '@polyv/vue-components';
 import { defineAsyncComponent } from 'vue';
 import { useTaskActivityQuestionnaire } from './hooks/use-task-activity-questionnaire';
 import { useIarUILoader } from '../interactive-receive-v2/_load-iar-ui-v2';
@@ -28,8 +25,6 @@ import { useQuestionnaireTarget } from '../interactive-receive-v2/questionnaire-
 const { targetInited, getIarTarget } = useQuestionnaireTarget();
 
 const { questionnaireVisible, currentQuestionnaire, onSubmitData } = useTaskActivityQuestionnaire();
-
-const { mobilePlayerIsPageFullscreen } = storeDefinitionToRefs(useLayoutStore);
 
 const { loadIarUI } = useIarUILoader('iar-questionnaire-ui');
 

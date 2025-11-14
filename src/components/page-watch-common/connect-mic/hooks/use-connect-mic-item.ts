@@ -60,6 +60,9 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
     return docStore.hasPaintAuth && unref(isLocal);
   });
 
+  /** 是否开启镜像（仅本地流有效） */
+  const mirrorEnabled = computed(() => props.micItem.mirrorEnabled);
+
   watch(
     () => isPause.value,
     (val: boolean) => {
@@ -134,6 +137,7 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
     isMaster,
     currentConnectMicType,
     showShareIcon,
+    mirrorEnabled,
     resume,
   };
 };

@@ -16,7 +16,7 @@
     <div
       v-if="showDonateGifts"
       class="c-pc-chat-input-controller__more-panel__item pws-pc-more-panel-item"
-      @click="onClickDonateAnimation"
+      @click="toggleDonateAnimationVisible()"
     >
       <pc-form-checkbox :checked="!donateAnimationVisible">
         {{ $lang('donate.hideAnimation') }}
@@ -81,8 +81,8 @@ const emit = defineEmits({
 const { getEmitter } = useGlobalInject();
 
 const donateStore = useDonateStore();
-const { donateAnimationVisible, showDonateGifts } = storeToRefs(donateStore);
-const { toggleDonateAnimationVisible } = useDonateAnimationVisible();
+const { showDonateGifts } = storeToRefs(donateStore);
+const { donateAnimationVisible, toggleDonateAnimationVisible } = useDonateAnimationVisible();
 
 const chatStore = useChatStore();
 const { onlySpecialMsg, onlySpecialMsgWidgetVisible } = storeToRefs(chatStore);
@@ -95,10 +95,6 @@ const { toInterruptUserClick } = useInterruptUserClick();
 
 function onClickSpecialMsg() {
   chatStore.toggleOnlySpecialMsg();
-}
-
-function onClickDonateAnimation() {
-  toggleDonateAnimationVisible();
 }
 
 function onClickSetNick() {

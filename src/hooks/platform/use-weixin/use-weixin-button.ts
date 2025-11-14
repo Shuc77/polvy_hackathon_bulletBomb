@@ -91,7 +91,7 @@ export const useWeixinButton = (
     });
   }
 
-  const weixinBtnRef = ref<HTMLDivElement>();
+  const weixinBtnRef = ref<HTMLDivElement | HTMLElement>();
 
   const buttonOptions = computed(() => {
     return hookOptions.getButtonOptions?.();

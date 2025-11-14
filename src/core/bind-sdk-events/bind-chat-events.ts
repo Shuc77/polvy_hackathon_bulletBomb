@@ -13,6 +13,12 @@ export function bindChatModuleEvents(watchCore: PolyvWatchCore): void {
 
   const { redirectToErrorVerify } = useErrorVerify();
 
+  watchCore.chat.eventEmitter.on(ChatEvents.ChatSdkV2Setuped, () => {
+    chatStore.$patch({
+      chatSdkV2Setuped: true,
+    });
+  });
+
   // 聊天室连接失败
   watchCore.chat.eventEmitter.on(ChatEvents.ChatConnectFail, () => {
     chatStore.$patch({

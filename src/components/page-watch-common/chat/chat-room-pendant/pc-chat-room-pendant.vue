@@ -43,11 +43,12 @@
 
     <template v-if="!isPlaybackWatchUrl">
       <!-- 点赞 -->
-      <pc-chat-like
-        v-if="likeFeatureEnabled"
-        class="c-pc-chat-room-pendant__item"
-        :upper-has-icon="hasOtherPendant"
-      />
+      <chat-loader-helper v-if="likeFeatureEnabled">
+        <pc-chat-like
+          class="c-pc-chat-room-pendant__item"
+          :upper-has-icon="hasOtherPendant"
+        />
+      </chat-loader-helper>
     </template>
   </div>
 </template>
@@ -67,7 +68,8 @@ import PcEmotionalFeedback from '../chat-emotional-feedback/pc-emotional-feedbac
 
 import PcImgAdvert from '@/components/page-watch-common/icon-advert/pc-img-advert.vue';
 import { RiskEvaluationEntrance } from '@/components/page-watch-common/interactive-receive/risk-evaluation';
-import PcChatLike from '../chat-like/pc-chat-like.vue';
+import PcChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
+import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';

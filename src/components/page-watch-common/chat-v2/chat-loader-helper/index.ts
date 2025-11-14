@@ -3,6 +3,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { computed, defineComponent, h } from 'vue';
 import { ChatUIInject } from './chat-ui-inject';
+import { useChatStore } from '@/store/use-chat-store';
 
 /**
  * 聊天室 UI 加载
@@ -13,8 +14,10 @@ export const ChatLoaderHelper = defineComponent({
 
     const { watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
 
+    const { chatSdkV2Setuped } = storeDefinitionToRefs(useChatStore);
+
     const canRender = computed(() => {
-      return isLoaded.value && watchPageChatConnected.value;
+      return chatSdkV2Setuped.value && isLoaded.value && watchPageChatConnected.value;
     });
 
     return () => {

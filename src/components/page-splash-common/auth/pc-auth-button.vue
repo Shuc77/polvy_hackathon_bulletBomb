@@ -8,6 +8,7 @@
       :size="ButtonSize.Medium"
       :text="buttonText"
       @click="onClickAuthButton"
+      data-testid="pc-auth-button"
     />
 
     <!-- 无条件观看/公开观看 -->

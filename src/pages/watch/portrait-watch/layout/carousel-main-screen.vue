@@ -120,10 +120,12 @@
     <div class="c-portrait-carousel-main-screen__bottom">
       <!-- 打赏动画 -->
       <div
-        v-show="!portraitPlayerIsPageFullscreen && donateAnimationVisible"
+        v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
-        <portrait-donate-animation />
+        <chat-loader-helper>
+          <portrait-donate-animation />
+        </chat-loader-helper>
       </div>
 
       <!-- 跑道消息 -->
@@ -131,7 +133,9 @@
         v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--pointer-event"
       >
-        <portrait-runway-effect :left="16" />
+        <chat-loader-helper>
+          <portrait-runway-effect :left="16" />
+        </chat-loader-helper>
       </div>
 
       <!-- 消息区 -->
@@ -220,7 +224,7 @@
         <div class="c-portrait-carousel-main-screen__input-wrap">
           <!-- 聊天室输入框占位 -->
           <template v-if="portraitChatInputVisible">
-            <portrait-chat-input-placeholder v-if="!isChatUIV2" />
+            <portrait-chat-input-placeholder v-if="!isChatUIV2 || !chatMenuData.visible" />
             <chat-loader-helper v-else>
               <portrait-message-input />
             </chat-loader-helper>
@@ -256,10 +260,9 @@
           <mobile-more-entrance v-if="!isPlaybackWatchUrl" />
 
           <!-- 点赞 -->
-          <portrait-chat-like
-            v-if="!isPlaybackWatchUrl && likeFeatureEnabled && !isPlaybacking"
-            class="c-portrait-carousel-main-screen__bottom__button"
-          />
+          <chat-loader-helper v-if="!isPlaybackWatchUrl && likeFeatureEnabled && !isPlaybacking">
+            <portrait-chat-like class="c-portrait-carousel-main-screen__bottom__button" />
+          </chat-loader-helper>
         </div>
       </div>
 
@@ -274,12 +277,14 @@
       </div>
     </div>
 
-    <!-- 打赏 svga 特效 -->
+    <!-- 特效动画 -->
     <div
-      v-show="!portraitPlayerIsPageFullscreen && donateAnimationVisible"
-      class="c-portrait-carousel-main-screen__svga-donate"
+      v-show="!portraitPlayerIsPageFullscreen"
+      class="c-portrait-carousel-main-screen__special-effect"
     >
-      <portrait-donate-svga-animation />
+      <chat-loader-helper>
+        <portrait-special-effect-animation />
+      </chat-loader-helper>
     </div>
 
     <!-- 课堂激励点赞特效 -->
@@ -318,20 +323,20 @@ import ChatMsgListV2 from '@/components/page-watch-common/chat-v2/chat-msg-list/
 import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
 import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import PortraitChatErrorTips from '@/components/page-watch-common/chat/chat-error-tips/portrait-chat-error-tips.vue';
-import PortraitChatLike from '@/components/page-watch-common/chat/chat-like/portrait-chat-like.vue';
+import PortraitChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
 import PortraitDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/portrait-doc-side-switch.vue';
 import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
-import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
+import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/index.vue';
 import MobileDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/mobile-donate-entrance.vue';
-import PortraitDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
+import PortraitSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
 import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
 import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
 import LiveSquare from '@/components/page-watch-common/live-square/live-square.vue';
-import PortraitRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
+import PortraitRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
@@ -596,21 +601,17 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   height: 36px;
   // margin-left: 12px;
   background-size: 100% 100%;
-
-  .plv-like-button__content {
-    width: 36px !important;
-    height: 36px !important;
-  }
 }
 
 .c-portrait-carousel-main-screen__bottom__button--donate {
   background-image: url(./images/icon-donate.png);
 }
-.c-portrait-carousel-main-screen__svga-donate {
+.c-portrait-carousel-main-screen__special-effect {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
+  height: 50%;
   pointer-events: none;
 }
 

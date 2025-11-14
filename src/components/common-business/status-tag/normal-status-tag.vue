@@ -13,7 +13,11 @@
       class="c-normal-live-status-tag__signal-icon"
       background="currentColor"
     />
-    <span class="c-normal-status-tag__text">{{ statusTagText }}</span>
+    <span
+      class="c-normal-status-tag__text"
+      data-testid="live-status-tag-text"
+      >{{ statusTagText }}</span
+    >
   </div>
 </template>
 

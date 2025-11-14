@@ -20,6 +20,7 @@
             :class="{
               'c-pc-player-control__setting__panel__item--active': item.active,
             }"
+            data-testid="plv-player-control-line-item"
             @click="toChangeLine(item.value)"
           >
             {{ item.text }}
@@ -41,6 +42,8 @@
             :class="{
               'c-pc-player-control__setting__panel__item--active': item.active,
             }"
+            data-testid="plv-player-control-quality-level-item"
+            :data-testid-active="item.active"
             @click="toChangeQualityLevel(item.value)"
           >
             {{ item.text }}
@@ -64,6 +67,7 @@
             :class="{
               'c-pc-player-control__setting__panel__item--active': item.active,
             }"
+            data-testid="plv-player-control-latency-mode-item"
             @click="toSetLowLowLatency(item.value)"
           >
             {{ item.text }}

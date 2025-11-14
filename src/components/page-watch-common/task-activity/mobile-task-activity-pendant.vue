@@ -21,7 +21,7 @@
       >
         <div class="c-mobile-task-activity-pendant__network-error-tip__container">
           <span class="c-mobile-task-activity-pendant__network-error-tip__text">
-            {{ translate('taskActivity.networkError.title') }}
+            {{ translate('taskActivity.networkError.title2') }}
           </span>
           <div
             class="c-mobile-task-activity-pendant__network-error-tip__close-icon"
@@ -114,6 +114,7 @@ function onCloseNetworkError() {
   line-height: 20px;
   color: #ffffff; /* 中性色-深色/中性色-白色100%(标题) */
   text-align: left;
+  white-space: nowrap;
 }
 
 .c-mobile-task-activity-pendant__network-error-tip__close-icon {

@@ -47,6 +47,7 @@ export const useHideChatMsg = () => {
 export const useMessageLayout = () => {
   const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
   const { chatSetting } = storeDefinitionToRefs(useChatStore);
+  const { isMobile } = useBrowser();
 
   function __formatLayout(target: ChatMessageLayout): MessageLayout {
     return target === ChatMessageLayout.Loose ? 'loose' : 'compact';
@@ -72,9 +73,35 @@ export const useMessageLayout = () => {
     return chatSetting.value.chatMessageAvatarDisplay;
   }
 
+  function getMessageHorizontalSpacing(): MessageConfig['messageHorizontalSpacing'] {
+    return isPortraitWatchLayout.value
+      ? {
+          left: 0,
+          right: 0,
+        }
+      : {
+          left: 16,
+          right: 64,
+        };
+  }
+
+  function getMessageContainerBoundaryPadding(): MessageConfig['messageContainerBoundaryPadding'] {
+    return isMobile
+      ? {
+          top: 0,
+          bottom: 0,
+        }
+      : {
+          top: 16,
+          bottom: 16,
+        };
+  }
+
   return {
     getMessageLayout,
     getShowUserAvatar,
+    getMessageHorizontalSpacing,
+    getMessageContainerBoundaryPadding,
   };
 };
 

@@ -53,6 +53,12 @@
             v-if="confirmButtonText"
             @click="onConfirm"
           >
+            <div
+              v-if="isWeixin && confirmButtonWeixinId"
+              class="c-mobile-message-box__footer__btn__weixin-btn"
+              :id="confirmButtonWeixinId"
+            ></div>
+
             {{ props.confirmButtonText }}
           </button>
         </div>
@@ -70,6 +76,7 @@ import {
   MessageBoxPositionType,
 } from './use-message-box';
 import { useSlots } from 'vue';
+import { isWeixin } from '@/assets/utils/browser';
 
 const props = defineProps(messageBoxMobileProps());
 const emit = defineEmits(messageBoxEmits());
@@ -145,6 +152,7 @@ defineExpose(messageBoxInstance);
   border-top: 1px solid #ededef;
 }
 .c-mobile-message-box__footer__btn {
+  position: relative;
   box-sizing: border-box;
   display: inline-block;
   flex: 1;
@@ -157,6 +165,15 @@ defineExpose(messageBoxInstance);
     border-left: 1px solid rgba(#000000, 0.1);
   }
 }
+.c-mobile-message-box__footer__btn__weixin-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+}
+
 .c-mobile-message-box__body {
   box-sizing: border-box;
   display: flex;

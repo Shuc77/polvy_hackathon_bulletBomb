@@ -6,7 +6,7 @@ import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore, SwitchTipsStatus } from '@/store/use-player-store';
-import { PlayStatus, PlayerEvents } from '@polyv/live-watch-sdk';
+import { PlayStatus, PlayerEvents, LoggerName } from '@polyv/live-watch-sdk';
 import debounce from 'lodash-es/debounce';
 import { usePlayerControl } from './use-player-control';
 import { setLatencySettings } from '../latency-settings-storage';
@@ -437,6 +437,11 @@ export const usePlayerAction = () => {
     setTimeout(() => {
       getEmitter().emit(appEvents.player.ResetUpPlayer);
     }, 0);
+    getWatchCore().logger.info(
+      LoggerName.LowLatencyPlayer,
+      'low-latency-player-switch',
+      String(isLowLatency),
+    );
   }
 
   /** 切换移动端播放器页面全屏 */

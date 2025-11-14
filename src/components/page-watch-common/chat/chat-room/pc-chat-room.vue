@@ -10,13 +10,14 @@
       />
 
       <!-- 跑道消息 -->
-      <pc-runway-effect class="c-pc-chat-room__topic__item" />
+      <chat-loader-helper>
+        <pc-runway-effect class="c-pc-chat-room__topic__item" />
+      </chat-loader-helper>
 
       <!-- 打赏动画 -->
-      <pc-donate-animation
-        v-if="donateAnimationVisible"
-        class="c-pc-chat-room__topic__item"
-      />
+      <chat-loader-helper>
+        <pc-donate-animation class="c-pc-chat-room__topic__item" />
+      </chat-loader-helper>
     </div>
 
     <!-- 聊天消息列表区域 -->
@@ -30,8 +31,10 @@
       <!-- 右下角挂件 -->
       <pc-chat-room-pendant />
 
-      <!-- 打赏 svga 特效 -->
-      <pc-donate-svga-animation v-if="donateAnimationVisible" />
+      <!-- 特效动画 -->
+      <chat-loader-helper>
+        <pc-special-effect-animation />
+      </chat-loader-helper>
     </div>
 
     <!-- 互动二次入口 -->
@@ -56,24 +59,23 @@
 
 <script setup lang="ts">
 import PcEnroll from '@/components/common-business/enroll/pc-enroll.vue';
-import PcDonateAnimation from '@/components/page-watch-common/donate/donate-animation/donate-animation.vue';
-import PcDonateSvgaAnimation from '@/components/page-watch-common/donate/donate-svga-animation/donate-svga-animation.vue';
+import PcDonateAnimation from '@/components/page-watch-common/donate/donate-animation/index.vue';
+import PcSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 
+import PcRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import PcAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
 import PcInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/pc-interactive-entrance.vue';
-import PcChatInputController from '../chat-input-controller/pc-chat-input-controller/pc-chat-input-controller.vue';
-import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
-import ChatMsgListV2 from '../../chat-v2/chat-msg-list/index.vue';
-import PcMessageInputV2 from '../../chat-v2/message-input/pc-message-input.vue';
-import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
-import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
-import PcRunwayEffect from '@/components/page-watch-common/message-effect/runway-effect.vue';
-import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useDonateStore } from '@/store/use-donate-store';
+import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
+import ChatMsgListV2 from '../../chat-v2/chat-msg-list/index.vue';
+import PcMessageInputV2 from '../../chat-v2/message-input/pc-message-input.vue';
+import PcChatInputController from '../chat-input-controller/pc-chat-input-controller/pc-chat-input-controller.vue';
+import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
+import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
+import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
@@ -81,8 +83,6 @@ const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatS
 
 const { announcementFunctionVisible, iarSdkLoaded } =
   storeDefinitionToRefs(useInteractReceiveStore);
-
-const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 </script>
 
 <style lang="scss">

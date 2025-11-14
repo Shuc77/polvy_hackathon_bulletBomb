@@ -10,6 +10,7 @@
       'c-portrait-player-fullscreen-button--position': usePosition,
     }"
     :style="usePosition ? portraitPlayerFullscreenBtnStyle : {}"
+    data-testid="plv-player-fullscreen-toggle-btn"
     @click="togglePortraitPlayerFullscreen"
   ></div>
 </template>

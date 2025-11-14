@@ -98,6 +98,23 @@
         @click="toggleFacingMode"
       ></div>
 
+      <!-- 镜像开关 -->
+      <div
+        v-if="
+          connectMicStatus === ConnectMicStatus.Connected &&
+          localConnectMicType === ConnectMicType.Video
+        "
+        class="c-portrait-connect-mic-pendant__button"
+        :class="{
+          'c-portrait-connect-mic-pendant__button--mirror-enabled':
+            mirrorEnabled && !localIsVideoMuted,
+          'c-portrait-connect-mic-pendant__button--mirror-disabled':
+            !mirrorEnabled && !localIsVideoMuted,
+          'c-portrait-connect-mic-pendant__button--mirror-video-disabled': localIsVideoMuted,
+        }"
+        @click="() => toggleMirror()"
+      ></div>
+
       <!-- 麦克风开关 -->
       <div
         v-if="connectMicStatus === ConnectMicStatus.Connected"
@@ -213,13 +230,15 @@ const {
   localIsAudioMuted,
   localConnectMicType,
   supportFacingMode,
+  mirrorEnabled,
 } = storeDefinitionToRefs(useConnectMicStore);
 
 const { mobileLayoutBottomTop, mobileMenuHeaderHeight } = storeDefinitionToRefs(useLayoutStore);
 
 const { applyConnectMic, cancelApplyConnectMic } = useConnectMicApply();
 
-const { endConnectMic, toggleVideo, toggleAudio, toggleFacingMode } = useConnectMicControl();
+const { endConnectMic, toggleVideo, toggleAudio, toggleFacingMode, toggleMirror } =
+  useConnectMicControl();
 
 useConnectMic();
 
@@ -384,6 +403,20 @@ const { top } = useAsideDrag({
 .c-portrait-connect-mic-pendant__button--facing-disabled {
   pointer-events: none;
   background-image: url(../imgs/btn-facingmode-environment.png);
+}
+
+.c-portrait-connect-mic-pendant__button--mirror-enabled {
+  background-image: url(../imgs/btn-mirror-enabled.png);
+}
+
+.c-portrait-connect-mic-pendant__button--mirror-disabled {
+  background-image: url(../imgs/btn-mirror-disabled.png);
+}
+
+.c-portrait-connect-mic-pendant__button--mirror-video-disabled {
+  pointer-events: none;
+  background-image: url(../imgs/btn-mirror-disabled.png);
+  opacity: 0.5;
 }
 
 .c-portrait-connect-mic-pendant__tips {
