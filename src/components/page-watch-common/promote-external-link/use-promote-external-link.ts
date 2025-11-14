@@ -3,18 +3,9 @@ import { openLink } from '@/assets/utils/url';
 import { PropUtils, VueProps } from '@polyv/vue-components';
 import { ChannelMenuIframeOpenType, plvInterval, plvParseJson } from '@polyv/live-watch-sdk';
 import { computed, onMounted, ref, watch } from 'vue';
-import {
-  navigateToLink,
-  formatLink,
-  type LinkData,
-  LinkJumpWay,
-  LinkType,
-} from '@utils-ts/external-link';
+import { formatLink, type LinkData, LinkType } from '@utils-ts/external-link';
 import { useIarExternalLinkParams } from '../interactive-receive/use-iar-external-link-params';
-import { useWeixinButton } from '@/hooks/platform/use-weixin/use-weixin-button';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useWebviewStore } from '@/store/use-webview-store';
-import { isMobile } from '@/assets/utils/browser';
+import { useMultiPlatformLink } from '@/hooks/platform/use-multi-platform-link/use-multi-platform-link';
 
 export const promoteExternalLinkProps = () => ({
   /** iframe 链接地址或者 json 配置 */
@@ -28,96 +19,6 @@ export const promoteExternalLinkProps = () => ({
   /** 微信按钮选择器 */
   weixinBtnSelector: PropUtils.string.def(),
 });
-
-export const usePromotionExternalLinkButton = (options: {
-  getLinkData: () => LinkData | null;
-  popUpJumpHandler: (url: string) => void;
-}) => {
-  const { getPlvWebviewBridge } = useWebviewStore();
-  const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
-
-  const { getLinkParams } = useIarExternalLinkParams();
-
-  const {
-    supportWxOpenLaunchWebApp,
-    weixinBtnRef,
-
-    checkWxMiniProgramWebview,
-    toWxMiniProgram,
-    supportWxMiniProgramNavigateTo,
-  } = useWeixinButton({
-    getButtonOptions: () => {
-      const linkData = options.getLinkData();
-      if (!linkData) return undefined;
-
-      return {
-        wxMiniprogramOriginalId: linkData.wxMiniprogramOriginalId,
-        wxMiniprogramLink: formatLink(linkData.wxMiniprogramLink, getLinkParams),
-        classKey: 'promote',
-      };
-    },
-  });
-
-  /**
-   * 根据跳转方式打开链接
-   * @param url 链接
-   * @param jumpWay 跳转方式，默认新窗口打开
-   */
-  function openJumpWayLink(url: string, jumpWay: LinkJumpWay) {
-    switch (jumpWay) {
-      case LinkJumpWay.CurrentWindow:
-        window.location.href = url;
-        break;
-      case LinkJumpWay.PopUp:
-        options.popUpJumpHandler(url);
-        break;
-      case LinkJumpWay.NewWindow:
-      default:
-        openLink(url);
-    }
-  }
-
-  function handleMultiPlatformLinkType() {
-    try {
-      const linkData = options.getLinkData();
-      if (!linkData) return;
-
-      navigateToLink({
-        linkData,
-        getLinkParams,
-        openLink: openJumpWayLink,
-        isMobile: () => isMobile,
-        isPlvWebview: () => isPlvWebview.value,
-        getPlvWebviewBridge: () => new Promise(resolve => resolve(getPlvWebviewBridge())),
-        getPlvWebviewSmallWindowSize: () => plvWebviewDataSize.value,
-        isWxMiniProgramEnv: supportWxMiniProgramNavigateTo,
-        toWxMiniProgram,
-      });
-    } catch (error) {
-      console.error('handleMultiPlatformLinkType', error);
-    }
-  }
-
-  const getWeixinBtnSetupEnabled = async () => {
-    const linkData = options.getLinkData();
-    if (!linkData) return false;
-
-    const isWxMiniProgramWebview = await checkWxMiniProgramWebview();
-    // 小程序 webview 内使用原生 sdk 功能跳转
-    if (isWxMiniProgramWebview) {
-      return false;
-    }
-
-    return supportWxOpenLaunchWebApp.value && !!linkData.wxMiniprogramOriginalId;
-  };
-
-  return {
-    getWeixinBtnSetupEnabled,
-    weixinBtnRef,
-
-    handleMultiPlatformLinkType,
-  };
-};
 
 /**
  * @hook 推广链接组件 Hook
@@ -154,8 +55,10 @@ export const usePromoteExternalLinkHook = (options: {
   }
 
   const { getWeixinBtnSetupEnabled, weixinBtnRef, handleMultiPlatformLinkType } =
-    usePromotionExternalLinkButton({
+    useMultiPlatformLink({
+      getLinkParams,
       getLinkData,
+      wxBtnClassKey: 'promote',
       popUpJumpHandler: url => {
         forceOpenInMenu.value = true;
         iframeUrl.value = url;

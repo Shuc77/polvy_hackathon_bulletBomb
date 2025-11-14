@@ -10,6 +10,7 @@ export const sliderBarDirections = tupleString('horizontal', 'vertical');
 export type SliderBarDirection = typeof sliderBarDirections[number];
 
 export const sliderBarProps = () => ({
+  dataTestId: PropUtils.string.def(''),
   /** 绑定值 */
   value: PropUtils.number.def(0),
   /** hover 时放大滑块 */

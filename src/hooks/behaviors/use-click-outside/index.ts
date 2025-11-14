@@ -1,5 +1,5 @@
 import Vue, { onBeforeUnmount, onMounted, Ref } from 'vue';
-import { getRefElem, MaybeElement } from '@polyv/vue-components';
+import { getRefElem } from '@polyv/vue-components';
 import { isFunction } from '@/assets/utils/function';
 import { isMac } from '@/assets/utils/browser';
 
@@ -37,7 +37,7 @@ export const useClickOutside = (
         return;
       }
 
-      const elemVal = getRefElem(refTarget as MaybeElement);
+      const elemVal = getRefElem(refTarget);
       // 已经是 dom 节点
       if (elemVal instanceof HTMLElement) {
         targetElements.push(elemVal);

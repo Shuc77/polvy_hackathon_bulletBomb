@@ -18,6 +18,8 @@
           'c-portrait-player-control__select-item--active pws-portrait-player-control__select-item--activity':
             item.active,
         }"
+        data-testid="plv-player-control-quality-level-item"
+        :data-testid-active="item.active"
         @click="onClickItem(item.value)"
       >
         {{ item.text }}

@@ -31,6 +31,18 @@
           }"
           @click="onClickAudio"
         ></div>
+
+        <!-- 镜像 -->
+        <div
+          v-if="supportSetupVideo"
+          class="c-pc-connect-mic-control__button g-img-cover"
+          :class="{
+            'c-pc-connect-mic-control__button--mirror-enabled': mirrorEnabled && !isVideoMuted,
+            'c-pc-connect-mic-control__button--mirror-disabled': !mirrorEnabled && !isVideoMuted,
+            'c-pc-connect-mic-control__button--mirror-video-disabled': isVideoMuted,
+          }"
+          @click="onClickMirror"
+        ></div>
       </div>
     </transition>
   </div>
@@ -50,6 +62,8 @@ const props = defineProps({
   isVideoMuted: PropUtils.bool.def(false),
   /** 是否关闭麦克风 */
   isAudioMuted: PropUtils.bool.def(false),
+  /** 是否开启镜像 */
+  mirrorEnabled: PropUtils.bool.def(true),
 });
 
 const emit = defineEmits({
@@ -61,6 +75,8 @@ const emit = defineEmits({
   'enabled-audio': emitFunc<void>(),
   // 关闭麦克风
   'disabled-audio': emitFunc<void>(),
+  /** 切换镜像 */
+  'toggle-mirror': emitFunc<void>(),
 });
 
 const { supportSetupVideo } = storeDefinitionToRefs(useConnectMicStore);
@@ -79,6 +95,10 @@ function onClickAudio() {
   } else {
     emit('disabled-audio');
   }
+}
+
+function onClickMirror() {
+  emit('toggle-mirror');
 }
 
 const {
@@ -138,5 +158,25 @@ const {
   &:hover {
     background-image: url(../imgs/item-audio-close-hover.png);
   }
+}
+
+.c-pc-connect-mic-control__button--mirror-enabled {
+  background-image: url(../imgs/item-mirror-enabled.png);
+  &:hover {
+    background-image: url(../imgs/item-mirror-enabled-hover.png);
+  }
+}
+
+.c-pc-connect-mic-control__button--mirror-disabled {
+  background-image: url(../imgs/item-mirror-disabled.png);
+  &:hover {
+    background-image: url(../imgs/item-mirror-disabled-hover.png);
+  }
+}
+
+.c-pc-connect-mic-control__button--mirror-video-disabled {
+  pointer-events: none;
+  background-image: url(../imgs/item-mirror-disabled.png);
+  opacity: 0.5;
 }
 </style>

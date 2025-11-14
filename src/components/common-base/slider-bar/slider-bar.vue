@@ -20,6 +20,7 @@
         'c-slide-bar__container--dragging': isDragging,
       }"
       :style="containerStyle"
+      :data-testid="dataTestId"
       @mousedown="onMouseDown"
       @mousemove="onTrackMouseMove"
       @mouseup="onMouseUp"

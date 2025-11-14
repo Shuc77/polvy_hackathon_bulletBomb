@@ -15,10 +15,16 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import MobileMorePanel from './mobile-more-panel.vue';
+import { provide } from 'vue';
+import { MORE_POPUP_INJECT_KEY } from './types';
 
 const { visible, setVisible, close: closeMore } = useSimpleVisible(false);
 
 useEventBusListener(appEvents.global.OpenMobileMorePopup, (_visible = true) => {
   setVisible(_visible);
+});
+
+provide(MORE_POPUP_INJECT_KEY, {
+  closeMore,
 });
 </script>

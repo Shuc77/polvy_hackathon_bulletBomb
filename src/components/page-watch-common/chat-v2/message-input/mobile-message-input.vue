@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import MobileChatLike from '@/components/page-watch-common/chat/chat-like/mobile-chat-like.vue';
+import MobileChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import MobileDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/mobile-donate-entrance.vue';
 import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
 import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';

@@ -4,6 +4,9 @@
     <div
       ref="wrapRef"
       class="c-portrait-connect-mic-user-item__wrap"
+      :class="{
+        'c-portrait-connect-mic-user-item__wrap--no-mirror': isLocal && !mirrorEnabled,
+      }"
     ></div>
 
     <div
@@ -71,6 +74,7 @@ const {
   isLocal,
   isMaster,
   isPause,
+  mirrorEnabled,
   resume,
 } = useConnectMicItem({
   props,
@@ -100,6 +104,12 @@ const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
 
   video {
     transform: none !important;
+  }
+}
+
+.c-portrait-connect-mic-user-item__wrap--no-mirror {
+  video {
+    transform: scaleX(-1) !important;
   }
 }
 .c-portrait-connect-mic-user-item__fail {

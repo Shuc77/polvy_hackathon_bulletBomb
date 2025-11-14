@@ -7,7 +7,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { useQueryParams } from '@/hooks/core/use-query-params';
-import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { computed, ComputedRef, ref, Ref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useChannelStore } from './use-channel-store';
 import { useAuthStore } from './use-auth-store';
@@ -58,18 +58,26 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
   const identitySetting = ref(PlvIdentityModule.generateDefaultIdentitySetting());
 
   /**
+   * 是否是外部用户
+   */
+  const isExternalUser = computed(() => {
+    return !!identityUnionInfo.value?.externalViewerId;
+  });
+
+  /**
    * 绑定用户手机号是否显示
    */
   const bindMobileVisible = computed(() => {
-    if (!unref(watchUserSystemEnabled)) {
+    if (!watchUserSystemEnabled.value || !identityUnionInfo.value) {
       return false;
     }
 
-    if (isGuest.value) {
+    // 游客和外部用户不显示绑定手机号
+    if (isGuest.value || isExternalUser.value) {
       return false;
     }
 
-    return !unref(identityUnionInfo)?.phoneNumber;
+    return !identityUnionInfo.value.phoneNumber;
   });
 
   /**

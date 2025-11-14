@@ -9,6 +9,9 @@
     <div
       ref="wrapRef"
       class="c-mobile-connect-mic-user-item__wrap"
+      :class="{
+        'c-mobile-connect-mic-user-item__wrap--no-mirror': isLocal && !mirrorEnabled,
+      }"
     ></div>
 
     <!-- 关闭摄像头 -->
@@ -76,6 +79,7 @@ const {
   isMaster,
   showShareIcon,
   isPause,
+  mirrorEnabled,
 } = useConnectMicItem({
   props,
 });
@@ -135,6 +139,12 @@ watch(
   video {
     background: transparent !important;
     transform: none !important;
+  }
+}
+
+.c-mobile-connect-mic-user-item__wrap--no-mirror {
+  video {
+    transform: scaleX(-1) !important;
   }
 }
 

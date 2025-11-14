@@ -8,6 +8,7 @@
           'c-pc-player-control__button--volume-setting': !isVolumeMute,
           'c-pc-player-control__button--volume-mute': isVolumeMute,
         }"
+        data-testid="plv-player-volume-toggle-btn"
         @click="onClickVolumeButton"
       ></div>
 
@@ -15,6 +16,7 @@
         <div class="c-pc-player-control__volume-setting__panel__percent">{{ volumeText }}</div>
         <div class="c-pc-player-control__volume-setting__panel__slider-bar">
           <slider-bar
+            :data-test-id="'plv-player-volume-slide-bar'"
             direction="vertical"
             :min="0"
             :max="1"

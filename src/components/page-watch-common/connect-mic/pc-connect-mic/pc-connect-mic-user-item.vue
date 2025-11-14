@@ -9,6 +9,9 @@
     <div
       ref="wrapRef"
       class="c-pc-connect-mic-user-item__wrap"
+      :class="{
+        'c-pc-connect-mic-user-item__wrap--no-mirror': isLocal && !mirrorEnabled,
+      }"
     ></div>
 
     <!-- 占位图 -->
@@ -52,10 +55,12 @@
       :connect-mic-type="currentConnectMicType"
       :is-audio-muted="isAudioMuted"
       :is-video-muted="isVideoMuted"
+      :mirror-enabled="mirrorEnabled"
       @enabled-video="enabledVideo"
       @disabled-video="disabledVideo"
       @enabled-audio="enabledAudio"
       @disabled-audio="disabledAudio"
+      @toggle-mirror="() => toggleMirror()"
     />
 
     <!-- 当前正在屏幕共享时的遮罩层 -->
@@ -103,11 +108,13 @@ const {
   isMaster,
   currentConnectMicType,
   showShareIcon,
+  mirrorEnabled,
 } = useConnectMicItem({
   props,
 });
 
-const { enabledVideo, disabledVideo, enabledAudio, disabledAudio } = useConnectMicControl();
+const { enabledVideo, disabledVideo, enabledAudio, disabledAudio, toggleMirror } =
+  useConnectMicControl();
 
 const { screenShareInfo, networkInfo } = storeDefinitionToRefs(useConnectMicStore);
 
@@ -146,6 +153,12 @@ const { playerBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
   video {
     background: transparent !important;
     transform: none !important;
+  }
+}
+
+.c-pc-connect-mic-user-item__wrap--no-mirror {
+  video {
+    transform: scaleX(-1) !important;
   }
 }
 

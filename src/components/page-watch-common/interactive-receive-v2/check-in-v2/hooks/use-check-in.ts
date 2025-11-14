@@ -77,7 +77,7 @@ export const useCheckIn = () => {
 
   const showEntrance = (visible: boolean) => {
     if (visible) {
-      setCheckInEntrance();
+      onSignIn();
     }
   };
   /** 兼容旧版聊天室，新逻辑：该频道发起过签到后，入口常驻 */

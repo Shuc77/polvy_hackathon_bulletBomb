@@ -36,14 +36,16 @@
         <mobile-product-pendant v-if="interactSetting.productEnabled && iarSdkLoaded" />
 
         <!-- 点赞 -->
-        <mobile-chat-like v-if="likeFeatureEnabled" />
+        <chat-loader-helper v-if="likeFeatureEnabled">
+          <mobile-chat-like />
+        </chat-loader-helper>
       </template>
     </mobile-msg-input-wrap>
   </div>
 </template>
 
 <script setup lang="ts">
-import MobileChatLike from '@/components/page-watch-common/chat/chat-like/mobile-chat-like.vue';
+import MobileChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import MobileChatMsgQuote from '@/components/page-watch-common/chat/chat-msg-quote/mobile-chat-msg-quote.vue';
 import MobileDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/mobile-donate-entrance.vue';
 import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
@@ -51,6 +53,7 @@ import MobileMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/mo
 import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { useChatStore } from '@/store/use-chat-store';

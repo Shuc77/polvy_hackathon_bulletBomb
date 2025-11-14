@@ -2,14 +2,13 @@
  * @file 打赏 store
  */
 import { translate } from '@/assets/lang';
-import { YN, DonateType, DonateGoodData, PayDonateData } from '@polyv/live-watch-sdk';
-import { defineStore } from 'pinia';
-import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelStore } from '@/store/use-channel-store';
+import { DonateGoodData, DonateType, PayDonateData, YN } from '@polyv/live-watch-sdk';
 import { ynToBool } from '@utils-ts/boolean';
-import { changeProtocol } from '@utils-ts/net';
-import { useWatchAppStore } from './use-watch-app-store';
+import { defineStore } from 'pinia';
+import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { usePlaybackStore } from './use-playback-store';
+import { useWatchAppStore } from './use-watch-app-store';
 
 export interface DonateGoodInfo extends DonateGoodData {
   /** 翻译后的礼物名称 */
@@ -60,8 +59,6 @@ export interface DonateStoreAction {
   getGoodPriceText: (goodPrice: string) => string;
   /** 根据道具id获取打赏道具信息 */
   findDonateGoodById: (targetGoodId?: string) => DonateGoodInfo | undefined;
-  /** 根据道具图片获取打赏道具信息 */
-  findDonateGoodByImg: (targetGoodImg: string) => DonateGoodInfo | undefined;
   /** 同步打赏 Store */
   syncDonateStore: () => void;
 }
@@ -208,28 +205,6 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   }
 
   /**
-   * 根据道具图片获取打赏道具信息
-   * @param targetGoodImg 道具图片
-   */
-  function findDonateGoodByImg(targetGoodImg: string): DonateGoodInfo | undefined {
-    let goodInfo: DonateGoodInfo | undefined;
-    const list = donateItemAll.value;
-
-    for (let i = 0; i < list.length; i++) {
-      const good = list[i];
-      const goodImg = changeProtocol(good.goodImg, 'https');
-      const dynamicImg = changeProtocol(good.dynamicImg ?? '', 'https');
-      const _targetGoodImg = changeProtocol(targetGoodImg, 'https');
-      if (_targetGoodImg === goodImg || _targetGoodImg === dynamicImg) {
-        goodInfo = good;
-        break;
-      }
-    }
-
-    return goodInfo;
-  }
-
-  /**
    * 根据道具id获取打赏道具信息
    */
   function findDonateGoodById(targetGoodId?: string): DonateGoodInfo | undefined {
@@ -288,7 +263,6 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     translateGoodName,
     getGoodPriceText,
     findDonateGoodById,
-    findDonateGoodByImg,
     syncDonateStore,
   };
 });

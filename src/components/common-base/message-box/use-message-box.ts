@@ -45,6 +45,8 @@ export const messageBoxCommonProps = () => ({
   cancelButtonText: PropUtils.string.def(),
   /** 确认按钮文本 */
   confirmButtonText: PropUtils.string.def(),
+  /** 确认按钮id */
+  confirmButtonWeixinId: PropUtils.string.def(),
 });
 
 export const messageBoxPcProps = () => ({

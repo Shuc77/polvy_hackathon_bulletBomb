@@ -145,6 +145,7 @@
         :text="$lang('player.subtitle.text')"
         @click="onClickSubtitle"
       />
+
       <!-- 回放字幕 -->
       <more-item
         v-if="replaySubtitleVisible && isPortraitWatchLayout && !liveSubtitlesEnable"
@@ -152,6 +153,7 @@
         :text="$lang('player.replaySubtitle.text')"
         @click="onClickReplaySubtitle"
       />
+
       <!-- 个人中心 -->
       <more-item
         v-if="identitySetting.profileEnabled"
@@ -199,6 +201,7 @@
           donateAnimationVisible ? MobileOriginIconMoreShowDonate : MobileOriginIconMoreHideDonate
         "
         :text="$lang('donate.showAnimation')"
+        auto-close
         @click="toggleDonateAnimationVisible"
       />
 

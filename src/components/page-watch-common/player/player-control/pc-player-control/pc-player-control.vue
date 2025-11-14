@@ -178,6 +178,7 @@
               'c-pc-player-control__button--fullscreen': !isFullscreen,
               'c-pc-player-control__button--fullscreen-cancel': isFullscreen,
             }"
+            data-testid="plv-player-fullscreen-toggle-btn"
             :data-tips="
               isFullscreen ? $lang('layout.fullscreenCancel') : $lang('layout.fullscreen')
             "

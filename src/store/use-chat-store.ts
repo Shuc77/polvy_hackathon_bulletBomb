@@ -26,6 +26,8 @@ import { useQueryParams } from '@/hooks/core/use-query-params';
 export interface ChatStoreState {
   /** 聊天室设置信息 */
   chatSetting: Ref<ChatSetting>;
+  /** V2 聊天室 SDK 安装完成 */
+  chatSdkV2Setuped: Ref<boolean>;
   /** 是否使用 v2 版本的聊天室 UI */
   isChatUIV2: ComputedRef<boolean>;
   /** 聊天室是否显示 */
@@ -95,6 +97,9 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天室设置信息 */
   const chatSetting = ref<ChatSetting>(PlvChatModule.generateDefaultChatSetting());
+
+  /** V2 聊天室 SDK 安装完成 */
+  const chatSdkV2Setuped = ref(false);
 
   /** 是否使用 v2 版本的聊天室 UI */
   const isChatUIV2 = computed(() => {
@@ -279,6 +284,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   return {
     chatSetting,
+    chatSdkV2Setuped,
     isChatUIV2,
     chatRoomVisible,
     chatMsgListEnabled,

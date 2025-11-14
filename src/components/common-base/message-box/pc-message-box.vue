@@ -37,9 +37,15 @@
           class="c-pc-message-box__footer-button"
           :type="ButtonType.Primary"
           :size="ButtonSize.Small"
-          :text="props.confirmButtonText"
           @click="onConfirm"
-        />
+        >
+          <div
+            v-if="isWeixin && confirmButtonWeixinId"
+            class="c-pc-message-box__footer__btn__weixin-btn"
+            :id="confirmButtonWeixinId"
+          ></div>
+          {{ confirmButtonText }}
+        </normal-button>
       </div>
     </div>
   </pc-dialog>
@@ -52,6 +58,7 @@ import { computed } from 'vue';
 
 import { messageBoxPcProps, messageBoxEmits, useMessageBox } from './use-message-box';
 import { useComputePcDialogForPlayer } from '@/hooks/business/use-compute-pc-dialog-for-player/use-compute-pc-dialog-for-player';
+import { isWeixin } from '@/assets/utils/browser';
 
 const props = defineProps(messageBoxPcProps());
 const emit = defineEmits(messageBoxEmits());
@@ -111,8 +118,18 @@ defineExpose(messageBoxInstance);
   text-align: center;
 }
 .c-pc-message-box__footer-button {
+  position: relative;
   &:first-child {
     margin-right: 16px;
   }
+}
+
+.c-pc-message-box__footer__btn__weixin-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -20,23 +20,42 @@
           class="c-portrait-image-msg__placeholder g-img-cover"
         ></div>
         <!-- 本地上传图片后，消息替换时用的占位图 -->
-        <img
+        <div
           v-else
-          class="c-portrait-image-msg__img"
-          :src="imageUrl"
-          @click="onClickImage"
-        />
+          class="c-portrait-image-msg__img-wrap"
+        >
+          <div class="c-portrait-image-msg__img-inner">
+            <img
+              class="c-portrait-image-msg__img"
+              :src="imageUrl"
+              :style="imageBoundStyle"
+              @click="onClickImage"
+              @load="onImageLoad"
+            />
+
+            <span v-if="isLargeImage">{{ $lang('chat.longImage') }}</span>
+          </div>
+        </div>
       </template>
 
       <!-- 本地上传缓存图片 / 服务端图片 -->
-      <img
+      <div
         v-show="isLoaded"
-        ref="imageRef"
-        class="c-portrait-image-msg__img"
-        :src="imageUrl"
-        @load="onImageLoad"
-        @click="onClickImage"
-      />
+        class="c-portrait-image-msg__img-wrap"
+      >
+        <div class="c-portrait-image-msg__img-inner">
+          <img
+            ref="imageRef"
+            class="c-portrait-image-msg__img"
+            :src="imageUrl"
+            :style="imageBoundStyle"
+            @load="onImageLoad"
+            @click="onClickImage"
+          />
+
+          <span v-if="isLargeImage">{{ $lang('chat.longImage') }}</span>
+        </div>
+      </div>
     </template>
   </portrait-msg-container>
 </template>
@@ -52,6 +71,8 @@ const {
   localImagePlaceholder,
   isLoaded,
   imageRef,
+  imageBoundStyle,
+  isLargeImage,
 
   onImageLoad,
   onClickImage,
@@ -88,14 +109,36 @@ $--image-size: 80px;
   border-radius: 4px;
 }
 
+.c-portrait-image-msg__img-inner {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+
+  span {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 10px;
+    line-height: 16px;
+    color: #fff;
+    pointer-events: none;
+    background: rgba(#000, 0.4);
+    border-radius: 2px;
+  }
+}
+
 .c-portrait-image-msg__img {
   display: block;
-  max-width: $--image-size;
-  max-height: $--image-size;
+  min-width: 80px;
+  max-width: 150px;
+  min-height: 50px;
+  max-height: 200px;
   margin: 4px 0;
   cursor: zoom-in;
   border-radius: 4px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .c-portrait-msg-container--relax-mode {

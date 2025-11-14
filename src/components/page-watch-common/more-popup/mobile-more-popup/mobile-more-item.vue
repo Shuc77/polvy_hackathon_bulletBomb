@@ -2,7 +2,7 @@
 <template>
   <div
     class="c-mobile-more-item"
-    @click="emit('click')"
+    @click="onClick"
   >
     <component
       v-if="iconComp"
@@ -16,17 +16,33 @@
 
 <script setup lang="ts">
 import { PropUtils, emitFunc } from '@polyv/vue-components';
+import { inject } from 'vue';
+import { MORE_POPUP_INJECT_KEY } from './types';
 
-defineProps({
+const props = defineProps({
   /** 图片 */
   iconComp: PropUtils.icon(),
   /** 文字 */
   text: PropUtils.string.isRequired,
+  /**
+   * 点击后自动关闭
+   * @default false
+   */
+  autoClose: PropUtils.bool.def(false),
 });
 
 const emit = defineEmits({
   click: emitFunc<void>(),
 });
+
+const { closeMore } = inject(MORE_POPUP_INJECT_KEY)!;
+
+function onClick() {
+  emit('click');
+  if (props.autoClose) {
+    closeMore();
+  }
+}
 </script>
 
 <style lang="scss">

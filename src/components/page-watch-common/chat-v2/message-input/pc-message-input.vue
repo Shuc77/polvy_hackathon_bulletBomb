@@ -21,17 +21,6 @@
 
     <!-- 更多面板 -->
     <template #more-panel>
-      <!-- 屏蔽特效 -->
-      <div
-        v-if="showDonateGifts"
-        class="c-pc-chat-message-input__hide-effect"
-        @click="onClickDonateAnimation"
-      >
-        <pc-icon-checkbox v-if="donateAnimationVisible" />
-        <pc-origin-icon-checkbox v-else />
-        <span>{{ $lang('donate.hideAnimation') }}</span>
-      </div>
-
       <!-- 设置昵称 -->
       <div
         v-if="canSetNick"
@@ -67,10 +56,8 @@
 <script setup lang="ts">
 import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { PcOriginIconCheckbox } from '@/components/component-icons/pc-origin/map';
 import {
   PcIconBindMobile,
-  PcIconCheckbox,
   PcIconMoreFiles,
   PcIconSetNick,
 } from '@/components/component-icons/pc/map';
@@ -79,21 +66,12 @@ import PcAnnouncementEntrance from '@/components/page-watch-common/interactive-r
 import PcPersonalRewardEntrance from '@/components/page-watch-common/personal-reward/pc-personal-reward-entrance.vue';
 import { getChatUIV2Pkg } from '@/plugins/external-lib-loaders/load-chat-ui-v2';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useDonateStore } from '@/store/use-donate-store';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useViewerStore } from '@/store/use-viewer-store';
-import { useDonateAnimationVisible } from '../../donate/donate-animation/use-donate-animation';
 
 const { getEmitter } = useGlobalInject();
 const PolyvChatUI = getChatUIV2Pkg();
 const { ChatMessageInputSection } = PolyvChatUI;
-
-// 屏蔽特效
-const { donateAnimationVisible, showDonateGifts } = storeDefinitionToRefs(useDonateStore);
-const { toggleDonateAnimationVisible } = useDonateAnimationVisible();
-function onClickDonateAnimation() {
-  toggleDonateAnimationVisible();
-}
 
 // 设置昵称
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
@@ -114,10 +92,10 @@ function onClickFileManagement() {
 </script>
 
 <style lang="scss">
-.c-pc-chat-message-input__hide-effect {
-  order: 35;
+.c-pc-chat-message-input {
+  position: relative;
+  z-index: 10;
 }
-
 .c-pc-chat-message-input__set-nick {
   order: 40;
 }

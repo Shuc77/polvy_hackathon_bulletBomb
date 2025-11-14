@@ -22,6 +22,8 @@
             'c-portrait-player-main__container--audio': isAudioPlayerMode,
           }"
           :style="allPlayerContainerStyle"
+          data-testid="plv-player-container"
+          @click="onClickPlayerRegion"
         >
           <div
             v-if="playerSdkLoadError"
@@ -73,9 +75,6 @@ import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { useGlobalInject } from '@/app/use-global-inject';
-
-const { getEmitter } = useGlobalInject();
 
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -131,13 +130,13 @@ const playerStyle = computed<CSSProperties>(() => {
   }
 });
 
+const { onClickPlayerRegion } = usePortraitClickPlayer();
+
 const onClickContainer = (event: MouseEvent) => {
   if (isDocMainScreen.value) {
-    getEmitter().emit(appEvents.portrait.ClickPlayerRegion, event);
+    onClickPlayerRegion(event);
   }
 };
-
-usePortraitClickPlayer();
 
 useResolutionSize({
   playerContainer,

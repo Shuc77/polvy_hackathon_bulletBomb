@@ -12,7 +12,7 @@
       }"
     >
       <portrait-connect-mic-container
-        v-if="masterMicItem"
+        v-if="connectMicList.length"
         ref="portraitMicContainer"
         :style="{
           paddingTop: `${portraitDocWrapHeight}px`,
@@ -113,7 +113,7 @@ const { canRenderDoc, documentSwitch } = storeDefinitionToRefs(useDocStore);
 
 const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
-const { masterMicItem } = storeDefinitionToRefs(useConnectMicStore);
+const { masterMicItem, connectMicList } = storeDefinitionToRefs(useConnectMicStore);
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
