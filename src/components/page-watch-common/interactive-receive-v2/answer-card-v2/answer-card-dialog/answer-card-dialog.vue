@@ -29,11 +29,13 @@ const { targetInited: answerCardTargetInited, getIarTarget: getAnswerCardTarget 
 
     answerCardTarget.eventEmitter.on(AnswerCardEvent.StartAnswerCard, checkAnswerCardEntrance);
     answerCardTarget.eventEmitter.on(AnswerCardEvent.StopAnswerCard, checkAnswerCardEntrance);
+    answerCardTarget.eventEmitter.on(AnswerCardEvent.SubmitAnswerCard, checkAnswerCardEntrance);
   });
 
 function checkAnswerCardEntrance() {
   const answerCardTarget = getAnswerCardTarget();
   const currentAnswerCard = answerCardTarget.getCurrentAnswerCard();
+  console.log('currentAnswerCard', currentAnswerCard);
   if (currentAnswerCard) {
     setAnswerCardEntrance();
   } else {

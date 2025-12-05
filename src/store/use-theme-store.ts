@@ -19,6 +19,8 @@ export enum SkinColorMode {
 export interface SkinConfig {
   /** 颜色深浅 */
   mode: SkinColorMode;
+  /** 主题色 */
+  themeColor: string;
   /** 特殊颜色 */
   specialColor: string;
 }
@@ -32,6 +34,8 @@ export interface ThemeStore {
   pageSkinConfig: ComputedRef<SkinConfig>;
   /** 当前皮肤的深浅 */
   pageSkinColorMode: ComputedRef<SkinColorMode>;
+  /** 当前皮肤的主题色 */
+  pageSkinThemeColor: ComputedRef<string>;
   /** 浏览器标签页图标 */
   browserFavIcon: Ref<string>;
   /** 频道图标 */
@@ -70,30 +74,37 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   const pageSkinConfigs: Record<ChannelWatchPageSkin, SkinConfig> = {
     [ChannelWatchPageSkin.Black]: {
       mode: SkinColorMode.Dark,
+      themeColor: '#202127',
       specialColor: '#3F76FC',
     },
     [ChannelWatchPageSkin.Blue]: {
       mode: SkinColorMode.Light,
+      themeColor: '#D1E3F9',
       specialColor: '#3F76FC',
     },
     [ChannelWatchPageSkin.Freshblue]: {
       mode: SkinColorMode.Dark,
+      themeColor: '#2275dd',
       specialColor: '#69C5FF',
     },
     [ChannelWatchPageSkin.Golden]: {
       mode: SkinColorMode.Light,
+      themeColor: '#f2f2f2',
       specialColor: '#D8A83A',
     },
     [ChannelWatchPageSkin.Green]: {
       mode: SkinColorMode.Dark,
+      themeColor: '#398775',
       specialColor: '#33C89E',
     },
     [ChannelWatchPageSkin.Red]: {
       mode: SkinColorMode.Dark,
+      themeColor: '#a20a1f',
       specialColor: '#FF5252',
     },
     [ChannelWatchPageSkin.White]: {
       mode: SkinColorMode.Light,
+      themeColor: '#f2f2f2',
       specialColor: '#3F76FC',
     },
   };
@@ -127,6 +138,17 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     }
 
     return mode;
+  });
+
+  /** 当前皮肤的主题色 */
+  const pageSkinThemeColor = computed<string>(() => {
+    const skin = unref(pageSkin);
+    if (!skin) {
+      return SkinColorMode.Dark;
+    }
+    const config = pageSkinConfigs[skin];
+
+    return config.themeColor;
   });
 
   /** 浏览器标签页图标 */
@@ -224,6 +246,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     pageSkin,
     pageSkinConfig,
     pageSkinColorMode,
+    pageSkinThemeColor,
     browserFavIcon,
     channelCoverImg,
     splashImg,

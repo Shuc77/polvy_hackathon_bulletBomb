@@ -143,6 +143,8 @@ export const useChatMsgQueue = (hookOptions: ChatMsgListHookOptions) => {
       // 只有停留在列表底部，才需要渲染
       if (renderDataLen > 0) {
         __addChatMsgItems(renderData);
+      } else {
+        chatMsgStore.hideMoreMsg();
       }
 
       // 每次轮询都尝试去压缩历史数据队列

@@ -65,9 +65,14 @@
     <!-- 固定的聊天消息输入框 -->
     <template v-if="chatInputControllerEnable">
       <!-- 聊天消息输入框弹层 -->
-      <chat-loader-helper v-if="isChatUIV2">
-        <mobile-chat-message-input-popup />
-      </chat-loader-helper>
+      <template v-if="isChatUIV2">
+        <chat-loader-helper>
+          <mobile-chat-message-input-popup />
+        </chat-loader-helper>
+        <chat-loader-helper>
+          <mobile-ask-message-input-popup />
+        </chat-loader-helper>
+      </template>
       <!-- 仅云席开启后可用 -->
       <mobile-chat-input-controller-fixed v-else-if="interactSetting.seatTableEnabled" />
     </template>
@@ -107,51 +112,53 @@
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
 
-import MobileWatchPendant from './mobile-watch-pendant.vue';
-import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
-import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
-import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
-import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
-import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
-import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
-import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
-import MobileProductRender from '@/components/page-watch-common/product/mobile-product-render.vue';
-import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
-import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
-import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
-import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
-import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
-import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/mobile-invite-detail-popup.vue';
-import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
-import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
-import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
 import MobileIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
-import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-message-input-popup.vue';
-import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
+import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
+import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
+import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
+import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
+import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
+import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
+import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
+import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
+import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
+import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
+import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/mobile-invite-detail-popup.vue';
+import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
+import MobileMorePopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
+import MobileProductRender from '@/components/page-watch-common/product/mobile-product-render.vue';
+import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
+import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
+import MobileWatchPendant from './mobile-watch-pendant.vue';
 
-import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
-import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
-import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
-import MobilePlaybackSetting from '@/components/page-watch-common/player/player-control/mobile-player-control/mobile-playback-setting.vue';
-import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
-import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input-popup.vue';
+import MobileAskMessageInputPopup from '@/components/page-watch-common/ask-v2/mobile-ask-message-input-popup.vue';
+
 import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
+import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
+import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
+import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
+import MobilePlaybackSetting from '@/components/page-watch-common/player/player-control/mobile-player-control/mobile-playback-setting.vue';
 import PortraitPlayerControlPopup from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-control-popup.vue';
+import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
+import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useChatStore } from '@/store/use-chat-store';
+import { useDonateStore } from '@/store/use-donate-store';
+import { useIdentityStore } from '@/store/use-identity-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useInviteStore } from '@/store/use-invite-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
-import { useDonateStore } from '@/store/use-donate-store';
-import { useInviteStore } from '@/store/use-invite-store';
-import { useChatStore } from '@/store/use-chat-store';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useIdentityStore } from '@/store/use-identity-store';
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () =>

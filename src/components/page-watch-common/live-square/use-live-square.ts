@@ -1,13 +1,7 @@
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { LiveSquare, YN, plvInterval } from '@polyv/live-watch-sdk';
 import { ref, computed } from 'vue';
-import {
-  navigateToLink,
-  formatLink,
-  type LinkData,
-  LinkJumpWay,
-  LinkType,
-} from '@utils-ts/external-link';
+import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
 import { openLink } from '@/assets/utils/url';
 import { useIarExternalLinkParams } from '@/components/page-watch-common/interactive-receive/use-iar-external-link-params';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -75,20 +69,37 @@ function useLiveSquare() {
     }
 
     // 普通链接类型
-    return {
-      linkType: Number(liveSquareLinkConfig.value.linkType),
+    const data = {
       link: liveSquareLinkConfig.value.link,
       jumpWay: (liveSquareLinkConfig.value.jumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
       pcLink: liveSquareLinkConfig.value.pcLink,
-      mobileLink: liveSquareLinkConfig.value.mobileLink,
       mobileAppLink: liveSquareLinkConfig.value.mobileAppLink,
       androidLink: liveSquareLinkConfig.value.androidLink,
       iosLink: liveSquareLinkConfig.value.iosLink,
+      harmonyLink: liveSquareLinkConfig.value.harmonyLink,
       wxMiniprogramOriginalId: liveSquareLinkConfig.value.wxMiniprogramOriginalId,
       wxMiniprogramAppId: liveSquareLinkConfig.value.wxMiniprogramAppId,
       wxMiniprogramLink: liveSquareLinkConfig.value.wxMiniprogramLink,
-      otherLink: liveSquareLinkConfig.value.otherLink,
     };
+
+    // 旧数据配置了通用链接，则多平台链接全部失效
+    if (liveSquareLinkConfig.value.linkType === '10') {
+      data.pcLink = '';
+      data.mobileAppLink = '';
+      data.androidLink = '';
+      data.iosLink = '';
+      data.harmonyLink = '';
+      data.wxMiniprogramOriginalId = '';
+      data.wxMiniprogramAppId = '';
+      data.wxMiniprogramLink = '';
+    }
+
+    // 旧数据只配置多平台，要把手机端链接放到浏览器链接里使用
+    if (liveSquareLinkConfig.value.linkType === '11' && !data.link) {
+      data.link = liveSquareLinkConfig.value.mobileLink;
+    }
+
+    return data;
   }
 
   /**
@@ -151,14 +162,7 @@ function useLiveSquare() {
       return;
     }
 
-    // 处理多平台链接
-    if (liveSquareLinkConfig.value.linkType === String(LinkType.MultiPlatform)) {
-      handleMultiPlatformLinkType();
-      return;
-    }
-
-    // 处理普通链接
-    handleGeneralLinkType();
+    handleMultiPlatformLinkType();
   }
 
   /** 是否需要在弹窗中打开 */
@@ -209,8 +213,6 @@ function useLiveSquare() {
           clearPolling();
           // 设置值的时候，会自动去创建对应的微信开放标签
           weixinBtnRef.value = $hackWeixinBtn as HTMLDivElement;
-
-          console.log('weixinBtnRef', weixinBtnRef.value);
           showWeixinBtn.value = true;
         }
       },
@@ -238,6 +240,7 @@ function useLiveSquare() {
     liveSquareLinkConfig,
     isShowLiveSquare,
     handleLiveSquareClick,
+    handleGeneralLinkType,
     iframeUrl,
     isOpenInPopup,
     resetPopupState,

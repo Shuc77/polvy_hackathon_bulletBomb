@@ -9,6 +9,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useBrowser } from '@polyv/vue-components';
 import RedpaperMsg from '../chat-msg-list/components/redpaper-msg/redpaper-msg-wrap.vue';
 import {
+  getAskMessageInput,
   useChatMessageInput,
   useClickMsgCallback,
   useCopySpeakMsg,
@@ -19,6 +20,8 @@ import { useChatTarget } from './use-chat-target';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { storeToRefs } from 'pinia';
+import { translate } from '@/assets/lang';
+import { useAskStore } from '@/store/use-ask-store';
 
 export const useChatUIGlobalProvide = () => {
   const { getWatchCore } = useGlobalInject();
@@ -26,13 +29,23 @@ export const useChatUIGlobalProvide = () => {
 
   const { isMobile } = useBrowser();
 
-  const { chatSetting, onlySpecialMsgWidgetVisible, likeSingleClickEnabled, likeHoldEnabled } =
-    storeDefinitionToRefs(useChatStore);
+  const {
+    chatSetting,
+    onlySpecialMsgWidgetVisible,
+    likeSingleClickEnabled,
+    likeHoldEnabled,
+    chatRoomLongTimeNotUsed,
+    chatRoomLongTimeNotUsedText,
+    chatExited,
+  } = storeDefinitionToRefs(useChatStore);
   const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
   const { needHideUserActor } = storeDefinitionToRefs(useViewerStore);
   const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);
   const donateStore = useDonateStore();
   const { showDonateGifts } = storeToRefs(donateStore);
+
+  const askSetting = watchCore.ask.getAskSetting();
+  const { askWelcomeText } = storeDefinitionToRefs(useAskStore);
 
   const { getHideSources } = useHideChatMsg();
   const {
@@ -43,6 +56,7 @@ export const useChatUIGlobalProvide = () => {
   } = useMessageLayout();
   const { getCopySpeakEnabled } = useCopySpeakMsg();
   const { getChatInputPlaceholder, getDisabledInput } = useChatMessageInput();
+  const { getAskInputPlaceholder } = getAskMessageInput();
   const { clickMsgCallback } = useClickMsgCallback();
   const { toInterruptUserClick } = useInterruptUserClick();
 
@@ -54,10 +68,31 @@ export const useChatUIGlobalProvide = () => {
     getChatTarget: () => {
       return chatTarget;
     },
+    getBaseConfig: () => {
+      return {
+        hideNickname: watchCore.channel.needHideViewerNickname(),
+      };
+    },
+    getHistoryConfig: () => {
+      return {
+        getChatHistory: !chatRoomLongTimeNotUsed.value,
+      };
+    },
     getMessageConfig: () => {
+      let systemText = '';
+
+      if (chatExited.value) {
+        // 聊天室被退出提示
+        systemText = translate('chat.transformTip');
+      } else if (chatRoomLongTimeNotUsed.value) {
+        // 聊天室长时间未使用提示
+        systemText = chatRoomLongTimeNotUsedText.value;
+      }
+
       return {
         introductionText: watchCore.chat.getChatCustomIntroductionText(),
-        showEmptyTips: true,
+        systemText,
+        showEmptyTips: !isPortraitWatchLayout.value,
         hideSources: getHideSources(),
         showMessageTime: !isPortraitWatchLayout.value,
         messageLayout: getMessageLayout(),
@@ -76,13 +111,22 @@ export const useChatUIGlobalProvide = () => {
         clickMsgCallback,
       };
     },
+    getAskConfig: () => {
+      return {
+        askWelcomeText: askWelcomeText.value,
+      };
+    },
     getInputConfig: () => {
       return {
         disabledInput: getDisabledInput(),
-        inputPlaceholder: getChatInputPlaceholder(),
         faceEmotionEnabled: chatSetting.value.faceEmotionEnabled,
         imageEmotionEnabled: chatSetting.value.imageEmotionEnabled,
-        sendImageEnabled: chatSetting.value.viewerSendImgEnabled,
+
+        chatInputPlaceholder: getChatInputPlaceholder(),
+        sendChatImageEnabled: chatSetting.value.viewerSendImgEnabled,
+
+        askInputPlaceholder: getAskInputPlaceholder(),
+        sendAskImageEnabled: askSetting.questionImageEnabled,
       };
     },
     getLikeConfig: () => {
@@ -91,6 +135,12 @@ export const useChatUIGlobalProvide = () => {
         holdEnabled: likeHoldEnabled.value,
         countPosition: isMobile ? 'top' : 'bottom',
         triggerSize: isMobile ? 36 : 40,
+      };
+    },
+    getOnlineConfig: () => {
+      return {
+        searchEnabled: false,
+        ruleEnabled: true,
       };
     },
     getSpecialEffectConfig: () => {

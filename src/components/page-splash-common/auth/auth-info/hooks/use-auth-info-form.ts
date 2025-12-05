@@ -5,6 +5,7 @@ import {
   AuthInfoPropValType,
   AuthInfoType,
   AuthSettingItemInfo,
+  YN,
 } from '@polyv/live-watch-sdk';
 import { ValidatorRules } from '@/plugins/async-validator';
 
@@ -27,6 +28,7 @@ import { useAuthInfoSetting } from './use-auth-info-setting';
 import { useAuthInfoSms } from './use-auth-info-sms';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { ynToBool } from '@polyv/utils/es/boolean';
 
 export const authInfoFormEmits = () => ({
   /** 关闭窗口 */
@@ -170,12 +172,20 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
         case AuthInfoType.Text:
         case AuthInfoType.Option:
           rules[field] = [
-            { type: 'string', message: translate('auth.error.improveInfo'), required: true },
+            {
+              type: 'string',
+              message: translate('auth.error.improveInfo'),
+              required: ynToBool(option.required, YN.Y),
+            },
           ];
           break;
         case AuthInfoType.Number:
           rules[field] = [
-            { type: 'number', message: translate('auth.error.improveInfo'), required: true },
+            {
+              type: 'number',
+              message: translate('auth.error.improveInfo'),
+              required: ynToBool(option.required, YN.Y),
+            },
           ];
           break;
         case AuthInfoType.Mobile:
@@ -183,12 +193,17 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
             {
               type: 'string',
               message: translate('form.error.phoneNumberRequired'),
-              required: true,
+              required: ynToBool(option.required, YN.Y),
             },
             {
               validator: () => {
                 const phoneNumber = formData[field];
                 const areaCode = formData.areaCode;
+
+                // 非必填且手机号为空，则不进行验证
+                if (!ynToBool(option.required, YN.Y) && !phoneNumber) {
+                  return [];
+                }
 
                 if (validatePhoneNumber(phoneNumber, areaCode)) {
                   return [];

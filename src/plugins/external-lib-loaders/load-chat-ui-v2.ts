@@ -38,15 +38,15 @@ export function useLoadChatUIV2(autoLoad = true) {
     const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20251113',
+        version: 'rc-20251204',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20251113',
+        version: 'rc-20251204',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: 'dev-20251113',
+        version: 'dev-20251204',
       },
     };
 

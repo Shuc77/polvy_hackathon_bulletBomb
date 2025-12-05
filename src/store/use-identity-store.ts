@@ -100,7 +100,7 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
       return false;
     }
 
-    if (channelStore.isPptChannel || channelStore.isSeminarChannel) {
+    if (channelStore.isSeminarChannel) {
       return false;
     }
 

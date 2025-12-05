@@ -6,6 +6,8 @@ import { ChatMsgType, ChatRequestHistoryMode } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
 import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
+import { appEvents } from '@/app/app-events';
+import { useChatStore } from '@/store/use-chat-store';
 
 interface RequestParams {
   timestamp?: number;
@@ -17,18 +19,24 @@ export const useRequestHistoryTime = (
   hookOptions: ChatMsgListHookOptions,
   getStore: () => {
     chatMsgStore: ReturnType<typeof useChatMsgStore>;
+    chatStore: ReturnType<typeof useChatStore>;
     watchAppStore: ReturnType<typeof useWatchAppStore>;
   },
 ): RequestHistoryCommonResult => {
   const chatMsgStore = getStore().chatMsgStore;
+  const chatStore = getStore().chatStore;
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { filterSpecialMsgList } = useFilterSpecialMsgHook();
   const { filterRepeatMsg } = useFilterRepeatMsgHook(hookOptions);
 
   const watchAppStore = getStore().watchAppStore;
   const getWatchCore = watchAppStore.getWatchCore;
+  const getEmitter = watchAppStore.getEmitter;
 
   async function requestChatHistory(params: RequestParams = {}) {
+    if (chatStore.chatRoomLongTimeNotUsed) {
+      return [];
+    }
     const watchCore = getWatchCore();
     const { mode = ChatRequestHistoryMode.Prev } = params;
 
@@ -79,6 +87,8 @@ export const useRequestHistoryTime = (
     const data = await requestChatHistory();
     chatMsgStore.resetHistoryData(data);
     chatMsgStore.resetMsgQueue([]);
+
+    getEmitter().emit(appEvents.chat.LoadInitialData);
 
     return {
       data,

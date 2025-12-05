@@ -44,7 +44,7 @@
       </div>
 
       <!-- 基础信息 -->
-      <mobile-basic-info />
+      <mobile-basic-info :show-like-count="likeFeatureEnabled" />
     </div>
 
     <!-- 底部按钮 -->
@@ -63,6 +63,7 @@ import MobileSplashBtn from './components/mobile-splash-btn.vue';
 
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
+import { useChatStore } from '@/store/use-chat-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
@@ -78,6 +79,7 @@ const MobilePlayerTrial = defineAsyncComponent(
 
 const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
 const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
+const { likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTrialHook();
 </script>

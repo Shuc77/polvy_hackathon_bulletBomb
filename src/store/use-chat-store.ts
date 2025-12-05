@@ -15,13 +15,13 @@ import {
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useChannelMenuStore } from './use-channel-menu-store';
-import { useLayoutStore } from './use-layout-store';
 import { usePlaybackStore } from './use-playback-store';
 import { useViewerStore } from './use-viewer-store';
 import { useChannelStore } from './use-channel-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useIdentityStore } from './use-identity-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useLayoutStore } from './use-layout-store';
 
 export interface ChatStoreState {
   /** 聊天室设置信息 */
@@ -30,8 +30,10 @@ export interface ChatStoreState {
   chatSdkV2Setuped: Ref<boolean>;
   /** 是否使用 v2 版本的聊天室 UI */
   isChatUIV2: ComputedRef<boolean>;
-  /** 聊天室是否显示 */
-  chatRoomVisible: ComputedRef<boolean>;
+  /** 聊天室是否长时间未使用 */
+  chatRoomLongTimeNotUsed: ComputedRef<boolean>;
+  /** 聊天室长时间未使用提示文案 */
+  chatRoomLongTimeNotUsedText: ComputedRef<string>;
   /** 配置是否启用聊天列表 */
   chatMsgListEnabled: Ref<boolean>;
   /** 聊天室是否连接失败 */
@@ -89,8 +91,8 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   const channelMenuStore = useChannelMenuStore();
   const identityStore = useIdentityStore();
   const viewerStore = useViewerStore();
-  const layoutStore = useLayoutStore();
   const playbackStore = usePlaybackStore();
+  const layoutStore = useLayoutStore();
   const { paramGetter } = useQueryParams();
 
   const { redirectToErrorVerify } = useErrorVerify();
@@ -103,7 +105,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 是否使用 v2 版本的聊天室 UI */
   const isChatUIV2 = computed(() => {
-    if (playbackStore.chatMsgReplayEnabled) {
+    if (playbackStore.chatReplayEnabled || playbackStore.chatMsgReplayEnabled) {
       return false;
     }
 
@@ -114,11 +116,25 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     return chatSetting.value.chatUIVersion === 'v2';
   });
 
-  /** 聊天室是否显示 */
+  /** 聊天室是否长时间未使用 */
   const chatRoomVisible = computed(() => {
     if (channelStore.privateSeminarChannel) return false;
 
     return chatSetting.value.watchChatEnabled;
+    // return false;
+  });
+
+  const chatRoomLongTimeNotUsed = computed(() => {
+    return !chatRoomVisible.value;
+    // return true;
+  });
+
+  const chatRoomLongTimeNotUsedText = computed(() => {
+    if (channelStore.privateSeminarChannel) {
+      return translate('seminar.disabledChat');
+    }
+
+    return translate('chat.closeTips');
   });
 
   /** 配置是否启用聊天列表 */
@@ -182,7 +198,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天区输入框控制栏是否可用 */
   const chatInputControllerEnable = computed(() => {
-    if (watchAppStore.isPlaybackWatchUrl || chatExited.value) return false;
+    if (watchAppStore.isPlaybackWatchUrl) return false;
 
     // 研讨会相关
     if (
@@ -192,8 +208,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
       return false;
     }
 
-    // 直播间长时间未使用
-    if (!chatRoomVisible.value) {
+    if (!layoutStore.isPortraitWatchLayout && (chatRoomLongTimeNotUsed.value || chatExited.value)) {
       return false;
     }
 
@@ -205,6 +220,10 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 聊天室输入框占位符 */
   const chatInputPlaceholder = computed<string>(() => {
+    if (chatRoomLongTimeNotUsed.value || chatExited.value) {
+      return translate('chat.roomClosed');
+    }
+
     // 聊天室被强制关闭
     if (unref(chatRoomIsClosed)) {
       return translate('chat.roomClosed2');
@@ -220,11 +239,6 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     // 针对移动端在未设置昵称下更改文案
     if (isMobile && !viewerStore.hasNickname) {
       placeholder = translate('chat.input.placeholder3');
-    }
-
-    // 针对竖屏观看页更改文案
-    if (layoutStore.isPortraitWatchLayout) {
-      placeholder = translate('chat.input.placeholder2');
     }
 
     // 后台中聊天室的占位设置
@@ -245,6 +259,10 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
       viewerStore.needRealNameAuth ||
       identityStore.needIdentityGuestForceLogin
     ) {
+      return true;
+    }
+
+    if (chatRoomLongTimeNotUsed.value || chatExited.value) {
       return true;
     }
 
@@ -270,6 +288,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
     const chatInfo = watchCore.chat.getChatInfo();
     chatExited.value = chatInfo.chatExited;
+    // chatExited.value = true;
     chatRoomIsClosed.value = chatInfo.chatRoomIsClosed;
     isKicked.value = chatInfo.isKicked;
     isShield.value = chatInfo.isShield;
@@ -286,7 +305,8 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     chatSetting,
     chatSdkV2Setuped,
     isChatUIV2,
-    chatRoomVisible,
+    chatRoomLongTimeNotUsed,
+    chatRoomLongTimeNotUsedText,
     chatMsgListEnabled,
 
     connectError,

@@ -8,6 +8,7 @@ import { isUndefined } from 'lodash-es';
 import { onBeforeUnmount, onMounted } from 'vue';
 import { useSendMsg } from './send-msg-hook';
 import { ChatMsgListHookOptions } from './types';
+import { useChatStore } from '@/store/use-chat-store';
 
 /**
  * 聊天室消息处理 hook
@@ -17,6 +18,7 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
 
   const watchCore = getWatchCore();
   const chatMsgStore = useChatMsgStore();
+  const chatStore = useChatStore();
   const { sendSystemMsg } = useSendMsg();
 
   /**
@@ -112,4 +114,19 @@ export const useChatMsgHandle = (hookOptions: ChatMsgListHookOptions) => {
 
   /** -------------- 特效消息处理 -------------- */
   useMessageEffect();
+
+  /** -------------- 处理加载初始数据 -------------- */
+  let __systemTextSended = false;
+  useEventBusListener(appEvents.chat.LoadInitialData, () => {
+    setTimeout(() => {
+      if (__systemTextSended) return;
+
+      __systemTextSended = true;
+      if (chatStore.chatExited) {
+        sendSystemMsg(translate('chat.transformTip'));
+      } else if (chatStore.chatRoomLongTimeNotUsed) {
+        sendSystemMsg(chatStore.chatRoomLongTimeNotUsedText);
+      }
+    }, 10);
+  });
 };

@@ -17,6 +17,9 @@
       <pc-lucky-lottery-detail-popup />
       <!-- 平台抽奖领取弹层 -->
       <pc-lucky-lottery-receive-popup />
+
+      <!-- 投票规则说明弹层 -->
+      <pc-vote-rule-popup />
     </div>
   </div>
 </template>
@@ -28,6 +31,7 @@ import PcLotteryDialog from '@/components/page-watch-common/interactive-receive-
 import PcLuckyLotteryListPopup from './lucky-lottery/pc/pc-lucky-lottery-list-popup.vue';
 import PcLuckyLotteryDetailPopup from './lucky-lottery/pc/pc-lucky-lottery-detail-popup.vue';
 import PcLuckyLotteryReceivePopup from './lucky-lottery/pc/pc-lucky-lottery-receive-popup.vue';
+import PcVoteRulePopup from './vote-v2/pc/pc-vote-rule-popup.vue';
 </script>
 
 <style lang="scss">

@@ -91,25 +91,6 @@
   cursor: pointer;
 }
 
-// ============  投票 ============ //
-
-// 投票
-.plv-iar-vote__main {
-  @include scrollbar;
-}
-@media (max-width: 1280px) {
-  .plv-iar-vote-item__title {
-    max-width: 204px !important;
-    font-size: 12px !important;
-  }
-  .plv-iar-vote-item__count {
-    font-size: 12px !important;
-    > span {
-      font-size: 18px !important;
-    }
-  }
-}
-
 // ============  图文直播 ============ //
 .pws-plv-ia-tuwen-message-item-content-text {
   line-height: 21px;

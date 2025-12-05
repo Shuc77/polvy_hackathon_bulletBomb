@@ -145,17 +145,10 @@ export const useViewerStore = defineStore<'viewer', ViewerStore>('viewer', () =>
     seatInfo.value = watchCore.user.getUserSeatInfo();
     needHideUserActor.value = watchCore.user.needHideUserActor();
 
-    if (viewerId.value) {
-      if (window.aegis) {
-        window.aegis.setConfig({
-          uin: viewerId.value,
-        });
-      }
-      if (window.plvLogger) {
-        window.plvLogger.updateCommonParams({
-          uid: viewerId.value,
-        });
-      }
+    if (viewerId.value && window.plvLogger) {
+      window.plvLogger.updateCommonParams({
+        uid: viewerId.value,
+      });
     }
   }
 

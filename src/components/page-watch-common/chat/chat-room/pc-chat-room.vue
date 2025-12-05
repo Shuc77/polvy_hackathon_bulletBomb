@@ -10,7 +10,7 @@
       />
 
       <!-- 跑道消息 -->
-      <chat-loader-helper>
+      <chat-loader-helper v-if="!chatRoomLongTimeNotUsed">
         <pc-runway-effect class="c-pc-chat-room__topic__item" />
       </chat-loader-helper>
 
@@ -29,7 +29,7 @@
       </chat-loader-helper>
 
       <!-- 右下角挂件 -->
-      <pc-chat-room-pendant />
+      <pc-chat-room-pendant v-if="chatInputControllerEnable" />
 
       <!-- 特效动画 -->
       <chat-loader-helper>
@@ -38,7 +38,7 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <pc-interactive-entrance v-if="iarSdkLoaded" />
+    <pc-interactive-entrance v-if="iarSdkLoaded && chatInputControllerEnable" />
 
     <!-- 底部输入框 -->
     <template v-if="chatInputControllerEnable">
@@ -71,7 +71,7 @@ import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
 import ChatMsgListV2 from '../../chat-v2/chat-msg-list/index.vue';
-import PcMessageInputV2 from '../../chat-v2/message-input/pc-message-input.vue';
+import PcMessageInputV2 from '../../chat-v2/message-input/pc-chat-message-input.vue';
 import PcChatInputController from '../chat-input-controller/pc-chat-input-controller/pc-chat-input-controller.vue';
 import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
@@ -79,7 +79,8 @@ import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, isChatUIV2, chatRoomLongTimeNotUsed } =
+  storeDefinitionToRefs(useChatStore);
 
 const { announcementFunctionVisible, iarSdkLoaded } =
   storeDefinitionToRefs(useInteractReceiveStore);

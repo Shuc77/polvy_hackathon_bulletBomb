@@ -36,7 +36,8 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { computed, unref } from 'vue';
 
-const { chatInputDisabled } = storeDefinitionToRefs(useChatStore);
+const { chatInputDisabled, chatRoomLongTimeNotUsed, chatExited } =
+  storeDefinitionToRefs(useChatStore);
 
 const { chatMenuData, askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -64,6 +65,10 @@ function onClickPlaceholder() {
     return;
   }
 
+  if (unref(chatRoomLongTimeNotUsed) || unref(chatExited)) {
+    return;
+  }
+
   // 输入框禁用
   if (
     unref(portraitMessageTabCurrentName) !== PortraitChatTabName.Ask &&
@@ -87,12 +92,16 @@ function onClickPlaceholder() {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 150px;
+  max-width: 160px;
   height: 32px;
   padding: 0 12px;
   line-height: 32px;
   background-color: rgba(#000000, 0.4);
   border-radius: 16px;
+
+  .c-portrait-ask-icon {
+    margin-left: 4px;
+  }
 }
 .c-portrait-chat-input-placeholder__icon {
   display: flex;

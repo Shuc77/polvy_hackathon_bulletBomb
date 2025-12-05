@@ -11,6 +11,7 @@
           @click="handleAdvertClick"
         />
         <div
+          v-if="shouldShowWeixinBtn"
           ref="wxBtn"
           class="c-mobile-icon-advert__content__wx-btn"
           :style="{ 'z-index': hasWxJumpDom ? '99' : '-1' }"
@@ -38,7 +39,7 @@
 <script lang="ts" setup>
 import { useAdvertStore } from '@/store/use-advert-store';
 import { storeToRefs } from 'pinia';
-import { computed, ref, nextTick, watch } from 'vue';
+import { computed, ref, nextTick, watch, onMounted } from 'vue';
 import { useIconAdvert } from './hooks/use-icon-advert';
 import { MobileIconClose } from '@/components/component-icons/mobile/map';
 import { useAdvert } from '@/hooks/business/use-advert';
@@ -55,7 +56,7 @@ const iconAdvert = computed(() => (imgAdvertList.value.length > 0 ? imgAdvertLis
 
 const { init, hasWxJumpDom } = useIconAdvert();
 
-const { iframeVisible, iframeUrl, handleAdvertClick } = useAdvert({
+const { iframeVisible, iframeUrl, isWeixinButton, handleAdvertClick } = useAdvert({
   getLinkData: () => {
     if (!iconAdvert.value) return null;
     return convertIconAdvertItemToLinkData(iconAdvert.value);
@@ -63,9 +64,10 @@ const { iframeVisible, iframeUrl, handleAdvertClick } = useAdvert({
 });
 
 const wxBtn = ref<HTMLElement | null>(null);
+const shouldShowWeixinBtn = ref(false);
 
 watch(
-  iconAdvert,
+  () => [iconAdvert.value, wxBtn.value],
   () => {
     nextTick(() => {
       if (!iconAdvert.value) return;
@@ -85,6 +87,10 @@ watch(
   },
   { immediate: true },
 );
+
+onMounted(async () => {
+  shouldShowWeixinBtn.value = await isWeixinButton();
+});
 </script>
 
 <style lang="scss">

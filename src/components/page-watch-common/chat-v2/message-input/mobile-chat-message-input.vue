@@ -1,7 +1,7 @@
 <!-- 移动端聊天室输入框 -->
 <template>
   <div class="c-mobile-chat-message-input">
-    <viewer-input-control>
+    <chat-message-input-control>
       <template #suffix>
         <!-- 更多 -->
         <mobile-more-entrance />
@@ -15,7 +15,7 @@
         <!-- 点赞 -->
         <mobile-chat-like v-if="likeFeatureEnabled" />
       </template>
-    </viewer-input-control>
+    </chat-message-input-control>
   </div>
 </template>
 
@@ -31,7 +31,7 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const PolyvChatUI = getChatUIV2Pkg();
 
-const { ViewerInputControl } = PolyvChatUI;
+const { ChatMessageInputControl } = PolyvChatUI;
 
 const { likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 

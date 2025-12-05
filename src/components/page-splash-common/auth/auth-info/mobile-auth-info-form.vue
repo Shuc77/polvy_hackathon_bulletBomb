@@ -29,6 +29,7 @@
           <form-item
             :label="item.name"
             :key="`name-${index}`"
+            :required="item.required === YN.Y"
             :form-field="generateFormField(index)"
           >
             <form-input
@@ -43,6 +44,7 @@
           <form-item
             :label="item.name"
             :key="`text-${index}`"
+            :required="item.required === YN.Y"
             :form-field="generateFormField(index)"
           >
             <form-input
@@ -57,6 +59,7 @@
           <form-item
             :label="item.name"
             :key="`number-${index}`"
+            :required="item.required === YN.Y"
             :form-field="generateFormField(index)"
           >
             <form-number-input
@@ -71,6 +74,7 @@
           <form-item
             :label="item.name"
             :key="`option-${index}`"
+            :required="item.required === YN.Y"
             :form-field="generateFormField(index)"
           >
             <mobile-form-select
@@ -88,6 +92,7 @@
           <form-item
             :label="item.name"
             :key="`phone-${index}`"
+            :required="item.required === YN.Y"
             :form-field="generateFormField(index)"
           >
             <mobile-form-phone-input
@@ -163,7 +168,7 @@ import MobileFormSmsVerifyInput from '@/components/common-base/form/form-sms-ver
 import FormSubmitButton from '@/components/common-base/form/form-submit-button.vue';
 import FormWrap from '@/components/common-base/form/form-wrap.vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
-import { SmsScene } from '@polyv/live-watch-sdk';
+import { SmsScene, YN } from '@polyv/live-watch-sdk';
 import { authInfoFormEmits, useAuthInfoForm } from './hooks/use-auth-info-form';
 
 const emit = defineEmits(authInfoFormEmits());
