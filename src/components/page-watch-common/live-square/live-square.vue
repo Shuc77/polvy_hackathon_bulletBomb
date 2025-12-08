@@ -12,9 +12,9 @@
 
       <!-- 微信按钮占位容器 -->
       <div
-        v-if="isWeixin"
+        v-if="isWeixin && shouldShowWeixinBtn"
+        ref="weixinBtnRef"
         class="plv-watch-live-square-hack-weixin-btn"
-        v-show="showWeixinBtn"
       ></div>
     </div>
 
@@ -65,10 +65,10 @@ const {
   getWeixinBtnSetupEnabled,
   weixinBtnRef,
   hackWeixinBtnSetup,
-  showWeixinBtn,
 } = useLiveSquare();
 
 const popupVisible = ref(false);
+const shouldShowWeixinBtn = ref(false);
 
 // 当需要在弹窗中打开时，显示弹窗
 watch(isOpenInPopup, newValue => {
@@ -91,7 +91,7 @@ watch(popupVisible, newValue => {
 
 // 微信按钮设置
 onMounted(async () => {
-  await hackWeixinBtnSetup('.plv-watch-live-square-hack-weixin-btn');
+  shouldShowWeixinBtn.value = await getWeixinBtnSetupEnabled();
 });
 
 // 暴露给父组件的方法和属性

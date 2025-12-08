@@ -41,7 +41,6 @@ export const useSyncStoreForWatchApp = () => {
   const layoutStore = useLayoutStore();
   const themeStore = useThemeStore();
 
-  const liveBookingStore = useLiveBookingStore();
   const shareStore = useShareStore();
   const inviteStore = useInviteStore();
   const multiMeetingStore = useMultiMeetingStore();
@@ -62,7 +61,6 @@ export const useSyncStoreForWatchApp = () => {
     layoutStore.syncLayoutStore();
     themeStore.syncThemeStore();
 
-    liveBookingStore.syncLiveBookingStore();
     shareStore.syncShareStore();
     inviteStore.syncInviteInfo();
     multiMeetingStore.syncMultiMeetingStore();
@@ -81,6 +79,7 @@ export const useSyncStoreForWatchCore = () => {
   const langStore = useLangStore();
 
   const financeStore = useFinanceStore();
+  const liveBookingStore = useLiveBookingStore();
 
   /**
    * PolyvWatchCoreEvents.WatchCoreSetuped 钩子同步 Store
@@ -94,6 +93,7 @@ export const useSyncStoreForWatchCore = () => {
     weixinStore.syncWeixinStore();
     langStore.syncLangStore();
 
+    liveBookingStore.syncLiveBookingStore();
     financeStore.syncFinanceStore();
   }
 

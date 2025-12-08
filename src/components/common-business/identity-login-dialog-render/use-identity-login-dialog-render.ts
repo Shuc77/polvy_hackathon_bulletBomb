@@ -10,7 +10,7 @@ import {
   useMultiPlatformLink,
   useMultiPlatformLinkHelper,
 } from '@/hooks/platform/use-multi-platform-link/use-multi-platform-link';
-import { LinkData, LinkType } from '@utils-ts/external-link';
+import { LinkData } from '@utils-ts/external-link';
 import { ref } from 'vue';
 
 export const useIdentityLoginDialogRender = () => {
@@ -50,7 +50,7 @@ export const useIdentityLoginDialogRender = () => {
   const linkData = ref<LinkData | null>(null);
 
   function getLinkData() {
-    if (!linkData.value || linkData.value.linkType !== LinkType.MultiPlatform) {
+    if (!linkData.value) {
       return null;
     }
     return linkData.value;
@@ -87,16 +87,8 @@ export const useIdentityLoginDialogRender = () => {
       return;
     }
 
-    // 通用链接
-    if (linkData.value.linkType === LinkType.Normal) {
-      console.error('暂不支持通用链接跳转');
-      return;
-    }
-
     // 多平台
-    if (linkData.value.linkType === LinkType.MultiPlatform) {
-      handleMultiPlatformLinkType();
-    }
+    handleMultiPlatformLinkType();
   }
 
   const contentDialogVisible = ref(false);
@@ -151,9 +143,7 @@ export const useIdentityLoginDialogRender = () => {
 
     if (weixinBtnRef.value) return;
 
-    if (linkData.value.linkType === LinkType.MultiPlatform) {
-      hackWeixinBtnSetup();
-    }
+    hackWeixinBtnSetup();
   }
 
   return {

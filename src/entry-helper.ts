@@ -50,9 +50,6 @@ const installVue = () => {
 
   Vue.config.errorHandler = error => {
     console.error(error);
-    if (window.aegis) {
-      window.aegis.error(error);
-    }
     if (window.plvLogger) {
       window.plvLogger.error(error);
     }

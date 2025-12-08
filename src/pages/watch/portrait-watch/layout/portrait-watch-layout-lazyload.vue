@@ -83,7 +83,10 @@
     <mobile-task-activity-finish-dialog />
 
     <!-- 在线用户列表弹层 -->
-    <portrait-member-list-popup />
+    <!-- <portrait-member-list-popup /> -->
+    <chat-loader-helper>
+      <mobile-member-list-popup-v2 />
+    </chat-loader-helper>
 
     <!-- 在线用户列表规则弹层 -->
     <mobile-member-list-rule-popup />
@@ -110,9 +113,14 @@
     <mobile-more-panel-popup />
 
     <!-- 聊天消息输入框弹层 -->
-    <chat-loader-helper v-if="isChatUIV2">
-      <mobile-chat-message-input-popup />
-    </chat-loader-helper>
+    <template v-if="isChatUIV2">
+      <chat-loader-helper>
+        <mobile-chat-message-input-popup />
+      </chat-loader-helper>
+      <chat-loader-helper>
+        <mobile-ask-message-input-popup />
+      </chat-loader-helper>
+    </template>
   </div>
 </template>
 
@@ -145,7 +153,6 @@ import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invi
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileTaskRewardReceivePopup from '@/components/page-watch-common/task-activity/mobile-task-reward-receive.vue';
 import MobileTaskActivityFinishDialog from '@/components/page-watch-common/task-activity/mobile-task-activity-finish.vue';
-import PortraitMemberListPopup from '@/components/page-watch-common/member-list/portrait-member-list.vue';
 import MobileMemberListRulePopup from '@/components/page-watch-common/member-list/member-list-rule.vue';
 import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-playback-setting.vue';
 import PortraitMultiMeetingPopup from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-popup.vue';
@@ -153,7 +160,10 @@ import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-r
 import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
 import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
-import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-message-input-popup.vue';
+
+import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input-popup.vue';
+import MobileAskMessageInputPopup from '@/components/page-watch-common/ask-v2/mobile-ask-message-input-popup.vue';
+import MobileMemberListPopupV2 from '@/components/page-watch-common/member-list/member-popup-v2.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

@@ -1,6 +1,4 @@
-import type { IconAdvertItem } from '@polyv/live-watch-sdk';
-import { AdvertHrefType } from '@polyv/live-watch-sdk';
-import { LinkType } from '@polyv/utils/es/external-link';
+import { type IconAdvertItem, AdvertHrefType } from '@polyv/live-watch-sdk';
 
 /** @file 关于h5跳转微信的一些能力函数 */
 const ua = navigator.userAgent.toLowerCase();
@@ -32,19 +30,39 @@ export const compareVersions = (version1: string, version2: string) => {
 };
 
 export const convertIconAdvertItemToLinkData = (iconAdvert: IconAdvertItem) => {
-  return {
-    linkType:
-      iconAdvert.hrefType === AdvertHrefType.COMMON ? LinkType.Normal : LinkType.MultiPlatform,
+  console.info('图标广告拿到的数据', iconAdvert);
+  const data = {
     jumpWay: iconAdvert.jumpWay,
     link: iconAdvert.advertHref || '',
     pcLink: iconAdvert.pcLink || '',
-    mobileLink: iconAdvert.mobileLink || '',
-    androidLink: '',
-    iosLink: '',
-    otherLink: '',
+    androidLink: iconAdvert.androidLink || '',
+    iosLink: iconAdvert.iosLink || '',
+    harmonyLink: iconAdvert.harmonyLink || '',
     mobileAppLink: iconAdvert.mobileAppLink || '',
     wxMiniprogramAppId: iconAdvert.wxMiniprogramAppId || '',
     wxMiniprogramOriginalId: iconAdvert.wxMiniprogramOriginalId || '',
     wxMiniprogramLink: iconAdvert.wxMiniprogramLink || '',
   };
+
+  // 旧数据配置了通用链接，则多平台链接全部失效
+  if (iconAdvert.hrefType === AdvertHrefType.COMMON) {
+    console.info('图标广告进入通用链接');
+    data.pcLink = '';
+    data.mobileAppLink = '';
+    data.androidLink = '';
+    data.iosLink = '';
+    data.harmonyLink = '';
+    data.wxMiniprogramOriginalId = '';
+    data.wxMiniprogramAppId = '';
+    data.wxMiniprogramLink = '';
+  }
+
+  // 旧数据只配置多平台，要把手机端链接放到浏览器链接里使用
+  if (iconAdvert.hrefType === AdvertHrefType.MULTI_PLATFORM && !data.link) {
+    console.info('图标广告进入多平台');
+    data.link = iconAdvert.mobileLink;
+  }
+  console.info('最终转换的数据', data);
+
+  return data;
 };

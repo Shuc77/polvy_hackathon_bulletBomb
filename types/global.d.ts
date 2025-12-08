@@ -3,10 +3,6 @@ import type { ComputedRef, Ref } from 'vue';
 
 declare global {
   interface Window extends Record<string, unknown> {
-    aegis?: {
-      error: (err: Error) => void;
-      setConfig: (params: object) => void;
-    };
     plvLogger?: {
       error: (err: Error) => void;
       updateCommonParams: (params: { cid?: string; uid?: string }) => void;

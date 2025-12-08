@@ -22,18 +22,21 @@
             :placeholder="$lang('chat.setNick.placeholder')"
             show-word-limit
             :maxlength="nickMaxLength"
+            data-testid="c-pc-chat-set-nick-comp"
           />
         </form-item>
         <div class="c-pc-chat-set-nick__content__buttons">
           <form-submit-button
             :text="$lang('base.confirm')"
             :size="ButtonSize.Small"
+            data-testid="c-pc-chat-set-nick__content__buttons_confirm"
           />
           <normal-button
             :text="$lang('base.cancel')"
             :size="ButtonSize.Small"
             :type="ButtonType.Info"
             @click="setDialogVisible(false)"
+            data-testid="c-pc-chat-set-nick__content__buttons_cancel"
           />
         </div>
       </form-wrap>

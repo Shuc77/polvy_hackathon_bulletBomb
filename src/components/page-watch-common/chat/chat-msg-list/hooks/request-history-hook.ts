@@ -2,6 +2,7 @@
  * @file 用于请求历史消息 hook
  */
 
+import { appEvents } from '@/app/app-events';
 import { isString } from '@/assets/utils/string';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
@@ -10,20 +11,24 @@ import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
 import { useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
+import { useChatStore } from '@/store/use-chat-store';
 
 export const useRequestHistory = (
   hookOptions: ChatMsgListHookOptions,
   getStore: () => {
+    chatStore: ReturnType<typeof useChatStore>;
     chatMsgStore: ReturnType<typeof useChatMsgStore>;
     watchAppStore: ReturnType<typeof useWatchAppStore>;
   },
 ): RequestHistoryCommonResult => {
   const chatMsgStore = getStore().chatMsgStore;
+  const chatStore = getStore().chatStore;
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { filterSpecialMsgList } = useFilterSpecialMsgHook();
 
   const watchAppStore = getStore().watchAppStore;
   const getWatchCore = watchAppStore.getWatchCore;
+  const getEmitter = watchAppStore.getEmitter;
 
   /**
    * 请求聊天室历史消息
@@ -32,6 +37,14 @@ export const useRequestHistory = (
     const reqStart = start;
     const reqEnd = end ?? start + chatMsgStore.batchCount - 1;
     const watchCore = getWatchCore();
+
+    if (chatStore.chatRoomLongTimeNotUsed) {
+      return {
+        data: [],
+        realStartIndex: start,
+        realEndIndex: start,
+      };
+    }
 
     let data = await watchCore.chat.getChatHistory({
       start: reqStart,
@@ -69,6 +82,8 @@ export const useRequestHistory = (
       chatMsgStore.setRealStartIndex(result.realStartIndex);
       chatMsgStore.setRealEndIndex(result.realEndIndex);
     }
+
+    getEmitter().emit(appEvents.chat.LoadInitialData);
 
     return {
       data: filterSpecialMsgList(data),

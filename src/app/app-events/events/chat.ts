@@ -4,6 +4,11 @@
 
 export const chatEvents = {
   /**
+   * 加载初始数据
+   */
+  LoadInitialData: 'LoadInitialData',
+
+  /**
    * 重建聊天列表
    */
   ResetUpChatMsgList: 'ResetUpChatMsgList',

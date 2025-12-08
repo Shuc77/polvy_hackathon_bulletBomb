@@ -6,6 +6,7 @@ import { ChatReplayMsgType, ChatReplayRequestHistoryMode } from '@polyv/live-wat
 import { useContractHistory } from './contract-history-hook';
 import { useFilterSpecialMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
+import { appEvents } from '@/app/app-events';
 
 /**
  * @hook 请求聊天室重放历史
@@ -22,6 +23,7 @@ export const useRequestHistoryReplayHook = (
 
   const watchCore = getWatchCore();
   const chatMsgStore = getStore().chatMsgStore;
+  const getEmitter = watchAppStore.getEmitter;
   const { contractHistoryData } = useContractHistory(hookOptions);
   const { filterSpecialMsgList } = useFilterSpecialMsgHook();
 
@@ -52,10 +54,10 @@ export const useRequestHistoryReplayHook = (
 
     chatMsgStore.historyEnd = data.length < chatMsgStore.batchCount;
 
-    data.forEach((chatMsg, index) => {
-      const realIndex = start + index;
-      chatMsgStore.setRealIndexById(chatMsg.id, realIndex);
-    });
+    // data.forEach((chatMsg, index) => {
+    //   const realIndex = start + index;
+    //   chatMsgStore.setRealIndexById(chatMsg.id, realIndex);
+    // });
 
     return {
       data,
@@ -73,10 +75,12 @@ export const useRequestHistoryReplayHook = (
     const data = result.data;
     chatMsgStore.resetHistoryData(data);
 
-    if (data.length) {
-      chatMsgStore.setRealStartIndex(result.realStartIndex);
-      chatMsgStore.setRealEndIndex(result.realEndIndex);
-    }
+    // if (data.length) {
+    //   chatMsgStore.setRealStartIndex(result.realStartIndex);
+    //   chatMsgStore.setRealEndIndex(result.realEndIndex);
+    // }
+
+    getEmitter().emit(appEvents.chat.LoadInitialData);
 
     return {
       data: filterSpecialMsgList(data),
@@ -130,7 +134,7 @@ export const useRequestHistoryReplayHook = (
       reqStart = reqStart < 0 ? 0 : reqStart;
       const result = await requestChatHistory(reqStart, ChatReplayRequestHistoryMode.Next);
       chatMsgStore.concatHistoryData(result.data, 'tail');
-      chatMsgStore.setRealStartIndex(result.realStartIndex);
+      // chatMsgStore.setRealStartIndex(result.realStartIndex);
       // 数据新增，refIndex 需要重新获取
       refIndex = chatMsgStore.findHistoryIndex(id);
     }

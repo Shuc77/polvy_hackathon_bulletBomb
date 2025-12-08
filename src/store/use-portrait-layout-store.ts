@@ -125,6 +125,10 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
         placeholder = translate('ask.input.placeholder');
       }
 
+      if (chatStore.chatRoomLongTimeNotUsed || chatStore.chatExited) {
+        placeholder = translate('chat.roomClosed');
+      }
+
       return placeholder;
     });
 

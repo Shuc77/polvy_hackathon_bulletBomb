@@ -85,6 +85,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
     const baseGetStore = () => ({
       chatMsgStore,
       watchAppStore,
+      chatStore,
     });
 
     if (watchAppStore.isPlaybackWatchUrl) {

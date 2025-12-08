@@ -62,7 +62,7 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
     }
 
     const watchCore = getWatchCore();
-    const { promotion } = posterData.value;
+    const { promotion, useThirdInviteQrcode = false, thirdInviteQrcodeUrl = '' } = posterData.value;
 
     const { type = 1 } = props;
 
@@ -87,6 +87,8 @@ export const useInvitePoster = (options: { props: VueProps<typeof invitePosterPr
         promotion.inviteCoverImage || commonStore.plvDefaultResource.defaultSplashImg,
       customUserType: promotion.customUserType,
       footerText,
+      // 为空的时候默认会用 watchUrl 去生成二维码
+      qrCode: useThirdInviteQrcode ? thirdInviteQrcodeUrl : '',
     };
 
     iframeUrl.value = watchCore.invite.getInvitePosterUrl(params);

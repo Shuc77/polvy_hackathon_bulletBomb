@@ -75,6 +75,7 @@ import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -113,6 +114,8 @@ const { isConnectMicing, masterMicItem } = storeDefinitionToRefs(useConnectMicSt
 const { documentSwitch } = storeDefinitionToRefs(useDocStore);
 
 const isDocMainScreen = computed(() => {
+  if (isBuildForFeedMainMode()) return false;
+
   return (
     mainScreen.value === MainScreenContent.Doc &&
     portraitDocSideSwitchVisible.value &&

@@ -137,4 +137,14 @@ export const interactionEvents = {
    * 打开商品详情
    */
   OpenProductDetail: 'OpenProductDetail',
+  /**
+   * 打开投票弹窗
+   * @param {boolean} visible 显示状态
+   */
+  OpenVote: 'OpenVote',
+  /**
+   * 打开投票规则弹窗
+   * @param {string} ruleText 规则文本
+   */
+  OpenVoteRule: 'OpenVoteRule',
 };

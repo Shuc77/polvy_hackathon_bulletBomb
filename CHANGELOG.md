@@ -4,6 +4,56 @@
 
 ---
 
+## v2.11.0(2025-12-05)
+
+### Deprecated
+
+- 删除旧版互动投票功能
+
+### Warning
+
+目前项目中的短信验证码功能，使用了阿里云验证码 1.0 `AWSC` 的服务。但由于该服务预计在今年年底退市（详见[官方公告](https://help.aliyun.com/zh/captcha/captcha2-0/product-overview/announcement-verification-code-1-0-stop-service)），预计下个版本会改用新的短信验证码服务，请知悉。
+
+### Bug Fixes
+
+- 修复观看页聊天消息重放加载多次历史数据后，点击"查看更多消息"按钮后加载不出内容的问题
+- 修复答题卡提交后没有隐藏答题卡入口问题
+- 修复从引导页进入观看页后，自定义预约按钮没有正常显示的问题
+- 修复观众提交答题卡后答题卡开关没有实时隐藏
+- 修复观看页在 ios 下点击设置昵称无法正常选中昵称输入框的问题
+- 修复点赞入口在移动端引导页没有响应后台开关的问题
+
+### Features
+
+- 补充新版聊天室“隐藏观众昵称”功能
+- 接入新版聊天室 UI 的提问功能
+- 接入新版聊天室 UI 的成员列表功能
+- 接入新版互动投票功能
+- 观看条件-登记观看新增是否必填处理
+- 用户体系放开对三分屏频道的限制
+- 支持在观看页 vid 模式下使用"AI 看"功能
+
+### Optimizes
+
+- 优化直播间长时间未使用、转播频道的提示效果
+- 竖屏直播间聊天区新增黑色遮罩，修改提问的系统提示文案
+- 支持在邀请海报增加 `qrCode` 传参来展示外部二维码
+- 内部一系列小的优化
+
+### Build System
+
+- 更新 `@polyv/vue-components` 版本至 `1.4.0`
+- 更新 `@polyv/utils` 版本到 `2.17.0`
+- 更新 `@polyv/chat` 和 `@polyv/chat-ui`，版本为 `rc-20251204`
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20251204`
+- 更新 `@polyv/product-ui` 版本至 `rc-20251204`
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20251204`
+- `@polyv/iar` 相关 UI 层 SDK
+  - 更新关联互动版本至 `rc-20251204`
+  - 新增 `@polyv/iar-vote-ui` SDK
+
+---
+
 ## v2.10.0(2025-11-14)
 
 ### Bug Fixes

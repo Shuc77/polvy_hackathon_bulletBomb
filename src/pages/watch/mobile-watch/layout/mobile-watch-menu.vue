@@ -71,12 +71,7 @@
           :sub-label="chatSubLabel"
           :show-reminder="chatReminderVisible"
         >
-          <template v-if="chatRoomVisible">
-            <mobile-chat-room />
-          </template>
-          <template v-else>
-            <mobile-chat-close-tips />
-          </template>
+          <mobile-chat-room />
         </mobile-menu-tab-pane>
 
         <!-- 提问 -->
@@ -88,7 +83,10 @@
           :show-new-message="askReminderVisible"
           lazy-load
         >
-          <mobile-ask />
+          <mobile-ask v-if="!isChatUIV2" />
+          <chat-loader-helper v-else>
+            <mobile-ask-v2 />
+          </chat-loader-helper>
         </mobile-menu-tab-pane>
 
         <!-- 问答 -->
@@ -170,12 +168,12 @@
 
         <!-- 投票 -->
         <mobile-menu-tab-pane
-          v-else-if="menu.menuType === ChannelMenuType.Vote"
+          v-else-if="menu.menuType === ChannelMenuType.Vote && voteActiveMenuData.visible"
           :key="`vote-${index}`"
           :label="menu.name"
           :name="TAB_NAME_VOTE"
         >
-          <mobile-vote-panel v-if="iarSdkLoaded" />
+          <mobile-vote-panel-v2 v-if="iarSdkLoaded" />
         </mobile-menu-tab-pane>
 
         <!-- 云席 -->
@@ -208,8 +206,9 @@
           :name="TAB_NAME_MEMBERS"
           lazy-load
         >
-          <mobile-member-desc />
-          <mobile-member-list />
+          <chat-loader-helper>
+            <mobile-member-list-v2 />
+          </chat-loader-helper>
         </mobile-menu-tab-pane>
 
         <!-- 微活动 -->
@@ -302,7 +301,6 @@ import MobileAsk from '@/components/page-watch-common/ask/mobile-ask/mobile-ask.
 import MobileChapter from '@/components/page-watch-common/chapter/mobile-chapter.vue';
 // import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import MobileChatRoom from '@/components/page-watch-common/chat/chat-room/mobile-chat-room.vue';
-import MobileChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/chat-close-tips.vue';
 import MobileCustomTuwenTextMenu from '@/components/page-watch-common/custom-tuwen-text-menu/mobile-custom-tuwen-text-menu.vue';
 import MobileDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/mobile-doc-side-switch.vue';
 import MobileFollowBtn from '@/components/page-watch-common/follow/follow-btn/mobile-follow-btn.vue';
@@ -310,9 +308,8 @@ import MobileFollowLayer from '@/components/page-watch-common/follow/follow-laye
 import MobileQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/mobile-question-answer.vue';
 import MobileTuwenLive from '@/components/page-watch-common/interactive-receive/tuwen-live/mobile-tuwen-live.vue';
 import MobilePromoteExternalLink from '@/components/page-watch-common/promote-external-link/mobile-promote-external-link.vue';
-import MobileVotePanel from '@/components/page-watch-common/interactive-receive/vote/mobile-vote-panel.vue';
+import MobileVotePanelV2 from '@/components/page-watch-common/interactive-receive-v2/vote-v2/mobile-vote-panel.vue';
 import MobileInviteRank from '@/components/page-watch-common/invite/mobile-invite-rank/mobile-invite-rank.vue';
-import MobileMemberList from '@/components/page-watch-common/member-list/member-list.vue';
 import MobileMicroActivity from '@/components/page-watch-common/micro-activity/mobile-micro-activity/mobile-micro-activity.vue';
 import MobilePlaybackList from '@/components/page-watch-common/playback-list/mobile-playback-list/mobile-playback-list.vue';
 import MobileMultiMeetingPortrait from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-portrait.vue';
@@ -320,9 +317,12 @@ import MobileSubtitle from '@/components/page-watch-common/subtitle/mobile-subti
 import MobileSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/mobile-seat-table.vue';
 import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import MobileMemberDesc from '@/components/page-watch-common/member-list/mobile-member-desc.vue';
 import MobilePlaybackOutline from '@/components/page-watch-common/polyv-ai/ai-summary/playback-outline.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
+
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import MobileAskV2 from '@/components/page-watch-common/ask-v2/mobile-ask.vue';
+import MobileMemberListV2 from '@/components/page-watch-common/member-list/member-list-v2.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -371,12 +371,12 @@ const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutSto
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 
-const { channelMenus, multiMeetingMenuData, isSubChannel } =
+const { channelMenus, multiMeetingMenuData, isSubChannel, voteActiveMenuData } =
   storeDefinitionToRefs(useChannelMenuStore);
 
 const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 
-const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
+const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 

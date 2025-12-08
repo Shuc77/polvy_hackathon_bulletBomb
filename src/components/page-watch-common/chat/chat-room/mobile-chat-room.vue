@@ -24,7 +24,7 @@
       </div>
 
       <!-- 跑道消息 -->
-      <chat-loader-helper>
+      <chat-loader-helper v-if="!chatRoomLongTimeNotUsed">
         <mobile-runway-effect class="c-mobile-chat-room__topic__item" />
       </chat-loader-helper>
 
@@ -43,7 +43,7 @@
       </chat-loader-helper>
 
       <!-- 右下角挂件 -->
-      <mobile-chat-room-pendant />
+      <mobile-chat-room-pendant v-if="chatInputControllerEnable" />
 
       <!-- 特效动画 -->
       <chat-loader-helper>
@@ -52,13 +52,13 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <mobile-interactive-entrance v-if="iarSdkLoaded" />
+    <mobile-interactive-entrance v-if="iarSdkLoaded && chatInputControllerEnable" />
 
     <!-- 底部输入框 -->
     <template v-if="chatInputControllerEnable">
       <mobile-chat-input-controller v-if="!isChatUIV2" />
       <chat-loader-helper v-else>
-        <mobile-message-input-v2 />
+        <mobile-chat-message-input-v2 />
       </chat-loader-helper>
     </template>
 
@@ -70,17 +70,18 @@
 <script setup lang="ts">
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 import MobileEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
-import MobileRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import MobileChatInputController from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller/mobile-chat-input-controller.vue';
 import MobileDonateAnimation from '@/components/page-watch-common/donate/donate-animation/index.vue';
-import MobileSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 import MobileAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
 import MobileInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/mobile-interactive-entrance.vue';
-import { ChatLoaderHelper } from '../../chat-v2/chat-loader-helper';
-import ChatMsgListV2 from '../../chat-v2/chat-msg-list/index.vue';
-import MobileMessageInputV2 from '../../chat-v2/message-input/mobile-message-input.vue';
 import MobileChatMsgList from '../chat-msg-list/mobile-chat-msg-list.vue';
 import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant.vue';
+
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import ChatMsgListV2 from '@/components/page-watch-common/chat-v2/chat-msg-list/index.vue';
+import MobileRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
+import MobileChatMessageInputV2 from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input.vue';
+import MobileSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -91,7 +92,8 @@ import { useThemeStore } from '@/store/use-theme-store';
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 
-const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, isChatUIV2, chatRoomLongTimeNotUsed } =
+  storeDefinitionToRefs(useChatStore);
 
 const { iarSdkLoaded, announcementFunctionVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);

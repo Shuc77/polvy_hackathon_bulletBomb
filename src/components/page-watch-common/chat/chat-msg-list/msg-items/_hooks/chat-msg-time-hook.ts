@@ -49,7 +49,7 @@ export const useChatMsgTime = (chatMsgData: ChatMsgDataContext, autoProvide = tr
     const msg = unref(chatMsg);
 
     if (!prevMsg) {
-      return true;
+      return false;
     }
 
     if (msg.time - prevMsg.time > MSG_TIME_GAP) {

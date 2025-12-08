@@ -32,6 +32,12 @@
       <!-- 平台抽奖 -->
       <mobile-lucky-lottery-pendant class="c-portrait-chat-room-pendant__item" />
 
+      <!-- 投票 -->
+      <mobile-vote-pendant
+        v-if="voteActiveMenuData.visible"
+        class="c-portrait-chat-room-pendant__item"
+      />
+
       <!-- 抢答 -->
       <mobile-rush-answer class="c-portrait-chat-room-pendant__item" />
 
@@ -69,6 +75,7 @@
 import mobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
+import MobileVotePendant from '@/components/page-watch-common/interactive-receive-v2/vote-v2/mobile-vote-pendant.vue';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import MobileFeedbackPendant from '@/components/page-watch-common/interactive-receive/feedback/mobile-feedback-pendant.vue';
 import PortraitPushCard from '@/components/page-watch-common/interactive-receive/push-card/mobile-push-card.vue';
@@ -86,12 +93,14 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useFinanceStore } from '@/store/use-finance-store';
 import { useMicroActivityStore } from '@/store/use-micro-activity-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
+const { voteActiveMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { iarSdkLoaded, feedbackPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 

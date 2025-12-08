@@ -2,7 +2,7 @@
 <template>
   <div
     class="portrait-online-user-capsule"
-    @click="showInviteRank"
+    @click="showOnlineUserListPopup"
   >
     {{ shortNumber(onlineUserCount) }}{{ $lang('member.online.userCount') }}
   </div>
@@ -22,7 +22,7 @@ const { onlineUserCount } = storeDefinitionToRefs(useChatStore);
 const { onlineListEnabled } = storeDefinitionToRefs(useChannelStore);
 const { getEmitter } = useGlobalInject();
 
-function showInviteRank() {
+function showOnlineUserListPopup() {
   // 需要开启在线列表才展示在线列表弹层
   if (onlineListEnabled.value) {
     getEmitter().emit(appEvents.portrait.OpenPortraitOnlineUserListPopup);

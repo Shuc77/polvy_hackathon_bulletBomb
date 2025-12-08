@@ -86,6 +86,7 @@ export const useAdvertStore = defineStore<'advert', AdvertStore>('advert', () =>
   function syncImgAdvertSetting() {
     const watchCore = watchAppStore.getWatchCore();
     const imgAdvertSetting = watchCore.channel.getImgAdvertSetting();
+    console.info('图标广告数据', imgAdvertSetting);
 
     imgAdvertEnabled.value = imgAdvertSetting.imgAdvertEnabled;
     imgCloseVisible.value = imgAdvertSetting.closeImgAdvertEnabled;

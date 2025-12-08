@@ -27,7 +27,7 @@ const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
 const PolyvChatUI = getChatUIV2Pkg();
 
-const { ChatMessageList, useSendMsg } = PolyvChatUI;
+const { ChatMessageList, useSendChatMsg } = PolyvChatUI;
 
 const listRef = ref<ComponentInstance<typeof ChatMessageList>>();
 
@@ -37,7 +37,7 @@ watch(onlySpecialMsg, () => {
 });
 
 // 监听发送图片事件
-const { choiceImageFileSend } = useSendMsg();
+const { choiceImageFileSend } = useSendChatMsg();
 useEventBusListener(appEvents.chat.ToSendImage, choiceImageFileSend);
 
 // 刷新列表组件

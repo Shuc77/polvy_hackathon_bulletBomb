@@ -138,8 +138,9 @@
         </chat-loader-helper>
       </div>
 
-      <!-- 消息区 -->
+      <!-- 消息区（V1） -->
       <div
+        v-if="!isChatUIV2"
         v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item c-portrait-carousel-main-screen__bottom__item--padding c-portrait-carousel-main-screen__bottom__item--pointer-event"
         @click="onClickPlayerRegion"
@@ -167,12 +168,7 @@
           >
             <!-- 聊天消息区 -->
             <plv-carousel-item v-if="chatMenuData.visible">
-              <template v-if="chatRoomVisible">
-                <portrait-chat-msg-list v-if="!isChatUIV2" />
-                <chat-loader-helper v-else>
-                  <chat-msg-list-v2 />
-                </chat-loader-helper>
-              </template>
+              <portrait-chat-msg-list />
             </plv-carousel-item>
 
             <!-- 提问消息区 -->
@@ -199,6 +195,11 @@
         </div>
       </div>
 
+      <!-- 消息区（V2） -->
+      <chat-loader-helper v-else-if="isChatUIV2">
+        <portrait-swiper-message />
+      </chat-loader-helper>
+
       <!-- 右侧挂件 -->
       <div class="c-portrait-carousel-main-screen__bottom__pendant">
         <portrait-chat-room-pendant v-show="!portraitPlayerIsPageFullscreen" />
@@ -224,18 +225,11 @@
         <div class="c-portrait-carousel-main-screen__input-wrap">
           <!-- 聊天室输入框占位 -->
           <template v-if="portraitChatInputVisible">
-            <portrait-chat-input-placeholder v-if="!isChatUIV2 || !chatMenuData.visible" />
+            <portrait-chat-input-placeholder v-if="!isChatUIV2" />
             <chat-loader-helper v-else>
-              <portrait-message-input />
+              <portrait-swiper-message-control />
             </chat-loader-helper>
           </template>
-          <!-- 发起转播频道被踢出提示 -->
-          <portrait-chat-error-tips
-            v-else-if="chatExited"
-            :content="$lang('chat.transformTip')"
-          />
-          <!-- 聊天室关闭提示 -->
-          <portrait-chat-close-tips v-else-if="portraitChatCloseTipsVisible" />
 
           <!-- 回放+章节入口 -->
           <div
@@ -310,7 +304,7 @@
 
 <script setup lang="ts">
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
 
 import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
@@ -318,12 +312,8 @@ import MobilePageFooter from '@/components/common-business/page-footer/mobile-pa
 import PortraitStatusTag from '@/components/common-business/status-tag/portrait-status-tag.vue';
 import MobileFeedLayoutBackBtn from '@/components/page-feed-common/feed-layout-back-btn/mobile-feed-layout-back-btn.vue';
 import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
-import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
-import ChatMsgListV2 from '@/components/page-watch-common/chat-v2/chat-msg-list/index.vue';
-import PortraitChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/portrait-chat-close-tips.vue';
+import PortraitAsk from '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue';
 import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
-import PortraitChatErrorTips from '@/components/page-watch-common/chat/chat-error-tips/portrait-chat-error-tips.vue';
-import PortraitChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
@@ -331,12 +321,10 @@ import PortraitDocSideSwitch from '@/components/page-watch-common/doc/doc-side-s
 import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
 import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/index.vue';
 import MobileDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/mobile-donate-entrance.vue';
-import PortraitSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
 import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
 import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
 import LiveSquare from '@/components/page-watch-common/live-square/live-square.vue';
-import PortraitRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
@@ -347,8 +335,14 @@ import MobileProductPendant from '@/components/page-watch-common/product/product
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
 import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-online-user-capsule.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
-import PortraitMessageInput from '@/components/page-watch-common/chat-v2/message-input/portrait-message-input.vue';
+
+import PortraitChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import PortraitRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
+import PortraitSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
+import PortraitSwiperMessage from '../components/swiper-message/swiper-message.vue';
+import PortraitSwiperMessageControl from '../components/swiper-message/swiper-message-control.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -369,12 +363,6 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
 
-const PortraitAsk = defineAsyncComponent(() => {
-  return import(
-    /* webpackChunkName: "portrait-ask" */ '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue'
-  );
-});
-
 const { isPlaybackWatchUrl, watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
 
 const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
@@ -386,14 +374,8 @@ const { announcementFunctionVisible, hasBulletin, productBubbleVisible, interact
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const {
-  chatInputControllerEnable,
-  chatRoomVisible,
-  chatExited,
-  likeFeatureEnabled,
-  chatOnlineNumberEnable,
-  isChatUIV2,
-} = storeDefinitionToRefs(useChatStore);
+const { chatInputControllerEnable, likeFeatureEnabled, chatOnlineNumberEnable, isChatUIV2 } =
+  storeDefinitionToRefs(useChatStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible, chatMsgReplayEnabled } =
   storeDefinitionToRefs(usePlaybackStore);
@@ -416,28 +398,10 @@ const {
  * 竖屏聊天输入框是否可见
  */
 const portraitChatInputVisible = computed(() => {
-  if (
-    askMenuData.value.visible &&
-    portraitMessageTabCurrentName.value === PortraitChatTabName.Ask
-  ) {
-    return true;
-  }
-
   if (chatMsgReplayEnabled.value) return false;
   if (!chatInputControllerEnable.value) return false;
 
   return true;
-});
-
-const portraitChatCloseTipsVisible = computed(() => {
-  if (
-    askMenuData.value.visible &&
-    portraitMessageTabCurrentName.value === PortraitChatTabName.Ask
-  ) {
-    return false;
-  }
-
-  return !chatRoomVisible.value && !chatExited.value;
 });
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
@@ -525,6 +489,18 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   padding-bottom: 16px;
   pointer-events: none;
   @include iphone-x-pb(16px);
+
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    content: '';
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 100%);
+  }
 }
 
 .c-portrait-carousel-main-screen__bottom__item {

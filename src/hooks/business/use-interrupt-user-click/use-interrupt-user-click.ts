@@ -12,6 +12,7 @@ type IarInterruptTriggerSource =
   | 'before-join-lottery'
   | 'show-lottery-list'
   | 'lucky-lottery-pendant'
+  | 'vote-pendant'
   | 'personal-reward'
   | 'mobile-product-pendant'
   | 'pc-product-pendant'

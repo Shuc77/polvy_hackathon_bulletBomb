@@ -265,6 +265,7 @@ defineExpose(msgInputWrapInstance);
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1; // 增加层级来处理 ios 下输入框会自动被聚焦的情况
   width: 100%;
   height: 100%;
 }

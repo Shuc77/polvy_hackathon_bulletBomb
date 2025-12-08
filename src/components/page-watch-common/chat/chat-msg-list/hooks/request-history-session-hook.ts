@@ -6,6 +6,7 @@ import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { RequestHistoryCommonResult } from './types';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { appEvents } from '@/app/app-events';
 
 /**
  * @hook 请求场次历史消息
@@ -22,6 +23,7 @@ export const useRequestHistorySession = (
   const watchAppStore = getStore().watchAppStore;
 
   const getWatchCore = watchAppStore.getWatchCore;
+  const getEmitter = watchAppStore.getEmitter;
 
   /** 当前页码，默认为 1 */
   const curPageNumber = ref(1);
@@ -86,6 +88,8 @@ export const useRequestHistorySession = (
       chatMsgStore.setRealStartIndex(result.realStartIndex);
       chatMsgStore.setRealEndIndex(result.realEndIndex);
     }
+
+    getEmitter().emit(appEvents.chat.LoadInitialData);
 
     return {
       data,

@@ -51,22 +51,17 @@
           :show-reminder="chatReminderVisible"
           :name="TAB_NAME_CHAT"
         >
-          <template v-if="chatRoomVisible">
-            <pc-chat-room />
-          </template>
-          <template v-else>
-            <pc-chat-close-tips />
-          </template>
+          <pc-chat-room />
         </pc-aside-tab-pane>
 
         <!-- 投票活动 tab -->
         <pc-aside-tab-pane
-          v-if="menu.menuType === ChannelMenuType.Vote"
+          v-if="menu.menuType === ChannelMenuType.Vote && voteActiveMenuData.visible"
           :key="`vote-${index}`"
           :label="menu.name"
           :name="TAB_NAME_VOTE"
         >
-          <pc-vote-panel v-if="iarSdkLoaded" />
+          <pc-vote-panel-v2 v-if="iarSdkLoaded" />
         </pc-aside-tab-pane>
 
         <!-- 成员列表 tab -->
@@ -77,9 +72,9 @@
           :name="TAB_NAME_MEMBERS"
           lazy-load
         >
-          <!-- 在线成员列表信息栏 -->
-          <pc-member-desc />
-          <pc-member-list />
+          <chat-loader-helper>
+            <pc-member-list-v2 />
+          </chat-loader-helper>
         </pc-aside-tab-pane>
 
         <!-- 提问 tab -->
@@ -91,7 +86,10 @@
           :show-new-message="askReminderVisible"
           lazy-load
         >
-          <pc-ask />
+          <pc-ask v-if="!isChatUIV2" />
+          <chat-loader-helper v-else>
+            <pc-ask-v2 />
+          </chat-loader-helper>
         </pc-aside-tab-pane>
 
         <!-- 问答 tab -->
@@ -169,21 +167,22 @@
 import PcAsideTabPane from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-tab-pane.vue';
 import PcAsideTabs from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-tabs.vue';
 // import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
-import PcChatCloseTips from '@/components/page-watch-common/chat/chat-close-tips/chat-close-tips.vue';
 import PcChatRoom from '@/components/page-watch-common/chat/chat-room/pc-chat-room.vue';
 import PcMicroActivity from '@/components/page-watch-common/micro-activity/pc-micro-activity/pc-micro-activity.vue';
 import PcConnectMic from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic.vue';
 import PcProductList from '@/components/page-watch-common/product/product-list/pc-product-list.vue';
-import PcVotePanel from '@/components/page-watch-common/interactive-receive/vote/pc-vote-panel.vue';
-import PcMemberList from '@/components/page-watch-common/member-list/member-list.vue';
+import PcVotePanelV2 from '@/components/page-watch-common/interactive-receive-v2/vote-v2/pc/pc-vote-panel.vue';
 import PcQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/pc-question-answer.vue';
 import PcAsk from '@/components/page-watch-common/ask/pc-ask/pc-ask.vue';
 import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
 import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
 import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import PcMemberDesc from '@/components/page-watch-common/member-list/pc-member-desc.vue';
 import PcPlaybackOutline from '@/components/page-watch-common/polyv-ai/ai-summary/playback-outline.vue';
+
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import PcAskV2 from '@/components/page-watch-common/ask-v2/pc-ask.vue';
+import PcMemberListV2 from '@/components/page-watch-common/member-list/member-list-v2.vue';
 
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -219,9 +218,9 @@ const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
 const { connectMicPendantRenderEnabled } = storeDefinitionToRefs(useConnectMicStore);
 
-const { chatRoomVisible } = storeDefinitionToRefs(useChatStore);
+const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
-const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
+const { channelMenus, voteActiveMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const { qaReminderVisible } = storeDefinitionToRefs(useInteractReceiveStore);
 

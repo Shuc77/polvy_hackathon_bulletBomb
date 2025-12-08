@@ -1,6 +1,6 @@
 <template>
   <div class="c-portrait-chat-message-input">
-    <viewer-input-control>
+    <chat-message-input-control>
       <template
         v-if="askMenuData.visible"
         #body-suffix
@@ -12,7 +12,7 @@
           <portrait-ask-icon :font-size="20" />
         </div>
       </template>
-    </viewer-input-control>
+    </chat-message-input-control>
   </div>
 </template>
 
@@ -32,7 +32,7 @@ const { getEmitter } = useGlobalInject();
 
 const PolyvChatUI = getChatUIV2Pkg();
 
-const { ViewerInputControl } = PolyvChatUI;
+const { ChatMessageInputControl } = PolyvChatUI;
 
 function onClickAsk(event: MouseEvent) {
   if (portraitMessageTabCurrentName.value === PortraitChatTabName.Ask) {

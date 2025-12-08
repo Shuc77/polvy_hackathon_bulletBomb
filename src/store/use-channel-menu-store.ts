@@ -21,6 +21,7 @@ import { useChannelStore } from './use-channel-store';
 import { ynToBool } from '@utils-ts/boolean';
 import { useChatStore } from './use-chat-store';
 import { usePolyvAIStore } from './use-polyv-ai-store';
+import { useIdentityStore } from './use-identity-store';
 
 export interface MenuDataType {
   /** 是否创建该菜单节点 */
@@ -89,6 +90,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
     const interactReceiveStore = useInteractReceiveStore();
     const multiMeetingStore = useMultiMeetingStore();
     const polyvAIStore = usePolyvAIStore();
+    const identityStore = useIdentityStore();
 
     /** 中文频道菜单 */
     const cnChannelMenus = ref<ChannelMenuItem[]>([]);
@@ -103,9 +105,12 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         menus = unref(enChannelMenus);
       }
 
-      // 回放地址进入观看页时只需要"聊天tab"
+      // 回放地址进入观看页时只需要"聊天tab"和"AI 回放大纲"
       if (watchAppStore.isPlaybackWatchUrl) {
-        menus = menus.filter(menu => menu.menuType === ChannelMenuType.Chat);
+        menus = menus.filter(
+          menu =>
+            menu.menuType === ChannelMenuType.Chat || menu.menuType === ChannelMenuType.AISummary,
+        );
       }
 
       // 会议模式不需要“往期tab” || 单个视频回放时不需要
@@ -311,7 +316,11 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
     /** 投票活动菜单信息 */
     const voteActiveMenuData = computed<MenuDataType>(() => {
       const visible =
-        interactReceiveStore.interactSetting.voteActiveEnabled && !watchAppStore.isPlaybackWatchUrl;
+        interactReceiveStore.interactSetting.voteActiveEnabled &&
+        !watchAppStore.isPlaybackWatchUrl &&
+        !identityStore.isGuest &&
+        channelMenus.value.some(menu => menu.menuType === ChannelMenuType.Vote);
+
       return {
         visible,
         label: translate('menu.tabName.vote'),

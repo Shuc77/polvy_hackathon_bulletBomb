@@ -3,9 +3,10 @@ import { openLink } from '@/assets/utils/url';
 import { PropUtils, VueProps } from '@polyv/vue-components';
 import { ChannelMenuIframeOpenType, plvInterval, plvParseJson } from '@polyv/live-watch-sdk';
 import { computed, onMounted, ref, watch } from 'vue';
-import { formatLink, type LinkData, LinkType } from '@utils-ts/external-link';
+import { formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
 import { useIarExternalLinkParams } from '../interactive-receive/use-iar-external-link-params';
 import { useMultiPlatformLink } from '@/hooks/platform/use-multi-platform-link/use-multi-platform-link';
+import { omit } from 'lodash-es';
 
 export const promoteExternalLinkProps = () => ({
   /** iframe 链接地址或者 json 配置 */
@@ -34,24 +35,64 @@ export const usePromoteExternalLinkHook = (options: {
     return translate('promote.external.link.tips');
   });
 
+  const finalLinkType = computed(() => {
+    const linkType = props.linkType;
+    if (!linkType) {
+      // 英文菜单在 props.linkType 为空，从 props.content 里取 linkType
+      const { success, data } = plvParseJson<LinkData & { mobileLink: string; linkType: number }>(
+        props.content,
+      );
+      if (success) return data.linkType;
+    }
+    return linkType;
+  });
+
   /** 强制页内展示 */
   const forceOpenInMenu = ref(false);
 
   /** iframe 地址 */
   const iframeUrl = ref('');
 
-  function getLinkData() {
-    if (props.linkType !== LinkType.MultiPlatform) {
-      return null;
-    }
+  function generateDefaultLinkData(): LinkData {
+    return {
+      jumpWay: LinkJumpWay.NewWindow,
+      link: '',
+      pcLink: '',
+      mobileAppLink: '',
+      androidLink: '',
+      iosLink: '',
+      harmonyLink: '',
+      wxMiniprogramOriginalId: '',
+      wxMiniprogramAppId: '',
+      wxMiniprogramLink: '',
+    };
+  }
 
-    const { success, data } = plvParseJson<LinkData>(props.content);
+  function getLinkData() {
+    const { success, data } = plvParseJson<LinkData & { mobileLink: string; linkType: number }>(
+      props.content,
+    );
     if (!success) {
       console.error('getLinkData parse error');
       return null;
     }
 
-    return data;
+    // 旧数据配置了通用链接，则多平台链接全部失效
+    if (data.linkType === 10) {
+      return {
+        ...generateDefaultLinkData(),
+        jumpWay: data.jumpWay,
+        link: data.link || '',
+      };
+    }
+
+    const finalData = omit(data, ['mobileLink', 'linkType']);
+    // 旧数据只配置多平台，要把手机端链接放到浏览器链接里使用
+    if (data.linkType === 11 && !data.link) {
+      finalData.link = data.mobileLink;
+    }
+
+    return finalData;
   }
 
   const { getWeixinBtnSetupEnabled, weixinBtnRef, handleMultiPlatformLinkType } =
@@ -74,7 +115,7 @@ export const usePromoteExternalLinkHook = (options: {
   });
 
   function getPromoteGeneralLinkUrl() {
-    if (!props.linkType || props.linkType === LinkType.Normal) {
+    if (!props.linkType || props.linkType === 10) {
       return formatLink(props.content, getLinkParams);
     }
 
@@ -83,13 +124,16 @@ export const usePromoteExternalLinkHook = (options: {
 
   function handleGeneralLinkType() {
     const promoteLinkUrl = getPromoteGeneralLinkUrl();
+    console.info('执行通用链接', promoteLinkUrl);
     if (!promoteLinkUrl) return;
 
+    console.info('isOpenInMenu', isOpenInMenu.value);
     if (isOpenInMenu.value) {
       iframeUrl.value = promoteLinkUrl;
       return;
     }
 
+    console.info('props.openType', props.openType);
     if (props.openType === ChannelMenuIframeOpenType.NewPage) {
       openLink(promoteLinkUrl);
       return;
@@ -103,16 +147,18 @@ export const usePromoteExternalLinkHook = (options: {
   watch(
     () => props.isActive,
     isActive => {
+      console.info('进入激活状态', props.isActive);
+      console.info('linkType', props.linkType);
       if (!isActive) return;
 
       // 处理通用链接
-      if (!props.linkType || props.linkType === LinkType.Normal) {
+      if (!finalLinkType.value || finalLinkType.value === 10) {
         handleGeneralLinkType();
         return;
       }
 
       // 处理多平台链接
-      if (props.linkType === LinkType.MultiPlatform) {
+      if (finalLinkType.value === 11) {
         handleMultiPlatformLinkType();
       }
     },
@@ -151,7 +197,7 @@ export const usePromoteExternalLinkHook = (options: {
   }
 
   onMounted(() => {
-    if (props.linkType === LinkType.MultiPlatform) {
+    if (finalLinkType.value === 11) {
       hackWeixinBtnSetup();
     }
   });
@@ -161,5 +207,7 @@ export const usePromoteExternalLinkHook = (options: {
 
     iframeUrl,
     isOpenInMenu,
+
+    handleGeneralLinkType,
   };
 };

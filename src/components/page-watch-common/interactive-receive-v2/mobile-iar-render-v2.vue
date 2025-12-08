@@ -20,6 +20,9 @@
 
     <!-- 答题卡 -->
     <answer-card-dialog />
+
+    <!-- 投票规则说明弹层 -->
+    <mobile-vote-rule-popup />
   </div>
 </template>
 
@@ -31,4 +34,5 @@ import MobileLuckyLotteryDetailPopup from './lucky-lottery/mobile-lucky-lottery-
 import MobileLuckyLotteryListPopup from './lucky-lottery/mobile-lucky-lottery-list-popup.vue';
 import MobileLuckyLotteryReceivePopup from './lucky-lottery/mobile-lucky-lottery-receive-popup.vue';
 import QuestionnaireDialog from './questionnaire-v2/questionnaire-dialog/questionnaire-dialog.vue';
+import MobileVoteRulePopup from './vote-v2/mobile-vote-rule-popup.vue';
 </script>

@@ -10,8 +10,6 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
-import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import type { ChatMsgSource } from '@polyv/chat';
 import type { MessageConfig, MessageEffectData, MessageLayout } from '@polyv/chat-ui';
 import { ChannelMenuType, ChatMessageLayout, ProductEntryPosition } from '@polyv/live-watch-sdk';
@@ -88,7 +86,7 @@ export const useMessageLayout = () => {
   function getMessageContainerBoundaryPadding(): MessageConfig['messageContainerBoundaryPadding'] {
     return isMobile
       ? {
-          top: 0,
+          top: 14,
           bottom: 0,
         }
       : {
@@ -127,10 +125,8 @@ export const useCopySpeakMsg = () => {
  * 聊天室输入框相关
  */
 export const useChatMessageInput = () => {
-  const layoutStore = useLayoutStore();
   const channelMenuStore = useChannelMenuStore();
-  const playbackStore = usePlaybackStore();
-  const portraitLayoutStore = usePortraitLayoutStore();
+  const chatStore = useChatStore();
 
   const { needInterruptUserClick } = useInterruptUserClick();
 
@@ -140,23 +136,14 @@ export const useChatMessageInput = () => {
   function getChatInputPlaceholder() {
     let placeholder = translate('chat.input.placeholder');
 
-    // 针对竖屏观看页更改文案
-    if (layoutStore.isPortraitWatchLayout) {
-      placeholder = translate('chat.input.placeholder2');
-    }
-
     // 后台中聊天室的占位设置
     const chatMenu = channelMenuStore.getMenuData(ChannelMenuType.Chat);
     if (chatMenu && chatMenu.content) {
       placeholder = chatMenu.content;
     }
 
-    // 针对竖屏提问区更改文案
-    if (
-      layoutStore.isPortraitWatchLayout &&
-      portraitLayoutStore.portraitMessageTabCurrentName === PortraitChatTabName.Ask
-    ) {
-      placeholder = translate('ask.input.placeholder');
+    if (chatStore.chatRoomLongTimeNotUsed || chatStore.chatExited) {
+      placeholder = translate('chat.roomClosed');
     }
 
     return placeholder;
@@ -166,11 +153,18 @@ export const useChatMessageInput = () => {
    * 获取是否禁用聊天室输入框
    */
   function getDisabledInput() {
+    // 需要中断用户点击
     if (needInterruptUserClick.value) {
       return true;
     }
 
-    if (playbackStore.chatMsgReplayEnabled) {
+    // 聊天室被退出
+    if (chatStore.chatExited) {
+      return true;
+    }
+
+    // 聊天室长时间未使用
+    if (chatStore.chatRoomLongTimeNotUsed) {
       return true;
     }
 
@@ -182,6 +176,21 @@ export const useChatMessageInput = () => {
     getDisabledInput,
   };
 };
+
+export function getAskMessageInput() {
+  const chatStore = useChatStore();
+
+  function getAskInputPlaceholder() {
+    if (chatStore.chatRoomLongTimeNotUsed || chatStore.chatExited) {
+      return translate('chat.roomClosed');
+    }
+    return translate('ask.input.placeholder');
+  }
+
+  return {
+    getAskInputPlaceholder,
+  };
+}
 
 /**
  * 消息点击回调相关
