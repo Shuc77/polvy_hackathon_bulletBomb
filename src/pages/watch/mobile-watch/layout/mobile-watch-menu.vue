@@ -250,7 +250,7 @@
           :name="TAB_NAME_AI_SUMMARY"
           lazy-load
         >
-          <mobile-playback-outline />
+          <mobile-ai-aggregate />
         </mobile-menu-tab-pane>
 
         <!-- 多会场列表（竖向） for 主会场 -->
@@ -317,8 +317,8 @@ import MobileSubtitle from '@/components/page-watch-common/subtitle/mobile-subti
 import MobileSeatTable from '@/components/page-watch-common/interactive-receive/seat-table/mobile-seat-table.vue';
 import MobileAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import MobilePlaybackOutline from '@/components/page-watch-common/polyv-ai/ai-summary/playback-outline.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
+import MobileAiAggregate from '@/components/page-watch-common/polyv-ai/ai-aggregate/ai-aggregate.vue';
 
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import MobileAskV2 from '@/components/page-watch-common/ask-v2/mobile-ask.vue';

@@ -13,6 +13,7 @@ import { ChatMsgImageType } from '@polyv/live-watch-sdk';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { getImgSize } from '@/assets/utils/image';
 
 export interface ChatInputInstance {
   /** 聚焦输入框 */
@@ -137,10 +138,12 @@ export const useChatInputController = (options?: {
     const imageChatMsgQueueMap: { [imageId: string]: ChatMsgImageType } = {};
 
     watchCore.utils.uploadMultiImage({
-      ready: ({ imageId, previewSrc }) => {
+      ready: async ({ imageId, previewSrc }) => {
+        const { width, height } = await getImgSize(previewSrc);
         imageChatMsgQueueMap[imageId] = insertChatLocalImageMsg({
           imageId,
           imageUrl: previewSrc,
+          size: { width, height },
         });
       },
       success: ({ imageId, imageUrl, size }) => {

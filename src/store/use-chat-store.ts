@@ -257,6 +257,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
       unref(chatRoomIsClosed) ||
       playbackStore.chatMsgReplayEnabled ||
       viewerStore.needRealNameAuth ||
+      !viewerStore.hasNickname ||
       identityStore.needIdentityGuestForceLogin
     ) {
       return true;

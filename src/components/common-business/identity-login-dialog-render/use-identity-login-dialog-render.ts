@@ -11,11 +11,13 @@ import {
   useMultiPlatformLinkHelper,
 } from '@/hooks/platform/use-multi-platform-link/use-multi-platform-link';
 import { LinkData } from '@utils-ts/external-link';
+import { useWebviewStore } from '@/store/use-webview-store';
 import { ref } from 'vue';
 
 export const useIdentityLoginDialogRender = () => {
   const { getWatchCore } = useGlobalInject();
   const watchCore = getWatchCore();
+  const webviewStore = useWebviewStore();
 
   const isFeedMainMode = isBuildForFeedMainMode();
 
@@ -66,7 +68,11 @@ export const useIdentityLoginDialogRender = () => {
     getLinkData,
     popUpJumpHandler: url => {
       // 暂不支持半弹窗展示
-      openLink(url);
+      if (webviewStore.isPlvWebview) {
+        window.location.href = url;
+      } else {
+        openLink(url);
+      }
     },
     wxBtnClassKey: 'identify-guest',
   });

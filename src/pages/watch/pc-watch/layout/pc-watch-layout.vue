@@ -64,6 +64,8 @@
           :class="{
             'c-pc-watch-layout__main__fullscreen-wrap--fullscreened': isFullscreen,
             'c-pc-watch-layout__main__fullscreen-wrap--page-fullscreened': isPcPageFullscreen,
+            'c-pc-watch-layout__main__fullscreen-wrap--page-fullscreened--hide-watermark':
+              isFullscreenWatermarkVisible,
           }"
           @mousemove="showPlayerControl"
           @mouseenter="showPlayerControl"
@@ -158,6 +160,9 @@
                   interactSetting.productEnabled
                 "
               />
+
+              <!-- AI 答题卡 -->
+              <ai-question-card v-if="layoutLoaded" />
             </div>
           </div>
 
@@ -212,6 +217,9 @@
 
           <!-- 其他直播预约 -->
           <common-other-live-booking class="c-pc-watch-layout__main__other-live-booking" />
+
+          <!-- 全屏水印 -->
+          <fullscreen-watermark />
         </div>
       </div>
     </div>
@@ -276,6 +284,8 @@ import PcWatchLayoutPlayerSidePopup from './pc-watch-layout-player-side-popup.vu
 import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
 import PcProductRender from '@/components/page-watch-common/product/pc-product-render.vue';
 import PcProductPendant from '@/components/page-watch-common/product/product-pendant/pc-product-pendant.vue';
+import AiQuestionCard from '@/components/page-watch-common/polyv-ai/ai-question/ai-question-card.vue';
+import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -288,6 +298,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 
 import {
   MainScreenContent,
@@ -337,6 +348,8 @@ const {
   forceShowHoverItem: forceShowPlayerControlItem,
   hideHoverItem: hidePlayerControl,
 } = useHoverVisible();
+
+const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
 function showPlayerControl(e: MouseEvent) {
   // 聚焦在播放器控制栏上时，不需要自动隐藏
@@ -724,5 +737,11 @@ $--layout-sub-pack-up-height: 40px !default;
   width: 450px;
   pointer-events: initial;
   transform: translateX(-50%);
+}
+
+.c-pc-watch-layout__main__fullscreen-wrap--page-fullscreened--hide-watermark {
+  & #pptAndPaintDiv [data-type='watermark'] {
+    display: none;
+  }
 }
 </style>

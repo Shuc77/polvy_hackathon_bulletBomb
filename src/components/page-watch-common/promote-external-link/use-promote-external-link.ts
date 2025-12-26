@@ -7,6 +7,7 @@ import { formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link'
 import { useIarExternalLinkParams } from '../interactive-receive/use-iar-external-link-params';
 import { useMultiPlatformLink } from '@/hooks/platform/use-multi-platform-link/use-multi-platform-link';
 import { omit } from 'lodash-es';
+import { useWebviewStore } from '@/store/use-webview-store';
 
 export const promoteExternalLinkProps = () => ({
   /** iframe 链接地址或者 json 配置 */
@@ -30,6 +31,8 @@ export const usePromoteExternalLinkHook = (options: {
   const { props } = options;
 
   const { getLinkParams } = useIarExternalLinkParams();
+
+  const webviewStore = useWebviewStore();
 
   const tips = computed(() => {
     return translate('promote.external.link.tips');
@@ -135,7 +138,11 @@ export const usePromoteExternalLinkHook = (options: {
 
     console.info('props.openType', props.openType);
     if (props.openType === ChannelMenuIframeOpenType.NewPage) {
-      openLink(promoteLinkUrl);
+      if (webviewStore.isPlvWebview) {
+        window.location.href = promoteLinkUrl;
+      } else {
+        openLink(promoteLinkUrl);
+      }
       return;
     }
 

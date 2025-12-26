@@ -147,7 +147,7 @@
           :name="TAB_NAME_AI_SUMMARY"
           lazy-load
         >
-          <pc-playback-outline />
+          <pc-ai-aggregate />
         </pc-aside-tab-pane>
       </template>
 
@@ -178,7 +178,7 @@ import PcChapter from '@/components/page-watch-common/chapter/pc-chapter.vue';
 import PcSubtitle from '@/components/page-watch-common/subtitle/pc-subtitle.vue';
 import PcAiAssistantChat from '@/components/page-watch-common/polyv-ai/ai-assistant-chat/ai-assistant-chat.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import PcPlaybackOutline from '@/components/page-watch-common/polyv-ai/ai-summary/playback-outline.vue';
+import PcAiAggregate from '@/components/page-watch-common/polyv-ai/ai-aggregate/ai-aggregate.vue';
 
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import PcAskV2 from '@/components/page-watch-common/ask-v2/pc-ask.vue';

@@ -21,6 +21,9 @@
     <div
       ref="playerContainer"
       class="c-mobile-player-main__container"
+      :class="{
+        'c-mobile-player-main__container--hide-watermark': isFullscreenWatermarkVisible,
+      }"
       data-testid="plv-player-container"
     ></div>
 
@@ -38,7 +41,23 @@
     <mobile-player-cover-img />
 
     <!-- “点击播放”播放按钮，仅用来展示  -->
-    <player-play-business-button class="c-mobile-player-main__play-btn" />
+    <player-play-business-button class="c-mobile-player-main__play-btn">
+      <template v-slot:btn-before>
+        <mobile-icon-player-back
+          v-if="fastForwardBackwardVisible"
+          class="c-mobile-player-main__player-forward-btn"
+          @click.stop="toBackOffVideoBuffered(15, true)"
+        />
+      </template>
+
+      <template v-slot:btn-after>
+        <mobile-icon-player-forward
+          v-if="fastForwardBackwardVisible"
+          class="c-mobile-player-main__player-forward-btn"
+          @click.stop="toForwardVideoBuffered(15, true)"
+        />
+      </template>
+    </player-play-business-button>
 
     <!-- 播放器顶部-左侧 访问次数 -->
     <div
@@ -156,7 +175,12 @@ import { useShortNumber } from '@/hooks/business/use-short-number';
 import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
 import { useThemeStore } from '@/store/use-theme-store';
 import { usePlayerAdvert } from '@/components/page-watch-common/player/hooks/use-player-advert';
-import { MobileIconArrowLeft } from '@/components/component-icons/mobile/map';
+import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
+import {
+  MobileIconArrowLeft,
+  MobileIconPlayerBack,
+  MobileIconPlayerForward,
+} from '@/components/component-icons/mobile/map';
 
 const { shortNumber } = useShortNumber();
 
@@ -174,6 +198,8 @@ const lowLatencyPlayerIsPageFullscreen = computed(() => {
     !isHorizontalScreenOrientation.value
   );
 });
+// 全屏水印显示时，通过样式隐藏播放器水印
+const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
 const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText();
 
@@ -210,9 +236,11 @@ const { playerContainer } = usePlayerMain({
   },
 });
 
-const { latencyModeSettingVisible, addHistoryTipsListener } = usePlayerControl();
+const { latencyModeSettingVisible, addHistoryTipsListener, fastForwardBackwardVisible } =
+  usePlayerControl();
 
-const { toTryPlay, toExitWebPageFullscreen } = usePlayerAction();
+const { toTryPlay, toExitWebPageFullscreen, toBackOffVideoBuffered, toForwardVideoBuffered } =
+  usePlayerAction();
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 // 计算是否显示webview返回按钮
@@ -422,6 +450,14 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
   transform: translateX(-50%);
 }
 
+.c-mobile-player-main__player-forward-btn {
+  margin: 0 40px;
+  font-size: 28px;
+  color: #fff;
+  pointer-events: initial;
+  opacity: 0.8;
+}
+
 .c-mobile-player-playback-subtitle-select {
   display: none;
 }
@@ -429,6 +465,17 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 .c-mobile-player-main--page-fullscreen {
   .c-mobile-player-main__pv--landscape-fix {
     left: 60px;
+  }
+}
+
+.c-mobile-player-main__container--hide-watermark {
+  .plv-live-watermark {
+    // 使用display: none 实测会影响水印的渲染，导致全屏后不显示
+    visibility: hidden;
+  }
+
+  .plv-watch-sdk__player-watermark {
+    visibility: hidden;
   }
 }
 </style>

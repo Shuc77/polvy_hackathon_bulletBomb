@@ -16,7 +16,6 @@
       @click-send-image="onClickSendImage"
       @click-input-wrap="onInputWarpClickHandler"
       @click-image-emotion-enter="onInputWarpClickHandler"
-      @click-send-image-enter="onInputWarpClickHandler"
     >
       <!-- 面板区插槽 -->
       <template #panel-suffix>

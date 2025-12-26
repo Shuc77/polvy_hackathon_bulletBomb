@@ -18,7 +18,8 @@ type IarInterruptTriggerSource =
   | 'pc-product-pendant'
   | 'product-big-card-popup'
   | 'mobile-product-small-card'
-  | 'pc-product-small-card';
+  | 'pc-product-small-card'
+  | 'before-choose-topic-pk-answer';
 
 export type WatchInterruptTriggerSource =
   | 'chat-input'

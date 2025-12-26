@@ -12,14 +12,7 @@ export interface WeixinButtonOptions {
   classKey: string;
 }
 
-export const useWeixinButton = (
-  hookOptions: {
-    /** 获取按钮选项 */
-    getButtonOptions?: () => WeixinButtonOptions | undefined;
-    /** launch 回调 */
-    launchCallback?: () => unknown;
-  } = {},
-) => {
+export const useWeixinMiniProgramHelper = () => {
   const { getWeixinSdk } = useWeixinSdk();
 
   /**
@@ -91,6 +84,33 @@ export const useWeixinButton = (
     });
   }
 
+  return {
+    isWxMiniProgramWebview,
+    supportWxOpenLaunchWebApp,
+
+    supportWxMiniProgramNavigateTo,
+    checkWxMiniProgramWebview,
+    toWxMiniProgram,
+  };
+};
+
+export const useWeixinButton = (
+  hookOptions: {
+    /** 获取按钮选项 */
+    getButtonOptions?: () => WeixinButtonOptions | undefined;
+    /** launch 回调 */
+    launchCallback?: () => unknown;
+  } = {},
+) => {
+  const {
+    isWxMiniProgramWebview,
+    supportWxOpenLaunchWebApp,
+
+    supportWxMiniProgramNavigateTo,
+    checkWxMiniProgramWebview,
+    toWxMiniProgram,
+  } = useWeixinMiniProgramHelper();
+
   const weixinBtnRef = ref<HTMLDivElement | HTMLElement>();
 
   const buttonOptions = computed(() => {
@@ -158,7 +178,6 @@ export const useWeixinButton = (
   );
 
   return {
-    isHighWeixinVersion,
     isWxMiniProgramWebview,
     supportWxOpenLaunchWebApp,
     checkWxMiniProgramWebview,

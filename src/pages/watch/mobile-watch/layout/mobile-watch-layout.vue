@@ -74,6 +74,7 @@
         ),
         'c-mobile-watch-layout__doc--sub-screen': mainScreen !== MainScreenContent.Doc,
         'c-mobile-watch-layout__doc--page-fullscreen': mobileDocIsPageFullscreen,
+        'c-mobile-watch-layout__doc--page-fullscreen--hide-watermark': isFullscreenWatermarkVisible,
       }"
       :style="getScreenStyles(MainScreenContent.Doc)"
     >
@@ -150,6 +151,8 @@
       :is-normal-mobile-layout="true"
       class="c-mobile-watch-layout__player-tips"
     ></player-tips>
+
+    <fullscreen-watermark></fullscreen-watermark>
   </div>
 </template>
 
@@ -198,6 +201,8 @@ import { useChatStore } from '@/store/use-chat-store';
 import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 import liveSquare from '@/components/page-watch-common/live-square/live-square.vue';
 import { usePageStore } from '@/store/use-page-store';
+import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
+import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
@@ -248,6 +253,8 @@ useResizeObserver(layoutWrapRef, () => {
     mobileWatchLayoutHeight: layoutWrapRef.value?.clientHeight || 0,
   });
 });
+
+const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
 // 顶部占位距离 => 决定 layoutTopElem.clientHeight => 决定播放器高度
 const layoutTopDistance = computed(() => {
@@ -554,6 +561,12 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   .c-mobile-watch-layout__top-layer__live-square {
     margin-right: 12px;
     pointer-events: initial;
+  }
+}
+
+.c-mobile-watch-layout__doc--page-fullscreen--hide-watermark {
+  & #pptAndPaintDiv [data-type='watermark'] {
+    display: none;
   }
 }
 </style>

@@ -5,7 +5,10 @@
     :visible.sync="dialogVisible"
     :title="$lang('chat.setNick.title')"
   >
-    <div class="c-mobile-chat-set-nick__content">
+    <div
+      class="c-mobile-chat-set-nick__content"
+      data-testid="mobile-chat-set-nick-content"
+    >
       <form-wrap
         :form-data="formData"
         :form-rules="formRules"
@@ -13,6 +16,7 @@
       >
         <form-item form-field="nickname">
           <form-input
+            data-testid="mobile-chat-set-nick-input"
             v-model="formData.nickname"
             :maxlength="nickMaxLength"
             :placeholder="$lang('chat.setNick.placeholder')"
@@ -20,6 +24,7 @@
         </form-item>
         <div class="c-mobile-chat-set-nick__content__buttons">
           <form-submit-button
+            data-testid="mobile-chat-set-nick-submit-btn"
             :text="$lang('base.confirm')"
             :size="ButtonSize.Medium"
             block

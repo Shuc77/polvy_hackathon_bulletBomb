@@ -3,6 +3,7 @@
   <iar-pc-topic-pk
     class="c-pc-topic-pk"
     :topic-sdk="topicPkSdk"
+    :before-choose-topic-pk-answer="beforeChooseTopicPkAnswer"
   />
 </template>
 
@@ -12,5 +13,5 @@ import { useTopicPk } from './hook/use-topic-pk';
 
 const IarPcTopicPk = getIarComponent('PcTopic');
 
-const { topicPkSdk } = useTopicPk();
+const { topicPkSdk, beforeChooseTopicPkAnswer } = useTopicPk();
 </script>

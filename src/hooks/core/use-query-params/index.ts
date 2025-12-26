@@ -147,6 +147,8 @@ export const useQueryParams = (opts?: {
     watchLayout: buildGetters<MobileWatchLayout>('watchLayout'),
     /** feed 流布局层级 */
     feedLayoutLevel: buildGetters<'0' | '1'>('feedLayoutLevel'),
+    /** 外链跳转额外参数 */
+    linkExt: buildGetters<string>('linkExt'),
 
     /** 频道号 */
     channelId: buildGetters('channelId'),

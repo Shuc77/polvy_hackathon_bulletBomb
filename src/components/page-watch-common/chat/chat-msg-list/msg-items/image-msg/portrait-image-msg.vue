@@ -18,11 +18,13 @@
         <div
           v-if="!localImagePlaceholder"
           class="c-portrait-image-msg__placeholder g-img-cover"
+          :style="placeholderImageStyle"
         ></div>
-        <!-- 本地上传图片后，消息替换时用的占位图 -->
+        <!-- 本地上传的情况下，消息替换时用的占位图，为了快速过渡 -->
         <div
           v-else
-          class="c-portrait-image-msg__img-wrap"
+          class="c-portrait-image-msg__img-wrap c-portrait-image-msg__img-wrap--local"
+          :style="placeholderImageStyle"
         >
           <div class="c-portrait-image-msg__img-inner">
             <img
@@ -38,7 +40,7 @@
         </div>
       </template>
 
-      <!-- 本地上传缓存图片 / 服务端图片 -->
+      <!-- 直接插入到本地的图片 / 服务端图片 -->
       <div
         v-show="isLoaded"
         class="c-portrait-image-msg__img-wrap"
@@ -69,6 +71,7 @@ const {
   chatMsg,
   imageUrl,
   localImagePlaceholder,
+  placeholderImageStyle,
   isLoaded,
   imageRef,
   imageBoundStyle,
@@ -102,8 +105,6 @@ $--image-size: 80px;
 }
 
 .c-portrait-image-msg__placeholder {
-  width: $--image-size;
-  height: $--image-size;
   margin: 4px 0;
   background-image: url(../_imgs/img-msg-placeholder.png);
   border-radius: 4px;

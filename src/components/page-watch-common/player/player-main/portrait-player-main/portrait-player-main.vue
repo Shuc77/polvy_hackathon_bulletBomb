@@ -20,6 +20,7 @@
           class="c-portrait-player-main__container"
           :class="{
             'c-portrait-player-main__container--audio': isAudioPlayerMode,
+            'c-portrait-player-main__container--hide-watermark': isFullscreenWatermarkVisible,
           }"
           :style="allPlayerContainerStyle"
           data-testid="plv-player-container"
@@ -76,6 +77,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -91,6 +93,9 @@ const { playerContainer } = usePlayerMain({
     };
   },
 });
+
+// 全屏水印显示时，通过样式隐藏播放器水印
+const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
 const {
   playerSdkLoadError,
@@ -342,6 +347,13 @@ useConnectMicing();
 .c-portrait-player-main--guide-portrait-stream-fit {
   .plvideo video {
     object-fit: cover;
+  }
+}
+
+.c-portrait-player-main__container--hide-watermark {
+  .plv-live-watermark {
+    // 使用display: none 实测会影响水印的渲染，导致全屏后不显示
+    visibility: hidden;
   }
 }
 </style>

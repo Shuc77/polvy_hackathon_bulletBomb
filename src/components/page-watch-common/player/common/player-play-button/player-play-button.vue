@@ -13,11 +13,17 @@
     </div>
     <div
       v-else
-      class="c-player-play-button__mode--default"
-      :class="{
-        'c-player-play-button__mode--default-new-skin': isDefaultNewSkin,
-      }"
-    ></div>
+      class="c-player-play-button__mode--default-wrapper"
+    >
+      <slot name="btn-before"></slot>
+      <div
+        class="c-player-play-button__mode--default"
+        :class="{
+          'c-player-play-button__mode--default-new-skin': isDefaultNewSkin,
+        }"
+      ></div>
+      <slot name="btn-after"></slot>
+    </div>
   </div>
 </template>
 
@@ -97,13 +103,9 @@ const isDefaultNewSkin = computed(() => {
 }
 
 .c-player-play-button__mode--default {
-  position: absolute;
-  top: 50%;
-  left: 50%;
   width: 128px;
   max-width: 22%;
   pointer-events: none;
-  transform: translate(-50%, -50%);
 
   &::after {
     display: block;
@@ -122,5 +124,15 @@ const isDefaultNewSkin = computed(() => {
     background-image: url(./imgs/play-btn-new-skin.png);
     background-size: 100% 100%;
   }
+}
+
+.c-player-play-button__mode--default-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
 </style>

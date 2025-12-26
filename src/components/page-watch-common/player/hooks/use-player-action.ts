@@ -352,6 +352,53 @@ export const usePlayerAction = () => {
 
   // ========= 播放进度相关 ==========
 
+  /**
+   * 合并高频点击的快进/快退操作，降低频繁 seek 带来的抖动。
+   * 新接口使用，不影响原有 toForwardVideo / toBackOffVideo 行为。
+   */
+  const SEEK_BUFFER_DELAY_MS = 300; // trailing debounce duration for buffered seek
+  let pendingSeekOffset = 0;
+  let pendingSeekTimer: number | null = null;
+  let pauseAfterSeekAttached = false;
+
+  const clampSeekTime = (time: number) => {
+    if (time < 0) return 0;
+    if (time > playerStore.durationTime) return Math.max(playerStore.durationTime - 0.001, 0);
+    return time;
+  };
+
+  function attachPauseAfterSeekOnce() {
+    if (pauseAfterSeekAttached) return;
+    pauseAfterSeekAttached = true;
+
+    const playerModule = getWatchCore().player;
+    playerModule.eventEmitter.once(PlayerEvents.PlayerPlaying, () => {
+      pauseAfterSeekAttached = false;
+      // 下一帧暂停，避免和 seek 竞争
+      setTimeout(() => {
+        toPause();
+      }, 0);
+    });
+  }
+
+  function scheduleSeek(offset: number, seekAfterPause: boolean) {
+    pendingSeekOffset += offset;
+    // trailing debounce：每次点击都会重置计时，安静一段时间后统一 seek
+    pendingSeekTimer && clearTimeout(pendingSeekTimer);
+
+    if (seekAfterPause) attachPauseAfterSeekOnce();
+
+    pendingSeekTimer = window.setTimeout(() => {
+      pendingSeekTimer = null;
+
+      const target = clampSeekTime(playerStore.currentTime + pendingSeekOffset);
+      pendingSeekOffset = 0;
+
+      toSeekVideo(target);
+      playerStore.$patch({ currentTime: target });
+    }, SEEK_BUFFER_DELAY_MS);
+  }
+
   /** 设置播放进度 */
   function toSeekVideo(time: number): void {
     if (time > playerStore.durationTime) {
@@ -361,10 +408,12 @@ export const usePlayerAction = () => {
   }
 
   /**
-   * 视频前进
+   * 视频前进（原逻辑，立即 seek）
    * @param second 秒数，默认：15
    */
-  function toForwardVideo(second = 15) {
+  function toForwardVideo(second = 15, seekAfterPause = false) {
+    if (seekAfterPause) attachPauseAfterSeekOnce();
+
     let currentTime = playerStore.currentTime + second;
     if (currentTime > playerStore.durationTime) {
       currentTime = playerStore.durationTime - 1;
@@ -373,6 +422,13 @@ export const usePlayerAction = () => {
     playerStore.$patch({
       currentTime,
     });
+  }
+
+  /**
+   * 视频前进（合并高频点击，批量 seek）
+   */
+  function toForwardVideoBuffered(second = 15, seekAfterPause = false) {
+    scheduleSeek(second, seekAfterPause);
   }
 
   /**
@@ -385,18 +441,28 @@ export const usePlayerAction = () => {
   }
 
   /**
-   * 视频后退
+   * 视频后退（原逻辑，立即 seek）
    * @param second 秒数，默认：15
    */
-  function toBackOffVideo(second = 15) {
+  function toBackOffVideo(second = 15, seekAfterPause = false) {
+    if (seekAfterPause) attachPauseAfterSeekOnce();
+
     let currentTime = playerStore.currentTime - second;
     if (currentTime < 0) {
       currentTime = 0;
     }
+
     toSeekVideo(currentTime);
     playerStore.$patch({
       currentTime,
     });
+  }
+
+  /**
+   * 视频后退（合并高频点击，批量 seek）
+   */
+  function toBackOffVideoBuffered(second = 15, seekAfterPause = false) {
+    scheduleSeek(-second, seekAfterPause);
   }
 
   /**
@@ -494,8 +560,10 @@ export const usePlayerAction = () => {
 
     toSeekVideo,
     toForwardVideo,
+    toForwardVideoBuffered,
     toForwardVideoInLimit,
     toBackOffVideo,
+    toBackOffVideoBuffered,
     toBackOffVideoInLimit,
 
     toRestart,

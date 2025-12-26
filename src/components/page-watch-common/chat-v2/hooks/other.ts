@@ -12,7 +12,12 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import type { ChatMsgSource } from '@polyv/chat';
 import type { MessageConfig, MessageEffectData, MessageLayout } from '@polyv/chat-ui';
-import { ChannelMenuType, ChatMessageLayout, ProductEntryPosition } from '@polyv/live-watch-sdk';
+import {
+  ChannelMenuType,
+  ChatMessageLayout,
+  LikeEffectType,
+  ProductEntryPosition,
+} from '@polyv/live-watch-sdk';
 import { useBrowser } from '@polyv/vue-components';
 import { useChatTarget } from './use-chat-target';
 
@@ -257,3 +262,50 @@ export function useClickMsgCallback() {
     clickMsgCallback,
   };
 }
+
+export const useChatLikeConfig = () => {
+  const { getWatchCore } = useGlobalInject();
+  const { chatSetting } = storeDefinitionToRefs(useChatStore);
+
+  const watchCore = getWatchCore();
+
+  function getLikeEffectIcons(): string[] {
+    const domainInfo = watchCore.domain.getDomainInfo();
+    const likeEffectType = chatSetting.value.likeEffectType;
+
+    switch (likeEffectType) {
+      case LikeEffectType.Festival:
+        return [
+          `${domainInfo.resourceDomain}/default-img/like/festival/1.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/2.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/3.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/4.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/5.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/6.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/7.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/8.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/9.png`,
+          `${domainInfo.resourceDomain}/default-img/like/festival/10.png`,
+        ];
+      case LikeEffectType.Custom:
+        return chatSetting.value.likeEffectIcons;
+      default:
+        return [
+          `${domainInfo.resourceDomain}/default-img/like/system/1.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/2.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/3.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/4.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/5.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/6.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/7.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/8.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/9.png`,
+          `${domainInfo.resourceDomain}/default-img/like/system/10.png`,
+        ];
+    }
+  }
+
+  return {
+    getLikeEffectIcons,
+  };
+};

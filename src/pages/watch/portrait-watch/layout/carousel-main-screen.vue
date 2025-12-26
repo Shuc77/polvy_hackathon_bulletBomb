@@ -237,6 +237,20 @@
             class="c-portrait-carousel-main-screen__playback-entrance g-img-cover"
             @click="onClickPlaybackEntrance(true)"
           ></div>
+
+          <div
+            v-if="fastForwardBackwardVisible"
+            class="c-portrait-carousel-main-screen__seek-btns"
+          >
+            <mobile-icon-player-back
+              class="c-portrait-carousel-main-screen__player-forward-btn"
+              @click.stop="toBackOffVideo(15)"
+            />
+            <mobile-icon-player-forward
+              class="c-portrait-carousel-main-screen__player-forward-btn"
+              @click.stop="toForwardVideo(15)"
+            />
+          </div>
         </div>
 
         <!-- 底部控制栏右侧内容 -->
@@ -335,6 +349,10 @@ import MobileProductPendant from '@/components/page-watch-common/product/product
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
 import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-online-user-capsule.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
+import {
+  MobileIconPlayerBack,
+  MobileIconPlayerForward,
+} from '@/components/component-icons/mobile/map';
 
 import PortraitChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
@@ -362,6 +380,8 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 
 const { isPlaybackWatchUrl, watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
 
@@ -393,6 +413,9 @@ const {
   portraitOnlineListEntranceVisible,
   portraitDocSideSwitchVisible,
 } = storeDefinitionToRefs(usePortraitLayoutStore);
+
+const { toBackOffVideo, toForwardVideo } = usePlayerAction();
+const { fastForwardBackwardVisible } = usePlayerControl();
 
 /**
  * 竖屏聊天输入框是否可见
@@ -547,7 +570,7 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   flex: 1;
   gap: 12px;
   align-items: center;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 .c-portrait-carousel-main-screen__bottom__item--message-area {
   gap: 12px;
@@ -665,5 +688,19 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   left: 50%;
   width: 335px;
   transform: translateX(-50%);
+}
+
+.c-portrait-carousel-main-screen__seek-btns {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.c-portrait-carousel-main-screen__player-forward-btn {
+  height: 32px;
+  font-size: 32px;
+  color: #fff;
+  pointer-events: initial;
+  opacity: 0.85;
 }
 </style>

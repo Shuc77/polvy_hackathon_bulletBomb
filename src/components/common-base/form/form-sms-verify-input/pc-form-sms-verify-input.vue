@@ -19,20 +19,12 @@
         {{ sendText }}
       </div>
     </form-input>
-
-    <div
-      v-if="slideVerifyVisible && validType === SmsValidType.Slider"
-      class="c-pc-form-sms-verify-input__slide"
-    >
-      <pc-form-slide-verify @verify-success="toSendSliderSmsCode" />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAttrs } from 'vue';
 import FormInput from '@/components/common-base/form/form-input/form-input.vue';
-import PcFormSlideVerify from '@/components/common-base/form/form-slide-verify/pc-form-slide-verify.vue';
 import {
   formSmsVerifyInputProps,
   formSmsVerifyInputEmits,
@@ -45,16 +37,10 @@ const emit = defineEmits(formSmsVerifyInputEmits());
 
 const attrs = useAttrs();
 
-const {
-  inputPlaceholder,
-  sendDisabled,
-  sendText,
-  slideVerifyVisible,
-  SmsValidType,
-  onInputChange,
-  onClickSend,
-  toSendSliderSmsCode,
-} = useSmsVerifyInput({ props, emit });
+const { inputPlaceholder, sendDisabled, sendText, onInputChange, onClickSend } = useSmsVerifyInput({
+  props,
+  emit,
+});
 </script>
 
 <style lang="scss">
@@ -75,17 +61,5 @@ const {
 .c-pc-form-sms-verify-input__send--disabled {
   color: $--font-color-disabled;
   cursor: not-allowed;
-}
-
-.c-pc-form-sms-verify-input__slide {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 10;
-  box-sizing: border-box;
-  width: 100%;
-  padding: 8px;
-  background: $--color-white;
-  box-shadow: $--popper-shadow;
 }
 </style>

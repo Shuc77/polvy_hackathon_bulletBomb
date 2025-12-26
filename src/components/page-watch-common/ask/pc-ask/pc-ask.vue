@@ -22,13 +22,12 @@
         :image-paste-input-enabled="imagePasteInputEnabled"
         :placeholder="askInputPlaceholder"
         :disabled-input="inputDisabled"
-        :disabled-emotion-picker="needInterruptUserClick"
-        :disabled-send-image="needInterruptUserClick"
+        :disabled-emotion-picker="inputDisabled"
+        :disabled-send-image="inputDisabled"
         @submit="onSubmitMessage"
         @system-msg="onSendSystemMsg"
         @click-send-image="onClickSendImage"
         @click-image-emotion-enter="onClickInputWrap"
-        @click-send-image-enter="onClickInputWrap"
         @click-input-wrap="onClickInputWrap"
       />
     </div>
@@ -56,7 +55,7 @@ const askMsgListRef = ref<AskMsgListInstance>();
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { needInterruptUserClick, toInterruptUserClick } = useInterruptUserClick();
+const { toInterruptUserClick } = useInterruptUserClick();
 
 const {
   askMsgRenderList,

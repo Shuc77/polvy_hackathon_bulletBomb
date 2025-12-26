@@ -15,7 +15,10 @@
     <!-- 播放器渲染容器 -->
     <div
       ref="playerContainer"
-      class="c-pc-player-main__container"
+      :class="[
+        'c-pc-player-main__container',
+        { 'c-pc-player-main__container__hide-watermark': isFullscreenWatermarkVisible },
+      ]"
       data-testid="plv-player-container"
       @click="toTogglePlayInLimit"
     ></div>
@@ -68,6 +71,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 
 const {
   playerSdkLoadError,
@@ -98,6 +102,8 @@ const { playerContainer } = usePlayerMain({
     };
   },
 });
+
+const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
 usePlayerKeyboard(playerContainer);
 
@@ -163,6 +169,13 @@ const { iframeVisible, iframeUrl } = usePlayerAdvert();
     .pv-icon-btn-play {
       opacity: 0;
     }
+  }
+}
+
+// 通过样式隐藏播放器水印
+.c-pc-player-main__container__hide-watermark {
+  .plv-live-player-watermark {
+    display: none !important;
   }
 }
 </style>

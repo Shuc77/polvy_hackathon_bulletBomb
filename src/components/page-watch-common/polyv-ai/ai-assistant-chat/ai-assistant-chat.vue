@@ -24,9 +24,13 @@ import type { AiAssistantChat as AiAssistantChatType } from '@polyv/live-watch-a
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { ynToBool } from '@polyv/utils/es/boolean';
 import { YN } from '@polyv/live-watch-sdk';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 
 const { paramGetter } = useQueryParams();
-const { watchAICore, watchCore } = useAIGlobalProvider();
+const { getWatchAICore, watchCore } = useAIGlobalProvider();
+
+const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
 
 const renderEnabled = ref(false);
 
@@ -56,7 +60,8 @@ watch(
   },
 );
 
-onBeforeMount(async () => {
+async function setupAIAssistantChat() {
+  const watchAICore = getWatchAICore();
   if (!watchAICore) return;
 
   const { aiAssistantId, aiAssistantName, aiAssistantCode } =
@@ -79,7 +84,21 @@ onBeforeMount(async () => {
   } else {
     renderEnabled.value = true;
   }
+}
+
+onBeforeMount(() => {
+  setupAIAssistantChat();
 });
+
+watch(
+  watchAICoreSetuped,
+  () => {
+    if (watchAICoreSetuped.value) {
+      setupAIAssistantChat();
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style lang="scss">

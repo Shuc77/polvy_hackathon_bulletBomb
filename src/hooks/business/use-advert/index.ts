@@ -66,7 +66,14 @@ export const useAdvert = (options: { getLinkData: () => LinkData | null }) => {
         iframeVisible.value = true;
         iframeUrl.value = url;
         break;
-      case LinkJumpWay.NewWindow:
+      case LinkJumpWay.NewWindow: {
+        if (isPlvWebview.value) {
+          window.location.href = url;
+        } else {
+          openLink(url);
+        }
+        break;
+      }
       default:
         openLink(url);
     }

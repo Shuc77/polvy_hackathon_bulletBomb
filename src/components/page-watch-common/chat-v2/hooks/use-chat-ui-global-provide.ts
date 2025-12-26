@@ -10,6 +10,7 @@ import { useBrowser } from '@polyv/vue-components';
 import RedpaperMsg from '../chat-msg-list/components/redpaper-msg/redpaper-msg-wrap.vue';
 import {
   getAskMessageInput,
+  useChatLikeConfig,
   useChatMessageInput,
   useClickMsgCallback,
   useCopySpeakMsg,
@@ -59,6 +60,7 @@ export const useChatUIGlobalProvide = () => {
   const { getAskInputPlaceholder } = getAskMessageInput();
   const { clickMsgCallback } = useClickMsgCallback();
   const { toInterruptUserClick } = useInterruptUserClick();
+  const { getLikeEffectIcons } = useChatLikeConfig();
 
   const { chatTarget, ChatMsgSource } = useChatTarget();
 
@@ -134,7 +136,10 @@ export const useChatUIGlobalProvide = () => {
         clickEnabled: likeSingleClickEnabled.value,
         holdEnabled: likeHoldEnabled.value,
         countPosition: isMobile ? 'top' : 'bottom',
+        showCount: chatSetting.value.likeCountEnabled,
         triggerSize: isMobile ? 36 : 40,
+        triggerImage: chatSetting.value.likeIconUrl,
+        bubbles: getLikeEffectIcons(),
       };
     },
     getOnlineConfig: () => {

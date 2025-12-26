@@ -127,9 +127,9 @@ let projectVersion = (exports.projectVersion = pkgJSON.version);
 /**
  * 获取观看页 SDK 环境变量
  * */
-function getWatchSdkEnv() {
+const getWatchSdkEnv = (exports.getWatchSdkEnv = () => {
     return 'prod';
-}
+});
 
 /** 注入的全局常量 */
 exports.defineConstants = {

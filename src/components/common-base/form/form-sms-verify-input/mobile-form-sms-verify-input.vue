@@ -20,19 +20,11 @@
         {{ sendText }}
       </div>
     </form-input>
-
-    <div
-      v-if="slideVerifyVisible"
-      class="c-mobile-form-sms-verify-input__slide"
-    >
-      <mobile-form-slide-verify @verify-success="toSendSliderSmsCode" />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import FormInput from '@/components/common-base/form/form-input/form-input.vue';
-import MobileFormSlideVerify from '@/components/common-base/form/form-slide-verify/mobile-form-slide-verify.vue';
 import { useAttrs } from 'vue';
 import {
   formSmsVerifyInputEmits,
@@ -46,15 +38,10 @@ const emit = defineEmits(formSmsVerifyInputEmits());
 
 const attrs = useAttrs();
 
-const {
-  inputPlaceholder,
-  sendDisabled,
-  sendText,
-  slideVerifyVisible,
-  onInputChange,
-  onClickSend,
-  toSendSliderSmsCode,
-} = useSmsVerifyInput({ props, emit });
+const { inputPlaceholder, sendDisabled, sendText, onInputChange, onClickSend } = useSmsVerifyInput({
+  props,
+  emit,
+});
 </script>
 
 <style lang="scss">
