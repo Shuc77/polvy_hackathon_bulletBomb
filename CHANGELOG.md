@@ -36,7 +36,7 @@
 
 ### Build System
 
-- 新增 `@polyv/captcha-sdk`，版本为 `1.0.0`
+- 新增 `@polyv/captcha-sdk`，版本为 `1.0.1`
 - 更新 `@polyv/utils` 版本至 `2.18.0`
 - 更新 `@polyv/vue-components` 版本至 `1.5.0`
 - 更新 `@polyv/chat` 和 `@polyv/chat-ui`，版本为 `rc-20251225`
