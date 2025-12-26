@@ -5,7 +5,7 @@ import { useWatchAppStore } from './use-watch-app-store';
 
 export interface PolyvAIStore {
   /** AI SDK 核心已安装 */
-  watchAICoreSetuped?: Ref<boolean>;
+  watchAICoreSetuped: Ref<boolean>;
   /** AI 助手是否可用 */
   AIAssistantEnabled: ComputedRef<boolean>;
   /** 同步 PolyvAI 存储数据 */

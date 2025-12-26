@@ -262,7 +262,9 @@ $--splash-header-content-height: 406px;
   width: 720px;
   height: $--splash-header-content-height;
   margin-right: 60px;
+  overflow: hidden;
   background-color: #ccc;
+  border-radius: 8px;
 }
 
 .c-pc-splash__header__title {

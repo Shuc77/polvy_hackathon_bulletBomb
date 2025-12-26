@@ -56,7 +56,14 @@ export const useMultiPlatformLink = (options: {
       case LinkJumpWay.PopUp:
         options.popUpJumpHandler(url);
         break;
-      case LinkJumpWay.NewWindow:
+      case LinkJumpWay.NewWindow: {
+        if (isPlvWebview.value) {
+          window.location.href = url;
+        } else {
+          openLink(url);
+        }
+        break;
+      }
       default:
         openLink(url);
     }

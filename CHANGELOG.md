@@ -4,6 +4,50 @@
 
 ---
 
+## v2.12.0(2025-12-26)
+
+### Deprecated
+
+- 删除不再使用的 `ai-summary` 目录组件，改用 `ai-aggregate` 组件
+- 删除不再使用的 `load-ali-aws` 插件加载文件
+- 删除不再需要的 `form-slide-verify` 组件
+
+### Bug Fixes
+
+- 修复竖屏观看页使用 v2 聊天室时点击发送图片无法唤起选择文件问题
+
+### Features
+
+- 接入 `@polyv/captcha-sdk` 来处理第三方滑块验证码，涉及短信预约、一客一码、手机号登录、手机号绑定四个功能
+- 用户体系游客模式支持触发话题 PK 互动时引导游客登录
+- 微信小程序 webview 场景下支持对外暴露 token 以支持退出登录
+- 新增点赞特效配置
+- 新增全屏水印功能
+- 移动端新增快进快退 15s 的按钮
+- 回放 AI 看功能新增逐字稿功能
+- 回放 AI 看功能新增知识测验功能
+- 外链跳转新增透传参数 `linkExt`
+
+### Optimizes
+
+- 移动端回放列表处理加载下一页交互优化
+- 优化聊天消息图片尺寸计算和样式处理，优化本地上传图片的展示效果
+- 内部一系列小的优化
+
+### Build System
+
+- 新增 `@polyv/captcha-sdk`，版本为 `1.0.1`
+- 更新 `@polyv/utils` 版本至 `2.18.0`
+- 更新 `@polyv/vue-components` 版本至 `1.5.0`
+- 更新 `@polyv/chat` 和 `@polyv/chat-ui`，版本为 `rc-20251225`
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20251204`
+- 更新 `@polyv/live-watch-ai-ui` 版本至 `rc-20251204`
+- 更新 `@polyv/product-ui` 版本至 `rc-20251225`
+- 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20251225`
+- 更新 `@polyv/iar` 相关 UI 层 SDK, 版本至 `rc-20251225`
+
+---
+
 ## v2.11.0(2025-12-05)
 
 ### Deprecated

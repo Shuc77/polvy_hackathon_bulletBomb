@@ -3,7 +3,15 @@
   <player-play-button
     v-if="playerBusinessBtnVisible"
     :mode="playerBtnMode"
-  />
+  >
+    <template #btn-before>
+      <slot name="btn-before"></slot>
+    </template>
+
+    <template #btn-after>
+      <slot name="btn-after"></slot>
+    </template>
+  </player-play-button>
 </template>
 
 <script setup lang="ts">

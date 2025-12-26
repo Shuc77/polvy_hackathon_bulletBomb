@@ -318,12 +318,16 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     }
 
     isLoading.value = true;
+    const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
     try {
       const watchCore = watchAppStore.getWatchCore();
-      const data = await watchCore.playback.getPlaybackList({
-        pageNumber: pageNo,
-        pageSize: unref(pageSize),
-      });
+      const [data] = await Promise.all([
+        watchCore.playback.getPlaybackList({
+          pageNumber: pageNo,
+          pageSize: unref(pageSize),
+        }),
+        sleep(500), // loading 至少展示 500ms
+      ]);
 
       pageNumber.value = data.pageNumber;
       isNoMore.value = data.pageNumber >= data.totalPages;
@@ -331,9 +335,9 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
       playbackList.value.push(...data.contents);
       playbackListMap.value[data.pageNumber] = data.contents;
-
-      isLoading.value = false;
-    } catch (e) {
+    } catch (err) {
+      console.error(err);
+    } finally {
       isLoading.value = false;
     }
   }

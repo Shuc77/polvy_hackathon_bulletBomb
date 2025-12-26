@@ -106,6 +106,9 @@
 
     <!-- 播放器设置弹层 -->
     <portrait-player-control-popup />
+
+    <!-- AI 答题卡 -->
+    <ai-question-card />
   </div>
 </template>
 
@@ -132,6 +135,7 @@ import MobileProductRender from '@/components/page-watch-common/product/mobile-p
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import MobileWatchPendant from './mobile-watch-pendant.vue';
+import AiQuestionCard from '@/components/page-watch-common/polyv-ai/ai-question/ai-question-card.vue';
 
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input-popup.vue';

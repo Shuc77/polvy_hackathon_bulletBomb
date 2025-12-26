@@ -14,6 +14,9 @@
 
     <!-- 观看页全局弹出层组件-延迟加载 -->
     <portrait-watch-layout-lazyload v-if="layoutLoaded" />
+
+    <!-- 全屏水印 -->
+    <fullscreen-watermark />
   </div>
 </template>
 
@@ -23,6 +26,7 @@ import { defineAsyncComponent } from 'vue';
 import MobileTopGuide from '@/components/page-watch-common/top-guide/mobile-top-guide.vue';
 import PortraitWatchLayout from './layout/portrait-watch-layout.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
+import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
 
 import { usePvTrack } from '@/hooks/business/use-pv-track';
 import { useLayoutLoad } from '@/hooks/core/use-layout-load';

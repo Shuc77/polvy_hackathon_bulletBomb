@@ -4,6 +4,7 @@ import { useInviteStore } from '@/store/use-invite-store';
 import { useShareStore } from '@/store/use-share-store';
 
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 /** 互动外链跳转参数 hook */
 export const useIarExternalLinkParams = () => {
@@ -14,13 +15,14 @@ export const useIarExternalLinkParams = () => {
   const viewerStore = useViewerStore();
   const inviteStore = useInviteStore();
   const shareStore = useShareStore();
+  const { paramGetter } = useQueryParams();
 
   /** 获取链接参数 */
   const getLinkParams = () => {
     const saleInfo = watchCore.user.getUserSaleInfo();
     const params = watchCore.user.getStatisticsParams();
 
-    return {
+    const linkParams: Record<string, string | undefined | null> = {
       openId: viewerStore.openId,
       unionId: viewerStore.unionId,
       userId: viewerStore.viewerId,
@@ -44,6 +46,12 @@ export const useIarExternalLinkParams = () => {
       // 自定义统计参数param5
       param5: params.param5,
     };
+
+    if (paramGetter().linkExt()) {
+      linkParams.linkExt = paramGetter().linkExt();
+    }
+
+    return linkParams;
   };
 
   return {

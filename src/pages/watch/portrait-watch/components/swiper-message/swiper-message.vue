@@ -34,7 +34,7 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useWebviewStore } from '@/store/use-webview-store';
-import { useWindowResizeListener } from '@polyv/vue-components';
+import { useEventBusListener, useWindowResizeListener } from '@polyv/vue-components';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 
@@ -49,7 +49,11 @@ const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait
 
 const PolyvChatUI = getChatUIV2Pkg();
 
-const { SwiperSection: ChatAskSwiperSection } = PolyvChatUI;
+const { SwiperSection: ChatAskSwiperSection, useSendChatMsg } = PolyvChatUI;
+
+// 监听发送图片事件
+const { choiceImageFileSend } = useSendChatMsg();
+useEventBusListener(appEvents.chat.ToSendImage, choiceImageFileSend);
 
 /** 消息区轮播列表 */
 const swiperList = computed(() => {

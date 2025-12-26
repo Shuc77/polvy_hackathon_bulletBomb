@@ -5,6 +5,7 @@ const {
   devServerProxy,
   publicPath,
   devMode,
+  getWatchSdkEnv,
   // transpileDependencies,
   outputDir,
 } = require('./build/build-config');
@@ -71,5 +72,5 @@ module.exports = {
     },
   },
 
-  productionSourceMap: false,
+  productionSourceMap: getWatchSdkEnv() !== 'prod',
 };

@@ -2,10 +2,10 @@
  * @file 短信验证码输入框 hook
  */
 
+import { onBeforeUnmount, computed, ref, unref, onMounted } from 'vue';
 import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { translate } from '@/assets/lang';
 import { validateImageCaptcha, validatePhoneNumber } from '@/assets/utils/validate';
-import { computed, ref, unref, watchEffect } from 'vue';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
 import {
@@ -19,6 +19,11 @@ import { InputValueType } from '../form-input/hooks/use-form-input';
 import { ImageVerifyInputInstance } from '../form-image-verify-input/type';
 import { isArray } from '@/assets/utils/array';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { loadCaptcha, createCaptcha } from './captcha';
+import type { Captcha, Language as CaptchaLanguage } from '@polyv/captcha-sdk';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { LangType } from '@/assets/lang/lang-enum';
+import { useLangStore } from '@/store/use-lang-store';
 
 /** 验证类型，imageCode - 图片验证码，sliderCode - 滑块验证码 */
 export type VerifyType = 'imageCaptcha' | 'sliderCode';
@@ -116,23 +121,46 @@ export const useSmsVerifyInput = (options: {
     emit('input', `${val}`);
   }
 
-  /** 滑块验证码是否显示 */
-  const slideVerifyVisible = ref(false);
+  const captchaInstance = ref<Captcha | undefined>();
 
-  watchEffect(() => {
-    if (unref(sendDisabled)) {
-      slideVerifyVisible.value = false;
+  onMounted(() => {
+    if (unref(validType) === SmsValidType.Slider) {
+      loadCaptcha();
     }
   });
 
+  onBeforeUnmount(() => {
+    if (captchaInstance.value) {
+      captchaInstance.value.destroy();
+      captchaInstance.value = undefined;
+    }
+  });
+
+  const { currentLang } = storeDefinitionToRefs(useLangStore);
+
   /** 处理点击发送 */
-  function onClickSend() {
+  async function onClickSend() {
     if (unref(sendDisabled)) {
       return;
     }
 
     if (unref(validType) === SmsValidType.Slider) {
-      slideVerifyVisible.value = true;
+      if (!captchaInstance.value) {
+        captchaInstance.value = await createCaptcha({
+          language: ({
+            [LangType.ZH_CN]: 'zh-cn',
+            [LangType.ZH_TW]: 'zh-tw',
+            [LangType.English]: 'en',
+            [LangType.Japanese]: 'ko',
+            [LangType.Korean]: 'ja',
+            [LangType.Russian]: 'ru',
+          }[currentLang.value] || 'en') as CaptchaLanguage,
+          onSuccess(data) {
+            toSendSliderSmsCode(data);
+          },
+        });
+      }
+      captchaInstance.value.show();
     } else if (unref(validType) === SmsValidType.None) {
       toSendNoneSmsCode();
     } else {
@@ -143,22 +171,24 @@ export const useSmsVerifyInput = (options: {
   /**
    * 发送短信验证码（滑块验证）
    */
-  async function toSendSliderSmsCode(slideData: AliAwscSliceData) {
+  async function toSendSliderSmsCode(slideData: object) {
     const watchCore = getWatchCore();
     const validTypeVal = unref(validType);
 
     let result: SendSmsVerifyResult | undefined;
 
     if (validTypeVal === SmsValidType.Slider) {
-      result = await watchCore.sms.sendSmsVerifyCode({
-        phoneNumber: unref(phoneNumber),
-        areaCode: unref(areaCode),
-        validType: validTypeVal,
-        scene: unref(smsScene),
-        sessionId: slideData.sessionId,
-        sig: slideData.sig,
-        token: slideData.token,
-      });
+      result = await watchCore.sms.sendSmsVerifyCode(
+        Object.assign(
+          {
+            phoneNumber: unref(phoneNumber),
+            areaCode: unref(areaCode),
+            validType: validTypeVal,
+            scene: unref(smsScene),
+          },
+          slideData,
+        ),
+      );
     }
 
     if (!result) {
@@ -170,8 +200,6 @@ export const useSmsVerifyInput = (options: {
     } else {
       onSendFail(result);
     }
-
-    slideVerifyVisible.value = false;
   }
 
   /**
@@ -276,11 +304,6 @@ export const useSmsVerifyInput = (options: {
 
     // 开始倒计时
     initCountDown();
-
-    // 2秒后隐藏滑块验证码
-    setTimeout(() => {
-      slideVerifyVisible.value = false;
-    }, 2000);
   }
 
   return {
@@ -289,7 +312,6 @@ export const useSmsVerifyInput = (options: {
     sendText,
     SmsValidType,
     onInputChange,
-    slideVerifyVisible,
     onClickSend,
     toSendSliderSmsCode,
     toSendImageSmsCode,

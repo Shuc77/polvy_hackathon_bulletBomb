@@ -50,12 +50,6 @@ export function bindPlayerModuleEvents(watchCore: PolyvWatchCore): void {
     }
   });
 
-  watchCore.player.eventEmitter.on(PlayerEvents.PlayerError, evt => {
-    if (evt.reason === PlayerErrorReason.SdkLoadError) {
-      playerStore.$patch({ playerSdkLoadError: true });
-    }
-  });
-
   watchCore.player.eventEmitter.on(PlayerEvents.TimeUpdate, params => {
     if (playbackStore.chatReplayEnabled) {
       watchCore.chat.processChatMsgReplay(params);

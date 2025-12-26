@@ -5,11 +5,15 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { loadScript } from '@just4/load-script';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
-import type { PlaybackOutline, OutlineMindMap, AiAssistantChat } from '@polyv/live-watch-ai-ui';
+import type {
+  PlaybackQuestionCard,
+  AiAssistantChat,
+  AiAggregateFeaturePanel,
+} from '@polyv/live-watch-ai-ui';
 
 interface LiveWatchAIUIType {
-  PlaybackOutline: typeof PlaybackOutline;
-  OutlineMindMap: typeof OutlineMindMap;
+  AiAggregateFeaturePanel: typeof AiAggregateFeaturePanel;
+  PlaybackQuestionCard: typeof PlaybackQuestionCard;
   AiAssistantChat: typeof AiAssistantChat;
 }
 
@@ -36,15 +40,15 @@ export const useLiveWatchAIUILoader = () => {
     const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20251023',
+        version: 'rc-20251225',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20251023',
+        version: 'rc-20251225',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: 'dev-20251023',
+        version: 'dev-20251225',
       },
     };
 

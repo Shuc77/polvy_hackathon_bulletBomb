@@ -49,7 +49,7 @@
       </div>
       <div
         v-if="isLoading"
-        class="c-mobile-playback-list__tips pws-mobile-playback-list-tips"
+        class="c-mobile-playback-list__loading c-mobile-playback-list__tips pws-mobile-playback-list-tips"
       >
         <list-loading />
       </div>
@@ -107,6 +107,8 @@ const debounceHandlePlaybackListScroll = debounce(handlePlaybackListScroll, 300)
 .c-mobile-playback-list {
   height: 100%;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
 }
 
 .c-mobile-playback-list__main {
@@ -215,5 +217,9 @@ const debounceHandlePlaybackListScroll = debounce(handlePlaybackListScroll, 300)
   font-size: 12px;
   color: #adadc0;
   text-align: center;
+}
+
+.c-mobile-playback-list__loading {
+  margin-top: 4px;
 }
 </style>
