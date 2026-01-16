@@ -5,6 +5,7 @@ const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
 const { ExtractIndexWebpackAssetPlugin } = require('./extract-index-asset-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
+// const { CodeInspectorPlugin } = require('code-inspector-plugin');
 // const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
@@ -133,6 +134,7 @@ let webpackVueConfig = {
       lintDirtyModulesOnly: devMode,
       files: ['**/*.{vue,css,scss}'],
     }),
+    // ...(devMode ? [CodeInspectorPlugin({ bundler: 'webpack' })] : []),
   ].concat(indexWebpackAssetsPlugins),
 
   optimization: {

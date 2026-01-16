@@ -9,8 +9,9 @@
       }"
     ></div>
 
-    <div
-      v-if="isPause"
+    <!-- 竖屏无法点击这个按钮，先注释，没用 -->
+    <!-- <div
+      v-if="playBtnShow"
       @click="resume"
       class="c-portrait-connect-mic-user-item__fail"
     >
@@ -19,7 +20,7 @@
         alt="play"
         class="c-portrait-connect-mic-user-item__fail--img"
       />
-    </div>
+    </div> -->
 
     <!-- 关闭摄像头 -->
     <player-video-placeholder
@@ -51,6 +52,7 @@
 </template>
 
 <script setup lang="ts">
+// import { computed } from 'vue';
 import ConnectMicInfo from '../common/connect-mic-info.vue';
 import ConnectMicNetwork from '../common/connect-mic-network.vue';
 import PlayerVideoPlaceholder from '@/components/common-business/player/player-video-placeholder.vue';
@@ -73,9 +75,9 @@ const {
   isSipUser,
   isLocal,
   isMaster,
-  isPause,
+  // isPause,
   mirrorEnabled,
-  resume,
+  // isAudience,
 } = useConnectMicItem({
   props,
 });
@@ -83,6 +85,14 @@ const {
 const { networkInfo } = storeDefinitionToRefs(useConnectMicStore);
 
 const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
+
+// const playBtnShow = computed(() => {
+//   if (isAudience.value) {
+//     return false;
+//   }
+
+//   return isPause;
+// });
 </script>
 
 <style lang="scss">

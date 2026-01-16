@@ -1,103 +1,12 @@
 <!-- @file 轮播屏：主屏 -->
 <template>
-  <div class="c-portrait-carousel-main-screen">
+  <div
+    v-show="!anchorPopupVisible"
+    class="c-portrait-carousel-main-screen"
+  >
     <!-- 左上角定位内容 -->
     <boundary-wrap>
-      <div class="c-portrait-carousel-main-screen__top-left">
-        <div
-          v-if="channelInfoSeat === 1"
-          class="c-portrait-carousel-main-screen__top-left__item"
-        >
-          <mobile-feed-layout-back-btn
-            v-if="isBuildForFeedMainMode()"
-            class="c-portrait-carousel-main-screen__top-left__item__children"
-          />
-          <!-- 频道信息 -->
-          <portrait-channel-info-capsule />
-        </div>
-
-        <div
-          class="c-portrait-carousel-main-screen__top-left__item c-portrait-carousel-main-screen__top-left__item--scroll"
-          v-show="!portraitPlayerIsPageFullscreen"
-        >
-          <div
-            class="c-portrait-carousel-main-screen__top-left__item__container"
-            @touchstart.stop
-            @touchend.stop
-            @touchmove.stop
-          >
-            <!-- 直播状态标签 -->
-            <portrait-status-tag
-              class="c-portrait-carousel-main-screen__top-left__item__children"
-            />
-
-            <!-- 竖屏分会场 -->
-            <portrait-multi-meeting-entrance
-              v-if="multiMeetingEnabled"
-              class="c-portrait-carousel-main-screen__top-left__item__children"
-            />
-
-            <!-- 邀请榜入口 -->
-            <portrait-invite-rank-entrance
-              v-if="inviteRankEnabled"
-              class="c-portrait-carousel-main-screen__top-left__item__children"
-            />
-            <!-- 互动二次入口 -->
-            <portrait-interactive-entrance
-              v-if="iarSdkLoaded"
-              class="c-portrait-carousel-main-screen__top-left__item__children"
-            />
-          </div>
-        </div>
-
-        <div class="c-portrait-carousel-main-screen__top-left__item">
-          <!-- 倒计时 + 预约 -->
-          <portrait-count-down-layer />
-        </div>
-      </div>
-    </boundary-wrap>
-
-    <boundary-wrap v-if="isChatUIV2">
-      <chat-loader-helper>
-        <div
-          class="c-portrait-carousel-main-screen__toping-msg"
-          @touchstart.stop
-        >
-          <toping-msg class="c-portrait-carousel-main-screen__toping-msg__content" />
-        </div>
-      </chat-loader-helper>
-    </boundary-wrap>
-
-    <!-- 右上角定位的内容 -->
-    <boundary-wrap seat="right">
-      <div class="c-portrait-carousel-main-screen__top-right">
-        <!-- 在线列表入口 -->
-        <portrait-online-user-capsule
-          v-if="portraitOnlineListEntranceVisible || chatOnlineNumberEnable"
-          class="c-portrait-carousel-main-screen__top-right__item"
-        />
-        <!-- 置顶公告 -->
-        <portrait-announcement-entrance
-          v-if="announcementFunctionVisible && iarSdkLoaded"
-          v-show="!portraitPlayerIsPageFullscreen && hasBulletin"
-          class="c-portrait-carousel-main-screen__top-right__item"
-        />
-
-        <!-- 文档位置切换 -->
-        <portrait-doc-side-switch
-          v-if="portraitDocSideSwitchVisible && !isBuildForFeedMainMode()"
-          class="c-portrait-carousel-main-screen__top-right__item"
-        />
-
-        <!-- 文档开关 -->
-        <portrait-doc-switch
-          v-if="canRenderDoc"
-          class="c-portrait-carousel-main-screen__top-right__item"
-        />
-
-        <!-- 直播广场 -->
-        <live-square class="c-portrait-carousel-main-screen__top-right__item" />
-      </div>
+      <portrait-carousel-main-topic v-show="!portraitPlayerIsPageFullscreen" />
     </boundary-wrap>
 
     <!-- 右部绝对定位的内容 -->
@@ -113,6 +22,8 @@
         <mobile-chat-connect-error-tips />
         <!-- 播放监测提示，切换最优线路或清晰度 -->
         <portrait-player-loading-detection />
+        <!-- RTC 流播放失败提示 -->
+        <connect-mic-play-failed-tips />
       </div>
     </boundary-wrap>
 
@@ -164,7 +75,6 @@
             }"
             :slide-index.sync="messageCarouselActiveIndex"
             @slide-prev-end="onMessageCarouselSlidePrevEnd"
-            @slide-next-end="onMessageCarouselSlideNextEnd"
           >
             <!-- 聊天消息区 -->
             <plv-carousel-item v-if="chatMenuData.visible">
@@ -317,50 +227,38 @@
 </template>
 
 <script setup lang="ts">
-import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { computed } from 'vue';
 
 import PortraitEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
-import PortraitStatusTag from '@/components/common-business/status-tag/portrait-status-tag.vue';
-import MobileFeedLayoutBackBtn from '@/components/page-feed-common/feed-layout-back-btn/mobile-feed-layout-back-btn.vue';
+import {
+  MobileIconPlayerBack,
+  MobileIconPlayerForward,
+} from '@/components/component-icons/mobile/map';
 import PortraitAskTips from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-tips.vue';
 import PortraitAsk from '@/components/page-watch-common/ask/portrait-ask/portrait-ask.vue';
 import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import PortraitChatMsgList from '@/components/page-watch-common/chat/chat-msg-list/portrait-chat-msg-list.vue';
 import PortraitChatRoomPendant from '@/components/page-watch-common/chat/chat-room-pendant/portrait-chat-room-pendant.vue';
-import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
-import PortraitDocSideSwitch from '@/components/page-watch-common/doc/doc-side-switch/portrait-doc-side-switch.vue';
-import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/portrait-doc-switch.vue';
 import PortraitDonateAnimation from '@/components/page-watch-common/donate/donate-animation/index.vue';
 import MobileDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/mobile-donate-entrance.vue';
-import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
-import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
-import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
-import LiveSquare from '@/components/page-watch-common/live-square/live-square.vue';
 import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
 import PortraitPlayerFullscreenButton from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-fullscreen-button.vue';
 import PortraitPlayerProgress from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-progress.vue';
 import PortraitPlayerLoadingDetection from '@/components/page-watch-common/player/player-loading-detection/portrait-player-detection.vue';
+import ConnectMicPlayFailedTips from '@/components/page-watch-common/connect-mic/common/connect-mic-play-failed-tips.vue';
 import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
-import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
-import PortraitOnlineUserCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-online-user-capsule.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
-import {
-  MobileIconPlayerBack,
-  MobileIconPlayerForward,
-} from '@/components/component-icons/mobile/map';
+import PortraitCarouselMainTopic from './carousel-main-topic.vue';
 
 import PortraitChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import PortraitRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import PortraitSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
-import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
-import PortraitSwiperMessage from '../components/swiper-message/swiper-message.vue';
 import PortraitSwiperMessageControl from '../components/swiper-message/swiper-message-control.vue';
+import PortraitSwiperMessage from '../components/swiper-message/swiper-message.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';
@@ -368,33 +266,30 @@ import BoundaryWrap from './boundary-wrap.vue';
 import { appEvents, useEventBusEmitter } from '@/app/app-events';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
-import { useDocStore } from '@/store/use-doc-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useInviteStore } from '@/store/use-invite-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
-import { useMessageCarousel } from './hooks/use-message-carousel';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useMessageCarousel } from './hooks/use-message-carousel';
 
 const { isPlaybackWatchUrl, watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
 
-const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
-
 const { askMenuData, chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { announcementFunctionVisible, hasBulletin, productBubbleVisible, interactSetting } =
-  storeDefinitionToRefs(useInteractReceiveStore);
+const { anchorPopupVisible } = storeDefinitionToRefs(useChannelInfoStore);
+
+const { productBubbleVisible, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { chatInputControllerEnable, likeFeatureEnabled, chatOnlineNumberEnable, isChatUIV2 } =
+const { chatInputControllerEnable, likeFeatureEnabled, isChatUIV2 } =
   storeDefinitionToRefs(useChatStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible, chatMsgReplayEnabled } =
@@ -402,16 +297,11 @@ const { isPlaybacking, playbackListVisible, chapterVisible, chatMsgReplayEnabled
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
-
 const {
-  channelInfoSeat,
   portraitMessageTabCurrentName,
   portraitPlayerFullscreenBtnVisible,
   portraitPlayerIsPageFullscreen,
   portraitMessageInputVisible,
-  portraitOnlineListEntranceVisible,
-  portraitDocSideSwitchVisible,
 } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { toBackOffVideo, toForwardVideo } = usePlayerAction();
@@ -439,12 +329,9 @@ const {
   messageCarouselActiveIndex,
 
   onMessageCarouselSlidePrevEnd,
-  onMessageCarouselSlideNextEnd,
 } = useMessageCarousel();
 
 const { emitEvent: onClickPlayerRegion } = useEventBusEmitter(appEvents.portrait.ClickPlayerRegion);
-
-const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 </script>
 
 <style lang="scss">

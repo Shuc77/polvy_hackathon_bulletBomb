@@ -33,11 +33,12 @@ export function useSpeakTop() {
     }
 
     messageList.value = [data, ...(data.others || [])].map(item => {
-      item.content = watchCore.chat.parseSpeakContent(item.content, {
+      const newItem = { ...item };
+      newItem.content = watchCore.chat.parseSpeakContent(newItem.content, {
         parseEmotion: true,
         parseLink: true,
       });
-      return item;
+      return newItem;
     });
     showSpeakTop.value = true;
   };

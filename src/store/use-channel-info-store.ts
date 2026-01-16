@@ -69,6 +69,9 @@ export interface ChannelInfoStoreState {
   viewerWatchDuration: Ref<number>;
   /** 学习时长统计弹窗是否可用 */
   learningStatsDialogEnabled: ComputedRef<boolean>;
+
+  /** 主讲信息弹层是否显示 */
+  anchorPopupVisible: Ref<boolean>;
 }
 
 export interface ChannelInfoStoreAction {
@@ -302,6 +305,9 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       );
     });
 
+    /** 主讲信息弹层是否显示 */
+    const anchorPopupVisible = ref(false);
+
     /** 刷新频道信息 */
     function syncChannelInfo(): void {
       const watchCore = watchAppStore.getWatchCore();
@@ -353,6 +359,8 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       learningStatsEnabled,
       viewerWatchDuration,
       learningStatsDialogEnabled,
+
+      anchorPopupVisible,
 
       syncChannelInfo,
     };

@@ -33,7 +33,9 @@ export const useConnectMicSetup = () => {
       return;
     }
 
-    await watchCore.connectMic.setupConnectMic();
+    const { success } = await watchCore.connectMic.setupConnectMic();
+
+    connectMicStore.micSetupSuccess = success;
   }
 
   async function setupConnectMic() {

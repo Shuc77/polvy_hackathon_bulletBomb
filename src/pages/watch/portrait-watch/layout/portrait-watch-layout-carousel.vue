@@ -7,11 +7,12 @@
       :slide-index.sync="carouselActiveIndex"
       :css-rotate-angle="portraitPlayerIsPageFullscreen ? 90 : 0"
     >
-      <!-- 副屏 -->
+      <!-- 空白屏 -->
       <plv-carousel-item>
-        <carousel-page-container click-for-player>
-          <carousel-sub-screen />
-        </carousel-page-container>
+        <carousel-page-container
+          click-for-player
+          is-blank-screen
+        />
       </plv-carousel-item>
 
       <!-- 主屏 -->
@@ -20,28 +21,19 @@
           <carousel-main-screen />
         </carousel-page-container>
       </plv-carousel-item>
-
-      <!-- 空白屏 -->
-      <plv-carousel-item>
-        <carousel-page-container
-          click-for-player
-          is-blank-screen
-        />
-      </plv-carousel-item>
     </plv-carousel>
   </div>
 </template>
 
 <script setup lang="ts">
-import CarouselPageContainer from './carousel-page-container.vue';
-import CarouselMainScreen from './carousel-main-screen.vue';
-import CarouselSubScreen from './carousel-sub-screen.vue';
-import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
-import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useDocStore } from '@/store/use-doc-store';
-import { nextTick, ref, watch } from 'vue';
+import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import { PlvCarouselInstance } from '@/plugins/polyv-ui/types';
+import { useDocStore } from '@/store/use-doc-store';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import { nextTick, ref, watch } from 'vue';
+import CarouselMainScreen from './carousel-main-screen.vue';
+import CarouselPageContainer from './carousel-page-container.vue';
 
 const { carouselActiveIndex, portraitPlayerIsPageFullscreen } =
   storeDefinitionToRefs(usePortraitLayoutStore);

@@ -35,6 +35,7 @@ export const useDonateRewardMsgInsertHook = () => {
         watchCore.chat.insertLocalRewardChatMsg({
           donateType: DonateType.Good,
           goodImage: goodInfo.goodImage,
+          dynamicFile: goodInfo.dynamicFile,
           goodName: goodInfo.goodName,
           isFree,
         });
@@ -52,6 +53,7 @@ export const useDonateRewardMsgInsertHook = () => {
 
     watchCore.chat.insertLocalRewardChatMsg({
       goodImage: good.goodImage,
+      dynamicFile: good.dynamicFile,
       goodName: good.goodName,
       goodCount: count,
       isFree: true,

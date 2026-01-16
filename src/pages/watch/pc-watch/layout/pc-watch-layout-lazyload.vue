@@ -45,8 +45,8 @@
 </template>
 
 <script setup lang="ts">
-import PcIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/pc-identity-collect-info-dialog.vue';
-import PcIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/pc-identity-login-dialog-render.vue';
+import PcIdentityCollectInfoDialog from '@/components/common-business/watch-identity/identity-collect-info-dialog/pc-identity-collect-info-dialog.vue';
+import PcIdentityLoginDialogRender from '@/components/common-business/watch-identity/identity-login-dialog-render/pc-identity-login-dialog-render.vue';
 
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';

@@ -11,6 +11,28 @@ export const useUserIdentityIntercept = () => {
 
   const watchCore = getWatchCore();
 
+  /** 用户登录成功拦截（授权后拦截） */
+  async function toInterruptLoginAfter() {
+    // 登录方式包含企微授权时，需要确保在微信环境下进行企微静默授权
+    const needWorkWechatAuth = watchCore.identity.checkWorkWxSnsApiBaseEnabled();
+    if (needWorkWechatAuth) {
+      const { redirected } = await watchCore.identity.ensureWorkWxSnsAuth({
+        getIsWeixin: () => isWeixin,
+        getIsWorkWeixinAuthorized: () => watchCore.weixin.isWorkWeixinAuthorized(),
+      });
+
+      if (redirected) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * 检查用户体系登录
+   * @returns 返回 true 说明需要拦截
+   */
   async function checkIdentityInfoLogin() {
     // 检查是否需要用户信息登录
     let needIdentityLogin = watchCore.identity.checkIdentityLogin();
@@ -28,6 +50,7 @@ export const useUserIdentityIntercept = () => {
       }
     }
 
+    // 进入独立的认证页面
     if (needIdentityLogin) {
       watchAppStore.setDirectBusinessPage({
         pageType: DirectBusinessPageType.WatchIdentity,
@@ -35,27 +58,14 @@ export const useUserIdentityIntercept = () => {
       return true;
     }
 
-    // 游客登录就不再继续往下处理了
+    // 游客登录的情况不用往下处理
     if (identityStore.isGuest) {
       return false;
     }
 
-    // ====
-    // 剩余流程会尽量先补充好用户信息
-    // ====
-
-    const needWorkWechatAuth = watchCore.identity.checkWorkWxSnsApiBaseEnabled();
-
-    if (needWorkWechatAuth) {
-      const { redirected } = await watchCore.identity.ensureWorkWxSnsAuth({
-        getIsWeixin: () => isWeixin,
-        getIsWorkWeixinAuthorized: () => watchCore.weixin.isWorkWeixinAuthorized(),
-      });
-
-      if (redirected) {
-        return true;
-      }
-    }
+    // 授权后拦截，用于补充用户信息
+    const redirected = await toInterruptLoginAfter();
+    if (redirected) return true;
 
     return false;
   }

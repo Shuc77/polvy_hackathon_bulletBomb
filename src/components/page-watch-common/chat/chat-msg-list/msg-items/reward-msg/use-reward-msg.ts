@@ -11,6 +11,7 @@ import { computed, unref } from 'vue';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
 import { translate } from '@/assets/lang';
+import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 
 export const useRewardMsg = () => {
   const { getEmitter } = useGlobalInject();
@@ -19,6 +20,8 @@ export const useRewardMsg = () => {
   const { translateGoodName } = donateStore;
 
   // const { effectSetting } = useEffectSetting();
+
+  const { toInterruptUserClick } = useInterruptUserClick();
 
   const { chatMsg } = useChatMsgDataInject<ChatMsgRewardType>();
 
@@ -41,6 +44,11 @@ export const useRewardMsg = () => {
 
   function onClickMsg() {
     if (!donateStore.showDonateFunction) {
+      return;
+    }
+
+    const intercepted = toInterruptUserClick({ triggerSource: 'reward-msg', ignoreSetNick: true });
+    if (intercepted) {
       return;
     }
 

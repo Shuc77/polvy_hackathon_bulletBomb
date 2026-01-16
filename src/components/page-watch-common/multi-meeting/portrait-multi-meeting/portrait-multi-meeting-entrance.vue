@@ -40,10 +40,10 @@ onMounted(() => {
   display: inline-block;
   padding: 0 8px;
   font-size: 12px;
-  line-height: 28px;
+  line-height: 20px;
   color: #fff;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 16px;
   &::before {
     display: inline-block;

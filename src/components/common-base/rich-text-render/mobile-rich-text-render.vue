@@ -5,7 +5,7 @@
       v-html="renderHtmlContent"
       class="c-mobile-rich-text-render__content"
       :class="{
-        'pws-primary-text-color': followPageSkin,
+        'c-mobile-rich-text-render__content--color': followPageSkin,
       }"
     ></div>
   </div>
@@ -120,5 +120,9 @@ const { renderHtmlContent } = useRichTextRender({ props });
   hr {
     border-color: #000000;
   }
+}
+
+.c-mobile-rich-text-render__content--color {
+  color: $text-color;
 }
 </style>

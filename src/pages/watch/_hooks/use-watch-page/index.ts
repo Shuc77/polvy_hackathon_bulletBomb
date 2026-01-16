@@ -1,4 +1,4 @@
-import { LiveStatus, ChatEvents } from '@polyv/live-watch-sdk';
+import { ChatEvents, LiveStatus } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, watch } from 'vue';
 
 import { translate } from '@/assets/lang';
@@ -6,18 +6,22 @@ import { useToastManager } from '@/hooks/components/use-toast';
 
 import { useIarGlobalConfigHook } from '@/components/page-watch-common/interactive-receive/use-iar-global-config';
 
-import { useMainScreen } from './_hooks/use-main-screen';
-import { usePageViewPolling, usePolyvMeetingPolling } from './_hooks/use-polling';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
+import { useMainScreen } from './_hooks/use-main-screen';
+import {
+  usePageViewPolling,
+  usePolyvMeetingPolling,
+  useSmallClassPolling,
+} from './_hooks/use-polling';
 
-import { useChannelStore } from '@/store/use-channel-store';
-import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
-import { useIarGlobalConfigHookV2 } from '@/components/page-watch-common/interactive-receive-v2/use-iar-global-config-v2';
-import { installVueComponents } from '@/plugins/vue-components';
-import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
-import { isWeixin } from '@/assets/utils/browser';
-import { useWeixinMiniProgramHelper } from '@/hooks/platform/use-weixin/use-weixin-button';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { isWeixin } from '@/assets/utils/browser';
+import { useIdentityUIGlobalProvider } from '@/components/common-business/watch-identity/use-identify-ui-global-provider';
+import { useIarGlobalConfigHookV2 } from '@/components/page-watch-common/interactive-receive-v2/use-iar-global-config-v2';
+import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
+import { useWeixinMiniProgramHelper } from '@/hooks/platform/use-weixin/use-weixin-button';
+import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
+import { useChannelStore } from '@/store/use-channel-store';
 
 const useWhiteListRemoveUser = () => {
   const { getWatchCore } = useMultiPolyvWatchApp();
@@ -105,12 +109,15 @@ export const useWatchPage = async () => {
   // 使用会议模式轮询
   usePolyvMeetingPolling();
 
+  // 使用小班课轮询
+  useSmallClassPolling();
+
+  // 设置身份认证全局配置
+  useIdentityUIGlobalProvider();
+
   // 设置互动功能全局配置
   useIarGlobalConfigHook();
   useIarGlobalConfigHookV2();
-
-  // 设置 vue-components 全局配置
-  installVueComponents();
 
   // 主副屏响应切换逻辑
   useMainScreen();

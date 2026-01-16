@@ -19,7 +19,9 @@ type IarInterruptTriggerSource =
   | 'product-big-card-popup'
   | 'mobile-product-small-card'
   | 'pc-product-small-card'
-  | 'before-choose-topic-pk-answer';
+  | 'before-choose-topic-pk-answer'
+  | 'mobile-product-list'
+  | 'pc-product-list';
 
 export type WatchInterruptTriggerSource =
   | 'chat-input'
@@ -32,6 +34,7 @@ export type WatchInterruptTriggerSource =
   | 'set-nick'
   | 'like'
   | 'donate'
+  | 'reward-msg'
   | 'invite-poster';
 
 export type InterruptTriggerSource =
@@ -50,6 +53,7 @@ export const useInterruptUserClick = () => {
   const { getEmitter } = useGlobalInject();
 
   const needInterruptUserClick = computed(() => {
+    console.info('2222', identityStore.needIdentityGuestForceLogin || viewerStore.needRealNameAuth);
     return identityStore.needIdentityGuestForceLogin || viewerStore.needRealNameAuth;
   });
 

@@ -80,6 +80,7 @@ const {
   showShareIcon,
   isPause,
   mirrorEnabled,
+  checkMediaPaused,
 } = useConnectMicItem({
   props,
 });
@@ -90,12 +91,6 @@ const { setIsConnectMicPaused } = useConnectMicStore();
 const { isCustomLiveAudioMode } = storeDefinitionToRefs(useChannelStore);
 
 const { themeSetting, playerBgUrl } = storeDefinitionToRefs(useThemeStore);
-
-const checkMediaPaused = () => {
-  return (
-    wrapRef.value?.querySelector('video')?.paused && wrapRef.value?.querySelector('audio')?.paused
-  );
-};
 
 watch(
   () => isPause.value,

@@ -2,10 +2,10 @@
   <div class="c-channel-splash-img">
     <plv-channel-cover
       class="c-channel-splash-img__blur-content"
-      :channel-id="channelId"
+      :channel-id="renderChannelId"
       :splash-img="renderSplashImg"
-      :title="showTitle ? channelTitle : ''"
-      :text-cover-bg-id="splashImgBackgroundId"
+      :title="showTitle ? renderChannelTitle : ''"
+      :text-cover-bg-id="renderBackgroundId"
       :image-props="{
         gradual: false,
         'blur-background-enabled': blurBackgroundEnabled,
@@ -16,54 +16,69 @@
       v-if="props.baseInfoVisible"
     >
       <div class="c-channel-splash-img__base-info__title g-singleline">
-        {{ channelTitle }}
+        {{ renderChannelTitle }}
       </div>
       <div class="c-channel-splash-img__base-info__id">
-        {{ $lang('base.channelId') }} : {{ channelId }}
+        {{ $lang('base.channelId') }} : {{ renderChannelId }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useThemeStore } from '@/store/use-theme-store';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { PlvChannelCover } from '@/plugins/polyv-ui/admin-import';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelStore } from '@/store/use-channel-store';
-import { useGlobalInject } from '@/app/use-global-inject';
-import { computed } from 'vue';
-import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
+import { useThemeStore } from '@/store/use-theme-store';
 import { PropUtils } from '@polyv/vue-components';
+import { computed } from 'vue';
 
 const props = defineProps({
   /** 封面地址，不传则使用引导页封面图 */
-  coverImg: PropUtils.string.def(''),
+  coverImg: PropUtils.looseString,
   showTitle: PropUtils.bool.def(true),
   /** 是否展示基础信息 */
   baseInfoVisible: PropUtils.bool.def(false),
   /** 是否背景虚拟化 */
   blurBackgroundEnabled: PropUtils.bool.def(false),
+  /** 封面 id */
+  splashImgBackgroundId: PropUtils.looseNumber,
+  /** 频道名称 */
+  channelName: PropUtils.looseString,
+  /** 频道号 */
+  channelId: PropUtils.oneOfType<string | number>([String, Number]).def(),
 });
 
 const { resizeOSSImg } = useResizeOssImage();
 
-const { splashImg, splashImgBackgroundId } = storeDefinitionToRefs(useThemeStore);
-
-const { channelTitle } = storeDefinitionToRefs(useChannelInfoStore);
-
-const { channelId } = storeDefinitionToRefs(useChannelStore);
+const themeStore = useThemeStore();
+const channelInfoStore = useChannelInfoStore();
+const channelStore = useChannelStore();
 
 const { getWatchCore } = useGlobalInject();
 
 const watchCore = getWatchCore();
 
+const renderChannelId = computed(() => {
+  return props.channelId ?? channelStore.channelId;
+});
+
+const renderChannelTitle = computed(() => {
+  return props.channelName ?? channelInfoStore.channelTitle;
+});
+
+const renderBackgroundId = computed(() => {
+  return props.splashImgBackgroundId ?? themeStore.splashImgBackgroundId;
+});
+
 const renderSplashImg = computed(() => {
   const defaultSource = watchCore.utils.getDefaultResource();
 
-  const coverUrl = props.coverImg || splashImg.value;
+  const coverUrl = props.coverImg ?? themeStore.splashImg;
 
-  if (splashImgBackgroundId.value && coverUrl === defaultSource.defaultSplashImg) {
+  if (renderBackgroundId.value && coverUrl === defaultSource.defaultSplashImg) {
     return '';
   }
 

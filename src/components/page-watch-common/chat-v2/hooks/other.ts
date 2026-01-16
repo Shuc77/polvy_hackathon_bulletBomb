@@ -205,6 +205,8 @@ export function useClickMsgCallback() {
   const { interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
   const layoutStore = useLayoutStore();
 
+  const { toInterruptUserClick } = useInterruptUserClick();
+
   const { ChatMsgSource } = useChatTarget();
   const PolyvChatUI = getChatUIV2Pkg();
   const { isMobile } = useBrowser();
@@ -254,6 +256,15 @@ export function useClickMsgCallback() {
       if (!showDonateFunction.value) {
         return;
       }
+
+      const intercepted = toInterruptUserClick({
+        triggerSource: 'reward-msg',
+        ignoreSetNick: true,
+      });
+      if (intercepted) {
+        return;
+      }
+
       getEmitter().emit(appEvents.donate.OpenDonatePopup);
     },
   };

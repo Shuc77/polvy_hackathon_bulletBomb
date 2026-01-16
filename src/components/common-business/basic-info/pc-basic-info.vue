@@ -20,9 +20,10 @@
             {{ channelTitle }}
           </span>
           <!-- 直播状态标签 -->
-          <normal-status-tag
+          <pwc-live-status-tag
             class="c-pc-basic-info__main__status"
-            force-dark
+            :status="liveStatus"
+            effect="fill"
           />
           <!-- 无延迟标签 -->
           <i
@@ -150,32 +151,32 @@
 </template>
 
 <script setup lang="ts">
-import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
-import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
-import PcFollowBtn from '@/components/page-watch-common/follow/follow-btn/pc-follow-btn.vue';
+import PcWebSharePanel from '@/components/common-business/web-share-panel/web-share-panel.vue';
 import {
-  PcIconShare,
-  PcIconPeople,
   PcIconFeedback,
+  PcIconPeople,
+  PcIconShare,
   PcIconWatchDuration,
 } from '@/components/component-icons/pc/map';
+import PcFollowBtn from '@/components/page-watch-common/follow/follow-btn/pc-follow-btn.vue';
 import PcStreamTrack from '@/components/page-watch-common/player/player-stream-track/pc-player-stream-track.vue';
 import { usePopper } from '@/hooks/components/use-popper';
 
-import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { usePlayerStore } from '@/store/use-player-store';
-import { useLangStore } from '@/store/use-lang-store';
-import { useShareStore } from '@/store/use-share-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { appEvents } from '@/app/app-events';
-import { useThemeStore } from '@/store/use-theme-store';
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
-import { useChannelStore } from '@/store/use-channel-store';
 import { useShortNumber } from '@/hooks/business/use-short-number';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLangStore } from '@/store/use-lang-store';
+import { usePlayerStore } from '@/store/use-player-store';
+import { useShareStore } from '@/store/use-share-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { PwcLiveStatusTag } from '@polyv/vue-components';
 
 const { resizeOSSImg } = useResizeOssImage();
 
@@ -213,7 +214,7 @@ const {
   viewerWatchDuration,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
+const { supportMultiStreamTrack, liveStatus } = storeDefinitionToRefs(useChannelStore);
 
 const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
 

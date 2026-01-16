@@ -33,7 +33,7 @@ const STORAGE_KEYS = {
  * 默认设置
  */
 const DEFAULT_SETTINGS: SubtitleSettingsStorage = {
-  subtitleEnabled: false,
+  subtitleEnabled: true,
   translateLanguage: '' as SubtitleSourceTranslateLanguage,
   displayMode: 'all',
   portraitReplayMainEnabled: true,

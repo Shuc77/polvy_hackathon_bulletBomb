@@ -225,7 +225,7 @@ export const useChannelMenuStore = defineStore<'channelMenu', ChannelMenuStore>(
         [ChannelMenuType.Previous]: [translate('menu.tabName.previous'), '往期'],
         [ChannelMenuType.Tuwen]: [translate('menu.tabName.tuwen'), '图文直播'],
         [ChannelMenuType.QA]: [translate('menu.tabName.qa'), '问答'],
-        [ChannelMenuType.Buy]: [translate('menu.tabName.buy'), '边看边买'],
+        [ChannelMenuType.Buy]: [translate('menu.tabName.buy'), '商品列表'],
         [ChannelMenuType.Invite]: [translate('menu.tabName.invite'), '邀请榜'],
         [ChannelMenuType.Members]: [translate('menu.tabName.members'), '成员'],
         [ChannelMenuType.Vote]: [translate('menu.tabName.vote'), '投票'],

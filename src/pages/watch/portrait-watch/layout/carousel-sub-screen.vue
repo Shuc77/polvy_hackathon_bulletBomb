@@ -12,36 +12,14 @@
         </div>
       </div>
     </boundary-wrap>
-    <div class="c-portrait-carousel-sub-screen__main">
-      <!-- 直播介绍 -->
-      <portrait-channel-description v-if="descMenuData.visible" />
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import BoundaryWrap from './boundary-wrap.vue';
 import PortraitChannelInfoCapsule from '@/pages/watch/portrait-watch/components/channel-info/portrait-channel-info-capsule.vue';
-import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import PortraitChannelDescription from '@/pages/watch/portrait-watch/components/channel-description/portrait-channel-description.vue';
-import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
+import BoundaryWrap from './boundary-wrap.vue';
 
 const { channelInfoSeat } = storeDefinitionToRefs(usePortraitLayoutStore);
-
-const { descMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 </script>
-
-<style lang="scss">
-.c-portrait-carousel-sub-screen__main {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  box-sizing: border-box;
-  width: 100%;
-  max-height: 446px;
-  padding: 0 15px 15px;
-  overflow-y: auto;
-  @include iphone-x-pb(15px);
-}
-</style>

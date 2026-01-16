@@ -96,6 +96,12 @@
                   :mic-info-visible="mainScreen !== MainScreenContent.Player"
                   :fit-type="connectMicFitType"
                 />
+                <player-play-button
+                  class="c-pc-watch-layout__main__player-inner__mic-btn"
+                  v-if="shouldShowPlayButton"
+                  :mode="PlayButtonMode.Text"
+                  @click="onPlayClick"
+                />
                 <pc-player-main v-if="canRenderPlayer" />
               </div>
             </div>
@@ -268,6 +274,7 @@ import PcMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeti
 import PcPageAdvert from '@/components/page-watch-common/page-advert/pc-page-advert.vue';
 import PcPlayerControl from '@/components/page-watch-common/player/player-control/pc-player-control/pc-player-control.vue';
 import PcPlayerMain from '@/components/page-watch-common/player/player-main/pc-player-main/pc-player-main.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
 import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
 import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
@@ -299,6 +306,7 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
+import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 
 import {
   MainScreenContent,
@@ -313,6 +321,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutLoad } from '@/hooks/core/use-layout-load';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
+import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/hooks/use-small-class-play';
 
 const { layoutLoaded } = useLayoutLoad('pc-watch-layout');
 
@@ -396,6 +405,8 @@ watch(showControl, val => {
     showControl.value = false;
   }
 });
+
+const { shouldShowPlayButton, onPlayClick } = useSmallClassPlay();
 </script>
 
 <style lang="scss">
@@ -743,5 +754,9 @@ $--layout-sub-pack-up-height: 40px !default;
   & #pptAndPaintDiv [data-type='watermark'] {
     display: none;
   }
+}
+
+.c-pc-watch-layout__main__player-inner__mic-btn {
+  pointer-events: auto !important;
 }
 </style>

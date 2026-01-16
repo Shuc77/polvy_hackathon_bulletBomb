@@ -31,6 +31,14 @@ export interface PortraitLayoutStoreState {
   portraitPlayerIsPageFullscreen: Ref<boolean>;
   /** 竖屏轮播屏当前索引 */
   carouselActiveIndex: Ref<number>;
+  /** 是否在主屏 */
+  isMainCarouselScreen: ComputedRef<boolean>;
+  /** 是否在空白屏 */
+  isBlankCarouselScreen: ComputedRef<boolean>;
+  /** 切到主屏 */
+  switchToMainCarouselScreen: () => void;
+  /** 切到空白屏 */
+  switchToBlankCarouselScreen: () => void;
   /** 竖屏文档容器内容渲染高度 */
   portraitDocContentHeight: ComputedRef<number>;
   /** 竖屏文档容器渲染高度 */
@@ -114,6 +122,26 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
     /** 竖屏轮播屏当前索引 */
     const carouselActiveIndex = ref(1);
 
+    /** 是否在主屏 */
+    const isMainCarouselScreen = computed(() => {
+      return carouselActiveIndex.value === 1;
+    });
+
+    /** 是否在空白屏 */
+    const isBlankCarouselScreen = computed(() => {
+      return carouselActiveIndex.value === 0;
+    });
+
+    /** 切到主屏 */
+    const switchToMainCarouselScreen = () => {
+      carouselActiveIndex.value = 1;
+    };
+
+    /** 切到空白屏 */
+    const switchToBlankCarouselScreen = () => {
+      carouselActiveIndex.value = 0;
+    };
+
     /** 竖屏消息区激活的 Tab 栏 */
     const portraitMessageTabCurrentName = ref(PortraitChatTabName.Chat);
 
@@ -192,6 +220,10 @@ export const usePortraitLayoutStore = defineStore<'portraitLayout', PortraitStor
       portraitPlayerFullscreenBtnVisible,
       portraitPlayerIsPageFullscreen,
       carouselActiveIndex,
+      isMainCarouselScreen,
+      isBlankCarouselScreen,
+      switchToMainCarouselScreen,
+      switchToBlankCarouselScreen,
       portraitMessageTabCurrentName,
       portraitDocContentHeight,
       portraitDocWrapHeight,

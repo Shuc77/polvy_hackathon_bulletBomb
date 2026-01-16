@@ -18,6 +18,11 @@
           paddingTop: `${portraitDocWrapHeight}px`,
         }"
       />
+      <player-play-button
+        v-if="shouldShowPlayButton"
+        :mode="PlayButtonMode.Text"
+        @click="onPlayClick"
+      />
       <portrait-player-main v-if="canRenderPlayer" />
     </div>
 
@@ -80,6 +85,7 @@ import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
 import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PortraitSubtitleManager from '@/components/page-watch-common/subtitle/portrait-subtitle-manager/portrait-subtitle-manager.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
@@ -91,21 +97,19 @@ import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
 import { CSSProperties } from 'vue/types/jsx';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
 import { useChatStore } from '@/store/use-chat-store';
+import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/hooks/use-small-class-play';
 
 const { isVerticalScreenOrientation, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
 const portraitLayoutStore = usePortraitLayoutStore();
-const {
-  portraitDocWrapHeight,
-  portraitDocContentHeight,
-  portraitPlayerIsPageFullscreen,
-  carouselActiveIndex,
-} = storeDefinitionToRefs(usePortraitLayoutStore);
+const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
@@ -117,9 +121,13 @@ const { masterMicItem, connectMicList } = storeDefinitionToRefs(useConnectMicSto
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
+const { shouldShowPlayButton, onPlayClick, addPortraitClickEvent } = useSmallClassPlay();
+
 const portraitLayout = ref<HTMLElement>();
 const portraitWrap = ref<HTMLElement>();
 const portraitMicContainer = ref();
+
+addPortraitClickEvent();
 
 useResizeObserver(portraitLayout, () => {
   portraitLayoutStore.$patch({
@@ -150,7 +158,7 @@ const micTouchEnd = (e: TouchEvent) => {
 
 // 竖屏模版是否显示评论上墙
 const portraitShowSpeakToTop = computed(() => {
-  return carouselActiveIndex.value === 1;
+  return portraitLayoutStore.isMainCarouselScreen;
 });
 
 const isDocMainScreen = computed(() => {

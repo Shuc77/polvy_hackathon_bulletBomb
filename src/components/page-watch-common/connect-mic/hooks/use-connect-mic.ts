@@ -203,6 +203,13 @@ export const useConnectMic = () => {
     connectMicStore.syncFacingMode();
   }
 
+  // 用户流播放失败
+  function onUserStreamPlayFailed() {
+    connectMicStore.$patch({
+      isUserStreamPlayFailed: true,
+    });
+  }
+
   onMounted(() => {
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.InviteConnectMic, onInviteConnectMic);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.TeacherHangUp, onHandUpMic);
@@ -216,6 +223,10 @@ export const useConnectMic = () => {
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
     watchCore.connectMic.eventEmitter.on(ConnectMicEvents.FacingModeChange, onFacingModeChange);
+    watchCore.connectMic.eventEmitter.on(
+      ConnectMicEvents.UserStreamPlayFailed,
+      onUserStreamPlayFailed,
+    );
   });
 
   onBeforeUnmount(() => {
@@ -227,5 +238,9 @@ export const useConnectMic = () => {
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.DeviceRecoverFail, onDeviceRecoverFail);
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.CurrentSpeakerStatusChanged, onSpeaker);
     watchCore.connectMic.eventEmitter.off(ConnectMicEvents.FacingModeChange, onFacingModeChange);
+    watchCore.connectMic.eventEmitter.off(
+      ConnectMicEvents.UserStreamPlayFailed,
+      onUserStreamPlayFailed,
+    );
   });
 };

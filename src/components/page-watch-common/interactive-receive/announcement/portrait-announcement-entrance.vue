@@ -45,19 +45,20 @@ function onShowDetail(data: unknown) {
 <style lang="scss">
 .c-portrait-announcement-entrance {
   position: relative;
+  display: inline-flex;
 }
 .c-portrait-announcement-entrance__inner {
   display: flex;
   align-items: center;
-  height: 28px;
+  height: 20px;
   padding: 0 8px;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 16px;
 }
 .c-portrait-announcement-entrance__icon {
-  width: 14px;
-  height: 16px;
-  margin-right: 4px;
+  width: 12px;
+  height: 12px;
+  margin-right: 2px;
   background-image: url(./imgs/icon-bulletin.png);
 }
 .c-portrait-announcement-entrance__title {
@@ -70,6 +71,7 @@ function onShowDetail(data: unknown) {
   position: absolute;
   top: 36px;
   right: 0;
+  z-index: 30;
   .plv-iar-bulletin__top-bubble-label::before {
     left: 75%;
     margin-left: -10px;

@@ -1,4 +1,7 @@
 @use 'sass:map';
+@use '~@polyv/vue-components/styles/skin-color.scss' as *;
+@use '~@polyv/vue-components/styles/variables.scss' as *;
+
 @import './function.scss';
 
 $--plv-mobile-watch-full-screen-vw: var(--plv-watch-full-screen-vw) !default;

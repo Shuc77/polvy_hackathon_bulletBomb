@@ -32,6 +32,8 @@ import {
   isStaticBuildMode,
 } from '@/assets/utils/utils';
 import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/auth/hooks/use-auth-invite-watch-intercept';
+import { ChannelNewScene } from '@polyv/live-watch-sdk';
+import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 
 /**
  * 拦截观看页应用初始化
@@ -41,6 +43,7 @@ import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/aut
 const useInterceptWatchAppInit = async (): Promise<boolean> => {
   const watchAppStore = useWatchAppStore();
   const watchCore = watchAppStore.getWatchCore();
+  const { redirectToErrorVerify } = useErrorVerify();
 
   const { checkRedirectMainChannelAuth, checkRedirectSubChannel } = useMultiMeetingRedirect();
   // 当前处于分会场，是否需要跳转到主会场进行观看条件授权
@@ -91,6 +94,18 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
       desc: translate('pageError.work.wechat.businessError.desc2'),
     });
     return true;
+  }
+
+  // 小班课场景
+  if (watchCore.channel.getNewScene() === ChannelNewScene.SmallClass) {
+    const isEnable = await watchCore.channel.getSmallClassLoginEnabled();
+
+    if (!isEnable) {
+      redirectToErrorVerify({
+        errorType: ErrorVerifyType.SmallClassOverLogin,
+      });
+      return true;
+    }
   }
 
   return false;

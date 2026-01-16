@@ -80,6 +80,10 @@ const containerStyle = computed(() => {
 
 // 每个元素的宽度和高度
 const calcItemWidth = computed(() => {
+  if (filterConnectMicList.value.length === 0 && masterMicItem.value) {
+    return `width: 100%; height: ${(pageClientWidth * 9) / 16}px;`;
+  }
+
   switch (filterConnectMicList.value.length) {
     // switch (len.value) {
     case 1:

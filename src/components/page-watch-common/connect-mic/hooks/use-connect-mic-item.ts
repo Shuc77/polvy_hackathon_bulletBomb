@@ -4,6 +4,9 @@ import { ConnectMicItem, ConnectMicFitType } from '@polyv/live-watch-sdk';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { isMobile } from '@/assets/utils/browser';
 import { useDocStore } from '@/store/use-doc-store';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 
 export const connectMicItemProps = (fitType = ConnectMicFitType.Contain) => ({
   micItem: PropUtils.object<ConnectMicItem>().isRequired,
@@ -21,6 +24,8 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
   const wrapRef = ref<HTMLDivElement>();
 
   const isPause = computed(() => props.micItem.isPlayFail);
+
+  const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
   /** 连麦用户昵称 */
   const micNickname = computed<string>(() => {
@@ -55,6 +60,9 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
   /** 当前用户的连麦方式 */
   const currentConnectMicType = computed(() => props.micItem.currentConnectMicType);
 
+  /** 当前是否为观众模式 */
+  const isAudience = computed(() => props.micItem.isAudience);
+
   /** 是否显示共享标志 */
   const showShareIcon = computed(() => {
     return docStore.hasPaintAuth && unref(isLocal);
@@ -73,6 +81,16 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
       }
     },
   );
+
+  if (isPortraitWatchLayout.value) {
+    useEventBusListener(appEvents.portrait.ClickPlayerRegion, resume);
+  }
+
+  const checkMediaPaused = () => {
+    return (
+      wrapRef.value?.querySelector('video')?.paused && wrapRef.value?.querySelector('audio')?.paused
+    );
+  };
 
   /**
    * 初始化连麦节点
@@ -111,6 +129,7 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
   }
 
   function resume() {
+    console.info('resume');
     const micItem = props.micItem;
     micItem.resumeStream();
   }
@@ -139,5 +158,7 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
     showShareIcon,
     mirrorEnabled,
     resume,
+    checkMediaPaused,
+    isAudience,
   };
 };

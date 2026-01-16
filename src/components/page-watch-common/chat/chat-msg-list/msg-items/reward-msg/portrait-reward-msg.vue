@@ -34,7 +34,7 @@
           v-if="item.textType === 'donateName' && item.image"
           class="c-portrait-reward-msg__item__donate-image"
           :style="{
-            backgroundImage: `url(${resizeOSSImg(item.image, 20, 20)})`,
+            backgroundImage: `url(${resizeOSSImg(item.image, 240)})`,
           }"
         ></span>
       </span>

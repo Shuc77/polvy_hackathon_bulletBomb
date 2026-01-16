@@ -109,14 +109,17 @@
 
     <!-- AI 答题卡 -->
     <ai-question-card />
+
+    <!-- 主讲详情弹层 -->
+    <anchor-popup />
   </div>
 </template>
 
 <script setup lang="ts">
 import { defineAsyncComponent } from 'vue';
 
-import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
-import MobileIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
+import MobileIdentityCollectInfoDialog from '@/components/common-business/watch-identity/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
+import MobileIdentityLoginDialogRender from '@/components/common-business/watch-identity/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
 import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
 import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/mobile-chat-full-message.vue';
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
@@ -136,6 +139,7 @@ import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-au
 import MobileTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/mobile-transmit-switch-tip.vue';
 import MobileWatchPendant from './mobile-watch-pendant.vue';
 import AiQuestionCard from '@/components/page-watch-common/polyv-ai/ai-question/ai-question-card.vue';
+import AnchorPopup from '@/components/page-watch-common/anchor/anchor-popup/anchor-popup.vue';
 
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input-popup.vue';
