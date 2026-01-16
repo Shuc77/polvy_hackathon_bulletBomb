@@ -3,6 +3,7 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useConfigProvider } from '@polyv/vue-components';
+import '@polyv/vue-components/font/din-pro/index.scss';
 
 export const installVueComponents = () => {
   const langStore = useLangStore();

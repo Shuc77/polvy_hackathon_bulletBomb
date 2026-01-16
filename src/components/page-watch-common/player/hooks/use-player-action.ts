@@ -100,7 +100,15 @@ export const usePlayerAction = () => {
 
     // 无延迟暂停也会拉流，所以需要暂停拉流而不是暂停
     if (playerStore.isLowLatency) {
-      toStop();
+      const needWaitToStop = playerStore.needWaitToStop;
+      if (needWaitToStop) {
+        const waitTime = 2000;
+        setTimeout(() => {
+          toStop();
+        }, waitTime);
+      } else {
+        toStop();
+      }
       toPause();
     } else {
       toPause();

@@ -43,6 +43,8 @@ export interface ConnectMicStoreState {
   maxMicIndex: Ref<number>;
   /** 是否有连麦画面被暂停 */
   isConnectMicPaused: Ref<boolean>;
+  /** 是否有用户流播放失败 */
+  isUserStreamPlayFailed: Ref<boolean>;
   /** 当前用户是否正在连麦中 */
   isConnectMicing: ComputedRef<boolean>;
   /** 连麦挂件是否需要渲染 */
@@ -87,6 +89,10 @@ export interface ConnectMicStoreState {
   isDeviceRecoverFailed: Ref<boolean>;
   /** 播放容器模式 */
   connectMicFitType: Ref<ConnectMicFitType>;
+  /** 连麦setup成功 */
+  micSetupSuccess: Ref<boolean>;
+  /** 当前是否处于观众模式（仅拉流，不推本地流） */
+  isAudience: Ref<boolean>;
 }
 
 export interface ConnectMicStoreAction {
@@ -155,6 +161,12 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   /** 连麦画面填充类型 */
   const connectMicFitType = ref<ConnectMicFitType>(ConnectMicFitType.Contain);
 
+  /** 连麦setup success */
+  const micSetupSuccess = ref<boolean>(false);
+
+  /** 当前是否处于观众模式（仅拉流，不推本地流） */
+  const isAudience = ref<boolean>(false);
+
   /** 当前用户是否正在连麦中 */
   const isConnectMicing = computed<boolean>(() => {
     const status = unref(connectMicStatus);
@@ -191,6 +203,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 是否有连麦画面被暂停 */
   const isConnectMicPaused = ref(false);
+
+  /** 是否有用户流播放失败 */
+  const isUserStreamPlayFailed = ref(false);
 
   /** 连麦列表 */
   const connectMicList: Ref<ConnectMicItem[]> = ref([]);
@@ -346,11 +361,15 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     if (connectMicInfo.connectMicStatus === ConnectMicStatus.NotConnect) {
       setIsConnectMicPaused(false);
     }
+
+    isAudience.value = watchCore.connectMic.isAudienceModeJoined();
   }
 
   function syncConnectMicList(): void {
     const watchCore = watchAppStore.getWatchCore();
     connectMicList.value = watchCore.connectMic.getConnectMicList();
+
+    isAudience.value = watchCore.connectMic.isAudienceModeJoined();
   }
 
   function syncFacingMode(): void {
@@ -373,6 +392,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     maxMicIndex,
     isConnectMicing,
     isConnectMicPaused,
+    isUserStreamPlayFailed,
     connectMicPendantRenderEnabled,
     connectMicPendantVisible,
     connectMicList,
@@ -403,5 +423,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     syncConnectMicList,
     syncFacingMode,
     setIsConnectMicPaused,
+    micSetupSuccess,
+    isAudience,
   };
 });

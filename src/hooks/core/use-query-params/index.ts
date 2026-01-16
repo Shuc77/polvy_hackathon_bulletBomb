@@ -239,6 +239,8 @@ export const useQueryParams = (opts?: {
     chatUIVersion: buildGetters<'v1' | 'v2'>('chatUIVersion'),
     /** 使用 AI 全部功能 */
     useAICompleteFeature: buildGetters<YN>('useAICompleteFeature'),
+    /** 是否强制外部授权 */
+    forceExternalAuth: buildGetters<YN>('forceExternalAuth'),
   });
 
   /**

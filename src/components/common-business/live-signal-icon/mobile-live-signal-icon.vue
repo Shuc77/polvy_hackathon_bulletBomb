@@ -36,7 +36,7 @@ defineProps({
   overflow: hidden;
   background: #fff;
   border-radius: 1px;
-  animation: pulse 1.2s infinite ease-in-out;
+  animation: live-pulse 1.2s infinite ease-in-out;
 }
 
 .c-signal-bar:nth-child(2n + 1) {
@@ -48,7 +48,7 @@ defineProps({
   background: transparent !important;
 }
 /* 定义动画关键帧 */
-@keyframes pulse {
+@keyframes live-pulse {
   0%,
   100% {
     height: 30%; /* 最低高度 */

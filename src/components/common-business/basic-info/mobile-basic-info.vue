@@ -1,7 +1,7 @@
 <!-- @file 移动端基础信息显示 -->
 <template>
   <div class="c-mobile-basic-info">
-    <div class="c-mobile-basic-info__top pws-dark-white-bg-10 pws-light-white-bg-40">
+    <div class="c-mobile-basic-info__top">
       <!-- 基础信息 -->
       <div class="c-mobile-basic-info__channel">
         <!-- 频道 logo -->
@@ -14,25 +14,24 @@
         <div class="c-mobile-basic-info__channel__inner">
           <!-- 频道标题 + 频道状态 -->
           <div class="c-mobile-basic-info__channel__inner__top">
-            <div class="c-mobile-basic-info__channel__inner__title pws-primary-text-color">
+            <div class="c-mobile-basic-info__channel__inner__title">
               {{ channelTitle }}
-              <normal-status-tag
+              <pwc-live-status-tag
                 class="c-mobile-basic-info__channel__inner__status"
-                :live-status="liveStatus"
+                :status="liveStatus"
+                :effect="tagEffect"
               />
             </div>
           </div>
           <!-- 直播时间 + 浏览次数 + 无延迟标记 -->
-          <div
-            class="c-mobile-basic-info__channel__inner__bottom pws-dark-white-color-80 pws-light-black-color-40"
-          >
+          <div class="c-mobile-basic-info__channel__inner__bottom">
             <span class="c-mobile-basic-info__channel__inner__start-time">
               {{ pageViewVisible ? '' : `${$lang('watch.liveTime')}：` }}
               {{ liveStartTimeText }}
             </span>
             <span
               v-if="pageViewVisible"
-              class="c-mobile-basic-info__channel__inner__page-view pws-basic-border-color"
+              class="c-mobile-basic-info__channel__inner__page-view"
             >
               {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
             </span>
@@ -49,13 +48,11 @@
       </div>
 
       <!-- 主持人信息 -->
-      <div
-        class="c-mobile-basic-info__author pws-basic-border-color pws-dark-white-color-80 pws-light-black-color-40"
-      >
+      <div class="c-mobile-basic-info__author">
         <!-- 主持人 -->
         <div
           class="c-mobile-basic-info__author__publisher"
-          @click="togglePublisherFullVisible"
+          @click="onClickPublisher"
         >
           <img
             v-if="channelPublisherPic"
@@ -121,7 +118,6 @@ import {
 } from '@/components/component-icons/mobile/map';
 import MobileRichTextRender from '@/components/common-base/rich-text-render/mobile-rich-text-render.vue';
 import MobilePageFooter from '@/components/common-business/page-footer/mobile-page-footer.vue';
-import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
 
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelStore } from '@/store/use-channel-store';
@@ -129,7 +125,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
-import { PropUtils, useProps } from '@polyv/vue-components';
+import { PropUtils, useProps, PwcLiveStatusTag } from '@polyv/vue-components';
 import { computed, unref } from 'vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { useChatStore } from '@/store/use-chat-store';
@@ -138,6 +134,9 @@ import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useShortNumber } from '@/hooks/business/use-short-number';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { appEvents } from '@/app/app-events';
+import { useLiveStatusTagStyle } from '../status-tag/use-status-tag';
 
 const props = defineProps({
   /** 是否显示页面浏览次数，默认：true */
@@ -156,7 +155,9 @@ const { showPageView, showLikeCount, showDesc } = useProps(props);
 
 const { shortNumber } = useShortNumber();
 
-const { liveStatus, compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
+const { liveStatus, compressImageEnabled, teacherInfo } = storeDefinitionToRefs(useChannelStore);
+
+const { tagEffect } = useLiveStatusTagStyle();
 
 const {
   channelTitle,
@@ -194,6 +195,15 @@ const pageViewVisible = computed(() => {
 /** 主持人是否显示完整 */
 const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   useSimpleVisible(false);
+
+const { getEmitter } = useGlobalInject();
+function onClickPublisher() {
+  togglePublisherFullVisible();
+
+  if (teacherInfo.value?.anchorEnabled) {
+    getEmitter().emit(appEvents.global.OpenAnchorPopup);
+  }
+}
 </script>
 
 <style lang="scss">
@@ -207,6 +217,16 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   padding: 0 16px;
   margin: 12px 16px 0;
   border-radius: 8px;
+  @include set-skin-style(
+    (
+      light: (
+        background-color: rgba(#fff, 0.4),
+      ),
+      dark: (
+        background-color: rgba(#fff, 0.1),
+      ),
+    )
+  );
 }
 
 .c-mobile-basic-info__channel {
@@ -236,6 +256,16 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   font-size: 16px;
   line-height: 22px;
   word-break: break-word;
+  @include set-skin-style(
+    (
+      light: (
+        color: rgba(#000, 0.8),
+      ),
+      dark: (
+        color: #fff,
+      ),
+    )
+  );
 }
 
 .c-mobile-basic-info__channel__inner__status {
@@ -249,6 +279,7 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   height: 18px;
   margin-top: 3px;
   font-size: 14px;
+  color: rgba($neutral-color-dark-rgb, 0.6);
 }
 
 .c-mobile-basic-info__channel__inner__page-view {
@@ -257,7 +288,7 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   margin-left: 8px;
   line-height: 10px;
   vertical-align: top;
-  border-left: 1px solid #aaa;
+  border-left: 1px solid rgba($neutral-color-dark-rgb, 0.1);
 }
 
 .c-mobile-basic-info__channel__inner__low-latency {
@@ -280,8 +311,9 @@ const { visible: publisherFullVisible, toggle: togglePublisherFullVisible } =
   padding: 12px 0;
 
   font-size: 14px;
+  color: rgba($neutral-color-dark-rgb, 0.6);
 
-  border-top: 1px solid #000;
+  border-top: 1px solid rgba($neutral-color-dark-rgb, 0.1);
 }
 
 .c-mobile-basic-info__author__publisher {

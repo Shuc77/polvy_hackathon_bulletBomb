@@ -19,7 +19,6 @@
         <chat-ask-swiper-section
           :swiper-list="swiperList"
           @slide-reach-beginning="onSlideReachBeginning"
-          @slide-reach-end="onSlideReachEnd"
         />
       </div>
     </div>
@@ -102,15 +101,7 @@ if (webViewStore.isPlvWebview) {
 }
 
 function onSlideReachBeginning() {
-  portraitLayoutStore.$patch({
-    carouselActiveIndex: portraitLayoutStore.carouselActiveIndex - 1,
-  });
-}
-
-function onSlideReachEnd() {
-  portraitLayoutStore.$patch({
-    carouselActiveIndex: portraitLayoutStore.carouselActiveIndex + 1,
-  });
+  portraitLayoutStore.switchToBlankCarouselScreen();
 }
 </script>
 

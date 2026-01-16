@@ -38,7 +38,7 @@ const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
 
 <style lang="scss">
 .c-portrait-count-down-layout {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 32px;

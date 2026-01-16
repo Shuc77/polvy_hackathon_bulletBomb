@@ -121,6 +121,9 @@
         <mobile-ask-message-input-popup />
       </chat-loader-helper>
     </template>
+
+    <!-- 主讲详情 -->
+    <anchor-popup />
   </div>
 </template>
 
@@ -140,9 +143,9 @@ import MobileWithdrawApply from '@/components/page-watch-common/withdraw/mobile-
 import MobileWithdrawDetail from '@/components/page-watch-common/withdraw/mobile-withdraw-detail/mobile-withdraw-detail.vue';
 import PortraitPlaybackChapterPopup from '@/pages/watch/portrait-watch/components/playback-chapter-popup/portrait-playback-chapter-popup.vue';
 import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-auth/mobile-real-name-auth.vue';
-import MobileIdentityCollectInfoDialog from '@/components/common-business/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
+import MobileIdentityCollectInfoDialog from '@/components/common-business/watch-identity/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
 import MobileMorePanelPopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
-import MobileIdentityLoginDialogRender from '@/components/common-business/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
+import MobileIdentityLoginDialogRender from '@/components/common-business/watch-identity/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
 
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
@@ -160,6 +163,7 @@ import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-r
 import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
 import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
+import AnchorPopup from '@/components/page-watch-common/anchor/anchor-popup/anchor-popup.vue';
 
 import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input-popup.vue';
 import MobileAskMessageInputPopup from '@/components/page-watch-common/ask-v2/mobile-ask-message-input-popup.vue';

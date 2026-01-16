@@ -59,7 +59,10 @@
           :name="ChannelMenuType.Desc"
           lazy-load
         >
-          <mobile-basic-info :show-like-count="false" />
+          <mobile-basic-info
+            v-show="!anchorPopupVisible"
+            :show-like-count="false"
+          />
         </mobile-menu-tab-pane>
 
         <!-- 聊天室 -->
@@ -115,15 +118,17 @@
         </mobile-menu-tab-pane>
 
         <!-- 商品库 -->
-        <!-- <mobile-menu-tab-pane
-          v-else-if="menu.menuType === ChannelMenuType.Buy"
+        <mobile-menu-tab-pane
+          v-else-if="
+            menu.menuType === ChannelMenuType.Buy && productEntryLandscapePosition === 'menuBar'
+          "
           :key="`buy-${index}`"
           :label="menu.name"
           :name="TAB_NAME_PRODUCT"
           switch-to-refresh
         >
           <mobile-product-list v-if="iarSdkLoaded" />
-        </mobile-menu-tab-pane> -->
+        </mobile-menu-tab-pane>
 
         <!-- 图文直播 -->
         <mobile-menu-tab-pane
@@ -323,6 +328,7 @@ import MobileAiAggregate from '@/components/page-watch-common/polyv-ai/ai-aggreg
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import MobileAskV2 from '@/components/page-watch-common/ask-v2/mobile-ask.vue';
 import MobileMemberListV2 from '@/components/page-watch-common/member-list/member-list-v2.vue';
+import MobileProductList from '@/components/page-watch-common/product/product-list/mobile-product-list.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
@@ -348,7 +354,7 @@ import {
   TAB_NAME_MICRO_ACTIVITY,
   TAB_NAME_MULTI_MEETING,
   TAB_NAME_PLAYBACK,
-  // TAB_NAME_PRODUCT,
+  TAB_NAME_PRODUCT,
   TAB_NAME_QA,
   TAB_NAME_SEAT,
   TAB_NAME_SUBTITLE,
@@ -364,6 +370,7 @@ import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 
 const { paramGetter } = useQueryParams();
 
@@ -374,7 +381,9 @@ const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 const { channelMenus, multiMeetingMenuData, isSubChannel, voteActiveMenuData } =
   storeDefinitionToRefs(useChannelMenuStore);
 
-const { liveStatus } = storeDefinitionToRefs(useChannelStore);
+const { liveStatus, productEntryLandscapePosition } = storeDefinitionToRefs(useChannelStore);
+
+const { anchorPopupVisible } = storeDefinitionToRefs(useChannelInfoStore);
 
 const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 

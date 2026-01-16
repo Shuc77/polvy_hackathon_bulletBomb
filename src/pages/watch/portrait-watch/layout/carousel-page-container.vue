@@ -24,14 +24,14 @@
 
 <script setup lang="ts">
 import { appEvents } from '@/app/app-events';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { useFeedInjectStore } from '@/store/use-feed-inject-store';
 import { PropUtils } from '@polyv/vue-components';
 import { computed, ref } from 'vue';
-import { useGlobalInject } from '@/app/use-global-inject';
-import { useFeedInjectStore } from '@/store/use-feed-inject-store';
-import { isBuildForFeedMainMode } from '@/assets/utils/utils';
-import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import PortraitExitClearScreenBtn from '../components/exit-clear-screen-btn/portrait-exit-clear-screen-btn.vue';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 
 const props = defineProps({
   clickForPlayer: PropUtils.bool.def(false),
@@ -40,7 +40,8 @@ const props = defineProps({
 });
 
 const feedInjectStore = useFeedInjectStore();
-const { carouselActiveIndex } = storeDefinitionToRefs(usePortraitLayoutStore);
+
+const { isBlankCarouselScreen } = storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { getEmitter } = useGlobalInject();
 
@@ -58,10 +59,9 @@ const containerRef = ref<HTMLDivElement>();
 
 /**
  * 是否显示退出清屏按钮
- * 当处于清屏模式（carouselActiveIndex === 2）且当前容器是空白屏时显示
  */
 const showExitClearScreenBtn = computed(() => {
-  return props.isBlankScreen && carouselActiveIndex.value === 2;
+  return props.isBlankScreen && isBlankCarouselScreen.value;
 });
 </script>
 

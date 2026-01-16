@@ -22,19 +22,19 @@ function showInviteRank() {
 .c-portrait-invite-rank__entrance {
   white-space: nowrap;
   > div {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     padding: 0 8px;
     font-size: 12px;
-    line-height: 28px;
-    color: #ffa611;
+    line-height: 20px;
+    color: #fff;
     text-align: center;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
     border-radius: 16px;
     &::before {
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      margin-top: -3px;
+      width: 12px;
+      height: 12px;
       margin-right: 2px;
       vertical-align: middle;
       content: '';

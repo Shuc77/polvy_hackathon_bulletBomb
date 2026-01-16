@@ -45,10 +45,7 @@ let hideTextTimer: ReturnType<typeof setTimeout> | null = null;
  * 退出清屏模式
  */
 function handleExitClearScreen() {
-  // 从清屏模式（index 2）回到主屏（index 1）
-  portraitLayoutStore.$patch({
-    carouselActiveIndex: 1,
-  });
+  portraitLayoutStore.switchToMainCarouselScreen();
 }
 
 onMounted(() => {

@@ -1,8 +1,10 @@
 <!-- @file 直播广场 -->
 <template>
-  <div class="c-live-square">
+  <div
+    v-if="isShowLiveSquare"
+    class="c-live-square"
+  >
     <div
-      v-if="isShowLiveSquare"
       class="c-live-square-entry"
       @click="handleLiveSquareClick"
     >

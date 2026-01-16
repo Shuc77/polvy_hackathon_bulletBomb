@@ -1,6 +1,9 @@
 <!-- @file 播放器的播放大按钮 -->
 <template>
-  <div class="c-player-play-button">
+  <div
+    class="c-player-play-button"
+    @click="handleClick"
+  >
     <div
       v-if="isTextMode"
       class="c-player-play-button__mode--text"
@@ -34,6 +37,8 @@ import { usePlayerPlayButtonProps, PlayButtonMode } from './use-player-play-butt
 
 const props = defineProps(usePlayerPlayButtonProps());
 
+const emit = defineEmits(['click']);
+
 const isTextMode = computed(() => {
   return props.mode === PlayButtonMode.Text;
 });
@@ -41,6 +46,10 @@ const isTextMode = computed(() => {
 const isDefaultNewSkin = computed(() => {
   return props.mode === PlayButtonMode.DefaultNewSkin;
 });
+
+const handleClick = (e: MouseEvent) => {
+  emit('click', e);
+};
 </script>
 
 <style lang="scss">

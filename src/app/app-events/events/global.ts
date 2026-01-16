@@ -33,6 +33,10 @@ const externalGlobalEvents = {
    * 切换到 Feed 流下一个 Swiper
    */
   SlideToNextFeedSwiper: 'SlideToNextFeedSwiper',
+  /**
+   * 打开外部的登录弹窗
+   */
+  OpenExternalIdentityLoginDialog: 'OpenExternalIdentityLoginDialog',
 };
 
 export const globalEvents = {
@@ -132,4 +136,7 @@ export const globalEvents = {
 
   /** 打开用户体系登录弹窗 */
   OpenIdentityLoginDialog: 'OpenIdentityLoginDialog',
+
+  /** 打开主讲弹层 */
+  OpenAnchorPopup: 'OpenAnchorPopup',
 };

@@ -4,6 +4,45 @@
 
 ---
 
+## v2.13.0(2026-01-16)
+
+### Bug Fixes
+
+- 修复无延迟频道在鸿蒙 webview 连麦后远端流声音异常的问题
+- 修复评论上墙功能在页面第一次加载后消息解析错误的问题
+
+### Features
+
+- 移动端横屏新增商品库菜单，响应后台配置
+- 新增小班课直播场景
+- 新增 `forceExternalAuth` 链接入参支持在外部授权成功后能够重新授权
+- 支持查看主讲详情
+
+### Code Refactoring
+
+- 接入`@polyv/watch-identify-sdk-ui-default` 的 `v1.0.0-rc-20260115`版本，并进行相关调整
+  - 登录认证 SDK 的 UI 组件，统一改用 `useIdentityUIGlobalProvider` 来注入全局参数
+  - 游客外链登录逻辑改用登录认证 SDK 的 UI 组件实现
+  - 调整目录结构，优化游客登录逻辑
+
+### Optimizes
+
+- 优化新版聊天室打赏逻辑
+- 优化竖屏直播介绍页内容
+- 优化实时字幕功能开关逻辑
+- 优化使用火山 RTC 连麦能力后的音量处理逻辑
+
+### Build System
+
+- 更新 `@polyv/vue-components` 版本至 `1.6.0`
+- 更新 `@polyv/watch-identify-sdk-ui-default` 版本至 `rc-20250115`
+- 更新 `@polyv/chat` 和 `@polyv/chat-ui`，版本为 `rc-20260115`
+- 更新 `@polyv/live-watch-ai-ui` 版本至 `rc-20250115`
+- 更新 `@polyv/product-ui` 版本至 `rc-20260115`
+- 更新 `@polyv/iar` 相关 UI 层 SDK, 版本至 `rc-20260115`
+
+---
+
 ## v2.12.0(2025-12-26)
 
 ### Deprecated

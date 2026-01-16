@@ -1,8 +1,7 @@
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
-import { useLangStore } from '@/store/use-lang-store';
-import { computed, onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 
 export const useIdentityCollectInfo = () => {
   const { getWatchCore } = useGlobalInject();
@@ -11,17 +10,7 @@ export const useIdentityCollectInfo = () => {
 
   const dialogInstance = ref<{ openDialog: () => void }>();
 
-  const langStore = useLangStore();
-
   const watchCore = getWatchCore();
-
-  const lang = computed(() => {
-    return langStore.currentLang;
-  });
-
-  function getWatchIdentifyCore() {
-    return watchCore.identity.getIdentifyCore();
-  }
 
   const autoOpen = ref(false);
 
@@ -52,8 +41,6 @@ export const useIdentityCollectInfo = () => {
     renderEnabled,
     dialogInstance,
 
-    lang,
-    getWatchIdentifyCore,
     autoOpen,
   };
 };

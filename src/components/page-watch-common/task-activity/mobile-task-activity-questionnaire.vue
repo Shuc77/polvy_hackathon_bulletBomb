@@ -5,13 +5,16 @@
     fill-body
     :body-max-height="0.7"
     :show-header="false"
+    :padding="false"
   >
-    <iar-normal-questionnaire
-      v-if="targetInited"
-      :questionnaire-target="getIarTarget()"
-      :questionnaire-data="currentQuestionnaire"
-      @submit="onSubmitData"
-    />
+    <div class="c-mobile-normal-questionnaire-popup__content">
+      <iar-normal-questionnaire
+        v-if="targetInited"
+        :questionnaire-target="getIarTarget()"
+        :questionnaire-data="currentQuestionnaire"
+        @submit="onSubmitData"
+      />
+    </div>
   </pwc-popup>
 </template>
 
@@ -30,3 +33,13 @@ const { loadIarUI } = useIarUILoader('iar-questionnaire-ui');
 
 const IarNormalQuestionnaire = defineAsyncComponent(() => loadIarUI('normal-questionnaire'));
 </script>
+
+<style lang="scss">
+.c-mobile-normal-questionnaire-popup__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+</style>

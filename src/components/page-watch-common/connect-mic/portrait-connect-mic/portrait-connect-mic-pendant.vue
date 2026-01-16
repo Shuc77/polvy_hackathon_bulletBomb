@@ -138,7 +138,11 @@
     <mobile-popup
       class="c-portrait-connect-mic-pendant__apply-tips"
       :visible.sync="applyTipsVisible"
-      :title="$lang('base.tips')"
+      :title="
+        connectMicType === ConnectMicType.Video
+          ? $lang('connectMic.connectTitle.video')
+          : $lang('connectMic.connectTitle.audio')
+      "
     >
       <div class="c-portrait-connect-mic-pendant__apply-tips__content">
         <mobile-icon-video-call
@@ -149,16 +153,15 @@
           v-else
           class="c-portrait-connect-mic-pendant__apply-tips__icon"
         />
-        <p class="c-portrait-connect-mic-pendant__apply-tips__text">
-          <template v-if="connectMicType === ConnectMicType.Video">
-            {{ $lang('connectMic.openVideoTips') }}
-          </template>
-          <template v-else>{{ $lang('connectMic.openAudioTips') }}</template>
-          <br />
-          {{ $lang('connectMic.agreement') }}
-          <br />
-          {{ $lang('connectMic.joinConnect') }}
-        </p>
+
+        <div class="c-portrait-connect-mic-pendant__apply-tips__text">
+          <span>{{
+            connectMicType === ConnectMicType.Video
+              ? $lang('connectMic.agreement')
+              : $lang('connectMic.agreement.audio')
+          }}</span>
+          <span>{{ $lang('connectMic.agreement.audio.low') }}</span>
+        </div>
         <normal-button
           :text="$lang('connectMic.applyConnect')"
           block
@@ -454,8 +457,17 @@ const { top } = useAsideDrag({
   margin-bottom: 24px;
   font-size: 14px;
   line-height: 22px;
-  color: #666;
+  color: rgba(0, 0, 0, 0.8);
   text-align: center;
+
+  span {
+    display: block;
+  }
+
+  span:nth-child(2) {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
 }
 .c-portrait-connect-mic-handup-text {
   margin-bottom: 24px;

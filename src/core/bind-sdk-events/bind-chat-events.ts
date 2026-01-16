@@ -57,6 +57,18 @@ export function bindChatModuleEvents(watchCore: PolyvWatchCore): void {
     redirectToErrorVerify(params);
   });
 
+  // OverLoginLimit事件，跳到满员页面
+  watchCore.chat.eventEmitter.on(ChatEvents.OverLoginLimit, params => {
+    const errorType =
+      params && params?.isStartLiveOverLogin
+        ? ErrorVerifyType.SmallClassStartLiveOverLogin
+        : ErrorVerifyType.SmallClassOverLogin;
+
+    redirectToErrorVerify({
+      errorType,
+    });
+  });
+
   // 点赞数修改
   watchCore.chat.eventEmitter.on(ChatEvents.ChatLikeCountChange, () => {
     const realtimeLikes = watchCore.chat.getRealtimeLikes();

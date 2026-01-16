@@ -10,6 +10,8 @@ import {
   SmsConfig,
   StreamType,
   TeacherInfoType,
+  ChannelNewScene,
+  ChannelAnchorInfo,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -44,6 +46,8 @@ export interface ChannelStoreState {
   isCustomLiveAudioMode: ComputedRef<boolean>;
   /** 讲师信息 */
   teacherInfo: Ref<TeacherInfoType | undefined>;
+  /** 关联的主讲详情 */
+  anchorDetail: Ref<ChannelAnchorInfo | undefined>;
   /** 当前直播推流类型 */
   currentStreamType: Ref<StreamType | undefined>;
   /** 是否导播台推流 */
@@ -62,6 +66,10 @@ export interface ChannelStoreState {
   managerBulletinMarqueeRenderEnabled: ComputedRef<boolean>;
   /** 是否压缩直播介绍中的内容图片 */
   compressImageEnabled: Ref<boolean>;
+  /** 是否为小班课场景 */
+  isSmallClassChannel: Ref<boolean>;
+  /** 商品库横屏位置 */
+  productEntryLandscapePosition: Ref<string>;
 }
 
 export interface ChannelStoreActions {
@@ -90,6 +98,11 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 频道场景 */
   const channelScene = ref<ChannelScene>();
 
+  /**
+   * 频道直播场景
+   */
+  const channelNewScene = ref<ChannelNewScene>();
+
   /** 是否为普通直播频道 */
   const isAloneChannel = computed(() => unref(channelScene) === ChannelScene.Alone);
 
@@ -98,6 +111,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
   /** 是否为研讨会频道 */
   const isSeminarChannel = computed(() => unref(channelScene) === ChannelScene.Seminar);
+
+  /** 是否为小班课场景频道 */
+  const isSmallClassChannel = computed(() => unref(channelNewScene) === ChannelNewScene.SmallClass);
 
   /** 研讨会频道是否处于"内部研讨"状态 */
   const privateSeminarChannel = computed(() => {
@@ -141,6 +157,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 讲师信息 */
   const teacherInfo = ref<TeacherInfoType>();
 
+  /** 关联的主讲详情 */
+  const anchorDetail = ref<ChannelAnchorInfo>();
+
   /** 短信功能全局配置 */
   const smsConfig = ref<SmsConfig>({
     smsImageCaptchaEnabled: true,
@@ -151,6 +170,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
   /** 管理员公告跑马灯开关 */
   const managerBulletinMarqueeEnabled = ref(true);
+
+  /** 商品库横屏位置 */
+  const productEntryLandscapePosition = ref('chat');
 
   /** 是否支持渲染管理员公告跑马灯 */
   const managerBulletinMarqueeRenderEnabled = computed(() => {
@@ -181,8 +203,10 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     streamTrackConfig.value = watchCore.channel.getChannelStreamTrackConfig();
     audioMode.value = watchCore.channel.getAudioMode();
     audioModeSwitchEnabled.value = watchCore.channel.getAudioModeSwitchEnabled();
+    productEntryLandscapePosition.value = watchCore.channel.getProductEntryLandscapePosition();
 
     smsConfig.value = watchCore.sms.getSmsConfig();
+    channelNewScene.value = watchCore.channel.getNewScene();
   }
 
   return {
@@ -200,12 +224,16 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     audioModeSwitchEnabled,
     isCustomLiveAudioMode,
     teacherInfo,
+    anchorDetail,
     currentStreamType,
     isNewGuideStream,
     onlineListEnabled,
     managerBulletinMarqueeEnabled,
     managerBulletinMarqueeRenderEnabled,
     compressImageEnabled,
+    isSmallClassChannel,
+    channelNewScene,
+    productEntryLandscapePosition,
 
     streamTrackConfig,
     supportMultiStreamTrack,

@@ -40,15 +40,15 @@ export const useLiveWatchAIUILoader = () => {
     const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20251225',
+        version: 'rc-20260115',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20251225',
+        version: 'rc-20260115',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: 'dev-20251225',
+        version: 'dev-20260115',
       },
     };
 

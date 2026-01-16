@@ -137,15 +137,7 @@ export const useMessageCarousel = () => {
   }
 
   function onMessageCarouselSlidePrevEnd() {
-    portraitLayoutStore.$patch({
-      carouselActiveIndex: portraitLayoutStore.carouselActiveIndex - 1,
-    });
-  }
-
-  function onMessageCarouselSlideNextEnd() {
-    portraitLayoutStore.$patch({
-      carouselActiveIndex: portraitLayoutStore.carouselActiveIndex + 1,
-    });
+    portraitLayoutStore.switchToBlankCarouselScreen();
   }
 
   return {
@@ -154,6 +146,5 @@ export const useMessageCarousel = () => {
     messageCarouselActiveIndex,
 
     onMessageCarouselSlidePrevEnd,
-    onMessageCarouselSlideNextEnd,
   };
 };

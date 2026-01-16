@@ -45,6 +45,8 @@ export const useIarExternalLinkParams = () => {
       param4: params.param4,
       // 自定义统计参数param5
       param5: params.param5,
+      // 身份来源类型，固定 CHANNEL
+      sourceType: 'CHANNEL',
     };
 
     if (paramGetter().linkExt()) {

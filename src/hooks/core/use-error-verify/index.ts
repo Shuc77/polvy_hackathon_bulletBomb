@@ -19,6 +19,10 @@ export enum ErrorVerifyType {
   AuthFail = 'authFail',
   /** 未签到 */
   NotCheckIn = 'notCheckIn',
+  /** 小班课超过最大上课人数 */
+  SmallClassOverLogin = 'smallClassOverLogin',
+  /** 小班课场景刚开始直播时超过最大上课人数时显示错误页 */
+  SmallClassStartLiveOverLogin = 'smallClassStartLiveOverLogin',
 }
 
 export interface RedirectErrorParams {

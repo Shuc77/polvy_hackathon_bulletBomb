@@ -62,3 +62,24 @@ export const usePolyvMeetingPolling = () => {
     }
   });
 };
+
+/**
+ * 小班课轮询
+ * @desc 由于小班课场景下只连麦不使用播放器直播，需要手动开启直播状态轮询
+ */
+export const useSmallClassPolling = () => {
+  const { getWatchCore } = useGlobalInject();
+  const channelStore = useChannelStore();
+  const pollingId = 'small-class-polling';
+  const watchCore = getWatchCore();
+
+  watchEffect(() => {
+    if (channelStore.isSmallClassChannel) {
+      watchCore.channel.startLiveStatusPolling(pollingId);
+    }
+  });
+
+  onBeforeUnmount(() => {
+    watchCore.channel.removeLiveStatusPolling(pollingId);
+  });
+};

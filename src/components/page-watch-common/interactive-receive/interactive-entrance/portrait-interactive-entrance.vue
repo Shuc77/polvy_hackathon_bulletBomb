@@ -100,22 +100,22 @@ function onClickButton(item: InteractiveEntranceData) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 28px;
-  padding: 0 10px;
+  height: 20px;
+  padding: 0 8px;
   font-size: 12px;
-  line-height: 28px;
+  line-height: 20px;
   color: #ffffff;
   text-align: center;
   white-space: nowrap;
   cursor: pointer;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 14px;
 }
 
 .c-interactive-entrance__button__icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
+  width: 12px;
+  height: 12px;
+  margin-right: 2px;
   background-position: center;
   background-size: contain;
 }

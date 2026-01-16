@@ -22,6 +22,9 @@
 
       <!-- 聊天消息重放提示 -->
       <mobile-chat-msg-replay-tips />
+
+      <!-- RTC 流播放失败提示 -->
+      <connect-mic-play-failed-tips class="c-mobile-watch-layout__page-notices__item--clickable" />
     </div>
 
     <!-- 顶部占位 -->
@@ -32,7 +35,6 @@
 
     <!-- 播放器 -->
     <div
-      v-if="canRenderPlayer"
       class="c-mobile-watch-layout__player"
       :class="{
         'c-mobile-watch-layout__player--hide': !(
@@ -47,17 +49,28 @@
     >
       <div class="c-mobile-watch-layout__player__content">
         <div class="c-mobile-watch-layout__player__content__inner">
+          <!-- 第一画面（连麦或小班课讲师流） -->
           <mobile-connect-mic-user-item
             v-if="masterMicItem"
             :key="`master-stream-${masterMicItem.streamId}`"
             :mic-item="masterMicItem"
             :fit-type="connectMicFitType"
           />
+          <!-- 小班课播放按钮 -->
           <player-play-button
-            v-if="isConnectMicPaused && masterMicItem"
+            class="c-mobile-watch-layout__small-class-play-btn"
+            v-if="shouldShowPlayButton"
+            :mode="PlayButtonMode.Text"
+            @click="onPlayClick"
+          />
+          <!-- 连麦暂停播放按钮 -->
+          <player-play-button
+            class="c-mobile-watch-layout__player__content__inner__mic-btn"
+            v-else-if="isConnectMicPaused && masterMicItem"
             :mode="PlayButtonMode.Text"
           />
-          <mobile-player-main />
+          <!-- 常规播放器：只在没有第一画面时显示 -->
+          <mobile-player-main v-else-if="canRenderPlayer" />
         </div>
       </div>
       <!-- webview 小窗下的控制栏 -->
@@ -146,7 +159,7 @@
       <mobile-watch-menu />
     </div>
 
-    <!-- 显示在顶部的播放器提示 -->
+    <!-- 显示在底部的播放器提示 -->
     <player-tips
       :is-normal-mobile-layout="true"
       class="c-mobile-watch-layout__player-tips"
@@ -174,6 +187,7 @@ import CommonOtherLiveBooking from '@/components/common-business/live-booking/co
 import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
 import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
+import ConnectMicPlayFailedTips from '@/components/page-watch-common/connect-mic/common/connect-mic-play-failed-tips.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
@@ -203,6 +217,7 @@ import liveSquare from '@/components/page-watch-common/live-square/live-square.v
 import { usePageStore } from '@/store/use-page-store';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
+import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/hooks/use-small-class-play';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
@@ -212,7 +227,7 @@ const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { chatExited, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
-const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
+const { supportMultiStreamTrack, isSmallClassChannel } = storeDefinitionToRefs(useChannelStore);
 
 const { multiMeetingEnabled, multiMeetingListLayout } = storeDefinitionToRefs(useMultiMeetingStore);
 
@@ -256,8 +271,25 @@ useResizeObserver(layoutWrapRef, () => {
 
 const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
+const { shouldShowPlayButton, onPlayClick } = useSmallClassPlay();
+
 // 顶部占位距离 => 决定 layoutTopElem.clientHeight => 决定播放器高度
 const layoutTopDistance = computed(() => {
+  // 小班课场景：有第一画面（讲师流）就按16:9比例（56.25%）显示
+  if (isSmallClassChannel.value) {
+    if (isVerticalScreenOrientation.value) {
+      // FIX：在折叠屏（如华为 Mate X5）上，屏幕展开后，播放器占比过高，当出现输入法的时候，会导致页面底部没有位置显示输入框
+      // 这里处理在特定比例的页面上，播放器宽高比为 10:3，减少高度腾出位置给底部区域
+      if (pageClientWidth.value / pageClientHeight.value > 0.8) {
+        return '30%';
+      }
+      return '56.25%'; // 16:9
+    }
+    if (isHorizontalScreenOrientation.value) return `${document.documentElement.clientHeight}px`;
+    return '56.25%'; // 16:9
+  }
+
+  // 常规场景：原有逻辑
   if (!canRenderPlayer.value) return '0';
 
   if (isVerticalScreenOrientation.value) {
@@ -388,6 +420,10 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   pointer-events: none;
 }
 
+.c-mobile-watch-layout__page-notices__item--clickable {
+  pointer-events: auto;
+}
+
 .c-mobile-watch-layout__page-notices--page-fullscreen {
   top: 0;
   right: 0;
@@ -439,6 +475,7 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
 .c-mobile-watch-layout__player__content__inner {
   width: 100%;
   height: 100%;
+  background: #000;
 }
 
 .c-mobile-watch-layout__player--sub-screen {
@@ -567,6 +604,17 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
 .c-mobile-watch-layout__doc--page-fullscreen--hide-watermark {
   & #pptAndPaintDiv [data-type='watermark'] {
     display: none;
+  }
+}
+
+.c-mobile-watch-layout__player__content__inner__mic-btn {
+  pointer-events: auto !important;
+}
+
+.c-mobile-watch-layout__small-class-play-btn {
+  pointer-events: auto !important;
+  .c-player-play-button__mode--text {
+    pointer-events: auto;
   }
 }
 </style>

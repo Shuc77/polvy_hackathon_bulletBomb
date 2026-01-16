@@ -168,6 +168,8 @@ export interface PlayerStoreState {
   playerLoadingDetectionInfo: Ref<PlayerDetectionCbParams>;
   /** 是否有导播台竖屏流适配类 */
   hasGuidePortraitStreamFitClass: ComputedRef<boolean>;
+  /** 是否需要等待执行停止流操作 */
+  needWaitToStop: Ref<boolean>;
 }
 
 export enum SwitchTipsStatus {
@@ -205,6 +207,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   const canRenderPlayer = computed(() => {
     // 会议模式下不支持创建播放器
     if (watchAppStore.meetingMode) {
+      return false;
+    }
+
+    // 小班课场景下不渲染播放器
+    if (channelStore.isSmallClassChannel && channelStore.liveStatus === LiveStatus.Live) {
       return false;
     }
 
@@ -427,6 +434,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 播放器延迟时间 */
   const delayTime = ref(__defaultPlayerInfo.delayTime);
 
+  /** 是否需要等待执行停止流操作 */
+  const needWaitToStop = ref(__defaultPlayerInfo.needWaitToStop);
+
   /** 是否支持刷新 api */
   const supportRefresh = ref(__defaultPlayerInfo.supportRefresh);
 
@@ -612,6 +622,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     barrageLocationDefaultId.value = playerInfo.barrageLocationDefaultId;
 
     delayTime.value = playerInfo.delayTime;
+    needWaitToStop.value = playerInfo.needWaitToStop;
     playStatus.value =
       !webViewStore.curWebviewPageIsActive || !watchAppStore.isPageActive
         ? PlayStatus.Pause
@@ -734,5 +745,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
     playerLoadingDetectionInfo,
     hasGuidePortraitStreamFitClass,
+    needWaitToStop,
   };
 });

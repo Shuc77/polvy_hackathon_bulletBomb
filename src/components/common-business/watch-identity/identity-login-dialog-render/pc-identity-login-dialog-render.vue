@@ -1,40 +1,47 @@
 <template>
-  <div class="c-pc-identity-login-dialog-render">
+  <div
+    v-if="renderEnabled"
+    class="c-pc-identity-login-dialog-render"
+  >
     <!-- 游客引导登录确认窗 -->
-    <pc-message-box
+    <pc-watch-identity-guest-login-splash-dialog
       ref="messageBoxRef"
       :title="$lang('base.warmTips')"
       :content="messageBoxContent"
       content-center
       :width="360"
+      :get-link-data="getLinkData"
       :confirm-button-text="$lang('auth.login.button')"
       :cancel-button-text="$lang('base.cancel')"
-      :position-type="positionType"
-      :confirm-button-weixin-id="weixinBtnSelectorId"
     />
     <!-- 用户体系登录弹层 -->
     <watch-identify-login-content
       :visible="contentDialogVisible"
       display-mode="popup"
-      @guest-auth-success="setupLinkData"
+      :wx-auto-auth-enabled="false"
       @popup-close="closeContentDialog"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PcMessageBox } from '@/components/common-base/message-box/index';
+import { defineComponent } from 'vue';
 import WatchIdentifyLoginContent from './watch-identify-login-content.vue';
-
+import { useWatchIdentifySDKSceneLoader } from '@/plugins/external-lib-loaders/load-watch-identify-ui-default';
 import { useIdentityLoginDialogRender } from './use-identity-login-dialog-render';
 
+const { getPcPolyvWatchIdentifySDKSceneComponent } = useWatchIdentifySDKSceneLoader();
+
+const PcWatchIdentityGuestLoginSplashDialog = defineComponent(() => {
+  return getPcPolyvWatchIdentifySDKSceneComponent('PcWatchIdentityGuestLoginSplashDialog');
+});
+
 const {
-  setupLinkData,
-  weixinBtnSelectorId,
+  renderEnabled,
+  getLinkData,
 
   messageBoxRef,
   messageBoxContent,
-  positionType,
 
   contentDialogVisible,
   closeContentDialog,

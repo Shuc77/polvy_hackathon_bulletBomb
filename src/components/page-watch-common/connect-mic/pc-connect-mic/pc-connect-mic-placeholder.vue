@@ -12,16 +12,11 @@
         class="c-pc-connect-mic-placeholder__icon pws-pc-connect-mic-desc-icon"
       />
       <p class="c-pc-connect-mic-placeholder__text g-aside-font-size pws-pc-connect-mic-desc-text">
-        <template v-if="connectMicType === ConnectMicType.Video">
-          {{ $lang('connectMic.openVideoTips') }}
-        </template>
-        <template v-else>{{ $lang('connectMic.openAudioTips') }}</template>
-        <template v-if="connectMicType === ConnectMicType.Video">
-          <br />
-          {{ $lang('connectMic.agreement') }}
-        </template>
-        <br />
-        {{ $lang('connectMic.joinConnect') }}
+        {{
+          connectMicType === ConnectMicType.Video
+            ? $lang('connectMic.agreement')
+            : $lang('connectMic.agreement.audio')
+        }}
       </p>
     </template>
     <!-- 申请中 -->

@@ -33,7 +33,13 @@
         <mobile-donate-entrance />
 
         <!-- 商品库入口 -->
-        <mobile-product-pendant v-if="interactSetting.productEnabled && iarSdkLoaded" />
+        <mobile-product-pendant
+          v-if="
+            interactSetting.productEnabled &&
+            iarSdkLoaded &&
+            productEntryLandscapePosition === 'chat'
+          "
+        />
 
         <!-- 点赞 -->
         <chat-loader-helper v-if="likeFeatureEnabled">
@@ -57,6 +63,7 @@ import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-lo
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { useChatStore } from '@/store/use-chat-store';
+import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { PropUtils } from '@polyv/vue-components';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
@@ -93,6 +100,8 @@ if (!props.isPureness) {
 
 const { chatInputPlaceholder, chatInputDisabled, chatSetting, likeFeatureEnabled } =
   storeDefinitionToRefs(useChatStore);
+
+const { productEntryLandscapePosition } = storeDefinitionToRefs(useChannelStore);
 
 const { interactSetting, iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 

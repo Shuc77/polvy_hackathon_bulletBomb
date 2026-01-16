@@ -4,6 +4,7 @@
     :title="$lang('member.list.onlineUser')"
     fill-body
     height="512px"
+    :closeable="false"
   >
     <template #header-right>
       <span
@@ -13,12 +14,14 @@
         {{ $lang('member.list.rule') }}
       </span>
     </template>
-    <polyv-member-list
-      v-if="refreshKey"
-      :key="refreshKey"
-      ref="memberListRef"
-      :show-top="false"
-    />
+    <div class="c-member-list-popup-v2__content">
+      <polyv-member-list
+        v-if="refreshKey"
+        :key="refreshKey"
+        ref="memberListRef"
+        :show-top="false"
+      />
+    </div>
   </pwc-popup>
 </template>
 
@@ -53,5 +56,17 @@ function showRulePopup() {
 .c-member-list-popup-v2__header__rule {
   font-size: 14px;
   color: rgba(0, 0, 0, 0.6);
+}
+
+.c-member-list-popup-v2__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  .plv-online-item {
+    padding: 0;
+  }
 }
 </style>

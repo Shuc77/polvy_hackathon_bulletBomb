@@ -31,9 +31,10 @@
 
             <template #suffix>
               <!-- 直播状态 -->
-              <normal-status-tag
+              <pwc-live-status-tag
                 class="c-pc-splash__header__status__tag"
-                force-dark
+                :status="liveStatus"
+                effect="fill"
               />
             </template>
           </plv-text-ellipsis>
@@ -150,23 +151,24 @@ import PcLiveBookingButton from '@/components/common-business/live-booking/pc-li
 import PcLiveCountDown from '@/components/common-business/live-count-down/pc-live-count-down.vue';
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
-import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
 import { PcIconPeople } from '@/components/component-icons/pc/map';
 import PcAuth from '@/components/page-splash-common/auth/pc-auth.vue';
 import { usePopper } from '@/hooks/components/use-popper';
 
-import { PlvTextEllipsis } from '@/plugins/polyv-ui/admin-import';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { PlvTextEllipsis } from '@/plugins/polyv-ui/admin-import';
 import { useAuthStore } from '@/store/use-auth-store';
-import { useChannelStore } from '@/store/use-channel-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { useChannelStore } from '@/store/use-channel-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { useLangStore } from '@/store/use-lang-store';
 
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { useThemeStore } from '@/store/use-theme-store';
+
+import { PwcLiveStatusTag } from '@polyv/vue-components';
 
 const { getAppBodyElement } = useGlobalInject();
 
@@ -185,7 +187,7 @@ const {
 
 const { hasSplash } = storeDefinitionToRefs(useThemeStore);
 
-const { compressImageEnabled } = storeDefinitionToRefs(useChannelStore);
+const { compressImageEnabled, liveStatus } = storeDefinitionToRefs(useChannelStore);
 
 const {
   referenceRef: publisherReferenceRef,

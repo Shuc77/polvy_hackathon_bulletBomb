@@ -13,6 +13,7 @@ export const AuthSpecialQueryParams: QueryParamsKeyType[] = [
   'ts',
   'sign',
   'nickname',
+  'forceExternalAuth',
 ];
 
 /**
