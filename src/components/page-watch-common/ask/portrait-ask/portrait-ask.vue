@@ -23,6 +23,7 @@ import { useHideChatMsgActorHook } from '../../chat/chat-msg-list/hooks/hide-cha
 
 import { useChatSDKAskQuestionUILoader } from '@/plugins/external-lib-loaders/load-chat-sdk-ui-ask-question';
 import { useChatStore } from '@/store/use-chat-store';
+import { watch } from 'vue';
 
 const { asyncImportChatSDKAskQuestionComponent } = useChatSDKAskQuestionUILoader();
 
@@ -38,14 +39,22 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
+const { portraitMessageTabCurrentName } = storeDefinitionToRefs(usePortraitLayoutStore);
+
 const { updateAskReminderVisible } = useAskReminder({
   onAskMsg: () => {
-    const portraitLayoutStore = usePortraitLayoutStore();
-    updateAskReminderVisible(
-      portraitLayoutStore.portraitMessageTabCurrentName !== PortraitChatTabName.Ask,
-    );
+    updateAskReminderVisible(portraitMessageTabCurrentName.value !== PortraitChatTabName.Ask);
   },
 });
+
+watch(
+  () => portraitMessageTabCurrentName.value,
+  () => {
+    if (portraitMessageTabCurrentName.value === PortraitChatTabName.Ask) {
+      updateAskReminderVisible(false);
+    }
+  },
+);
 </script>
 
 <style lang="scss">

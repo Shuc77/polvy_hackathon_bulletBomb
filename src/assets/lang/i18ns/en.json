@@ -482,6 +482,9 @@
   "playback.startTime": "start time：",
   "playback.chapter": "Chapter",
   "playback.no.more": "No more updates",
+  "playback.search.empty": "No relevant videos",
+  "playback.search.placeholder": "Search video name",
+  "playback.total.count": "{count} playback highlights",
   "trial.play.finish.tip": "Free preview expired",
   "trial.player.start.tip": "This live is a paid live.You can tyr it for {time} minute.",
   "trial.player.end.tip": "The trial is over. If you think this live broadcast is good, please click pay to watch",
@@ -892,5 +895,6 @@
   "portrait.subtitle.close.tips.content": "Close it in \"More-Interactive Tools-Real-Time Subtitles\" to open it",
   "portrait.subtitle.float.guide.tips": "Drag the side area with your finger to move it",
 
-  "portrait.exit.clear.screen.btn.text": "Exit clear screen"
+  "portrait.exit.clear.screen.btn.text": "Exit clear screen",
+  "externalLink.navigateFail": "Redirect is not supported at the moment"
 }

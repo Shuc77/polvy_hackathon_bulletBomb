@@ -22,6 +22,7 @@ import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useWeixinMiniProgramHelper } from '@/hooks/platform/use-weixin/use-weixin-button';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useAIGlobalProvider } from '@/components/page-watch-common/polyv-ai/use-ai-global-provider';
 
 const useWhiteListRemoveUser = () => {
   const { getWatchCore } = useMultiPolyvWatchApp();
@@ -118,6 +119,9 @@ export const useWatchPage = async () => {
   // 设置互动功能全局配置
   useIarGlobalConfigHook();
   useIarGlobalConfigHookV2();
+
+  // 设置 AI-UI 全局配置
+  useAIGlobalProvider();
 
   // 主副屏响应切换逻辑
   useMainScreen();

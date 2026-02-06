@@ -3,6 +3,7 @@
   <iar-pc-topic-pk
     class="c-pc-topic-pk"
     :topic-sdk="topicPkSdk"
+    :custom-img-config="customImgConfig"
     :before-choose-topic-pk-answer="beforeChooseTopicPkAnswer"
   />
 </template>
@@ -13,5 +14,5 @@ import { useTopicPk } from './hook/use-topic-pk';
 
 const IarPcTopicPk = getIarComponent('PcTopic');
 
-const { topicPkSdk, beforeChooseTopicPkAnswer } = useTopicPk();
+const { topicPkSdk, customImgConfig, beforeChooseTopicPkAnswer } = useTopicPk();
 </script>

@@ -477,6 +477,9 @@
   "playback.startTime": "開始時間：",
   "playback.chapter": "章",
   "playback.no.more": "これ以上ありません",
+  "playback.search.empty": "関連する動画がありません",
+  "playback.search.placeholder": "動画名を検索",
+  "playback.total.count": "${count} 個の精彩な再生",
   "trial.play.finish.tip": "試聴が終了しました",
   "trial.player.start.tip": "このライブは有料ライブです。{time} 分間試聴できます",
   "trial.player.end.tip": "試聴が終了しました。このライブが気に入った場合は、クリックして有料視聴してください",
@@ -892,5 +895,6 @@
   "portrait.subtitle.close.tips.content": "閉じると「マイナビ-インタラクティブツール-リアルタイム字幕」で開くことができます",
   "portrait.subtitle.float.guide.tips": "サイドバーをドラッグして位置を移動できます",
 
-  "portrait.exit.clear.screen.btn.text": "クリアスクリーンから退出"
+  "portrait.exit.clear.screen.btn.text": "クリアスクリーンから退出",
+  "externalLink.navigateFail": "現在リダイレクトをサポートしていません"
 }

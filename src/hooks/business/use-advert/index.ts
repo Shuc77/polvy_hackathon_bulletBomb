@@ -6,6 +6,9 @@ import { useWeixinButton } from '@/hooks/platform/use-weixin/use-weixin-button';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { isMobile } from '@/assets/utils/browser';
+import { useToast } from '@polyv/vue-components';
+import { translate } from '@/assets/lang';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 /**
  * 横幅广告、图标广告、片头广告、暂停广告外链跳转逻辑
@@ -18,6 +21,8 @@ export const useAdvert = (options: { getLinkData: () => LinkData | null }) => {
 
   const { getPlvWebviewBridge } = useWebviewStore();
   const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
+  const { toast } = useToast();
+  const { paramGetter } = useQueryParams();
 
   const {
     supportWxOpenLaunchWebApp,
@@ -97,6 +102,10 @@ export const useAdvert = (options: { getLinkData: () => LinkData | null }) => {
         getPlvWebviewSmallWindowSize: () => plvWebviewDataSize.value,
         isWxMiniProgramEnv: supportWxMiniProgramNavigateTo,
         toWxMiniProgram,
+        getIsApp: () => paramGetter().isApp(),
+        failCallback: () => {
+          toast.warning(translate('externalLink.navigateFail'));
+        },
       });
     } catch (error) {
       console.error('跳转广告链接错误：', error);

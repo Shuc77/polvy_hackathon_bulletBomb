@@ -2,8 +2,11 @@ import { computed } from 'vue';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { type PolyvVote } from '@polyv/live-watch-sdk';
 import { useIarTarget } from '../../_hooks/use-iar-target';
+import { useThemeStore } from '@/store/use-theme-store';
 
 export const useVote = () => {
+  const themeStore = useThemeStore();
+
   const { getWatchCore } = useGlobalInject();
 
   const watchCore = getWatchCore();
@@ -37,6 +40,12 @@ export const useVote = () => {
     return voteSetting.value?.resultShowType;
   });
 
+  const iconUrl = computed(() => {
+    if (!themeStore.watchThemeStyleConfig) return '';
+
+    return themeStore.watchThemeStyleConfig.common.pendant.vote;
+  });
+
   return {
     targetInited,
     getIarTarget,
@@ -44,5 +53,6 @@ export const useVote = () => {
     layout,
     voteRule,
     resultShowType,
+    iconUrl,
   };
 };

@@ -59,6 +59,9 @@ const isStaticBuildMode = (exports.isStaticBuildMode = buildMode === 'STATIC');
 let extractIndexWebpackAssetsEnabled = !!inSdkInjectMode;
 exports.extractIndexWebpackAssetsEnabled = extractIndexWebpackAssetsEnabled;
 
+/** 是否启用用量上报 */
+let rumEnabled = false;
+
 /**
  * 构建模式
  * @type { {[key:string]: { [key:string]: {publicPath:string; outputDir:string} }} }
@@ -144,11 +147,13 @@ exports.defineConstants = {
   /** 是否启用运行时公共路径 */
   ENABLE_RUNTIME_PUBLIC_PATH: JSON.stringify(enableRuntimePublicPath),
   /** 构建环境 */
-  BUILD_ENV: JSON.stringify(process.env.BUILD_ENV),
+  BUILD_ENV: JSON.stringify(process.env.BUILD_ENV || 'prod'),
   /** 是否为静态打包构建模式 */
   IS_STATIC_BUILD_MODE: JSON.stringify(isStaticBuildMode),
   /** 是否需要内部打包 Vue 文件 */
   NEED_INTERNAL_BUILD_VUE: JSON.stringify(needInternalBuildVue),
+  /** 是否启用用量上报 */
+  RUM_ENABLED: JSON.stringify(rumEnabled),
 };
 
 /** ts 配置文件 */

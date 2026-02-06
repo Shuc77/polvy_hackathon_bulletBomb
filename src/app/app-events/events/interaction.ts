@@ -147,4 +147,8 @@ export const interactionEvents = {
    * @param {string} ruleText 规则文本
    */
   OpenVoteRule: 'OpenVoteRule',
+  /**
+   * 打开公告 V2 弹窗
+   */
+  OpenBulletinPopup: 'OpenBulletinPopup',
 };

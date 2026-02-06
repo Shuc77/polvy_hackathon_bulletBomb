@@ -4,7 +4,8 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { SkinColorMode } from '@/skins/enum';
 
 export const statusTagProps = () => ({
   liveStatus: PropUtils.enum<LiveStatus>(),
@@ -87,12 +88,12 @@ export const useMiniStatusTagStyle = (options: { props: VueProps<typeof statusTa
 };
 
 export const useLiveStatusTagStyle = () => {
-  const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
+  const { currentSkinColorMode } = storeDefinitionToRefs(useThemeStore);
 
   const tagEffect = computed(() => {
     let effect: LiveStatusTagEffect = 'fill';
 
-    if (pageSkinColorMode.value === SkinColorMode.Light) {
+    if (currentSkinColorMode.value === SkinColorMode.Light) {
       effect = 'transparent';
     }
     return effect;

@@ -49,6 +49,7 @@
           :class="{
             'pws-dark-white-bg-20 pws-light-white-bg-100 pws-primary-text-color': isMobile,
           }"
+          :style="countStyle"
         >
           {{ text }}
         </span>

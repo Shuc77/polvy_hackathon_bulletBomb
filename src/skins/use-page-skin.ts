@@ -1,6 +1,10 @@
 import { $ } from '@just4/dom';
-import { watch } from 'vue';
-import { ChannelWatchPageSkin, MobileWatchLayout } from '@polyv/live-watch-sdk';
+import { ref, watch } from 'vue';
+import {
+  ChannelWatchPageSkin,
+  ChannelWatchThemeStyleType,
+  MobileWatchLayout,
+} from '@polyv/live-watch-sdk';
 
 import { isMobile } from '@/assets/utils/browser';
 import { useThemeStore } from '@/store/use-theme-store';
@@ -8,43 +12,17 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { hexToRGB } from '@/assets/utils/color';
+import { WatchThemeStyleConfig, getDefaultWatchThemeConfig } from './theme-config-type';
+import { SkinColorMode } from './enum';
+import { merge } from 'lodash-es';
 
-/**
- * 页面皮肤 hook
- */
-export const usePageSkin = () => {
-  const layoutStore = useLayoutStore();
+export const usePageSkinImport = () => {
   const themeStore = useThemeStore();
+  const layoutStore = useLayoutStore();
 
-  const { getAppRootElement, getPolyvWatchApp } = useMultiPolyvWatchApp();
-  const { paramGetter } = useQueryParams({
-    getPolyvWatchAppLoader: () => () => getPolyvWatchApp(),
-  });
-
-  /**
-   * 初始化观看页多皮肤
-   */
-  async function initPageSkin(): Promise<void> {
-    let pageSkin = themeStore.pageSkin;
-
-    const querySkin = paramGetter().skin();
-    if (querySkin) {
-      pageSkin = querySkin;
-    }
-
-    setPageSkin(pageSkin);
-  }
-
-  /**
-   * 设置页面皮肤
-   * @param pageSkin 页面皮肤
-   */
-  async function setPageSkin(pageSkin: ChannelWatchPageSkin | undefined): Promise<void> {
-    themeStore.$patch({
-      pageSkin,
-    });
-
-    importPageSkin();
+  function importSkinColorMode() {
+    import(/* webpackChunkName: "skin-dark" */ '@/skins/_v2/dark/style.scss');
+    import(/* webpackChunkName: "skin-light" */ '@/skins/_v2/light/style.scss');
   }
 
   /**
@@ -56,9 +34,6 @@ export const usePageSkin = () => {
     if (!pageSkin) {
       return;
     }
-
-    import(/* webpackChunkName: "skin-dark" */ '@/skins/_v2/dark/style.scss');
-    import(/* webpackChunkName: "skin-light" */ '@/skins/_v2/light/style.scss');
 
     if (!isMobile) {
       await importPcPageSkin(pageSkin);
@@ -187,10 +162,171 @@ export const usePageSkin = () => {
   }
 
   /**
+   * 加载观看页主题皮肤
+   * @desc 根据 colorMode 分开加载 dark/light 模式的皮肤文件
+   */
+  async function importWatchThemeSkin() {
+    const importDark = async () => {
+      if (!isMobile) {
+        await import(
+          /* webpackChunkName: "skin-custom-theme-dark-pc" */ '@/skins/custom-theme/entry/dark/_custom-theme-dark-pc.scss'
+        );
+        return;
+      }
+
+      if (layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait) {
+        await import(
+          /* webpackChunkName: "skin-custom-theme-dark-portrait" */ '@/skins/custom-theme/entry/dark/_custom-theme-dark-portrait.scss'
+        );
+      } else {
+        await import(
+          /* webpackChunkName: "skin-custom-theme-dark-mobile" */ '@/skins/custom-theme/entry/dark/_custom-theme-dark-mobile.scss'
+        );
+      }
+    };
+
+    const importLight = async () => {
+      if (!isMobile) {
+        await import(
+          /* webpackChunkName: "skin-custom-theme-light-pc" */ '@/skins/custom-theme/entry/light/_custom-theme-light-pc.scss'
+        );
+      }
+
+      if (layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait) {
+        await import(
+          /* webpackChunkName: "skin-custom-theme-light-portrait" */ '@/skins/custom-theme/entry/light/_custom-theme-light-portrait.scss'
+        );
+      } else {
+        await import(
+          /* webpackChunkName: "skin-custom-theme-light-mobile" */ '@/skins/custom-theme/entry/light/_custom-theme-light-mobile.scss'
+        );
+      }
+    };
+
+    const isDark = themeStore.currentSkinColorMode === SkinColorMode.Dark;
+
+    if (isDark) {
+      importDark();
+    } else {
+      importLight();
+    }
+  }
+
+  return {
+    importSkinColorMode,
+    importPageSkin,
+    importWatchThemeSkin,
+  };
+};
+
+/**
+ * 页面皮肤 hook
+ */
+export const usePageSkin = () => {
+  const themeStore = useThemeStore();
+  const layoutStore = useLayoutStore();
+
+  const { getAppRootElement, getPolyvWatchApp, getWatchCore } = useMultiPolyvWatchApp();
+  const { paramGetter } = useQueryParams({
+    getPolyvWatchAppLoader: () => () => getPolyvWatchApp(),
+  });
+
+  const { importSkinColorMode, importPageSkin, importWatchThemeSkin } = usePageSkinImport();
+
+  const skinInited = ref(false);
+
+  /**
+   * 初始化观看页多皮肤
+   */
+  async function initPageSkin(): Promise<void> {
+    try {
+      const querySkin = paramGetter().skin(); // 传入皮肤优先使用
+      const isPageSkinMode = themeStore.styleType === ChannelWatchThemeStyleType.Skin;
+
+      if (querySkin || isPageSkinMode) {
+        setupPageSkin(querySkin);
+      } else {
+        if (!isMobile && themeStore.watchTheme === 'spring') {
+          await setupPageSkin(ChannelWatchPageSkin.Red);
+        } else {
+          await setupWatchThemeConfig();
+        }
+      }
+
+      skinInited.value = true;
+    } catch (error) {
+      console.error('initPageSkin error', error);
+      setupPageSkin(ChannelWatchPageSkin.Black);
+    }
+  }
+
+  /**
+   * 初始化观看页主题配置
+   */
+  async function setupWatchThemeConfig(): Promise<void> {
+    if (themeStore.watchThemeStyleConfig || !themeStore.watchTheme) {
+      return;
+    }
+
+    const watchCore = getWatchCore();
+    let watchThemeStyleConfig =
+      await watchCore.channel.getWatchThemeStyleConfig<WatchThemeStyleConfig>(
+        themeStore.watchTheme,
+      );
+
+    watchThemeStyleConfig = merge(getDefaultWatchThemeConfig(), watchThemeStyleConfig);
+
+    themeStore.$patch({
+      watchThemeStyleConfig,
+
+      // 确保主题配置逻辑加载正常
+      styleType: ChannelWatchThemeStyleType.Theme,
+      pageSkin: null,
+    });
+
+    setupPageSkinVar();
+    setupPageSkinClass('custom-theme');
+
+    importSkinColorMode();
+    importWatchThemeSkin();
+  }
+
+  /**
+   * 设置页面皮肤
+   * @param pageSkin 页面皮肤
+   */
+  async function setupPageSkin(skin?: ChannelWatchPageSkin): Promise<void> {
+    const pageSkin = skin || themeStore.pageSkin;
+
+    themeStore.$patch({
+      pageSkin,
+
+      // 确保主题配置逻辑加载正常
+      styleType: ChannelWatchThemeStyleType.Skin,
+      watchTheme: null,
+      watchThemeStyleConfig: null,
+    });
+
+    setupPageSkinVar();
+    setupPageSkinClass(pageSkin);
+
+    importSkinColorMode();
+    importPageSkin();
+  }
+
+  /**
    * 获取皮肤类名
    */
-  function getSkinClassName(pageSkin?: ChannelWatchPageSkin) {
-    const __pageSkin = pageSkin || themeStore.pageSkin;
+  function getSkinClassName(pageSkin?: ChannelWatchPageSkin | string) {
+    let __pageSkin = pageSkin || themeStore.pageSkin;
+    if (!__pageSkin) {
+      if (themeStore.styleType === ChannelWatchThemeStyleType.Skin) {
+        return '';
+      } else {
+        __pageSkin = 'custom-theme';
+      }
+    }
+
     let skinClassPrefix = 'pws-skin-';
     if (
       layoutStore.mobileWatchLayout === MobileWatchLayout.Portrait &&
@@ -205,28 +341,35 @@ export const usePageSkin = () => {
   }
 
   // 设置页面的 class
+  function setupPageSkinClass(pageSkin?: string | null) {
+    if (!pageSkin) return;
+
+    const $document = $(getAppRootElement());
+    const pageSkinClass = getSkinClassName(pageSkin);
+    if (pageSkinClass) $document.addClass(pageSkinClass);
+  }
+
   watch(
     () => themeStore.pageSkin,
-    (pageSkin, oldPageSkin) => {
-      const $document = $(getAppRootElement());
-
+    (newPageSkin, oldPageSkin) => {
       if (oldPageSkin) {
+        const $document = $(getAppRootElement());
+
         const oldPageSkinClass = getSkinClassName(oldPageSkin);
-        if ($document.hasClass(oldPageSkinClass)) {
+        if (oldPageSkinClass && $document.hasClass(oldPageSkinClass)) {
           $document.removeClass(oldPageSkinClass);
         }
       }
 
-      if (pageSkin) {
-        const pageSkinClass = getSkinClassName(pageSkin);
-        $document.addClass(pageSkinClass);
+      if (oldPageSkin && newPageSkin) {
+        setupPageSkinClass(newPageSkin);
       }
     },
   );
 
   watch(
-    () => themeStore.pageSkinColorMode,
-    (pageSkinColorMode, oldPageSkinColorMode) => {
+    () => themeStore.currentSkinColorMode,
+    (currentSkinColorMode, oldPageSkinColorMode) => {
       const $document = $(getAppRootElement());
 
       const classPrefix = 'pws-skin-color-mode-';
@@ -238,8 +381,8 @@ export const usePageSkin = () => {
         }
       }
 
-      if (pageSkinColorMode) {
-        const newClass = classPrefix + pageSkinColorMode;
+      if (currentSkinColorMode) {
+        const newClass = classPrefix + currentSkinColorMode;
         $document.addClass(newClass);
       }
     },
@@ -248,21 +391,38 @@ export const usePageSkin = () => {
     },
   );
 
+  function setupPageSkinVar() {
+    const rootElement = getAppRootElement();
+    const config = themeStore.watchThemeStyleConfig;
+
+    const primaryRgbColor = hexToRGB(themeStore.currentSkinPrimaryColor);
+    rootElement.style.setProperty('--plv-watch-skin-primary-rgb', primaryRgbColor.join(','));
+
+    const themeRgbColor = hexToRGB(themeStore.currentSkinThemeColor);
+    rootElement.style.setProperty('--plv-watch-skin-theme-rgb', themeRgbColor.join(','));
+
+    // 根据 colorMode 设置中性色
+    const mode = themeStore.currentSkinColorMode;
+    const neutralRgb = mode === SkinColorMode.Dark ? '255,255,255' : '0,0,0';
+    rootElement.style.setProperty('--plv-watch-skin-neutral-rgb', neutralRgb);
+
+    if (!config) return;
+    const normalBtnBg = config.common.normalBtn.bg;
+    rootElement.style.setProperty('--plv-watch-skin-normal-btn-bg', normalBtnBg);
+
+    const normalBtnBorderColor = config.common.normalBtn.borderColor;
+    rootElement.style.setProperty('--plv-watch-skin-normal-btn-border-color', normalBtnBorderColor);
+
+    const normalBtnTextColor = config?.common.normalBtn.color;
+    rootElement.style.setProperty('--plv-watch-skin-normal-btn-text-color', normalBtnTextColor);
+  }
+
   watch(
-    () => themeStore.pageSkinConfig,
+    () => themeStore.currentSkinConfig,
     () => {
-      if (!themeStore.pageSkin) return;
+      if (!skinInited.value) return;
 
-      const rootElement = getAppRootElement();
-
-      let { specialColor } = themeStore.pageSkinConfig;
-      specialColor = specialColor || '#3F76FC';
-
-      const rgbColor = hexToRGB(specialColor);
-      rootElement.style.setProperty('--plv-watch-skin-special-rgb', rgbColor.join(','));
-    },
-    {
-      immediate: true,
+      setupPageSkinVar();
     },
   );
 
@@ -270,7 +430,6 @@ export const usePageSkin = () => {
     getSkinClassName,
 
     initPageSkin,
-    setPageSkin,
     importPageSkin,
   };
 };

@@ -19,13 +19,6 @@
         class="is-right"
       />
 
-      <!-- 置顶公告 -->
-      <portrait-announcement-entrance
-        v-if="announcementFunctionVisible && iarSdkLoaded"
-        class="is-right"
-        v-show="!portraitPlayerIsPageFullscreen && hasBulletin"
-      />
-
       <mobile-feed-layout-back-btn v-if="isBuildForFeedMainMode()" />
 
       <!-- 主讲信息 -->
@@ -90,17 +83,12 @@ import PortraitDocSwitch from '@/components/page-watch-common/doc/doc-switch/por
 import { useDocStore } from '@/store/use-doc-store';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import LiveSquare from '@/components/page-watch-common/live-square/live-square.vue';
-import PortraitAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/portrait-announcement-entrance.vue';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
 
-const {
-  channelInfoSeat,
-  portraitOnlineListEntranceVisible,
-  portraitDocSideSwitchVisible,
-  portraitPlayerIsPageFullscreen,
-} = storeDefinitionToRefs(usePortraitLayoutStore);
+const { channelInfoSeat, portraitOnlineListEntranceVisible, portraitDocSideSwitchVisible } =
+  storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 
@@ -111,8 +99,6 @@ const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 const { chatOnlineNumberEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
-
-const { announcementFunctionVisible, hasBulletin } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">

@@ -79,7 +79,11 @@ const renderSplashImg = computed(() => {
   const coverUrl = props.coverImg ?? themeStore.splashImg;
 
   if (renderBackgroundId.value && coverUrl === defaultSource.defaultSplashImg) {
-    return '';
+    if (!themeStore.watchThemeStyleConfig) {
+      return '';
+    } else {
+      return themeStore.watchThemeStyleConfig.common.player.cover;
+    }
   }
 
   return resizeOSSImg(coverUrl, 1280, 720);

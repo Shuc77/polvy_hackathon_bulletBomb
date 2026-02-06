@@ -356,7 +356,7 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 }
 
 .c-mobile-player-main__webview-back {
-  position: absolute;
+  position: fixed;
   top: 12px;
   right: 12px;
   z-index: 2100;
@@ -381,7 +381,7 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 }
 
 .c-mobile-player-main__webview-back--lowLatency {
-  position: absolute;
+  position: fixed;
   top: 12px;
   left: 12px;
   transform: none;

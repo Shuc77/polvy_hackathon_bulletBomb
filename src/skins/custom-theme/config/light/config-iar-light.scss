@@ -1,0 +1,181 @@
+// =====================================================
+// Custom Theme Light 模式互动功能配置
+// =====================================================
+
+@import './config-common-light.scss';
+@import './config-pc-light.scss';
+
+// 皮肤互动功能公用配置
+$--skin-iar-common-configs: (
+  // 挂件字体色
+  'iar-pendant:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+
+  // 输入框背景色 - 浅色模式使用更淡的背景
+  'iar-input:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.05)'},
+  // 输入框字体色
+  'iar-input:text-color': $--dynamic-neutral-color,
+  // 输入框前缀图标色
+  'iar-input-prefix-icon:icon-color': $--dynamic-neutral-color,
+  // 输入框清空图标色
+  'iar-input-clear:icon-color': $--dynamic-neutral-color,
+
+  // 问答表情图标颜色
+  'iar-icon-qa-ask-emotion:icon-color': $--dynamic-neutral-color,
+  // 商品库内容背景色 - 使用主题色透明度（浅色模式下更明显）
+  'iar-product-list-content:bg-color': #{'rgba(var(--plv-watch-skin-theme-rgb), 0.6)'},
+  // 商品库图标图片
+  'iar-product-list-shop:icon-image': '../../imgs/pws-product-icon.png',
+  // 商品库图标颜色
+  'iar-product-list-shop:icon-color': $--dynamic-neutral-color,
+  // 商品库图标图片（职位）
+  'iar-product-list-recruitment:icon-image': '../../imgs/pws-product-icon-recruitment.png',
+  // 商品库图标颜色（职位）
+  'iar-product-list-recruitment:icon-color': $--dynamic-neutral-color,
+  // 商品库标签背景色 - 浅色模式使用更淡的背景
+  'iar-product-list-label:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.05)'},
+  // 商品库标签字体色
+  'iar-product-list-label:text-color': $--dynamic-neutral-color,
+  // 商品库商品名称序号背景色
+  'iar-product-list-name-number:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.2)'},
+  // 商品库空状态图标图片
+  'iar-product-list-empty:icon-image': '../../imgs/pws-product-shop-car.png',
+  // 商品库商品下边框颜色
+  'iar-product-list-item:border-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.1)'},
+  // 商品库商品名称字体色
+  'iar-product-list-good-name:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 商品库商品未讲解字体颜色
+  'iar-product-list-not-explained:text-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.6)'},
+  // 商品库商品未讲解边框颜色
+  'iar-product-list-not-explained:border-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.1)'},
+  // 商品库标签节点背景色
+  'iar-product-list-product-label-item:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.05)'},
+  // 商品库标签节点字体色
+  'iar-product-list-product-label-item:text-color': $--dynamic-neutral-color,
+  // 商品库标签节点激活字体色 - 使用主要色
+  'iar-product-list-product-label-item--active:text-color': $--dynamic-primary-color,
+  // 商品库标签节点激活边框色 - 使用主要色
+  'iar-product-list-product-label-item--active:border-color': $--dynamic-primary-color,
+
+  // 置顶公告背景色 - 浅色模式使用深色以确保对比度
+  'iar-bulletin-top-banner:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.7)'},
+  // 置顶公告字体色 - 使用主题色
+  'iar-bulletin-top-banner:text-color': $--dynamic-theme-color,
+
+  // 问答背景色
+  'iar-qa-body:bg-color': map.get($--skin-component-configs, 'main-tab-body:bg-color'),
+  // 问答过滤层背景色
+  'iar-qa-filter:bg-color': map.get($--skin-component-configs, 'main-tab-body:bg-color'),
+  // 问答过滤层边框色
+  'iar-qa-filter:border-color': map.get($--skin-component-configs, 'main-tab-body:bg-color'),
+  // 问答过滤层文案字体色
+  'iar-qa-filter-desc:text-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.6)'},
+  // 问答选择字体色
+  'iar-qa-select:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 问答选择箭头边框色
+  'iar-qa-select:border-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.8)'},
+  // 问答节点背景色 - 使用主题色透明度（浅色模式下更明显）
+  'iar-qa-item:bg-color': #{'rgba(var(--plv-watch-skin-theme-rgb), 0.6)'},
+  // 问答节点内容字体色
+  'iar-qa-item-content:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 问答节点信息字体色
+  'iar-qa-item-info:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
+  // 问答节点更多字体色
+  'iar-qa-item-more:text-color': map.get($--skin-basic-configs, 'main-highlight-text-color'),
+  // 问答节点边框色
+  'iar-qa-item:border-color': map.get($--skin-basic-configs, 'theme-color'),
+  // 问答新消息按钮背景色 - 浅色模式使用深色以确保可见性
+  'iar-qa-new-msg-button:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.7)'},
+  // 问答新消息按钮字体色 - 使用主题色
+  'iar-qa-new-msg-button:text-color': $--dynamic-theme-color,
+  // 问答没有更多文案字体色
+  'iar-qa-no-more:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
+
+  // 投票无数据的字体色
+  'iar-vote-no-data:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+);
+
+// 皮肤互动功能 PC 配置
+$--skin-iar-pc-configs: (
+  // 问答选择选项背景色
+  'iar-pc-qa-select-option:bg-color': map.get($--skin-component-configs, 'main-tab-header:bg-color'),
+  // 问答选择选项 hover 背景色
+  'iar-pc-qa-select-option--hover:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.05)'},
+  // 问答选择选项字体色
+  'iar-pc-qa-select-option:text-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.5)'},
+  // 问答选择选项激活字体色
+  'iar-pc-qa-select-option--active:text-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.6)'},
+  // 问答选择选项边框色
+  'iar-pc-qa-select-option:border-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.1)'},
+  // 问答表情选择图标字体色
+  'iar-pc-qa-ask-emotion:text-color': $--dynamic-neutral-color,
+  'iar-pc-qa-ask-emotion:background-filter': grayscale(100%) brightness(200%),
+
+  // 中奖记录弹层文字颜色 - 浅色模式使用深色
+  'iar-pc-lottery-record-msg:text-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.7)'},
+);
+
+
+$--skin-iar-mobile-seat-user-card-content--bg1: linear-gradient(113deg, rgba(var(--plv-watch-skin-neutral-rgb), 0.2) 7%, rgba(var(--plv-watch-skin-neutral-rgb), 0.1) 100%);
+$--skin-iar-mobile-seat-user-card-content--bg2: #{'linear-gradient(180deg, rgba(var(--plv-watch-skin-primary-rgb), 0.8) 4%, rgba(var(--plv-watch-skin-primary-rgb), 1) 97%)'};
+
+// 皮肤互动功能 Mobile 配置
+$--skin-iar-mobile-configs: (
+  // 问答空数据的图标图片
+  'iar-mobile-qa-no-data:icon-image': '../../imgs/pws-qa-no-data-icon.png',
+  // 问答消息发送入口图片
+  'iar-mobile-qa-ask-entry:icon-image': '../../imgs/pws-qa-entry.png',
+  // 问答输入框外层背景色
+  'iar-mobile-qa-input-wrap:bg-color': map.get($--skin-component-configs, 'main-tab-header:bg-color'),
+  // 问答输入框背景色 - 浅色模式使用更淡的背景
+  'iar-mobile-qa-input:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.05)'},
+  // 问答输入框字体色
+  'iar-mobile-qa-input:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 问答表情选择图标字体色
+  'iar-mobile-qa-ask-emotion:text-color': $--dynamic-neutral-color,
+  'iar-mobile-qa-ask-emotion:background-filter': grayscale(100%) brightness(200%),
+  // 问答发送按钮字体色
+  'iar-mobile-qa-ask-send-button:text-color': $--dynamic-neutral-color,
+
+  // 图文直播头部字体色
+  'iar-mobile-tuwen-live-header:text-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.8)'},
+  // 图文直播名称字体色
+  'iar-mobile-tuwen-live-content-name:text-color': map.get($--skin-basic-configs, 'main-highlight-text-color'),
+  // 图文直播时间字体色
+  'iar-mobile-tuwen-live-content-time:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
+  // 图文直播内容字体色
+  'iar-mobile-tuwen-live-content:text-color': map.get($--skin-basic-configs, 'main-text-color'),
+  // 图文直播暂无更多字体色
+  'iar-mobile-tuwen-live-no-more:text-color': map.get($--skin-basic-configs, 'describe-text-color'),
+
+  // 订单中心入口按钮字体色
+  'iar-mobile-order-enter-button:text-color': $--dynamic-neutral-color,
+
+  // 云席相关
+  'iar-mobile-seat-table-light': '../../imgs/pws-seat-table-light.png',
+  'iar-mobile-seat-table-guest:bg': '../../imgs/pws-seat-table-guest-bg.png',
+  'iar-mobile-seat-table-guest-like': '../../imgs/pws-seat-table-guest-like.png',
+  'iar-mobile-seat-table-sofa-normal': '../../imgs/pws-seat-table-sofa-normal.png',
+  'iar-mobile-seat-table-sofa-vip': '../../imgs/pws-seat-table-sofa-vip.png',
+  'iar-mobile-seat-name-text:text-color': $--dynamic-neutral-color,
+  'iar-mobile-seat-name-bLine:bg-color': #{'rgba(var(--plv-watch-skin-neutral-rgb), 0.2)'},
+  'iar-mobile-seat-table-current-seat:border-color': $--dynamic-neutral-color,
+
+  // 云席用户卡片相关
+  'iar-mobile-seat-user-card-top:bg': '../../imgs/pws-mobile-seat-table-user-card-top-bg.png',
+
+  'iar-mobile-seat-user-card-content--corner:bg': $--skin-iar-mobile-seat-user-card-content--bg1 + ',' + $--skin-iar-mobile-seat-user-card-content--bg2,
+
+  'iar-mobile-seat-user-card-qrcode-title:bg': #{'linear-gradient(270deg, rgba(var(--plv-watch-skin-primary-rgb), 1) 0%, rgba(var(--plv-watch-skin-primary-rgb), 1) 100%)'},
+  'iar-mobile-seat-user-card-qrcode-wrap:bg': '../../imgs/pws-mobile-seat-table-user-card-qrcode-bg.png',
+
+  'iar-mobile-seat-user-card-collect-btn:bg': #{'linear-gradient(270deg, rgba(var(--plv-watch-skin-primary-rgb), 1) 0%, rgba(var(--plv-watch-skin-primary-rgb), 1) 100%)'},
+  'iar-mobile-seat-user-card-collect-btn__cancel:bg': $--dynamic-neutral-color,
+  'iar-mobile-seat-user-card-collect-btn__cancel:text-bg': #{'linear-gradient(270deg, rgba(var(--plv-watch-skin-primary-rgb), 1) 0%, rgba(var(--plv-watch-skin-primary-rgb), 1) 100%)'},
+
+  // 云席入座提示
+  'iar-mobile-seat-tips-ico:bg': '../../imgs/pws-icon-has-seat.png',
+  'iar-mobile-seat-tips-seat-count:text-color': $--dynamic-primary-color,
+
+  // 云席竖向模板
+  'iar-mobile-seat-table-guest-vertical:bg': '../../imgs/pws-seat-table-vertical-guest-bg.png',
+);

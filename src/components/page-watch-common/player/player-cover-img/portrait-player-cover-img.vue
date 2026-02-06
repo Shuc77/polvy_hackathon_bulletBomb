@@ -15,7 +15,7 @@
     <!-- 音频直播下占位图-直播封面图 -->
     <player-audio-live-placeholder
       v-show="showAudioLivePlaceholder && !isAudioPlayerMode"
-      class="c-portrait-player-cover-img__audio-cover-img"
+      class="c-portrait-player-cover-img__item"
       :style="{
         ...playerContainerStyle,
       }"
@@ -37,6 +37,16 @@
     >
       <p>{{ $lang('seminar.hostInGroup') }}</p>
     </div>
+    <!-- 多皮肤主题默认图 -->
+    <div
+      v-if="!warmUpRenderCover && watchThemeStyleConfig && !isPlayStarted"
+      class="c-portrait-player-cover-img__item"
+      :style="{
+        ...playerContainerStyle,
+      }"
+    >
+      <channel-splash-img />
+    </div>
   </div>
 </template>
 
@@ -46,21 +56,26 @@ import { getImgSize } from '@/assets/utils/image';
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
+import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
 import PlayerAudioLivePlaceholder from '@/components/common-business/player/player-audio-live-placeholder.vue';
 import PortraitAudioPanel from '../common/audio-panel/portrait-audio-panel.vue';
 
 import { usePortraitPlayerSize } from '../player-main/portrait-player-main/use-portrait-player-size';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const {
   showWarmUpImg,
   warmUpRenderCover,
+  isPlayStarted,
 
   showAudioLivePlaceholder,
   isAudioPlayerMode,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { isSeminarHostInGroup } = storeDefinitionToRefs(useChannelStore);
+
+const { watchThemeStyleConfig } = storeDefinitionToRefs(useThemeStore);
 
 const { setTargetSize, playerContainerStyle } = usePortraitPlayerSize();
 
@@ -102,7 +117,7 @@ watch(
   position: absolute;
 }
 
-.c-portrait-player-cover-img__audio-cover-img {
+.c-portrait-player-cover-img__item {
   position: absolute;
   width: 100%;
   height: 100%;

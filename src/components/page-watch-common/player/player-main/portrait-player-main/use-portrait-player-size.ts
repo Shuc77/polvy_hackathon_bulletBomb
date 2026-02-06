@@ -2,6 +2,7 @@ import { usePageStore } from '@/store/use-page-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { PortraitPlayerScreenType } from '@polyv/live-watch-sdk';
 import { computed, ref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 
@@ -73,12 +74,16 @@ const usePlayerSizeCompute = () => {
     // 视频高度占满屏高的等比宽度
     const _videoWidth = (targetWidth / targetHeight) * portraitWatchLayoutHeight;
 
+    /** 宽高是否限制在屏幕可视区域 */
+    const isLimitInScreenArea =
+      playerStore.portraitPlayerScreenType !== PortraitPlayerScreenType.Default;
+
     // 等比高度超出屏幕高度，宽度占满，上下裁边
     if (_videoHeight >= portraitWatchLayoutHeight) {
       sizeData = {
         width: pageClientWidth,
-        height: _videoHeight,
-        top: (portraitWatchLayoutHeight - _videoHeight) / 2,
+        height: isLimitInScreenArea ? portraitWatchLayoutHeight : _videoHeight,
+        top: isLimitInScreenArea ? 0 : (portraitWatchLayoutHeight - _videoHeight) / 2,
         left: 0,
       };
       return sizeData;
@@ -97,10 +102,10 @@ const usePlayerSizeCompute = () => {
 
     // 高度占满，左右裁边
     sizeData = {
-      width: _videoWidth,
+      width: isLimitInScreenArea ? pageClientWidth : _videoWidth,
       height: portraitWatchLayoutHeight,
       top: 0,
-      left: (pageClientWidth - _videoWidth) / 2,
+      left: isLimitInScreenArea ? 0 : (pageClientWidth - _videoWidth) / 2,
     };
 
     return sizeData;

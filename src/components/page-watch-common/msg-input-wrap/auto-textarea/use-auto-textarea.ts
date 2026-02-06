@@ -9,7 +9,16 @@ import {
 } from '@polyv/vue-components';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { throttle } from 'lodash-es';
-import { ref, computed, unref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue';
+import {
+  ref,
+  computed,
+  unref,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  CSSProperties,
+} from 'vue';
 
 export const autoTextareaProps = () => ({
   /** 绑定值 */
@@ -28,8 +37,8 @@ export const autoTextareaProps = () => ({
   isOverflow: PropUtils.bool.def(false),
   /** 输入框是否 2 行以上，.sync */
   isMultiRow: PropUtils.bool.def(false),
-  /** 背景 */
-  background: PropUtils.string,
+  /** 输入框样式 */
+  inputStyle: PropUtils.object<CSSProperties>().def({}),
 });
 
 export const autoTextareaEmits = () => ({

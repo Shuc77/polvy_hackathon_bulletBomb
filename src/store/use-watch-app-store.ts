@@ -286,12 +286,14 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   function __notNeedRealTimeConnect() {
     /**
      * 不需要连麦，不需要连接聊天室
-     * @scene 回放观看页地址进入观看页
+     * @scene vid 回放地址下，根据回放对象标志判断是否需要连接聊天室
      * @scene 研讨会处于"内部研讨"时不需要连接聊天室
      * @scene 研讨会处于回放时不需要连接聊天室
      */
     return (
-      isPlaybackWatchUrl.value ||
+      (isPlaybackWatchUrl.value &&
+        playbackStore.currentPlaybackTarget &&
+        !playbackStore.currentPlaybackTarget.chatConnectEnabled) ||
       channelStore.privateSeminarChannel ||
       (channelStore.isSeminarChannel && channelStore.liveStatus === LiveStatus.Playback)
     );

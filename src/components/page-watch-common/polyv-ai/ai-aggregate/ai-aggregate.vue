@@ -17,14 +17,11 @@
 import { useLiveWatchAIUILoader } from '@/plugins/external-lib-loaders/load-ai-ui';
 import { useAIAggregate } from './use-ai-aggregate';
 import { defineAsyncComponent } from 'vue';
-import { useAIGlobalProvider } from '../use-ai-global-provider';
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 
 const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
-
-useAIGlobalProvider();
 
 const { loadLiveWatchAIUIComponent } = useLiveWatchAIUILoader();
 

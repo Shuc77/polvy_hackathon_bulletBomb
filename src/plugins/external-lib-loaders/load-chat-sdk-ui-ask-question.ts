@@ -35,15 +35,15 @@ export const useChatSDKAskQuestionUILoader = () => {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
         // eslint-disable-next-line sonarjs/no-duplicate-string
-        version: '0.6.0-rc.1',
+        version: 'rc-20260205',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkDomain,
-        version: '0.6.0-rc.1',
+        version: 'rc-20260205',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: '0.6.0-dev.1',
+        version: 'dev-20260205',
       },
     };
 

@@ -2,8 +2,6 @@
 <template>
   <div class="c-pc-iar-render">
     <template>
-      <!-- 公告 -->
-      <pc-announcement-dialog v-if="announcementFunctionVisible" />
       <!-- 签到 -->
       <pc-check-in-dialog />
       <!-- 反馈 -->
@@ -27,14 +25,12 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { onMounted } from 'vue';
 import PcQrCodeShareDialog from '../../common-business/qrcode-share-dialog/pc-qrcode-share-dialog.vue';
 import PcCheckInDialog from '../interactive-receive-v2/check-in-v2/pc-check-in-dialog.vue';
-import PcAnnouncementDialog from './announcement/pc-announcement-dialog.vue';
 import PcEnrollLotteryDialog from './enroll-lottery/pc-enroll-lottery-dialog.vue';
 import PcFeedbackDialog from './feedback/pc-feedback-dialog.vue';
 import PcRedpackRain from './redpack-rain/pc-redpack-rain.vue';
 import PcRedpackDialog from './redpack/pc-redpack-dialog.vue';
 
-const { announcementFunctionVisible, feedbackEnabled } =
-  storeDefinitionToRefs(useInteractReceiveStore);
+const { feedbackEnabled } = storeDefinitionToRefs(useInteractReceiveStore);
 
 onMounted(() => {
   import(

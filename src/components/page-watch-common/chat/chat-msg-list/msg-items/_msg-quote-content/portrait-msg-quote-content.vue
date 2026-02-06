@@ -64,13 +64,13 @@ const { quoteNick } = useMsgQuoteContent({ props });
     left: 0;
     width: 2px;
     content: '';
-    background-color: rgba(var(--plv-watch-skin-special-rgb), 1);
+    background-color: rgba(var(--plv-watch-skin-primary-rgb), 1);
     border-radius: 2px;
   }
 }
 
 .c-portrait-msg-quote-content__nick {
-  color: rgba(var(--plv-watch-skin-special-rgb), 1);
+  color: rgba(var(--plv-watch-skin-primary-rgb), 1);
 }
 
 .c-portrait-msg-quote-content__main {

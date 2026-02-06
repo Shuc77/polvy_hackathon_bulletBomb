@@ -2,8 +2,9 @@
 <template>
   <iar-red-envelop-pendant
     class="c-redpack-pendant"
-    auto-toggle
+    :auto-toggle="true"
     :red-envelope-sdk="redpackSdk"
+    :custom-img-config="customImgConfig"
     :auto-fetch-detail="interactSetting.redpackEnabled"
     @visible-changed="onEntryVisibleChanged"
   />
@@ -18,5 +19,5 @@ const IarRedEnvelopPendant = getIarComponent('RedEnvelopePendant');
 
 const { interactSetting } = useInteractReceiveStore();
 
-const { redpackSdk, onEntryVisibleChanged } = useRedpackPendant();
+const { redpackSdk, customImgConfig, onEntryVisibleChanged } = useRedpackPendant();
 </script>

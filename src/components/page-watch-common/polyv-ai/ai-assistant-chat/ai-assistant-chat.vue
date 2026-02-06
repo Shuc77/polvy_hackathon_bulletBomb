@@ -17,7 +17,6 @@
 <script lang="ts" setup>
 import { useLiveWatchAIUILoader } from '@/plugins/external-lib-loaders/load-ai-ui';
 import { defineAsyncComponent, onBeforeMount, ref, watch } from 'vue';
-import { useAIGlobalProvider } from '../use-ai-global-provider';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { TAB_NAME_AI_ASSISTANT } from '@/assets/constants/tab-name';
 import type { AiAssistantChat as AiAssistantChatType } from '@polyv/live-watch-ai-ui';
@@ -26,9 +25,10 @@ import { ynToBool } from '@polyv/utils/es/boolean';
 import { YN } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 const { paramGetter } = useQueryParams();
-const { getWatchAICore, watchCore } = useAIGlobalProvider();
+const { getWatchCore } = useGlobalInject();
 
 const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
 
@@ -61,7 +61,10 @@ watch(
 );
 
 async function setupAIAssistantChat() {
-  const watchAICore = getWatchAICore();
+  if (!watchAICoreSetuped.value) return;
+
+  const watchCore = getWatchCore();
+  const watchAICore = watchCore.polyvAI.getWatchAICore();
   if (!watchAICore) return;
 
   const { aiAssistantId, aiAssistantName, aiAssistantCode } =

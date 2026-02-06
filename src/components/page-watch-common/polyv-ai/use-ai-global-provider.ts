@@ -12,7 +12,7 @@ export const useAIGlobalProvider = () => {
 
   const { getWatchCore } = useGlobalInject();
 
-  const { pageSkinColorMode } = storeToRefs(useThemeStore());
+  const { currentSkinColorMode } = storeToRefs(useThemeStore());
 
   const watchCore = getWatchCore();
 
@@ -22,14 +22,14 @@ export const useAIGlobalProvider = () => {
 
   const provideData = reactive({
     globalLang: currentLang.value,
-    theme: pageSkinColorMode.value,
+    theme: currentSkinColorMode.value,
     isMobile: () => isMobile,
     getWatchAICore,
   });
 
   watchEffect(() => {
     provideData.globalLang = currentLang.value;
-    provideData.theme = pageSkinColorMode.value;
+    provideData.theme = currentSkinColorMode.value;
   });
 
   provide('AIUIGlobalConfig', provideData);

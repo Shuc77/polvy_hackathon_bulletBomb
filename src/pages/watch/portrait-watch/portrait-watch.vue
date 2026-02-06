@@ -3,6 +3,7 @@
   <div class="c-portrait-watch">
     <background-section
       :background-type="themeSetting.portraitBackgroundType"
+      :default-url="defaultPortraitPageBgUrl"
       :custom-url="portraitPageBgUrl"
     />
 
@@ -47,7 +48,8 @@ usePvTrack('saas-web-watch-portrait');
 
 const { layoutLoaded } = useLayoutLoad('portrait-watch');
 
-const { themeSetting, portraitPageBgUrl } = storeDefinitionToRefs(useThemeStore);
+const { themeSetting, defaultPortraitPageBgUrl, portraitPageBgUrl } =
+  storeDefinitionToRefs(useThemeStore);
 </script>
 
 <style lang="scss">

@@ -3,6 +3,7 @@
   <div class="c-pc-lucky-lottery-pendant">
     <iar-pc-lucky-lottery-pendant
       v-if="targetInited"
+      :icon-url="iconUrl"
       :lucky-lottery-target="getIarTarget()"
       :before-click-interrupt="beforeClickInterrupt"
     />
@@ -13,18 +14,19 @@
 import { defineAsyncComponent } from 'vue';
 import { useLotteryTarget } from '../use-lucky-lottery';
 import { useIarUILoader } from '../../_load-iar-ui-v2';
-import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
+import { useLuckLotteryPendant } from '../use-lucky-lottery-pendant';
 
 const { loadIarUI } = useIarUILoader('iar-lucky-lottery-ui');
 
 const IarPcLuckyLotteryPendant = defineAsyncComponent(() => loadIarUI('lucky-lottery-pendant'));
-const { targetInited, getIarTarget } = useLotteryTarget();
 
-const { toInterruptUserClick } = useInterruptUserClick();
+const {
+  targetInited,
 
-function beforeClickInterrupt() {
-  return toInterruptUserClick({ triggerSource: 'lucky-lottery-pendant', ignoreSetNick: true });
-}
+  getIarTarget,
+} = useLotteryTarget();
+
+const { iconUrl, beforeClickInterrupt } = useLuckLotteryPendant();
 </script>
 
 <style lang="scss">

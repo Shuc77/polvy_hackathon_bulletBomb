@@ -204,6 +204,17 @@ export const useAsk = (options: UseAskOptions) => {
     }
   }
 
+  function onRemoveSingleQuestion(evt: AskEventsRelations[AskEvents.RemoveSingleQuestion]) {
+    removeMsgById(evt.id);
+  }
+
+  function onRemoveAskUser(evt: AskEventsRelations[AskEvents.RemoveAskUser]) {
+    if (evt.userId !== viewerStore.viewerId) {
+      return;
+    }
+    askMsgList.value = [];
+  }
+
   function bindAskEvent() {
     const watchCore = getWatchCore();
     watchCore.ask.eventEmitter.on(AskEvents.StudentQuestion, onAskEvent);
@@ -212,6 +223,8 @@ export const useAsk = (options: UseAskOptions) => {
     watchCore.ask.eventEmitter.on(AskEvents.SendBadWord, onSendBadWord);
     watchCore.ask.eventEmitter.on(AskEvents.ReplaceAskMessage, onReplaceMessage);
     watchCore.ask.eventEmitter.on(AskEvents.RemoveAskMessage, onRemoveMessage);
+    watchCore.ask.eventEmitter.on(AskEvents.RemoveSingleQuestion, onRemoveSingleQuestion);
+    watchCore.ask.eventEmitter.on(AskEvents.RemoveAskUser, onRemoveAskUser);
   }
 
   function unbindAskEvent() {
@@ -222,6 +235,8 @@ export const useAsk = (options: UseAskOptions) => {
     watchCore.ask.eventEmitter.off(AskEvents.SendBadWord, onSendBadWord);
     watchCore.ask.eventEmitter.off(AskEvents.ReplaceAskMessage, onReplaceMessage);
     watchCore.ask.eventEmitter.off(AskEvents.RemoveAskMessage, onRemoveMessage);
+    watchCore.ask.eventEmitter.off(AskEvents.RemoveSingleQuestion, onRemoveSingleQuestion);
+    watchCore.ask.eventEmitter.off(AskEvents.RemoveAskUser, onRemoveAskUser);
   }
 
   onMounted(() => {

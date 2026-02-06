@@ -49,6 +49,13 @@
         </chat-loader-helper>
       </div>
 
+      <!-- 公告置顶 -->
+      <bulletin-topping
+        v-if="announcementFunctionVisible && iarSdkLoaded"
+        v-show="!portraitPlayerIsPageFullscreen"
+        class="c-portrait-carousel-main-screen__bottom__item"
+      />
+
       <!-- 消息区（V1） -->
       <div
         v-if="!isChatUIV2"
@@ -136,6 +143,7 @@
           <!-- 聊天室输入框占位 -->
           <template v-if="portraitChatInputVisible">
             <portrait-chat-input-placeholder v-if="!isChatUIV2" />
+            <portrait-ask-remind v-if="!isChatUIV2" />
             <chat-loader-helper v-else>
               <portrait-swiper-message-control />
             </chat-loader-helper>
@@ -165,17 +173,17 @@
 
         <!-- 底部控制栏右侧内容 -->
         <div class="c-portrait-carousel-main-screen__bottom__right-auto">
+          <!-- 菜单入口 -->
+          <mobile-more-entrance v-if="!isPlaybackWatchUrl" />
+
+          <!-- 打赏入口 -->
+          <mobile-donate-entrance />
+
           <!-- 商品库入口 -->
           <mobile-product-pendant
             v-if="!isPlaybackWatchUrl && iarSdkLoaded && interactSetting.productEnabled"
             class="c-portrait-carousel-main-screen__bottom__button"
           />
-
-          <!-- 打赏入口 -->
-          <mobile-donate-entrance />
-
-          <!-- 菜单入口 -->
-          <mobile-more-entrance v-if="!isPlaybackWatchUrl" />
 
           <!-- 点赞 -->
           <chat-loader-helper v-if="!isPlaybackWatchUrl && likeFeatureEnabled && !isPlaybacking">
@@ -251,12 +259,14 @@ import PortraitPlayerLoadingDetection from '@/components/page-watch-common/playe
 import ConnectMicPlayFailedTips from '@/components/page-watch-common/connect-mic/common/connect-mic-play-failed-tips.vue';
 import MobileProductPendant from '@/components/page-watch-common/product/product-pendant/mobile-product-pendant.vue';
 import PortraitChatInputPlaceholder from '@/pages/watch/portrait-watch/components/chat/chat-input-placeholder/portrait-chat-input-placeholder.vue';
+import PortraitAskRemind from '@/components/page-watch-common/ask/portrait-ask/portrait-ask-remind.vue';
 import PortraitCarouselMainTopic from './carousel-main-topic.vue';
 
 import PortraitChatLike from '@/components/page-watch-common/chat-v2/chat-like/index.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import PortraitRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import PortraitSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
+import BulletinTopping from '@/components/page-watch-common/interactive-receive-v2/bulletin-v2/bulletin-topping.vue';
 import PortraitSwiperMessageControl from '../components/swiper-message/swiper-message-control.vue';
 import PortraitSwiperMessage from '../components/swiper-message/swiper-message.vue';
 
@@ -285,7 +295,8 @@ const { askMenuData, chatMenuData } = storeDefinitionToRefs(useChannelMenuStore)
 
 const { anchorPopupVisible } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { productBubbleVisible, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { productBubbleVisible, interactSetting, announcementFunctionVisible } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
@@ -417,7 +428,7 @@ $--portrait-carousel-main-screen__bottom-marginTop: 12px !default;
   position: relative;
   display: flex;
   max-width: 100%;
-  margin-top: $--portrait-carousel-main-screen__bottom-marginTop;
+  margin-top: 4px;
   pointer-events: initial;
   &:empty {
     display: none;

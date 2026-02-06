@@ -2,7 +2,7 @@ import { translate } from '@/assets/lang';
 import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
 import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
-import { computed, unref, watch } from 'vue';
+import { type CSSProperties, computed, unref, watch } from 'vue';
 import { countDownSizes, countdownThemes } from './types';
 
 export const countDownCommonProps = () => ({
@@ -22,6 +22,7 @@ export const countDownProps = () => ({
   size: PropUtils.oneOf(countDownSizes).def('default'),
   /** 倒计时样式，square-方形，text-文本，默认：square */
   theme: PropUtils.oneOf(countdownThemes).def('square'),
+  countStyle: PropUtils.object<CSSProperties>().def({}),
 
   /** 自定义倒计时时间内容 */
   customTimeSecond: PropUtils.number.def(undefined),

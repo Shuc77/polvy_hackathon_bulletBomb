@@ -5,6 +5,9 @@ import { useWeixinButton } from '../use-weixin/use-weixin-button';
 import { openLink } from '@/assets/utils/url';
 import { isMobile } from '@/assets/utils/browser';
 import { plvInterval } from '@polyv/live-watch-sdk';
+import { useToast } from '@polyv/vue-components';
+import { translate } from '@/assets/lang';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 /**
  * 处理多平台链接跳转
@@ -22,6 +25,8 @@ export const useMultiPlatformLink = (options: {
 }) => {
   const { getPlvWebviewBridge } = useWebviewStore();
   const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
+  const { toast } = useToast();
+  const { paramGetter } = useQueryParams();
 
   const {
     supportWxOpenLaunchWebApp,
@@ -84,6 +89,10 @@ export const useMultiPlatformLink = (options: {
         getPlvWebviewSmallWindowSize: () => plvWebviewDataSize.value,
         isWxMiniProgramEnv: supportWxMiniProgramNavigateTo,
         toWxMiniProgram,
+        getIsApp: () => paramGetter().isApp(),
+        failCallback: () => {
+          toast.warning(translate('externalLink.navigateFail'));
+        },
       });
     } catch (error) {
       console.error('handleMultiPlatformLinkType', error);

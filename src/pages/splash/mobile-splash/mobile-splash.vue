@@ -32,14 +32,16 @@
       <div
         v-if="showLiveCountDown"
         class="c-mobile-splash__main__header pws-dark-white-bg-10 pws-light-white-bg-40"
+        :style="liveBookingStyle"
       >
         <mobile-live-count-down
           :show-title="showLiveBookingButton"
           theme="number-square"
+          :count-style="countStyle"
         />
         <mobile-live-booking-button
           v-if="showLiveBookingButton"
-          class="c-mobile-splash__main__header__booking"
+          class="c-mobile-splash__main__header__booking pws-normal-button-primary--config-wrapper"
         />
       </div>
 
@@ -53,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
+import { computed, CSSProperties, defineAsyncComponent } from 'vue';
 
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
 import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
@@ -68,6 +70,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const MobilePlayerTrial = defineAsyncComponent(
   () =>
@@ -82,6 +85,33 @@ const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
 const { likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTrialHook();
+
+const themeStore = useThemeStore();
+
+const liveBookingStyle = computed(() => {
+  if (!themeStore.watchThemeStyleConfig) return;
+
+  return {
+    'border-image': themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea.bg,
+    ...themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea.style,
+  };
+});
+
+const countStyle = computed(() => {
+  if (!themeStore.watchThemeStyleConfig) return;
+
+  const result: CSSProperties = {};
+  const { countBg, countColor } = themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea;
+
+  if (countBg) {
+    result.background = countBg;
+  }
+  if (countColor) {
+    result.color = countColor;
+  }
+
+  return result;
+});
 </script>
 
 <style lang="scss">
@@ -135,7 +165,7 @@ const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTr
   flex: 1;
 
   &.c-mobile-splash__main__padding {
-    padding-bottom: 64px;
+    padding-bottom: 80px;
   }
 }
 

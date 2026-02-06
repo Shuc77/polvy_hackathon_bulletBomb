@@ -54,6 +54,9 @@
 
 <script setup lang="ts">
 import { useTabHeader, useTabHeaderArrow } from '../hooks/use-tab-header';
+import { tabsHeaderProps } from '../hooks/use-tabs';
+
+const props = defineProps(tabsHeaderProps());
 
 const {
   scrollRef,
@@ -63,7 +66,7 @@ const {
   onClickHeaderItem,
   itemRef,
   currentLineLeft,
-} = useTabHeader({
+} = useTabHeader(props, {
   scrollCurrent: true,
 });
 

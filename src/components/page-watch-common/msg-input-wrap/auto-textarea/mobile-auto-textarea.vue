@@ -5,6 +5,7 @@
     :class="{
       'c-mobile-auto-textarea--multi-row': textAreaIsMultiRow,
     }"
+    :style="inputStyle"
   >
     <textarea
       ref="textareaRef"
@@ -72,6 +73,7 @@ $--textarea-min-height: 36px;
   align-items: center;
   width: 100%;
   min-height: $--textarea-min-height;
+  border: 1px solid transparent;
   border-radius: 18px;
   transition: 0.3s;
 }

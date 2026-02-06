@@ -1,6 +1,6 @@
 <!-- @file 竖屏端消息发送公用输入框 -->
 <template>
-  <div class="c-portrait-msg-input-wrap">
+  <div class="c-portrait-msg-input-wrap pws-portrait-chat-msg-input-control">
     <!-- 主体 -->
     <div class="c-portrait-msg-input-wrap__main">
       <form
@@ -11,8 +11,9 @@
 
         <input
           v-model="inputElmValue"
+          :style="inputStyle"
           type="text"
-          class="c-portrait-msg-input-wrap__main__input"
+          class="c-portrait-msg-input-wrap__main__input pws-portrait-chat-msg-input"
           :placeholder="placeholder"
           :disabled="disabledInput"
           ref="inputElemRef"
@@ -37,7 +38,7 @@
 
       <!-- 发送 -->
       <div
-        class="c-portrait-msg-input-wrap__main__submit"
+        class="c-portrait-msg-input-wrap__main__submit pws-portrait-msg-send-button"
         :class="{
           'c-portrait-msg-input-wrap__main__submit--disabled': sendBtnDisabled,
         }"

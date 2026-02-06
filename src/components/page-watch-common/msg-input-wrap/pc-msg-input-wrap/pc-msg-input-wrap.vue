@@ -1,6 +1,11 @@
 <!-- @file PC 端消息发送公用输入框 -->
 <template>
-  <div class="c-pc-msg-input-wrap pws-pc-msg-bottom-input-wrap">
+  <div
+    class="c-pc-msg-input-wrap pws-pc-msg-bottom-input-wrap"
+    :class="{
+      'pwc-skin-color-mode--dark': pageSkin === ChannelWatchPageSkin.Blue,
+    }"
+  >
     <!-- 面板区 -->
     <div class="c-pc-msg-input-wrap__panel">
       <!-- 表情选择 -->
@@ -136,6 +141,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { throttle } from 'lodash-es';
+import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
 import { PlvInputPasteImage } from '@/plugins/polyv-ui/admin-import';
 import { PcIconEmotion, PcIconPic, PcIconClose } from '@/components/component-icons/pc/map';
 import PcEmotionPicker from '@/components/page-watch-common/emotion-picker/pc-emotion-picker/pc-emotion-picker.vue';
@@ -147,12 +153,14 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { msgInputWrapEmits, msgInputWrapProps, useMsgInputWrap } from '../use-msg-input-wrap';
 import { usePopper } from '@/hooks/components/use-popper';
 import { previewImage } from '@/hooks/components/use-image-preview';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const props = defineProps(msgInputWrapProps());
 
 const emit = defineEmits(msgInputWrapEmits());
 
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
+const { pageSkin } = storeDefinitionToRefs(useThemeStore);
 
 const needSetNick = computed(() => {
   return !hasNickname.value;

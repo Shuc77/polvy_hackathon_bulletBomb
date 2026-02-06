@@ -53,7 +53,8 @@ import { PropUtils, emitFunc } from '@polyv/vue-components';
 import { computed, ref } from 'vue';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { SkinColorMode } from '@/skins/enum';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
 import { ChatMessageLayout } from '@polyv/live-watch-sdk';
@@ -92,7 +93,7 @@ const { isSpecialUser, hideUserAvatar } = useChatMsgUserInject();
 
 const { chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
+const { currentSkinColorMode } = storeDefinitionToRefs(useThemeStore);
 
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
@@ -136,7 +137,7 @@ const bubbleBgClass = computed(() => {
     return '';
   }
 
-  switch (pageSkinColorMode.value) {
+  switch (currentSkinColorMode.value) {
     case SkinColorMode.Dark:
       return isPortraitWatchLayout.value ? 'pws-dark-basic-bg-20' : 'pws-dark-basic-bg-10';
     case SkinColorMode.Light:

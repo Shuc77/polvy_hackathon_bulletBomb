@@ -3,10 +3,14 @@
   <div
     class="c-portrait-player-main"
     :class="{
+      'c-portrait-player-main--object-fit-contain':
+        portraitPlayerScreenType === PortraitPlayerScreenType.Full,
+      'c-portrait-player-main--object-fit-cover':
+        portraitPlayerScreenType === PortraitPlayerScreenType.Fill ||
+        hasGuidePortraitStreamFitClass,
       'c-portrait-player-main--none-live': noneLiveVisible,
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
       'c-portrait-player-main--hide': isConnectMicing,
-      'c-portrait-player-main--guide-portrait-stream-fit': hasGuidePortraitStreamFitClass,
     }"
     @click="onClickContainer"
   >
@@ -21,6 +25,9 @@
           :class="{
             'c-portrait-player-main__container--audio': isAudioPlayerMode,
             'c-portrait-player-main__container--hide-watermark': isFullscreenWatermarkVisible,
+            'c-portrait-player-main__container--fit-mini':
+              portraitCopyRightExtraClassEnabled && isMiniAvatar,
+            'c-portrait-player-main__container--resolution-fit': portraitCopyRightExtraClassEnabled,
           }"
           :style="allPlayerContainerStyle"
           data-testid="plv-player-container"
@@ -44,7 +51,7 @@
     </div>
 
     <!-- 暂无直播占位面板 -->
-    <portrait-none-live-panel v-if="noneLiveVisible" />
+    <portrait-none-live-panel v-if="noneLiveVisible && !watchThemeStyleConfig" />
 
     <!-- webview 小窗下的控制栏 -->
     <small-window-control v-if="isSmallWindow" />
@@ -71,13 +78,20 @@ import { usePortraitPlayerSize } from './use-portrait-player-size';
 import { computed, unref, onBeforeUnmount } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { useChannelStore } from '@/store/use-channel-store';
-import { LiveStatus, MainScreenContent, StreamType } from '@polyv/live-watch-sdk';
+import { usePortraitCopyrightStyle } from './_hooks/use-portrait-copyright-style';
+import {
+  LiveStatus,
+  MainScreenContent,
+  StreamType,
+  PortraitPlayerScreenType,
+} from '@polyv/live-watch-sdk';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -105,12 +119,15 @@ const {
   resolutionHeight,
   isAudioPlayerMode,
   hasGuidePortraitStreamFitClass,
+  portraitPlayerScreenType,
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { portraitDocWrapHeight, portraitDocSideSwitchVisible } =
   storeDefinitionToRefs(usePortraitLayoutStore);
 
 const { addHistoryTipsListener } = usePlayerControl();
+
+const { watchThemeStyleConfig } = useThemeStore();
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
@@ -127,6 +144,8 @@ const isDocMainScreen = computed(() => {
     !masterMicItem.value
   );
 });
+
+const { isMiniAvatar, portraitCopyRightExtraClassEnabled } = usePortraitCopyrightStyle();
 
 const playerStyle = computed<CSSProperties>(() => {
   if (!isDocMainScreen.value) {
@@ -192,7 +211,12 @@ const allPlayerContainerStyle = computed<CSSProperties>(() => {
 
   // 规则成立时，需要向上移动，才能让画面展示得比较好，247/288 是设计方案如此
   if (resolutionRule && liveStatusRule && docRule) {
-    style.marginTop = `-${unref(portraitDocWrapHeight) * (247 / 288)}px`;
+    const marginTopValue = unref(portraitDocWrapHeight) * (247 / 288);
+    style.marginTop = `-${marginTopValue}px`;
+    document.documentElement.style.setProperty(
+      '--plv-cr-doc-rule',
+      `${marginTopValue - (isMiniAvatar.value ? 40 : 100)}px`,
+    );
   }
 
   return style;
@@ -344,16 +368,45 @@ useConnectMicing();
   }
 }
 
-.c-portrait-player-main--guide-portrait-stream-fit {
-  .plvideo video {
-    object-fit: cover;
-  }
-}
-
 .c-portrait-player-main__container--hide-watermark {
   .plv-live-watermark {
     // 使用display: none 实测会影响水印的渲染，导致全屏后不显示
     visibility: hidden;
+  }
+}
+
+.c-portrait-player-main--object-fit-contain {
+  video {
+    object-fit: contain !important;
+  }
+}
+.c-portrait-player-main--object-fit-cover {
+  video {
+    object-fit: cover !important;
+  }
+
+  .plv-player-cover {
+    background-size: cover !important;
+  }
+}
+
+.c-portrait-player-main__container--resolution-fit {
+  .plv-live-copyright-notice {
+    top: calc(100px + var(--plv-cr-doc-rule));
+  }
+
+  .plv-player-copyright-notice__container {
+    top: calc(100px + var(--plv-cr-doc-rule));
+  }
+}
+
+.c-portrait-player-main__container--fit-mini {
+  .plv-live-copyright-notice {
+    top: calc(50px + var(--plv-cr-doc-rule));
+  }
+
+  .plv-player-copyright-notice__container {
+    top: calc(50px + var(--plv-cr-doc-rule));
   }
 }
 </style>

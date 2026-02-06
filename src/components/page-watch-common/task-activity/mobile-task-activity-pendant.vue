@@ -3,8 +3,9 @@
     v-if="isShowPendant"
     class="c-mobile-task-activity-pendant"
     :class="{
-      'c-mobile-task-activity-pendant--en': currentLang !== LangType.ZH_CN,
+      'c-mobile-task-activity-pendant--en': !isChineseLang,
     }"
+    :style="pendantStyle"
     @click="onClickPendant"
   >
     <!-- 任务活动弹层 -->
@@ -43,18 +44,20 @@ import { useTaskActivityStore } from '@/store/use-task-activity-store';
 import MobileTaskActivityDialog from './mobile-task-activity-dialog.vue';
 import MobileTaskActivityQuestionnaire from './mobile-task-activity-questionnaire.vue';
 import { useLangStore } from '@/store/use-lang-store';
-import { LangType } from '@/assets/lang/lang-enum';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { computed, ref } from 'vue';
+import { CSSProperties, computed, ref } from 'vue';
 import { MobileIconClose } from '@/components/component-icons/mobile/map';
 import { translate } from '@/assets/lang';
+import { useThemeStore } from '@/store/use-theme-store';
+
+const themeStore = useThemeStore();
 
 const { getEmitter } = useGlobalInject();
 
 const { isShowPendant, isShowTaskActivityErrorPopper } =
   storeDefinitionToRefs(useTaskActivityStore);
 
-const { currentLang } = storeDefinitionToRefs(useLangStore);
+const { isChineseLang } = storeDefinitionToRefs(useLangStore);
 
 const isCloseNetworkError = ref(false);
 
@@ -69,6 +72,18 @@ function onClickPendant() {
 function onCloseNetworkError() {
   isCloseNetworkError.value = true;
 }
+
+const pendantStyle = computed<CSSProperties>(() => {
+  if (!themeStore.watchThemeStyleConfig) return {};
+
+  const pendantIconUrl = isChineseLang.value
+    ? themeStore.watchThemeStyleConfig.common.pendant.taskPrizeZh
+    : themeStore.watchThemeStyleConfig.common.pendant.taskPrizeEn;
+
+  return {
+    backgroundImage: `url(${pendantIconUrl})`,
+  };
+});
 </script>
 
 <style lang="scss">

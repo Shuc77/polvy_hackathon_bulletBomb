@@ -3,6 +3,7 @@
   <div class="c-mobile-chat-input-controller">
     <mobile-msg-input-wrap
       ref="msgInputWrapRef"
+      :input-style="inputStyle"
       :placeholder="chatInputPlaceholder"
       :disabled-input="chatInputDisabled"
       :disabled-emotion-picker="chatInputDisabled"
@@ -37,6 +38,7 @@
           v-if="
             interactSetting.productEnabled &&
             iarSdkLoaded &&
+            !isPlaybackWatchUrl &&
             productEntryLandscapePosition === 'chat'
           "
         />
@@ -67,6 +69,9 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { PropUtils } from '@polyv/vue-components';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
+import { CSSProperties, computed } from 'vue';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const props = defineProps({
   /** 是否为纯净模式 */
@@ -74,6 +79,8 @@ const props = defineProps({
   /** 是否处于激活状态 */
   isAlwayActive: PropUtils.bool.def(false),
 });
+
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { toInterruptUserClick } = useInterruptUserClick();
 
@@ -97,6 +104,17 @@ if (!props.isPureness) {
     focusMsgInput();
   });
 }
+
+const themeStore = useThemeStore();
+
+const inputStyle = computed<CSSProperties>(() => {
+  if (!themeStore.watchThemeStyleConfig) return {};
+
+  return {
+    background: themeStore.watchThemeStyleConfig.common.chat.msgInput.bg,
+    borderColor: themeStore.watchThemeStyleConfig.common.chat.msgInput.borderColor,
+  };
+});
 
 const { chatInputPlaceholder, chatInputDisabled, chatSetting, likeFeatureEnabled } =
   storeDefinitionToRefs(useChatStore);

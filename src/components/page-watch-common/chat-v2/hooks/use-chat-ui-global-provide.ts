@@ -23,6 +23,8 @@ import { useDonateStore } from '@/store/use-donate-store';
 import { storeToRefs } from 'pinia';
 import { translate } from '@/assets/lang';
 import { useAskStore } from '@/store/use-ask-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useChannelStore } from '@/store/use-channel-store';
 
 export const useChatUIGlobalProvide = () => {
   const { getWatchCore } = useGlobalInject();
@@ -30,8 +32,10 @@ export const useChatUIGlobalProvide = () => {
 
   const { isMobile } = useBrowser();
 
+  const { watchThemeStyleConfig } = storeDefinitionToRefs(useThemeStore);
   const {
     chatSetting,
+    likeIconUrl,
     onlySpecialMsgWidgetVisible,
     likeSingleClickEnabled,
     likeHoldEnabled,
@@ -42,6 +46,7 @@ export const useChatUIGlobalProvide = () => {
   const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
   const { needHideUserActor } = storeDefinitionToRefs(useViewerStore);
   const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);
+  const { liveStatus } = storeDefinitionToRefs(useChannelStore);
   const donateStore = useDonateStore();
   const { showDonateGifts } = storeToRefs(donateStore);
 
@@ -131,6 +136,9 @@ export const useChatUIGlobalProvide = () => {
         sendAskImageEnabled: askSetting.questionImageEnabled,
       };
     },
+    getLiveStatus: () => {
+      return liveStatus.value;
+    },
     getLikeConfig: () => {
       return {
         clickEnabled: likeSingleClickEnabled.value,
@@ -138,8 +146,14 @@ export const useChatUIGlobalProvide = () => {
         countPosition: isMobile ? 'top' : 'bottom',
         showCount: chatSetting.value.likeCountEnabled,
         triggerSize: isMobile ? 36 : 40,
-        triggerImage: chatSetting.value.likeIconUrl,
+        triggerImage: likeIconUrl.value,
         bubbles: getLikeEffectIcons(),
+        likeCountStyle: watchThemeStyleConfig.value
+          ? {
+              background: watchThemeStyleConfig.value.common.chat.btn.like.countBg,
+              color: watchThemeStyleConfig.value.common.chat.btn.like.countColor,
+            }
+          : {},
       };
     },
     getOnlineConfig: () => {

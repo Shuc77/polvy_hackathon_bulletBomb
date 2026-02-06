@@ -41,7 +41,7 @@
           :is-multi-row.sync="isMultiRow"
           :maxlength="maxInputTextLength"
           :disabled="disabledInput"
-          background="#d4d9df"
+          :input-style="inputStyle"
           @submit="submitInput"
           @focus="onInputFocus"
           @blur="onInputBlur"

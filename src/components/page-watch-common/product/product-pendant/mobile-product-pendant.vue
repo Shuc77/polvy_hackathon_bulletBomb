@@ -4,14 +4,21 @@
     v-if="productTargetInited"
     :product-target="getProductTarget()"
     :before-click-interrupt="beforeClickInterrupt"
+    :show-total="showTotal"
+    :icon-url="iconUrl"
   />
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { useProductUILoader } from '../load-product-ui';
 import { useProductUI } from '../hooks/use-product-ui';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useChannelStore } from '@/store/use-channel-store';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+
+const themeStore = useThemeStore();
 
 const { loadProductUI } = useProductUILoader();
 
@@ -20,6 +27,20 @@ const MobileProductPendant = defineAsyncComponent(() => loadProductUI('mobile-pr
 const { productTargetInited, getProductTarget } = useProductUI();
 
 const { toInterruptUserClick } = useInterruptUserClick();
+
+const { productIconConfig } = storeDefinitionToRefs(useChannelStore);
+
+const showTotal = computed(() => {
+  if (!themeStore.watchThemeStyleConfig) return productIconConfig.value?.showProductCount ?? true;
+
+  return themeStore.watchThemeStyleConfig.common.chat.btn.cart.countVisible;
+});
+
+const iconUrl = computed(() => {
+  if (!themeStore.watchThemeStyleConfig) return productIconConfig.value?.url ?? '';
+
+  return themeStore.watchThemeStyleConfig.common.chat.btn.cart.iconUrl;
+});
 
 function beforeClickInterrupt() {
   return toInterruptUserClick({ triggerSource: 'mobile-product-pendant', ignoreSetNick: true });

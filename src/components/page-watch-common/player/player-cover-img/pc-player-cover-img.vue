@@ -30,6 +30,13 @@
     >
       <p>{{ $lang('seminar.hostInGroup') }}</p>
     </div>
+    <!-- 多皮肤主题默认图 -->
+    <div
+      v-if="!warmUpRenderCover && watchThemeStyleConfig && !isPlayStarted"
+      class="c-pc-player-cover-img__warm-up-img"
+    >
+      <channel-splash-img />
+    </div>
   </div>
 </template>
 
@@ -43,13 +50,17 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { MainScreenContent } from '@polyv/live-watch-sdk';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const {
   showWarmUpImg,
   warmUpRenderCover,
 
   showAudioLivePlaceholder,
+  isPlayStarted,
 } = storeDefinitionToRefs(usePlayerStore);
+
+const { watchThemeStyleConfig } = storeDefinitionToRefs(useThemeStore);
 
 const { isSeminarHostInGroup } = storeDefinitionToRefs(useChannelStore);
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);

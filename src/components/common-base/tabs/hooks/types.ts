@@ -23,6 +23,8 @@ export interface TabsInstance {
   setCurrentTab(name: TabNameType): void;
   /** 设置默认激活的面板 */
   setDefaultTabName(name: TabNameType): void;
+  /** 清除默认激活的面板 */
+  clearDefaultTabName(): void;
 }
 
 export interface TabsInjectContext {
@@ -38,6 +40,8 @@ export interface TabsInjectContext {
   tabPaneData: Ref<TabPaneDataItem[]>;
   /** 设置当前激活面板 */
   setCurrentTab: (name: TabNameType) => void;
+  /** 触发当前激活面板点击事件 */
+  toEmitCurrentTabClick: () => void;
   /** 切到下一个 tab */
   toNextTab: () => void;
   /** 切到上一个 tab */

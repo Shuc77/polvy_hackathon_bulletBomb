@@ -289,13 +289,13 @@ export function createWatchApp() {
       await toConfigWeixinFeature(watchCore);
     }
 
+    // 初始化多皮肤
+    await initPageSkin();
+
     // 初始化完毕，设置渲染标识位
     watchAppStore.$patch({
       watchAppInited: true,
     });
-
-    // 初始化多皮肤
-    initPageSkin();
 
     /**
      * 处理强制自动播放

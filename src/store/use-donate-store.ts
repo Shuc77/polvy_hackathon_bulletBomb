@@ -9,6 +9,7 @@ import { defineStore } from 'pinia';
 import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { usePlaybackStore } from './use-playback-store';
 import { useWatchAppStore } from './use-watch-app-store';
+import { useResizeOssImage } from '@polyv/vue-components';
 
 export interface DonateGoodInfo extends DonateGoodData {
   /** 翻译后的礼物名称 */
@@ -69,6 +70,8 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
   const playbackStore = usePlaybackStore();
+
+  const { resizeOSSImg } = useResizeOssImage();
 
   /** 道具礼物中英文 */
   const goodNamesConfig = computed<UniversalParams<string>>(() => {
@@ -133,6 +136,7 @@ export const useDonateStore = defineStore<'donate', DonateStore>('donate', () =>
     return __donateItemAll.value.map(good => {
       return {
         ...good,
+        goodImage: resizeOSSImg(good.goodImage),
         goodTranslateName: translateGoodName(good.goodName),
         goodPriceText: getGoodPriceText(good.goodPrice),
       };

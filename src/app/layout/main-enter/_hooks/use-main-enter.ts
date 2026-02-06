@@ -200,11 +200,12 @@ export const useMainEnter = (options: {
       await webviewStore.initWebviewBridge();
     }
 
-    loadWatchAICore();
     await loadIarSDK();
 
     // 处理需要等观看页加载完后的逻辑
     if (watchAppStore.watchPageInited) {
+      loadWatchAICore();
+
       if (webviewStore.isPlvWebview) {
         // 进入观看页后初始化webview
         webviewStore.initWebview();

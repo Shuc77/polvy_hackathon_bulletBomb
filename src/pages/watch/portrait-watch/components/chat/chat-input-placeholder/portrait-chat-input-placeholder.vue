@@ -6,6 +6,7 @@
       'c-portrait-chat-input-placeholder--disabled': chatInputDisabled,
       'c-portrait-chat-input-placeholder--round': playbackChapterEntranceVisible,
     }"
+    :style="inputStyle"
     @click="onClickPlaceholder"
   >
     <template v-if="!playbackChapterEntranceVisible">
@@ -17,6 +18,9 @@
         {{ portraitMessageInputPlaceholder }}
       </span>
       <portrait-ask-icon :font-size="18" />
+    </template>
+    <template v-else>
+      <mobile-icon-message class="c-portrait-chat-input-placeholder__icon" />
     </template>
   </div>
 </template>
@@ -34,7 +38,10 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { computed, unref } from 'vue';
+import { useThemeStore } from '@/store/use-theme-store';
+import { CSSProperties, computed, unref } from 'vue';
+
+const themeStore = useThemeStore();
 
 const { chatInputDisabled, chatRoomLongTimeNotUsed, chatExited } =
   storeDefinitionToRefs(useChatStore);
@@ -84,6 +91,15 @@ function onClickPlaceholder() {
 
   getEmitter().emit(appEvents.chat.FocusToChatInput);
 }
+
+const inputStyle = computed<CSSProperties>(() => {
+  if (!themeStore.watchThemeStyleConfig) return {};
+
+  return {
+    background: themeStore.watchThemeStyleConfig.common.chat.msgInput.bg,
+    borderColor: themeStore.watchThemeStyleConfig.common.chat.msgInput.borderColor,
+  };
+});
 </script>
 
 <style lang="scss">
@@ -97,6 +113,7 @@ function onClickPlaceholder() {
   padding: 0 12px;
   line-height: 32px;
   background-color: rgba(#000000, 0.4);
+  border: 1px solid transparent;
   border-radius: 16px;
 
   .c-portrait-ask-icon {
@@ -118,10 +135,17 @@ function onClickPlaceholder() {
 }
 
 .c-portrait-chat-input-placeholder--round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 32px;
   height: 32px;
-  background-image: url(./images/icon-send-msg.png);
-  background-size: 100%;
+  padding: 0;
+
+  .c-portrait-chat-input-placeholder__icon {
+    margin-right: 0;
+    font-size: 22px !important;
+  }
 }
 .c-portrait-chat-input-question__icon {
   display: flex;

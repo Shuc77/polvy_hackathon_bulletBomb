@@ -15,6 +15,7 @@
     background-image: url($--bg-image) !important;
   } @else if ($--bg-type == 'color') {
     background-color: $--bg-color !important;
+    background-image: none !important;
   } @else if ($--bg-type == 'line-gradient') {
     background: $--bg-gradient-color;
   } @else {

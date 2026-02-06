@@ -3,7 +3,7 @@
   <div class="c-pc-watch-aside-menu">
     <pc-aside-tabs
       v-model="pcAsideTabCurrentName"
-      @input="trackWatchTabChange"
+      @tab-click="trackWatchTabChange"
       @is-empty-callback="onIsEmptyCallback"
     >
       <!-- 课堂激励特效，跟随"屏蔽特效"开关 -->
@@ -108,7 +108,8 @@
           v-if="
             menu.menuType === ChannelMenuType.Buy &&
             interactSetting.productEnabled &&
-            interactSetting.productEntryPosition === ProductEntryPosition.MenuBar
+            interactSetting.productEntryPosition === ProductEntryPosition.MenuBar &&
+            !isPlaybackWatchUrl
           "
           :key="`buy-${index}`"
           :label="menu.name"
@@ -211,6 +212,7 @@ import { ChannelMenuType, MotivationLikeType, ProductEntryPosition } from '@poly
 
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const layoutStore = useLayoutStore();
 
@@ -229,6 +231,8 @@ const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,

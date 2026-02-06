@@ -22,11 +22,13 @@ module.exports = {
     ENABLE_RUNTIME_PUBLIC_PATH: 'readonly',
     BUILD_ENV: 'readonly',
     NEED_INTERNAL_BUILD_VUE: 'readonly',
+    RUM_ENABLED: 'readonly',
   },
   rules: {
     'import/named': 'off',
     'import/no-named-as-default': 'off',
     'import/no-named-as-default-member': 'off',
+    'promise/prefer-await-to-then': 'off',
     '@typescript-eslint/no-for-in-array': 'off',
 
     '@typescript-eslint/naming-convention': [

@@ -3,7 +3,7 @@ import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useChannelStore } from '@/store/use-channel-store';
 
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { LiveStatus, PlaybackTarget } from '@polyv/live-watch-sdk';
+import { LiveStatus, PlaybackTarget, plvWait } from '@polyv/live-watch-sdk';
 
 export const usePlaybackList = () => {
   const playbackStore = usePlaybackStore();
@@ -33,6 +33,8 @@ export const usePlaybackList = () => {
     }
 
     await watchCore.player.changePlayback(target.playbackOptions);
+
+    await plvWait(300);
     watchCore.player.play();
   }
 

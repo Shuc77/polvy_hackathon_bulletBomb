@@ -16,13 +16,14 @@
 </template>
 
 <script setup lang="ts">
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useThemeStore } from '@/store/use-theme-store';
-import { ChannelWatchPageSkin } from '@polyv/live-watch-sdk';
-import { usePageSkin } from '../use-page-skin';
+import { ChannelWatchPageSkin, ChannelWatchThemeStyleType } from '@polyv/live-watch-sdk';
+import { usePageSkinImport } from '../use-page-skin';
+import { storeToRefs } from 'pinia';
 
-const { pageSkin } = storeDefinitionToRefs(useThemeStore);
-const { setPageSkin } = usePageSkin();
+const themeStore = useThemeStore();
+const { pageSkin } = storeToRefs(themeStore);
+const { importPageSkin } = usePageSkinImport();
 
 const selectList = [
   ChannelWatchPageSkin.Black,
@@ -39,7 +40,12 @@ function onClickItem(skin: ChannelWatchPageSkin) {
     return;
   }
 
-  setPageSkin(skin);
+  themeStore.$patch({
+    pageSkin: skin,
+    styleType: ChannelWatchThemeStyleType.Skin,
+  });
+
+  importPageSkin();
 }
 </script>
 

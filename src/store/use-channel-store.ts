@@ -12,6 +12,7 @@ import {
   TeacherInfoType,
   ChannelNewScene,
   ChannelAnchorInfo,
+  ProductIconConfig,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -70,6 +71,8 @@ export interface ChannelStoreState {
   isSmallClassChannel: Ref<boolean>;
   /** 商品库横屏位置 */
   productEntryLandscapePosition: Ref<string>;
+  /** 商品库图标配置 */
+  productIconConfig: Ref<ProductIconConfig | undefined>;
 }
 
 export interface ChannelStoreActions {
@@ -173,6 +176,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
   /** 商品库横屏位置 */
   const productEntryLandscapePosition = ref('chat');
+  /** 商品库图标配置 */
+  const productIconConfig = ref<ProductIconConfig>();
 
   /** 是否支持渲染管理员公告跑马灯 */
   const managerBulletinMarqueeRenderEnabled = computed(() => {
@@ -204,6 +209,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     audioMode.value = watchCore.channel.getAudioMode();
     audioModeSwitchEnabled.value = watchCore.channel.getAudioModeSwitchEnabled();
     productEntryLandscapePosition.value = watchCore.channel.getProductEntryLandscapePosition();
+    productIconConfig.value = watchCore.channel.getProductIconConfig();
 
     smsConfig.value = watchCore.sms.getSmsConfig();
     channelNewScene.value = watchCore.channel.getNewScene();
@@ -234,6 +240,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isSmallClassChannel,
     channelNewScene,
     productEntryLandscapePosition,
+    productIconConfig,
 
     streamTrackConfig,
     supportMultiStreamTrack,

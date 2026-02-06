@@ -19,7 +19,6 @@
 <script setup lang="ts">
 import { useLiveWatchAIUILoader } from '@/plugins/external-lib-loaders/load-ai-ui';
 import { defineAsyncComponent, ref } from 'vue';
-import { useAIGlobalProvider } from '../use-ai-global-provider';
 import { useAIPlaybackQuestion } from '../hooks/use-ai-playback-question';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerStore } from '@/store/use-player-store';
@@ -29,8 +28,6 @@ import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 
 const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
-
-useAIGlobalProvider();
 
 const { loadLiveWatchAIUIComponent } = useLiveWatchAIUILoader();
 const PlaybackQuestionCard = defineAsyncComponent(() =>

@@ -2,62 +2,92 @@
 <!-- @file PC 端回放列表 -->
 <template>
   <div class="c-pc-playback-list">
-    <plv-row
-      class="c-pc-playback-list__main"
-      :gutter="20"
-    >
-      <plv-col
-        v-for="(item, index) in currentPagePlaybackList"
-        :key="index"
-        :span="{
-          sm: 6,
-          md: 6,
-          lg: 6,
-          xl: 4.8,
-          xxl: 4.8,
-        }"
-        class="c-pc-playback-list__item"
-        :class="{
-          'c-pc-playback-list__item--current':
-            item.playbackId === currentPlaybackTarget?.playbackId,
-        }"
-        @click.native="onClickPlaybackItem(item)"
+    <!-- 顶部栏：总数和搜索框 -->
+    <div class="c-pc-playback-list__header">
+      <div class="c-pc-playback-list__header__total">
+        {{ $lang('playback.total.count', { count: totalItems }) }}
+      </div>
+      <div class="c-pc-playback-list__header__search">
+        <search-input
+          v-model="searchKeyword"
+          :placeholder="$lang('playback.search.placeholder')"
+          :debounce-delay="500"
+          @search="onSearch"
+        />
+      </div>
+    </div>
+    <div class="c-pc-playback-list__body">
+      <div
+        v-if="isLoading"
+        class="c-pc-playback-list__loading"
       >
-        <div class="c-pc-playback-list__item__cover-wrap">
-          <div
-            class="c-pc-playback-list__item__cover g-img-cover"
-            :style="{
-              backgroundImage: `url(${item.firstImage})`,
-            }"
-          ></div>
-
-          <div
-            v-if="item.playbackId === currentPlaybackTarget?.playbackId"
-            class="c-pc-playback-list__item__playing pws-pc-playback-list-playing"
-          >
-            <pc-icon-media class="c-pc-playback-list__item__playing__icon" />
-            <span>{{ $lang('playback.playing') }}</span>
-          </div>
-
-          <div class="c-pc-playback-list__item__bottom">
-            <pc-icon-play-round class="c-pc-playback-list__item__bottom__icon" />
-            <span class="c-pc-playback-list__item__bottom__duration">
-              {{ formatDuration(item.duration) }}
-            </span>
-          </div>
-        </div>
-
-        <p class="c-pc-playback-list__item__title g-singleline">{{ item.title }}</p>
-        <p
-          v-if="item.startTime && listLiveStartTimeEnabled"
-          class="c-pc-playback-list__item__start-time"
+        <list-loading />
+      </div>
+      <plv-row
+        class="c-pc-playback-list__main"
+        :gutter="20"
+      >
+        <plv-col
+          v-for="(item, index) in currentPagePlaybackList"
+          :key="index"
+          :span="{
+            sm: 6,
+            md: 6,
+            lg: 6,
+            xl: 4.8,
+            xxl: 4.8,
+          }"
+          class="c-pc-playback-list__item"
+          :class="{
+            'c-pc-playback-list__item--current':
+              item.playbackId === currentPlaybackTarget?.playbackId,
+          }"
+          @click.native="onClickPlaybackItem(item)"
         >
-          {{ $lang('playback.startTime') }}
-          <span>{{ formatDate(item.startTime, DATE_FORMAT_COMPLETE) }}</span>
-        </p>
-      </plv-col>
-    </plv-row>
+          <div class="c-pc-playback-list__item__cover-wrap">
+            <div
+              class="c-pc-playback-list__item__cover g-img-cover"
+              :style="{
+                backgroundImage: `url(${item.firstImage})`,
+              }"
+            ></div>
+
+            <div
+              v-if="item.playbackId === currentPlaybackTarget?.playbackId"
+              class="c-pc-playback-list__item__playing pws-pc-playback-list-playing"
+            >
+              <pc-icon-media class="c-pc-playback-list__item__playing__icon" />
+              <span>{{ $lang('playback.playing') }}</span>
+            </div>
+
+            <div class="c-pc-playback-list__item__bottom">
+              <pc-icon-play-round class="c-pc-playback-list__item__bottom__icon" />
+              <span class="c-pc-playback-list__item__bottom__duration">
+                {{ formatDuration(item.duration) }}
+              </span>
+            </div>
+          </div>
+
+          <p class="c-pc-playback-list__item__title g-singleline">{{ item.title }}</p>
+          <p
+            v-if="item.startTime && listLiveStartTimeEnabled"
+            class="c-pc-playback-list__item__start-time"
+          >
+            {{ $lang('playback.startTime') }}
+            <span>{{ formatDate(item.startTime, DATE_FORMAT_COMPLETE) }}</span>
+          </p>
+        </plv-col>
+      </plv-row>
+      <div
+        v-if="searchEmpty"
+        class="c-pc-playback-list__empty"
+      >
+        {{ $lang('playback.search.empty') }}
+      </div>
+    </div>
+
     <plv-pagination
+      v-show="currentPagePlaybackList.length"
       :hide-on-single="true"
       :total="totalPages"
       :current-page="pageNumber"
@@ -68,9 +98,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import { formatDate } from '@utils-ts/date';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { PcIconMedia, PcIconPlayRound } from '@/components/component-icons/pc/map';
+import SearchInput from '@/components/common-base/search-input/search-input.vue';
+import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { formatDuration } from '@/assets/utils/date-time';
@@ -84,10 +117,23 @@ const {
 
   pageNumber,
   totalPages,
+  totalItems,
 
   currentPagePlaybackList,
   currentPlaybackTarget,
+
+  isLoading,
+  searchEmpty,
 } = storeDefinitionToRefs(usePlaybackStore);
+
+// 搜索关键词
+const searchKeyword = ref('');
+
+// 搜索（防抖由 SearchInput 组件处理）
+function onSearch(keyword: string) {
+  playbackStore.setSearchKeyword(keyword);
+  playbackStore.searchPlaybackList();
+}
 
 const { onClickPlaybackItem } = usePlaybackList();
 </script>
@@ -95,6 +141,24 @@ const { onClickPlaybackItem } = usePlaybackList();
 <style lang="scss">
 .c-pc-playback-list {
   margin-top: -20px;
+}
+
+.c-pc-playback-list__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.c-pc-playback-list__header__total {
+  font-size: 16px;
+  color: $--font-color-primary;
+}
+
+.c-pc-playback-list__header__search {
+  flex-shrink: 0;
+  width: 320px;
+  max-width: 320px;
 }
 
 .c-pc-playback-list__main {
@@ -201,6 +265,29 @@ const { onClickPlaybackItem } = usePlaybackList();
   margin-top: 8px;
   font-size: 14px;
   color: #aaaaaa;
+}
+
+.c-pc-playback-list__body {
+  position: relative;
+}
+
+.c-pc-playback-list__loading {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.c-pc-playback-list__empty {
+  width: 100%;
+  padding: 40px 0;
+  font-size: 16px;
+  color: #adadc0;
+  text-align: center;
 }
 
 // @media only screen and(max-width: 1280px) {

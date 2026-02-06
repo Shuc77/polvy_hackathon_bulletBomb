@@ -13,6 +13,7 @@ import { FullMsgData } from '../../../chat-full-message/type';
 import { ChatMsgItemCategory } from '../use-chat-msg-item';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
+import { unescapeHTML } from '@polyv/utils/es/string';
 
 export const useQuoteSpeakContentParse = () => {
   const { getWatchCore } = useGlobalInject();
@@ -148,7 +149,7 @@ export const useSpeakMsgTranslate = (chatMsgRef: ResponsiveRef<ChatMsgSpeakType>
 
     isTranslating.value = true;
     try {
-      const result = await watchCore.utils.translateText(content);
+      const result = await watchCore.utils.translateText(unescapeHTML(content));
       translatedContent.value = result;
       isTranslating.value = false;
     } catch (e) {
@@ -196,7 +197,7 @@ export const useSpeakMsg = () => {
     if (unref(chatMsg).isOverLength) {
       copyContent = await getFullSpeakContent();
     }
-    await copyText(watchCore.emotion.translateEmotions(copyContent));
+    await copyText(unescapeHTML(watchCore.emotion.translateEmotions(copyContent)));
     toast.success(translate('copy.success'));
   }
 

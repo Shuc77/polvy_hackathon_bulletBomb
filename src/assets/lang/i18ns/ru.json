@@ -482,6 +482,9 @@
   "playback.startTime": "Время начала：",
   "playback.chapter": "Глава",
   "playback.no.more": "Больше нет",
+  "playback.search.empty": "Нет соответствующих видео",
+  "playback.search.placeholder": "Поиск по названию видео",
+  "playback.total.count": "{count} интересных воспроизведений",
   "trial.play.finish.tip": "Пробный просмотр закончен",
   "trial.player.start.tip": "Это платная трансляция, вы можете посмотреть {time} минут бесплатно",
   "trial.player.end.tip": "Пробный просмотр закончен. Если вам понравилась трансляция, нажмите для оплаты",
@@ -892,5 +895,6 @@
   "portrait.subtitle.close.tips.content": "Закройте его в \"Больше-Интерактивные инструменты-Субтитры в реальном времени\" для открытия",
   "portrait.subtitle.float.guide.tips": "Перетащите область боковой панели, чтобы переместить ее",
 
-  "portrait.exit.clear.screen.btn.text": "Выйти из очистки экрана"
+  "portrait.exit.clear.screen.btn.text": "Выйти из очистки экрана",
+  "externalLink.navigateFail": "В настоящее время перенаправление не поддерживается."
 }

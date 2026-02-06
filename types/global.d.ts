@@ -50,6 +50,9 @@ declare global {
   /** 构建环境 */
   const BUILD_ENV: string;
 
+  /** 是否启用用量上报 */
+  const RUM_ENABLED: boolean;
+
   /** 是否为静态打包构建模式 */
   const IS_STATIC_BUILD_MODE: boolean;
 

@@ -363,6 +363,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     }
 
     isAudience.value = watchCore.connectMic.isAudienceModeJoined();
+    supportFacingMode.value = connectMicInfo.supportFacingMode;
   }
 
   function syncConnectMicList(): void {
