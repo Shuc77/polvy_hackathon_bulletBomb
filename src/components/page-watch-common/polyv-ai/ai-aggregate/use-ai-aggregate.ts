@@ -3,8 +3,11 @@ import { useAIPlaybackOutline } from '../hooks/use-ai-playback-outline';
 import { useAISubtitleList } from '../hooks/use-ai-subtitle-list';
 import { useAIPlaybackQuestion } from '../hooks/use-ai-playback-question';
 import { computed } from 'vue';
+import { usePlaybackStore } from '@/store/use-playback-store';
 
 export const useAIAggregate = () => {
+  const playbackStore = usePlaybackStore();
+
   const { toSeekVideo } = usePlayerAction();
 
   // 大纲数据
@@ -14,7 +17,7 @@ export const useAIAggregate = () => {
   const { srtUrl, srtData, aiSubtitleListEnabled } = useAISubtitleList();
 
   // 答题数据
-  const { questionUrl, questionData, aiKnowledgeQuizEnabled } = useAIPlaybackQuestion();
+  const { questionUrl, questionData } = useAIPlaybackQuestion();
 
   function onSeekVideo(time: number) {
     toSeekVideo(time);
@@ -24,7 +27,7 @@ export const useAIAggregate = () => {
     return {
       outlineEnabled: !!(aiOutlineEnabled.value && outlineUrl.value),
       subtitleEnabled: !!(aiSubtitleListEnabled.value && srtUrl.value),
-      questionEnabled: !!(aiKnowledgeQuizEnabled.value && questionUrl.value),
+      questionEnabled: !!(playbackStore.aiKnowledgeQuizEnabled && questionUrl.value),
     };
   });
 

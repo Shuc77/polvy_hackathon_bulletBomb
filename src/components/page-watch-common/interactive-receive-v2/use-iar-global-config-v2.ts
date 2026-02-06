@@ -9,6 +9,7 @@ import { provide, reactive, watchEffect } from 'vue';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 /**
  * 互动功能全局配置注入的 key
@@ -30,6 +31,7 @@ export const useIarGlobalConfigHookV2 = () => {
 
   const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
   const { getPlvWebviewBridge } = useWebviewStore();
+  const { paramGetter } = useQueryParams();
 
   const provideData = reactive({
     globalLang: langStore.currentLang,
@@ -57,6 +59,7 @@ export const useIarGlobalConfigHookV2 = () => {
         height: plvWebviewDataSize.value.height,
       };
     },
+    getIsApp: () => paramGetter().isApp(),
   });
 
   watchEffect(() => {

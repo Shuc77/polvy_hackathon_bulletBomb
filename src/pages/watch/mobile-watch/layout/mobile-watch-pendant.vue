@@ -14,14 +14,11 @@
     />
 
     <!-- 更多 -->
-    <div
+    <mobile-more-entrance
       v-if="morePendantVisible"
-      class="c-mobile-watch-pendant__item c-mobile-watch-pendant__item--more pws-dark-white-bg-10 pws-light-basic-bg-90 pws-dark-white-color-100 pws-light-black-color-80"
-      :style="morePendantStyle"
-      @click="showMorePopup"
-    >
-      <mobile-icon-more-entrance />
-    </div>
+      class="c-mobile-watch-pendant__item"
+      :theme="morePendantTheme"
+    />
 
     <!-- 云席挂件 -->
     <mobile-seat-table-pendant
@@ -32,20 +29,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, unref } from 'vue';
-import { appEvents } from '@/app/app-events';
+import { computed } from 'vue';
 
 import { useInviteStore } from '@/store/use-invite-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { MobileIconMoreEntrance } from '@/components/component-icons/mobile/map';
 
+import MobileMoreEntrance from '@/components/page-watch-common/more-popup/mobile-more-entrance/mobile-more-entrance.vue';
 import MobileSeatTablePendant from '@/components/page-watch-common/interactive-receive/seat-table/seat-table-pendant/mobile-seat-table-pendant.vue';
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 
 import { TAB_NAME_INVITE_RANK, TAB_NAME_QA, TAB_NAME_SEAT } from '@/assets/constants/tab-name';
-import { useGlobalInject } from '@/app/use-global-inject';
+import { SkinColorMode } from '@/skins/enum';
 
 const { mobileWatchInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
@@ -54,25 +50,17 @@ const { mobileMenuCurrentName } = storeDefinitionToRefs(useLayoutStore);
 const { chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const morePendantVisible = computed(() => {
-  return !unref(chatMenuData).visible;
+  return !chatMenuData.value.visible;
 });
 
-const morePendantStyle = computed(() => {
-  const styles: Record<string, string> = {};
-
+const morePendantTheme = computed(() => {
   // 由于邀请榜菜单颜色过浅，图标必须使用深色
   if (mobileMenuCurrentName.value === TAB_NAME_INVITE_RANK) {
-    styles.color = 'rgba(0, 0, 0, 0.8) !important';
+    return SkinColorMode.Dark;
   }
 
-  return styles;
+  return undefined;
 });
-
-const { getEmitter } = useGlobalInject();
-
-function showMorePopup() {
-  getEmitter().emit(appEvents.global.OpenMobileMorePopup, true);
-}
 </script>
 
 <style lang="scss">

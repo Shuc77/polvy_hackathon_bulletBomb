@@ -20,6 +20,6 @@ const { announcementFunctionVisible } = storeDefinitionToRefs(useInteractReceive
 
 // 公告交互
 function onClickAnnouncement() {
-  getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
+  getEmitter().emit(appEvents.interaction.OpenBulletinPopup);
 }
 </script>

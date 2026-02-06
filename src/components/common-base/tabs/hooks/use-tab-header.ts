@@ -1,11 +1,23 @@
-import { nextTick, onBeforeUnmount, onMounted, Ref, ref, unref, watch } from 'vue';
-import { useTabsInject } from './use-tabs';
+import {
+  computed,
+  CSSProperties,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  Ref,
+  ref,
+  unref,
+  watch,
+} from 'vue';
+import { tabsHeaderProps, useTabsInject } from './use-tabs';
 import { useLangStore } from '@/store/use-lang-store';
 import { TabPaneDataItem } from './types';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 import { isIOS } from '@/assets/utils/browser';
+import { VueProps } from '@polyv/vue-components';
 
 export const useTabHeader = (
+  props: VueProps<typeof tabsHeaderProps>,
   options: {
     /** 点击后滚动到当前 tab，默认：false */
     scrollCurrent?: boolean;
@@ -14,8 +26,15 @@ export const useTabHeader = (
   const { scrollCurrent = false } = options;
   const langStore = useLangStore();
 
-  const { tabPaneData, currentTabName, currentTabIndex, setCurrentTab, toNextTab, toPrevTab } =
-    useTabsInject();
+  const {
+    tabPaneData,
+    currentTabName,
+    currentTabIndex,
+    setCurrentTab,
+    toEmitCurrentTabClick,
+    toNextTab,
+    toPrevTab,
+  } = useTabsInject();
 
   const scrollRef = ref<HTMLDivElement>();
   const itemRef = ref<HTMLDivElement[]>([]);
@@ -26,6 +45,7 @@ export const useTabHeader = (
       return;
     }
     setCurrentTab(paneData.name);
+    toEmitCurrentTabClick();
     if (scrollCurrent) {
       scrollToCurrent();
     }
@@ -37,6 +57,7 @@ export const useTabHeader = (
     await nextTick();
     if (scrollCurrent) {
       scrollToCurrent();
+      toEmitCurrentTabClick();
     }
   }
 
@@ -46,6 +67,7 @@ export const useTabHeader = (
     await nextTick();
     if (scrollCurrent) {
       scrollToCurrent();
+      toEmitCurrentTabClick();
     }
   }
 
@@ -125,6 +147,32 @@ export const useTabHeader = (
     });
   }
 
+  const showUnderLine = computed(() => {
+    const styleConfig = props.headerConfig.activeItem;
+    if (styleConfig && !styleConfig.underline) {
+      return false;
+    }
+
+    return tabPaneData.value.length > 1;
+  });
+
+  function getTabItemStyle(isActive: boolean): CSSProperties {
+    if (!props.headerConfig.activeItem || !props.headerConfig.item) return {};
+
+    if (!isActive) {
+      return {
+        color: props.headerConfig.item.fontColor,
+      };
+    }
+
+    const styleConfig = props.headerConfig.activeItem;
+    return {
+      background: styleConfig.bg,
+      borderColor: styleConfig.borderColor,
+      color: styleConfig.fontColor,
+    };
+  }
+
   return {
     scrollRef,
     itemRef,
@@ -136,6 +184,9 @@ export const useTabHeader = (
     onClickPrev,
     currentLineLeft,
     currentLineRef,
+
+    showUnderLine,
+    getTabItemStyle,
   };
 };
 

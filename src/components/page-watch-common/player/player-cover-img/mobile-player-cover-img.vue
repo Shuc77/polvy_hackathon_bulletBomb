@@ -3,7 +3,7 @@
   <div
     class="c-mobile-player-cover-img"
     :class="{
-      'c-pc-player-cover-img__prevent-player-click': preventPlayerClick,
+      'c-mobile-player-cover-img__prevent-player-click': preventPlayerClick,
     }"
   >
     <!-- 暖场图/播放器封面图 -->
@@ -27,6 +27,13 @@
     >
       <p>{{ $lang('seminar.hostInGroup') }}</p>
     </div>
+    <!-- 多皮肤主题默认图 -->
+    <div
+      v-if="!warmUpRenderCover && watchThemeStyleConfig && !isPlayStarted"
+      class="c-mobile-player-cover-img__warm-up-img"
+    >
+      <channel-splash-img />
+    </div>
   </div>
 </template>
 
@@ -38,14 +45,17 @@ import PlayerAudioLivePlaceholder from '@/components/common-business/player/play
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
-
+import { useThemeStore } from '@/store/use-theme-store';
 const {
   warmUpRenderCover,
   showWarmUpImg,
+  isPlayStarted,
 
   showAudioLivePlaceholder,
 } = storeDefinitionToRefs(usePlayerStore);
 const { isSeminarHostInGroup } = storeDefinitionToRefs(useChannelStore);
+
+const { watchThemeStyleConfig } = storeDefinitionToRefs(useThemeStore);
 
 const preventPlayerClick = computed(() => {
   if (isSeminarHostInGroup.value) return true;
@@ -64,7 +74,7 @@ const preventPlayerClick = computed(() => {
   height: 100%;
   pointer-events: none;
 }
-.c-pc-player-cover-img__prevent-player-click {
+.c-mobile-player-cover-img__prevent-player-click {
   pointer-events: visible;
 }
 

@@ -3,6 +3,7 @@
   <iar-mobile-topic-pk
     class="c-mobile-topic-pk"
     :topic-sdk="topicPkSdk"
+    :custom-img-config="customImgConfig"
     :before-choose-topic-pk-answer="beforeChooseTopicPkAnswer"
     @visible-changed="onTopicPKVisibleChanged"
   />
@@ -14,5 +15,6 @@ import { useTopicPk } from './hook/use-topic-pk';
 
 const IarMobileTopicPk = getIarComponent('MobileTopic');
 
-const { topicPkSdk, onTopicPKVisibleChanged, beforeChooseTopicPkAnswer } = useTopicPk();
+const { topicPkSdk, customImgConfig, onTopicPKVisibleChanged, beforeChooseTopicPkAnswer } =
+  useTopicPk();
 </script>

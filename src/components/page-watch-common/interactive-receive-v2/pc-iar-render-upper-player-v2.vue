@@ -20,6 +20,9 @@
 
       <!-- 投票规则说明弹层 -->
       <pc-vote-rule-popup />
+
+      <!-- 公告弹层 -->
+      <pc-bulletin-popup />
     </div>
   </div>
 </template>
@@ -32,6 +35,7 @@ import PcLuckyLotteryListPopup from './lucky-lottery/pc/pc-lucky-lottery-list-po
 import PcLuckyLotteryDetailPopup from './lucky-lottery/pc/pc-lucky-lottery-detail-popup.vue';
 import PcLuckyLotteryReceivePopup from './lucky-lottery/pc/pc-lucky-lottery-receive-popup.vue';
 import PcVoteRulePopup from './vote-v2/pc/pc-vote-rule-popup.vue';
+import PcBulletinPopup from './bulletin-v2/bulletin-popup/pc-bulletin-popup.vue';
 </script>
 
 <style lang="scss">

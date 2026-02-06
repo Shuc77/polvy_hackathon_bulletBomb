@@ -7,6 +7,7 @@
     <iar-mobile-vote-pendant
       :is-full-screen="isIarFullScreen"
       :vote-target="getIarTarget()"
+      :icon-url="iconUrl"
       :before-click-interrupt="beforeClickInterrupt"
     />
   </div>
@@ -24,7 +25,7 @@ const { loadIarUI } = useIarUILoader('iar-vote-ui');
 
 const IarMobileVotePendant = defineAsyncComponent(() => loadIarUI('vote-pendant'));
 
-const { targetInited, getIarTarget } = useVote();
+const { targetInited, getIarTarget, iconUrl } = useVote();
 
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 

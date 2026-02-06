@@ -1,7 +1,10 @@
 <!-- @file 移动端基础信息显示 -->
 <template>
   <div class="c-mobile-basic-info">
-    <div class="c-mobile-basic-info__top">
+    <div
+      class="c-mobile-basic-info__top"
+      :style="basicInfoTopStyle"
+    >
       <!-- 基础信息 -->
       <div class="c-mobile-basic-info__channel">
         <!-- 频道 logo -->
@@ -21,6 +24,15 @@
                 :status="liveStatus"
                 :effect="tagEffect"
               />
+
+              <!-- 无延迟标签 -->
+              <span
+                v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
+                class="c-mobile-basic-info__channel__inner__low-latency"
+                :class="{
+                  'c-mobile-basic-info__channel__inner__low-latency__en': !isChineseLang,
+                }"
+              ></span>
             </div>
           </div>
           <!-- 直播时间 + 浏览次数 + 无延迟标记 -->
@@ -35,14 +47,6 @@
             >
               {{ shortNumber(pageViewCount) }} {{ $lang('watch.pvSuffix') }}
             </span>
-            <!-- 无延迟标签 -->
-            <span
-              v-if="(isLowLatency || isConnectMicing) && supportLowLatency"
-              class="c-mobile-basic-info__channel__inner__low-latency g-img-cover"
-              :class="{
-                'c-mobile-basic-info__channel__inner__low-latency__en': !isChineseLang,
-              }"
-            ></span>
           </div>
         </div>
       </div>
@@ -126,7 +130,7 @@ import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { PropUtils, useProps, PwcLiveStatusTag } from '@polyv/vue-components';
-import { computed, unref } from 'vue';
+import { CSSProperties, computed, unref } from 'vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { useChatStore } from '@/store/use-chat-store';
 import { useThemeStore } from '@/store/use-theme-store';
@@ -154,6 +158,8 @@ const { resizeOSSImg } = useResizeOssImage();
 const { showPageView, showLikeCount, showDesc } = useProps(props);
 
 const { shortNumber } = useShortNumber();
+
+const themeStore = useThemeStore();
 
 const { liveStatus, compressImageEnabled, teacherInfo } = storeDefinitionToRefs(useChannelStore);
 
@@ -204,6 +210,14 @@ function onClickPublisher() {
     getEmitter().emit(appEvents.global.OpenAnchorPopup);
   }
 }
+
+const basicInfoTopStyle = computed<CSSProperties>(() => {
+  if (!themeStore.watchThemeStyleConfig) return {};
+
+  return {
+    background: themeStore.watchThemeStyleConfig.common.introArea.bg,
+  };
+});
 </script>
 
 <style lang="scss">
@@ -270,6 +284,7 @@ function onClickPublisher() {
 
 .c-mobile-basic-info__channel__inner__status {
   margin-left: 8px;
+  vertical-align: middle;
   transform: translateY(-1px);
 }
 
@@ -292,12 +307,15 @@ function onClickPublisher() {
 }
 
 .c-mobile-basic-info__channel__inner__low-latency {
+  display: inline-block;
   width: 58px;
-  height: 18px;
-  margin-top: -3px;
-  margin-left: auto;
-
+  height: 16px;
+  margin-left: 8px;
+  vertical-align: middle;
   background-image: url(./imgs/low-latency-bg-mobile.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  transform: translateY(-1px);
 
   &.c-mobile-basic-info__channel__inner__low-latency__en {
     width: 100px;

@@ -1,6 +1,6 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import type { PlaybackQuestionData } from '@polyv/live-watch-sdk';
 
 const jsonRecord: Record<string, Promise<PlaybackQuestionData>> = {};
@@ -16,11 +16,6 @@ export const useAIPlaybackQuestion = () => {
 
   // 答题数据
   const questionData = ref<PlaybackQuestionData>();
-
-  const aiKnowledgeQuizEnabled = computed(() => {
-    const playbackTarget = playbackStore.currentPlaybackTarget;
-    return playbackTarget?.aiKnowledgeQuizEnabled ?? false;
-  });
 
   function getJsonData(url: string) {
     if (!jsonRecord[url]) {
@@ -50,7 +45,7 @@ export const useAIPlaybackQuestion = () => {
       return;
     }
 
-    if (!aiKnowledgeQuizEnabled.value) {
+    if (!playbackStore.aiKnowledgeQuizEnabled) {
       questionData.value = undefined;
       return;
     }
@@ -72,6 +67,5 @@ export const useAIPlaybackQuestion = () => {
   return {
     questionUrl,
     questionData,
-    aiKnowledgeQuizEnabled,
   };
 };

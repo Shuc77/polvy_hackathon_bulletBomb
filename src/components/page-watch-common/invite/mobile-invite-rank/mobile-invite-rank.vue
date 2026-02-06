@@ -72,7 +72,10 @@
     </section>
 
     <!-- 我的排名信息 -->
-    <section class="c-mobile-invite-rank__me">
+    <section
+      class="c-mobile-invite-rank__me"
+      v-if="inviteActivityWillEndTipVisible || currentRankInfo || invitePosterEnabled"
+    >
       <mobile-invite-activity-will-end-tip
         v-if="inviteActivityWillEndTipVisible"
         class="c-mobile-invite-rank__invite-activity-will-end-tip"
@@ -107,13 +110,13 @@
         <invite-entry-capsule v-if="invitePosterEnabled" />
       </invite-rank-item>
       <div
-        v-else
-        class="c-mobile-invite-rank__not__info pws-mobile-invite-rank__not__info"
+        v-else-if="invitePosterEnabled"
+        class="c-mobile-invite-rank__not__info"
       >
         <span class="c-mobile-invite-rank__not__info__text">
           {{ $lang('invite.rank.click.btn.desc') }}
         </span>
-        <invite-entry-capsule v-if="invitePosterEnabled" />
+        <invite-entry-capsule />
       </div>
     </section>
   </div>

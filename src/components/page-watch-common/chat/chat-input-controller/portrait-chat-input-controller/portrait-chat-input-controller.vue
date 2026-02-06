@@ -3,6 +3,7 @@
   <div
     v-show="inputVisible"
     ref="inputWrapRef"
+    :key="portraitMessageTabCurrentName + '__input'"
     class="c-portrait-chat-input-controller"
   >
     <!-- 消息引用 -->
@@ -10,11 +11,12 @@
 
     <portrait-msg-input-wrap
       ref="msgInputWrapRef"
+      :input-style="inputStyle"
       :placeholder="portraitMessageInputPlaceholder"
       :disabled-input="portraitChatInputDisabled"
       :disabled-emotion-picker="portraitChatInputDisabled"
       :face-emotion-enabled="chatSetting.faceEmotionEnabled"
-      :image-emotion-enabled="chatSetting.imageEmotionEnabled"
+      :image-emotion-enabled="imageEmotionEnabled"
       @system-msg="onSendSystemMsg"
       @submit="onSubmit"
       @click-image-emotion="closeInput"
@@ -36,7 +38,7 @@ import PortraitMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useAppendTo } from '@/hooks/behaviors/use-append-to';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
-import { computed, nextTick, ref } from 'vue';
+import { CSSProperties, computed, nextTick, ref } from 'vue';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -45,10 +47,15 @@ import { PlvInputContent, PlvInputContentText } from '@/plugins/polyv-ui/types';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
+import { useThemeStore } from '@/store/use-theme-store';
+import { storeToRefs } from 'pinia';
 
 const inputWrapRef = ref<HTMLDivElement>();
 
 const portraitLayoutStore = usePortraitLayoutStore();
+
+const { portraitMessageInputPlaceholder, portraitMessageTabCurrentName } =
+  storeToRefs(portraitLayoutStore);
 
 const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
@@ -59,8 +66,6 @@ const { getWatchCore } = useGlobalInject();
 const { onSubmitMessage, onSendSystemMsg, msgInputWrapRef, focusMsgInput } = useChatInputController(
   {
     submitIntercept: (contentList: PlvInputContent[]) => {
-      const portraitLayoutStore = usePortraitLayoutStore();
-
       // 竖屏提问
       if (portraitLayoutStore.portraitMessageTabCurrentName === PortraitChatTabName.Ask) {
         const data = contentList[0] as PlvInputContentText;
@@ -116,9 +121,6 @@ useClickOutside(inputWrapRef, () => {
 
 const { chatInputDisabled, chatSetting } = storeDefinitionToRefs(useChatStore);
 
-const { portraitMessageInputPlaceholder, portraitMessageTabCurrentName } =
-  storeDefinitionToRefs(usePortraitLayoutStore);
-
 const portraitChatInputDisabled = computed(() => {
   if (portraitMessageTabCurrentName.value === PortraitChatTabName.Ask) {
     return false;
@@ -131,6 +133,25 @@ function onSubmit(params: { contentList: PlvInputContent[] }) {
   onSubmitMessage(params);
   setInputVisible(false);
 }
+
+const themeStore = useThemeStore();
+
+const inputStyle = computed<CSSProperties>(() => {
+  if (!themeStore.watchThemeStyleConfig) return {};
+
+  return {
+    background: themeStore.watchThemeStyleConfig.common.chat.msgInput.bg,
+    borderColor: themeStore.watchThemeStyleConfig.common.chat.msgInput.borderColor,
+  };
+});
+
+const imageEmotionEnabled = computed(() => {
+  if (portraitMessageTabCurrentName.value === PortraitChatTabName.Ask) {
+    return false;
+  }
+
+  return chatSetting.value.imageEmotionEnabled;
+});
 </script>
 
 <style lang="scss">

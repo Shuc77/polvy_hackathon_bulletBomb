@@ -2,12 +2,12 @@
 <template>
   <div
     v-if="showLiveCountDown"
-    class="c-mobile-count-down-layout"
+    class="c-mobile-count-down-layout pws-normal-button-primary--config-wrapper"
     :class="{
       'c-mobile-count-down-layout--top-right': isTopRightStyle,
     }"
   >
-    <div class="c-mobile-count-down-layout__content">
+    <div class="c-mobile-count-down-layout__content pws-count-down-layout">
       <!-- 直播开始文案 -->
       <div class="c-mobile-count-down-layout__time-text">
         {{ $lang('watch.liveTime') }}：{{ liveStartTimeText }}

@@ -8,6 +8,7 @@
     :is-full-screen="isIarFullScreen"
     :get-link-params="getLinkParams"
     :get-weixin-sdk="getWeixinSdk"
+    :custom-img-config="customImgConfig"
     @visible-changed="onPushCardVisibleChanged"
     @entry-visible-changed="onEntryVisibleChanged"
   />
@@ -27,7 +28,8 @@ const IarPushCard = getIarComponent('PushCard');
 
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { pushCardSdk, onEntryVisibleChanged, onPushCardVisibleChanged } = usePushCard();
+const { pushCardSdk, customImgConfig, onEntryVisibleChanged, onPushCardVisibleChanged } =
+  usePushCard();
 
 const { getLinkParams } = useIarExternalLinkParams();
 </script>

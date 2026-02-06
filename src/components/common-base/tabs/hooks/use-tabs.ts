@@ -31,13 +31,34 @@ export const generateHackWeixinBtnId = (menuName: string | number, needSelectorK
   return needSelectorKey ? `#${id}` : id;
 };
 
+export interface TabHeaderConfig {
+  bg?: string;
+  item?: {
+    fontColor: string;
+  };
+  activeItem?: {
+    bg: string;
+    borderColor: string;
+    icon: string;
+    fontColor: string;
+    underline: boolean;
+  };
+}
+
+export const tabsHeaderProps = () => ({
+  headerConfig: PropUtils.object<TabHeaderConfig>().def({}),
+});
+
 export const tabsProps = () => ({
+  ...tabsHeaderProps(),
   /** 激活的面板 name */
   value: PropUtils.oneOfType<TabNameType>([String, Number]).def(''),
 });
 
 export const tabsEmits = () => ({
   input: emitFunc<TabNameType>(),
+  /** 只有点击 Tab 行为才会触发该事件 */
+  'tab-click': emitFunc<TabNameType>(),
   'is-empty-callback': emitFunc<boolean>(),
 });
 
@@ -89,6 +110,10 @@ export const useTabs = (options: {
     },
   );
 
+  function clearDefaultTabName() {
+    defaultTabName.value = '';
+  }
+
   function setDefaultTabName(name: TabNameType) {
     defaultTabName.value = name;
     const firstTabName = tabPaneData.value.length > 0 ? tabPaneData.value[0].name : '';
@@ -109,11 +134,23 @@ export const useTabs = (options: {
     currentTabName.value = name;
     currentTabIndex.value = newIndex;
 
+    if (prevTabName.value === currentTabName.value) {
+      return;
+    }
+
     emit('input', name);
 
     if (options.switchEvent) {
       getEmitter().emit(options.switchEvent, name);
     }
+  }
+
+  function toEmitCurrentTabClick() {
+    if (tabPaneData.value.length === 0) {
+      return;
+    }
+
+    emit('tab-click', currentTabName.value);
   }
 
   /** 切到下一个 tab */
@@ -244,6 +281,7 @@ export const useTabs = (options: {
     currentTabIndex,
     tabPaneData,
     setCurrentTab,
+    toEmitCurrentTabClick,
     toNextTab,
     toPrevTab,
   });
@@ -252,6 +290,7 @@ export const useTabs = (options: {
     currentTabName,
     setCurrentTab,
     setDefaultTabName,
+    clearDefaultTabName,
   };
 
   return {

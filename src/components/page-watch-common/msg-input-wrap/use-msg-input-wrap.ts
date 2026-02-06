@@ -1,6 +1,6 @@
 import { PropUtils, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';
-import { computed, ref, unref, watch } from 'vue';
+import { CSSProperties, computed, ref, unref, watch } from 'vue';
 import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { useMsgInputController } from './use-msg-input-controller';
 import { translate } from '@/assets/lang';
@@ -10,6 +10,8 @@ import { WatchSdkLangEnum } from '@polyv/live-watch-sdk';
 export const msgInputWrapProps = () => ({
   /** 占位符 */
   placeholder: PropUtils.string,
+  /** 输入框样式 */
+  inputStyle: PropUtils.object<CSSProperties>().def({}),
   /** 是否禁用输入框 */
   disabledInput: PropUtils.bool.def(false),
   /** 是否禁用发送按钮 */

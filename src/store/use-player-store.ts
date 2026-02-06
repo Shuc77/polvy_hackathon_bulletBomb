@@ -17,6 +17,7 @@ import {
   PlayerResolutionRatio,
   PlayerDetectionCbParams,
   PlayerLoadingDetectionType,
+  PortraitPlayerScreenType,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -170,6 +171,8 @@ export interface PlayerStoreState {
   hasGuidePortraitStreamFitClass: ComputedRef<boolean>;
   /** 是否需要等待执行停止流操作 */
   needWaitToStop: Ref<boolean>;
+  /** 竖屏播放器画面适配类型 */
+  portraitPlayerScreenType: Ref<PortraitPlayerScreenType>;
 }
 
 export enum SwitchTipsStatus {
@@ -437,6 +440,11 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否需要等待执行停止流操作 */
   const needWaitToStop = ref(__defaultPlayerInfo.needWaitToStop);
 
+  /** 竖屏播放器画面适配类型 */
+  const portraitPlayerScreenType = ref<PortraitPlayerScreenType>(
+    __defaultPlayerInfo.portraitPlayerScreenType,
+  );
+
   /** 是否支持刷新 api */
   const supportRefresh = ref(__defaultPlayerInfo.supportRefresh);
 
@@ -638,6 +646,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     playbackShowPlayButtonEnabled.value = playerInfo.playbackShowPlayButtonEnabled;
 
     playerResolutionRatio.value = playerInfo.playerResolutionRatio;
+    portraitPlayerScreenType.value = playerInfo.portraitPlayerScreenType;
 
     /**
      * 暂不支持三分屏场景和研讨会场景
@@ -746,5 +755,6 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     playerLoadingDetectionInfo,
     hasGuidePortraitStreamFitClass,
     needWaitToStop,
+    portraitPlayerScreenType,
   };
 });

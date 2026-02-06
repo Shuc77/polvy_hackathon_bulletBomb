@@ -4,7 +4,7 @@
     <!-- 聊天室顶部固定区域 -->
     <div class="c-pc-chat-room__topic pws-main-tab-body">
       <!-- 置顶公告 -->
-      <pc-announcement-top
+      <bulletin-topping
         v-if="announcementFunctionVisible && iarSdkLoaded"
         class="c-pc-chat-room__topic__item c-pc-chat-room__topic__announcement"
       />
@@ -33,7 +33,7 @@
 
       <!-- 特效动画 -->
       <chat-loader-helper>
-        <pc-special-effect-animation />
+        <pc-special-effect-animation class="c-pc-chat-room__special-effect-animation" />
       </chat-loader-helper>
     </div>
 
@@ -63,7 +63,7 @@ import PcDonateAnimation from '@/components/page-watch-common/donate/donate-anim
 import PcSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 
 import PcRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
-import PcAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
+import BulletinTopping from '@/components/page-watch-common/interactive-receive-v2/bulletin-v2/bulletin-topping.vue';
 import PcInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/pc-interactive-entrance.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
@@ -120,6 +120,10 @@ const { announcementFunctionVisible, iarSdkLoaded } =
   &:empty {
     display: none;
   }
+}
+
+.c-pc-chat-room__special-effect-animation {
+  z-index: 20;
 }
 
 .c-pc-chat-room__msg-list {

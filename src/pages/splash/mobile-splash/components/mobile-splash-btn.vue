@@ -1,6 +1,6 @@
 <!-- @file 移动端引导页底部按钮 -->
 <template>
-  <div class="c-mobile-splash-btn">
+  <div class="c-mobile-splash-btn pws-normal-button-primary--config-wrapper">
     <!-- 观看条件 -->
     <div
       v-if="!isAuthorized"

@@ -24,7 +24,8 @@
 <script setup lang="ts">
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { statusTagProps, useStatusTag } from './use-status-tag';
-import { SkinColorMode, useThemeStore } from '@/store/use-theme-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { SkinColorMode } from '@/skins/enum';
 import { computed } from 'vue';
 import { PropUtils } from '@polyv/vue-components';
 import MobileLiveSignalIcon from '../live-signal-icon/mobile-live-signal-icon.vue';
@@ -39,10 +40,10 @@ const { statusTagText, liveStatus } = useStatusTag({
   props,
 });
 
-const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
+const { currentSkinColorMode } = storeDefinitionToRefs(useThemeStore);
 
 const isDarkStyle = computed(() => {
-  if (props.forceDark || pageSkinColorMode.value === SkinColorMode.Dark) {
+  if (props.forceDark || currentSkinColorMode.value === SkinColorMode.Dark) {
     return true;
   }
   return false;

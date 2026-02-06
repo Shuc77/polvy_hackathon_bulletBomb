@@ -48,10 +48,7 @@ function __isMobile() {
 }
 
 function __isTablet() {
-  const ua = navigator.userAgent;
-  if (/(?:iPad|PlayBook)/.test(ua)) return true;
-  if ((uaInfo.os.isAndroid && !/(?:Mobile)/.test(ua)) || /(?:Tablet)/.test(ua)) return true;
-  return false;
+  return uaInfo.isTabletLike;
 }
 
 const isMob = __isMobile();

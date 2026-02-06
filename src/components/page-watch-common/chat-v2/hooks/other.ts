@@ -20,6 +20,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { useBrowser } from '@polyv/vue-components';
 import { useChatTarget } from './use-chat-target';
+import { useThemeStore } from '@/store/use-theme-store';
 
 /**
  * 消息隐藏相关
@@ -277,12 +278,17 @@ export function useClickMsgCallback() {
 export const useChatLikeConfig = () => {
   const { getWatchCore } = useGlobalInject();
   const { chatSetting } = storeDefinitionToRefs(useChatStore);
+  const themeStore = useThemeStore();
 
   const watchCore = getWatchCore();
 
   function getLikeEffectIcons(): string[] {
     const domainInfo = watchCore.domain.getDomainInfo();
-    const likeEffectType = chatSetting.value.likeEffectType;
+    let likeEffectType = chatSetting.value.likeEffectType;
+
+    if (themeStore.watchThemeStyleConfig && likeEffectType === LikeEffectType.System) {
+      likeEffectType = themeStore.watchThemeStyleConfig.common.chat.btn.like.effectType;
+    }
 
     switch (likeEffectType) {
       case LikeEffectType.Festival:

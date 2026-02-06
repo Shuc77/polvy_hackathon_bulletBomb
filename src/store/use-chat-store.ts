@@ -22,6 +22,7 @@ import { useWatchAppStore } from './use-watch-app-store';
 import { useIdentityStore } from './use-identity-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useLayoutStore } from './use-layout-store';
+import { useThemeStore } from './use-theme-store';
 
 export interface ChatStoreState {
   /** 聊天室设置信息 */
@@ -54,6 +55,8 @@ export interface ChatStoreState {
   likeSingleClickEnabled: ComputedRef<boolean>;
   /** 长按点赞开关 */
   likeHoldEnabled: ComputedRef<boolean>;
+  /** 点赞图标链接 */
+  likeIconUrl: ComputedRef<string>;
   /** 实时的点赞数 */
   realtimeLikes: Ref<number>;
   /** "只看特殊角色的消息"的控件是否展示 */
@@ -93,6 +96,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   const viewerStore = useViewerStore();
   const playbackStore = usePlaybackStore();
   const layoutStore = useLayoutStore();
+  const themeStore = useThemeStore();
   const { paramGetter } = useQueryParams();
 
   const { redirectToErrorVerify } = useErrorVerify();
@@ -171,6 +175,19 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
   /** 点赞功能是否可用 */
   const likeFeatureEnabled = computed(() => {
     return chatSetting.value.likeEnabled && !channelStore.isSeminarChannel;
+  });
+
+  /** 点赞图标链接 */
+  const likeIconUrl = computed(() => {
+    const defaultSetting = PlvChatModule.generateDefaultChatSetting();
+
+    const isDefaultIcon = defaultSetting.likeIconUrl === chatSetting.value.likeIconUrl;
+
+    if (themeStore.watchThemeStyleConfig && isDefaultIcon) {
+      return themeStore.watchThemeStyleConfig.common.chat.btn.like.iconUrl;
+    }
+
+    return chatSetting.value.likeIconUrl;
   });
 
   /** 实时的点赞数 */
@@ -320,6 +337,7 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     likeFeatureEnabled,
     likeSingleClickEnabled,
     likeHoldEnabled,
+    likeIconUrl,
     realtimeLikes,
 
     onlySpecialMsgWidgetVisible,

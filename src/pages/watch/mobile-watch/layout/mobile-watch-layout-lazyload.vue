@@ -5,7 +5,7 @@
     <!-- 互动功能 -->
     <mobile-iar-render v-if="iarSdkLoaded" />
     <mobile-iar-render-v2 v-if="iarSdkLoaded" />
-    <mobile-product-render v-if="iarSdkLoaded" />
+    <mobile-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
 
     <!-- 连麦挂件 -->
     <mobile-connect-mic-pendant
@@ -108,7 +108,7 @@
     <portrait-player-control-popup />
 
     <!-- AI 答题卡 -->
-    <ai-question-card />
+    <ai-question-card v-if="aiKnowledgeQuizEnabled" />
 
     <!-- 主讲详情弹层 -->
     <anchor-popup />
@@ -167,6 +167,8 @@ import { useLangStore } from '@/store/use-lang-store';
 import { useRedpackStore } from '@/store/use-redpack-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () =>
@@ -210,4 +212,8 @@ const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs
 
 const { learningStatsEnabled, learningStatsDialogEnabled } =
   storeDefinitionToRefs(useChannelInfoStore);
+
+const { aiKnowledgeQuizEnabled } = storeDefinitionToRefs(usePlaybackStore);
+
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 </script>

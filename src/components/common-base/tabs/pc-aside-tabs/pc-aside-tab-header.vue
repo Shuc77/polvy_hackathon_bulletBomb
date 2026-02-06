@@ -70,6 +70,9 @@
 <script setup lang="ts">
 import { useTabHeader, useTabHeaderArrow } from '../hooks/use-tab-header';
 import { PcIconArrowLeft, PcIconArrowRight } from '@/components/component-icons/pc/map';
+import { tabsHeaderProps } from '../hooks/use-tabs';
+
+const props = defineProps(tabsHeaderProps());
 
 const {
   tabPaneData,
@@ -81,7 +84,7 @@ const {
   scrollRef,
   itemRef,
   currentLineLeft,
-} = useTabHeader({
+} = useTabHeader(props, {
   scrollCurrent: true,
 });
 

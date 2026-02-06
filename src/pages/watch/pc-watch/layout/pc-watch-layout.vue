@@ -150,17 +150,18 @@
               <pc-iar-render-upper-player v-if="iarSdkLoaded && layoutLoaded" />
               <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded && layoutLoaded" />
               <pc-watch-layout-player-side-popup v-if="iarSdkLoaded && layoutLoaded" />
-              <pc-product-render />
+              <pc-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
             </div>
             <!-- 播放器右下角挂件区 -->
             <div class="c-pc-watch-layout__main__side-pendant-render">
               <!-- 商品库小卡片 -->
-              <pc-product-small-card v-if="iarSdkLoaded && layoutLoaded" />
+              <pc-product-small-card v-if="iarSdkLoaded && layoutLoaded && !isPlaybackWatchUrl" />
 
               <!-- 商品库挂件，开启「播放器是否悬浮商品列表入口开关」显示 -->
               <pc-product-pendant
                 v-if="
                   iarSdkLoaded &&
+                  !isPlaybackWatchUrl &&
                   layoutLoaded &&
                   interactSetting.productEntryPosition === ProductEntryPosition.Player &&
                   interactSetting.productEnabled
@@ -168,7 +169,7 @@
               />
 
               <!-- AI 答题卡 -->
-              <ai-question-card v-if="layoutLoaded" />
+              <ai-question-card v-if="layoutLoaded && aiKnowledgeQuizEnabled" />
             </div>
           </div>
 
@@ -305,6 +306,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 
@@ -326,6 +328,8 @@ import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/ho
 const { layoutLoaded } = useLayoutLoad('pc-watch-layout');
 
 const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { aiKnowledgeQuizEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { chatExited, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 

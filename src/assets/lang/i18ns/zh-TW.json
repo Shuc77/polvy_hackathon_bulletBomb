@@ -477,6 +477,9 @@
   "playback.startTime": "開始時間：",
   "playback.chapter": "章節",
   "playback.no.more": "沒有更多了",
+  "playback.search.empty": "暫無相關視頻",
+  "playback.search.placeholder": "輸入影片名稱搜尋",
+  "playback.total.count": "共 {count} 個精彩回放",
   "trial.play.finish.tip": "試看已結束",
   "trial.player.start.tip": "本次直播為付費直播，您可試看 {time} 分鐘",
   "trial.player.end.tip": "試看已結束。如果您覺得本直播不錯，請點擊付費觀看",
@@ -892,5 +895,6 @@
   "portrait.subtitle.close.tips.content": "關閉後可在「更多-互動工具-實時字幕」中開啟",
   "portrait.subtitle.float.guide.tips": "手指拖拽側邊區域，可移動位置",
 
-  "portrait.exit.clear.screen.btn.text": "退出清屏"
+  "portrait.exit.clear.screen.btn.text": "退出清屏",
+  "externalLink.navigateFail": "暫不支援跳轉"
 }

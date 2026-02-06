@@ -34,7 +34,7 @@ const watchCore = getWatchCore();
 const announcementSdk = watchCore.interactReceive.getAnnouncement();
 
 function onShowList() {
-  getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
+  getEmitter().emit(appEvents.interaction.OpenBulletinPopup);
 }
 
 function onShowDetail(data: unknown) {

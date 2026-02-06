@@ -5,6 +5,7 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { useWeixinSdk } from '@polyv/vue-components';
 import { storeToRefs } from 'pinia';
 import { provide, reactive, watchEffect } from 'vue';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 const PLV_IDENTITY_UI_GLOBAL_CONFIG = 'PlvIdentityUIGlobalConfig';
 
@@ -29,6 +30,8 @@ export const useIdentityUIGlobalProvider = () => {
 
   const { getWeixinSdk } = useWeixinSdk();
 
+  const { paramGetter } = useQueryParams();
+
   const langStore = useLangStore();
 
   const { isPlvWebview, plvWebviewDataSize } = storeToRefs(useWebviewStore());
@@ -49,6 +52,7 @@ export const useIdentityUIGlobalProvider = () => {
       };
     },
     getLinkParams,
+    getIsApp: () => paramGetter().isApp(),
   });
 
   watchEffect(() => {

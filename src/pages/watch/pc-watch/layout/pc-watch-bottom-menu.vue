@@ -1,6 +1,9 @@
 <!-- @file PC 端底部菜单栏 -->
 <template>
-  <div class="c-pc-watch-bottom-menu">
+  <div
+    class="c-pc-watch-bottom-menu"
+    :class="[skinColorIgnoreClass]"
+  >
     <pc-normal-tabs
       v-model="pcBottomTabCurrentName"
       ref="pcBottomMenuRef"
@@ -140,6 +143,9 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useLangStore } from '@/store/use-lang-store';
+import { useSkinColorIgnore } from '@polyv/vue-components';
+
+const { skinColorIgnoreClass } = useSkinColorIgnore();
 
 const { paramGetter } = useQueryParams();
 

@@ -2,10 +2,10 @@
  * @file 当前观看页地址上的参数
  */
 
-import {
+import type {
   ChannelWatchPageSkin,
   MobileWatchLayout,
-  PlaybackOrigin,
+  PlaybackType,
   YN,
   ZoneType,
 } from '@polyv/live-watch-sdk';
@@ -166,7 +166,7 @@ export const useQueryParams = (opts?: {
     /** 回放地址-回放 vid */
     vid: buildGetters('vid'),
     /** 回放地址-回放来源 */
-    playbackType: buildGetters<PlaybackOrigin>('playbackType'),
+    playbackType: buildGetters<PlaybackType>('playbackType'),
     /** 回放分享-回放视频 Id */
     playBackVid: buildGetters('playBackVid'),
     /** 渠道 id */
@@ -241,6 +241,8 @@ export const useQueryParams = (opts?: {
     useAICompleteFeature: buildGetters<YN>('useAICompleteFeature'),
     /** 是否强制外部授权 */
     forceExternalAuth: buildGetters<YN>('forceExternalAuth'),
+    /** app 标识 */
+    isApp: buildGetters<'1'>('isApp'),
   });
 
   /**

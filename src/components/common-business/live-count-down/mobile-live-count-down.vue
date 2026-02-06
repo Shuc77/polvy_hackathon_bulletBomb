@@ -11,6 +11,7 @@
       :end-timestamp="liveStartTime"
       size="small"
       :theme="theme"
+      :count-style="countStyle"
       :hide-zero-days="theme === 'text'"
       @count-down-change="onCountDownChange"
       @count-down-finish="onCountDownFinish"
@@ -19,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+import { type CSSProperties } from 'vue';
 import { PropUtils } from '@polyv/vue-components';
 import CountDown from '@/components/common-base/count-down/count-down.vue';
 import { countdownThemes } from '@/components/common-base/count-down/types';
@@ -31,6 +33,8 @@ defineProps({
   theme: PropUtils.oneOf(countdownThemes).def('square'),
   /** 显示标题 */
   showTitle: PropUtils.bool.def(false),
+
+  countStyle: PropUtils.object<CSSProperties>().def({}),
 });
 
 const { liveStartTime } = storeDefinitionToRefs(useChannelInfoStore);

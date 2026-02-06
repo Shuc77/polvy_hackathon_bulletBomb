@@ -1,0 +1,97 @@
+{
+  "mode": "dark",
+  "themeColor": "#a20a1f",
+  "primaryColor": "#FF5252",
+  "common": {
+    "player": {
+      "cover": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/player-cover.png"
+    },
+    "chat": {
+      "msgInput": {
+        "bg": "linear-gradient(180deg, rgba(254, 47, 32, 0.5) 0%, rgba(252, 124, 77, 0.5) 100%)",
+        "borderColor": "rgba(255, 185, 113, 0.5)"
+      },
+      "btn": {
+        "more": {
+          "iconUrl": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/chat-btn-more.png"
+        },
+        "donate": {
+          "iconUrl": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/chat-btn-donate.png"
+        },
+        "cart": {
+          "iconUrl": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/chat-btn-cart.png",
+          "countVisible": false
+        },
+        "like": {
+          "iconUrl": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/chat-btn-like.png",
+          "countBg": "#fee1bf",
+          "countColor": "#d84835",
+          "effectType": "FESTIVAL"
+        }
+      }
+    },
+    "normalBtn": {
+      "bg": "linear-gradient(97deg, #FED298 3%, #FFF5DA 50%, #FED6A3 100%)",
+      "borderColor": "#ffb971",
+      "color": "#e92903"
+    },
+    "introArea": {
+      "bg": "linear-gradient(180deg, rgba(254, 47, 32, 0.5) 0%, rgba(252, 124, 77, 0.5) 100%)"
+    },
+    "pendant": {
+      "pushCardForQrCode": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-qrcode-card.png",
+      "pushCardForNormal": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-red-packet-card.png",
+      "coupon": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-coupon.png",
+      "feedback": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-feedback.png",
+      "lottery": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-lottery.png",
+      "conditionLottery": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-condition-lottery.png",
+      "luckyLottery": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-plat-lottery.png",
+      "invitePoster": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-poster.png",
+      "redPacketRain": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-red-packet-rain.png",
+      "redPacket": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-red-packet.png",
+      "redPacketPwd": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-red-packet-pwd.png",
+      "taskPrizeEn": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-task-prize-en.png",
+      "taskPrizeZh": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-task-prize-zh.png",
+      "topicPk": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-topic-pk.png",
+      "vote": "https://s2.videocc.net/watch-theme/spring/v1/assets/common/pendant-vote.png"
+    }
+  },
+
+  "mobile": {
+    "splash": {
+      "subscribeArea": {
+        "bg": "url(https://s2.videocc.net/watch-theme/spring/v1/assets/common/subscribe-bg.png)",
+        "countBg": "#FFF2DD",
+        "countColor": "#E92903",
+        "style": {
+          "border-image-slice": "30 fill",
+          "border-image-width": "15px",
+          "border-image-repeat": "stretch"
+        }
+      }
+    },
+
+    "menu": {
+      "bg": "url(https://s2.videocc.net/watch-theme/spring/v1/assets/mobile/menu-bg.jpg)",
+      "item": {
+        "fontColor": "#FFFFFF"
+      },
+      "activeItem": {
+        "bg": "linear-gradient(110deg, #FED298 3%, #FFF5DA 50%, #FED6A3 100%)",
+        "borderColor": "#FFB971",
+        "icon": "https://s2.videocc.net/watch-theme/spring/v1/assets/mobile/menu-active-item-icon-right.png",
+        "fontColor": "#b63209",
+        "underline": false
+      }
+    },
+    "chat": {
+      "bgUrl": "https://s2.videocc.net/watch-theme/spring/v1/assets/mobile/chat-bg.jpg"
+    }
+  },
+
+  "portrait": {
+    "chat": {
+      "bgUrl": "https://s2.videocc.net/watch-theme/spring/v1/assets/portrait/chat-bg.jpg"
+    }
+  }
+}

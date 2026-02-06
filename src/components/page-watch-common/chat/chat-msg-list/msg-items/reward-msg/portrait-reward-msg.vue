@@ -34,7 +34,7 @@
           v-if="item.textType === 'donateName' && item.image"
           class="c-portrait-reward-msg__item__donate-image"
           :style="{
-            backgroundImage: `url(${resizeOSSImg(item.image, 240)})`,
+            backgroundImage: `url(${resizeOSSImg(item.image)})`,
           }"
         ></span>
       </span>
@@ -46,8 +46,8 @@
 import { useEffectText } from '@/components/page-watch-common/message-effect/hooks/use-effect-text';
 import PortraitMsgContainer from '../_msg-container/portrait-msg-container.vue';
 import { useRewardMsg } from './use-reward-msg';
-import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
+import { useResizeOssImage } from '@polyv/vue-components';
 
 const { resizeOSSImg } = useResizeOssImage();
 

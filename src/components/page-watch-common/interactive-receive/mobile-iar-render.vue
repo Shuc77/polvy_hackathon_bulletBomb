@@ -2,7 +2,7 @@
 <template>
   <div class="c-mobile-iar-render">
     <!-- 公告 -->
-    <mobile-announcement-popup v-if="announcementFunctionVisible" />
+    <mobile-bulletin-popup v-if="announcementFunctionVisible" />
 
     <!-- 反馈 -->
     <mobile-feedback-popup v-if="feedbackEnabled" />
@@ -33,7 +33,7 @@ import { onMounted, watch } from 'vue';
 import { $ } from '@just4/dom';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
-import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
+import MobileBulletinPopup from '../interactive-receive-v2/bulletin-v2/bulletin-popup/mobile-bulletin-popup.vue';
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';

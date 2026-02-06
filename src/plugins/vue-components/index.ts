@@ -18,9 +18,10 @@ export const installVueComponents = () => {
     getEmitter,
     getSkinColorConfig: () => {
       return {
-        skinColorMode: themeStore.pageSkinColorMode,
-        specialColor: themeStore.pageSkinConfig.specialColor,
-        themeColor: themeStore.pageSkinThemeColor,
+        skinColorMode: themeStore.currentSkinColorMode,
+        specialColor: themeStore.currentSkinPrimaryColor,
+        themeColor: themeStore.currentSkinThemeColor,
+        primaryColor: themeStore.currentSkinPrimaryColor,
       };
     },
   });

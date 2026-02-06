@@ -6,6 +6,7 @@
     internal
     :push-card-sdk="pushCardSdk"
     :get-link-params="getLinkParams"
+    :custom-img-config="customImgConfig"
     @entry-visible-changed="onEntryVisibleChanged"
   />
 </template>
@@ -17,7 +18,7 @@ import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const IarPushCard = getIarComponent('PushCard');
 
-const { pushCardSdk, onEntryVisibleChanged } = usePushCard();
+const { pushCardSdk, customImgConfig, onEntryVisibleChanged } = usePushCard();
 
 const { getLinkParams } = useIarExternalLinkParams();
 </script>

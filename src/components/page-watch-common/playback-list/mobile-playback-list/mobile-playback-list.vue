@@ -4,6 +4,15 @@
     class="c-mobile-playback-list"
     @scroll="debounceHandlePlaybackListScroll"
   >
+    <!-- 搜索框 -->
+    <div class="c-mobile-playback-list__search">
+      <search-input
+        v-model="searchKeyword"
+        :placeholder="$lang('playback.search.placeholder')"
+        :debounce-delay="500"
+        @search="onSearch"
+      />
+    </div>
     <div class="c-mobile-playback-list__main">
       <div
         v-for="(item, index) in playbackList"
@@ -54,10 +63,16 @@
         <list-loading />
       </div>
       <div
-        v-if="isNoMore"
+        v-if="playbackList.length > 0 && isNoMore"
         class="c-mobile-playback-list__tips pws-mobile-playback-list-tips"
       >
         {{ $lang('playback.no.more') }}
+      </div>
+      <div
+        v-if="searchEmpty"
+        class="c-mobile-playback-list__tips pws-mobile-playback-list-tips"
+      >
+        {{ $lang('playback.search.empty') }}
       </div>
     </div>
   </div>
@@ -68,6 +83,7 @@ import debounce from 'lodash-es/debounce';
 
 import { MobileIconMedia } from '@/components/component-icons/mobile/map';
 import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
+import SearchInput from '@/components/common-base/search-input/search-input.vue';
 
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { formatDate } from '@utils-ts/date';
@@ -76,6 +92,7 @@ import { formatDuration } from '@/assets/utils/date-time';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlaybackList } from '../use-playback-list';
+import { ref } from 'vue';
 
 const playbackStore = usePlaybackStore();
 const {
@@ -86,9 +103,19 @@ const {
 
   isLoading,
   isNoMore,
+  searchEmpty,
 } = storeDefinitionToRefs(usePlaybackStore);
 
 const { onClickPlaybackItem } = usePlaybackList();
+
+// 搜索关键词
+const searchKeyword = ref('');
+
+// 搜索（防抖由 SearchInput 组件处理）
+function onSearch(keyword: string) {
+  playbackStore.setSearchKeyword(keyword);
+  playbackStore.searchPlaybackList();
+}
 
 function handlePlaybackListScroll(e: UIEvent) {
   const target = e.target as HTMLElement;
@@ -109,6 +136,10 @@ const debounceHandlePlaybackListScroll = debounce(handlePlaybackListScroll, 300)
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: none;
+}
+
+.c-mobile-playback-list__search {
+  padding: 12px 16px;
 }
 
 .c-mobile-playback-list__main {

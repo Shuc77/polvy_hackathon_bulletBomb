@@ -2,9 +2,7 @@
 <template>
   <div
     class="c-pc-dialog"
-    :class="{
-      [getSkinClassName()]: true,
-    }"
+    :class="dialogSkinClass"
     ref="dialogRef"
   >
     <transition
@@ -83,6 +81,17 @@ import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 const { getAppRootElement, getAppBodyElement, getAppElement } = useMultiPolyvWatchApp();
 
 const { getSkinClassName } = usePageSkin();
+
+const dialogSkinClass = computed(() => {
+  const skinClassName = getSkinClassName();
+  if (skinClassName) {
+    return {
+      [skinClassName]: true,
+    };
+  }
+
+  return {};
+});
 
 const props = defineProps(dialogPcProps());
 

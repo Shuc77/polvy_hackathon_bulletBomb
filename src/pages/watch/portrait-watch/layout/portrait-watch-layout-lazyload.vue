@@ -11,7 +11,7 @@
     <!-- 互动功能 -->
     <portrait-iar-render v-if="iarSdkLoaded" />
     <portrait-iar-render-v2 v-if="iarSdkLoaded" />
-    <portrait-product-render v-if="iarSdkLoaded" />
+    <portrait-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
 
     <!-- 邀请榜弹层 -->
     <portrait-invite-rank-popup v-if="inviteRankEnabled" />
@@ -130,7 +130,7 @@
 <script setup lang="ts">
 import MobileLangSwitch from '@/components/common-business/lang-switch/mobile-lang-switch.vue';
 import PortraitChatInputController from '@/components/page-watch-common/chat/chat-input-controller/portrait-chat-input-controller/portrait-chat-input-controller.vue';
-import PortraitChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/portrait-chat-set-nick.vue';
+import PortraitChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import PortraitIarRender from '@/components/page-watch-common/interactive-receive/portrait-iar-render.vue';
 import PortraitIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/portrait-iar-render-v2.vue';
@@ -185,6 +185,7 @@ import { useIdentityStore } from '@/store/use-identity-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
@@ -217,4 +218,6 @@ const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 
 const { learningStatsEnabled, learningStatsDialogEnabled } =
   storeDefinitionToRefs(useChannelInfoStore);
+
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 </script>

@@ -11,6 +11,7 @@
       >
         <background-section
           :background-type="themeSetting.mobileChatBackgroundType"
+          :default-url="defaultMobileChatRoomBgUrl"
           :custom-url="mobileChatRoomBgUrl"
         />
       </div>
@@ -20,7 +21,7 @@
         v-if="announcementFunctionVisible && iarSdkLoaded"
         class="c-mobile-chat-room__topic__item"
       >
-        <mobile-announcement-top class="c-mobile-chat-room__topic__announcement" />
+        <bulletin-topping class="c-mobile-chat-room__topic__announcement" />
       </div>
 
       <!-- 跑道消息 -->
@@ -47,7 +48,7 @@
 
       <!-- 特效动画 -->
       <chat-loader-helper>
-        <mobile-special-effect-animation />
+        <mobile-special-effect-animation class="c-mobile-chat-room__special-effect-animation" />
       </chat-loader-helper>
     </div>
 
@@ -72,7 +73,7 @@ import BackgroundSection from '@/components/common-business/background-section/b
 import MobileEnroll from '@/components/common-business/enroll/mobile-enroll.vue';
 import MobileChatInputController from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller/mobile-chat-input-controller.vue';
 import MobileDonateAnimation from '@/components/page-watch-common/donate/donate-animation/index.vue';
-import MobileAnnouncementTop from '@/components/page-watch-common/interactive-receive/announcement/announcement-top.vue';
+import BulletinTopping from '@/components/page-watch-common/interactive-receive-v2/bulletin-v2/bulletin-topping.vue';
 import MobileInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/mobile-interactive-entrance.vue';
 import MobileChatMsgList from '../chat-msg-list/mobile-chat-msg-list.vue';
 import MobileChatRoomPendant from '../chat-room-pendant/mobile-chat-room-pendant.vue';
@@ -98,7 +99,8 @@ const { chatInputControllerEnable, isChatUIV2, chatRoomLongTimeNotUsed } =
 const { iarSdkLoaded, announcementFunctionVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
 
-const { mobileChatRoomBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
+const { defaultMobileChatRoomBgUrl, mobileChatRoomBgUrl, themeSetting } =
+  storeDefinitionToRefs(useThemeStore);
 
 const { mobileLayoutBottomHeight } = storeDefinitionToRefs(useLayoutStore);
 </script>
@@ -157,6 +159,10 @@ const { mobileLayoutBottomHeight } = storeDefinitionToRefs(useLayoutStore);
   &:empty {
     display: none;
   }
+}
+
+.c-mobile-chat-room__special-effect-animation {
+  z-index: 20;
 }
 
 .c-mobile-chat-room__msg-list {

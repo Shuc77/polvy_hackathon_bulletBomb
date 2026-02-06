@@ -3,6 +3,7 @@
   <iar-mobile-lucky-lottery-pendant
     v-if="targetInited"
     :is-full-screen="isIarFullScreen"
+    :icon-url="iconUrl"
     :lucky-lottery-target="getIarTarget()"
     :before-click-interrupt="beforeClickInterrupt"
   />
@@ -14,7 +15,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLotteryTarget } from './use-lucky-lottery';
 import { useIarUILoader } from '../_load-iar-ui-v2';
-import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
+import { useLuckLotteryPendant } from './use-lucky-lottery-pendant';
 
 const { loadIarUI } = useIarUILoader('iar-lucky-lottery-ui');
 
@@ -23,9 +24,5 @@ const { targetInited, getIarTarget } = useLotteryTarget();
 
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { toInterruptUserClick } = useInterruptUserClick();
-
-function beforeClickInterrupt() {
-  return toInterruptUserClick({ triggerSource: 'lucky-lottery-pendant', ignoreSetNick: true });
-}
+const { iconUrl, beforeClickInterrupt } = useLuckLotteryPendant();
 </script>

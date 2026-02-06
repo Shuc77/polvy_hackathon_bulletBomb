@@ -3,8 +3,8 @@
     class="c-background-section"
     :class="{
       'is-live-screenshot': backgroundType === BackgroundType.LiveScreenshot,
-      'c-background-section--dark': pageSkinColorMode === 'dark',
-      'c-background-section--light': pageSkinColorMode === 'light',
+      'c-background-section--dark': currentSkinColorMode === 'dark',
+      'c-background-section--light': currentSkinColorMode === 'light',
     }"
   >
     <div
@@ -42,10 +42,11 @@ import { computed, ref, watch } from 'vue';
 
 const props = defineProps({
   backgroundType: PropUtils.enum<BackgroundType>(),
+  defaultUrl: PropUtils.string,
   customUrl: PropUtils.string,
 });
 
-const { pageSkinColorMode } = storeDefinitionToRefs(useThemeStore);
+const { currentSkinColorMode } = storeDefinitionToRefs(useThemeStore);
 
 const { liveScreenshotUrl } = useLiveScreenshot();
 
@@ -58,7 +59,7 @@ const bgUrl = computed(() => {
     return liveScreenshotUrl.value;
   }
 
-  return undefined;
+  return props.defaultUrl;
 });
 
 const wrapRef = ref<HTMLDivElement>();

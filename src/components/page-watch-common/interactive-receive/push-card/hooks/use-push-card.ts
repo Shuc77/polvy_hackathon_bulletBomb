@@ -3,13 +3,17 @@ import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useShareStore } from '@/store/use-share-store';
+import { useThemeStore } from '@/store/use-theme-store';
 import { useViewerStore } from '@/store/use-viewer-store';
+import { computed } from 'vue';
 
 /** 卡片推送 hook */
 export const usePushCard = () => {
   const { getWatchCore } = useGlobalInject();
 
   const interactReceiveStore = useInteractReceiveStore();
+
+  const themeStore = useThemeStore();
 
   const { toLockFeedDrag, toUnlockFeedDrag } = useFeedBehavior();
 
@@ -30,8 +34,22 @@ export const usePushCard = () => {
     }
   }
 
+  const customImgConfig = computed(() => {
+    if (!themeStore.watchThemeStyleConfig) {
+      return {};
+    }
+
+    const pendant = themeStore.watchThemeStyleConfig.common.pendant;
+    return {
+      iconQrEntry: pendant.pushCardForQrCode,
+      giftBox: pendant.pushCardForNormal,
+      redpackBox: pendant.pushCardForNormal,
+    };
+  });
+
   return {
     pushCardSdk,
+    customImgConfig,
     onEntryVisibleChanged,
     onPushCardVisibleChanged,
   };

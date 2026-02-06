@@ -9,6 +9,9 @@ import { useWebviewStore } from '@/store/use-webview-store';
 import { isMobile } from '@/assets/utils/browser';
 import { useWeixinButton } from '@/hooks/platform/use-weixin/use-weixin-button';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useToast } from '@polyv/vue-components';
+import { translate } from '@/assets/lang';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 export type LiveSquareLinkConfig = Exclude<LiveSquare, 'enabled' | 'title'>;
 
@@ -32,6 +35,8 @@ function useLiveSquare() {
   const { getPlvWebviewBridge } = useWebviewStore();
   const { isPlvWebview, plvWebviewDataSize } = storeDefinitionToRefs(useWebviewStore);
   const { getLinkParams } = useIarExternalLinkParams();
+  const { paramGetter } = useQueryParams();
+  const { toast } = useToast();
 
   // 微信按钮功能
   const {
@@ -147,6 +152,10 @@ function useLiveSquare() {
         getPlvWebviewSmallWindowSize: () => plvWebviewDataSize.value,
         isWxMiniProgramEnv: supportWxMiniProgramNavigateTo,
         toWxMiniProgram,
+        getIsApp: () => paramGetter().isApp(),
+        failCallback: () => {
+          toast.warning(translate('externalLink.navigateFail'));
+        },
       });
     } catch (error) {
       console.error('handleMultiPlatformLinkType error:', error);

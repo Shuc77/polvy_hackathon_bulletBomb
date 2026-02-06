@@ -67,6 +67,11 @@ export const usePlayerEvent = () => {
       return;
     }
 
+    if (!playerStore.isPlayMode) {
+      console.warn('not enabled on PlayerPlaying');
+      return;
+    }
+
     playerStore.$patch({
       isPlayStarted: true,
       playStatus: PlayStatus.Playing,

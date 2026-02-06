@@ -4,14 +4,16 @@
     <background-section
       v-show="mobileMenuCurrentName === TAB_NAME_CHAT"
       :background-type="themeSetting.mobileChatBackgroundType"
+      :default-url="defaultMobileChatRoomBgUrl"
       :custom-url="mobileChatRoomBgUrl"
     />
 
     <mobile-menu-tabs
       v-model="mobileMenuCurrentName"
       ref="mobileMenuTabsRef"
+      :header-config="watchThemeStyleConfig?.mobile.menu"
       :force-show-header="followEnabled"
-      @input="trackWatchTabChange"
+      @tab-click="onTabClick"
     >
       <template #header-suffix>
         <mobile-follow-btn v-if="followEnabled" />
@@ -120,7 +122,9 @@
         <!-- 商品库 -->
         <mobile-menu-tab-pane
           v-else-if="
-            menu.menuType === ChannelMenuType.Buy && productEntryLandscapePosition === 'menuBar'
+            menu.menuType === ChannelMenuType.Buy &&
+            productEntryLandscapePosition === 'menuBar' &&
+            !isPlaybackWatchUrl
           "
           :key="`buy-${index}`"
           :label="menu.name"
@@ -367,10 +371,11 @@ import { translate } from '@/assets/lang';
 import { useFollowSetting } from '@/components/page-watch-common/follow/hooks/use-follow-setting';
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
-import { TabsInstance } from '@/components/common-base/tabs/hooks/types';
+import { TabNameType, TabsInstance } from '@/components/common-base/tabs/hooks/types';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { paramGetter } = useQueryParams();
 
@@ -395,7 +400,10 @@ const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { themeSetting, mobileChatRoomBgUrl } = storeDefinitionToRefs(useThemeStore);
+const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { themeSetting, watchThemeStyleConfig, defaultMobileChatRoomBgUrl, mobileChatRoomBgUrl } =
+  storeDefinitionToRefs(useThemeStore);
 
 const docOrCameraMenuName = computed(() => {
   if (unref(mainScreen) === MainScreenContent.Doc) {
@@ -431,6 +439,13 @@ onMounted(async () => {
     mobileMenuTabsRef.value?.setDefaultTabName(TAB_NAME_PLAYBACK);
   }
 });
+
+function onTabClick(tabName: TabNameType) {
+  if (mobileMenuTabsRef.value) {
+    mobileMenuTabsRef.value.clearDefaultTabName();
+  }
+  trackWatchTabChange(tabName);
+}
 
 watch(liveStatus, () => {
   if ([LiveStatus.Live, LiveStatus.Stop].includes(liveStatus.value)) {

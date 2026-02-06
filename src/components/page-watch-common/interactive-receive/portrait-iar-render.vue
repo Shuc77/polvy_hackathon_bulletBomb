@@ -3,7 +3,7 @@
   <div class="c-portrait-iar-render">
     <template>
       <!-- 公告 -->
-      <mobile-announcement-popup v-if="announcementFunctionVisible" />
+      <mobile-bulletin-popup v-if="announcementFunctionVisible" />
       <!--  举报/投诉反馈 -->
       <mobile-feedback-popup v-if="feedbackEnabled" />
 
@@ -32,7 +32,7 @@ import MobileCouponCommonPopup from '@/components/page-watch-common/interactive-
 import MobileCouponUserPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-user-popup.vue';
 import { onMounted } from 'vue';
 import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
-import MobileAnnouncementPopup from './announcement/mobile-announcement-popup.vue';
+import MobileBulletinPopup from '../interactive-receive-v2/bulletin-v2/bulletin-popup/mobile-bulletin-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
 import PortraitQuestionAnswer from './question-answer/portrait-question-answer.vue';

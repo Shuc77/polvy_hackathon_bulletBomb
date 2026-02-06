@@ -1,26 +1,46 @@
 <template>
-  <div
-    class="c-mobile-more-entrance pws-dark-white-color-100 pws-light-black-color-80"
+  <button
+    class="c-mobile-more-entrance"
     :class="{
-      'pws-dark-white-bg-10 pws-light-white-bg-90': !isChatUIV2,
-      'pws-dark-black-bg-20 pws-light-white-bg-60': isChatUIV2,
+      'c-mobile-more-entrance--dark': isDarkSkinMode,
+      'c-mobile-more-entrance--light': !isDarkSkinMode,
     }"
+    :style="backgroundStyle"
     @click="onClickMore"
-  >
-    <mobile-icon-more-entrance />
-  </div>
+  />
 </template>
 
 <script setup lang="ts">
-import { MobileIconMoreEntrance } from '@/components/component-icons/mobile/map';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { appEvents } from '@/app/app-events';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useChatStore } from '@/store/use-chat-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { CSSProperties, computed } from 'vue';
+import { SkinColorMode } from '@/skins/enum';
+import { PropUtils } from '@polyv/vue-components';
 
 const { getEmitter } = useGlobalInject();
 
-const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
+const props = defineProps({
+  theme: PropUtils.enum<SkinColorMode>().def(undefined),
+});
+
+const themeStore = useThemeStore();
+
+const isDarkSkinMode = computed(() => {
+  if (props.theme) {
+    return props.theme === SkinColorMode.Dark;
+  }
+
+  return themeStore.isDarkSkinMode;
+});
+
+const backgroundStyle = computed<CSSProperties>(() => {
+  if (!themeStore.watchThemeStyleConfig) return {};
+
+  return {
+    'background-image': `url(${themeStore.watchThemeStyleConfig.common.chat.btn.more.iconUrl})`,
+  };
+});
 
 function onClickMore() {
   getEmitter().emit(appEvents.global.OpenMobileMorePopup, true);
@@ -29,17 +49,21 @@ function onClickMore() {
 
 <style lang="scss">
 .c-mobile-more-entrance {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 36px;
   min-width: 36px;
   height: 36px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   border-radius: 50%;
+}
 
-  span {
-    display: flex;
-    font-size: 36px;
-  }
+.c-mobile-more-entrance--light {
+  background-image: url('./images/more-icon-light.png');
+}
+
+.c-mobile-more-entrance--dark {
+  background-image: url('./images/more-icon-dark.png');
 }
 </style>

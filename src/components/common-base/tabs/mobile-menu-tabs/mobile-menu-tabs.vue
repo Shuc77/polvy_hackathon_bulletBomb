@@ -1,7 +1,10 @@
 <!-- @file 移动端菜单栏 Tabs 标签页 -->
 <template>
   <div class="c-mobile-menu-tabs">
-    <mobile-menu-tab-header v-show="!isEmptyMenu || forceShowHeader">
+    <mobile-menu-tab-header
+      v-show="!isEmptyMenu || forceShowHeader"
+      :header-config="headerConfig"
+    >
       <template #header-suffix>
         <slot name="header-suffix"></slot>
       </template>

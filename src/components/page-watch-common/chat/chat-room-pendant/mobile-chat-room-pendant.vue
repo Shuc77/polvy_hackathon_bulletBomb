@@ -87,7 +87,7 @@
 
         <!-- 商品库小卡片 -->
         <mobile-product-small-card
-          v-if="mobileChatTabHasBeenShowed"
+          v-if="mobileChatTabHasBeenShowed && !isPlaybackWatchUrl"
           class="c-mobile-chat-room-pendant__product-small-card"
         />
       </template>

@@ -27,7 +27,11 @@ export const useAppendTo = (elemRef: Ref | HTMLElement, parentRef?: Ref | HTMLEl
       return;
     }
 
-    $(elem).addClass(getSkinClassName());
+    const skinClassName = getSkinClassName();
+    if (skinClassName) {
+      $(elem).addClass(skinClassName);
+    }
+
     parentElem.appendChild(elem);
   });
 

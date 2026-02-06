@@ -1,6 +1,11 @@
 <!-- @file 移动端底部 Tabs 标签头部 -->
 <template>
-  <div class="c-mobile-menu-tab-header">
+  <div
+    class="c-mobile-menu-tab-header"
+    :style="{
+      backgroundImage: props.headerConfig.bg,
+    }"
+  >
     <div class="c-mobile-menu-tab-header__content">
       <div
         ref="scrollRef"
@@ -18,6 +23,7 @@
               'c-mobile-menu-tab-header__header__item--reminder': paneData.showReminder,
               'c-mobile-menu-tab-header__header__item--news': paneData.showNewMessage,
             }"
+            :style="getTabItemStyle(paneData.name === currentTabName)"
             @click="onClickHeaderItem(paneData)"
           >
             <div
@@ -42,9 +48,17 @@
                 {{ paneData.subLabel }}
               </span>
             </span>
+
+            <div
+              v-if="headerConfig.activeItem && paneData.name === currentTabName"
+              class="c-mobile-menu-tab-header__item-right-icon"
+              :style="{
+                backgroundImage: `url(${headerConfig.activeItem.icon})`,
+              }"
+            ></div>
           </div>
           <div
-            v-if="tabPaneData.length > 1"
+            v-if="showUnderLine"
             ref="currentLineRef"
             class="c-mobile-menu-tab-header__current-line pws-special-bg-color"
             :style="{
@@ -61,7 +75,9 @@
 <script setup lang="ts">
 import { isWeixin } from '@/assets/utils/browser';
 import { useTabHeader } from '../hooks/use-tab-header';
-import { generateHackWeixinBtnId } from '../hooks/use-tabs';
+import { generateHackWeixinBtnId, tabsHeaderProps } from '../hooks/use-tabs';
+
+const props = defineProps(tabsHeaderProps());
 
 const {
   scrollRef,
@@ -71,7 +87,10 @@ const {
   onClickHeaderItem,
   itemRef,
   currentLineLeft,
-} = useTabHeader({
+
+  showUnderLine,
+  getTabItemStyle,
+} = useTabHeader(props, {
   scrollCurrent: true,
 });
 </script>
@@ -85,6 +104,8 @@ const {
   width: 100%;
   height: 40px;
   cursor: pointer;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 .c-mobile-menu-tab-header__content {
@@ -107,8 +128,10 @@ const {
 .c-mobile-menu-tab-header__header__list {
   position: relative;
   display: flex;
+  align-items: center;
   width: 100%;
   height: 100%;
+  padding-left: 4px;
   font-size: 14px;
   white-space: nowrap;
 }
@@ -118,13 +141,15 @@ const {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 80%;
   padding: 0 20px;
   text-align: center;
+  border-radius: 16px;
 }
 
 .c-mobile-menu-tab-header__header__item__label {
   position: relative;
+  z-index: 2;
   display: flex;
   align-items: flex-end;
 }
@@ -198,5 +223,25 @@ const {
   width: 100%;
   height: 100%;
   cursor: pointer;
+}
+
+.c-mobile-menu-tab-header__item-right-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 100%;
+}
+
+.c-mobile-menu-tab-header__header__item:has(.c-mobile-menu-tab-header__item-right-icon) {
+  .c-mobile-menu-tab-header__header__item__label {
+    left: -8px;
+    padding-left: 8px;
+  }
 }
 </style>

@@ -214,12 +214,7 @@
       />
 
       <!-- 公告 -->
-      <more-item
-        v-if="announcementFunctionVisible"
-        :icon-comp="MobileIconMoreAnnouncement"
-        :text="$lang('interact.announcement.title')"
-        @click="onClickAnnouncement"
-      />
+      <mobile-bulletin-entrance />
 
       <!-- 我的学习 -->
       <more-item
@@ -252,7 +247,6 @@ import { useDonateAnimationVisible } from '@/components/page-watch-common/donate
 import { useWebviewStore } from '@/store/use-webview-store';
 import { watch } from 'vue';
 import {
-  MobileIconMoreAnnouncement,
   MobileIconMoreAudio,
   MobileIconMoreBindMobile,
   MobileIconMoreCoupon,
@@ -285,6 +279,7 @@ import {
   MobileOriginIconMoreOnlySpecial,
   MobileOriginIconMoreShowDonate,
 } from '@/components/component-icons/mobile-origin/map';
+import MobileBulletinEntrance from '@/components/page-watch-common/interactive-receive-v2/bulletin-v2/bulletin-entrance/mobile-bulletin-entrance.vue';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerControl } from '../../player/hooks/use-player-control';
 import { usePlayerStore } from '@/store/use-player-store';
@@ -300,12 +295,8 @@ const emit = defineEmits({
 
 const { getEmitter, getWatchCore } = useGlobalInject();
 
-const {
-  announcementFunctionVisible,
-  feedbackMenuVisible,
-  couponPendantVisible,
-  personalRewardEntranceVisible,
-} = storeDefinitionToRefs(useInteractReceiveStore);
+const { feedbackMenuVisible, couponPendantVisible, personalRewardEntranceVisible } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
@@ -375,12 +366,6 @@ function onClickProfile() {
 /** 点击只看主持人 */
 function onClickOnlySpecialMsg() {
   toggleOnlySpecialMsg();
-  closeMore();
-}
-
-/** 点击公告 */
-function onClickAnnouncement() {
-  getEmitter().emit(appEvents.interaction.OpenAnnouncementList, true);
   closeMore();
 }
 

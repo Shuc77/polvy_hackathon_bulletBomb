@@ -32,7 +32,7 @@
       <!-- 图标区插槽 -->
       <template #icon-suffix>
         <!-- 公告 -->
-        <pc-announcement-entrance
+        <pc-bulletin-entrance
           class="c-pc-msg-input-wrap__icons__item pws-pc-msg-bottom-input-wrap-item"
         />
 
@@ -65,7 +65,7 @@ import { appEvents, useEventBusListener } from '@/app/app-events';
 import { isIE } from '@/assets/utils/browser';
 
 import PcDonateEntrance from '@/components/page-watch-common/donate/donate-entrance/pc-donate-entrance.vue';
-import PcAnnouncementEntrance from '@/components/page-watch-common/interactive-receive/announcement/pc-announcement-entrance.vue';
+import PcBulletinEntrance from '@/components/page-watch-common/interactive-receive-v2/bulletin-v2/bulletin-entrance/pc-bulletin-entrance.vue';
 import PcMsgInputWrap from '@/components/page-watch-common/msg-input-wrap/pc-msg-input-wrap/pc-msg-input-wrap.vue';
 import PcPersonalRewardEntrance from '@/components/page-watch-common/personal-reward/pc-personal-reward-entrance.vue';
 import { usePanelVisible } from '@/hooks/behaviors/use-panel-visible';

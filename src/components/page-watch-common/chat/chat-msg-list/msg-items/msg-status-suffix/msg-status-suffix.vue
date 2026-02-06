@@ -1,8 +1,9 @@
 <template>
   <span
     v-if="
-      iconShowStatus === ChatMsgItemSendStatus.Loading ||
-      iconShowStatus === ChatMsgItemSendStatus.Fail
+      (iconShowStatus === ChatMsgItemSendStatus.Loading ||
+        iconShowStatus === ChatMsgItemSendStatus.Fail) &&
+      category === ChatMsgItemCategory.Chat
     "
     class="c-msg-status-suffix"
   >
@@ -25,8 +26,9 @@ import { useChatMsgStatus } from './use-msg-status';
 import { ChatMsgItemSendStatus, ChatMsgSpeakType, ChatMsgImageType } from '@polyv/live-watch-sdk';
 import { PcIconChatError, PcIconChatLoading } from '@/components/component-icons/pc/map';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
+import { ChatMsgItemCategory } from '../use-chat-msg-item';
 
-const { chatMsg } = useChatMsgDataInject<ChatMsgSpeakType | ChatMsgImageType>();
+const { chatMsg, category } = useChatMsgDataInject<ChatMsgSpeakType | ChatMsgImageType>();
 
 const { iconShowStatus, handleThrottleReSendMsg } = useChatMsgStatus();
 </script>

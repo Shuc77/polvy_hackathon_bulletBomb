@@ -1,7 +1,7 @@
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
-import { onBeforeMount, onBeforeUnmount, ref, watch, watchEffect, nextTick } from 'vue';
+import { onBeforeMount, onBeforeUnmount, ref, watch, watchEffect } from 'vue';
 import { translate } from '@/assets/lang';
 import { useLangStore } from '@/store/use-lang-store';
 import { TreeSelectDataValue } from '@/components/common-base/tree-select/tree-select-types';
@@ -59,13 +59,13 @@ export function useMobilePlaybackSubtitle(options: { openSelectAction: () => voi
     // 原生字幕不存在时，翻译字幕的index为0
     const translateSelectIndex = replaySubtitleSourceLanguageOptions.value.length > 0 ? 1 : 0;
 
-    nextTick(() => {
+    window.setTimeout(() => {
       watchCore.player.setPlayerReplaySubtitleSelectConfig({
         index: translateSelectIndex,
         text: targetSubtitle?.label,
         show: !!targetSubtitle,
       });
-    });
+    }, 1000);
   }
 
   function handleSubtitleSelectBtnClick() {

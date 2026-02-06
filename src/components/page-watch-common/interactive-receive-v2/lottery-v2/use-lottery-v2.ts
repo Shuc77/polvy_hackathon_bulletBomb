@@ -8,6 +8,7 @@ import { storeToRefs } from 'pinia';
 import { useSendMsg } from '../../chat/chat-msg-list/hooks/send-msg-hook';
 import { useIarTarget } from '../_hooks/use-iar-target';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
+import { useThemeStore } from '@/store/use-theme-store';
 
 export const useLotteryTarget = () => {
   const interactReceiveStore = useInteractReceiveStore();
@@ -16,6 +17,8 @@ export const useLotteryTarget = () => {
   const enrollStore = useEnrollStore();
 
   const { sendSpeakMsg } = useSendMsg();
+
+  const { watchThemeStyleConfig } = storeToRefs(useThemeStore());
 
   const { getWatchCore, getEmitter } = useGlobalInject();
 
@@ -36,6 +39,10 @@ export const useLotteryTarget = () => {
     toFillQuestionnaire: questionnaireId => {
       interactReceiveStore.setQuestionnaireBackBtnVisible(false);
       getEmitter().emit(appEvents.interaction.OpenQuestionnaire, questionnaireId);
+    },
+    customIconConfig: {
+      normalIconUrl: watchThemeStyleConfig.value?.common.pendant.lottery,
+      conditionIconUrl: watchThemeStyleConfig.value?.common.pendant.conditionLottery,
     },
     beforeJoinLottery: async () => {
       // 需要先拦截用户操作

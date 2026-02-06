@@ -33,10 +33,12 @@
 <script setup lang="ts">
 import { isWeixin } from '@/assets/utils/browser';
 import { useTabHeader } from '../hooks/use-tab-header';
-import { generateHackWeixinBtnId } from '../hooks/use-tabs';
+import { generateHackWeixinBtnId, tabsHeaderProps } from '../hooks/use-tabs';
+
+const props = defineProps(tabsHeaderProps());
 
 const { tabPaneData, currentTabName, currentLineRef, onClickHeaderItem, itemRef, currentLineLeft } =
-  useTabHeader();
+  useTabHeader(props);
 </script>
 
 <style lang="scss">

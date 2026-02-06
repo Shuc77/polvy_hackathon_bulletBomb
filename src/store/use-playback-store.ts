@@ -20,6 +20,8 @@ export interface PlaybackStoreState {
   pageSize: Ref<number>;
   /** 总页数 */
   totalPages: Ref<number>;
+  /** 总数量 */
+  totalItems: Ref<number>;
   /** 是否正在加载中 */
   isLoading: Ref<boolean>;
   /** 是否已加载完毕 */
@@ -50,6 +52,13 @@ export interface PlaybackStoreState {
   answerCardReplayEnabled: ComputedRef<boolean>;
   /** 是否能够问卷重放 */
   questionnaireReplayEnabled: ComputedRef<boolean>;
+
+  /** AI 回放问答是否显示 */
+  aiKnowledgeQuizEnabled: ComputedRef<boolean>;
+  /** 搜索关键词 */
+  searchKeyword: Ref<string>;
+  /** 搜索结果是否为空（非 loading、有搜索词、列表为空） */
+  searchEmpty: ComputedRef<boolean>;
 }
 
 export interface PlaybackStoreActions {
@@ -73,6 +82,10 @@ export interface PlaybackStoreActions {
   resetPlaybackStoreData(): void;
   /** 补充回放参数到当前链接 */
   appendPlaybackQueueParams(): void;
+  /** 设置搜索关键词 */
+  setSearchKeyword(keyword: string): void;
+  /** 搜索回放列表 */
+  searchPlaybackList(): Promise<void>;
 }
 
 export interface PlaybackStore extends PlaybackStoreState, PlaybackStoreActions {}
@@ -97,6 +110,8 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
   /** 总页数 */
   const totalPages = ref(1);
+
+  const totalItems = ref(0);
 
   /** 是否正在加载中 */
   const isLoading = ref(false);
@@ -183,6 +198,21 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     if (!currentPlaybackTarget.value) return false;
 
     return currentPlaybackTarget.value.questionnaireReplayEnabled;
+  });
+
+  /** AI 回放问答是否显示 */
+  const aiKnowledgeQuizEnabled = computed(() => {
+    if (!currentPlaybackTarget.value) return false;
+
+    return currentPlaybackTarget.value.aiKnowledgeQuizEnabled;
+  });
+
+  /** 搜索关键词 */
+  const searchKeyword = ref('');
+
+  /** 搜索结果是否为空（非 loading、有搜索词、列表为空） */
+  const searchEmpty = computed<boolean>(() => {
+    return !!searchKeyword.value && !isLoading.value && playbackList.value.length === 0;
   });
 
   /** 是否开启循环播放 */
@@ -325,6 +355,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
         watchCore.playback.getPlaybackList({
           pageNumber: pageNo,
           pageSize: unref(pageSize),
+          keyword: unref(searchKeyword) || undefined,
         }),
         sleep(500), // loading 至少展示 500ms
       ]);
@@ -332,6 +363,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
       pageNumber.value = data.pageNumber;
       isNoMore.value = data.pageNumber >= data.totalPages;
       totalPages.value = data.totalPages;
+      totalItems.value = data.totalItems;
 
       playbackList.value.push(...data.contents);
       playbackListMap.value[data.pageNumber] = data.contents;
@@ -380,8 +412,25 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
 
     playbackListMap.value = { 0: [] };
     playbackList.value = [];
+    searchKeyword.value = '';
 
     currentPlaybackTarget.value = undefined;
+  }
+
+  /** 设置搜索关键词 */
+  function setSearchKeyword(keyword: string) {
+    searchKeyword.value = keyword;
+  }
+
+  /** 搜索回放列表 */
+  async function searchPlaybackList() {
+    // 如果有关键词，需要清空当前列表并重新加载
+    pageNumber.value = 0;
+    isLoading.value = false;
+    isNoMore.value = false;
+    playbackList.value = [];
+    playbackListMap.value = { 0: [] };
+    await loadNextPlaybackList();
   }
 
   return {
@@ -391,6 +440,7 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     pageNumber,
     pageSize,
     totalPages,
+    totalItems,
     isLoading,
     isNoMore,
 
@@ -406,6 +456,9 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     checkInReplayEnabled,
     answerCardReplayEnabled,
     questionnaireReplayEnabled,
+
+    aiKnowledgeQuizEnabled,
+
     loopPlayEnabled,
     listLiveStartTimeEnabled,
 
@@ -421,5 +474,11 @@ export const usePlaybackStore = defineStore<'playback', PlaybackStore>('playback
     resetPlaybackStoreData,
 
     appendPlaybackQueueParams,
+
+    searchKeyword,
+    setSearchKeyword,
+    searchPlaybackList,
+
+    searchEmpty,
   };
 });
