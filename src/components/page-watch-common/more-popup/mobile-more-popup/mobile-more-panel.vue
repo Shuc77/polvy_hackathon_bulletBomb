@@ -172,7 +172,7 @@
 
       <!-- 任务奖励 -->
       <more-item
-        v-if="personalRewardEntranceVisible"
+        v-if="iarSdkLoaded && !notNeedIar && personalRewardEntranceVisible"
         :icon-comp="MobileIconMoreMyReward"
         :text="$lang('taskActivity.myReward')"
         @click="onClickPersonalReward"
@@ -188,7 +188,7 @@
 
       <!-- 积分记录 -->
       <more-item
-        v-if="scoreRedpackEnabled && chatMenuData.visible"
+        v-if="iarSdkLoaded && !notNeedIar && scoreRedpackEnabled && chatMenuData.visible"
         :icon-comp="MobileIconMoreScore"
         :text="$lang('interact.scoreRecord.title')"
         @click="onClickScoreRecord"
@@ -205,16 +205,18 @@
         @click="toggleDonateAnimationVisible"
       />
 
-      <!-- 优惠券 -->
-      <more-item
-        v-if="couponPendantVisible"
-        :icon-comp="MobileIconMoreCoupon"
-        :text="$lang('interact.coupon.title')"
-        @click="onClickCoupon"
-      />
+      <template v-if="iarSdkLoaded && !notNeedIar">
+        <!-- 优惠券 -->
+        <more-item
+          v-if="couponPendantVisible"
+          :icon-comp="MobileIconMoreCoupon"
+          :text="$lang('interact.coupon.title')"
+          @click="onClickCoupon"
+        />
 
-      <!-- 公告 -->
-      <mobile-bulletin-entrance />
+        <!-- 公告 -->
+        <mobile-bulletin-entrance />
+      </template>
 
       <!-- 我的学习 -->
       <more-item
@@ -288,6 +290,7 @@ import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useStreamTrack } from '../../player/player-stream-track/use-stream-track';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -335,6 +338,10 @@ const playerStore = usePlayerStore();
 const { isAudioPlayerMode } = storeDefinitionToRefs(usePlayerStore);
 
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
+
+const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
 
 const {
   lineSettingVisible,

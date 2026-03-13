@@ -5,7 +5,7 @@
     <div class="c-pc-chat-room__topic pws-main-tab-body">
       <!-- 置顶公告 -->
       <bulletin-topping
-        v-if="announcementFunctionVisible && iarSdkLoaded"
+        v-if="announcementFunctionVisible && iarSdkLoaded && !notNeedIar"
         class="c-pc-chat-room__topic__item c-pc-chat-room__topic__announcement"
       />
 
@@ -38,7 +38,7 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <pc-interactive-entrance v-if="iarSdkLoaded && chatInputControllerEnable" />
+    <pc-interactive-entrance v-if="iarSdkLoaded && chatInputControllerEnable && !notNeedIar" />
 
     <!-- 底部输入框 -->
     <template v-if="chatInputControllerEnable">
@@ -76,6 +76,9 @@ import PcChatInputController from '../chat-input-controller/pc-chat-input-contro
 import PcChatMsgList from '../chat-msg-list/pc-chat-msg-list.vue';
 import PcChatMsgQuote from '../chat-msg-quote/pc-chat-msg-quote.vue';
 import PcChatRoomPendant from '../chat-room-pendant/pc-chat-room-pendant.vue';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+
+const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 

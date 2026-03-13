@@ -20,13 +20,14 @@
     <div class="c-anchor-info__content">
       <div class="c-anchor-info__nick">{{ anchorDetail.nickname }}</div>
       <div class="c-anchor-info__actor">
-        <div
+        <mobile-origin-icon-male
+          v-if="anchorDetail.sex === 'M'"
           class="c-anchor-info__sex"
-          :class="{
-            'is-man': anchorDetail.sex === 'M',
-            'is-woman': anchorDetail.sex === 'W',
-          }"
-        ></div>
+        />
+        <mobile-origin-icon-female
+          v-if="anchorDetail.sex === 'W'"
+          class="c-anchor-info__sex"
+        />
         {{ anchorDetail.actor || '' }}
       </div>
 
@@ -42,6 +43,10 @@
 
 <script setup lang="ts">
 import { useGlobalInject } from '@/app/use-global-inject';
+import {
+  MobileOriginIconFemale,
+  MobileOriginIconMale,
+} from '@/components/component-icons/mobile-origin/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChannelStore } from '@/store/use-channel-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
@@ -151,15 +156,7 @@ onMounted(async () => {
   width: 12px;
   height: 12px;
   margin-right: 4px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  &.is-man {
-    background-image: url(./images/male.svg);
-  }
-  &.is-woman {
-    background-image: url(./images/female.svg);
-  }
+  font-size: 12px;
 }
 
 .c-anchor-info__desc {

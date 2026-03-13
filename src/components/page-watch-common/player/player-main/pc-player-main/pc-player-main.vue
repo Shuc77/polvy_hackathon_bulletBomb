@@ -5,6 +5,7 @@
     :class="{
       'c-pc-player-main__hide': isConnectMicing,
       'c-pc-player-main--hide-normal-player-btn': !isLowLatency,
+      'c-pc-player-main__hide-player-loading': initLoadingVisible,
     }"
   >
     <background-section
@@ -36,6 +37,12 @@
     <!-- 播放器封面图 -->
     <pc-player-cover-img />
 
+    <!-- 播放器初始化 loading（解决 SDK 未挂载前的空白区域） -->
+    <loading-overlay
+      :visible="initLoadingVisible"
+      :show-text="false"
+    />
+
     <!-- 视频区播放按钮，仅用来展示 -->
     <player-play-business-button />
 
@@ -60,11 +67,13 @@ import PcPlayerLogo from '@/components/page-watch-common/player/player-logo/pc-p
 import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/pc-player-subtitle.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 import PcIframePopup from '@/components/common-base/iframe-popup/pc-iframe-popup.vue';
+import LoadingOverlay from '@/components/common-base/loading-overlay/loading-overlay.vue';
 
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { usePlayerAdvert } from '@/components/page-watch-common/player/hooks/use-player-advert';
+import { usePlayerInitLoading } from '@/components/page-watch-common/player/hooks/use-player-init-loading';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -73,18 +82,15 @@ import { usePlayerStreamStopText } from '@/components/page-watch-common/player/h
 import { useThemeStore } from '@/store/use-theme-store';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 
-const {
-  playerSdkLoadError,
-
-  isLowLatency,
-  logoSetting,
-} = storeDefinitionToRefs(usePlayerStore);
+const { playerSdkLoadError, isLowLatency, logoSetting } = storeDefinitionToRefs(usePlayerStore);
 
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 const { playerBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
 
 const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText();
+
+const { initLoadingVisible } = usePlayerInitLoading();
 
 const { playerContainer } = usePlayerMain({
   initPlayerOptions: () => {
@@ -176,6 +182,17 @@ const { iframeVisible, iframeUrl } = usePlayerAdvert();
 .c-pc-player-main__container__hide-watermark {
   .plv-live-player-watermark {
     display: none !important;
+  }
+}
+
+// 避免观看页加的loading跟播放器loading重叠显示
+.c-pc-player-main__hide-player-loading {
+  .plv-live-player-loading {
+    opacity: 0 !important;
+  }
+
+  .pv-loading {
+    opacity: 0 !important;
   }
 }
 </style>

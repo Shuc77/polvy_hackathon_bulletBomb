@@ -11,6 +11,7 @@
       'c-portrait-player-main--none-live': noneLiveVisible,
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
       'c-portrait-player-main--hide': isConnectMicing,
+      'c-portrait-player-main__hide-player-loading': initLoadingVisible,
     }"
     @click="onClickContainer"
   >
@@ -44,6 +45,12 @@
         <!-- 播放器封面图 -->
         <portrait-player-cover-img />
 
+        <!-- 播放器初始化 loading（解决 SDK 未挂载前的空白区域） -->
+        <loading-overlay
+          :visible="initLoadingVisible"
+          :show-text="false"
+        />
+
         <!-- 播放按钮 -->
         <!-- @warn 该 Dom 只用来显示状态，实际用来控制播放的是 appEvents.portrait.ClickPlayerRegion 事件回调 -->
         <player-business-play-button :style="playerButtonStyle" />
@@ -63,6 +70,7 @@ import PortraitNoneLivePanel from '../../common/none-live-panel/portrait-none-li
 import PortraitPlayerCoverImg from '../../player-cover-img/portrait-player-cover-img.vue';
 import SmallWindowControl from '../../player-control/common-player-control/small-window-control.vue';
 import PlayerBusinessPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
+import LoadingOverlay from '@/components/common-base/loading-overlay/loading-overlay.vue';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
@@ -75,6 +83,7 @@ import { useResolutionSize } from '../../hooks/use-resolution-size';
 import { usePortraitClickPlayer } from './_hooks/use-portrait-click-player';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { usePortraitPlayerSize } from './use-portrait-player-size';
+import { usePlayerInitLoading } from '../../hooks/use-player-init-loading';
 import { computed, unref, onBeforeUnmount } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { useChannelStore } from '@/store/use-channel-store';
@@ -146,6 +155,8 @@ const isDocMainScreen = computed(() => {
 });
 
 const { isMiniAvatar, portraitCopyRightExtraClassEnabled } = usePortraitCopyrightStyle();
+
+const { initLoadingVisible } = usePlayerInitLoading();
 
 const playerStyle = computed<CSSProperties>(() => {
   if (!isDocMainScreen.value) {
@@ -407,6 +418,13 @@ useConnectMicing();
 
   .plv-player-copyright-notice__container {
     top: calc(50px + var(--plv-cr-doc-rule));
+  }
+}
+
+// 通过样式隐藏播放器 loading，避免跟观看页加的 loading 重叠显示
+.c-portrait-player-main__hide-player-loading {
+  .plv-live-loading {
+    opacity: 0;
   }
 }
 </style>

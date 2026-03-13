@@ -11,7 +11,7 @@
       {{ msgTimeText }}
     </div>
     <div class="c-portrait-chat-msg-item__content">
-      <template v-if="iarSdkLoaded">
+      <template v-if="iarSdkLoaded && iarUIV1Loaded">
         <!-- 红包消息 -->
         <portrait-redpaper-msg v-if="chatMsg.msgSource === ChatMsgSource.Redpaper" />
         <!-- 红包领取消息 -->
@@ -72,7 +72,7 @@ const { chatMsg, msgVisible, showMsgTime, msgTimeText } = useChatMsgItem({
 
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>
 
 <style lang="scss">

@@ -9,8 +9,8 @@
     />
 
     <!-- 互动功能 -->
-    <portrait-iar-render v-if="iarSdkLoaded" />
-    <portrait-iar-render-v2 v-if="iarSdkLoaded" />
+    <portrait-iar-render v-if="iarSdkLoaded && iarUIV1Loaded" />
+    <portrait-iar-render-v2 v-if="iarSdkLoaded && !notNeedIar" />
     <portrait-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
 
     <!-- 邀请榜弹层 -->
@@ -77,7 +77,7 @@
     <mobile-identity-login-dialog-render v-if="needIdentityGuestForceLogin" />
 
     <!-- 任务奖励领取弹层 -->
-    <mobile-task-reward-receive-popup v-if="iarSdkLoaded" />
+    <mobile-task-reward-receive-popup v-if="iarSdkLoaded && !notNeedIar" />
 
     <!-- 任务完成弹层 -->
     <mobile-task-activity-finish-dialog />
@@ -98,7 +98,7 @@
     <portrait-multi-meeting-popup v-if="multiMeetingEnabled" />
 
     <!-- 我的奖励弹层 -->
-    <mobile-personal-reward-popup />
+    <mobile-personal-reward-popup v-if="iarSdkLoaded && !notNeedIar" />
 
     <!-- 文件管理 -->
     <mobile-file-management />
@@ -210,7 +210,7 @@ const { isPlaybacking, playbackListVisible, chapterVisible } =
 
 const { supportMultiStreamTrack } = storeDefinitionToRefs(useChannelStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs(useIdentityStore);
 
@@ -219,5 +219,5 @@ const { multiMeetingEnabled } = storeDefinitionToRefs(useMultiMeetingStore);
 const { learningStatsEnabled, learningStatsDialogEnabled } =
   storeDefinitionToRefs(useChannelInfoStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 </script>

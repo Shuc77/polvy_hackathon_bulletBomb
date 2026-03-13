@@ -4,6 +4,50 @@
 
 ---
 
+## v2.15.0(2026-03-13)
+
+### Bug Fixes
+
+- 修复用量上报功能在 Electron WebView 下的兼容性
+- 修复当"AI 看"为菜单首位时，无法正常查看"逐字稿"功能的问题
+- 修复一客一码功能在后台关闭微信授权后无法正常在微信内使用的问题
+
+### Features
+
+- 白名单观看新增 phoneAuthToken 的校验方式
+- 非直播状态也可显示消息上墙
+- 支持在传入 `notNeedIar=Y` 也能够正常使用商品库功能，并支持商品库在 `sdk-inject` 模式下使用
+- 支持在用户体系登录后，后续进行登记观看和报名观看时能够自动回填用户手机号
+- 播放器加载前增加 loading
+- 优化在聊天发言时仍可见直播画面
+
+### Styles
+
+- 优化当 `styleType=theme` 的情况下，各个组件内部的主题样式处理，并统一使用 `bgConfig` 和 `generateBgStyle` 来处理主题背景样式
+
+### Optimizes
+
+- 打赏消息不再截断昵称
+- 内部一系列小的优化调整
+
+### Build System
+
+- 工程调整
+  - 增加 webpack 原生配置，并增加 SWC、lightningcss、esbuild 等工具，以便更快处理构建打包和本地开发调试，默认最低支持到 ES6
+  - 增加 Rsdoctor 方便进行构建调试
+  - 增加 code-inspector-plugin 方便进行插件调试
+  - 开发 parallel-lint-webpack-plugin 插件用于更快进行类型检查和代码校验
+  - 下个版本会移除 vue-cli 相关的配置和依赖包，后续不再支持 IE
+- 依赖更新
+  - 更新 `@polyv/rum-sdk`, 版本为 `0.2.0`
+  - 更新 `@polyv/vue-components` 版本至 `1.8.0`
+  - 更新 `@polyv/chat` 和 `@polyv/chat-ui`，版本为 `rc-20260312`
+  - 更新 `@polyv/product-ui` 版本至 `rc-20260312`
+  - 更新 `interactions-receive-sdk-ui-default` 版本至 `rc-20260312`
+  - 更新 `@polyv/iar` 相关 UI 层 SDK, 版本至 `rc-20260312`
+
+---
+
 ## v2.14.0(2026-02-06)
 
 ### Bug Fixes
@@ -1094,7 +1138,7 @@
 - 新增一客一码数据采集功能
 - 支持互动商品相关的提示语配置
 - 支持聊天信息和提问信息进行重发
-- 支持显示主播信息
+- 支持显示主讲信息
 
 ### Styles
 

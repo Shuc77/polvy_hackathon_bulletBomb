@@ -22,7 +22,7 @@ defineProps({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .c-chat-speak-top {
   position: relative;
   box-sizing: border-box;

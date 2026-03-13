@@ -3,8 +3,8 @@
 <template>
   <div class="c-mobile-watch-layout-lazyload">
     <!-- 互动功能 -->
-    <mobile-iar-render v-if="iarSdkLoaded" />
-    <mobile-iar-render-v2 v-if="iarSdkLoaded" />
+    <mobile-iar-render v-if="iarSdkLoaded && iarUIV1Loaded" />
+    <mobile-iar-render-v2 v-if="iarSdkLoaded && !notNeedIar" />
     <mobile-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
 
     <!-- 连麦挂件 -->
@@ -84,7 +84,7 @@
     <mobile-identity-login-dialog-render v-if="needIdentityGuestForceLogin" />
 
     <!-- 任务奖励领取弹层 -->
-    <mobile-task-reward-receive-popup v-if="iarSdkLoaded" />
+    <mobile-task-reward-receive-popup v-if="iarSdkLoaded && !notNeedIar" />
 
     <!-- 任务完成弹层 -->
     <mobile-task-activity-finish-dialog />
@@ -96,7 +96,7 @@
     <mobile-playback-setting />
 
     <!-- 我的奖励弹层 -->
-    <mobile-personal-reward-popup />
+    <mobile-personal-reward-popup v-if="iarSdkLoaded && !notNeedIar" />
 
     <!-- 观看/学习时长统计弹层 -->
     <mobile-learning-stat-dialog v-if="learningStatsDialogEnabled" />
@@ -206,7 +206,8 @@ const { inviteDetailEnabled, inviteActivityEnabled } = storeDefinitionToRefs(use
 
 const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
-const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded, interactSetting } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs(useIdentityStore);
 
@@ -215,5 +216,5 @@ const { learningStatsEnabled, learningStatsDialogEnabled } =
 
 const { aiKnowledgeQuizEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 </script>

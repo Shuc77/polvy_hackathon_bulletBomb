@@ -41,6 +41,7 @@ export const useEffectMsg = () => {
 
       // 普通、职位商品打开商品详情
       if (
+        productDetail &&
         [productTarget.ProductType.Normal, productTarget.ProductType.Position].includes(
           productDetail.productType,
         )

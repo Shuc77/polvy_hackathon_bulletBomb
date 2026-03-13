@@ -25,7 +25,6 @@ import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-m
 import { useEmotionSetup } from './use-emotion-setup';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useWatchAICoreSetup } from './use-watch-ai-core-setup';
-import { installVueComponents } from '@/plugins/vue-components';
 
 /**
  * 页面尺寸初始化设置
@@ -158,7 +157,7 @@ export const useMainEnter = (options: {
   function removeUrlAuthQueryParams() {
     if (!authStore.isAuthorized) return;
 
-    removeQueryParam(['name', 'password', ...AuthSpecialQueryParams]);
+    removeQueryParam(['name', 'password', 'phoneAuthToken', ...AuthSpecialQueryParams]);
   }
 
   usePageSizeSetup();
@@ -221,9 +220,6 @@ export const useMainEnter = (options: {
       }, 0);
     }
   }
-
-  // 设置 vue-components 全局配置
-  installVueComponents();
 
   return {
     onPageMounted,

@@ -1,30 +1,32 @@
 <!-- @file PC 端聊天室右下角挂件 -->
 <template>
   <div class="c-pc-chat-room-pendant">
-    <template v-if="iarSdkLoaded">
-      <!-- 风险测评 -->
-      <risk-evaluation-entrance
-        v-if="riskEvaluationEntranceEnabled"
-        class="c-pc-chat-room-pendant__item"
-      />
+    <template v-if="iarSdkLoaded && !notNeedIar">
+      <template v-if="iarUIV1Loaded">
+        <!-- 风险测评 -->
+        <risk-evaluation-entrance
+          v-if="riskEvaluationEntranceEnabled"
+          class="c-pc-chat-room-pendant__item"
+        />
 
-      <!-- 卡片推送 -->
-      <pc-push-card class="c-pc-chat-room-pendant__item" />
+        <!-- 卡片推送 -->
+        <pc-push-card class="c-pc-chat-room-pendant__item" />
 
-      <!-- 红包 -->
-      <pc-redpack-pendant class="c-pc-chat-room-pendant__item" />
+        <!-- 红包 -->
+        <pc-redpack-pendant class="c-pc-chat-room-pendant__item" />
 
-      <!-- 报名抽奖 -->
-      <pc-enroll-lottery-pendant class="c-pc-chat-room-pendant__item" />
+        <!-- 报名抽奖 -->
+        <pc-enroll-lottery-pendant class="c-pc-chat-room-pendant__item" />
 
-      <!-- 话题 PK -->
-      <pc-topic-pk class="c-pc-chat-room-pendant__item" />
+        <!-- 话题 PK -->
+        <pc-topic-pk class="c-pc-chat-room-pendant__item" />
+
+        <!-- 抢答 -->
+        <pc-rush-answer class="c-pc-chat-room-pendant__item" />
+      </template>
 
       <!-- 抽奖 -->
       <lottery-pendant-v2 class="c-pc-chat-room-pendant__item" />
-
-      <!-- 抢答 -->
-      <pc-rush-answer class="c-pc-chat-room-pendant__item" />
 
       <!-- 优惠券 -->
       <pc-coupon-pendant class="c-pc-chat-room-pendant__item" />
@@ -77,12 +79,13 @@ import { useFinanceStore } from '@/store/use-finance-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
 const {
   iarSdkLoaded,
+  iarUIV1Loaded,
 
   pushCardPendantVisible,
   redpackPendantVisible,

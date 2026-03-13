@@ -234,7 +234,7 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .c-portrait-mic-container {
   width: 100%;
   height: 100%;

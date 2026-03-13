@@ -25,6 +25,7 @@ import {
 } from './types';
 import { isTabPaneInstance } from './use-tab-pane';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { BgConfig } from '@/skins/theme-config-helper';
 
 export const generateHackWeixinBtnId = (menuName: string | number, needSelectorKey?: boolean) => {
   const id = `plv-watch-menu-hack-weixin-btn-${menuName}`;
@@ -32,12 +33,12 @@ export const generateHackWeixinBtnId = (menuName: string | number, needSelectorK
 };
 
 export interface TabHeaderConfig {
-  bg?: string;
+  bgConfig?: BgConfig;
   item?: {
     fontColor: string;
   };
   activeItem?: {
-    bg: string;
+    bgConfig: BgConfig;
     borderColor: string;
     icon: string;
     fontColor: string;

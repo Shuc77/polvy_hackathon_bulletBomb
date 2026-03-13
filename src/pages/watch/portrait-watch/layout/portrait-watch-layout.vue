@@ -10,6 +10,7 @@
       :class="{
         'c-portrait-watch-layout__player-wrap__fullscreen': portraitPlayerIsPageFullscreen,
       }"
+      :style="playerWrapStyle"
     >
       <portrait-connect-mic-container
         v-if="connectMicList.length"
@@ -62,18 +63,6 @@
     <!-- 播放器提示 -->
     <player-tips class="c-portrait-watch-layout__player-tips"></player-tips>
 
-    <!-- 评论上墙 -->
-    <transition
-      v-if="!isChatUIV2"
-      name="fade"
-    >
-      <speak-top-business
-        class="c-portrait-watch-layout__speak-to-top"
-        v-show="portraitShowSpeakToTop"
-        layout="portrait"
-      ></speak-top-business>
-    </transition>
-
     <!-- 字幕管理 -->
     <portrait-subtitle-manager />
   </div>
@@ -82,30 +71,31 @@
 <script setup lang="ts">
 import PortraitConnectMicContainer from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-container.vue';
 import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import PortraitPlayerMain from '@/components/page-watch-common/player/player-main/portrait-player-main/portrait-player-main.vue';
-import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
-import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PortraitSubtitleManager from '@/components/page-watch-common/subtitle/portrait-subtitle-manager/portrait-subtitle-manager.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { computed, nextTick, ref, watch } from 'vue';
 import PortraitWatchLayoutCarousel from './portrait-watch-layout-carousel.vue';
 
+import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useWebviewStore } from '@/store/use-webview-store';
-import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
 
-import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
-import { CSSProperties } from 'vue/types/jsx';
-import { MainScreenContent } from '@polyv/live-watch-sdk';
-import { useChatStore } from '@/store/use-chat-store';
 import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/hooks/use-small-class-play';
+import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
+import { MainScreenContent } from '@polyv/live-watch-sdk';
+import { CSSProperties } from 'vue/types/jsx';
+import { isAndroid } from '@/assets/utils/browser';
+import { usePageStore } from '@/store/use-page-store';
 
-const { isVerticalScreenOrientation, mainScreen } = storeDefinitionToRefs(useLayoutStore);
+const { isVerticalScreenOrientation, mainScreen, mobileInputFocusing, mobileKeyboardHeight } =
+  storeDefinitionToRefs(useLayoutStore);
 
 const portraitLayoutStore = usePortraitLayoutStore();
 const { portraitDocWrapHeight, portraitDocContentHeight, portraitPlayerIsPageFullscreen } =
@@ -115,11 +105,11 @@ const { canRenderPlayer } = storeDefinitionToRefs(usePlayerStore);
 
 const { canRenderDoc, documentSwitch } = storeDefinitionToRefs(useDocStore);
 
-const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
-
 const { masterMicItem, connectMicList } = storeDefinitionToRefs(useConnectMicStore);
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
+
+const { pageClientHeight } = storeDefinitionToRefs(usePageStore);
 
 const { shouldShowPlayButton, onPlayClick, addPortraitClickEvent } = useSmallClassPlay();
 
@@ -155,11 +145,6 @@ const micTouchEnd = (e: TouchEvent) => {
     portraitMicContainer.value.onTouchEnd(e.changedTouches[0].pageY);
   }
 };
-
-// 竖屏模版是否显示评论上墙
-const portraitShowSpeakToTop = computed(() => {
-  return portraitLayoutStore.isMainCarouselScreen;
-});
 
 const isDocMainScreen = computed(() => {
   return (
@@ -247,6 +232,32 @@ watch(
     }
   },
 );
+
+const playerWrapStyle = computed(() => {
+  const styles: CSSProperties = {};
+
+  if (mobileInputFocusing.value) {
+    let transformHeight = mobileKeyboardHeight.value;
+
+    if (portraitDocWrapHeight.value === 0) {
+      transformHeight = mobileKeyboardHeight.value / 1.5;
+    } else if (mainScreen.value === MainScreenContent.Player) {
+      transformHeight = mobileKeyboardHeight.value / 3;
+      /**
+       * 针对安卓设备，键盘显示时页面高度减少
+       * 如果播放器在下方，则往上偏移位置
+       */
+      if (isAndroid) {
+        transformHeight = pageClientHeight.value * 0.3 * -1;
+      }
+    }
+
+    styles.transform = `translateY(${transformHeight}px)`;
+    styles['z-index'] = 100;
+  }
+
+  return styles;
+});
 </script>
 
 <style lang="scss">

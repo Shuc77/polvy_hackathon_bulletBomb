@@ -61,20 +61,18 @@ export const useSmallClassPlay = () => {
     useEventBusListener(appEvents.portrait.ClickPlayerRegion, onPlayClick);
   };
 
-  watch(
-    () => liveStatus.value,
-    async () => {
-      if (!isSmallClassChannel) {
-        return;
-      }
-
-      // 下课时停止viewlog, 并停止订阅讲师流
-      if (liveStatus.value !== LiveStatus.Live) {
-        await watchCore.connectMic.leaveAudience();
-        watchCore.connectMic.stopSmallClassStat();
-      }
-    },
-  );
+  if (isSmallClassChannel.value) {
+    watch(
+      () => liveStatus.value,
+      async () => {
+        // 下课时停止 view-log, 并停止订阅讲师流
+        if (liveStatus.value !== LiveStatus.Live) {
+          await watchCore.connectMic.leaveAudience();
+          watchCore.connectMic.stopSmallClassStat();
+        }
+      },
+    );
+  }
 
   return {
     shouldShowPlayButton,

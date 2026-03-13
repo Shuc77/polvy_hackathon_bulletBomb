@@ -59,6 +59,8 @@ export interface LotteryRecordData {
 export interface InteractReceiveStoreState {
   /** 互动 SDK 加载完成，注意不一定加载成功 */
   iarSdkLoaded: Ref<boolean>;
+  /** 互动 UI V1 版本加载完成，注意不一定加载成功 */
+  iarUIV1Loaded: Ref<boolean>;
   /** 互动设置信息 */
   interactSetting: Ref<InteractSetting>;
   /** 互动功能是否全屏处理 */
@@ -155,6 +157,9 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     /** 互动 SDK 加载完成，注意不一定加载成功 */
     const iarSdkLoaded = ref(false);
+
+    /** 互动 UI V1 版本加载完成，注意不一定加载成功 */
+    const iarUIV1Loaded = ref(false);
 
     /** 互动设置信息 */
     const interactSetting = ref<InteractSetting>(
@@ -325,13 +330,16 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     /** 投诉反馈功能是否可见 */
     const feedbackEnabled = computed(() => {
-      return iarSdkLoaded.value && interactSetting.value.watchFeedbackEnabled;
+      return (
+        iarSdkLoaded.value && iarUIV1Loaded.value && interactSetting.value.watchFeedbackEnabled
+      );
     });
 
     /** 投诉反馈挂件是否可见 */
     const feedbackPendantVisible = computed(() => {
       return (
         feedbackEnabled.value &&
+        iarUIV1Loaded.value &&
         interactSetting.value.watchFeedbackButtonPositions.includes('EXTERNAL')
       );
     });
@@ -378,6 +386,7 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
 
     return {
       iarSdkLoaded,
+      iarUIV1Loaded,
 
       interactSetting,
       syncInteractStore,

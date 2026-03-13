@@ -51,7 +51,9 @@ import { useResizeOssImage } from '@polyv/vue-components';
 
 const { resizeOSSImg } = useResizeOssImage();
 
-const { getEffectText } = useEffectText();
+const { getEffectText } = useEffectText({
+  sliceNickname: false,
+});
 
 const { effectData, msgUserAvatar, onClickMsg } = useRewardMsg();
 

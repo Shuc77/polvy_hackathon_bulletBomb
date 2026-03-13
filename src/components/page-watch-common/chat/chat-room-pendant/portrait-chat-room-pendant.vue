@@ -1,30 +1,35 @@
 <!-- @file 竖屏端右下角挂件 -->
 <template>
   <div class="c-portrait-chat-room-pendant">
-    <template v-if="iarSdkLoaded">
-      <!-- 风险测评 -->
-      <risk-evaluation-entrance
-        v-if="riskEvaluationEntranceEnabled"
-        class="c-portrait-chat-room-pendant__item"
-      />
+    <template v-if="iarSdkLoaded && !notNeedIar">
+      <template v-if="iarUIV1Loaded">
+        <!-- 风险测评 -->
+        <risk-evaluation-entrance
+          v-if="riskEvaluationEntranceEnabled"
+          class="c-portrait-chat-room-pendant__item"
+        />
+
+        <!-- 卡片推送 -->
+        <portrait-push-card class="c-portrait-chat-room-pendant__item" />
+
+        <!-- 红包 -->
+        <mobile-redpack-pendant class="c-portrait-chat-room-pendant__item" />
+
+        <!-- 报名抽奖 -->
+        <mobile-enroll-lottery-pendant class="c-portrait-chat-room-pendant__item" />
+
+        <!-- 话题 PK -->
+        <mobile-topic-pk class="c-portrait-chat-room-pendant__item" />
+
+        <!-- 抢答 -->
+        <mobile-rush-answer class="c-portrait-chat-room-pendant__item" />
+      </template>
 
       <!-- 微活动 -->
       <portrait-micro-activity-pendant
         v-if="microActivityEnabled"
         class="c-portrait-chat-room-pendant__item"
       />
-
-      <!-- 卡片推送 -->
-      <portrait-push-card class="c-portrait-chat-room-pendant__item" />
-
-      <!-- 红包 -->
-      <mobile-redpack-pendant class="c-portrait-chat-room-pendant__item" />
-
-      <!-- 报名抽奖 -->
-      <mobile-enroll-lottery-pendant class="c-portrait-chat-room-pendant__item" />
-
-      <!-- 话题 PK -->
-      <mobile-topic-pk class="c-portrait-chat-room-pendant__item" />
 
       <!-- 抽奖 -->
       <lottery-pendant-v2 class="c-portrait-chat-room-pendant__item" />
@@ -37,9 +42,6 @@
         v-if="voteActiveMenuData.visible"
         class="c-portrait-chat-room-pendant__item"
       />
-
-      <!-- 抢答 -->
-      <mobile-rush-answer class="c-portrait-chat-room-pendant__item" />
 
       <!-- 任务活动 -->
       <mobile-task-activity-pendant class="c-portrait-chat-room-pendant__item" />
@@ -97,12 +99,16 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 const { voteActiveMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
-const { iarSdkLoaded, feedbackPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
+
+const { iarSdkLoaded, iarUIV1Loaded, feedbackPendantVisible } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { microActivityEnabled } = storeDefinitionToRefs(useMicroActivityStore);
 

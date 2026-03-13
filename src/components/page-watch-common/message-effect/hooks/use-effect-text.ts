@@ -2,7 +2,14 @@ import { useLangStore } from '@/store/use-lang-store';
 import { EffectTextType, MessageEffectData, MessageEffectTextItem } from '../type';
 import { translate } from '@/assets/lang';
 
-export const useEffectText = () => {
+export const useEffectText = (
+  options: {
+    /** 是否截取昵称 */
+    sliceNickname?: boolean;
+  } = {},
+) => {
+  const { sliceNickname = true } = options;
+
   const langStore = useLangStore();
 
   /**
@@ -46,7 +53,10 @@ export const useEffectText = () => {
 
     const nicknames = data.nicknames.map(text => {
       text = langStore.translateNick(text);
-      return sliceText(text);
+      if (sliceNickname) {
+        text = sliceText(text);
+      }
+      return text;
     });
 
     strList.forEach(item => {

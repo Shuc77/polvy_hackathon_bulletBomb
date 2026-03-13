@@ -133,12 +133,7 @@
     />
 
     <!-- 评论上墙 -->
-    <speak-top-business
-      v-if="!isChatUIV2"
-      class="c-mobile-watch-layout__speak-to-top"
-      layout="mobile"
-    />
-    <chat-loader-helper v-else>
+    <chat-loader-helper>
       <toping-msg
         class="c-mobile-watch-layout__speak-to-top c-mobile-watch-layout__speak-to-top-v2"
       />
@@ -153,7 +148,7 @@
       class="c-mobile-watch-layout__bottom"
     >
       <!-- 快速答题卡 -->
-      <quick-answer-card v-if="iarSdkLoaded" />
+      <quick-answer-card v-if="iarSdkLoaded && !notNeedIar" />
 
       <!-- 菜单栏 -->
       <mobile-watch-menu />
@@ -170,62 +165,61 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, ref, unref, watch } from 'vue';
+import { CSSProperties, computed, defineAsyncComponent, nextTick, ref, unref, watch } from 'vue';
 
-import MobileConnectMicUserItem from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-item.vue';
-import MobileConnectMicUserList from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-list.vue';
-import MobileDoc from '@/components/page-watch-common/doc/mobile-doc.vue';
-import QuickAnswerCard from '@/components/page-watch-common/interactive-receive-v2/answer-card-v2/quick-answer-card/quick-answer-card.vue';
-import MobilePlayerMain from '@/components/page-watch-common/player/player-main/mobile-player-main/mobile-player-main.vue';
-import MobileCountDownLayer from '@/components/page-watch-common/count-down-layer/mobile-count-down-layer.vue';
-import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
-import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
-import MobilePlayerStreamTrack from '@/components/page-watch-common/player/player-stream-track/mobile-player-stream-track.vue';
-import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
-import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
-import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
-import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
-import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
 import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
-import ConnectMicPlayFailedTips from '@/components/page-watch-common/connect-mic/common/connect-mic-play-failed-tips.vue';
-import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
+import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
+import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
+import MobileChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/mobile-chat-msg-replay-tips.vue';
+import ConnectMicPlayFailedTips from '@/components/page-watch-common/connect-mic/common/connect-mic-play-failed-tips.vue';
+import MobileConnectMicUserItem from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-item.vue';
+import MobileConnectMicUserList from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-user-list.vue';
+import MobileCountDownLayer from '@/components/page-watch-common/count-down-layer/mobile-count-down-layer.vue';
+import MobileDoc from '@/components/page-watch-common/doc/mobile-doc.vue';
+import QuickAnswerCard from '@/components/page-watch-common/interactive-receive-v2/answer-card-v2/quick-answer-card/quick-answer-card.vue';
+import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
+import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
+import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
+import MobilePlayerMain from '@/components/page-watch-common/player/player-main/mobile-player-main/mobile-player-main.vue';
+import MobilePlayerStreamTrack from '@/components/page-watch-common/player/player-stream-track/mobile-player-stream-track.vue';
 
-import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { TAB_NAME_CHAT, TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
+import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { useDocStore } from '@/store/use-doc-store';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { TAB_NAME_CHAT, TAB_NAME_DOC_OR_VIDEO } from '@/assets/constants/tab-name';
-import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
-import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
-import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { appEvents, useEventBusListener } from '@/app/app-events';
-import { usePlayerStore } from '@/store/use-player-store';
-import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useChannelStore } from '@/store/use-channel-store';
-import { useWebviewStore } from '@/store/use-webview-store';
-import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
-import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
-import { useChatStore } from '@/store/use-chat-store';
-import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
-import liveSquare from '@/components/page-watch-common/live-square/live-square.vue';
-import { usePageStore } from '@/store/use-page-store';
-import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
+import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/hooks/use-small-class-play';
+import liveSquare from '@/components/page-watch-common/live-square/live-square.vue';
+import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
+import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
+import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
+import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useChatStore } from '@/store/use-chat-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
+import { usePageStore } from '@/store/use-page-store';
+import { usePlayerStore } from '@/store/use-player-store';
+import { useWebviewStore } from '@/store/use-webview-store';
+import { MainScreenContent, MultiMeetingListLayout } from '@polyv/live-watch-sdk';
 
 const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
 );
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
-const { chatExited, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
+const { chatExited } = storeDefinitionToRefs(useChatStore);
 
 const { supportMultiStreamTrack, isSmallClassChannel } = storeDefinitionToRefs(useChannelStore);
 
@@ -243,6 +237,8 @@ const {
   mobileLayoutBottomTop,
   mobileDocIsPageFullscreen,
   mobilePlayerIsPageFullscreen,
+  mobileKeyboardHeight,
+  mobileInputFocusing,
 } = storeDefinitionToRefs(useLayoutStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
@@ -273,43 +269,45 @@ const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 
 const { shouldShowPlayButton, onPlayClick } = useSmallClassPlay();
 
+const defaultLayoutTopDistance = computed(() => {
+  if (isVerticalScreenOrientation.value) {
+    // FIX：在折叠屏（如华为 Mate X5）上，屏幕展开后，播放器占比过高，当出现输入法的时候，会导致页面底部没有位置显示输入框
+    // 这里处理在特定比例的页面上，播放器宽高比为 10:3，减少高度腾出位置给底部区域
+    if (pageClientWidth.value > 500 && pageClientWidth.value / pageClientHeight.value > 0.8) {
+      return '30%';
+    }
+    return '56.25%'; // 16:9
+  }
+  if (isHorizontalScreenOrientation.value) return `${document.documentElement.clientHeight}px`;
+  return '56.25%'; // 16:9
+});
+
 // 顶部占位距离 => 决定 layoutTopElem.clientHeight => 决定播放器高度
 const layoutTopDistance = computed(() => {
   // 小班课场景：有第一画面（讲师流）就按16:9比例（56.25%）显示
   if (isSmallClassChannel.value) {
-    if (isVerticalScreenOrientation.value) {
-      // FIX：在折叠屏（如华为 Mate X5）上，屏幕展开后，播放器占比过高，当出现输入法的时候，会导致页面底部没有位置显示输入框
-      // 这里处理在特定比例的页面上，播放器宽高比为 10:3，减少高度腾出位置给底部区域
-      if (pageClientWidth.value / pageClientHeight.value > 0.8) {
-        return '30%';
-      }
-      return '56.25%'; // 16:9
-    }
-    if (isHorizontalScreenOrientation.value) return `${document.documentElement.clientHeight}px`;
-    return '56.25%'; // 16:9
+    return defaultLayoutTopDistance.value;
   }
 
   // 常规场景：原有逻辑
   if (!canRenderPlayer.value) return '0';
 
-  if (isVerticalScreenOrientation.value) {
-    // FIX：在折叠屏（如华为 Mate X5）上，屏幕展开后，播放器占比过高，当出现输入法的时候，会导致页面底部没有位置显示输入框
-    // 这里处理在特定比例的页面上，播放器宽高比为 10:3，减少高度腾出位置给底部区域
-    if (pageClientWidth.value / pageClientHeight.value > 0.8) {
-      return '30%';
-    }
-    return '56.25%';
-  }
-  if (isHorizontalScreenOrientation.value) return `${document.documentElement.clientHeight}px`;
-  return '56.25%';
+  return defaultLayoutTopDistance.value;
 });
 
 /** 主屏的样式 */
 const mainScreenStyles = computed(() => {
-  return {
+  const styles: CSSProperties = {
     height: `${unref(mobileLayoutTopHeight)}px`,
     top: 0,
   };
+
+  if (unref(mobileInputFocusing)) {
+    styles.transform = `translateY(${unref(mobileKeyboardHeight)}px)`;
+    styles['z-index'] = 100;
+  }
+
+  return styles;
 });
 
 /** 副屏的样式 */

@@ -102,7 +102,7 @@
           :name="TAB_NAME_QA"
           lazy-load
         >
-          <mobile-question-answer v-if="iarSdkLoaded" />
+          <mobile-question-answer v-if="iarSdkLoaded && iarUIV1Loaded" />
         </mobile-menu-tab-pane>
 
         <!-- 回放 -->
@@ -142,7 +142,7 @@
           :name="TAB_NAME_TUWEN_LIVE"
           lazy-load
         >
-          <mobile-tuwen-live v-if="iarSdkLoaded" />
+          <mobile-tuwen-live v-if="iarSdkLoaded && iarUIV1Loaded" />
         </mobile-menu-tab-pane>
 
         <!-- 图文菜单 -->
@@ -182,7 +182,7 @@
           :label="menu.name"
           :name="TAB_NAME_VOTE"
         >
-          <mobile-vote-panel-v2 v-if="iarSdkLoaded" />
+          <mobile-vote-panel-v2 v-if="iarSdkLoaded && !notNeedIar" />
         </mobile-menu-tab-pane>
 
         <!-- 云席 -->
@@ -193,7 +193,7 @@
           :name="TAB_NAME_SEAT"
           lazy-load
         >
-          <mobile-seat-table v-if="iarSdkLoaded" />
+          <mobile-seat-table v-if="iarSdkLoaded && iarUIV1Loaded" />
         </mobile-menu-tab-pane>
 
         <!-- 邀请榜 -->
@@ -259,7 +259,7 @@
           :name="TAB_NAME_AI_SUMMARY"
           lazy-load
         >
-          <mobile-ai-aggregate />
+          <mobile-ai-aggregate v-if="watchAICoreSetuped" />
         </mobile-menu-tab-pane>
 
         <!-- 多会场列表（竖向） for 主会场 -->
@@ -376,8 +376,11 @@ import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 
 const { paramGetter } = useQueryParams();
+
+const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
 
 const { mobileMenuCurrentName, mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -398,9 +401,9 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { themeSetting, watchThemeStyleConfig, defaultMobileChatRoomBgUrl, mobileChatRoomBgUrl } =
   storeDefinitionToRefs(useThemeStore);

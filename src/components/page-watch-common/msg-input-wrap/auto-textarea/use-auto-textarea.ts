@@ -1,23 +1,24 @@
 import { isDesktopIPad } from '@/assets/utils/browser';
+import { useMobileInput } from '@/hooks/behaviors/use-mobile-input';
+import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import {
   PropUtils,
-  useProps,
+  VueEmit,
   VueProps,
   emitFunc,
   updateModelEmit,
-  VueEmit,
+  useProps,
 } from '@polyv/vue-components';
-import { PlvInputContent } from '@/plugins/polyv-ui/types';
 import { throttle } from 'lodash-es';
 import {
-  ref,
-  computed,
-  unref,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
-  watch,
   CSSProperties,
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  unref,
+  watch,
 } from 'vue';
 
 export const autoTextareaProps = () => ({
@@ -76,6 +77,8 @@ export const useAutoTextarea = (options: {
   const { props, emit } = options;
   const { value, lineHeight, fontSize, placeholder } = useProps(props);
 
+  const { onInputFocus, onInputBlur } = useMobileInput();
+
   const textareaRef = ref<HTMLTextAreaElement>();
 
   /** 是否聚焦中 */
@@ -131,8 +134,6 @@ export const useAutoTextarea = (options: {
 
     clientHeight.value = textareaElem.clientHeight;
 
-    console.log('textAreaIsMultiRow', textAreaIsMultiRow.value, clientHeight.value);
-
     if (textareaElem.scrollHeight > textareaElem.clientHeight + 2) {
       emit('update:isOverflow', true);
     } else {
@@ -158,11 +159,13 @@ export const useAutoTextarea = (options: {
   function onBlur() {
     isFocus.value = false;
     emit('blur');
+    onInputBlur();
   }
 
   function onFocus() {
     isFocus.value = true;
     emit('focus');
+    onInputFocus();
   }
 
   function onInput() {

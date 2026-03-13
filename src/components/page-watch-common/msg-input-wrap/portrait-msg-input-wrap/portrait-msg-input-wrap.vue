@@ -18,6 +18,8 @@
           :disabled="disabledInput"
           ref="inputElemRef"
           maxlength="200"
+          @focus="onInputFocus"
+          @blur="onInputBlur"
         />
 
         <!-- 表情 -->
@@ -98,6 +100,8 @@ const {
   sendBtnDisabled,
   submitInput,
   msgInputWrapInstance,
+  onInputFocus,
+  onInputBlur,
 } = useMsgInputWrap({
   props,
   emit,

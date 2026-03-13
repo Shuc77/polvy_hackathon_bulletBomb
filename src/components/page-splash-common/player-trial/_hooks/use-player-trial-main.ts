@@ -36,6 +36,8 @@ export const usePlayerTrialMain = (
     }
 
     playerStore.$patch({
+      playerSdkLoadError: false,
+      playerScriptLoading: true,
       playerInited: false,
       isPlayStarted: false,
     });

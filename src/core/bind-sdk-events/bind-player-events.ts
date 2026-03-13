@@ -46,8 +46,17 @@ export function bindPlayerModuleEvents(watchCore: PolyvWatchCore): void {
 
   watchCore.player.eventEmitter.on(PlayerEvents.PlayerError, evt => {
     if (evt.reason === PlayerErrorReason.SdkLoadError) {
-      playerStore.$patch({ playerSdkLoadError: true });
+      playerStore.$patch({
+        playerSdkLoadError: true,
+        playerScriptLoading: false,
+      });
     }
+  });
+
+  watchCore.player.eventEmitter.on(PlayerEvents.PlayerScriptLoaded, () => {
+    playerStore.$patch({
+      playerScriptLoading: false,
+    });
   });
 
   watchCore.player.eventEmitter.on(PlayerEvents.TimeUpdate, params => {

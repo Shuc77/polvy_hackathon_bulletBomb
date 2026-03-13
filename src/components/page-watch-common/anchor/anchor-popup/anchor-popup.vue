@@ -77,6 +77,8 @@ import AnchorInfo from '../anchor-info/anchor-info.vue';
 import DescriptionInfo from './description-info.vue';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { translate } from '@/assets/lang';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 const { pageClientHeight } = storeDefinitionToRefs(usePageStore);
 
@@ -84,7 +86,10 @@ const { teacherInfo } = storeDefinitionToRefs(useChannelStore);
 
 const { anchorPopupVisible } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
+const { mobileLayoutBottomHeight, mobileMenuHeaderHeight, isPortraitWatchLayout } =
+  storeDefinitionToRefs(useLayoutStore);
+
+const { descMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
 const refreshKey = ref(Date.now());
 
@@ -92,19 +97,21 @@ const originDefaultHeight = 600;
 const defaultHeight = ref(originDefaultHeight);
 const popupHeight = ref(originDefaultHeight);
 
-const tabList = computed(() => {
-  const list: Array<{ label: string; value: string }> = [];
+type TabType = 'description' | 'channel';
 
-  if (isPortraitWatchLayout.value) {
+const tabList = computed(() => {
+  const list: Array<{ label: string; value: TabType }> = [];
+
+  if (isPortraitWatchLayout.value && descMenuData.value.visible) {
     list.push({
-      label: '直播介绍',
+      label: descMenuData.value.label || translate('menu.tabName.desc'),
       value: 'description',
     });
   }
 
   if (teacherInfo.value?.anchorEnabled) {
     list.push({
-      label: 'TA的频道',
+      label: translate('anchor.tab.channel.label'),
       value: 'channel',
     });
   }
@@ -112,11 +119,11 @@ const tabList = computed(() => {
   return list;
 });
 
-const hasTab = (value: string) => {
+const hasTab = (value: TabType) => {
   return tabList.value.some(item => item.value === value);
 };
 
-const currentTab = ref('');
+const currentTab = ref<TabType | undefined>();
 
 const channelTotal = ref(0);
 
@@ -128,14 +135,11 @@ function show() {
   if (tabList.value.length > 0) {
     currentTab.value = tabList.value[0].value;
   } else {
-    currentTab.value = '';
+    currentTab.value = undefined;
   }
 
   if (!isPortraitWatchLayout.value) {
-    const elem = document.querySelector('.c-mobile-menu-tabs__body');
-    if (elem) {
-      defaultHeight.value = elem.clientHeight + 80;
-    }
+    defaultHeight.value = mobileLayoutBottomHeight.value + mobileMenuHeaderHeight.value;
   }
 
   popupHeight.value = defaultHeight.value;
@@ -147,7 +151,7 @@ function hide() {
   anchorPopupVisible.value = false;
 }
 
-const onChangeTab = (value: string) => {
+const onChangeTab = (value: TabType) => {
   currentTab.value = value;
 };
 

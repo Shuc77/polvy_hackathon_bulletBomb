@@ -13,13 +13,13 @@
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
 import MobileTopGuide from '@/components/page-watch-common/top-guide/mobile-top-guide.vue';
+import { defineAsyncComponent } from 'vue';
 import MobileWatchLayout from './layout/mobile-watch-layout.vue';
 
 import { usePvTrack } from '@/hooks/business/use-pv-track';
-import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
 import { useLayoutLoad } from '@/hooks/core/use-layout-load';
+import { useWatchPage } from '@/pages/watch/_hooks/use-watch-page';
 
 const MobileWatchLayoutLazyload = defineAsyncComponent(
   () =>

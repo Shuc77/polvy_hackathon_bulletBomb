@@ -147,9 +147,11 @@
           <!-- 播放器侧边 - 互动功能渲染入口 -->
           <div class="c-pc-watch-layout__main-layer">
             <div class="c-pc-watch-layout__main__side-popup-render">
-              <pc-iar-render-upper-player v-if="iarSdkLoaded && layoutLoaded" />
-              <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded && layoutLoaded" />
-              <pc-watch-layout-player-side-popup v-if="iarSdkLoaded && layoutLoaded" />
+              <pc-iar-render-upper-player v-if="iarSdkLoaded && iarUIV1Loaded && layoutLoaded" />
+              <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded && layoutLoaded && !notNeedIar" />
+              <pc-watch-layout-player-side-popup
+                v-if="iarSdkLoaded && iarUIV1Loaded && layoutLoaded"
+              />
               <pc-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
             </div>
             <!-- 播放器右下角挂件区 -->
@@ -212,11 +214,7 @@
           />
 
           <!-- 置顶消息 -->
-          <speak-top-business
-            v-if="!isChatUIV2"
-            layout="pc"
-          />
-          <chat-loader-helper v-else>
+          <chat-loader-helper>
             <div class="c-pc-watch-layout__main-layer">
               <toping-msg class="c-pc-watch-layout__main__toping-msg" />
             </div>
@@ -262,76 +260,75 @@
 </template>
 
 <script setup lang="ts">
-import { $ } from '@just4/dom';
-import { onMounted, ref, watch } from 'vue';
-import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
+import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
 import PcBasicInfo from '@/components/common-business/basic-info/pc-basic-info.vue';
+import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
+import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
 import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
+import PcBulletinMarquee from '@/components/page-watch-common/bulletin-marquee/pc-bulletin-marquee.vue';
+import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
+import PcChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
 import PcConnectMicUserItem from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-user-item.vue';
+import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
 import PcDoc from '@/components/page-watch-common/doc/pc-doc.vue';
 import PcDonatePayQrcode from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-pay-qrcode.vue';
+import PcIarRenderUpperPlayerV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-upper-player-v2.vue';
+import PcIarRenderUpperPlayer from '@/components/page-watch-common/interactive-receive/pc-iar-render-upper-player.vue';
+import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PcMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-horizontal.vue';
 import PcPageAdvert from '@/components/page-watch-common/page-advert/pc-page-advert.vue';
+import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PcPlayerControl from '@/components/page-watch-common/player/player-control/pc-player-control/pc-player-control.vue';
 import PcPlayerMain from '@/components/page-watch-common/player/player-main/pc-player-main/pc-player-main.vue';
-import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
-import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
-import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
-import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
-import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc-count-down-layer.vue';
-import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
-import SpeakTopBusiness from '@/components/page-watch-common/chat/chat-speak-top/speak-top-business.vue';
-import PcProductSmallCard from '@/components/page-watch-common/product/product-small-card/pc-product-small-card.vue';
-import PcBulletinMarquee from '@/components/page-watch-common/bulletin-marquee/pc-bulletin-marquee.vue';
-import PcChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
-import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
-import PcIarRenderUpperPlayer from '@/components/page-watch-common/interactive-receive/pc-iar-render-upper-player.vue';
-import PcIarRenderUpperPlayerV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-upper-player-v2.vue';
-import PcWatchLayoutPlayerSidePopup from './pc-watch-layout-player-side-popup.vue';
-import PcPageNotice from '@/components/common-base/page-notice/pc-page-notice.vue';
+import AiQuestionCard from '@/components/page-watch-common/polyv-ai/ai-question/ai-question-card.vue';
 import PcProductRender from '@/components/page-watch-common/product/pc-product-render.vue';
 import PcProductPendant from '@/components/page-watch-common/product/product-pendant/pc-product-pendant.vue';
-import AiQuestionCard from '@/components/page-watch-common/polyv-ai/ai-question/ai-question-card.vue';
-import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
+import PcProductSmallCard from '@/components/page-watch-common/product/product-small-card/pc-product-small-card.vue';
+import { $ } from '@just4/dom';
+import { onMounted, ref, watch } from 'vue';
+import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
+import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
+import PcWatchLayoutPlayerSidePopup from './pc-watch-layout-player-side-popup.vue';
+import PcWatchSubPackUp from './pc-watch-sub-pack-up.vue';
 
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
-import { SwitchTipsStatus, usePlayerStore } from '@/store/use-player-store';
-import { useDocStore } from '@/store/use-doc-store';
-import { useLayoutStore } from '@/store/use-layout-store';
-import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
-import { useThemeStore } from '@/store/use-theme-store';
-import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { useDonateStore } from '@/store/use-donate-store';
-import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
-import { useChannelStore } from '@/store/use-channel-store';
-import { usePlaybackStore } from '@/store/use-playback-store';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
 import { PlayButtonMode } from '@/components/page-watch-common/player/common/player-play-button/use-player-play-button';
+import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChannelStore } from '@/store/use-channel-store';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
+import { useDocStore } from '@/store/use-doc-store';
+import { useDonateStore } from '@/store/use-donate-store';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLayoutStore } from '@/store/use-layout-store';
+import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
+import { usePlaybackStore } from '@/store/use-playback-store';
+import { SwitchTipsStatus, usePlayerStore } from '@/store/use-player-store';
+import { useThemeStore } from '@/store/use-theme-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-import {
-  MainScreenContent,
-  MultiMeetingListLayout,
-  MotivationLikeType,
-  ProductEntryPosition,
-} from '@polyv/live-watch-sdk';
-import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
-import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { useChatStore } from '@/store/use-chat-store';
-import { useLayoutLoad } from '@/hooks/core/use-layout-load';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
 import { useSmallClassPlay } from '@/components/page-watch-common/connect-mic/hooks/use-small-class-play';
+import PcConnectMicTips from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic-tips.vue';
+import { useHoverVisible } from '@/hooks/behaviors/use-hover-visible';
+import { useLayoutLoad } from '@/hooks/core/use-layout-load';
+import { useChatStore } from '@/store/use-chat-store';
+import {
+  MainScreenContent,
+  MotivationLikeType,
+  MultiMeetingListLayout,
+  ProductEntryPosition,
+} from '@polyv/live-watch-sdk';
 
 const { layoutLoaded } = useLayoutLoad('pc-watch-layout');
 
-const { iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { aiKnowledgeQuizEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
-const { chatExited, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
+const { chatExited } = storeDefinitionToRefs(useChatStore);
 
 const { canRenderPlayer, switchQualityTipStatus, showControl } =
   storeDefinitionToRefs(usePlayerStore);
@@ -351,7 +348,8 @@ const { multiMeetingListLayout, multiMeetingEnabled } = storeDefinitionToRefs(us
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded, interactSetting } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const PlayerControlWrapperRef = ref<HTMLDivElement>();
 

@@ -134,6 +134,7 @@ import { CSSProperties, computed, unref } from 'vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { useChatStore } from '@/store/use-chat-store';
 import { useThemeStore } from '@/store/use-theme-store';
+import { generateBgStyle } from '@/skins/theme-config-helper';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
@@ -214,9 +215,8 @@ function onClickPublisher() {
 const basicInfoTopStyle = computed<CSSProperties>(() => {
   if (!themeStore.watchThemeStyleConfig) return {};
 
-  return {
-    background: themeStore.watchThemeStyleConfig.common.introArea.bg,
-  };
+  const bgConfig = themeStore.watchThemeStyleConfig.common.introArea.bgConfig;
+  return generateBgStyle(bgConfig);
 });
 </script>
 
@@ -230,6 +230,9 @@ const basicInfoTopStyle = computed<CSSProperties>(() => {
 .c-mobile-basic-info__top {
   padding: 0 16px;
   margin: 12px 16px 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
   border-radius: 8px;
   @include set-skin-style(
     (

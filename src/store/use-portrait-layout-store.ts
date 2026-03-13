@@ -1,5 +1,6 @@
 import { translate } from '@/assets/lang';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { LiveStatus } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
@@ -10,7 +11,6 @@ import { usePageStore } from './use-page-store';
 import { usePlaybackStore } from './use-playback-store';
 import { usePlayerStore } from './use-player-store';
 import { useWebviewStore } from './use-webview-store';
-import { useConnectMicStore } from '@/store/use-connect-mic-store';
 
 export enum PortraitChatTabName {
   /** 聊天室 */

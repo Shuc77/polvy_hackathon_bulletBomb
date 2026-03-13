@@ -1,18 +1,15 @@
-import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { DirectBusinessPageType } from '../layout/direct-business-page/type';
 import { isWeixin } from '@/assets/utils/browser';
 import { useIdentityStore } from '@/store/use-identity-store';
+import type { PolyvWatchCore } from '@polyv/live-watch-sdk';
 
 export const useUserIdentityIntercept = () => {
   const watchAppStore = useWatchAppStore();
   const identityStore = useIdentityStore();
-  const { getWatchCore } = useMultiPolyvWatchApp();
-
-  const watchCore = getWatchCore();
 
   /** 用户登录成功拦截（授权后拦截） */
-  async function toInterruptLoginAfter() {
+  async function toInterruptLoginAfter(watchCore: PolyvWatchCore) {
     // 登录方式包含企微授权时，需要确保在微信环境下进行企微静默授权
     const needWorkWechatAuth = watchCore.identity.checkWorkWxSnsApiBaseEnabled();
     if (needWorkWechatAuth) {
@@ -33,7 +30,7 @@ export const useUserIdentityIntercept = () => {
    * 检查用户体系登录
    * @returns 返回 true 说明需要拦截
    */
-  async function checkIdentityInfoLogin() {
+  async function checkIdentityInfoLogin(watchCore: PolyvWatchCore) {
     // 检查是否需要用户信息登录
     let needIdentityLogin = watchCore.identity.checkIdentityLogin();
 
@@ -64,7 +61,7 @@ export const useUserIdentityIntercept = () => {
     }
 
     // 授权后拦截，用于补充用户信息
-    const redirected = await toInterruptLoginAfter();
+    const redirected = await toInterruptLoginAfter(watchCore);
     if (redirected) return true;
 
     return false;

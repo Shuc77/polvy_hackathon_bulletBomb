@@ -5,6 +5,13 @@
 export const injectAssets = [
   {
     attrs: {
+      src: 'http://localhost:15020/assets/js/chunk-polyv.js',
+      crossorigin: 'anonymous',
+    },
+    tagName: 'script',
+  },
+  {
+    attrs: {
       src: 'http://localhost:15020/assets/js/chunk-vendors.js',
       crossorigin: 'anonymous',
     },

@@ -7,6 +7,7 @@ import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { getAreaSelectNames, isSelectFinish } from '@/plugins/polyv-ui/area-utils';
 import { EnrollBasicFormData, useEnrollStore } from '@/store/use-enroll-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import {
   EnrollAuthType,
   EnrollFieldItem,
@@ -51,6 +52,15 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
   const watchAppStore = useWatchAppStore();
   const enrollStore = useEnrollStore();
   const commonStore = useCommonStore();
+  const identityStore = useIdentityStore();
+
+  function getDefaultFormNumber() {
+    return (
+      enrollStore.cacheLoginFormData.phoneNumber ||
+      identityStore.identityUnionInfo?.phoneNumber ||
+      ''
+    );
+  }
 
   /**
    * 获取字段的表单初始值
@@ -71,10 +81,9 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
 
       if (
         item.type === EnrollFieldType.Mobile &&
-        enrollStore.enrollAuthType === EnrollAuthType.Mobile &&
-        enrollStore.cacheLoginFormData.phoneNumber
+        enrollStore.enrollAuthType === EnrollAuthType.Mobile
       ) {
-        data[item.fieldId] = enrollStore.cacheLoginFormData.phoneNumber;
+        data[item.fieldId] = getDefaultFormNumber();
       }
 
       if (
@@ -92,8 +101,6 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
   /** 填写表单对象 */
   const formData = reactive<EnrollBasicFormData & EnrollValFormData>({
     ...getInitFormData(),
-    // 手机号
-    phoneNumber: '',
     // 手机区号
     areaCode: DEFAULT_PHONE_NUMBER_AREA_CODE,
     // 图片验证码 id
@@ -105,6 +112,8 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
     // 验证的邮箱地址
     email: '',
     ...enrollStore.cacheLoginFormData,
+    // 手机号
+    phoneNumber: getDefaultFormNumber(),
   });
 
   /** 处理手机号码输入框改变 */

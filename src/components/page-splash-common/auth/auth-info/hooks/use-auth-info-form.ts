@@ -112,11 +112,17 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
   }
 
   function generateFromData(): AuthInfoPropValType & BasicFormData {
+    const phoneNumber = identityStore.identityUnionInfo?.phoneNumber || '';
+
     function getInitFormData() {
       const data: AuthInfoPropValType = {};
 
       unref(authInfoFields).forEach((option, index) => {
-        data[generateFormField(index)] = '';
+        if (option.type === AuthInfoType.Mobile) {
+          data[generateFormField(index)] = phoneNumber;
+        } else {
+          data[generateFormField(index)] = '';
+        }
       });
 
       return data;
@@ -124,8 +130,8 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
 
     return {
       ...getInitFormData(),
-      // 手机号
-      phoneNumber: '',
+      // 手机号 - 优先使用 identityStore 中的手机号
+      phoneNumber,
       // 手机区号
       areaCode: '+86',
       // 图片验证码 id

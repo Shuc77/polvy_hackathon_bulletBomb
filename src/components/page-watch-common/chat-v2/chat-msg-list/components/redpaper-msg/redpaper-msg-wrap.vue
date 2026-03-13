@@ -1,6 +1,6 @@
 <template>
   <redpaper-msg
-    v-if="iarSdkLoaded"
+    v-if="iarSdkLoaded && iarUIV1Loaded"
     :chat-msg="chatMsg"
   />
 </template>
@@ -13,5 +13,5 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 defineProps(redpapperMsgProps());
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 </script>

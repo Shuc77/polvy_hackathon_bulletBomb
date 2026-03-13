@@ -6,13 +6,17 @@ import { useIarExternalLinkParams } from '@/components/page-watch-common/interac
 import { useIarTarget } from '@/components/page-watch-common/interactive-receive-v2/_hooks/use-iar-target';
 
 export const useProductUI = () => {
-  const { getWatchCore, getEmitter } = useGlobalInject();
+  const { getWatchCore, getEmitter, getAppBodyElement } = useGlobalInject();
   const { getLinkParams } = useIarExternalLinkParams();
 
   const watchCore = getWatchCore();
 
   const productUIConfig = ref({
     getLinkParams,
+  });
+
+  const popupConfig = ref({
+    appendTo: getAppBodyElement(),
   });
 
   const { targetInited: productTargetInited, getIarTarget: getProductTarget } =
@@ -44,6 +48,7 @@ export const useProductUI = () => {
 
   return {
     productUIConfig,
+    popupConfig,
 
     productTargetInited,
     getProductTarget,

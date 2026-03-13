@@ -1,4 +1,5 @@
 {
+  "base.loading": "Загрузка",
   "global.pageSlideForbidden.tips.connectMic": "Невозможно переключить прямую трансляцию во время подключения микрофона",
   "feed.switchLayout.entrance.text": "Нажмите, чтобы войти в прямую трансляцию",
   "watchCore.error.uploadImage": "Ошибка загрузки изображения!",
@@ -56,6 +57,7 @@
   "ask.placeholderMsg": "Здравствуйте! Есть ли у вас вопросы?",
   "ask.news": "Новое сообщение",
   "ask.badWord": "Не удалось отправить вопрос. Пожалуйста, переформулируйте его.",
+  "anchor.tab.channel.label": "Канал TA",
   "ai.input.placeholder": "Попробуйте ввести свой вопрос",
   "ai.not.config": "AI-ассистент не настроен",
   "ai.busy": "Система сейчас занята, пожалуйста, попробуйте позже.",
@@ -409,6 +411,7 @@
   "pageError.work.wechat.businessError.desc": "Вы не находитесь в видимой области этого канала, при возникновении вопросов свяжитесь с администратором трансляции или администратором WeChat Work",
   "pageError.work.wechat.businessError.desc2": "Этот сотрудник WeChat Work уже привязан к другому аккаунту, пожалуйста, используйте правильный аккаунт для входа",
   "pageError.saleInvite.limit.weixin": "Для эксклюзивного просмотра скопируйте ссылку и откройте в WeChat",
+  "pageError.saleInvite.limit.weixin2": "Невозможно войти, канал не активировал WeChat настройки. Пожалуйста, свяжитесь с администратором для решения проблемы.",
   "pageError.saleInvite.illegalSaleCode": "Недействительная ссылка, нет прав на просмотр трансляции",
   "pageError.NotAllowDomain.title": "Незаконный домен источника страницы, пожалуйста, настройте безопасный домен для просмотра",
   "pageError.NotAllowAccess.title": "Нет прав доступа к трансляции",
@@ -886,7 +889,6 @@
   "taskActivity.retry": "Попробовать снова",
   "more.base": "Базовые функции",
   "more.interactive": "Интерактивные инструменты",
-
   "portrait.subtitle.setting.title": "Настройки субтитров",
   "portrait.subtitle.setting.language": "Язык субтитров",
   "portrait.subtitle.setting.bilingual": "Показывать двуязычные субтитры",
@@ -894,7 +896,6 @@
   "portrait.subtitle.close.tips.title": "Подтвердить закрытие?",
   "portrait.subtitle.close.tips.content": "Закройте его в \"Больше-Интерактивные инструменты-Субтитры в реальном времени\" для открытия",
   "portrait.subtitle.float.guide.tips": "Перетащите область боковой панели, чтобы переместить ее",
-
   "portrait.exit.clear.screen.btn.text": "Выйти из очистки экрана",
   "externalLink.navigateFail": "В настоящее время перенаправление не поддерживается."
 }

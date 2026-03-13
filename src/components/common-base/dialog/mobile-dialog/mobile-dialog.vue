@@ -153,7 +153,7 @@ if (props.appendToBody) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-mobile-dialog {
   position: fixed;
   top: 0;

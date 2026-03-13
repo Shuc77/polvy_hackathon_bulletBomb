@@ -12,7 +12,11 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { hexToRGB } from '@/assets/utils/color';
-import { WatchThemeStyleConfig, getDefaultWatchThemeConfig } from './theme-config-type';
+import {
+  WatchThemeStyleConfig,
+  getDefaultWatchThemeConfig,
+  generateBgStyle,
+} from './theme-config-helper';
 import { SkinColorMode } from './enum';
 import { merge } from 'lodash-es';
 
@@ -246,8 +250,12 @@ export const usePageSkin = () => {
       if (querySkin || isPageSkinMode) {
         setupPageSkin(querySkin);
       } else {
-        if (!isMobile && themeStore.watchTheme === 'spring') {
-          await setupPageSkin(ChannelWatchPageSkin.Red);
+        if (!isMobile) {
+          if (themeStore.watchTheme === 'spring') {
+            await setupPageSkin(ChannelWatchPageSkin.Red);
+          } else if (themeStore.watchTheme === 'black-golden') {
+            await setupPageSkin(ChannelWatchPageSkin.Black);
+          }
         } else {
           await setupWatchThemeConfig();
         }
@@ -407,7 +415,13 @@ export const usePageSkin = () => {
     rootElement.style.setProperty('--plv-watch-skin-neutral-rgb', neutralRgb);
 
     if (!config) return;
-    const normalBtnBg = config.common.normalBtn.bg;
+    const normalBtnBgStyle = generateBgStyle(config.common.normalBtn.bgConfig);
+    const normalBtnBg = String(
+      normalBtnBgStyle.backgroundColor ||
+        normalBtnBgStyle.backgroundImage ||
+        normalBtnBgStyle.background ||
+        '',
+    );
     rootElement.style.setProperty('--plv-watch-skin-normal-btn-bg', normalBtnBg);
 
     const normalBtnBorderColor = config.common.normalBtn.borderColor;

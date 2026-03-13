@@ -31,15 +31,27 @@ const { toInterruptUserClick } = useInterruptUserClick();
 const { productIconConfig } = storeDefinitionToRefs(useChannelStore);
 
 const showTotal = computed(() => {
-  if (!themeStore.watchThemeStyleConfig) return productIconConfig.value?.showProductCount ?? true;
+  if (productIconConfig.value) {
+    return productIconConfig.value.showProductCount;
+  }
 
-  return themeStore.watchThemeStyleConfig.common.chat.btn.cart.countVisible;
+  if (themeStore.watchThemeStyleConfig) {
+    return themeStore.watchThemeStyleConfig.common.chat.btn.cart.countVisible;
+  }
+
+  return true;
 });
 
 const iconUrl = computed(() => {
-  if (!themeStore.watchThemeStyleConfig) return productIconConfig.value?.url ?? '';
+  if (productIconConfig.value) {
+    return productIconConfig.value.url;
+  }
 
-  return themeStore.watchThemeStyleConfig.common.chat.btn.cart.iconUrl;
+  if (themeStore.watchThemeStyleConfig) {
+    return themeStore.watchThemeStyleConfig.common.chat.btn.cart.iconUrl;
+  }
+
+  return '';
 });
 
 function beforeClickInterrupt() {

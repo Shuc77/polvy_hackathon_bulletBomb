@@ -1,4 +1,5 @@
 {
+  "base.loading": "読み込み中",
   "global.pageSlideForbidden.tips.connectMic": "通話中で、ライブルームを切り替えることができません",
   "feed.switchLayout.entrance.text": "ライブルームに入る",
   "watchCore.error.uploadImage": "画像のアップロードに失敗しました！",
@@ -56,6 +57,7 @@
   "ask.placeholderMsg": "こんにちは！何か質問はありますか",
   "ask.news": "新しいメッセージ",
   "ask.badWord": "質問の送信に失敗しました。表現を変えてください。",
+  "anchor.tab.channel.label": "TAのチャンネル",
   "ai.input.placeholder": "質問を入力してみてください",
   "ai.not.config": "AIアシスタントはまだ稼働していません",
   "ai.busy": "現在システムが混雑しています、しばらくしてから再試行してください。",
@@ -405,6 +407,7 @@
   "pageError.work.wechat.businessError.desc": "あなたはこのチャンネルの可視範囲内にいません。疑問がある場合は、ライブ管理者または企業WeChat管理者に連絡してください",
   "pageError.work.wechat.businessError.desc2": "このWeChat Work従業員は既に他のアカウントに紐付けられています。正しいアカウントでログインしてください",
   "pageError.saleInvite.limit.weixin": "専用視聴のため、リンクをコピーしてWeChatで開いてください",
+  "pageError.saleInvite.limit.weixin2": "入場できません。チャンネルのWeChat設定が有効になっていません。管理者に連絡してください",
   "pageError.saleInvite.illegalSaleCode": "共有リンクが無効です。現在、ライブを視聴する権限がありません",
   "pageError.NotAllowDomain.title": "ページのソースドメインが不正です。視聴ページの安全なドメインに移動して設定してください",
   "pageError.NotAllowAccess.title": "無許可訪問ライブルーム",
@@ -886,7 +889,6 @@
   "taskActivity.retry": "再試行",
   "more.base": "基本機能",
   "more.interactive": "インタラクティブツール",
-
   "portrait.subtitle.setting.title": "字幕設定",
   "portrait.subtitle.setting.language": "字幕言語",
   "portrait.subtitle.setting.bilingual": "二国語字幕を表示",
@@ -894,7 +896,6 @@
   "portrait.subtitle.close.tips.title": "閉じる",
   "portrait.subtitle.close.tips.content": "閉じると「マイナビ-インタラクティブツール-リアルタイム字幕」で開くことができます",
   "portrait.subtitle.float.guide.tips": "サイドバーをドラッグして位置を移動できます",
-
   "portrait.exit.clear.screen.btn.text": "クリアスクリーンから退出",
   "externalLink.navigateFail": "現在リダイレクトをサポートしていません"
 }

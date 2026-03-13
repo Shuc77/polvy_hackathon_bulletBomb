@@ -46,7 +46,7 @@ async function handleConfirm() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-connect-mic-play-failed-tips {
   display: flex;
   gap: 4px;

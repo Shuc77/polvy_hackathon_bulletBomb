@@ -163,6 +163,8 @@ export const usePlayerMain = ({
       if (!playerStore.playerEnabled) return;
 
       playerStore.$patch({
+        playerSdkLoadError: false,
+        playerScriptLoading: true,
         playerInited: false,
         isPlayStarted: false,
         playerControlVisible: false,

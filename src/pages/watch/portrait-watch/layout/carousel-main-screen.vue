@@ -51,7 +51,7 @@
 
       <!-- 公告置顶 -->
       <bulletin-topping
-        v-if="announcementFunctionVisible && iarSdkLoaded"
+        v-if="announcementFunctionVisible && iarSdkLoaded && !notNeedIar"
         v-show="!portraitPlayerIsPageFullscreen"
         class="c-portrait-carousel-main-screen__bottom__item"
       />
@@ -289,7 +289,8 @@ import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useMessageCarousel } from './hooks/use-message-carousel';
 
-const { isPlaybackWatchUrl, watchPageChatConnected } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl, watchPageChatConnected } =
+  storeDefinitionToRefs(useWatchAppStore);
 
 const { askMenuData, chatMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 

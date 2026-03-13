@@ -21,7 +21,7 @@ const watchLink = computed(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-pc-rtc__device_recover--failed {
   position: absolute;
   left: 50%;

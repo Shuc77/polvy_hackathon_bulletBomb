@@ -25,6 +25,7 @@ import { translate } from '@/assets/lang';
 import { useAskStore } from '@/store/use-ask-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useChannelStore } from '@/store/use-channel-store';
+import { useMobileInput } from '@/hooks/behaviors/use-mobile-input';
 
 export const useChatUIGlobalProvide = () => {
   const { getWatchCore } = useGlobalInject();
@@ -68,6 +69,8 @@ export const useChatUIGlobalProvide = () => {
   const { getLikeEffectIcons } = useChatLikeConfig();
 
   const { chatTarget, ChatMsgSource } = useChatTarget();
+
+  const { onInputFocus, onInputBlur } = useMobileInput();
 
   const PolyvChatUI = getChatUIV2Pkg();
 
@@ -134,6 +137,14 @@ export const useChatUIGlobalProvide = () => {
 
         askInputPlaceholder: getAskInputPlaceholder(),
         sendAskImageEnabled: askSetting.questionImageEnabled,
+
+        onInputFocus: () => {
+          onInputFocus();
+        },
+
+        onInputBlur: () => {
+          onInputBlur();
+        },
       };
     },
     getLiveStatus: () => {
