@@ -6,6 +6,7 @@ import {
   MobileWatchLayout,
   generateDefaultAccountInfo,
   AccountInfo,
+  YN,
 } from '@polyv/live-watch-sdk';
 
 import { appEvents } from '@/app/app-events';
@@ -42,6 +43,8 @@ import { isBuildForFeedMainMode, isInjectByExternalApp } from '@/assets/utils/ut
 export interface WatchAppStoreState {
   /** 页面是否激活，仅用于 web-feed */
   isPageActive: Ref<boolean>;
+  /** 不需要互动，默认为 false */
+  notNeedIar: Ref<boolean>;
 
   /** 当前是否处于回放观看页地址 */
   isPlaybackWatchUrl: Ref<boolean>;
@@ -146,6 +149,18 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   };
 
   const isPageActive = ref(__getPageIsActive());
+
+  /**
+   * 不需要互动，默认为 false
+   * @desc
+   * 1. 这里指代的互动功能，是指互动 SDK 相关的功能，包括签到、抽奖
+   * 2. 虽然不需要互动功能，但是需要加载底层的互动 SDK 核心，才能让商品库功能正常使用，
+   */
+  const notNeedIar = ref(
+    (() => {
+      return paramGetter().notNeedIar() === YN.Y;
+    })(),
+  );
 
   const curPageIsLockDrag = ref(false);
 
@@ -474,6 +489,7 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   return {
     isPageActive,
+    notNeedIar,
 
     isPlaybackWatchUrl,
     playbackWatchBasicInfo,

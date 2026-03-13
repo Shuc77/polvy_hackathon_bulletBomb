@@ -11,6 +11,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useEnrollSms } from './use-enroll-sms';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 export const enrollLoginEmits = () => ({
   /** 点击取消 */
@@ -35,13 +36,14 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
 
   const watchAppStore = useWatchAppStore();
   const enrollStore = useEnrollStore();
+  const identityStore = useIdentityStore();
 
   const { imageVerifyInputRef, imageVerifyInputEnabled, smsValidType } = useEnrollSms();
 
   /** 表单对象 */
   const formData = reactive({
     // 手机号
-    phoneNumber: '',
+    phoneNumber: identityStore.identityUnionInfo?.phoneNumber || '',
     // 区号
     areaCode: DEFAULT_PHONE_NUMBER_AREA_CODE,
     // 图片验证码
@@ -171,7 +173,7 @@ export const useEnrollLogin = (options: { emit: VueEmit<typeof enrollLoginEmits>
 export const useEnrollInfoCheck = (options: {
   /** 获取手机区号 */
   getAreaCode: () => string;
-  getPhoneMumber: () => string;
+  getPhoneNumber: () => string;
   cb: () => void;
   formSubmitRef: Ref<FormSubmitButtonInstance | undefined>;
 }) => {
@@ -182,9 +184,9 @@ export const useEnrollInfoCheck = (options: {
   const checkedNeedSmsVerify = ref(false);
 
   watch(
-    () => [options.getPhoneMumber(), options.getAreaCode()],
+    () => [options.getPhoneNumber(), options.getAreaCode()],
     () => {
-      const phoneNumber = options.getPhoneMumber();
+      const phoneNumber = options.getPhoneNumber();
       const areaCode = options.getAreaCode();
 
       if (phoneNumber && validatePhoneNumber(phoneNumber, areaCode)) {

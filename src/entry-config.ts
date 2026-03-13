@@ -1,4 +1,4 @@
-if (typeof BUILD_ENV !== 'undefined') {
+if (typeof BUILD_ENV !== 'undefined' && !window.BUILD_ENV) {
   window.BUILD_ENV = BUILD_ENV;
 }
 

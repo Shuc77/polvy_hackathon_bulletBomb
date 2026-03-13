@@ -17,6 +17,8 @@ class ExtractIndexWebpackAssetPlugin {
 
   __fileName = 'index-asset.js';
 
+  __assetsData = null; // 存储解析到的资源数据，供 emit 钩子使用
+
   constructor(opts) {
     this.__outputPath = opts.outputPath || this.__outputPath;
     this.__buildModule = opts.buildModule || this.__buildModule;
@@ -28,6 +30,7 @@ class ExtractIndexWebpackAssetPlugin {
    * @param {import('webpack').Compiler} compiler
    */
   apply(compiler) {
+    // 在 compilation 阶段解析 HTML 获取资源数据
     compiler.hooks.compilation.tap(pluginName, compilation => {
       const htmlPlugins = compiler.options.plugins.filter(plugin => {
         return plugin instanceof HtmlWebpackPlugin;
@@ -38,6 +41,7 @@ class ExtractIndexWebpackAssetPlugin {
         logger.error(new Error('NO html-webpack-plugin installed'));
       }
 
+      // 监听 HtmlWebpackPlugin 的 beforeEmit 钩子来获取资源数据
       HtmlWebpackPlugin.getCompilationHooks(compilation).beforeEmit.tapAsync(
         pluginName,
         (htmlPluginData, cb) => {
@@ -48,10 +52,27 @@ class ExtractIndexWebpackAssetPlugin {
           let assetsData = this.__getOriginAssetsData(html);
           assetsData = this.__transformAssetsData(assetsData);
 
-          this.__writeAssetFile(assetsData);
+          // 存储资源数据，供 emit 钩子使用
+          this.__assetsData = assetsData;
+
           cb(null, htmlPluginData);
         },
       );
+    });
+
+    // 在 done 阶段写入文件（确保在 Webpack 的 clean 操作之后执），重置数据避免内存泄漏
+    compiler.hooks.done.tap(pluginName, () => {
+      if (!this.__assetsData) {
+        console.warn('No assets data extracted, skip write asset file.');
+        return;
+      }
+
+      try {
+        this.__writeAssetFile(this.__assetsData);
+      } catch (error) {
+        console.error('Failed to write asset file:', error);
+      }
+      this.__assetsData = null;
     });
   }
 
@@ -99,13 +120,16 @@ class ExtractIndexWebpackAssetPlugin {
 
   __writeAssetFile(assetsData) {
     if (!fs.existsSync(this.__outputPath)) {
-      fs.mkdirSync(this.__outputPath, { recursive: true });
+      console.error('Output path not exists:', this.__outputPath);
+      return;
     }
 
     const prefixVar =
       this.__buildModule === 'umd'
         ? `var ${this.__indexAssetVarKey}`
         : `export const ${this.__indexAssetVarKey}`;
+
+    console.info('Write index asset success!', path.join(this.__outputPath, this.__fileName));
 
     fs.writeFileSync(
       path.join(this.__outputPath, this.__fileName),

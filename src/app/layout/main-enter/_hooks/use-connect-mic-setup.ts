@@ -35,7 +35,9 @@ export const useConnectMicSetup = () => {
 
     const { success } = await watchCore.connectMic.setupConnectMic();
 
-    connectMicStore.micSetupSuccess = success;
+    connectMicStore.$patch({
+      micSetupSuccess: success,
+    });
   }
 
   async function setupConnectMic() {

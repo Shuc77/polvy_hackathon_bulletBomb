@@ -9,6 +9,7 @@
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
       'c-mobile-player-main--hide': isConnectMicing,
       'c-mobile-player-main--hide-normal-player-btn': !isLowLatency,
+      'c-mobile-player-main__hide-player-loading': initLoadingVisible,
     }"
     @click="onClickContainer"
   >
@@ -39,6 +40,13 @@
 
     <!-- 播放器暖场/封面图  -->
     <mobile-player-cover-img />
+
+    <!-- 播放器初始化 loading（解决 SDK 未挂载前的空白区域） -->
+    <loading-overlay
+      :visible="initLoadingVisible"
+      :z-index="309"
+      :show-text="false"
+    />
 
     <!-- “点击播放”播放按钮，仅用来展示  -->
     <player-play-business-button class="c-mobile-player-main__play-btn">
@@ -152,6 +160,7 @@ import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { useMobilePlaybackSubtitle } from '../../../subtitle/use-mobile-playback-subtitle';
+import { usePlayerInitLoading } from '../../hooks/use-player-init-loading';
 
 import PlayerPlayBusinessButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
 import MobilePlayerCoverImg from '../../player-cover-img/mobile-player-cover-img.vue';
@@ -165,6 +174,7 @@ import MobilePlayerSubtitle from '@/components/page-watch-common/player/player-s
 import MobileSubtitleSelect from '@/components/page-watch-common/subtitle/mobile-subtitle-select/mobile-subtitle-select.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 import MobileIframePopup from '@/components/common-base/iframe-popup/mobile-iframe-popup.vue';
+import LoadingOverlay from '@/components/common-base/loading-overlay/loading-overlay.vue';
 
 import { MainScreenContent, PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { usePlayerAction } from '../../hooks/use-player-action';
@@ -214,6 +224,8 @@ const {
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { themeSetting, playerBgUrl } = storeDefinitionToRefs(useThemeStore);
+
+const { initLoadingVisible } = usePlayerInitLoading();
 
 const { pvShowEnabled, pageViewCountLocation, pageViewCount } =
   storeDefinitionToRefs(useChannelInfoStore);
@@ -476,6 +488,13 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 
   .plv-watch-sdk__player-watermark {
     visibility: hidden;
+  }
+}
+
+// 通过样式隐藏播放器 loading，避免跟观看页加的 loading 重叠显示
+.c-mobile-player-main__hide-player-loading {
+  .plv-live-loading {
+    opacity: 0;
   }
 }
 </style>

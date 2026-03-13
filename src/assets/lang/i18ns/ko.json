@@ -1,4 +1,5 @@
 {
+  "base.loading": "로딩 중",
   "global.pageSlideForbidden.tips.connectMic": "연결 중인 상태에서는 라이브 방송을 전환할 수 없습니다",
   "feed.switchLayout.entrance.text": "라이브 방송으로 이동",
   "watchCore.error.uploadImage": "이미지 업로드 실패!",
@@ -56,6 +57,7 @@
   "ask.placeholderMsg": "안녕하세요! 궁금한 점이 있나요?",
   "ask.news": "새 메시지",
   "ask.badWord": "질문 전송에 실패했습니다. 다른 표현으로 시도해주세요.",
+  "anchor.tab.channel.label": "TA의 채널",
   "ai.input.placeholder": "질문을 입력해 보세요",
   "ai.not.config": "AI 도우미가 아직 준비되지 않았습니다",
   "ai.busy": "현재 시스템이 바쁩니다. 잠시 후 다시 시도하세요.",
@@ -405,6 +407,7 @@
   "pageError.work.wechat.businessError.desc": "해당 채널의 가시 범위에 있지 않습니다. 문의사항은 라이브 관리자 또는 기업 위챗 관리자에게 문의하세요.",
   "pageError.work.wechat.businessError.desc2": "해당 WeChat Work 직원이 다른 계정에 이미 연결되었습니다. 올바른 계정으로 로그인하세요",
   "pageError.saleInvite.limit.weixin": "전용 시청을 위해 링크를 복사하여 위챗에서 열어주세요.",
+  "pageError.saleInvite.limit.weixin2": "입장할 수 없습니다. 채널의 WeChat 설정이 활성화되지 않았습니다. 관리자에게 연락하세요.",
   "pageError.saleInvite.illegalSaleCode": "공유 링크가 유효하지 않습니다. 현재 라이브 시청 권한이 없습니다.",
   "pageError.NotAllowDomain.title": "페이지 출처 도메인이 유효하지 않습니다. 시청 페이지의 안전 도메인으로 이동하여 설정해 주세요.",
   "pageError.NotAllowAccess.title": "본 라이브 시청 권한이 없습니다.",
@@ -886,7 +889,6 @@
   "taskActivity.retry": "다시 시도",
   "more.base": "기본 기능",
   "more.interactive": "인터랙티브 도구",
-
   "portrait.subtitle.setting.title": "자막 설정",
   "portrait.subtitle.setting.language": "자막 언어",
   "portrait.subtitle.setting.bilingual": "이중 자막 표시",
@@ -894,7 +896,6 @@
   "portrait.subtitle.close.tips.title": "확인하여 닫기",
   "portrait.subtitle.close.tips.content": "확인하여 닫기 후 \"더보기-인터랙티브 도구-실시간 자막\"에서 열 수 있습니다",
   "portrait.subtitle.float.guide.tips": "손가락으로 측면 영역을 끌어 이동할 수 있습니다",
-
   "portrait.exit.clear.screen.btn.text": "화면 지우기 나가기",
   "externalLink.navigateFail": "현재 리디렉션을 지원하지 않습니다"
 }

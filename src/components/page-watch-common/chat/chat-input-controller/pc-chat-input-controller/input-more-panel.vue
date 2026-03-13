@@ -16,7 +16,7 @@
     <div
       v-if="showDonateGifts"
       class="c-pc-chat-input-controller__more-panel__item pws-pc-more-panel-item"
-      @click="toggleDonateAnimationVisible()"
+      @click="toggleDonateAnimationVisible"
     >
       <pc-form-checkbox :checked="!donateAnimationVisible">
         {{ $lang('donate.hideAnimation') }}

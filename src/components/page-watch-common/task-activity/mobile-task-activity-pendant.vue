@@ -92,6 +92,7 @@ const pendantStyle = computed<CSSProperties>(() => {
   width: $pendant-size;
   height: $pendant-size;
   background-image: url(./images/pendant-icon.png);
+  background-repeat: no-repeat;
   background-size: contain;
 }
 .c-mobile-task-activity-pendant--en {

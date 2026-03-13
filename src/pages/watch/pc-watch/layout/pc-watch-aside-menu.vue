@@ -61,7 +61,7 @@
           :label="menu.name"
           :name="TAB_NAME_VOTE"
         >
-          <pc-vote-panel-v2 v-if="iarSdkLoaded" />
+          <pc-vote-panel-v2 v-if="iarSdkLoaded && !notNeedIar" />
         </pc-aside-tab-pane>
 
         <!-- 成员列表 tab -->
@@ -100,7 +100,7 @@
           :name="TAB_NAME_QA"
           :show-reminder="qaReminderVisible"
         >
-          <pc-question-answer v-if="iarSdkLoaded" />
+          <pc-question-answer v-if="iarSdkLoaded && iarUIV1Loaded" />
         </pc-aside-tab-pane>
 
         <!-- 商品库 tab，如果开了「播放器是否悬浮商品列表入口开关」，则不显示 -->
@@ -148,7 +148,7 @@
           :name="TAB_NAME_AI_SUMMARY"
           lazy-load
         >
-          <pc-ai-aggregate />
+          <pc-ai-aggregate v-if="watchAICoreSetuped" />
         </pc-aside-tab-pane>
       </template>
 
@@ -213,8 +213,11 @@ import { ChannelMenuType, MotivationLikeType, ProductEntryPosition } from '@poly
 import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
 
 const layoutStore = useLayoutStore();
+
+const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
@@ -230,9 +233,10 @@ const { chapterVisible } = storeDefinitionToRefs(usePlaybackStore);
 
 const { donateAnimationVisible } = storeDefinitionToRefs(useDonateStore);
 
-const { iarSdkLoaded, interactSetting } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded, interactSetting } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { chatSubLabel, chatReminderVisible, askReminderVisible } = useWatchTabHook({
   curActiveTabName: pcAsideTabCurrentName,

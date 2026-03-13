@@ -1,9 +1,6 @@
 <!-- @file 移动端互动功能接收端弹窗组件渲染入口 -->
 <template>
   <div class="c-mobile-iar-render">
-    <!-- 公告 -->
-    <mobile-bulletin-popup v-if="announcementFunctionVisible" />
-
     <!-- 反馈 -->
     <mobile-feedback-popup v-if="feedbackEnabled" />
 
@@ -21,10 +18,6 @@
     />
     <!-- 二维码分弹窗 -->
     <mobile-qr-code-share-dialog />
-    <!-- 优惠券弹窗 -->
-    <mobile-coupon-common-popup />
-    <!-- 优惠券已领取弹窗 -->
-    <mobile-coupon-user-popup />
   </div>
 </template>
 
@@ -33,7 +26,6 @@ import { onMounted, watch } from 'vue';
 import { $ } from '@just4/dom';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
-import MobileBulletinPopup from '../interactive-receive-v2/bulletin-v2/bulletin-popup/mobile-bulletin-popup.vue';
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';
 import MobileRedpackPopup from './redpack/mobile-redpack-popup.vue';
 import MobileRedpackRain from './redpack-rain/mobile-redpack-rain.vue';
@@ -41,8 +33,6 @@ import MobileScoreRecordPopup from './score/mobile-score-record-popup.vue';
 import MobileEnrollLotteryPopup from './enroll-lottery/mobile-enroll-lottery-popup.vue';
 import MobileSeatTableTips from './seat-table/seat-table-tips/mobile-seat-table-tips.vue';
 import MobileQrCodeShareDialog from '../../common-business/qrcode-share-dialog/mobile-qrcode-share-dialog.vue';
-import MobileCouponCommonPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-common-popup.vue';
-import MobileCouponUserPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-user-popup.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useRedpackStore } from '@/store/use-redpack-store';
@@ -51,7 +41,6 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 const {
   isIarFullScreen,
 
-  announcementFunctionVisible,
   seatTableVisible,
   isMeetingSeatTableTemplate,
 

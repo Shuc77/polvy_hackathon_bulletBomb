@@ -1,4 +1,5 @@
 {
+  "base.loading": "Loading",
   "global.pageSlideForbidden.tips.connectMic": "Currently connecting mic, unable to switch live broadcast room",
   "feed.switchLayout.entrance.text": "Click to enter the live broadcast room",
   "watchCore.error.uploadImage": "Upload Image Fail!",
@@ -56,6 +57,7 @@
   "ask.placeholderMsg": "Hi, what can I do for you",
   "ask.news": "News",
   "ask.badWord": "The question failed to send. Please rephrase it.",
+  "anchor.tab.channel.label": "TA's Channel",
   "ai.input.placeholder": "Try entering your question.",
   "ai.not.config": "AI Assistant is not configured.",
   "ai.busy": "The current system is busy. Please try again later.",
@@ -409,6 +411,7 @@
   "pageError.work.wechat.businessError.desc": "You are not visible within the scope of this channel. If you have any questions, please contact the live stream administrator or the Enterprise WeChat administrator.",
   "pageError.work.wechat.businessError.desc2": "The WeChat Work employee has bound another account, please log in with the correct account",
   "pageError.saleInvite.limit.weixin": "Please open WeChat to watch",
+  "pageError.saleInvite.limit.weixin2": "Unable to enter. WeChat settings not configured. Please contact your administrator",
   "pageError.saleInvite.illegalSaleCode": "Invalid share link. You don't have permission to view this livestream.",
   "pageError.NotAllowDomain.title": "Illegal source of request, Please to configure the secure domain",
   "pageError.NotAllowAccess.title": "No permission to access the live room",
@@ -886,7 +889,6 @@
   "taskActivity.retry": "Retry",
   "more.base": "Basic Features",
   "more.interactive": "Interactive Tools",
-
   "portrait.subtitle.setting.title": "Subtitle Settings",
   "portrait.subtitle.setting.language": "Subtitle Language",
   "portrait.subtitle.setting.bilingual": "Show bilingual subtitles",
@@ -894,7 +896,6 @@
   "portrait.subtitle.close.tips.title": "Confirm to close?",
   "portrait.subtitle.close.tips.content": "Close it in \"More-Interactive Tools-Real-Time Subtitles\" to open it",
   "portrait.subtitle.float.guide.tips": "Drag the side area with your finger to move it",
-
   "portrait.exit.clear.screen.btn.text": "Exit clear screen",
   "externalLink.navigateFail": "Redirect is not supported at the moment"
 }

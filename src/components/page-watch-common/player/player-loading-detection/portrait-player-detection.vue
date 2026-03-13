@@ -53,7 +53,7 @@ const {
 } = useLoadingDetection();
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-loading-detection {
   display: flex;
   gap: 4px;

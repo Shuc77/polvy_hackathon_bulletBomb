@@ -90,7 +90,7 @@ export const useQueryParams = (opts?: {
 
   function replaceHistoryState({ url }: { url: string }) {
     if (isInjectByExternalApp()) {
-      console.warn('replaceHistoryState', url);
+      console.log('replaceHistoryState', url);
       return;
     }
 
@@ -135,6 +135,8 @@ export const useQueryParams = (opts?: {
 
     // ===========  业务参数 ===========
 
+    /** 信息流页面Id */
+    infoFeedFlowPageId: buildGetters<'string'>('infoFeedFlowPageId'),
     /** 不需要互动功能 */
     notNeedIar: buildGetters<YN>('notNeedIar'),
     /** 是否需要微信 SDK 功能 */
@@ -185,6 +187,8 @@ export const useQueryParams = (opts?: {
     viewerid: buildGetters('viewerid'),
     /** 观看条件-验证码 */
     password: buildGetters('password'),
+    /** 观看条件-白名单 token */
+    phoneAuthToken: buildGetters('phoneAuthToken'),
     /** 观众昵称 */
     name: buildGetters('name'),
     /** 观众昵称 */

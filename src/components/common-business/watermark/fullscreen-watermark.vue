@@ -51,7 +51,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-fullscreen-watermark {
   position: fixed;
   top: 0;

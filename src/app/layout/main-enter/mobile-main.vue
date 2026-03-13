@@ -37,8 +37,9 @@
     <mobile-weixin-snapshot-tips v-if="isWeixinSnapshotPageMode" />
 
     <!-- 风险测评 -->
-    <mobile-risk-evaluation v-if="iarSdkLoaded" />
+    <mobile-risk-evaluation v-if="iarSdkLoaded && iarUIV1Loaded" />
     <risk-evaluation-redirect-dialog />
+
     <!-- 风险确认函 -->
     <mobile-risk-confirm-letter />
   </div>
@@ -105,7 +106,7 @@ const { isWeixinSnapshotPageMode } = storeDefinitionToRefs(useWeixinStore);
 const { mobileSplashLayout, mobileWatchLayout, isPortraitWatchLayout } =
   storeDefinitionToRefs(useLayoutStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 
 const { onPageMounted } = useMainEnter({

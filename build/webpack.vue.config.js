@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
-const { ExtractIndexWebpackAssetPlugin } = require('./extract-index-asset-webpack-plugin');
+const { ExtractIndexWebpackAssetPlugin } = require('./plugins/extract-index-asset-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 // const { CodeInspectorPlugin } = require('code-inspector-plugin');

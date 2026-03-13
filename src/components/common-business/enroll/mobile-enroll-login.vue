@@ -134,7 +134,7 @@ const formSubmitRef = ref<FormSubmitButtonInstance>();
 
 const { blurToCheckStatus, checkedNeedSmsVerify } = useEnrollInfoCheck({
   getAreaCode: () => formData.areaCode,
-  getPhoneMumber: () => formData.phoneNumber,
+  getPhoneNumber: () => formData.phoneNumber,
   cb: () => emitResize(),
   formSubmitRef,
 });

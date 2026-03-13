@@ -9,37 +9,42 @@
         'c-mobile-chat-room-pendant--screen__horizontal': isHorizontalScreenOrientation,
       }"
     >
-      <template v-if="iarSdkLoaded">
-        <!-- 风险测评 -->
-        <risk-evaluation-entrance
-          v-if="riskEvaluationEntranceEnabled"
-          class="c-mobile-chat-room-pendant__item"
-        />
+      <template v-if="iarSdkLoaded && !notNeedIar">
+        <template v-if="iarUIV1Loaded">
+          <!-- 风险测评 -->
+          <risk-evaluation-entrance
+            v-if="riskEvaluationEntranceEnabled"
+            class="c-mobile-chat-room-pendant__item"
+          />
 
-        <!-- 卡片推送 -->
-        <mobile-push-card
-          v-show="!isPageFullscreenOrHorizontalScreen"
-          class="c-mobile-chat-room-pendant__item"
-        />
+          <!-- 卡片推送 -->
+          <mobile-push-card
+            v-show="!isPageFullscreenOrHorizontalScreen"
+            class="c-mobile-chat-room-pendant__item"
+          />
 
-        <!-- 红包 -->
-        <mobile-redpack-pendant class="c-mobile-chat-room-pendant__item" />
+          <!-- 红包 -->
+          <mobile-redpack-pendant class="c-mobile-chat-room-pendant__item" />
+
+          <!-- 报名抽奖 -->
+          <mobile-enroll-lottery-pendant
+            v-show="!isPageFullscreenOrHorizontalScreen"
+            class="c-mobile-chat-room-pendant__item"
+          />
+
+          <!-- 话题 PK -->
+          <mobile-topic-pk
+            v-show="!isPageFullscreenOrHorizontalScreen"
+            class="c-mobile-chat-room-pendant__item"
+          />
+
+          <!-- 抢答 -->
+          <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
+        </template>
 
         <!-- 邀请海报 -->
         <mobile-invite-poster-entry
           v-if="mobileChatInvitePendantVisible"
-          v-show="!isPageFullscreenOrHorizontalScreen"
-          class="c-mobile-chat-room-pendant__item"
-        />
-
-        <!-- 报名抽奖 -->
-        <mobile-enroll-lottery-pendant
-          v-show="!isPageFullscreenOrHorizontalScreen"
-          class="c-mobile-chat-room-pendant__item"
-        />
-
-        <!-- 话题 PK -->
-        <mobile-topic-pk
           v-show="!isPageFullscreenOrHorizontalScreen"
           class="c-mobile-chat-room-pendant__item"
         />
@@ -49,9 +54,6 @@
 
         <!-- 平台抽奖 -->
         <mobile-lucky-lottery-pendant class="c-mobile-chat-room-pendant__item" />
-
-        <!-- 抢答 -->
-        <mobile-rush-answer class="c-mobile-chat-room-pendant__item" />
 
         <!-- 任务活动 -->
         <mobile-task-activity-pendant
@@ -123,12 +125,13 @@ import { useInviteStore } from '@/store/use-invite-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-const { isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
 
-const { iarSdkLoaded, feedbackPendantVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded, feedbackPendantVisible } =
+  storeDefinitionToRefs(useInteractReceiveStore);
 
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 

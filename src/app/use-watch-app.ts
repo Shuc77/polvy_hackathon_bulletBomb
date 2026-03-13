@@ -34,6 +34,8 @@ import {
 import { useAuthInviteWatchIntercept } from '@/components/page-splash-common/auth/hooks/use-auth-invite-watch-intercept';
 import { ChannelNewScene } from '@polyv/live-watch-sdk';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
+import { installVueComponents } from '@/plugins/vue-components';
+import { useAuthPhoneTokenIntercept } from '@/components/page-splash-common/auth/hooks/use-auth-phone-token-intercept';
 
 /**
  * 拦截观看页应用初始化
@@ -127,7 +129,9 @@ export function createWatchApp() {
 
   const { toConfigWeixinFeature } = useWeixinConfig();
 
+  const { checkIdentityInfoLogin } = useUserIdentityIntercept();
   const { checkInviteWatch } = useAuthInviteWatchIntercept();
+  const { checkPhoneAuthToken } = useAuthPhoneTokenIntercept();
 
   /** 获取地址上的频道号 */
   function getChannelIdByUrl(): string | undefined {
@@ -232,6 +236,11 @@ export function createWatchApp() {
         rtcWebScriptUrl: paramGetter().rtcWebScriptUrl(),
         chatSdkScriptUrl: paramGetter().chatSdkScriptUrl(),
       },
+      getExtBusinessInfo: () => {
+        return {
+          infoFeedFlowPageId: paramGetter().infoFeedFlowPageId(),
+        };
+      },
     });
 
     // @PLV-WARN 需要通过 appId 授权时，可以在此处补充对应的逻辑
@@ -249,11 +258,13 @@ export function createWatchApp() {
     }
 
     // 用户系统拦截
-    const { checkIdentityInfoLogin } = useUserIdentityIntercept();
-    const checkIdentityInfoLoginResult = await checkIdentityInfoLogin();
+    const checkIdentityInfoLoginResult = await checkIdentityInfoLogin(watchCore);
     if (checkIdentityInfoLoginResult) {
       return;
     }
+
+    // 白名单 token 自动鉴权（优先于其他观看条件校验流程）
+    await checkPhoneAuthToken();
 
     // 一客一码验证拦截
     const { checkSaleInvite } = useSaleInviteIntercept();
@@ -337,6 +348,9 @@ export function useWatchApp() {
   if (isInjectByExternalApp()) {
     useExternalContainerEffect();
   }
+
+  // 设置 vue-components 全局配置
+  installVueComponents();
 
   onBeforeMount(() => {
     setupGlobalStyle();

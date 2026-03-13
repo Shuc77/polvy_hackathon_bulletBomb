@@ -57,6 +57,8 @@
 <script setup lang="ts">
 import { computed, CSSProperties, defineAsyncComponent } from 'vue';
 
+import { generateBgStyle } from '@/skins/theme-config-helper';
+
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
 import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
 import MobileLiveBookingButton from '@/components/common-business/live-booking/mobile-live-booking-button.vue';
@@ -91,10 +93,9 @@ const themeStore = useThemeStore();
 const liveBookingStyle = computed(() => {
   if (!themeStore.watchThemeStyleConfig) return;
 
-  return {
-    'border-image': themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea.bg,
-    ...themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea.style,
-  };
+  const { bgConfig } = themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea;
+
+  return generateBgStyle(bgConfig);
 });
 
 const countStyle = computed(() => {
@@ -178,6 +179,8 @@ const countStyle = computed(() => {
   padding: 12px;
   margin: 16px 16px 0;
   text-align: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   border-radius: 8px;
 }
 .c-mobile-splash__main__header__booking {

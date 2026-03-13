@@ -15,6 +15,7 @@ import { TabPaneDataItem } from './types';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 import { isIOS } from '@/assets/utils/browser';
 import { VueProps } from '@polyv/vue-components';
+import { generateBgStyle } from '@/skins/theme-config-helper';
 
 export const useTabHeader = (
   props: VueProps<typeof tabsHeaderProps>,
@@ -167,7 +168,7 @@ export const useTabHeader = (
 
     const styleConfig = props.headerConfig.activeItem;
     return {
-      background: styleConfig.bg,
+      ...generateBgStyle(styleConfig.bgConfig),
       borderColor: styleConfig.borderColor,
       color: styleConfig.fontColor,
     };

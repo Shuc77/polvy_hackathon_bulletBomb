@@ -46,16 +46,33 @@ export const useSaleInviteIntercept = () => {
 
       const inviteCustomerUsageScenario = watchCore.saleInvite.getInviteCustomerUsageScenario();
 
-      if (!isWeixin && inviteCustomerUsageScenario === 'wechat') {
-        watchAppStore.setPageError({
-          type: PageErrorType.UnknownError,
-          desc: translate('pageError.saleInvite.limit.weixin'),
-        });
-        return true;
+      // 限制在微信内使用
+      if (inviteCustomerUsageScenario === 'wechat') {
+        // 非微信内
+        if (!isWeixin) {
+          watchAppStore.setPageError({
+            type: PageErrorType.UnknownError,
+            desc: translate('pageError.saleInvite.limit.weixin'),
+          });
+          return true;
+        }
+
+        // 微信内
+        if (!watchCore.weixin.getBasicWeixinAuthEnabled()) {
+          watchAppStore.setPageError({
+            type: PageErrorType.UnknownError,
+            desc: translate('pageError.saleInvite.limit.weixin2'),
+          });
+          return true;
+        }
       }
 
-      if (isWeixin && !weixinStore.weixinWatchAuthorized) {
-        // 如果没有微信静默授权，则需要先进行授权
+      if (
+        isWeixin &&
+        !weixinStore.weixinWatchAuthorized &&
+        watchCore.weixin.getBasicWeixinAuthEnabled()
+      ) {
+        // 如果没有微信非静默授权，则需要先进行授权
         redirectWeixinAuthorize({
           snsApiBase: false,
         });

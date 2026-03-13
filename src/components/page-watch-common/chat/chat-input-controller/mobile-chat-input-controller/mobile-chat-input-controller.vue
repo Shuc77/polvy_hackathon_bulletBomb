@@ -71,6 +71,7 @@ import { PropUtils } from '@polyv/vue-components';
 import { useChatInputController } from '../hooks/use-chat-input-controller';
 import { CSSProperties, computed } from 'vue';
 import { useThemeStore } from '@/store/use-theme-store';
+import { generateBgStyle } from '@/skins/theme-config-helper';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const props = defineProps({
@@ -110,9 +111,10 @@ const themeStore = useThemeStore();
 const inputStyle = computed<CSSProperties>(() => {
   if (!themeStore.watchThemeStyleConfig) return {};
 
+  const msgInput = themeStore.watchThemeStyleConfig.common.chat.msgInput;
   return {
-    background: themeStore.watchThemeStyleConfig.common.chat.msgInput.bg,
-    borderColor: themeStore.watchThemeStyleConfig.common.chat.msgInput.borderColor,
+    ...generateBgStyle(msgInput.bgConfig),
+    borderColor: msgInput.borderColor,
   };
 });
 

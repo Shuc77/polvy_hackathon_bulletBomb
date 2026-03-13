@@ -13,7 +13,7 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useLayoutStore } from './use-layout-store';
 import { appendToOssProcess } from '@/hooks/business/use-resize-oss-image';
-import { WatchThemeStyleConfig } from '@/skins/theme-config-type';
+import { WatchThemeStyleConfig } from '@/skins/theme-config-helper';
 import { SkinColorMode } from '@/skins/enum';
 
 export interface SkinConfig {
@@ -217,7 +217,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
       themeSetting.value.mobileChatBackgroundType === BackgroundType.SystemDefault &&
       watchThemeStyleConfig.value
     ) {
-      return watchThemeStyleConfig.value.mobile.chat.bgUrl;
+      return watchThemeStyleConfig.value.mobile.chat.bgConfig?.url || '';
     }
 
     return '';
@@ -245,7 +245,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
       themeSetting.value.portraitBackgroundType === BackgroundType.SystemDefault &&
       watchThemeStyleConfig.value
     ) {
-      return watchThemeStyleConfig.value.portrait.chat.bgUrl;
+      return watchThemeStyleConfig.value.portrait.chat.bgConfig?.url || '';
     }
 
     return '';

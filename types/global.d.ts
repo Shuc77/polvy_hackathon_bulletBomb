@@ -7,6 +7,10 @@ declare global {
       error: (err: Error) => void;
       updateCommonParams: (params: { cid?: string; uid?: string }) => void;
     };
+
+    baseChannelConfig?: {
+      watchDosageReportEnabled?: 'Y' | 'N';
+    };
   }
 
   interface HTMLElement {

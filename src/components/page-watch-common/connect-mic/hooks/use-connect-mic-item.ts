@@ -129,7 +129,7 @@ export const useConnectMicItem = (options: { props: VueProps<typeof connectMicIt
   }
 
   function resume() {
-    console.info('resume');
+    console.log('resume');
     const micItem = props.micItem;
     micItem.resumeStream();
   }

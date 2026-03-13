@@ -1,4 +1,5 @@
 {
+  "base.loading": "加载中",
   "global.pageSlideForbidden.tips.connectMic": "正在连麦中，无法切换直播间",
   "feed.switchLayout.entrance.text": "点击进入直播间",
   "watchCore.error.uploadImage": "图片上传失败！",
@@ -56,6 +57,7 @@
   "ask.placeholderMsg": "您好！请问有什么问题吗",
   "ask.news": "新消息",
   "ask.badWord": "提问发送失败，请更换表述",
+  "anchor.tab.channel.label": "TA的频道",
   "ai.input.placeholder": "试试输入你的问题",
   "ai.not.config": "AI助手未上岗",
   "ai.busy": "当前系统繁忙，请稍后再试。",
@@ -409,6 +411,7 @@
   "pageError.work.wechat.businessError.desc": "你未在该频道可见范围内，有疑问请联系直播管理员或企微管理员",
   "pageError.work.wechat.businessError.desc2": "该企微员工已绑定其他账号，请使用正确的账号登录",
   "pageError.saleInvite.limit.weixin": "专属观看请复制链接在微信下打开",
+  "pageError.saleInvite.limit.weixin2": "无法进入，频道未开启微信配置，请联系管理员处理",
   "pageError.saleInvite.illegalSaleCode": "分享链接无效，暂无权限查看直播",
   "pageError.NotAllowDomain.title": "页面来源域名非法，请前往观看页安全域名进行配置",
   "pageError.NotAllowAccess.title": "无权限访问直播间",
@@ -886,7 +889,6 @@
   "taskActivity.retry": "重试",
   "more.base": "基础功能",
   "more.interactive": "互动工具",
-
   "portrait.subtitle.setting.title": "字幕设置",
   "portrait.subtitle.setting.language": "字幕语言",
   "portrait.subtitle.setting.bilingual": "显示双语字幕",
@@ -894,7 +896,6 @@
   "portrait.subtitle.close.tips.title": "确认要关闭吗？",
   "portrait.subtitle.close.tips.content": "关闭后可在「更多-互动工具-实时字幕」中开启",
   "portrait.subtitle.float.guide.tips": "手指拖拽侧边区域，可移动位置",
-
   "portrait.exit.clear.screen.btn.text": "退出清屏",
   "externalLink.navigateFail": "暂不支持跳转"
 }

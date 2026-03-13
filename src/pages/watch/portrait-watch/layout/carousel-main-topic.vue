@@ -36,7 +36,7 @@
       <portrait-invite-rank-entrance v-if="inviteRankEnabled" />
 
       <!-- 互动二次入口 -->
-      <portrait-interactive-entrance v-if="iarSdkLoaded" />
+      <portrait-interactive-entrance v-if="iarSdkLoaded && !notNeedIar" />
 
       <!-- 在线列表入口 -->
       <portrait-online-user-capsule
@@ -53,10 +53,7 @@
     </div>
 
     <!-- 置顶消息 -->
-    <div
-      v-if="isChatUIV2"
-      class="c-portrait-carousel-main-topic__row"
-    >
+    <div class="c-portrait-carousel-main-topic__row">
       <chat-loader-helper>
         <toping-msg class="c-portrait-carousel-main-topic__toping-msg" />
       </chat-loader-helper>
@@ -86,6 +83,9 @@ import LiveSquare from '@/components/page-watch-common/live-square/live-square.v
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+
+const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
 
 const { channelInfoSeat, portraitOnlineListEntranceVisible, portraitDocSideSwitchVisible } =
   storeDefinitionToRefs(usePortraitLayoutStore);
@@ -96,7 +96,7 @@ const { inviteRankEnabled } = storeDefinitionToRefs(useInviteStore);
 
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { chatOnlineNumberEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
+const { chatOnlineNumberEnable } = storeDefinitionToRefs(useChatStore);
 
 const { canRenderDoc } = storeDefinitionToRefs(useDocStore);
 </script>

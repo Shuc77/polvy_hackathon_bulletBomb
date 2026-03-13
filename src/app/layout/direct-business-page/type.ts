@@ -38,8 +38,6 @@ export enum PageErrorType {
   NotAllowAccess = 'NotAllowAccess',
   /** 不存在指定场次 */
   TargetSessionNotExist = 'TargetSessionNotExist',
-  /** 小班课场景已满员 */
-  SmallClassJoinFull = 'SmallClassJoinFull',
 }
 
 /**

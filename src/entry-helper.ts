@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import * as Vue2Module from 'vue';
 import { PiniaVuePlugin, createPinia } from 'pinia';
-// import { initRUMSystemVue2 as initRUMSystem } from 'polyv-rum-sdk';
 
 import {
   injectPolyvWatchAppSdkMethods,
@@ -71,37 +70,43 @@ const createVueApp = (uniqueId: string, RootApp: Vue) => {
     store.$uniqueId = uniqueId;
   });
 
-  // if (RUM_ENABLED) {
-  //   const isNotDev = BUILD_ENV === 'pre' || BUILD_ENV === 'prod';
-  //   const sampleRate = isNotDev ? 0.05 : 1;
-  //   const logStore = isNotDev ? 'live-watch' : 'live-watch-dev';
+  try {
+    if (RUM_ENABLED && window.baseChannelConfig?.watchDosageReportEnabled === 'Y') {
+      const isNotDev = BUILD_ENV === 'pre' || BUILD_ENV === 'prod';
+      const sampleRate = isNotDev ? 0.05 : 1;
+      const logStore = isNotDev ? 'live-watch' : 'live-watch-dev';
 
-  //   initRUMSystem(
-  //     {
-  //       Vue,
-  //     },
-  //     {
-  //       debug: false,
-  //       environment: BUILD_ENV,
-  //       sampleRate: {
-  //         error: 0,
-  //         click: sampleRate,
-  //         route: sampleRate,
-  //         custom: sampleRate,
-  //         xhr: 0,
-  //       },
-  //       slsConfigOverride: {
-  //         host: 'cn-shenzhen.log.aliyuncs.com',
-  //         project: 'live-admin-rum',
-  //         logstore: logStore,
-  //         enabled: true,
-  //         appName: 'live-watch',
-  //       },
-  //     },
-  //   ).catch(error => {
-  //     console.warn('RUM system initialization failed:', error);
-  //   });
-  // }
+      import('@polyv/rum-sdk').then(({ initRUMSystemVue2 }) => {
+        initRUMSystemVue2(
+          {
+            Vue,
+          },
+          {
+            debug: false,
+            environment: BUILD_ENV,
+            sampleRate: {
+              error: 0,
+              click: sampleRate,
+              route: sampleRate,
+              custom: sampleRate,
+              xhr: 0,
+            },
+            slsConfigOverride: {
+              host: 'cn-shenzhen.log.aliyuncs.com',
+              project: 'live-admin-rum',
+              logstore: logStore,
+              enabled: true,
+              appName: 'live-watch',
+            },
+          },
+        ).catch(error => {
+          console.warn('RUM system initialization failed:', error);
+        });
+      });
+    }
+  } catch (error) {
+    console.warn('RUM system initialization not support:', error);
+  }
 
   return new Vue({
     pinia,

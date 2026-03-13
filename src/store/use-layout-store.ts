@@ -76,6 +76,10 @@ export interface LayoutStoreState {
   mobileDocIsPageFullscreen: Ref<boolean>;
   /** 当前是页面全屏或者横屏 */
   isPageFullscreenOrHorizontalScreen: ComputedRef<boolean>;
+  /** 移动端输入框聚焦中 */
+  mobileInputFocusing: Ref<boolean>;
+  /** 移动端软件盘抬起高度 */
+  mobileKeyboardHeight: Ref<number>;
 }
 
 export interface LayoutStoreActions {
@@ -218,6 +222,9 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     return unref(mobilePlayerIsPageFullscreen) || unref(isHorizontalScreenOrientation);
   });
 
+  const mobileInputFocusing = ref(false);
+  const mobileKeyboardHeight = ref(0);
+
   /** 移动端布局退出所有全屏 */
   function exitMobileLayoutFullScreen() {
     mobilePlayerIsPageFullscreen.value = false;
@@ -278,6 +285,8 @@ export const useLayoutStore = defineStore<'layout', LayoutStore>('layout', () =>
     mobileNormalLatencyPlayerIsFullscreen,
     mobileDocIsPageFullscreen,
     isPageFullscreenOrHorizontalScreen,
+    mobileInputFocusing,
+    mobileKeyboardHeight,
 
     exitMobileLayoutFullScreen,
     syncLayoutStore,

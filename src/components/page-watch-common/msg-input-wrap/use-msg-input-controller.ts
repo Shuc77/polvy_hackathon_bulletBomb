@@ -8,6 +8,7 @@ import {
 } from '@/plugins/polyv-ui/types';
 import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useMobileInput } from '@/hooks/behaviors/use-mobile-input';
 
 /**
  * @hook 对消息输入框的封装，统一提供给到组件外部使用的的方法
@@ -15,6 +16,7 @@ import { useGlobalInject } from '@/app/use-global-inject';
  */
 export const useMsgInputController = () => {
   const { getEmitter, getWatchCore } = useGlobalInject();
+  const mobileInput = useMobileInput();
 
   const watchCore = getWatchCore();
 
@@ -63,6 +65,8 @@ export const useMsgInputController = () => {
   function onInputFocus() {
     isInputFocus.value = true;
     getEmitter().emit(appEvents.global.MsgInputFocus);
+
+    mobileInput.onInputFocus();
   }
 
   function onInputBlur() {
@@ -72,6 +76,7 @@ export const useMsgInputController = () => {
      */
     setTimeout(() => {
       isInputFocus.value = false;
+      mobileInput.onInputBlur();
     }, 1);
   }
 

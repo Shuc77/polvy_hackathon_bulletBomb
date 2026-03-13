@@ -103,7 +103,7 @@ export const usePlayerAction = () => {
       const needWaitToStop = playerStore.needWaitToStop;
       if (needWaitToStop) {
         const waitTime = 2000;
-        setTimeout(() => {
+        window.setTimeout(() => {
           toStop();
         }, waitTime);
       } else {
@@ -383,7 +383,7 @@ export const usePlayerAction = () => {
     playerModule.eventEmitter.once(PlayerEvents.PlayerPlaying, () => {
       pauseAfterSeekAttached = false;
       // 下一帧暂停，避免和 seek 竞争
-      setTimeout(() => {
+      window.setTimeout(() => {
         toPause();
       }, 0);
     });
@@ -508,7 +508,7 @@ export const usePlayerAction = () => {
     // 保存延迟选项到 localStorage
     setLatencySettings({ isLowLatency });
 
-    setTimeout(() => {
+    window.setTimeout(() => {
       getEmitter().emit(appEvents.player.ResetUpPlayer);
     }, 0);
     getWatchCore().logger.info(

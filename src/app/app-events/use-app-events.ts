@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { onBeforeUnmount, onMounted, readonly } from 'vue';
-// import mitt, { Emitter } from 'mitt';
 import { EventEmitter } from '@polyv/utils/es/event';
 import { events } from './events/index';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
@@ -15,7 +14,6 @@ type AppMittEvents = {
 export type WatchAppEmitterType = EventEmitter<AppMittEvents>;
 
 export function createEmitter() {
-  // return mitt<AppMittEvents>();
   return new EventEmitter<AppMittEvents>();
 }
 

@@ -46,7 +46,7 @@ function handleSwitch() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-weak-network-switch-tips__switch {
   padding: 0 3px;
   color: #3f76fc;

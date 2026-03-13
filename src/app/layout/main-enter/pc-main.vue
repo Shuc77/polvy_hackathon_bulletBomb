@@ -15,7 +15,7 @@
     />
 
     <!-- 风险测评 -->
-    <pc-risk-evaluation v-if="iarSdkLoaded" />
+    <pc-risk-evaluation v-if="iarSdkLoaded && iarUIV1Loaded" />
     <risk-evaluation-redirect-dialog />
     <!-- 风险确认函 -->
     <pc-risk-confirm-letter />
@@ -56,7 +56,7 @@ const emit = defineEmits(mainEnterEmits());
 
 const { onPageMounted } = useMainEnter({ emit });
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 usePageLayoutStyle();
 

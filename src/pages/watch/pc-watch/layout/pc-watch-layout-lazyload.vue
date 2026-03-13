@@ -3,8 +3,8 @@
 <template>
   <div class="c-pc-watch-layout-lazyload">
     <!-- 互动功能渲染入口 -->
-    <pc-iar-render v-if="iarSdkLoaded" />
-    <pc-iar-render-v2 v-if="iarSdkLoaded" />
+    <pc-iar-render v-if="iarSdkLoaded && iarUIV1Loaded" />
+    <pc-iar-render-v2 v-if="iarSdkLoaded && !notNeedIar" />
 
     <!-- 商品库大卡片弹层 -->
     <pc-product-big-card-popup v-if="iarSdkLoaded" />
@@ -70,10 +70,13 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChatStore } from '@/store/use-chat-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);
 
-const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
+const { notNeedIar } = useWatchAppStore();
+
+const { iarSdkLoaded, iarUIV1Loaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { bindMobileVisible, needIdentityGuestForceLogin } = storeDefinitionToRefs(useIdentityStore);
 

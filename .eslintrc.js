@@ -50,6 +50,6 @@ module.exports = {
       },
     ],
 
-    // 'vue/enforce-style-attribute': ['warn', { allow: ['plain'] }],
+    'vue/enforce-style-attribute': ['warn', { allow: ['plain'] }],
   },
 };

@@ -2,9 +2,7 @@
 <template>
   <div
     class="c-mobile-menu-tab-header"
-    :style="{
-      backgroundImage: props.headerConfig.bg,
-    }"
+    :style="generateBgStyle(props.headerConfig.bgConfig)"
   >
     <div class="c-mobile-menu-tab-header__content">
       <div
@@ -50,7 +48,11 @@
             </span>
 
             <div
-              v-if="headerConfig.activeItem && paneData.name === currentTabName"
+              v-if="
+                headerConfig.activeItem &&
+                headerConfig.activeItem.icon &&
+                paneData.name === currentTabName
+              "
               class="c-mobile-menu-tab-header__item-right-icon"
               :style="{
                 backgroundImage: `url(${headerConfig.activeItem.icon})`,
@@ -76,6 +78,7 @@
 import { isWeixin } from '@/assets/utils/browser';
 import { useTabHeader } from '../hooks/use-tab-header';
 import { generateHackWeixinBtnId, tabsHeaderProps } from '../hooks/use-tabs';
+import { generateBgStyle } from '@/skins/theme-config-helper';
 
 const props = defineProps(tabsHeaderProps());
 

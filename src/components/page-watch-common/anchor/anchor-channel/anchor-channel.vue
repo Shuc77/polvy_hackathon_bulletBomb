@@ -39,7 +39,7 @@
           class="c-anchor-channel__item__time pwc-font-din-pro-regular"
         >
           <pwc-icon-clock />
-          <span>开播：</span>
+          <span>{{ $lang('base.start.live') }}：</span>
           <span style="font-size: 14px">{{
             formatDate(item.startTime, DATE_FORMAT_COMPLETE)
           }}</span>

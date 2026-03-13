@@ -204,7 +204,7 @@ watch(historyDuration, val => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-player-tips {
   display: flex;
   flex-direction: column;

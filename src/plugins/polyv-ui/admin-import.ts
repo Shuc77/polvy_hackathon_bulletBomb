@@ -45,5 +45,5 @@ export { default as PlvChannelCover } from '@polyv/polyv-ui/lib-admin/channel-co
 import '@polyv/polyv-ui/lib-admin/theme/text-ellipsis.css';
 export { default as PlvTextEllipsis } from '@polyv/polyv-ui/lib-admin/text-ellipsis';
 
-import '@polyv/polyv-ui/lib-admin/theme/markdown-render.css';
-export { default as PlvMarkdownRender } from '@polyv/polyv-ui/lib-admin/markdown-render';
+// import '@polyv/polyv-ui/lib-admin/theme/markdown-render.css';
+// export { default as PlvMarkdownRender } from '@polyv/polyv-ui/lib-admin/markdown-render';

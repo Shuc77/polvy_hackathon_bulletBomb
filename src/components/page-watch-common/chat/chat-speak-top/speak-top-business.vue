@@ -32,7 +32,7 @@
         :key="num"
         class="c-speak-top-business__indicator__item"
         :class="{
-          'c-speak-top-business__indicator__item--actived': num - 1 === slideIndex,
+          'c-speak-top-business__indicator__item--active': num - 1 === slideIndex,
         }"
         @click="handleChange(num - 1)"
       ></div>
@@ -47,21 +47,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
-import { useSpeakTop } from './use-speak-top';
-import SpeakTop from './speak-top.vue';
-import { useChannelStore } from '@/store/use-channel-store';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { LiveStatus } from '@polyv/live-watch-sdk';
-import { usePlaybackStore } from '@/store/use-playback-store';
-import { useWebPageFullscreen } from '@/components/page-watch-common/player/hooks/use-web-page-fullscreen';
-import { PropUtils } from '@polyv/vue-components';
 import { tupleString } from '@/assets/utils/array';
+import { useWebPageFullscreen } from '@/components/page-watch-common/player/hooks/use-web-page-fullscreen';
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/pc-import';
+import { usePlaybackStore } from '@/store/use-playback-store';
+import { PropUtils } from '@polyv/vue-components';
+import { computed, ref, watch } from 'vue';
+import SpeakTop from './speak-top.vue';
+import { useSpeakTop } from './use-speak-top';
 
 const playbackStore = usePlaybackStore();
-
-const { liveStatus } = storeDefinitionToRefs(useChannelStore);
 
 const slideIndex = ref(0);
 
@@ -92,14 +87,12 @@ const handleChange = (index: number) => {
 
 const speakTopLayerShow = computed(() => {
   return (
-    showSpeakTop.value === true &&
-    (liveStatus.value === LiveStatus.Live || playbackStore.chatMsgReplayEnabled) &&
-    !isSetupPanelShow.value
+    showSpeakTop.value === true && playbackStore.chatMsgReplayEnabled && !isSetupPanelShow.value
   );
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .c-speak-top-business {
   height: 66px;
   pointer-events: initial;
@@ -130,7 +123,7 @@ const speakTopLayerShow = computed(() => {
     margin: 0 3px;
     border-radius: 4px;
 
-    &.c-speak-top-business__indicator__item--actived {
+    &.c-speak-top-business__indicator__item--active {
       width: 14px;
     }
   }
@@ -197,7 +190,7 @@ const speakTopLayerShow = computed(() => {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 2px;
 
-  &.c-speak-top-business__indicator__item--actived {
+  &.c-speak-top-business__indicator__item--active {
     width: 8px;
   }
 }

@@ -1,4 +1,5 @@
 {
+  "base.loading": "載入中",
   "global.pageSlideForbidden.tips.connectMic": "正在連麥中，無法切換直播間",
   "feed.switchLayout.entrance.text": "點擊進入直播間",
   "watchCore.error.uploadImage": "圖片上傳失敗！",
@@ -56,6 +57,7 @@
   "ask.placeholderMsg": "您好！請問有什麼問題嗎",
   "ask.news": "新消息",
   "ask.badWord": "提問發送失敗，請更換表述",
+  "anchor.tab.channel.label": "TA的頻道",
   "ai.input.placeholder": "試試輸入你的問題",
   "ai.not.config": "AI助手未上崗",
   "ai.busy": "當前系統繁忙，請稍後再試。",
@@ -405,6 +407,7 @@
   "pageError.work.wechat.businessError.desc": "你未在該頻道可見範圍內，有疑問請聯繫直播管理員或企微管理員",
   "pageError.work.wechat.businessError.desc2": "該企微員工已繫結其他帳號，請使用正確的帳號登入",
   "pageError.saleInvite.limit.weixin": "專屬觀看請複製鏈接在微信下打開",
+  "pageError.saleInvite.limit.weixin2": "無法進入，頻道未開啓微信配置，請聯繫管理員處理",
   "pageError.saleInvite.illegalSaleCode": "分享鏈接無效，暫無權限查看直播",
   "pageError.NotAllowDomain.title": "頁面來源域名非法，請前往觀看頁安全域名進行配置",
   "pageError.NotAllowAccess.title": "無權限訪問直播間",
@@ -886,7 +889,6 @@
   "taskActivity.retry": "重試",
   "more.base": "基础功能",
   "more.interactive": "互動‌工具",
-
   "portrait.subtitle.setting.title": "字幕设置",
   "portrait.subtitle.setting.language": "字幕语言",
   "portrait.subtitle.setting.bilingual": "顯示雙語字幕",
@@ -894,7 +896,6 @@
   "portrait.subtitle.close.tips.title": "確認要關閉嗎？",
   "portrait.subtitle.close.tips.content": "關閉後可在「更多-互動工具-實時字幕」中開啟",
   "portrait.subtitle.float.guide.tips": "手指拖拽側邊區域，可移動位置",
-
   "portrait.exit.clear.screen.btn.text": "退出清屏",
   "externalLink.navigateFail": "暫不支援跳轉"
 }

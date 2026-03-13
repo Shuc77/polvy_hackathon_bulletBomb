@@ -20,7 +20,6 @@ import {
 } from '@polyv/live-watch-sdk';
 import { useBrowser } from '@polyv/vue-components';
 import { useChatTarget } from './use-chat-target';
-import { useThemeStore } from '@/store/use-theme-store';
 
 /**
  * 消息隐藏相关
@@ -228,6 +227,8 @@ export function useClickMsgCallback() {
       ) {
         const productTarget = await watchCore.product.getProductTarget();
         const productDetail = await productTarget.getProductData(Number(targetId));
+        if (!productDetail) return;
+
         // 普通、职位商品打开商品详情
         if (
           [productTarget.ProductType.Normal, productTarget.ProductType.Position].includes(
@@ -278,17 +279,13 @@ export function useClickMsgCallback() {
 export const useChatLikeConfig = () => {
   const { getWatchCore } = useGlobalInject();
   const { chatSetting } = storeDefinitionToRefs(useChatStore);
-  const themeStore = useThemeStore();
 
   const watchCore = getWatchCore();
 
   function getLikeEffectIcons(): string[] {
     const domainInfo = watchCore.domain.getDomainInfo();
-    let likeEffectType = chatSetting.value.likeEffectType;
-
-    if (themeStore.watchThemeStyleConfig && likeEffectType === LikeEffectType.System) {
-      likeEffectType = themeStore.watchThemeStyleConfig.common.chat.btn.like.effectType;
-    }
+    const likeEffectType = chatSetting.value.likeEffectType;
+    const likeEffectIcons = chatSetting.value.likeEffectIcons;
 
     switch (likeEffectType) {
       case LikeEffectType.Festival:
@@ -305,7 +302,7 @@ export const useChatLikeConfig = () => {
           `${domainInfo.resourceDomain}/default-img/like/festival/10.png`,
         ];
       case LikeEffectType.Custom:
-        return chatSetting.value.likeEffectIcons;
+        return likeEffectIcons;
       default:
         return [
           `${domainInfo.resourceDomain}/default-img/like/system/1.png`,

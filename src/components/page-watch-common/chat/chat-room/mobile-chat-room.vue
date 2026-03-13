@@ -18,7 +18,7 @@
 
       <!-- 置顶公告 -->
       <div
-        v-if="announcementFunctionVisible && iarSdkLoaded"
+        v-if="announcementFunctionVisible && iarSdkLoaded && !notNeedIar"
         class="c-mobile-chat-room__topic__item"
       >
         <bulletin-topping class="c-mobile-chat-room__topic__announcement" />
@@ -53,7 +53,7 @@
     </div>
 
     <!-- 互动二次入口 -->
-    <mobile-interactive-entrance v-if="iarSdkLoaded && chatInputControllerEnable" />
+    <mobile-interactive-entrance v-if="iarSdkLoaded && chatInputControllerEnable && !notNeedIar" />
 
     <!-- 底部输入框 -->
     <template v-if="chatInputControllerEnable">
@@ -90,6 +90,9 @@ import { useEnrollStore } from '@/store/use-enroll-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+
+const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
 
 const { needEnrollByChat } = storeDefinitionToRefs(useEnrollStore);
 

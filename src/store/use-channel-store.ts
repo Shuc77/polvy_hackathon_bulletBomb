@@ -68,7 +68,7 @@ export interface ChannelStoreState {
   /** 是否压缩直播介绍中的内容图片 */
   compressImageEnabled: Ref<boolean>;
   /** 是否为小班课场景 */
-  isSmallClassChannel: Ref<boolean>;
+  isSmallClassChannel: ComputedRef<boolean>;
   /** 商品库横屏位置 */
   productEntryLandscapePosition: Ref<string>;
   /** 商品库图标配置 */

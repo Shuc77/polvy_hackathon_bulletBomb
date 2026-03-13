@@ -36,6 +36,8 @@ export interface PlayerStoreState {
   isPlayMode: ComputedRef<boolean>;
   /** 播放器 sdk 加载失败 */
   playerSdkLoadError: Ref<boolean>;
+  /** 播放器脚本加载中 */
+  playerScriptLoading: Ref<boolean>;
   /** 播放器是否已初始化 */
   playerInited: Ref<boolean>;
   /** 是否已开始播放 */
@@ -222,6 +224,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   });
 
   const playerSdkLoadError = ref(false);
+
+  /** 播放器脚本加载中 */
+  const playerScriptLoading = ref(false);
 
   /** 播放器是否已初始化 */
   const playerInited = ref(false);
@@ -669,6 +674,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
 
   return {
     playerSdkLoadError,
+    playerScriptLoading,
     playerEnabled,
     canRenderPlayer,
     isAudioPlayerMode,
