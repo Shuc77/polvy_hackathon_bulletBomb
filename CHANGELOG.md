@@ -6,7 +6,7 @@
 
 ## v2.16.0(2026-04-24)
 
-## Deprecated
+### Deprecated
 
 - 移除不再需要的 `vue-cli` 构建配置
 - 移除原本的 `skins` 皮肤配置
