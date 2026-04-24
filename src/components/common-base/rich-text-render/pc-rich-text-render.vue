@@ -4,6 +4,9 @@
     <div
       v-html="renderHtmlContent"
       class="c-pc-rich-text-render__content"
+      :class="{
+        'c-pc-rich-text-render__content--color': followPageSkin,
+      }"
     ></div>
   </div>
 </template>
@@ -117,5 +120,9 @@ const { renderHtmlContent } = useRichTextRender({ props });
   hr {
     border-color: #000000;
   }
+}
+
+.c-pc-rich-text-render__content--color {
+  color: $text-color;
 }
 </style>

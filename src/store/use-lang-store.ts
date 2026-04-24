@@ -5,13 +5,12 @@ import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 
 import { LangType } from '@/assets/lang/lang-enum';
-import { updateI18nLocale } from '@/assets/lang';
+import { switchI18nLocale } from '@/assets/lang';
 import {
   convert2CurrentLang,
   convert2WatchSdkLang,
   getBrowserLang,
   getCacheLang,
-  getDefaultLang,
   setCacheLang,
 } from '@/assets/lang/util';
 
@@ -43,13 +42,17 @@ export interface LangStoreState {
   currentLangText: ComputedRef<string>;
   /** 当前是否为中文语言 */
   isChineseLang: ComputedRef<boolean>;
+  /** 语言切换是否正在加载中 */
+  langLoading: Ref<boolean>;
+  /** 正在切换的目标语种 */
+  pendingLang: Ref<LangType | undefined>;
 }
 
 export interface LangStoreAction {
   /** 同步多语言 store */
   syncLangStore: () => void;
   /** 切换当前多语言 */
-  switchLang: (lang: LangType) => void;
+  switchLang: (lang: LangType) => Promise<boolean>;
   /** 根据当前语言转换游客名称 */
   translateNick: (nick: string) => string;
 }
@@ -74,6 +77,12 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
   /** 是否显示日文语言切换（仅将英文的 text 换成日文文案） */
   const japLangEnabled = ref(false);
 
+  /** 语言切换是否正在加载中 */
+  const langLoading = ref(false);
+
+  /** 正在切换的目标语种 */
+  const pendingLang = ref<LangType | undefined>(undefined);
+
   /** 所有多语言选择列表 */
   const allLangSwitchList = computed<LangSwitchItem[]>(() => {
     return [
@@ -91,8 +100,8 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     return unref(allLangSwitchList).slice();
   });
 
-  /** 当前多语言 */
-  const currentLang = ref<LangType>(getDefaultLang());
+  /** 当前多语言（表示已生效到 i18n 的语种） */
+  const currentLang = ref<LangType>(LangType.ZH_CN);
 
   /** 当前多语言的文本 */
   const currentLangText = computed<string>(() => {
@@ -117,70 +126,101 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     japLangEnabled.value = langSetting.japLangEnabled;
 
     const cacheLang = getCacheLang();
-    // 缓存中不存在多语言时，需要响应后台配置
-    if (!cacheLang) {
-      const lang = langSetting.isFollowBrowserLang
+    const lang =
+      cacheLang ||
+      (langSetting.isFollowBrowserLang
         ? getBrowserLang()
-        : convert2CurrentLang(langSetting.defaultLangType);
+        : convert2CurrentLang(langSetting.defaultLangType));
 
-      syncCurrentLang(lang);
-    }
+    syncCurrentLang(lang).catch(err => {
+      console.error('[i18n] syncLangStore failed:', err);
+    });
   }
 
   /**
-   * 同步当前语种
+   * 同步当前语种（异步：先确保语种包已加载，再更新 sdk 与 store 状态）
    */
-  function syncCurrentLang(lang: LangType) {
+  async function syncCurrentLang(lang: LangType, withLoading = false): Promise<boolean> {
     const watchCore = watchAppStore.getWatchCore();
-    // 更新 sdk 语种
-    watchCore.updateAppConfig({
-      language: convert2WatchSdkLang(lang),
-    });
+    const targetSdkLang = convert2WatchSdkLang(lang);
+    const currentSdkLang = watchCore.getAppConfig().language;
 
-    // 更新 i18n 语种
-    updateI18nLocale(lang);
-
-    // 更新变量触发其他组件的 watch 钩子
-    currentLang.value = lang;
-
-    // 兼容旧逻辑，更改语言时支持同时更改音轨
-    const steamTrackItem = channelStore.streamTrackConfig?.trackList.find(i => {
-      return i.lang === convert2WatchSdkLang(lang);
-    });
-    if (steamTrackItem) {
-      playerStore.$patch({
-        streamTrackKey: steamTrackItem.key,
-      });
+    if (unref(currentLang) === lang && currentSdkLang === targetSdkLang) {
+      return true;
     }
 
-    // 重新初始化播放器来获取新语种
-    getEmitter().emit(appEvents.player.ResetUpPlayer);
+    if (withLoading) {
+      langLoading.value = true;
+      pendingLang.value = lang;
+    }
+
+    try {
+      const applied = await switchI18nLocale(lang);
+      if (!applied) {
+        return false;
+      }
+
+      currentLang.value = lang;
+
+      // 更新 sdk 语种
+      watchCore.updateAppConfig({
+        language: targetSdkLang,
+      });
+
+      // 兼容旧逻辑，更改语言时支持同时更改音轨
+      const steamTrackItem = channelStore.streamTrackConfig?.trackList.find(i => {
+        return i.lang === targetSdkLang;
+      });
+      if (steamTrackItem) {
+        playerStore.$patch({
+          streamTrackKey: steamTrackItem.key,
+        });
+      }
+
+      // 重新初始化播放器来获取新语种
+      getEmitter().emit(appEvents.player.ResetUpPlayer);
+      return true;
+    } catch (err) {
+      console.error('[i18n] Failed to switch locale:', err);
+      return false;
+    } finally {
+      if (withLoading) {
+        langLoading.value = false;
+        pendingLang.value = undefined;
+      }
+    }
   }
 
   /**
    * 设置当前多语言
    * @param lang 多语言
    */
-  function switchLang(lang: LangType) {
-    // 同步当前语种
-    syncCurrentLang(lang);
+  async function switchLang(lang: LangType): Promise<boolean> {
+    if (unref(langLoading)) return false;
 
-    // 同步设置到缓存，下次页面初始化可以命中缓存的语种
-    setCacheLang(lang);
+    // 同步当前语种（等待成功后再持久化）
+    const success = await syncCurrentLang(lang, true);
 
-    /**
-     * URL 带有 lang 参数，且参数值与保存的语言不一致时，
-     * 要删除参数值，否则下次进来还是参数值指定的语言。
-     * 注意：IE <= 9 无效，因为不支持 history.replaceState
-     */
-    if (history.replaceState) {
-      const search = location.search.replace(/([?&]lang=)(\w*)/, (match, $1, $2) => {
-        return $2 === lang ? match : $1;
-      });
-      if (search !== location.search) {
-        history.replaceState(null, document.title, location.pathname + search + location.hash);
+    // 只有切换成功后才写缓存
+    if (success && unref(currentLang) === lang) {
+      setCacheLang(lang);
+
+      /**
+       * URL 带有 lang 参数，且参数值与保存的语言不一致时，
+       * 要删除参数值，否则下次进来还是参数值指定的语言。
+       * 注意：IE <= 9 无效，因为不支持 history.replaceState
+       */
+      if (history.replaceState) {
+        const search = location.search.replace(/([?&]lang=)(\w*)/, (match, $1, $2) => {
+          return $2 === lang ? match : $1;
+        });
+        if (search !== location.search) {
+          history.replaceState(null, document.title, location.pathname + search + location.hash);
+        }
       }
     }
+
+    return success;
   }
 
   /** 根据当前语言转换游客名称 */
@@ -203,6 +243,8 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     currentLang,
     currentLangText,
     isChineseLang,
+    langLoading,
+    pendingLang,
 
     syncLangStore,
     switchLang,

@@ -25,7 +25,7 @@ import {
 } from './types';
 import { isTabPaneInstance } from './use-tab-pane';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { BgConfig } from '@/skins/theme-config-helper';
+import { BgConfig } from '@/themes/utils/theme-config';
 
 export const generateHackWeixinBtnId = (menuName: string | number, needSelectorKey?: boolean) => {
   const id = `plv-watch-menu-hack-weixin-btn-${menuName}`;

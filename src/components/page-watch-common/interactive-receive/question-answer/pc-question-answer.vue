@@ -1,6 +1,6 @@
 <!-- @file PC 端互动问答 -->
 <template>
-  <div class="c-pc-question-answer">
+  <div class="c-pc-question-answer pws-next-iar-qa-answer-config">
     <iar-pc-question-answer
       class="c-pc-question-answer__main"
       :question-answer-sdk="questionAnswerSdk"
@@ -59,6 +59,11 @@ function onNewsEvent() {
 .c-pc-question-answer {
   position: relative;
   height: 100%;
+
+  .plv-ia-qa,
+  .plv-ia-qa-ask {
+    background: none !important;
+  }
 }
 
 .c-pc-question-answer__main {

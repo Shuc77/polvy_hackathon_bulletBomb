@@ -23,6 +23,7 @@
             class="c-pc-multi-meeting-portrait__item"
             :class="{
               'c-pc-multi-meeting-portrait__item--current': item.isCurrentChannel,
+              'pws-next-primary-border-color': item.isCurrentChannel,
             }"
             :href="item.watchUrl"
           >
@@ -128,7 +129,7 @@ watch(
 .c-pc-multi-meeting-portrait__title {
   margin-bottom: 16px;
   font-size: 16px;
-  color: #333;
+  color: $text-color;
   span {
     margin-right: 15px;
   }
@@ -140,7 +141,8 @@ watch(
   display: block;
   overflow: hidden;
   text-decoration: none;
-  border: 1px solid #e9e8eb;
+  border: 2px solid $border-color;
+  border-radius: 8px;
 }
 
 .c-pc-multi-meeting-portrait__item--current {
@@ -222,7 +224,7 @@ watch(
 .c-pc-multi-meeting-portrait__item__name {
   font-size: 16px;
   line-height: 22px;
-  color: #333;
+  color: $text-color;
   @include multiline-text;
 }
 
@@ -232,7 +234,7 @@ watch(
   left: 16px;
   font-size: 14px;
   line-height: 14px;
-  color: rgba(#333, 0.7);
+  color: $text-color-secondary;
 }
 
 .c-pc-multi-meeting-portrait__item__pv {
@@ -243,7 +245,7 @@ watch(
   align-items: center;
   font-size: 14px;
   line-height: 16px;
-  color: rgba(#333, 0.7);
+  color: $text-color-secondary;
 }
 
 .c-pc-multi-meeting-portrait__item__pv__icon {

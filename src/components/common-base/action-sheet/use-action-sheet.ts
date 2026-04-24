@@ -10,6 +10,8 @@ export const actionSheetProps = () => ({
   actions: PropUtils.array<ActionSheetItem>(),
   /** 当前选择的操作，支持.sync */
   actionValue: PropUtils.oneOfType<ActionSheetValue>([String, Number]).def(''),
+  /** 点击选项后是否自动关闭，默认：true */
+  closeOnAction: PropUtils.bool.def(true),
   /** 是否显示取消，默认：true */
   showCancel: PropUtils.bool.def(false),
 });
@@ -48,11 +50,15 @@ export const useActionSheet = (options: {
 
   /** 处理点击选项 */
   function onClickOption(option: ActionSheetItem) {
+    if (option.disabled) {
+      return;
+    }
+
     if (props.actionValue !== option.value) {
       emit('update:actionValue', option.value);
     }
 
-    if (popupRef.value) {
+    if (props.closeOnAction && popupRef.value) {
       popupRef.value.closePopup();
     }
 

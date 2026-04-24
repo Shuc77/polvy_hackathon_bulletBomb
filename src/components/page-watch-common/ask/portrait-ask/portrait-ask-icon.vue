@@ -4,47 +4,30 @@
     v-if="askMenuData.visible"
     class="c-portrait-ask-icon"
   >
-    <template v-if="currentLang === LangType.ZH_CN">
-      <mobile-origin-icon-question
-        v-show="portraitMessageTabCurrentName === PortraitChatTabName.Chat"
-        class="c-portrait-ask-icon__emotion"
-        @click="onClickIcon(PortraitChatTabName.Ask)"
-      />
-      <mobile-origin-icon-question-active
-        v-show="portraitMessageTabCurrentName === PortraitChatTabName.Ask"
-        class="c-portrait-ask-icon__emotion"
-        @click="onClickIcon(PortraitChatTabName.Chat)"
-      />
-    </template>
-    <template v-else>
-      <mobile-origin-icon-question-en
-        v-show="portraitMessageTabCurrentName === PortraitChatTabName.Chat"
-        class="c-portrait-ask-icon__emotion"
-        @click="onClickIcon(PortraitChatTabName.Ask)"
-      />
-      <mobile-origin-icon-question-en-active
-        v-show="portraitMessageTabCurrentName === PortraitChatTabName.Ask"
-        class="c-portrait-ask-icon__emotion"
-        @click="onClickIcon(PortraitChatTabName.Chat)"
-      />
-    </template>
+    <mobile-icon-question-next
+      v-show="portraitMessageTabCurrentName === PortraitChatTabName.Chat"
+      class="c-portrait-ask-icon__emotion pws-portrait-msg-input-icon"
+      @click="onClickIcon(PortraitChatTabName.Ask)"
+    />
+    <mobile-icon-question-next-active
+      v-show="portraitMessageTabCurrentName === PortraitChatTabName.Ask"
+      class="c-portrait-ask-icon__emotion pws-portrait-msg-input-icon"
+      @click="onClickIcon(PortraitChatTabName.Chat)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import {
-  MobileOriginIconQuestion,
-  MobileOriginIconQuestionActive,
-  MobileOriginIconQuestionEn,
-  MobileOriginIconQuestionEnActive,
-} from '@/components/component-icons/mobile-origin/map';
+
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePortraitLayoutStore, PortraitChatTabName } from '@/store/use-portrait-layout-store';
 import { PropUtils } from '@polyv/vue-components';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
-import { useLangStore } from '@/store/use-lang-store';
-import { LangType } from '@/assets/lang/lang-enum';
+import {
+  MobileIconQuestionNext,
+  MobileIconQuestionNextActive,
+} from '@/components/component-icons/mobile/map';
 
 const props = defineProps({
   fontSize: PropUtils.number.def(24),
@@ -57,8 +40,6 @@ const { askMenuData, chatMenuData } = storeDefinitionToRefs(useChannelMenuStore)
 const portraitLayoutStore = usePortraitLayoutStore();
 
 const { portraitMessageTabCurrentName } = storeDefinitionToRefs(usePortraitLayoutStore);
-
-const { currentLang } = storeDefinitionToRefs(useLangStore);
 
 function onClickIcon(name: PortraitChatTabName) {
   if (name === PortraitChatTabName.Chat && !chatMenuData.value.visible) {

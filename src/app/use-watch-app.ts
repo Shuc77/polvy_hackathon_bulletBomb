@@ -3,7 +3,7 @@ import { onBeforeMount } from 'vue';
 import { initWatchSdk } from '@/core/watch-sdk';
 
 import { useAuthSpecial } from '@/components/page-splash-common/auth/hooks/use-auth-special';
-import { usePageSkin } from '@/skins/use-page-skin';
+import { usePageTheme } from '@/themes/use-page-theme';
 import { useGlobalEventsEffect } from './_hooks/use-global-events-effect';
 import { useBrowserIcon, useBrowserTitle, useGlobalStyle } from './_hooks/use-global-style';
 import { useWeixinSetup } from './_hooks/use-weixin-setup';
@@ -119,7 +119,7 @@ const useInterceptWatchAppInit = async (): Promise<boolean> => {
  */
 export function createWatchApp() {
   const { uniqueId } = useGlobalInject();
-  const { initPageSkin } = usePageSkin();
+  const { initPageTheme } = usePageTheme({ enabledWatcher: true });
 
   const { syncStoreBeforeWatchAppInited } = useSyncStoreForWatchApp();
   const { paramGetter } = useQueryParams();
@@ -301,7 +301,7 @@ export function createWatchApp() {
     }
 
     // 初始化多皮肤
-    await initPageSkin();
+    await initPageTheme();
 
     // 初始化完毕，设置渲染标识位
     watchAppStore.$patch({

@@ -13,16 +13,18 @@ import { computed, ComputedRef, ref, Ref, unref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useLayoutStore } from './use-layout-store';
 import { appendToOssProcess } from '@/hooks/business/use-resize-oss-image';
-import { WatchThemeStyleConfig } from '@/skins/theme-config-helper';
-import { SkinColorMode } from '@/skins/enum';
+import { WatchThemeStyleConfig } from '@/themes/utils';
+import { ThemeColorMode } from '@/themes/type/theme-color-mode';
 
 export interface SkinConfig {
   /** 颜色深浅 */
-  mode: SkinColorMode;
+  mode: ThemeColorMode;
   /** 主题色 */
   themeColor: string;
   /** 主要色 */
   primaryColor: string;
+  /** 主题蒙层透明度 */
+  themeMaskOpacity: number;
 }
 
 export interface ThemeStore {
@@ -35,17 +37,23 @@ export interface ThemeStore {
   /** 观看页主题配置 */
   watchThemeStyleConfig: Ref<WatchThemeStyleConfig | null>;
   /** 观看页皮肤 */
-  pageSkin: Ref<ChannelWatchPageSkin | null>;
+  pageSkin: Ref<ChannelWatchPageSkin | 'custom' | null>;
+  /** 自定义皮肤配置 */
+  customSkinConfig: Ref<SkinConfig>;
   /** 当前皮肤的配置 */
   currentSkinConfig: ComputedRef<SkinConfig>;
   /** 当前皮肤的深浅 */
-  currentSkinColorMode: ComputedRef<SkinColorMode>;
+  currentThemeColorMode: ComputedRef<ThemeColorMode>;
+  /** 当前皮肤的深浅 (alias for backward compatibility) */
+  currentSkinColorMode: ComputedRef<ThemeColorMode>;
   /** 当前皮肤是否为深色 */
   isDarkSkinMode: ComputedRef<boolean>;
   /** 当前皮肤的主题色 */
   currentSkinThemeColor: ComputedRef<string>;
   /** 当前皮肤的主要色 */
   currentSkinPrimaryColor: ComputedRef<string>;
+  /** 当前皮肤的主题蒙层透明度 */
+  currentSkinThemeMaskOpacity: ComputedRef<string>;
   /** 浏览器标签页图标 */
   browserFavIcon: Ref<string>;
   /** 频道图标 */
@@ -59,7 +67,7 @@ export interface ThemeStore {
   /** 移动端引导页大图 */
   mobileSplashLargeImg: Ref<string>;
   /** PC 端观看页背景图 */
-  pcWatchBackgroundImage: Ref<string | undefined>;
+  displayPcWatchBackgroundImage: ComputedRef<string>;
   /** (默认)移动端聊天室背景图地址 */
   defaultMobileChatRoomBgUrl: ComputedRef<string | undefined>;
   /** 移动端聊天室背景图地址 */
@@ -70,6 +78,12 @@ export interface ThemeStore {
   portraitPageBgUrl: ComputedRef<string | undefined>;
   /** 播放器背景图地址 */
   playerBgUrl: ComputedRef<string | undefined>;
+  /* 直播介绍信息卡片开关 */
+  descInfoCardEnabled: Ref<boolean>;
+  /**
+   * 兼容竖屏布局
+   */
+  isCompactPortraitWatchPage: ComputedRef<boolean>;
   /** 同步皮肤主题 store */
   syncThemeStore(): void;
 }
@@ -98,45 +112,81 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   const watchThemeStyleConfig = ref<WatchThemeStyleConfig | null>(null);
 
   /** 观看页皮肤 */
-  const pageSkin = ref<ChannelWatchPageSkin | null>(null);
+  const pageSkin = ref<ChannelWatchPageSkin | 'custom' | null>(null);
+
+  /** 自定义皮肤配置 */
+  const customSkinConfig = ref<SkinConfig>({
+    mode: ThemeColorMode.Dark,
+    themeColor: '#202127',
+    primaryColor: '#3F76FC',
+    themeMaskOpacity: 0.4,
+  });
 
   const pageSkinConfigs: Record<ChannelWatchPageSkin, SkinConfig> = {
     [ChannelWatchPageSkin.Black]: {
-      mode: SkinColorMode.Dark,
-      themeColor: '#202127',
+      mode: ThemeColorMode.Dark,
+      themeColor: '#2b2c35',
       primaryColor: '#3F76FC',
+      themeMaskOpacity: 0.4,
     },
     [ChannelWatchPageSkin.Blue]: {
-      mode: SkinColorMode.Light,
+      mode: ThemeColorMode.Light,
       themeColor: '#D1E3F9',
       primaryColor: '#3F76FC',
+      themeMaskOpacity: 0.5,
     },
     [ChannelWatchPageSkin.Freshblue]: {
-      mode: SkinColorMode.Dark,
+      mode: ThemeColorMode.Dark,
       themeColor: '#2275dd',
       primaryColor: '#69C5FF',
+      themeMaskOpacity: 0.1,
     },
     [ChannelWatchPageSkin.Golden]: {
-      mode: SkinColorMode.Light,
-      themeColor: '#f2f2f2',
-      primaryColor: '#D8A83A',
+      mode: ThemeColorMode.Light,
+      themeColor: '#dddddd',
+      primaryColor: '#ceae67',
+      themeMaskOpacity: 0.6,
     },
     [ChannelWatchPageSkin.Green]: {
-      mode: SkinColorMode.Dark,
+      mode: ThemeColorMode.Dark,
       themeColor: '#398775',
-      primaryColor: '#33C89E',
+      primaryColor: '#3cb599',
+      themeMaskOpacity: 0.1,
     },
     [ChannelWatchPageSkin.Red]: {
-      mode: SkinColorMode.Dark,
+      mode: ThemeColorMode.Dark,
       themeColor: '#a20a1f',
       primaryColor: '#FF5252',
+      themeMaskOpacity: 0.1,
     },
     [ChannelWatchPageSkin.White]: {
-      mode: SkinColorMode.Light,
-      themeColor: '#f2f2f2',
+      mode: ThemeColorMode.Light,
+      themeColor: '#dddddd',
       primaryColor: '#3F76FC',
+      themeMaskOpacity: 0.6,
     },
   };
+
+  const portraitWatchPageSkinConfig: SkinConfig = {
+    mode: ThemeColorMode.Dark,
+    themeColor: '#2b2c35',
+    primaryColor: '#3F76FC',
+    themeMaskOpacity: 0.4,
+  };
+
+  /**
+   * 使用旧版皮肤、当进入观看页时，如果是竖屏布局，且观看页已经初始化，且非引导页
+   * @desc 产品要求，即使是 UI3.0 也要兼容这种场景
+   */
+  const isCompactPortraitWatchPage = computed(() => {
+    return (
+      pageSkin.value !== 'custom' &&
+      styleType.value === ChannelWatchThemeStyleType.Skin &&
+      watchAppStore.watchAppInited &&
+      watchAppStore.watchPageInited &&
+      layoutStore.isPortraitWatchLayout
+    );
+  });
 
   /**
    * 当前皮肤的配置
@@ -145,40 +195,48 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   const currentSkinConfig = computed<SkinConfig>(() => {
     const defaultSkin = themeSetting.value.pageSkin;
 
-    if (styleType.value === ChannelWatchThemeStyleType.Skin) {
-      return pageSkinConfigs[pageSkin.value || defaultSkin];
+    // 当 pageSkin 为 'custom' 时，使用自定义配置
+    if (pageSkin.value === 'custom') {
+      return customSkinConfig.value;
     }
 
-    if (!watchThemeStyleConfig.value) {
-      return pageSkinConfigs[defaultSkin];
+    let skinConfig = pageSkinConfigs[pageSkin.value || defaultSkin];
+    if (isCompactPortraitWatchPage.value) {
+      skinConfig = {
+        ...portraitWatchPageSkinConfig,
+        primaryColor: skinConfig.primaryColor, // 使用对应的高亮色
+      };
+    }
+
+    // 处理旧版皮肤
+    if (styleType.value === ChannelWatchThemeStyleType.Skin || !watchThemeStyleConfig.value) {
+      return skinConfig;
     }
 
     return {
       mode: watchThemeStyleConfig.value.mode,
       themeColor: watchThemeStyleConfig.value.themeColor,
       primaryColor: watchThemeStyleConfig.value.primaryColor,
+      themeMaskOpacity: watchThemeStyleConfig.value.themeMaskOpacity || 0,
     };
   });
 
   /** 当前皮肤的深浅 */
-  const currentSkinColorMode = computed<SkinColorMode>(() => {
+  const currentThemeColorMode = computed<ThemeColorMode>(() => {
     let mode = currentSkinConfig.value.mode;
 
-    // 当进入观看页时，如果是竖屏布局，且观看页已经初始化，且非引导页，则使用深色模式
-    if (
-      watchAppStore.watchAppInited &&
-      watchAppStore.watchPageInited &&
-      layoutStore.isPortraitWatchLayout
-    ) {
-      mode = SkinColorMode.Dark;
+    if (isCompactPortraitWatchPage.value) {
+      mode = ThemeColorMode.Dark;
     }
 
     return mode;
   });
 
   const isDarkSkinMode = computed(() => {
-    return currentSkinColorMode.value === SkinColorMode.Dark;
+    return currentThemeColorMode.value === ThemeColorMode.Dark;
   });
+
+  const currentSkinColorMode = computed(() => currentThemeColorMode.value);
 
   /** 当前皮肤的主题色 */
   const currentSkinThemeColor = computed<string>(() => {
@@ -188,6 +246,10 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   /** 当前皮肤的主要色 */
   const currentSkinPrimaryColor = computed<string>(() => {
     return currentSkinConfig.value.primaryColor;
+  });
+
+  const currentSkinThemeMaskOpacity = computed(() => {
+    return String(currentSkinConfig.value.themeMaskOpacity);
   });
 
   /** 浏览器标签页图标 */
@@ -211,6 +273,19 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
   /** PC 端观看页背景图 */
   const pcWatchBackgroundImage = ref<string>();
+
+  /** 最终显示的 PC 端观看页背景图 */
+  const displayPcWatchBackgroundImage = computed<string>(() => {
+    if (pcWatchBackgroundImage.value) {
+      return pcWatchBackgroundImage.value;
+    }
+
+    if (watchThemeStyleConfig.value && watchThemeStyleConfig.value.pc) {
+      return watchThemeStyleConfig.value.pc.bgConfig?.url || '';
+    }
+
+    return '';
+  });
 
   const defaultMobileChatRoomBgUrl = computed<string>(() => {
     if (
@@ -285,6 +360,9 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     return appendToOssProcess(imageVal, blurParams);
   });
 
+  /* 直播介绍信息卡片开关 */
+  const descInfoCardEnabled = ref(__themeSetting.descInfoCardEnabled);
+
   function syncThemeStore() {
     const watchCore = watchAppStore.getWatchCore();
     const setting = watchCore.channel.getThemeSetting();
@@ -302,6 +380,7 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     mobileSplashLargeImg.value = setting.mobileSplashLargeImg;
 
     pcWatchBackgroundImage.value = setting.pcWatchBackgroundImage;
+    descInfoCardEnabled.value = setting.descInfoCardEnabled;
   }
 
   return {
@@ -312,23 +391,30 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     watchThemeStyleConfig,
 
     pageSkin,
+    customSkinConfig,
     currentSkinConfig,
-    currentSkinColorMode,
+    currentThemeColorMode,
     isDarkSkinMode,
+    currentSkinColorMode,
     currentSkinThemeColor,
     currentSkinPrimaryColor,
+    currentSkinThemeMaskOpacity,
     browserFavIcon,
     channelCoverImg,
     splashImg,
     splashImgBackgroundId,
     hasSplash,
     mobileSplashLargeImg,
-    pcWatchBackgroundImage,
+    displayPcWatchBackgroundImage,
     defaultMobileChatRoomBgUrl,
     mobileChatRoomBgUrl,
     defaultPortraitPageBgUrl,
     portraitPageBgUrl,
     playerBgUrl,
+
+    descInfoCardEnabled,
+
+    isCompactPortraitWatchPage,
     syncThemeStore,
   };
 });

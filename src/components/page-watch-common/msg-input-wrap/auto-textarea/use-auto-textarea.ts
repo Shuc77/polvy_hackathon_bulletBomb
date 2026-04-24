@@ -134,7 +134,7 @@ export const useAutoTextarea = (options: {
 
     clientHeight.value = textareaElem.clientHeight;
 
-    if (textareaElem.scrollHeight > textareaElem.clientHeight + 2) {
+    if (textareaElem.scrollHeight > textareaElem.clientHeight + 2 && unref(value).length) {
       emit('update:isOverflow', true);
     } else {
       emit('update:isOverflow', false);

@@ -8,6 +8,8 @@ import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { $ } from '@just4/dom';
 import { watchEffect } from 'vue';
+import { useWebsiteInfo } from '@/hooks/platform/use-browser/use-website-info';
+import { useOgMeta } from '@/hooks/platform/use-browser/use-og-meta';
 
 /**
  * @hook 全局样式 hook
@@ -53,6 +55,8 @@ export const useGlobalStyle = () => {
 export const useBrowserTitle = () => {
   const watchAppStore = useWatchAppStore();
   const channelInfoStore = useChannelInfoStore();
+  // const { updateOgMeta } = useOgMeta();
+  const { setTitle } = useWebsiteInfo();
 
   /**
    * 设置浏览器标签页标题
@@ -62,7 +66,8 @@ export const useBrowserTitle = () => {
 
     const channelTitle = channelInfoStore.channelTitle;
     if (channelTitle && watchAppStore.isPageActive) {
-      window.document.title = channelTitle;
+      setTitle(channelTitle);
+      // updateOgMeta({ title: channelTitle });
     }
   }
 
@@ -80,27 +85,15 @@ export const useBrowserTitle = () => {
 export const useBrowserIcon = () => {
   const watchAppStore = useWatchAppStore();
   const themeStore = useThemeStore();
-
-  /**
-   * 设置图标元素
-   * @param href 链接
-   */
-  function setFavIconElem(href: string): void {
-    let favIconNode = document.querySelector<HTMLLinkElement>('link[rel*=icon]');
-    if (!favIconNode) {
-      favIconNode = document.createElement('link');
-      window.document.head.appendChild(favIconNode);
-    }
-    favIconNode.rel = 'shortcut icon';
-    favIconNode.type = 'image/x-icon';
-    favIconNode.href = href;
-  }
+  const { updateOgMeta } = useOgMeta();
+  const { setFavIconElem } = useWebsiteInfo();
 
   function setBrowserIcon(): void {
     if (isBuildForFeedMainMode()) return;
 
     if (watchAppStore.isPageActive) {
       setFavIconElem(themeStore.browserFavIcon);
+      updateOgMeta({ imgUrl: themeStore.browserFavIcon });
     }
   }
 

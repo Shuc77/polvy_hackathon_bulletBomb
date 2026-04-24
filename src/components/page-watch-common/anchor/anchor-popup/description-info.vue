@@ -7,6 +7,7 @@
     <mobile-basic-info
       :show-like-count="false"
       :show-page-footer="false"
+      ignore-basic-info-top-style
     />
   </div>
 </template>

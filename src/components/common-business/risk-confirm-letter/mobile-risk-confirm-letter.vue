@@ -161,6 +161,9 @@ const isShowDialogHeader = computed(() => {
 </script>
 
 <style lang="scss">
+$--finance-primary-text-color: rgb(208, 172, 82);
+$--finance-primary-bg-color: rgb(217, 186, 108);
+
 // 预览协议
 .c-mobile-risk-confirm-letter__content__preview-agreement {
   padding: 0 20px;

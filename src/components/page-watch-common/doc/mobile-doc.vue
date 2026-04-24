@@ -54,6 +54,11 @@ const { isPortraitWatchLayout, mainScreen, mobileDocIsPageFullscreen } =
   position: relative;
   width: 100%;
   height: 100%;
+
+  // 这个在PPT SDK设置了层级2，导致跑马灯被遮挡
+  #paintbrush {
+    z-index: 0;
+  }
 }
 
 .c-mobile-doc__subtitle {

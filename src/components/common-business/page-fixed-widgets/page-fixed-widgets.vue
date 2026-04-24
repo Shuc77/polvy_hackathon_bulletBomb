@@ -11,6 +11,9 @@
 
     <!-- 分享 -->
     <fixed-web-share v-if="!hideWebShare && shareBtnEnabled" />
+
+    <!-- 多语言 -->
+    <fixed-lang-switch v-if="!hideLangSwitch && langSwitchEnabled" />
   </div>
 </template>
 
@@ -18,16 +21,22 @@
 import { PropUtils, useProps } from '@polyv/vue-components';
 import FixedWebShare from './fixed-web-share.vue';
 import FixedBackTop from './fixed-back-top.vue';
+import FixedLangSwitch from './fixed-lang-switch.vue';
 import { useShareStore } from '@/store/use-share-store';
+import { useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { isInjectByExternalApp } from '@/assets/utils/utils';
 
 const props = defineProps({
   /** 是否隐藏分享 */
   hideWebShare: PropUtils.bool.def(false),
+  /** 是否隐藏多语言 */
+  hideLangSwitch: PropUtils.bool.def(false),
 });
 
 const { hideWebShare } = useProps(props);
+
+const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
 const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
 </script>
@@ -44,30 +53,28 @@ const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
   }
 }
 
+// 子组件样式
 .c-fixed-widget-button {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
-  margin-top: 8px;
-  font-size: 14px;
-  color: $--font-color-primary;
+  width: 40px;
+  height: 40px;
+  margin-top: 12px;
+  font-size: 20px;
+  color: #fff;
   cursor: pointer;
-  background: $--color-white;
-  border: 1px solid $--border-color-primary;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  // background: rgba(255, 255, 255, 0.2);
+  border-radius: 40px;
+  opacity: 0.5;
   transition: all 0.15s ease-in;
+  backdrop-filter: blur(8.33px);
 
   &:hover {
-    background: #ededef;
+    opacity: 1;
   }
-}
-
-.c-fixed-widget-button__icon {
-  display: flex;
-  color: #adadc0;
 }
 </style>

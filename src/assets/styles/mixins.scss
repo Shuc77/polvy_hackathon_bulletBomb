@@ -140,23 +140,23 @@
 }
 
 // 利用缩放生成0.5px 边框
-@mixin minor-border($color: #e1e1e1) {
-  &::after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-sizing: border-box;
-    display: block;
-    width: 200%;
-    height: 200%;
-    pointer-events: none;
-    content: '';
-    border: 1px solid $color;
-    border-radius: 50%;
-    transform: scale(0.5);
-    transform-origin: 0 0;
-  }
-}
+// @mixin minor-border($color: #e1e1e1) {
+//   &::after {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     box-sizing: border-box;
+//     display: block;
+//     width: 200%;
+//     height: 200%;
+//     pointer-events: none;
+//     content: '';
+//     border: 1px solid $color;
+//     border-radius: 50%;
+//     transform: scale(0.5);
+//     transform-origin: 0 0;
+//   }
+// }
 
 $others-font: 'Helvetica Neue', helvetica, 'PingFang SC', 'Microsoft YaHei', arial, sans-serif;
 $mobile-font: 'PingFangSC-Regular', 'Roboto', $others-font;

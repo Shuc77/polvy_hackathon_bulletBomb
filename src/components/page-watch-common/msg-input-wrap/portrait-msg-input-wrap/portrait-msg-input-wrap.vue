@@ -26,14 +26,14 @@
         <mobile-icon-emotion
           v-if="emotionPickerBtnVisible"
           v-show="!emotionVisible"
-          class="c-portrait-msg-input-wrap__main__emotion"
+          class="c-portrait-msg-input-wrap__main__emotion pws-portrait-msg-input-icon"
           @click="onClickEmotionPickerBtn"
         />
 
         <!-- 键盘聚焦 -->
         <mobile-icon-keyboard
           v-show="emotionVisible"
-          class="c-portrait-msg-input-wrap__main__emotion"
+          class="c-portrait-msg-input-wrap__main__emotion pws-portrait-msg-input-icon"
           @click="focusInput"
         />
       </form>

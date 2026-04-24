@@ -30,6 +30,8 @@ export const formItemProps = () => ({
   labelModel: PropUtils.oneOf(formItemLabelModels),
   /** 是否显示必填星号 */
   required: PropUtils.bool.def(false),
+  /** 提示 */
+  tips: PropUtils.looseString,
 });
 
 /** <form-item> 组件名 */
@@ -84,6 +86,17 @@ export const useFormItem = (options: { props: VueProps<typeof formItemProps> }) 
     const width = props.contentWidth ?? formProps?.contentWidth;
 
     return formatStyleSize(width);
+  });
+
+  const footerStyle = computed(() => {
+    if (unref(labelModel) === 'header') {
+      return {};
+    }
+
+    const width = props.labelWidth ?? formProps?.labelWidth;
+    return {
+      paddingLeft: formatStyleSize(width),
+    };
   });
 
   /** 节点异常提示 */
@@ -178,6 +191,7 @@ export const useFormItem = (options: { props: VueProps<typeof formItemProps> }) 
     labelModel,
     labelStyle,
     contentWidthStyle,
+    footerStyle,
     itemErrorMessage,
     formItemIsError,
     removeErrorMessage,

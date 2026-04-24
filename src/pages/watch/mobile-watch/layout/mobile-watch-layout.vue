@@ -2,7 +2,7 @@
 <template>
   <div
     ref="layoutWrapRef"
-    class="c-mobile-watch-layout pws-main-tab-body"
+    class="c-mobile-watch-layout pws-main-tab-body pws-theme-mask-bg"
   >
     <div
       class="c-mobile-watch-layout__page-notices"
@@ -401,7 +401,6 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   flex: 1;
   flex-direction: column;
   overflow: hidden;
-  background: #202127;
 }
 
 .c-mobile-watch-layout__page-notices {

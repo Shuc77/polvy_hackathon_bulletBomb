@@ -12,35 +12,52 @@
       class="c-form-item__anchor"
       data-form-item-error
     ></div>
-    <div
-      v-if="labelText"
-      class="c-form-item__label"
-      :style="labelStyle"
-    >
-      <span
-        v-if="required"
-        class="c-form-item__label__required"
+    <div class="c-form-item__body">
+      <div
+        v-if="labelText"
+        class="c-form-item__label"
+        :style="labelStyle"
       >
-        *
-      </span>
-      {{ labelText }}
+        <span
+          v-if="required"
+          class="c-form-item__label__required"
+        >
+          *
+        </span>
+        {{ labelText }}
+      </div>
+
+      <div
+        class="c-form-item__content"
+        :class="{
+          'c-form-item__content--has-width': !!contentWidthStyle,
+        }"
+        :style="{
+          width: contentWidthStyle,
+        }"
+      >
+        <slot></slot>
+      </div>
     </div>
 
     <div
-      class="c-form-item__content"
-      :class="{
-        'c-form-item__content--has-width': !!contentWidthStyle,
-      }"
-      :style="{
-        width: contentWidthStyle,
-      }"
+      class="c-form-item__footer"
+      :style="footerStyle"
     >
-      <slot></slot>
+      <div
+        v-if="tips"
+        class="c-form-item__content__tips"
+      >
+        {{ tips }}
+      </div>
+
       <div
         v-if="itemErrorMessage"
         class="c-form-item__content__error"
       >
-        {{ itemErrorMessage }}
+        <div class="c-form-item__content__error__content">
+          {{ itemErrorMessage }}
+        </div>
       </div>
     </div>
   </div>
@@ -56,6 +73,7 @@ const {
   labelText,
   labelModel,
   labelStyle,
+  footerStyle,
   itemErrorMessage,
   contentWidthStyle,
   formItemIsError,
@@ -71,9 +89,12 @@ defineExpose(formItemInstance);
 <style lang="scss">
 .c-form-item {
   position: relative;
+  margin-bottom: 24px;
+}
+
+.c-form-item__body {
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
 }
 
 .c-form-item__anchor {
@@ -107,7 +128,10 @@ defineExpose(formItemInstance);
 }
 
 .c-form-item--header {
-  flex-direction: column;
+  .c-form-item__body {
+    flex-direction: column;
+  }
+
   .c-form-item__label {
     justify-content: flex-start;
     width: 100%;
@@ -121,14 +145,25 @@ defineExpose(formItemInstance);
   }
 }
 
-.c-form-item__content__error {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  box-sizing: border-box;
-  width: 100%;
+.c-form-item__content__tips {
   padding-top: 5px;
   font-size: 12px;
+  line-height: 17px;
+  color: $--font-color-info;
+}
+
+.c-form-item__content__error {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 12px;
   color: $--font-color-error;
+}
+
+.c-form-item__content__error__content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-top: 5px;
 }
 </style>

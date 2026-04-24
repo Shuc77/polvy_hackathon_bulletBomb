@@ -1,7 +1,6 @@
 <!-- @file PC 端多语言选择 -->
 <template>
   <div
-    ref="langRef"
     class="c-pc-lang-switch"
     :class="{
       'c-pc-lang-switch--dark': theme === 'dark',
@@ -34,9 +33,15 @@
           class="c-pc-lang-switch__popper__item"
           :class="{
             'c-pc-lang-switch__popper__item--active': item.lang === currentLang,
+            'c-pc-lang-switch__popper__item--loading': item.lang === pendingLang,
+            'c-pc-lang-switch__popper__item--disabled': langLoading,
           }"
           @click="onClickLangItem(item)"
         >
+          <span
+            v-if="item.lang === pendingLang"
+            class="c-pc-lang-switch__popper__item__spinner"
+          />
           {{ item.text }}
         </div>
       </div>
@@ -45,14 +50,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { PcIconLang, PcIconArrowDown } from '@/components/component-icons/pc/map';
 
 import { LangSwitchItem, useLangStore } from '@/store/use-lang-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { PropUtils, useProps } from '@polyv/vue-components';
-import { useClickOutside } from '@/hooks/behaviors/use-click-outside';
 import { usePopper } from '@/hooks/components/use-popper';
 
 const props = defineProps({
@@ -63,7 +66,8 @@ const props = defineProps({
 const { theme } = useProps(props);
 
 const langStore = useLangStore();
-const { currentLang, currentLangText, langSwitchList } = storeDefinitionToRefs(useLangStore);
+const { currentLang, currentLangText, langSwitchList, langLoading, pendingLang } =
+  storeDefinitionToRefs(useLangStore);
 
 const {
   referenceRef: langReferenceRef,
@@ -75,15 +79,13 @@ const {
   popperOffset: [0, 10],
 });
 
-function onClickLangItem(item: LangSwitchItem) {
-  langStore.switchLang(item.lang);
-  visible.value = false;
+async function onClickLangItem(item: LangSwitchItem) {
+  if (langLoading.value) return;
+  const success = await langStore.switchLang(item.lang);
+  if (success) {
+    visible.value = false;
+  }
 }
-
-const langRef = ref();
-useClickOutside([langRef], () => {
-  visible.value = false;
-});
 </script>
 
 <style lang="scss">
@@ -151,6 +153,9 @@ $--light-font-active-color: #3082fe !default;
 }
 
 .c-pc-lang-switch__popper__item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
   padding: 0 8px;
   line-height: 32px;
   cursor: pointer;
@@ -162,8 +167,30 @@ $--light-font-active-color: #3082fe !default;
     background: $--light-bg-active-color;
   }
 
-  &:hover {
+  &.c-pc-lang-switch__popper__item--disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &:hover:not(.c-pc-lang-switch__popper__item--disabled) {
     background: $--light-bg-active-color;
+  }
+}
+
+.c-pc-lang-switch__popper__item__spinner {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: lang-switch-spin 0.6s linear infinite;
+}
+
+@keyframes lang-switch-spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 

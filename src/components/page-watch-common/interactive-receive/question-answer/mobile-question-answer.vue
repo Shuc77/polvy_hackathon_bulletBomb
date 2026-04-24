@@ -1,6 +1,6 @@
 <!-- @file 移动端互动问答 -->
 <template>
-  <div class="c-mobile-question-answer">
+  <div class="c-mobile-question-answer pws-next-iar-qa-answer-config">
     <iar-mobile-question-answer
       class="c-mobile-question-answer__main"
       :question-answer-sdk="questionAnswerSdk"
@@ -53,6 +53,10 @@ function onNewsEvent() {
 .c-mobile-question-answer {
   position: relative;
   height: 100%;
+  .plv-ia-qa,
+  .plv-ia-qa-ask {
+    background: none !important;
+  }
 }
 .c-mobile-question-answer__main {
   height: 100%;

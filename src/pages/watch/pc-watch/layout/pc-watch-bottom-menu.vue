@@ -1,8 +1,9 @@
 <!-- @file PC 端底部菜单栏 -->
 <template>
   <div
+    v-if="bottomMenuList.length"
     class="c-pc-watch-bottom-menu"
-    :class="[skinColorIgnoreClass]"
+    :class="useNewTheme ? [] : [skinColorIgnoreClass]"
   >
     <pc-normal-tabs
       v-model="pcBottomTabCurrentName"
@@ -144,10 +145,13 @@ import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useLangStore } from '@/store/use-lang-store';
 import { useSkinColorIgnore } from '@polyv/vue-components';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { skinColorIgnoreClass } = useSkinColorIgnore();
 
 const { paramGetter } = useQueryParams();
+
+const { useNewTheme } = storeDefinitionToRefs(useWatchAppStore);
 
 const { channelDescription } = storeDefinitionToRefs(useChannelInfoStore);
 const { liveStatus, compressImageEnabled } = storeDefinitionToRefs(useChannelStore);

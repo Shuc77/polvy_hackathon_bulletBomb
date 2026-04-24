@@ -41,7 +41,7 @@ import MobileSeatTablePendant from '@/components/page-watch-common/interactive-r
 import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 
 import { TAB_NAME_INVITE_RANK, TAB_NAME_QA, TAB_NAME_SEAT } from '@/assets/constants/tab-name';
-import { SkinColorMode } from '@/skins/enum';
+import { ThemeColorMode } from '@/themes/type/theme-color-mode';
 
 const { mobileWatchInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
@@ -56,7 +56,7 @@ const morePendantVisible = computed(() => {
 const morePendantTheme = computed(() => {
   // 由于邀请榜菜单颜色过浅，图标必须使用深色
   if (mobileMenuCurrentName.value === TAB_NAME_INVITE_RANK) {
-    return SkinColorMode.Dark;
+    return ThemeColorMode.Dark;
   }
 
   return undefined;

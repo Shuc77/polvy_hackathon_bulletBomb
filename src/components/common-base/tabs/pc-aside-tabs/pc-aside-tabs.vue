@@ -2,10 +2,17 @@
 <template>
   <div class="c-pc-aside-tabs">
     <!-- tab 头部 -->
-    <pc-aside-tab-header v-show="!isEmptyMenu" />
+    <pc-aside-tab-header
+      v-show="!isEmptyMenu || forceShowHeader"
+      :header-config="headerConfig"
+    >
+      <template #header-suffix>
+        <slot name="header-suffix"></slot>
+      </template>
+    </pc-aside-tab-header>
 
     <!-- tab 主体 -->
-    <div class="c-pc-aside-tabs__body pws-main-tab-body">
+    <div class="c-pc-aside-tabs__body pws-main-tab-body pws-theme-mask-bg">
       <div
         v-if="isEmptyMenu"
         class="c-pc-aside-tabs__empty pws-main-tab-empty"
@@ -23,8 +30,13 @@
 import PcAsideTabHeader from './pc-aside-tab-header.vue';
 import { appEvents } from '@/app/app-events';
 import { tabsProps, tabsEmits, useTabs } from '../hooks/use-tabs';
+import { PropUtils } from '@polyv/vue-components';
 
-const props = defineProps(tabsProps());
+const props = defineProps({
+  ...tabsProps(),
+  /** 强制显示头部 */
+  forceShowHeader: PropUtils.bool.def(false),
+});
 
 const emit = defineEmits(tabsEmits());
 

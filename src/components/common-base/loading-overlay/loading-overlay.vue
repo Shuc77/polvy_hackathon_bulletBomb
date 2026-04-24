@@ -5,8 +5,10 @@
     class="c-loading-overlay"
     :style="rootStyle"
   >
-    <i
-      class="c-loading-overlay__spinner"
+    <img
+      class="c-loading-overlay__img"
+      :src="loadingIcon"
+      alt=""
       :style="spinnerStyle"
     />
     <div
@@ -23,6 +25,7 @@ import { computed } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { loadingOverlayProps } from './use-loading-overlay';
 import { translate } from '@/assets/lang';
+import loadingIcon from './assets/loading.png';
 
 const props = defineProps(loadingOverlayProps());
 
@@ -62,11 +65,7 @@ const displayText = computed(() => {
   pointer-events: none;
 }
 
-.c-loading-overlay__spinner {
-  box-sizing: border-box;
-  border: 3px solid rgba(255, 255, 255, 0.35);
-  border-top-color: rgba(255, 255, 255, 0.95);
-  border-radius: 50%;
+.c-loading-overlay__img {
   animation: plv-loading-overlay-spin 0.9s linear infinite;
 }
 

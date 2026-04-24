@@ -68,6 +68,8 @@ export { default as MobileIconPlaySeek } from './icons/play-seek';
 export { default as MobileIconPlayerBack } from './icons/player-back';
 export { default as MobileIconPlayerForward } from './icons/player-forward';
 export { default as MobileIconProduct } from './icons/product';
+export { default as MobileIconQuestionNext } from './icons/question-next';
+export { default as MobileIconQuestionNextActive } from './icons/question-next-active';
 export { default as MobileIconQuestionRound } from './icons/question-round';
 export { default as MobileIconSearch } from './icons/search';
 export { default as MobileIconShare } from './icons/share';

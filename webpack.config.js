@@ -29,7 +29,6 @@ const { RsdoctorWebpackPlugin } = require('@rsdoctor/webpack-plugin');
 const devServer = {
   host: devServerHost,
   port: devServerPort,
-  hot: true,
   allowedHosts: 'all',
   headers: {
     'Access-Control-Allow-Origin': '*',
@@ -40,7 +39,6 @@ const devServer = {
     htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
     rewrites: genHistoryApiFallbackRewrites(publicPath, { index: { filename: 'index.html' } }),
   },
-  // https: true,
   client: {
     overlay: {
       runtimeErrors: false,
@@ -175,7 +173,7 @@ const prodConfig = merge(commonConfig, {
             new BundleAnalyzerPlugin({
               analyzerMode: 'static',
             }),
-            new RsdoctorWebpackPlugin({ mode: 'brief' }), // 替代 SpeedMeasurePlugin
+            new RsdoctorWebpackPlugin(), // 替代 SpeedMeasurePlugin
           ]
         : [],
     ),

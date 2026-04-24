@@ -230,7 +230,7 @@ const realTimeContents = computed(() => {
     width: 32px;
     height: 52px;
     margin-right: 4px;
-    font-size: 40px;
+    font-size: 34px;
     color: #fff;
     background: rgba(#fff, 0.2);
     border-radius: 8px;

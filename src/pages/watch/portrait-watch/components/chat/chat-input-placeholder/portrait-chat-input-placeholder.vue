@@ -1,7 +1,7 @@
 <!-- @file 竖屏端聊天室输入框占位 -->
 <template>
   <div
-    class="c-portrait-chat-input-placeholder"
+    class="c-portrait-chat-input-placeholder pws-portrait-chat-input-placeholder"
     :class="{
       'c-portrait-chat-input-placeholder--disabled': chatInputDisabled,
       'c-portrait-chat-input-placeholder--round': playbackChapterEntranceVisible,
@@ -12,15 +12,19 @@
     <template v-if="!playbackChapterEntranceVisible">
       <mobile-icon-message
         v-if="askMenuData.visible || chatMenuData.visible"
-        class="c-portrait-chat-input-placeholder__icon"
+        class="c-portrait-chat-input-placeholder__icon pws-portrait-msg-input-icon"
       />
-      <span class="c-portrait-chat-input-placeholder__text g-singleline">
+      <span
+        class="c-portrait-chat-input-placeholder__text pws-portrait-chat-input-text--placeholder g-singleline"
+      >
         {{ portraitMessageInputPlaceholder }}
       </span>
       <portrait-ask-icon :font-size="18" />
     </template>
     <template v-else>
-      <mobile-icon-message class="c-portrait-chat-input-placeholder__icon" />
+      <mobile-icon-message
+        class="c-portrait-chat-input-placeholder__icon pws-portrait-msg-input-icon"
+      />
     </template>
   </div>
 </template>
@@ -39,7 +43,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 import { CSSProperties, computed, unref } from 'vue';
 
 const themeStore = useThemeStore();
@@ -110,13 +114,13 @@ const inputStyle = computed<CSSProperties>(() => {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 160px;
-  height: 32px;
+  max-width: 360px;
+  height: 40px;
   padding: 0 12px;
-  line-height: 32px;
+  line-height: 40px;
   background-color: rgba(#000000, 0.4);
   border: 1px solid transparent;
-  border-radius: 16px;
+  border-radius: 20px;
 
   .c-portrait-ask-icon {
     margin-left: 4px;
@@ -140,8 +144,8 @@ const inputStyle = computed<CSSProperties>(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   padding: 0;
 
   .c-portrait-chat-input-placeholder__icon {

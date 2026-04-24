@@ -23,8 +23,9 @@ exports.devServerHost = '0.0.0.0';
 let livePolyvCn = 'http://live.polyv.cn';
 
 /** 本地开发服务器代理 */
-exports.devServerProxy = {
-  '^/(v2|error-verify)': {
+exports.devServerProxy = [
+  {
+    context: '^/(v2|error-verify)',
     target: livePolyvCn, // 测试环境
     changeOrigin: true,
     onProxyReq(proxyReq) {
@@ -40,7 +41,7 @@ exports.devServerProxy = {
       }
     },
   },
-};
+];
 
 
 /** 构建模式 */

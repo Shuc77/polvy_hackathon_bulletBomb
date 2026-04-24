@@ -21,6 +21,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { PropUtils, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useEnrollSms } from './use-enroll-sms';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
 
 type EnrollValFormData = Record<string, string | string[] | boolean>;
 
@@ -42,6 +43,8 @@ export const enrollFormEmits = () => ({
  */
 export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }) => {
   const { getWatchCore } = useGlobalInject();
+
+  const { advanceSetLiveBookingCache } = useLiveBookingCache();
 
   const { toast } = useToastManager();
 
@@ -304,6 +307,13 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
       return;
     }
 
+    // 报名操作完成，提前设置直播预约缓存
+    advanceSetLiveBookingCache({
+      phoneNumber: formData.phoneNumber,
+      areaCode: formData.areaCode,
+      smsVerified: enrollStore.smsVerifyEnabled,
+    });
+
     // 优先判断是否需要审核和审核是否通过
     if (result.auditEnabled && !result.hasAudited) {
       toast.success(translate('enroll.auditing'));
@@ -316,6 +326,11 @@ export const useEnrollForm = (options: { emit: VueEmit<typeof enrollFormEmits> }
 
     // 入口报名且报名成功的情况下需要重新安装 watchCore
     if (enrollStore.needEnrollByEnter && result.hasEnrolled) {
+      // 只有入口报名且报名成功时，才需要免密预约并自动打开弹窗
+      advanceSetLiveBookingCache({
+        needAutoOpenBooking: true,
+      });
+
       await watchAppStore.resetUpWatchCore();
     }
 

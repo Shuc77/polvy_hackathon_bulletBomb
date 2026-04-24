@@ -1,6 +1,6 @@
 import { getRefElem } from '@polyv/vue-components';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
-import { usePageSkin } from '@/skins/use-page-skin';
+import { usePageTheme } from '@/themes/use-page-theme';
 import { $ } from '@just4/dom';
 import { onBeforeUnmount, onMounted, Ref } from 'vue';
 
@@ -12,7 +12,7 @@ import { onBeforeUnmount, onMounted, Ref } from 'vue';
 export const useAppendTo = (elemRef: Ref | HTMLElement, parentRef?: Ref | HTMLElement) => {
   const { getAppBodyElement } = useMultiPolyvWatchApp();
 
-  const { getSkinClassName } = usePageSkin();
+  const { getThemeClassName } = usePageTheme();
 
   let _parentRef: Ref | HTMLElement = getAppBodyElement();
   if (parentRef) {
@@ -27,9 +27,9 @@ export const useAppendTo = (elemRef: Ref | HTMLElement, parentRef?: Ref | HTMLEl
       return;
     }
 
-    const skinClassName = getSkinClassName();
-    if (skinClassName) {
-      $(elem).addClass(skinClassName);
+    const themeClassName = getThemeClassName();
+    if (themeClassName) {
+      $(elem).addClass(themeClassName);
     }
 
     parentElem.appendChild(elem);

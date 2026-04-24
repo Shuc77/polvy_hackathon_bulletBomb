@@ -311,7 +311,16 @@ async function computePendantWidth() {
 }
 
 watch(
-  () => [unref(pendantOpened), unref(connectMicStatus), unref(currentLang), unref(cancelText)],
+  () => [
+    unref(pendantOpened),
+    unref(connectMicStatus),
+    unref(currentLang),
+    unref(cancelText),
+    unref(localConnectMicType),
+    unref(localIsVideoMuted),
+    unref(localIsAudioMuted),
+    unref(mirrorEnabled),
+  ],
   () => computePendantWidth(),
 );
 

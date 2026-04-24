@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { unref, watch } from 'vue';
+import { unref, watch, watchEffect } from 'vue';
 import { PcIconArrowLeft, PcIconArrowRight } from '@/components/component-icons/pc/map';
 import { useHorizontalScrollArrow } from '@/hooks/behaviors/use-scroll-arrow';
 import { useInteractiveEntrance } from './use-interactive-entrance';
@@ -67,6 +67,10 @@ watch(
   () => [unref(currentLang), unref(interactiveEntrance)],
   () => resetArrowVisible(),
 );
+
+watchEffect(() => {
+  console.info('entrancesVisible', entrancesVisible.value, interactiveEntrance.value);
+});
 </script>
 
 <style lang="scss">

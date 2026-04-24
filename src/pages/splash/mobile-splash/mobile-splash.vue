@@ -23,7 +23,7 @@
     </header>
 
     <div
-      class="c-mobile-splash__main"
+      class="c-mobile-splash__main pws-theme-mask-bg"
       :class="{
         'c-mobile-splash__main__padding': showLiveCountDown,
       }"
@@ -46,18 +46,23 @@
       </div>
 
       <!-- 基础信息 -->
-      <mobile-basic-info :show-like-count="likeFeatureEnabled" />
+      <mobile-basic-info
+        class="c-mobile-splash__main__content"
+        :show-like-count="likeFeatureEnabled"
+      />
     </div>
 
     <!-- 底部按钮 -->
-    <mobile-splash-btn class="c-mobile-splash__bottom-btn" />
+    <div class="c-mobile-splash__bottom pws-theme-mask-bg">
+      <mobile-splash-btn class="c-mobile-splash__bottom-btn" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, CSSProperties, defineAsyncComponent } from 'vue';
 
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
 import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
@@ -163,6 +168,7 @@ const countStyle = computed(() => {
 }
 
 .c-mobile-splash__main {
+  position: relative;
   flex: 1;
 
   &.c-mobile-splash__main__padding {
@@ -171,6 +177,7 @@ const countStyle = computed(() => {
 }
 
 .c-mobile-splash__main__header {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -187,7 +194,11 @@ const countStyle = computed(() => {
   margin-left: auto;
 }
 
-.c-mobile-splash__bottom-btn {
+.c-mobile-splash__main__content {
+  position: relative;
+}
+
+.c-mobile-splash__bottom {
   position: sticky;
   bottom: 0;
   z-index: 1;
@@ -195,5 +206,9 @@ const countStyle = computed(() => {
   padding: 8px 0;
   background: inherit;
   @include iphone-x-pb(8px);
+}
+
+.c-mobile-splash__bottom-btn {
+  position: relative;
 }
 </style>

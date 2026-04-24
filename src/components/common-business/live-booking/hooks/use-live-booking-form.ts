@@ -2,40 +2,72 @@
  * @file （短信）直播预约表单 hook
  */
 import { translate } from '@/assets/lang';
-import { getStorageKey } from '@/assets/utils/storage';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { ValidatorRules } from '@/plugins/async-validator';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
-import { local } from '@just4/storage';
-import { computed, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref, watch } from 'vue';
 import { LiveBookingFormInstance } from '../types';
 import { useLiveBookingFail } from './use-live-booking-fail';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useGlobalInject } from '@/app/use-global-inject';
-
-// local 中的手机号码缓存 key
-const LOCAL_PHONE_KEY = getStorageKey('live-booking-phone');
-// local 中的手机区号缓存 key
-const LOCAL_AREA_CODE_KEY = getStorageKey('live-booking-area-code');
+import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
+import { useIdentityStore } from '@/store/use-identity-store';
+import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
 
 export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string } = {}) => {
   const { getWatchCore } = useGlobalInject();
+
+  const { setLiveBookingCache, getLiveBookingCache, clearLiveBookingCache } = useLiveBookingCache();
 
   const { toast } = useToastManager();
   const { toastBookingFail } = useLiveBookingFail();
 
   const liveBookingStore = useLiveBookingStore();
+  const identityStore = useIdentityStore();
+
+  function getDefaultFormNumber() {
+    return getLiveBookingCache().phoneNumber || identityStore.identityUnionInfo?.phoneNumber || '';
+  }
+
+  function getDefaultFormAreaCode() {
+    return getLiveBookingCache().areaCode || '+86';
+  }
+
+  const formSubmitRef = ref<FormSubmitButtonInstance | undefined>();
 
   /** 直播预约表单数据 */
   const bookingFormData = reactive({
     // 手机号
-    phoneNumber: local.get(LOCAL_PHONE_KEY) || '',
+    phoneNumber: getDefaultFormNumber(),
     // 手机区号
-    areaCode: local.get(LOCAL_AREA_CODE_KEY) || '+86',
+    areaCode: getDefaultFormAreaCode(),
     // 短信验证码
     verifyCode: '',
   });
+
+  /** 是否启用短信验证 */
+  const smsEnabled = ref(true);
+
+  const initSmsEnabled = () => {
+    if (bookingFormData.phoneNumber !== getLiveBookingCache().phoneNumber) {
+      // 如果手机号有变更，说明之前的短信验证结果不再有效，需要重新验证
+      smsEnabled.value = true;
+      return;
+    }
+
+    // 默认需要短信验证，除非缓存里有短信验证成功的记录
+    smsEnabled.value = !getLiveBookingCache().smsVerified;
+  };
+
+  watch(
+    () => bookingFormData.phoneNumber,
+    (newValue, oldValue) => {
+      if (oldValue && newValue !== oldValue) {
+        initSmsEnabled();
+      }
+    },
+  );
 
   /** 直播预约表单验证规则 */
   const bookingFormRules = computed<ValidatorRules>(() => {
@@ -55,7 +87,11 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
         },
       ],
       verifyCode: [
-        { type: 'string', message: translate('form.error.smsVerifyRequired'), required: true },
+        {
+          type: 'string',
+          message: translate('form.error.smsVerifyRequired'),
+          required: smsEnabled.value,
+        },
       ],
     };
   });
@@ -65,8 +101,15 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
 
   /** 打开弹层 */
   function openBookingForm() {
-    bookingFormVisible.value = true;
+    bookingFormData.phoneNumber = getDefaultFormNumber();
+    bookingFormData.areaCode = getDefaultFormAreaCode();
     bookingFormData.verifyCode = '';
+    initSmsEnabled();
+
+    formSubmitRef.value?.checkDisabled();
+    nextTick(() => {
+      bookingFormVisible.value = true;
+    });
   }
 
   const { trackUserConfirmReservationLive } = useWatchEventTrack();
@@ -85,8 +128,11 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
     });
 
     if (result.success) {
-      local.set(LOCAL_PHONE_KEY, bookingFormData.phoneNumber);
-      local.set(LOCAL_AREA_CODE_KEY, bookingFormData.areaCode);
+      setLiveBookingCache({
+        phoneNumber: bookingFormData.phoneNumber,
+        areaCode: bookingFormData.areaCode,
+        smsVerified: false,
+      });
 
       toast.success(translate('liveBooking.bookingSuccess'));
 
@@ -106,6 +152,8 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
       bookingFormVisible.value = false;
     } else {
       toastBookingFail(result.failReason);
+      setLiveBookingCache({ smsVerified: false });
+      initSmsEnabled();
     }
   }
 
@@ -120,8 +168,7 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
     });
 
     if (result.success) {
-      local.remove(LOCAL_PHONE_KEY);
-      local.remove(LOCAL_AREA_CODE_KEY);
+      clearLiveBookingCache();
 
       toast.success(translate('liveBooking.cancelSuccess'));
 
@@ -148,6 +195,8 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
   };
 
   return {
+    formSubmitRef,
+    smsEnabled,
     bookingFormData,
     bookingFormRules,
     bookingFormVisible,

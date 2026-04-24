@@ -2,7 +2,7 @@
 <template>
   <div class="c-pc-chat-room">
     <!-- 聊天室顶部固定区域 -->
-    <div class="c-pc-chat-room__topic pws-main-tab-body">
+    <div class="c-pc-chat-room__topic pws-main-tab-body pws-theme-mask-bg">
       <!-- 置顶公告 -->
       <bulletin-topping
         v-if="announcementFunctionVisible && iarSdkLoaded && !notNeedIar"
@@ -122,6 +122,11 @@ const { announcementFunctionVisible, iarSdkLoaded } =
 
   &:empty {
     display: none;
+  }
+
+  .c-bulletin-topping {
+    position: relative;
+    z-index: 1;
   }
 }
 

@@ -13,7 +13,6 @@ import { useHideChatMsgHook } from './hooks/hide-chat-msg-hook';
 import { useChatMsgQueue } from './hooks/msg-queue-hook';
 import { ChatMsgItemComponentOptions, useMsgRender } from './hooks/msg-render-hook';
 
-import { useRequestHistory } from './hooks/request-history-hook';
 import { useRequestHistorySession } from './hooks/request-history-session-hook';
 import { useRequestHistoryReplayHook } from './hooks/request-history-replay-hook';
 
@@ -99,11 +98,7 @@ export const useChatMsgList = (options: { ChatMsgItemComponent: ChatMsgItemCompo
       return useRequestHistoryReplayHook(hookOptions, baseGetStore);
     }
 
-    if (chatStore.onlySpecialMsg || !chatStore.chatSetting.getChatHistoryByTimestampEnabled) {
-      return useRequestHistory(hookOptions, baseGetStore);
-    } else {
-      return useRequestHistoryTime(hookOptions, baseGetStore);
-    }
+    return useRequestHistoryTime(hookOptions, baseGetStore);
   }
 
   // 聊天消息队列

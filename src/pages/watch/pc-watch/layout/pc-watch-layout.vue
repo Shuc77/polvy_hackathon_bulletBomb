@@ -243,13 +243,16 @@
         >
           <!-- 多会场（横向布局） -->
           <pc-multi-meeting-horizontal
+            class="c-pc-watch-layout__menu-panel-inner__item pws-theme-bg pws-theme-mask-bg"
             v-if="
               multiMeetingEnabled && multiMeetingListLayout === MultiMeetingListLayout.Horizontal
             "
           />
 
           <!-- 底部菜单栏 -->
-          <pc-watch-bottom-menu />
+          <pc-watch-bottom-menu
+            class="c-pc-watch-layout__menu-panel-inner__item pws-theme-bg pws-theme-mask-bg"
+          />
         </div>
       </div>
     </div>
@@ -376,17 +379,17 @@ function showPlayerControl(e: MouseEvent) {
   showPlayerControlItem();
 }
 
-const { pcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
+const { displayPcWatchBackgroundImage } = storeDefinitionToRefs(useThemeStore);
 
 const { getAppBodyElement } = useGlobalInject();
 
 onMounted(() => {
   // 需要在 body 设置全局背景
   $(getAppBodyElement()).addClass(['plv-pc-watch-bg', 'pws-pc-watch-bg']);
-  if (pcWatchBackgroundImage.value) {
+  if (displayPcWatchBackgroundImage.value) {
     getAppBodyElement().style.setProperty(
       'background-image',
-      `url("${pcWatchBackgroundImage.value}")`,
+      `url("${displayPcWatchBackgroundImage.value}")`,
       'important',
     );
   }
@@ -684,18 +687,17 @@ $--layout-sub-pack-up-height: 40px !default;
 
 .c-pc-watch-layout__menu-panel-inner {
   box-sizing: border-box;
-  padding: 0 32px;
-  background-color: $--color-white;
+  // padding: 0 32px;
 
   &.c-pc-watch-layout__menu-panel-inner--center {
     width: $--layout-left-width-percent;
     margin: 0 auto;
   }
 }
-@media (max-width: 1440px) {
-  .c-pc-watch-layout__menu-panel-inner {
-    padding: 0 24px;
-  }
+
+.c-pc-watch-layout__menu-panel-inner__item {
+  position: relative;
+  background-color: $--color-white;
 }
 
 .c-pc-watch-layout__main__side-popup-render {

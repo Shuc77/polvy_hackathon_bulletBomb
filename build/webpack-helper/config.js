@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const pkgJson = require('../../package.json');
 
-const { VueLoaderPlugin } = require('@vue/vue-loader-v15');
+const { VueLoaderPlugin } = require('vue-loader');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackTagsPlugin = require('html-webpack-tags-plugin');
@@ -66,7 +66,42 @@ const sassLoader = {
   loader: 'sass-loader',
   options: {
     sourceMap: false,
+    // 同时使用 `modern-compiler` 和 `sass-embedded` 可以显著提升构建性能
+    // 需要 `sass-loader >= 14.2.1`
+    api: 'modern-compiler',
+    implementation: require.resolve('sass-embedded'),
   },
+};
+
+const swcLoader = opts => {
+  const { isTs = false } = opts || {};
+
+  return devMode
+    ? [
+        {
+          loader: 'swc-loader',
+          options: {
+            jsc: {
+              parser: {
+                syntax: isTs ? 'typescript' : 'ecmascript',
+              },
+            },
+          },
+        },
+      ]
+    : [
+        {
+          loader: 'swc-loader',
+          options: {
+            jsc: {
+              target: 'es2015',
+              parser: {
+                syntax: isTs ? 'typescript' : 'ecmascript',
+              },
+            },
+          },
+        },
+      ];
 };
 
 // ========== plugin ===========
@@ -133,58 +168,12 @@ const webpackCommonConfig = {
 
       {
         test: /\.m?jsx?$/,
-        use: devMode
-          ? [
-              {
-                loader: 'swc-loader',
-              },
-            ]
-          : [
-              {
-                loader: 'thread-loader',
-              },
-              {
-                loader: 'swc-loader',
-                options: {
-                  jsc: {
-                    target: 'es2015',
-                  },
-                },
-              },
-            ],
+        use: swcLoader(),
       },
 
       {
         test: /\.ts$/,
-        use: devMode
-          ? [
-              {
-                loader: 'swc-loader',
-                options: {
-                  jsc: {
-                    parser: {
-                      syntax: 'typescript',
-                    },
-                  },
-                },
-              },
-            ]
-          : [
-              {
-                loader: 'thread-loader',
-              },
-              {
-                loader: 'swc-loader',
-                options: {
-                  jsc: {
-                    parser: {
-                      syntax: 'typescript',
-                    },
-                    target: 'es2015',
-                  },
-                },
-              },
-            ],
+        use: swcLoader({ isTs: true }),
         exclude: /node_modules/,
         include: srcPath,
       },
@@ -193,12 +182,7 @@ const webpackCommonConfig = {
         test: /\.vue$/,
         use: [
           {
-            loader: '@vue/vue-loader-v15',
-            options: {
-              compilerOptions: {
-                whitespace: 'condense',
-              },
-            },
+            loader: 'vue-loader',
           },
         ],
       },

@@ -1,4 +1,5 @@
 import { TAB_NAME_ASK, TAB_NAME_CHAT } from '@/assets/constants/tab-name';
+import { translate } from '@/assets/lang';
 import { useAskReminder } from '@/components/page-watch-common/ask/hooks/use-ask';
 import { useChatReminder } from '@/components/page-watch-common/chat/chat-msg-list/hooks/chat-reminder-hook';
 import { useChatStore } from '@/store/use-chat-store';
@@ -25,7 +26,9 @@ export const useWatchTabHook = (options: {
 
   /** 聊天 Tab 附加文本 */
   const chatSubLabel = computed(() => {
-    return chatStore.chatSetting.chatOnlineNumberEnable ? `${chatStore.onlineUserCount}` : '';
+    return chatStore.chatSetting.chatOnlineNumberEnable
+      ? `${chatStore.onlineUserCount}${translate('chat.online')}`
+      : '';
   });
 
   /** 提问新消息提醒 */

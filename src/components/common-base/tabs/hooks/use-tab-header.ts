@@ -15,7 +15,7 @@ import { TabPaneDataItem } from './types';
 import { useWindowResizeListener } from '@/hooks/core/use-window-resize-listener';
 import { isIOS } from '@/assets/utils/browser';
 import { VueProps } from '@polyv/vue-components';
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 
 export const useTabHeader = (
   props: VueProps<typeof tabsHeaderProps>,
@@ -197,8 +197,9 @@ export const useTabHeader = (
 export const useTabHeaderArrow = (options: {
   scrollRef: Ref<HTMLDivElement | undefined>;
   tabPaneData: Ref<TabPaneDataItem[]>;
+  buffer?: number;
 }) => {
-  const { scrollRef, tabPaneData } = options;
+  const { scrollRef, tabPaneData, buffer = 0 } = options;
 
   const leftArrowVisible = ref(false);
   const rightArrowVisible = ref(false);
@@ -216,7 +217,7 @@ export const useTabHeaderArrow = (options: {
       leftArrowVisible.value = false;
     }
 
-    if (scrollLeft < Math.floor(scrollElem.scrollWidth - scrollElem.clientWidth)) {
+    if (scrollLeft < Math.floor(scrollElem.scrollWidth - scrollElem.clientWidth - buffer)) {
       rightArrowVisible.value = true;
     } else {
       rightArrowVisible.value = false;

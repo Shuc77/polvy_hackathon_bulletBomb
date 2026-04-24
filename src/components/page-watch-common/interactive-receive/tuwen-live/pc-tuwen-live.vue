@@ -70,6 +70,7 @@ onMounted(() => {
 .c-pc-tuwen-live__menu {
   display: inline-flex;
   overflow: hidden;
+  background-color: $--color-white;
   border-radius: 2px;
 }
 .c-pc-tuwen-live__menu__item {

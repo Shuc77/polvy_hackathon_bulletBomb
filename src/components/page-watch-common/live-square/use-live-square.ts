@@ -78,7 +78,11 @@ function useLiveSquare() {
       link: liveSquareLinkConfig.value.link,
       jumpWay: (liveSquareLinkConfig.value.jumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
       pcLink: liveSquareLinkConfig.value.pcLink,
+      pcLinkJumpWay:
+        (liveSquareLinkConfig.value.pcLinkJumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
       mobileAppLink: liveSquareLinkConfig.value.mobileAppLink,
+      mobileAppLinkJumpWay:
+        (liveSquareLinkConfig.value.mobileAppLinkJumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
       androidLink: liveSquareLinkConfig.value.androidLink,
       iosLink: liveSquareLinkConfig.value.iosLink,
       harmonyLink: liveSquareLinkConfig.value.harmonyLink,

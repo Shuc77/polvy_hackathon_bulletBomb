@@ -118,7 +118,7 @@ const { isPlaybacking } = storeDefinitionToRefs(usePlaybackStore);
 <style lang="scss">
 .c-portrait-chat-room-pendant {
   position: absolute;
-  right: 13px;
+  right: 16px;
   bottom: 6px;
   width: $pendant-size;
 }

@@ -19,7 +19,10 @@
     <pc-chat-set-nick v-if="canSetNick" />
 
     <!-- 页面右下角固定挂件 -->
-    <pc-page-fixed-widgets hide-web-share />
+    <pc-page-fixed-widgets
+      hide-web-share
+      hide-lang-switch
+    />
 
     <!-- 聊天消息全文弹层 -->
     <pc-chat-full-message v-if="!isChatUIV2" />

@@ -85,6 +85,8 @@ export const usePromoteExternalLinkHook = (options: {
       return {
         ...generateDefaultLinkData(),
         jumpWay: data.jumpWay,
+        pcLinkJumpWay: data.pcLinkJumpWay || data.jumpWay,
+        mobileAppLinkJumpWay: data.mobileAppLinkJumpWay || data.jumpWay,
         link: data.link || '',
       };
     }

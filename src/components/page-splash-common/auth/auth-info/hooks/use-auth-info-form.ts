@@ -29,6 +29,7 @@ import { useAuthInfoSms } from './use-auth-info-sms';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { ynToBool } from '@polyv/utils/es/boolean';
+import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
 
 export const authInfoFormEmits = () => ({
   /** 关闭窗口 */
@@ -58,6 +59,8 @@ export interface AuthInfoFormInstance {
 
 export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmits> }) => {
   const { getWatchCore } = useGlobalInject();
+
+  const { advanceSetLiveBookingCache } = useLiveBookingCache();
 
   const { toast } = useToastManager();
 
@@ -260,6 +263,13 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
     });
 
     if (result.success) {
+      advanceSetLiveBookingCache({
+        phoneNumber: formData.phoneNumber,
+        areaCode: formData.areaCode,
+        smsVerified: smsVerifyEnabled.value,
+        needAutoOpenBooking: true,
+      });
+
       handleAuthVerifySuccess(result);
     } else {
       handleAuthVerifyFail(result);

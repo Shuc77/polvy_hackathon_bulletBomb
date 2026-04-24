@@ -29,7 +29,8 @@ const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 const { isDarkSkinMode, watchThemeStyleConfig } = storeToRefs(useThemeStore());
 
 const backgroundStyle = computed<CSSProperties>(() => {
-  if (!watchThemeStyleConfig.value) return {};
+  if (!watchThemeStyleConfig.value || !watchThemeStyleConfig.value.common.chat.btn.donate.iconUrl)
+    return {};
 
   return {
     'background-image': `url(${watchThemeStyleConfig.value.common.chat.btn.donate.iconUrl})`,
@@ -59,7 +60,6 @@ function onClickDonateEnter() {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  border-radius: 50%;
 }
 
 .c-mobile-donate-entrance--light {

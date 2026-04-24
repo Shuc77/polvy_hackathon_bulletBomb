@@ -10,11 +10,6 @@ export enum ButtonType {
   Info = 'info',
   /** 取消按钮 */
   Cancel = 'cancel',
-  /**
-   * 竖屏按钮
-   * @desc 从 v0.12.0 版本处理竖屏多皮肤后，不再需要用到该类型
-   * */
-  Portrait = 'portrait',
   /** 加重按钮 */
   Aggravate = 'aggravate',
   /** 侧边菜单栏 */
