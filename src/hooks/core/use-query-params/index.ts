@@ -135,6 +135,8 @@ export const useQueryParams = (opts?: {
 
     // ===========  业务参数 ===========
 
+    forceSplashPage: buildGetters<YN>('forceSplashPage'),
+
     /** 信息流页面Id */
     infoFeedFlowPageId: buildGetters<'string'>('infoFeedFlowPageId'),
     /** 不需要互动功能 */

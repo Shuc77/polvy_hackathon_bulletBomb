@@ -16,6 +16,7 @@ import {
 } from '@/components/page-watch-common/interactive-receive/announcement/hooks/use-announcement-tips';
 import {
   ChannelWatchPageSkin,
+  ChannelWatchThemeStyleType,
   InteractSetting,
   PayProvider,
   PlvInteractReceiveModule,
@@ -265,7 +266,12 @@ export const useInteractReceiveStore = defineStore<'interactReceive', InteractRe
       let isAvailableSkinForSeat = true;
 
       // 由于多皮肤暂未补齐，“模拟会场”模板才需要限制指定皮肤才能启用云席
-      if (isMeetingSeatTableTemplate.value && themeStore.pageSkin) {
+      if (
+        isMeetingSeatTableTemplate.value &&
+        themeStore.styleType === ChannelWatchThemeStyleType.Skin &&
+        themeStore.pageSkin &&
+        themeStore.pageSkin !== 'custom'
+      ) {
         isAvailableSkinForSeat = [ChannelWatchPageSkin.Red, ChannelWatchPageSkin.White].includes(
           themeStore.pageSkin,
         );

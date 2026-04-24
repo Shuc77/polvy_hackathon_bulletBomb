@@ -41,7 +41,7 @@
 
               <span
                 v-if="paneData.subLabel"
-                class="c-mobile-menu-tab-header__header__item__sub-label pws-secondary-text-color"
+                class="c-mobile-menu-tab-header__header__item__sub-label"
               >
                 {{ paneData.subLabel }}
               </span>
@@ -78,7 +78,7 @@
 import { isWeixin } from '@/assets/utils/browser';
 import { useTabHeader } from '../hooks/use-tab-header';
 import { generateHackWeixinBtnId, tabsHeaderProps } from '../hooks/use-tabs';
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 
 const props = defineProps(tabsHeaderProps());
 
@@ -147,6 +147,7 @@ const {
   height: 80%;
   padding: 0 20px;
   text-align: center;
+  border: 1px solid transparent;
   border-radius: 16px;
 }
 
@@ -162,6 +163,7 @@ const {
   font-family: DINPro-Medium;
   font-size: 12px;
   zoom: 0.83;
+  opacity: 0.8;
 }
 
 .c-mobile-menu-tab-header__header__item--reminder::after {

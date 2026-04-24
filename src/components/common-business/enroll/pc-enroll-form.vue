@@ -113,6 +113,7 @@
                 :key="`phone-auth-${index}`"
                 :required="item.isRequired"
                 :form-field="item.fieldId"
+                :tips="$lang('enroll.tips.phoneNumber')"
               >
                 <pc-form-phone-input
                   v-model="formData[item.fieldId]"

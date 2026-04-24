@@ -5,6 +5,7 @@
       v-model="pcAsideTabCurrentName"
       @tab-click="trackWatchTabChange"
       @is-empty-callback="onIsEmptyCallback"
+      :header-config="watchThemeStyleConfig?.pc?.menu"
     >
       <!-- 课堂激励特效，跟随"屏蔽特效"开关 -->
       <motivation-like-animation
@@ -214,12 +215,15 @@ import { useWatchTabHook } from '@/pages/watch/_hooks/use-watch-tab';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';
+import { useThemeStore } from '@/store/use-theme-store';
 
 const layoutStore = useLayoutStore();
 
 const { watchAICoreSetuped } = storeDefinitionToRefs(usePolyvAIStore);
 
 const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
+
+const { watchThemeStyleConfig } = storeDefinitionToRefs(useThemeStore);
 
 const { connectMicPendantRenderEnabled } = storeDefinitionToRefs(useConnectMicStore);
 

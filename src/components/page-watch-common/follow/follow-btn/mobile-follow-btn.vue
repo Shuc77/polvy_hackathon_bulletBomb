@@ -2,7 +2,7 @@
 <template>
   <div
     v-if="!customTheme"
-    class="c-mobile-follow-btn pws-mobile-follow-button"
+    class="c-mobile-follow-btn pws-mobile-follow-button pws-mobile-follow-button--support-config"
     @click="onClickFollowBtn"
   >
     <div class="g-singleline">
@@ -28,7 +28,7 @@ import { computed } from 'vue';
 import { useFollowBtn } from '../hooks/use-follow-btn';
 import { useFollowSetting } from '../hooks/use-follow-setting';
 import { useThemeStore } from '@/store/use-theme-store';
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 
 const { followEntrance } = useFollowSetting();
 

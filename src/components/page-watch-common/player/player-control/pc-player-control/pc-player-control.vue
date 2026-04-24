@@ -171,6 +171,20 @@
             @click="toggleMainScreen"
           ></div>
 
+          <!-- 画中画按钮 -->
+          <div
+            v-if="pipButtonVisible"
+            class="c-pc-player-control__button"
+            :class="{
+              'c-pc-player-control__button--pip': !isPipActive,
+              'c-pc-player-control__button--pip-exit': isPipActive,
+            }"
+            :data-tips="
+              isPipActive ? $lang('player.pictureInPictureExit') : $lang('player.pictureInPicture')
+            "
+            @click="togglePip"
+          ></div>
+
           <!-- 全屏按钮 -->
           <div
             class="c-pc-player-control__button"
@@ -228,6 +242,7 @@ import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use
 import { usePlayerControl } from '@/components/page-watch-common/player/hooks/use-player-control';
 import { collectPlayerKeyboardEffectElements } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
 import { usePcPlayerFullscreen } from '../../hooks/use-player-fullscreen';
+import { usePlayerPip } from '../../hooks/use-player-pip';
 
 const playerControlUI = ref<HTMLDivElement>();
 collectPlayerKeyboardEffectElements(playerControlUI);
@@ -272,6 +287,8 @@ const {
 } = usePlayerControl();
 
 const { isFullscreen, togglePlayerFullscreen } = usePcPlayerFullscreen();
+
+const { isPipActive, pipButtonVisible, togglePip } = usePlayerPip();
 
 const { visible: manualTipsVisible, close: closeManualTips } = useSimpleVisible(true);
 
@@ -595,6 +612,19 @@ $--player-control-button-icon-size: 24px !default;
   background-image: url(./imgs/pc-player-ui-switch-screen.png);
   &:hover {
     background-image: url(./imgs/pc-player-ui-switch-screen-hover.png);
+  }
+}
+
+.c-pc-player-control__button--pip {
+  background-image: url(./imgs/pc-player-ui-pip.png);
+  &:hover {
+    background-image: url(./imgs/pc-player-ui-pip-hover.png);
+  }
+}
+.c-pc-player-control__button--pip-exit {
+  background-image: url(./imgs/pc-player-ui-pip-exit.png);
+  &:hover {
+    background-image: url(./imgs/pc-player-ui-pip-exit-hover.png);
   }
 }
 

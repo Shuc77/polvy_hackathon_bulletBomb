@@ -172,7 +172,7 @@ function onClickCash() {
 }
 
 .c-mobile-donate-panel-good__point {
-  margin: 8px 8px 4px 0;
+  margin: 8px 8px 8px 0;
   font-size: 12px;
   text-align: right;
 }
@@ -204,12 +204,13 @@ $--carousel-indicator-size: 4px;
 }
 
 .c-mobile-donate-panel-good__goods__item {
+  position: relative;
   box-sizing: border-box;
   flex-shrink: 0;
   width: 20%;
   height: 95px;
   text-align: center;
-  // border: 1px solid transparent;
+  border: 1px solid transparent;
   border-radius: 8px;
   transition: all 0.1s ease-in-out;
 }

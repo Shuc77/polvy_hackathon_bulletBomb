@@ -29,6 +29,6 @@ defineExpose(tabPaneInstance);
   z-index: 10;
   box-sizing: border-box;
   min-height: 200px;
-  padding: 40px 0;
+  padding: 28px 12px;
 }
 </style>

@@ -1,12 +1,53 @@
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { DirectBusinessPageType } from '../layout/direct-business-page/type';
+import { DirectBusinessPageType, PageErrorType } from '../layout/direct-business-page/type';
 import { isWeixin } from '@/assets/utils/browser';
 import { useIdentityStore } from '@/store/use-identity-store';
 import type { PolyvWatchCore } from '@polyv/live-watch-sdk';
+import { useChannelStore } from '@/store/use-channel-store';
+import { translate } from '@/assets/lang';
 
 export const useUserIdentityIntercept = () => {
   const watchAppStore = useWatchAppStore();
   const identityStore = useIdentityStore();
+  const channelStore = useChannelStore();
+
+  /**
+   * 拦截频道分组验证（目前分组依赖手机号）
+   * @returns 返回 true 说明需要拦截
+   */
+  function interruptChannelGroupVerify(watchCore: PolyvWatchCore) {
+    // 研讨会和小班课频道不拦截
+    if (channelStore.isSeminarChannel || channelStore.isSmallClassChannel) {
+      return false;
+    }
+
+    const channelViewerGroupConfig = watchCore.channel.getChannelViewerGroupConfig();
+
+    // 如果频道分组未启用，则不拦截
+    if (!channelViewerGroupConfig.channelViewerGroupEnabled) {
+      return false;
+    }
+
+    // 如果没有权限观看，需要拦截跳转到错误页
+    if (!channelViewerGroupConfig.notInGroupCanWatchEnabled) {
+      watchAppStore.setPageError({
+        type: PageErrorType.NotAllowAccess,
+        title: translate('pageError.NotAllowAccess.title'),
+      });
+      return true;
+    }
+
+    const identityInfo = watchCore.identity.getIdentityUnionInfo();
+    if (!identityInfo) {
+      watchAppStore.setPageError({
+        type: PageErrorType.UnknownError,
+        desc: 'not get identity info in channel group verify',
+      });
+      return true;
+    }
+
+    return false;
+  }
 
   /** 用户登录成功拦截（授权后拦截） */
   async function toInterruptLoginAfter(watchCore: PolyvWatchCore) {
@@ -31,6 +72,8 @@ export const useUserIdentityIntercept = () => {
    * @returns 返回 true 说明需要拦截
    */
   async function checkIdentityInfoLogin(watchCore: PolyvWatchCore) {
+    if (!identityStore.watchUserSystemEnabled) return false;
+
     // 检查是否需要用户信息登录
     let needIdentityLogin = watchCore.identity.checkIdentityLogin();
 
@@ -52,6 +95,12 @@ export const useUserIdentityIntercept = () => {
       watchAppStore.setDirectBusinessPage({
         pageType: DirectBusinessPageType.WatchIdentity,
       });
+      return true;
+    }
+
+    // 用户登录后再进行分组验证
+    const interruptChannelGroupVerifyResult = interruptChannelGroupVerify(watchCore);
+    if (interruptChannelGroupVerifyResult) {
       return true;
     }
 

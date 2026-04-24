@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import { translate } from '@/assets/lang';
-import { computed, ref, unref } from 'vue';
+import { computed, onMounted, ref, unref } from 'vue';
 import { PropUtils, useProps } from '@polyv/vue-components';
 
 import {
@@ -96,8 +96,11 @@ import { LiveBookingFormInstance } from './types';
 import { useLiveBookingCustom } from './hooks/use-live-booking-custom';
 
 import { debounce } from 'lodash-es';
+import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
 
 const { trackUserReservationLive } = useWatchEventTrack();
+
+const { getLiveBookingCache, setLiveBookingCache } = useLiveBookingCache();
 
 const props = defineProps({
   /** 按钮使用的位置，splash-引导页（默认），player-播放器，corner-播放器角落 */
@@ -218,11 +221,10 @@ const bookingFormRef = ref<LiveBookingFormInstance>();
 /** 取消预约提示弹层实例 */
 const bookingCancelTipsRef = ref<MessageBoxInstance>();
 
-/** 处理按钮点击 */
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const onClickButton = debounce(async () => {
-  const booked = unref(isLiveBooking);
-  // 仅启用“自定义预约”模式
+/**
+ * 仅启用“自定义预约”模式
+ */
+const isOnlyCustom = () => {
   let onlyCustom = false;
   // 其他频道预约
   if (unref(props.isOtherLive)) {
@@ -234,13 +236,39 @@ const onClickButton = debounce(async () => {
     onlyCustom = unref(useCustomBooking) && !unref(useSmsBooking) && !unref(useWxBooking);
   }
 
+  return onlyCustom;
+};
+
+/** 执行预约逻辑 */
+const toBooking = () => {
+  const onlyCustom = isOnlyCustom();
+  const wxFirst = unref(useWxBooking);
+
+  // 当只有自定义预约时，执行自定义预约
+  if (onlyCustom) {
+    submitLiveBookingOfCustom();
+    return;
+  }
+  // 当有微信预约时，优先微信预约
+  if (wxFirst) {
+    onClickWxButton();
+    return;
+  }
+  // 当微信预约和短信预约同时启用时，不执行短信预约
+  onClickSmsButton();
+};
+
+/** 处理按钮点击 */
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const onClickButton = debounce(async () => {
+  const booked = unref(isLiveBooking);
+
   const smsBooking = unref(isSmsLiveBooking);
   const wxBooking = unref(isWxLiveBooking);
   const otherSmsBooked = unref(singleOtherChannelSmsLiveBooking);
   const otherCustomBooked = unref(singleOtherChannelCustomLiveBooking);
   const otherWxBooked = unref(singleOtherChannelWxLiveBooking);
   const smsInstance = unref(bookingFormRef);
-  const wxFirst = unref(useWxBooking);
   // 当已经存在预约时，按照预约类型取消
   if (booked) {
     if (otherWxBooked) {
@@ -293,18 +321,7 @@ const onClickButton = debounce(async () => {
     return;
   }
 
-  // 当只有自定义预约时，执行自定义预约
-  if (onlyCustom) {
-    submitLiveBookingOfCustom();
-    return;
-  }
-  // 当有微信预约时，优先微信预约
-  if (wxFirst) {
-    onClickWxButton();
-    return;
-  }
-  // 当微信预约和短信预约同时启用时，不执行短信预约
-  onClickSmsButton();
+  toBooking();
 }, 300);
 
 /** 处理微信预约点击 */
@@ -312,6 +329,20 @@ async function onClickWxButton() {
   trackUserReservationLive({ reservationType: 'official_account' });
   wxSubmitLiveBooking();
 }
+
+onMounted(() => {
+  // 自动打开预约弹窗
+  if (!isLiveBooking.value) {
+    const cache = getLiveBookingCache();
+    if (!cache.needAutoOpenBooking) return;
+
+    setLiveBookingCache({
+      needAutoOpenBooking: false,
+    });
+
+    toBooking();
+  }
+});
 
 /** 处理短信预约点击 */
 async function onClickSmsButton() {

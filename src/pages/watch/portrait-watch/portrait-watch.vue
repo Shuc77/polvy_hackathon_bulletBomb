@@ -1,6 +1,6 @@
 <!-- @file 竖屏观看页 -->
 <template>
-  <div class="c-portrait-watch">
+  <div class="c-portrait-watch pws-theme-portrait-bg pws-theme-mask-bg">
     <background-section
       :background-type="themeSetting.portraitBackgroundType"
       :default-url="defaultPortraitPageBgUrl"
@@ -55,7 +55,7 @@ const { themeSetting, defaultPortraitPageBgUrl, portraitPageBgUrl } =
 <style lang="scss">
 html,
 body {
-  background-image: url(~@/pages/watch/portrait-watch/layout/images/portrait-bg.png);
+  background-image: url(./layout/images/portrait-bg.png);
 }
 
 .c-portrait-watch {

@@ -154,7 +154,7 @@ export const useChatUIGlobalProvide = () => {
       return {
         clickEnabled: likeSingleClickEnabled.value,
         holdEnabled: likeHoldEnabled.value,
-        countPosition: isMobile ? 'top' : 'bottom',
+        countPosition: 'top',
         showCount: chatSetting.value.likeCountEnabled,
         triggerSize: isMobile ? 36 : 40,
         triggerImage: likeIconUrl.value,

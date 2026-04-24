@@ -8,7 +8,7 @@ export const loadingOverlayProps = () => {
     overlayStyle: PropUtils.object<CSSProperties>().def({}),
     zIndex: PropUtils.number.def(9),
     background: PropUtils.string.def('rgba(255, 255, 255, 0.03)'),
-    spinnerSize: PropUtils.number.def(36),
+    spinnerSize: PropUtils.number.def(40),
     /** 是否显示 loading 文案 */
     showText: PropUtils.bool.def(true),
     /** loading 文案（为空则使用默认文案） */

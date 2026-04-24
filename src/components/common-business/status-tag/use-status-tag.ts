@@ -5,7 +5,7 @@ import { LiveStatus } from '@polyv/live-watch-sdk';
 import { computed, unref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useThemeStore } from '@/store/use-theme-store';
-import { SkinColorMode } from '@/skins/enum';
+import { ThemeColorMode } from '@/themes/type/theme-color-mode';
 
 export const statusTagProps = () => ({
   liveStatus: PropUtils.enum<LiveStatus>(),
@@ -93,7 +93,7 @@ export const useLiveStatusTagStyle = () => {
   const tagEffect = computed(() => {
     let effect: LiveStatusTagEffect = 'fill';
 
-    if (currentSkinColorMode.value === SkinColorMode.Light) {
+    if (currentSkinColorMode.value === ThemeColorMode.Light) {
       effect = 'transparent';
     }
     return effect;

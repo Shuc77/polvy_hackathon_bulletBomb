@@ -12,10 +12,15 @@ import { ynToBool } from '@utils-ts/boolean';
 import { computed, unref } from 'vue';
 import { useWeixinSdk } from './use-weixin-sdk';
 
+import { useWebsiteInfo } from '@/hooks/platform/use-browser/use-website-info';
+import { useOgMeta } from '@/hooks/platform/use-browser/use-og-meta';
+
 /**
  * @hook 微信分享
  * */
 export const useWeixinShare = () => {
+  const { updateOgMeta } = useOgMeta();
+  const { setFavIconElem } = useWebsiteInfo();
   const { getWeixinSdk } = useWeixinSdk();
 
   const themeStore = useThemeStore();
@@ -69,11 +74,19 @@ export const useWeixinShare = () => {
     wx && wx.hideAllNonBaseMenuItem();
   }
 
+  function updateBrowserInfo(shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption) {
+    updateOgMeta(shareOptions);
+    // setTitle(shareOptions.title);
+    setFavIconElem(shareOptions.imgUrl);
+  }
+
   /**
    * 更新微信分享配置
    */
   async function updateWxShareConfig(shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption) {
     if (isBuildForFeedMainMode()) return;
+
+    updateBrowserInfo(shareOptions);
 
     const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
@@ -127,6 +140,7 @@ export const useWeixinShare = () => {
     shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption,
   ) {
     if (isBuildForFeedMainMode()) return;
+    updateBrowserInfo(shareOptions);
 
     const watchCore = getWatchCore();
     const wx = await getWeixinSdk();

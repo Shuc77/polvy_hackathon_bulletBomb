@@ -8,14 +8,14 @@
 
 ## 项目说明
 
-该开源项目基于 `vue-cli@5.x + vue@2.7 + typescript@5.x + pinia` 实现的单页面应用(SPA)，除 `@polyv/live-watch-sdk` 外，还集成了其他**保利威 npm 库**和部分第三方开源工具库
+该开源项目基于 `webpack@5.x + vue@2.7 + typescript@5.x + pinia` 实现的单页面应用(SPA)，除 `@polyv/live-watch-sdk` 外，还集成了其他**保利威 npm 库**和部分第三方开源工具库
 
-| 保利威 npm 库 | 备注  |
-| :---------- | :---- |
-| [@polyv/utils](https://www.npmjs.com/package/@polyv/utils)                     | POLYV 工具函数库 |
-| [@polyv/web-view-bridge](https://www.npmjs.com/package/@polyv/web-view-bridge) | POLYV 前端 WebView 桥接器库 |
-| [@polyv/eslint-config](https://www.npmjs.com/package/@polyv/eslint-config)     | POLYV 前端工程 ESLint 通用配置   |
-| @polyv/polyv-ui                                                                | POLYV 前端组件库【暂不对外提供文档】  |
+| 保利威 npm 库                                                                  | 备注                                                                                            |
+| :----------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
+| [@polyv/utils](https://www.npmjs.com/package/@polyv/utils)                     | POLYV 工具函数库                                                                                |
+| [@polyv/web-view-bridge](https://www.npmjs.com/package/@polyv/web-view-bridge) | POLYV 前端 WebView 桥接器库                                                                     |
+| [@polyv/eslint-config](https://www.npmjs.com/package/@polyv/eslint-config)     | POLYV 前端工程 ESLint 通用配置                                                                  |
+| @polyv/polyv-ui                                                                | POLYV 前端组件库【暂不对外提供文档】                                                            |
 | [@polyv/icons-vue](https://www.npmjs.com/package/@polyv/icons-vue)             | POLYV 图标库工具 ，搭配 [@polyv/icons-cli](https://www.npmjs.com/package/@polyv/icons-cli) 使用 |
 
 > 注意，如果需要 `@polyv/live-watch-sdk` 支持其他保利威 SDK 的类型推导，请参考 `node_modules/@polyv/live-watch-sdk/package.json` 中的 `peerDependencies`，自行安装对应的 `package` 到项目的 `devDependencies` 中
@@ -25,14 +25,16 @@
 - [帮助中心-旧版互动功能接收端 JS-SDK](https://help.polyv.net/#/live/js/new_sdk/interactions_receive_sdk/sdk/overview)
 - [帮助中心-新版互动功能接收端 JS-SDK](https://help.polyv.net/#/live/js/new_sdk/interactions_receive_sdk_v2/introduce)
 - [帮助中心-商品 SDK](https://help.polyv.net/#/live/js/new_sdk/product_sdk/introduce)
-- 帮助中心-AI SDK 【待补充】
+- [帮助中心-AI SDK](https://help.polyv.net/index.html#/live/js/new_sdk/live_watch_ai_sdk/articles/index)
 
 业务 SDK 相关的开源 Demo
 
-- [开源Demo-旧版互动功能接收端开源](https://gitee.com/polyv_ef/polyv-web-interactions-receive-sdk-ui-default)
-- 开源Demo-新版互动功能接收端 JS-SDK 【待补充】
-- 开源Demo-商品 SDK 【待补充】
-- 开源Demo-AI SDK 【待补充】
+- [开源 Demo-旧版互动功能接收端开源](https://gitee.com/polyv_ef/polyv-web-interactions-receive-sdk-ui-default)
+- 开源 Demo-新版互动功能接收端 JS-SDK 【待补充】
+- 开源 Demo-商品 SDK 【待补充】
+- [开源 Demo-AI SDK](https://gitee.com/polyv_ef/polyv-web-live-watch-ai-sdk)
+
+> 从 v2.16.0 开始，为了优化本地开发调试，加快构建流程，以及后续的长期维护，弃用 vue-cli，改用 webpack 自主配置
 
 ## 项目运行
 
@@ -53,12 +55,8 @@ npm run dev #启动项目
 
 ## 构建部署
 
-请先阅读以下两篇官方文档
-
-- [vue-cli 构建目标](https://cli.vuejs.org/zh/guide/build-targets.html)
-- [vue-cli 部署](https://cli.vuejs.org/zh/guide/deployment.html)
-
-如果需要自定义**生产环境构建文件的目录(outputDir)**，或者更改**部署应用包时的基本 URL(publicPath)**，请查看 `build/build-config.js` 和 `vue.config.js` 后自行修改
+- 请先阅读和 `webpack` 相关的技术文章
+- 如果需要自定义**生产环境构建文件的目录(outputDir)**，或者更改**部署应用包时的基本 URL(publicPath)**，请查看 `build/build-config.js` 和 `webpack.config.js` 后自行修改
 
 ### 基本构建和部署
 
@@ -110,29 +108,29 @@ npm run build-static
 
 项目根目录说明
 
-| 路径        | 说明    |
-| :--------- | :----- |
-| .husky/    | [husky](https://github.com/typicode/husky) 钩子文件夹  |
-| build/     | 构建逻辑     |
-| public/    | 静态资源文件夹，请参考这篇[文档](https://cli.vuejs.org/zh/guide/html-and-static-assets.html#public-%E6%96%87%E4%BB%B6%E5%A4%B9) |
-| icon-svgs/ | svg 图标文件夹  |
-| types/     | 全局的 typescript 类型  |
-| src/       | 项目源码  |
-| external/  | 存放一些额外的文件/工程  |
+| 路径       | 说明                                                  |
+| :--------- | :---------------------------------------------------- |
+| .husky/    | [husky](https://github.com/typicode/husky) 钩子文件夹 |
+| build/     | 构建逻辑                                              |
+| public/    | 静态资源文件夹                                        |
+| icon-svgs/ | svg 图标文件夹                                        |
+| types/     | 全局的 typescript 类型                                |
+| src/       | 项目源码                                              |
+| external/  | 存放一些额外的文件/工程                               |
 
 `src` 目录说明
 
-| 路径  | 说明  |
-| :------------- | :--------- |
-| src/core       | 搭配 `@polyv/live-watch-sdk` 逻辑层 |
-| src/app        | 项目应用入口  |
-| src/store      | 项目数据存储层 |
+| 路径           | 说明                                                                                                                                      |
+| :------------- | :---------------------------------------------------------------------------------------------------------------------------------------- |
+| src/core       | 搭配 `@polyv/live-watch-sdk` 逻辑层                                                                                                       |
+| src/app        | 项目应用入口                                                                                                                              |
+| src/store      | 项目数据存储层                                                                                                                            |
 | src/pages      | 项目业务页面，分为`引导页(splash)`和`观看页(watch)`，页面内再通过 `桌面端(pc)`,`移动端横屏(mobile)`,`移动端竖屏(portrait)` 来区分使用场景 |
-| src/components | [项目相关组件](src/components/README.md) |
-| src/hooks      | [项目公共 hooks](src/hooks/README.md)  |
-| src/assets     | 项目静态资源 , `src/assets/lang` 存放多语言文本 |
-| src/skins      | 项目多皮肤  |
-| src/plugins    | 项目第三方插件 |
+| src/components | [项目相关组件](src/components/README.md)                                                                                                  |
+| src/hooks      | [项目公共 hooks](src/hooks/README.md)                                                                                                     |
+| src/assets     | 项目静态资源 , `src/assets/lang` 存放多语言文本                                                                                           |
+| src/skins      | 项目多皮肤                                                                                                                                |
+| src/plugins    | 项目第三方插件                                                                                                                            |
 
 关键文件指引
 

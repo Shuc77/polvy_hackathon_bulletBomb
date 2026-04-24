@@ -1,9 +1,12 @@
+import Vue from 'vue';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLangStore } from '@/store/use-lang-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { useConfigProvider } from '@polyv/vue-components';
+import { useConfigProvider, vLoading as vNewLoading } from '@polyv/vue-components';
 import '@polyv/vue-components/font/din-pro/index.scss';
+
+Vue.directive('new-loading', vNewLoading);
 
 export const installVueComponents = () => {
   const langStore = useLangStore();

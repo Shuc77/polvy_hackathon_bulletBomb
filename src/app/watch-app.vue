@@ -15,7 +15,7 @@
       />
     </template>
 
-    <!-- <skin-select /> -->
+    <!-- <theme-select v-if="watchAppInited" /> -->
   </div>
 </template>
 
@@ -29,7 +29,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import DirectBusinessPageEntry from './layout/direct-business-page/direct-business-page-entry.vue';
 import { useGlobalInject } from './use-global-inject';
-// import SkinSelect from '../skins/_debug/skin-select.vue';
+// import ThemeSelect from '@/themes/debug/theme-select.vue';
 
 const { uniqueId } = useGlobalInject();
 

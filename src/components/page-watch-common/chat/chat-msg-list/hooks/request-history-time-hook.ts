@@ -4,7 +4,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { InitialResponse } from '@just4/virtual-list/types';
 import { ChatMsgType, ChatRequestHistoryMode } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
-import { useFilterRepeatMsgHook, useFilterSpecialMsgHook } from './filter-chat-msg-hook';
+import { useFilterRepeatMsgHook } from './filter-chat-msg-hook';
 import { ChatMsgListHookOptions, RequestHistoryCommonResult } from './types';
 import { appEvents } from '@/app/app-events';
 import { useChatStore } from '@/store/use-chat-store';
@@ -26,7 +26,6 @@ export const useRequestHistoryTime = (
   const chatMsgStore = getStore().chatMsgStore;
   const chatStore = getStore().chatStore;
   const { contractHistoryData } = useContractHistory(hookOptions);
-  const { filterSpecialMsgList } = useFilterSpecialMsgHook();
   const { filterRepeatMsg } = useFilterRepeatMsgHook(hookOptions);
 
   const watchAppStore = getStore().watchAppStore;
@@ -46,6 +45,7 @@ export const useRequestHistoryTime = (
       count: params.count,
       mode,
       exclude: chatMsgStore.hideChatMsgSources,
+      onlySpecialMsg: chatStore.onlySpecialMsg,
     });
   }
 
@@ -163,7 +163,7 @@ export const useRequestHistoryTime = (
 
     data = filterRepeatMsg(data);
     chatMsgStore.resetMsgQueue([]);
-    return filterSpecialMsgList(data);
+    return data;
   }
 
   async function loadPreviousData(ref: unknown): Promise<ChatMsgType[]> {
@@ -202,7 +202,7 @@ export const useRequestHistoryTime = (
     }, 50);
 
     data = filterRepeatMsg(data);
-    return filterSpecialMsgList(data);
+    return data;
   }
 
   return {

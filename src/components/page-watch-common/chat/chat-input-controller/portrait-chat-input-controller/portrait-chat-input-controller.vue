@@ -48,7 +48,7 @@ import { PortraitChatTabName, usePortraitLayoutStore } from '@/store/use-portrai
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useThemeStore } from '@/store/use-theme-store';
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 import { storeToRefs } from 'pinia';
 
 const inputWrapRef = ref<HTMLDivElement>();

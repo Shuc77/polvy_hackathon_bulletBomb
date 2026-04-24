@@ -1,20 +1,19 @@
 import { LangType } from './lang-enum';
-import { LangI18nData } from './types';
+import { LangConfig, LangLoader } from './types';
 
 import zhCNLang from './i18ns/zh-CN.json';
-import zhTWLang from './i18ns/zh-TW.json';
-import englishLang from './i18ns/en.json';
-import japaneseLang from './i18ns/ja.json';
-import koreanLang from './i18ns/ko.json';
-import russianLang from './i18ns/ru.json';
 
-export const i18nData: LangI18nData = {
-  [LangType.ZH_CN]: zhCNLang,
-  [LangType.ZH_TW]: zhTWLang,
-  [LangType.English]: englishLang,
-  [LangType.Japanese]: japaneseLang,
-  [LangType.Korean]: koreanLang,
-  [LangType.Russian]: russianLang,
+/** zh-CN 常驻语言包 */
+export const defaultLocaleMessages: LangConfig = zhCNLang;
+
+/** 已加载的语种集合（zh-CN 始终常驻） */
+export const loadedLangSet = new Set<LangType>([LangType.ZH_CN]);
+
+/** 其他语种的动态加载器 */
+export const asyncLocaleLoaders: Partial<Record<LangType, LangLoader>> = {
+  [LangType.ZH_TW]: () => import(/* webpackChunkName: "lang-zh-tw" */ './i18ns/zh-TW.json'),
+  [LangType.English]: () => import(/* webpackChunkName: "lang-en" */ './i18ns/en.json'),
+  [LangType.Japanese]: () => import(/* webpackChunkName: "lang-ja" */ './i18ns/ja.json'),
+  [LangType.Korean]: () => import(/* webpackChunkName: "lang-ko" */ './i18ns/ko.json'),
+  [LangType.Russian]: () => import(/* webpackChunkName: "lang-ru" */ './i18ns/ru.json'),
 };
-
-export default i18nData;

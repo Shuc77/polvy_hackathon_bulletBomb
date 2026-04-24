@@ -9,15 +9,22 @@
         :form-data="bookingFormData"
         :form-rules="bookingFormRules"
         :submit-action="submitLiveBookingForm"
+        label-model="header"
       >
-        <form-item form-field="phoneNumber">
+        <form-item
+          form-field="phoneNumber"
+          :tips="$lang('liveBooking.tips.phoneNumber')"
+        >
           <mobile-form-phone-input
             v-model="bookingFormData.phoneNumber"
             :area-code.sync="bookingFormData.areaCode"
           />
         </form-item>
 
-        <form-item form-field="verifyCode">
+        <form-item
+          v-show="smsEnabled"
+          form-field="verifyCode"
+        >
           <mobile-form-sms-verify-input
             v-model="bookingFormData.verifyCode"
             :area-code="bookingFormData.areaCode"
@@ -29,6 +36,7 @@
 
         <div class="c-mobile-live-booking-form__submit">
           <form-submit-button
+            ref="formSubmitRef"
             :text="$lang('liveBooking.confirm')"
             :size="ButtonSize.Medium"
             block
@@ -57,6 +65,8 @@ const props = defineProps({
 });
 
 const {
+  formSubmitRef,
+  smsEnabled,
   bookingFormData,
   bookingFormRules,
   bookingFormVisible,

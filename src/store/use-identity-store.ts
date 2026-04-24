@@ -112,7 +112,12 @@ export const useIdentityStore = defineStore<'identity', IdentityStore>('identity
 
     const setting = watchCore.identity.getIdentitySetting();
     identitySetting.value = setting;
-    watchUserSystemEnabled.value = setting.watchUserSystemEnabled;
+
+    if (watchAppStore.forceSplashPage) {
+      watchUserSystemEnabled.value = false;
+    } else {
+      watchUserSystemEnabled.value = setting.watchUserSystemEnabled;
+    }
 
     identityUnionInfo.value = watchCore.identity.getIdentityUnionInfo();
     isGuest.value = identityUnionInfo.value?.isGuest || false;

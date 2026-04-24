@@ -2,7 +2,7 @@
 <template>
   <div class="c-mobile-chat-room">
     <!-- 聊天室顶部固定区域 -->
-    <div class="c-mobile-chat-room__topic pws-main-tab-body">
+    <div class="c-mobile-chat-room__topic">
       <div
         class="c-mobile-chat-room__topic__bg"
         :style="{

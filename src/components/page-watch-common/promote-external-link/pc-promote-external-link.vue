@@ -34,13 +34,12 @@ const {
   justify-content: center;
   width: 100%;
   min-height: 200px;
-  color: #adadc0;
+  color: $text-color-secondary;
 }
 
 .c-pc-promote-external-link__tips {
   padding: 0 40px;
   line-height: 20px;
-  color: #adadc0;
   text-align: center;
 }
 </style>

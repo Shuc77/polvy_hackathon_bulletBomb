@@ -14,6 +14,7 @@
         <form-item
           form-field="phoneNumber"
           :label="$lang('form.name.phoneNumber')"
+          :tips="$lang('liveBooking.tips.phoneNumber')"
         >
           <pc-form-phone-input
             v-model="bookingFormData.phoneNumber"
@@ -22,6 +23,7 @@
         </form-item>
 
         <form-item
+          v-show="smsEnabled"
           form-field="verifyCode"
           :label="$lang('form.name.verifyCode')"
         >
@@ -36,6 +38,7 @@
 
         <div class="c-pc-live-booking-form__submit">
           <form-submit-button
+            ref="formSubmitRef"
             :size="ButtonSize.Small"
             :text="$lang('liveBooking.confirm')"
           />
@@ -64,6 +67,8 @@ const props = defineProps({
 });
 
 const {
+  formSubmitRef,
+  smsEnabled,
   bookingFormData,
   bookingFormRules,
   bookingFormVisible,

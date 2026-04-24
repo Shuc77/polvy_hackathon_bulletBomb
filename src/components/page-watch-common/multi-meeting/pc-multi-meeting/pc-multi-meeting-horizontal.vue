@@ -4,7 +4,7 @@
     v-if="multiMeetingList.length"
     class="c-pc-multi-meeting-horizontal"
   >
-    <div class="c-pc-multi-meeting-horizontal__control">
+    <div class="c-pc-multi-meeting-horizontal__control pws-next-primary-text-color">
       <span class="c-pc-multi-meeting-horizontal__control__title">
         {{ multiMeetingMenuData.label }}
       </span>
@@ -46,6 +46,7 @@
             class="c-pc-multi-meeting-horizontal__item"
             :class="{
               'c-pc-multi-meeting-horizontal__item--current': item.isCurrentChannel,
+              'pws-next-primary-border-color': item.isCurrentChannel,
             }"
             :style="itemStyle"
           >
@@ -135,15 +136,14 @@ const itemStyle = computed(() => {
 
 <style lang="scss">
 .c-pc-multi-meeting-horizontal {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #ededef;
+  padding: 16px 24px;
+  margin-bottom: 12px;
 }
 .c-pc-multi-meeting-horizontal__control {
+  position: relative;
   display: flex;
   align-items: center;
-  padding-top: 24px;
   margin-bottom: 24px;
-  color: $--font-color-primary;
 }
 
 .c-pc-multi-meeting-horizontal__control__title {
@@ -191,9 +191,6 @@ $--item-gutter: 24px;
 .c-pc-multi-meeting-horizontal__list {
   overflow: hidden;
 }
-.c-pc-multi-meeting-horizontal__list__wrap {
-  margin-left: -$--item-gutter;
-}
 .c-pc-multi-meeting-horizontal__list__inner {
   position: relative;
   display: flex;
@@ -201,8 +198,14 @@ $--item-gutter: 24px;
 }
 .c-pc-multi-meeting-horizontal__item {
   box-sizing: border-box;
-  padding-left: $--item-gutter;
+  overflow: hidden;
+  border: 2px solid $border-color;
+  border-radius: 8px;
 }
+.c-pc-multi-meeting-horizontal__item + .c-pc-multi-meeting-horizontal__item {
+  margin-left: $--item-gutter;
+}
+
 .c-pc-multi-meeting-horizontal__item__inner {
   position: relative;
   height: 0;
@@ -215,7 +218,6 @@ $--item-gutter: 24px;
   left: 0;
   width: 100%;
   overflow: hidden;
-  border-radius: 2px;
 
   img {
     width: 100%;
@@ -228,17 +230,7 @@ $--item-gutter: 24px;
   left: 8px;
 }
 .c-pc-multi-meeting-horizontal__item--current {
-  .c-pc-multi-meeting-horizontal__item__content::after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    content: '';
-    border: 2px solid #78a7ed;
-  }
+  border-color: #78a7ed;
 }
 
 .c-pc-multi-meeting-horizontal__item__name {
@@ -269,11 +261,8 @@ $--item-gutter: 24px;
 @media (max-width: 1280px) {
   $--item-gutter: 10px;
 
-  .c-pc-multi-meeting-horizontal__list__wrap {
-    margin-left: -$--item-gutter;
-  }
-  .c-pc-multi-meeting-horizontal__item {
-    padding-left: $--item-gutter;
+  .c-pc-multi-meeting-horizontal__item + .c-pc-multi-meeting-horizontal__item {
+    margin-left: $--item-gutter;
   }
 }
 </style>

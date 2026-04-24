@@ -8,8 +8,6 @@
     <template v-if="!directBusinessPageType && watchAppInited">
       <mobile-feed-main @page-mounted="onLayoutMounted" />
     </template>
-
-    <!-- <skin-select /> -->
   </div>
 </template>
 
@@ -23,7 +21,6 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import DirectBusinessPageEntry from './layout/direct-business-page/direct-business-page-entry.vue';
 import { useGlobalInject } from './use-global-inject';
 // import { useCurrentWatchAppEffect } from '@/hooks/core/use-error-verify';
-// import SkinSelect from '../skins/_debug/skin-select.vue';
 
 const { uniqueId } = useGlobalInject();
 

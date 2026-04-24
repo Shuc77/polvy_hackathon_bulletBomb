@@ -6,6 +6,7 @@
       class="c-portrait-follow-btn__content"
       :text="followEntrance"
       :size="ButtonSize.XMini"
+      stop-click-event
       @click="onClickFollowBtn"
     />
 

@@ -15,6 +15,9 @@
     >
       <mobile-enroll />
     </div>
+    <div v-else-if="forceSplashPage">
+      <mobile-auth />
+    </div>
   </div>
 </template>
 
@@ -24,8 +27,11 @@ import MobileEnroll from '@/components/common-business/enroll/mobile-enroll.vue'
 import { useAuthStore } from '@/store/use-auth-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { isAuthorized } = storeDefinitionToRefs(useAuthStore);
+
+const { forceSplashPage } = storeDefinitionToRefs(useWatchAppStore);
 
 const { needEnrollByEnter } = storeDefinitionToRefs(useEnrollStore);
 </script>

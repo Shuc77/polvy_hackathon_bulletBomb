@@ -70,39 +70,48 @@ const createVueApp = (uniqueId: string, RootApp: Vue) => {
     store.$uniqueId = uniqueId;
   });
 
+  const isNotDev = BUILD_ENV === 'pre' || BUILD_ENV === 'prod';
   try {
-    if (RUM_ENABLED && window.baseChannelConfig?.watchDosageReportEnabled === 'Y') {
-      const isNotDev = BUILD_ENV === 'pre' || BUILD_ENV === 'prod';
+    // 被 iframe 时，用量上报功能疑似会导致页面崩溃，故在该情况下不启用
+    // 生产环境暂不启用 rum-sdk
+    if (
+      !isNotDev &&
+      RUM_ENABLED &&
+      window.self === window.top &&
+      window.baseChannelConfig?.watchDosageReportEnabled === 'Y'
+    ) {
       const sampleRate = isNotDev ? 0.05 : 1;
       const logStore = isNotDev ? 'live-watch' : 'live-watch-dev';
 
-      import('@polyv/rum-sdk').then(({ initRUMSystemVue2 }) => {
-        initRUMSystemVue2(
-          {
-            Vue,
-          },
-          {
-            debug: false,
-            environment: BUILD_ENV,
-            sampleRate: {
-              error: 0,
-              click: sampleRate,
-              route: sampleRate,
-              custom: sampleRate,
-              xhr: 0,
+      import(/* webpackChunkName: "polyv-rum-sdk" */ '@polyv/rum-sdk').then(
+        ({ initRUMSystemVue2 }) => {
+          initRUMSystemVue2(
+            {
+              Vue,
             },
-            slsConfigOverride: {
-              host: 'cn-shenzhen.log.aliyuncs.com',
-              project: 'live-admin-rum',
-              logstore: logStore,
-              enabled: true,
-              appName: 'live-watch',
+            {
+              debug: false,
+              environment: BUILD_ENV,
+              sampleRate: {
+                error: 0,
+                click: sampleRate,
+                route: sampleRate,
+                custom: sampleRate,
+                xhr: 0,
+              },
+              slsConfigOverride: {
+                host: 'cn-shenzhen.log.aliyuncs.com',
+                project: 'live-admin-rum',
+                logstore: logStore,
+                enabled: true,
+                appName: 'live-watch',
+              },
             },
-          },
-        ).catch(error => {
-          console.warn('RUM system initialization failed:', error);
-        });
-      });
+          ).catch(error => {
+            console.warn('RUM system initialization failed:', error);
+          });
+        },
+      );
     }
   } catch (error) {
     console.warn('RUM system initialization not support:', error);

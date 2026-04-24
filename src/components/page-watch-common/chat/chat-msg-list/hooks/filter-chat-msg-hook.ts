@@ -26,6 +26,7 @@ export const useFilterSpecialMsgHook = () => {
 
   /**
    * 过滤得到只有特殊角色消息的列表
+   * @desc 后续只有聊天重放的列表才需要
    * @param list 聊天消息列表
    * @param excludeCurrentUser 排除当前观众，默认 true
    */

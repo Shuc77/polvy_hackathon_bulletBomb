@@ -26,24 +26,8 @@ $--color-white: #FFFFFF !default; // 白色
 $--color-black: #000000 !default; // 黑色
 $--color-primary: #3F76FC !default; // 主题色
 
-// #458ffe
-$--color-primary-light-1: get-opacity-color($--color-primary, 1);
-// #599bfe
-$--color-primary-light-2: get-opacity-color($--color-primary, 2);
-// #6ea8fe
-$--color-primary-light-3: get-opacity-color($--color-primary, 3);
-// #83b4fe
-$--color-primary-light-4: get-opacity-color($--color-primary, 4);
-// #98c1ff
-$--color-primary-light-5: get-opacity-color($--color-primary, 5);
-// #accdff
-$--color-primary-light-6: get-opacity-color($--color-primary, 6);
-// #c1daff
-$--color-primary-light-7: get-opacity-color($--color-primary, 7);
 // #d6e6ff
 $--color-primary-light-8: get-opacity-color($--color-primary, 8);
-// #eaf3ff
-$--color-primary-light-9: get-opacity-color($--color-primary, 9);
 
 // 背景色
 $--bg-color-portrait-popup: #262523 !default; // 竖屏下的弹层背景色
@@ -131,7 +115,3 @@ $--form-input-themes: (
 // 播放器控制栏相关样式变量
 // 播放器面板背景
 $--player-control-panel-bg: rgba(0, 0, 0, 0.65) !default;
-
-
-$--finance-primary-text-color: rgb(208, 172, 82);
-$--finance-primary-bg-color: rgb(217, 186, 108);

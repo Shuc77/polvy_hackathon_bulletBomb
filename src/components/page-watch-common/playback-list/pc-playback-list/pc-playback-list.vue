@@ -16,13 +16,14 @@
         />
       </div>
     </div>
-    <div class="c-pc-playback-list__body">
-      <div
-        v-if="isLoading"
-        class="c-pc-playback-list__loading"
-      >
-        <list-loading />
-      </div>
+    <div
+      class="c-pc-playback-list__body"
+      v-new-loading="{
+        loading: isLoading,
+        size: 36,
+        background: 'none',
+      }"
+    >
       <plv-row
         class="c-pc-playback-list__main"
         :gutter="20"
@@ -86,29 +87,32 @@
       </div>
     </div>
 
-    <plv-pagination
+    <div
       v-show="currentPagePlaybackList.length"
-      :hide-on-single="true"
-      :total="totalPages"
-      :current-page="pageNumber"
-      :layout="['prev', 'pager', 'next']"
-      @currentChange="playbackStore.onPageChange"
-    />
+      class="c-pc-playback-list__footer"
+    >
+      <pwc-pagination
+        :hide-on-single-page="true"
+        :value="pageContent"
+        :layout="['prev', 'pager', 'next']"
+        @change="onPaginationChange"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { formatDate } from '@utils-ts/date';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { PcIconMedia, PcIconPlayRound } from '@/components/component-icons/pc/map';
 import SearchInput from '@/components/common-base/search-input/search-input.vue';
-import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { formatDuration } from '@/assets/utils/date-time';
 import { usePlaybackList } from '../use-playback-list';
-import { PlvPagination, PlvRow, PlvCol } from '@/plugins/polyv-ui/admin-import';
+import { PlvRow, PlvCol } from '@/plugins/polyv-ui/admin-import';
+import { PwcPagination } from '@polyv/vue-components';
 
 const playbackStore = usePlaybackStore();
 
@@ -116,6 +120,7 @@ const {
   listLiveStartTimeEnabled,
 
   pageNumber,
+  pageSize,
   totalPages,
   totalItems,
 
@@ -129,10 +134,23 @@ const {
 // 搜索关键词
 const searchKeyword = ref('');
 
+const pageContent = computed(() => {
+  return {
+    pageNumber: pageNumber.value,
+    pageSize: pageSize.value,
+    totalPages: totalPages.value,
+    totalItems: totalItems.value,
+  };
+});
+
 // 搜索（防抖由 SearchInput 组件处理）
 function onSearch(keyword: string) {
   playbackStore.setSearchKeyword(keyword);
   playbackStore.searchPlaybackList();
+}
+
+function onPaginationChange({ pageNumber }: { pageNumber: number }) {
+  playbackStore.onPageChange(pageNumber);
 }
 
 const { onClickPlaybackItem } = usePlaybackList();
@@ -152,7 +170,7 @@ const { onClickPlaybackItem } = usePlaybackList();
 
 .c-pc-playback-list__header__total {
   font-size: 16px;
-  color: $--font-color-primary;
+  color: $text-color;
 }
 
 .c-pc-playback-list__header__search {
@@ -257,37 +275,31 @@ const { onClickPlaybackItem } = usePlaybackList();
 .c-pc-playback-list__item__title {
   margin-bottom: 8px;
   font-size: 18px;
-  color: $--font-color-primary;
+  color: $text-color;
 }
 
 .c-pc-playback-list__item__start-time {
   width: 100%;
   margin-top: 8px;
   font-size: 14px;
-  color: #aaaaaa;
+  color: $text-color-secondary;
 }
 
 .c-pc-playback-list__body {
   position: relative;
 }
 
-.c-pc-playback-list__loading {
-  position: absolute;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.5);
-}
-
 .c-pc-playback-list__empty {
   width: 100%;
   padding: 40px 0;
   font-size: 16px;
-  color: #adadc0;
+  color: $text-color-secondary;
   text-align: center;
+}
+
+.c-pc-playback-list__footer {
+  display: flex;
+  justify-content: center;
 }
 
 // @media only screen and(max-width: 1280px) {

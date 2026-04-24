@@ -94,6 +94,7 @@
             :key="`phone-${index}`"
             :required="item.required === YN.Y"
             :form-field="generateFormField(index)"
+            :tips="$lang('auth.info.tips.phoneNumber')"
           >
             <mobile-form-phone-input
               v-model="formData[generateFormField(index)]"

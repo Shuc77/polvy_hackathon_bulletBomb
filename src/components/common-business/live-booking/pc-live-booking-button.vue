@@ -15,13 +15,15 @@
     >
       <pc-icon-booking
         v-if="!isOtherLive"
-        class="c-pc-live-booking-button__text__icon"
+        class="c-pc-live-booking-button__text__icon pws-next-primary-color"
       />
       <mobile-icon-bell
         v-else
-        class="c-pc-live-booking-button__text__icon"
+        class="c-pc-live-booking-button__text__icon pws-next-primary-color"
       />
-      <span class="c-pc-live-booking-button__text__text">{{ buttonText }}</span>
+      <span class="c-pc-live-booking-button__text__text pws-next-primary-color">{{
+        buttonText
+      }}</span>
     </div>
 
     <!-- 按钮样式 -->
@@ -52,7 +54,7 @@ import LiveBookingFormDialog from './pc-live-booking-form-dialog.vue';
 import NormalButton from '@/components/common-base/normal-button/normal-button.vue';
 import { translate } from '@/assets/lang';
 import { PropUtils, useProps } from '@polyv/vue-components';
-import { computed, ref, unref } from 'vue';
+import { computed, onMounted, ref, unref } from 'vue';
 import { ButtonSize } from '@/components/common-base/normal-button/types';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
@@ -61,6 +63,9 @@ import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { MobileIconBell } from '@/components/component-icons/mobile/map';
 import { useLiveBookingCustom } from './hooks/use-live-booking-custom';
 import { debounce } from 'lodash-es';
+import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
+
+const { getLiveBookingCache, setLiveBookingCache } = useLiveBookingCache();
 
 const { trackUserReservationLive } = useWatchEventTrack();
 
@@ -172,6 +177,20 @@ const onClickButton = debounce(() => {
 
   instance?.openBookingForm();
 }, 200);
+
+onMounted(() => {
+  // 自动打开预约弹窗
+  if (!unref(isBooking)) {
+    const cache = getLiveBookingCache();
+    if (!cache.needAutoOpenBooking) return;
+
+    setLiveBookingCache({
+      needAutoOpenBooking: false,
+    });
+
+    onClickButton();
+  }
+});
 </script>
 
 <style lang="scss">

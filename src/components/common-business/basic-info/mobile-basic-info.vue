@@ -2,6 +2,7 @@
 <template>
   <div class="c-mobile-basic-info">
     <div
+      v-if="descInfoCardEnabled"
       class="c-mobile-basic-info__top"
       :style="basicInfoTopStyle"
     >
@@ -134,7 +135,7 @@ import { CSSProperties, computed, unref } from 'vue';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import { useChatStore } from '@/store/use-chat-store';
 import { useThemeStore } from '@/store/use-theme-store';
-import { generateBgStyle } from '@/skins/theme-config-helper';
+import { generateBgStyle } from '@/themes/utils/theme-config';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
 import { PageViewShowLocation } from '@polyv/live-watch-sdk';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
@@ -142,6 +143,7 @@ import { useShortNumber } from '@/hooks/business/use-short-number';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { appEvents } from '@/app/app-events';
 import { useLiveStatusTagStyle } from '../status-tag/use-status-tag';
+import { storeToRefs } from 'pinia';
 
 const props = defineProps({
   /** 是否显示页面浏览次数，默认：true */
@@ -152,6 +154,8 @@ const props = defineProps({
   showDesc: PropUtils.bool.def(true),
   /** 是否渲染页脚，默认：true */
   showPageFooter: PropUtils.bool.def(true),
+  /** 是否忽略基础信息顶部的样式，默认：false */
+  ignoreBasicInfoTopStyle: PropUtils.bool.def(false),
 });
 
 const { resizeOSSImg } = useResizeOssImage();
@@ -159,8 +163,6 @@ const { resizeOSSImg } = useResizeOssImage();
 const { showPageView, showLikeCount, showDesc } = useProps(props);
 
 const { shortNumber } = useShortNumber();
-
-const themeStore = useThemeStore();
 
 const { liveStatus, compressImageEnabled, teacherInfo } = storeDefinitionToRefs(useChannelStore);
 
@@ -180,7 +182,9 @@ const {
   viewerWatchDuration,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
-const { channelCoverImg } = storeDefinitionToRefs(useThemeStore);
+const themeStore = useThemeStore();
+
+const { channelCoverImg, descInfoCardEnabled } = storeToRefs(themeStore);
 
 const { realtimeLikes } = storeDefinitionToRefs(useChatStore);
 
@@ -213,6 +217,10 @@ function onClickPublisher() {
 }
 
 const basicInfoTopStyle = computed<CSSProperties>(() => {
+  if (props.ignoreBasicInfoTopStyle) {
+    return {};
+  }
+
   if (!themeStore.watchThemeStyleConfig) return {};
 
   const bgConfig = themeStore.watchThemeStyleConfig.common.introArea.bgConfig;

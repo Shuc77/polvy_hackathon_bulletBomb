@@ -54,7 +54,7 @@ import { computed, ref } from 'vue';
 import PortraitMsgUserInfo from '../_msg-user-info/portrait-msg-user-info.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useThemeStore } from '@/store/use-theme-store';
-import { SkinColorMode } from '@/skins/enum';
+import { ThemeColorMode } from '@/themes/type/theme-color-mode';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useChatMsgUserInject } from '../_hooks/chat-msg-user-hook';
 import { ChatMessageLayout } from '@polyv/live-watch-sdk';
@@ -138,9 +138,9 @@ const bubbleBgClass = computed(() => {
   }
 
   switch (currentSkinColorMode.value) {
-    case SkinColorMode.Dark:
-      return isPortraitWatchLayout.value ? 'pws-dark-basic-bg-20' : 'pws-dark-basic-bg-10';
-    case SkinColorMode.Light:
+    case ThemeColorMode.Dark:
+      return '';
+    case ThemeColorMode.Light:
     default:
       return 'pws-light-basic-bg-20';
   }

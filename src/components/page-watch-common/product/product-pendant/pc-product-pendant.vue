@@ -40,9 +40,15 @@ const { toInterruptUserClick } = useInterruptUserClick();
 const { productIconConfig } = storeDefinitionToRefs(useChannelStore);
 
 const iconUrl = computed(() => {
-  if (!themeStore.watchThemeStyleConfig) return productIconConfig.value?.url ?? '';
+  if (productIconConfig.value) {
+    return productIconConfig.value.url;
+  }
 
-  return themeStore.watchThemeStyleConfig.common.chat.btn.cart.iconUrl;
+  if (themeStore.watchThemeStyleConfig) {
+    return themeStore.watchThemeStyleConfig.common.chat.btn.cart.iconUrl;
+  }
+
+  return '';
 });
 
 function beforeClickInterrupt() {

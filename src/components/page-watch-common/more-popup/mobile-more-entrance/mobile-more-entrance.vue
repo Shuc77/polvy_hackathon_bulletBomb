@@ -15,27 +15,31 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { appEvents } from '@/app/app-events';
 import { useThemeStore } from '@/store/use-theme-store';
 import { CSSProperties, computed } from 'vue';
-import { SkinColorMode } from '@/skins/enum';
+import { ThemeColorMode } from '@/themes/type/theme-color-mode';
 import { PropUtils } from '@polyv/vue-components';
 
 const { getEmitter } = useGlobalInject();
 
 const props = defineProps({
-  theme: PropUtils.enum<SkinColorMode>().def(undefined),
+  theme: PropUtils.enum<ThemeColorMode>().def(undefined),
 });
 
 const themeStore = useThemeStore();
 
 const isDarkSkinMode = computed(() => {
   if (props.theme) {
-    return props.theme === SkinColorMode.Dark;
+    return props.theme === ThemeColorMode.Dark;
   }
 
   return themeStore.isDarkSkinMode;
 });
 
 const backgroundStyle = computed<CSSProperties>(() => {
-  if (!themeStore.watchThemeStyleConfig) return {};
+  if (
+    !themeStore.watchThemeStyleConfig ||
+    !themeStore.watchThemeStyleConfig.common.chat.btn.more.iconUrl
+  )
+    return {};
 
   return {
     'background-image': `url(${themeStore.watchThemeStyleConfig.common.chat.btn.more.iconUrl})`,
@@ -56,7 +60,6 @@ function onClickMore() {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  border-radius: 50%;
 }
 
 .c-mobile-more-entrance--light {

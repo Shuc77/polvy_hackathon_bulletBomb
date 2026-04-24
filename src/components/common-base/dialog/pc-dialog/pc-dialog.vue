@@ -2,7 +2,7 @@
 <template>
   <div
     class="c-pc-dialog"
-    :class="dialogSkinClass"
+    :class="dialogThemeClass"
     ref="dialogRef"
   >
     <transition
@@ -75,18 +75,18 @@ import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { DialogInstance } from '@/components/common-base/dialog/pc-dialog/types';
 
 import { dialogPcProps, dialogEmits } from '../use-dialog';
-import { usePageSkin } from '@/skins/use-page-skin';
+import { usePageTheme } from '@/themes/use-page-theme';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 
 const { getAppRootElement, getAppBodyElement, getAppElement } = useMultiPolyvWatchApp();
 
-const { getSkinClassName } = usePageSkin();
+const { getThemeClassName } = usePageTheme();
 
-const dialogSkinClass = computed(() => {
-  const skinClassName = getSkinClassName();
-  if (skinClassName) {
+const dialogThemeClass = computed(() => {
+  const themeClassName = getThemeClassName();
+  if (themeClassName) {
     return {
-      [skinClassName]: true,
+      [themeClassName]: true,
     };
   }
 

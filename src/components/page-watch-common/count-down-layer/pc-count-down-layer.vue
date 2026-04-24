@@ -98,7 +98,7 @@ const { isTopRightStyle } = useCountDownLayer();
     align-items: center;
     width: initial;
     height: initial;
-    padding: 10px 20px;
+    padding: 8px 8px 8px 16px;
     pointer-events: initial;
     background: rgba(0, 0, 0, 0.7);
     background-image: none;

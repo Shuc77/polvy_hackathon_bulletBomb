@@ -61,7 +61,7 @@ usePageSizeSetup();
   width: 100%;
   max-width: 1024px;
   height: 100%;
-  @include iphone-x-pb(20px);
   background-color: #f5f5f6;
+  @include iphone-x-pb(20px);
 }
 </style>

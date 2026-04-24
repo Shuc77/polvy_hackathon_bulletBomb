@@ -1,10 +1,19 @@
 <!-- @file PC 端引导页 -->
 <template>
-  <div class="c-pc-splash">
+  <div
+    class="c-pc-splash"
+    ref="splashRef"
+    :class="{
+      'c-pc-splash--dark': useNewTheme, // 在 UI3.0 暂时强制用暗色调
+    }"
+  >
     <header class="c-pc-splash__header g-outside">
       <custom-teleport :to="getAppBodyElement()">
         <!-- 毛玻璃效果蒙层，只有支持 filter 样式时才输出 -->
-        <div class="c-pc-splash__header__bg__teleport__wrapper g-outside">
+        <div
+          class="c-pc-splash__header__bg__teleport__wrapper g-outside"
+          :style="bgStyle"
+        >
           <div
             v-if="supportsFilterStyle && hasSplash"
             class="c-pc-splash__header__bg"
@@ -89,7 +98,7 @@
 
           <!-- 观看条件 -->
           <pc-auth
-            v-if="!isAuthorized"
+            v-if="!isAuthorized || forceSplashPage"
             class="c-pc-splash__header__auth"
           />
           <!-- 报名观看 -->
@@ -100,6 +109,11 @@
         </div>
       </div>
     </header>
+
+    <div
+      v-if="useNewTheme"
+      class="c-pc-splash-split-line g-boundary"
+    ></div>
 
     <div class="c-pc-splash__main">
       <div class="c-pc-splash__main__inner g-boundary">
@@ -116,15 +130,16 @@
               <pc-rich-text-render
                 :html-content="channelDescription"
                 :should-compress-imgs="compressImageEnabled"
+                :follow-page-skin="false"
               />
             </pc-normal-tab-pane>
           </template>
         </pc-normal-tabs>
 
-        <pc-lang-switch
+        <!-- <pc-lang-switch
           v-if="langSwitchEnabled"
           class="c-pc-splash__main__inner__lang-switch"
-        />
+        /> -->
       </div>
     </div>
 
@@ -146,7 +161,7 @@ import PcNormalTabPane from '@/components/common-base/tabs/pc-normal-tabs/pc-nor
 import PcNormalTabs from '@/components/common-base/tabs/pc-normal-tabs/pc-normal-tabs.vue';
 import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
 import PcEnroll from '@/components/common-business/enroll/pc-enroll.vue';
-import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
+// import PcLangSwitch from '@/components/common-business/lang-switch/pc-lang-switch.vue';
 import PcLiveBookingButton from '@/components/common-business/live-booking/pc-live-booking-button.vue';
 import PcLiveCountDown from '@/components/common-business/live-count-down/pc-live-count-down.vue';
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
@@ -162,15 +177,19 @@ import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useEnrollStore } from '@/store/use-enroll-store';
-import { useLangStore } from '@/store/use-lang-store';
+// import { useLangStore } from '@/store/use-lang-store';
 
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { useThemeStore } from '@/store/use-theme-store';
 
-import { PwcLiveStatusTag } from '@polyv/vue-components';
+import { PwcLiveStatusTag, useResizeObserver } from '@polyv/vue-components';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { ref } from 'vue';
 
 const { getAppBodyElement } = useGlobalInject();
+
+const { forceSplashPage, useNewTheme } = storeDefinitionToRefs(useWatchAppStore);
 
 const { isAuthorized } = storeDefinitionToRefs(useAuthStore);
 
@@ -198,7 +217,16 @@ const {
   arrow: true,
 });
 
-const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
+const splashRef = ref<HTMLElement>();
+const bgStyle = ref({});
+
+useResizeObserver(splashRef, () => {
+  bgStyle.value = {
+    height: `${getAppBodyElement().scrollHeight}px`,
+  };
+});
+
+// const { langSwitchEnabled } = storeDefinitionToRefs(useLangStore);
 
 const { channelMenus } = storeDefinitionToRefs(useChannelMenuStore);
 
@@ -225,7 +253,9 @@ $--splash-header-content-height: 406px;
   left: 0;
   z-index: -1;
   width: 100%;
-  height: ($--splash-header-padding-height * 2) + $--splash-header-content-height;
+  height: 100vh;
+  // height: ($--splash-header-padding-height * 2) + $--splash-header-content-height;
+  min-height: 100vh;
   overflow: hidden;
   background: #1a1b1f;
 }
@@ -243,7 +273,7 @@ $--splash-header-content-height: 406px;
   transform: scale(1.2);
 }
 .c-pc-splash__header__mask {
-  background: rgba(20, 21, 24, 0.75);
+  background: rgba(0, 0, 0, 0.75);
 }
 
 .c-pc-splash__header__inner {
@@ -338,20 +368,57 @@ $--splash-header-content-height: 406px;
   margin-top: 40px;
 }
 
+.c-pc-splash-split-line {
+  position: relative;
+  top: -20px;
+  height: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .c-pc-splash__main__inner {
   position: relative;
   min-height: 200px;
+  background-color: #fff;
 }
 
-.c-pc-splash__main__inner__lang-switch.c-pc-lang-switch {
-  position: absolute;
-  top: 20px;
-  right: 0;
-}
+// .c-pc-splash__main__inner__lang-switch.c-pc-lang-switch {
+//   position: absolute;
+//   top: 14px;
+//   right: 12px;
+// }
 
 .c-pc-splash__footer a {
   color: #aaaaaa;
   text-shadow: none;
+}
+
+.c-pc-splash--dark {
+  .c-pc-splash__main__inner {
+    background: none;
+  }
+
+  .c-pc-rich-text-render__content {
+    color: #fff;
+  }
+
+  .c-pc-splash__footer a {
+    color: rgba(#fff, 0.6);
+  }
+
+  .pws-next-pc-normal-tab-header {
+    background: none !important;
+    &::before {
+      display: none;
+    }
+  }
+
+  .pws-next-pc-normal-tab-header__item {
+    color: rgba(#fff, 0.6) !important;
+  }
+
+  .pws-next-pc-normal-tab-header__item--current {
+    color: #fff !important;
+  }
 }
 
 @media (max-width: 1679px) {

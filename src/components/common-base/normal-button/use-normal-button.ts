@@ -20,6 +20,8 @@ export const normalButtonProps = () => ({
   iconClass: PropUtils.string,
   /** 允许禁用状态触发点击事件，默认：false */
   allowDisabledClick: PropUtils.bool.def(false),
+  /** 是否停止点击事件冒泡，默认：false */
+  stopClickEvent: PropUtils.bool.def(false),
 });
 
 export const normalButtonEmits = () => ({

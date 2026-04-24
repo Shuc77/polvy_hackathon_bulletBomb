@@ -143,6 +143,7 @@ watch(
 
 <style lang="scss">
 .c-mobile-multi-meeting-horizontal__control {
+  position: relative;
   display: flex;
   align-items: center;
   height: 36px;

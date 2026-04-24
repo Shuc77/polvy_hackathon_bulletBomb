@@ -45,6 +45,10 @@ export interface WatchAppStoreState {
   isPageActive: Ref<boolean>;
   /** 不需要互动，默认为 false */
   notNeedIar: Ref<boolean>;
+  /** 使用新版主题，默认为 true */
+  useNewTheme: Ref<boolean>;
+  /** 强制显示引导页，默认为 false */
+  forceSplashPage: Ref<boolean>;
 
   /** 当前是否处于回放观看页地址 */
   isPlaybackWatchUrl: Ref<boolean>;
@@ -162,6 +166,14 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
     })(),
   );
 
+  const useNewTheme = ref(true);
+
+  const forceSplashPage = ref(
+    (() => {
+      return paramGetter().forceSplashPage() === YN.Y;
+    })(),
+  );
+
   const curPageIsLockDrag = ref(false);
 
   /** 当前是否处于回放观看页地址 */
@@ -202,6 +214,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
 
   /** 是否显示引导页 */
   const shouldShowSplash = computed(() => {
+    if (forceSplashPage.value) return true;
+
     if (shouldShowForceAuth.value) return false;
 
     return (
@@ -490,6 +504,8 @@ export const useWatchAppStore = defineStore<'watchApp', WatchAppStore>('watchApp
   return {
     isPageActive,
     notNeedIar,
+    useNewTheme,
+    forceSplashPage,
 
     isPlaybackWatchUrl,
     playbackWatchBasicInfo,

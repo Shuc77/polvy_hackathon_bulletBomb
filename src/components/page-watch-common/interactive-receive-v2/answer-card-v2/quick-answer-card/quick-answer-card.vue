@@ -5,6 +5,7 @@
     :class="{
       'is-portrait': isPortraitWatchLayout,
       'is-normal': isMobile && !isPortraitWatchLayout,
+      'is-page-fullscreen': isIarFullScreen,
     }"
   >
     <iar-quick-answer-card
@@ -23,6 +24,7 @@ import { useAnswerCardTarget } from '../hooks/use-answer-card';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { isMobile } from '@/assets/utils/browser';
+import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 const { loadIarUI } = useIarUILoader('iar-answer-card-ui');
 
@@ -34,13 +36,15 @@ const { targetInited: answerCardTargetInited, getIarTarget: getAnswerCardTarget 
 const { targetInited: questionnaireTargetInited, getIarTarget: getQuestionnaireTarget } =
   useQuestionnaireTarget();
 
+const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
+
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 </script>
 
 <style lang="scss">
 .c-quick-answer-card {
   position: relative;
-  z-index: 120;
+  z-index: 401; // 根据具体的挂载位置调整，确保可以被点击
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -58,6 +62,28 @@ const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
     position: absolute;
     top: 36px;
     left: 0;
+  }
+
+  &.is-page-fullscreen {
+    position: fixed;
+    top: 0;
+    top: 50%;
+    left: 50%;
+    z-index: 2002 !important;
+    transform: rotate(90deg);
+    transform-origin: top;
+  }
+}
+
+@media screen and (orientation: landscape) {
+  .c-quick-answer-card.is-normal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 2002 !important;
+    width: 100vh;
+    margin: auto;
   }
 }
 </style>

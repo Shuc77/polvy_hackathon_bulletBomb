@@ -3,7 +3,7 @@
   <div
     class="c-pc-msg-input-wrap pws-pc-msg-bottom-input-wrap"
     :class="{
-      'pwc-skin-color-mode--dark': pageSkin === ChannelWatchPageSkin.Blue,
+      'pwc-skin-color-mode--dark': pageSkin === ChannelWatchPageSkin.Blue && !useNewTheme,
     }"
   >
     <!-- 面板区 -->
@@ -154,6 +154,7 @@ import { msgInputWrapEmits, msgInputWrapProps, useMsgInputWrap } from '../use-ms
 import { usePopper } from '@/hooks/components/use-popper';
 import { previewImage } from '@/hooks/components/use-image-preview';
 import { useThemeStore } from '@/store/use-theme-store';
+import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const props = defineProps(msgInputWrapProps());
 
@@ -161,6 +162,8 @@ const emit = defineEmits(msgInputWrapEmits());
 
 const { hasNickname } = storeDefinitionToRefs(useViewerStore);
 const { pageSkin } = storeDefinitionToRefs(useThemeStore);
+
+const { useNewTheme } = storeDefinitionToRefs(useWatchAppStore);
 
 const needSetNick = computed(() => {
   return !hasNickname.value;
@@ -239,7 +242,7 @@ $--chat-input-bg: #3e3e4e;
 .c-pc-msg-input-wrap {
   position: relative;
   padding: 13px 8px;
-  background: $--chat-input-bg;
+  background-color: $--chat-input-bg;
 }
 
 .c-pc-msg-input-wrap__panel {
@@ -359,6 +362,7 @@ $--textarea-min-height: 32px;
 
     &::-webkit-scrollbar {
       width: 4px;
+      height: 4px;
     }
   }
   .plv-input-paste-image--disabled {

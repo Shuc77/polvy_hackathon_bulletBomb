@@ -311,6 +311,8 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
     isKicked.value = chatInfo.isKicked;
     isShield.value = chatInfo.isShield;
 
+    realtimeLikes.value = watchCore.chat.getRealtimeLikes();
+
     // 如果被踢出了则跳走页面
     if (isKicked.value) {
       redirectToErrorVerify({

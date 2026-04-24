@@ -12,8 +12,8 @@
       },
     ]"
     :type="nativeType"
-    :disabled="!allowDisabledClick && disabled"
-    @click="emit('click')"
+    :disabled="buttonDisabled"
+    @click="onClick"
   >
     <slot>
       <component
@@ -65,6 +65,22 @@ const buttonClass = computed(() => {
 
   return classes;
 });
+
+const buttonDisabled = computed(() => {
+  return props.disabled && !props.allowDisabledClick;
+});
+
+const onClick = (event: MouseEvent) => {
+  if (buttonDisabled.value) {
+    return;
+  }
+
+  if (props.stopClickEvent) {
+    event.stopPropagation();
+  }
+
+  emit('click');
+};
 </script>
 
 <style lang="scss">
@@ -102,16 +118,6 @@ const buttonClass = computed(() => {
     color: $--font-color-disabled;
     background-color: #e9ecee;
     border: none;
-  }
-}
-
-.c-normal-button--portrait {
-  color: $--color-white;
-  background-color: #ffa611;
-
-  &.is-disabled {
-    color: $--color-white;
-    background-color: #cdcdcd;
   }
 }
 
