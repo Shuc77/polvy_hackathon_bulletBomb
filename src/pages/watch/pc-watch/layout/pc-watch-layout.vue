@@ -46,7 +46,10 @@
           <!-- 右侧主体 -->
           <div class="c-pc-watch-layout__main__right__content">
             <!-- 页面广告 -->
-            <pc-page-advert v-if="!isPlaybackWatchUrl" />
+            <pc-page-advert
+              v-if="!isPlaybackWatchUrl"
+              class="c-pc-watch-layout__main__right__advert"
+            />
 
             <!-- 侧边菜单栏 -->
             <div class="c-pc-watch-layout__main__right__content__inner">
@@ -422,8 +425,14 @@ $--layer-zIndex-motivation-like-animation: 310;
 
 // 左侧占比
 $--layout-left-width-percent: 76.2% !default;
+
+$--layout-gap-percent: 12px !default;
+
 // 右侧宽度占比
-$--layout-right-width-percent: 100% - $--layout-left-width-percent !default;
+$--layout-right-width-percent: calc(
+  100% - $--layout-left-width-percent - $--layout-gap-percent
+) !default;
+
 // 播放器比例
 $--layout-player-percent: 56.25% !default;
 // 副屏收起时的高度
@@ -450,11 +459,8 @@ $--layout-sub-pack-up-height: 40px !default;
 
 .c-pc-watch-layout__main-wrap {
   position: relative;
-  // ==START==  @PLV-TODO Remove 1rem  ==START==
-  padding-top: 0.762 * 0.5625 * 0.08rem;
-  // padding-top: 3%;
-  // ==END== @PLV-TODO Remove 1rem  ==END==
-  padding-bottom: 32px;
+  padding-top: 3%;
+  padding-bottom: 12px;
 }
 
 .c-pc-watch-layout__main-wrap--center {
@@ -527,6 +533,10 @@ $--layout-sub-pack-up-height: 40px !default;
   width: 100%;
   height: 100%;
 }
+.c-pc-watch-layout__main__player-inner {
+  @include pc-watch-card-radius-top;
+  overflow: hidden;
+}
 .c-pc-watch-layout__main__player-wrap--right {
   right: 0;
   bottom: initial;
@@ -564,6 +574,7 @@ $--layout-sub-pack-up-height: 40px !default;
   z-index: 110;
   width: $--layout-right-width-percent;
   height: $--layout-sub-pack-up-height;
+  @include pc-watch-card-radius-top;
 }
 
 .c-pc-watch-layout__main__player-barrage {
@@ -624,6 +635,7 @@ $--layout-sub-pack-up-height: 40px !default;
 .c-pc-watch-layout__main__left {
   position: relative;
   width: $--layout-left-width-percent;
+  @include pc-watch-card-radius;
 
   &::before {
     display: block;
@@ -632,12 +644,14 @@ $--layout-sub-pack-up-height: 40px !default;
     padding-bottom: $--layout-player-percent;
     content: '';
     background: #212121;
+    @include pc-watch-card-radius;
   }
 }
 
 .c-pc-watch-layout__main__basic-wrap {
   padding: 22px 20px;
   background-color: rgba(#000000, 0.4);
+  @include pc-watch-card-radius-bottom;
 }
 
 .c-pc-watch-layout__main__right {
@@ -649,9 +663,28 @@ $--layout-sub-pack-up-height: 40px !default;
   width: $--layout-right-width-percent;
   height: 100%;
   pointer-events: none;
+
+  @include pc-watch-card-radius-top;
+
+  &:has(.c-pc-watch-layout__main__right__top) {
+    .c-pc-watch-layout__main__right__advert {
+      border-radius: 0;
+    }
+
+    .c-pc-watch-layout__main__right__content__inner {
+      border-radius: 0;
+    }
+  }
+
+  &:has(.c-pc-watch-layout__main__right__advert) {
+    .c-pc-watch-layout__main__right__content__inner {
+      border-radius: 0;
+    }
+  }
 }
 .c-pc-watch-layout__main__right__top {
   width: 100%;
+  border-radius: inherit;
   &::after {
     display: block;
     width: 100%;
@@ -659,16 +692,24 @@ $--layout-sub-pack-up-height: 40px !default;
     padding-bottom: $--layout-player-percent;
     content: '';
     background: #212121;
+    border-radius: inherit;
   }
 }
+
+.c-pc-watch-layout__main__right__advert {
+  border-radius: inherit;
+}
+
 .c-pc-watch-layout__main__right__content {
   display: flex;
   flex: 1;
   flex-direction: column;
   pointer-events: initial;
+  border-radius: inherit;
 }
 .c-pc-watch-layout__main__right__content__inner {
   flex: 1;
+  border-radius: inherit;
 }
 .c-pc-watch-layout__main__right__donate-pay {
   pointer-events: initial;
@@ -698,6 +739,10 @@ $--layout-sub-pack-up-height: 40px !default;
 .c-pc-watch-layout__menu-panel-inner__item {
   position: relative;
   background-color: $--color-white;
+  @include pc-watch-card-radius;
+  &::before {
+    @include pc-watch-card-radius;
+  }
 }
 
 .c-pc-watch-layout__main__side-popup-render {

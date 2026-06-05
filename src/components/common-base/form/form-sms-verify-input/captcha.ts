@@ -16,8 +16,8 @@ function getScriptURLByWatchSdkEnv() {
       version: 'v1-latest',
     },
     [SdkLoaderEnv.Rc]: {
-      domain: domainInfo.webSdkDomain,
-      version: 'v1-latest',
+      domain: domainInfo.webSdkTest1Domain,
+      version: 'beta',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,

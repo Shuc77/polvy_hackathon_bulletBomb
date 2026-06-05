@@ -65,8 +65,11 @@ export const useAuthButton = (options: { props: VueProps<typeof authButtonProps>
 
   const thisInstance = getCurrentInstance()?.proxy;
 
+  const computedAuthItem = computed(() => props.authItem);
+
   useAuthButtonProvide({
     authItem: props.authItem,
+    computedAuthItem,
     listenClickAuthButton,
     unlistenClickAuthButton,
   });

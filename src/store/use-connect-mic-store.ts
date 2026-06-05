@@ -12,6 +12,8 @@ import {
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
 import { computed, ComputedRef, ref, Ref, unref } from 'vue';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+import { isOpenHarmony } from '@/assets/utils/browser';
 import { useLayoutStore } from './use-layout-store';
 import { useWebviewStore } from './use-webview-store';
 import { useWatchAppStore } from './use-watch-app-store';
@@ -31,6 +33,8 @@ export interface ConnectMicStoreState {
   openMicStatus: Ref<boolean>;
   /** 邀请上麦状态 */
   inviteStatus: Ref<boolean>;
+  /** 是否自动连麦（与 SDK connectMicInfo.autoConnect 同步，小班课自动进房等场景） */
+  connectMicAutoConnect: Ref<boolean>;
   /** 连麦类型 */
   connectMicType: Ref<ConnectMicType>;
   /** 用户连麦状态 */
@@ -93,6 +97,10 @@ export interface ConnectMicStoreState {
   micSetupSuccess: Ref<boolean>;
   /** 当前是否处于观众模式（仅拉流，不推本地流） */
   isAudience: Ref<boolean>;
+  /** 地址栏连麦 UI 版本（connectMicUIVersion=v1 为旧版，未传参时默认 v2；纯血鸿蒙未传参时为 v1） */
+  connectMicUIVersion: ComputedRef<'v1' | 'v2'>;
+  /** 是否使用新版连麦 UI */
+  isConnectMicUIV2: ComputedRef<boolean>;
 }
 
 export interface ConnectMicStoreAction {
@@ -120,6 +128,21 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
   const layoutStore = useLayoutStore();
   const webviewStore = useWebviewStore();
 
+  const { paramGetter } = useQueryParams();
+
+  /** 地址栏连麦 UI 版本（统一从此处读取，勿在组件内重复拼 query） */
+  const connectMicUIVersion = computed<'v1' | 'v2'>(() => {
+    const v = paramGetter().connectMicUIVersion();
+    if (v === 'v1') return 'v1';
+    if (v === 'v2') return 'v2';
+    // 未传 connectMicUIVersion：纯血鸿蒙默认旧版连麦 UI
+    if (isOpenHarmony) return 'v1';
+    return 'v2';
+  });
+
+  /** 是否使用新版连麦 UI（默认 v2；纯血鸿蒙未传参时为 v1；显式 connectMicUIVersion=v1 为旧版） */
+  const isConnectMicUIV2 = computed(() => unref(connectMicUIVersion) !== 'v1');
+
   /** 配置是否使用连麦 */
   const connectMicEnabled = ref(true);
 
@@ -142,6 +165,9 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
 
   /** 邀请上麦状态 */
   const inviteStatus = ref(__connectMicInfo.inviteStatus);
+
+  /** 是否自动连麦 */
+  const connectMicAutoConnect = ref(__connectMicInfo.autoConnect);
 
   /** 连麦类型 */
   const connectMicType = ref<ConnectMicType>(__connectMicInfo.connectMicType);
@@ -346,6 +372,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     supportConnectMic.value = connectMicInfo.supportConnectMic;
     openMicStatus.value = connectMicInfo.openMicStatus;
     inviteStatus.value = connectMicInfo.inviteStatus;
+    connectMicAutoConnect.value = connectMicInfo.autoConnect;
     connectMicType.value = connectMicInfo.connectMicType;
     connectMicStatus.value = connectMicInfo.connectMicStatus;
     showJoinQueueNumberEnabled.value = connectMicInfo.showJoinQueueNumberEnabled;
@@ -386,6 +413,7 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     mirrorEnabled,
     openMicStatus,
     inviteStatus,
+    connectMicAutoConnect,
     connectMicType,
     connectMicStatus,
     showJoinQueueNumberEnabled,
@@ -426,5 +454,8 @@ export const useConnectMicStore = defineStore<'connectMic', ConnectMicStore>('co
     setIsConnectMicPaused,
     micSetupSuccess,
     isAudience,
+
+    connectMicUIVersion,
+    isConnectMicUIV2,
   };
 });

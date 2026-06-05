@@ -23,6 +23,9 @@ export const forcePc = /[?&]plvLayout=pc?(&|$)/.test(window.location.search);
 /** 强制使用移动端样式 */
 export const forceMobile = /[?&]plvLayout=mobile?(&|$)/.test(window.location.search);
 
+/** 是否微信小程序 */
+export const isWxMiniProgram = uaInfo.client.isWxMiniProgram;
+
 /** 判断 PC 端微信小程序环境 */
 export const isPcMiniProgram = (() => {
   const env = isWeixin || isWorkWeixin;

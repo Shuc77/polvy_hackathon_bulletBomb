@@ -139,7 +139,7 @@ const bubbleBgClass = computed(() => {
 
   switch (currentSkinColorMode.value) {
     case ThemeColorMode.Dark:
-      return '';
+      return 'pws-dark-basic-bg-20';
     case ThemeColorMode.Light:
     default:
       return 'pws-light-basic-bg-20';

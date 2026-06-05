@@ -274,6 +274,17 @@ export const usePageTheme = (opts?: { enabledWatcher?: boolean }) => {
         setupThemeVar();
       },
     );
+
+    // 处理竖屏样式兼容，重新去加载一遍主题样式
+    watch(
+      () => themeStore.isCompactPortraitWatchPage,
+      () => {
+        if (themeStore.isCompactPortraitWatchPage) {
+          importPageTheme();
+        }
+      },
+      { immediate: true },
+    );
   }
 
   return {

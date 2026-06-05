@@ -30,6 +30,7 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { useWebviewStore } from '@/store/use-webview-store';
+import { useEnrollStore } from '@/store/use-enroll-store';
 
 export const useSyncStoreForWatchApp = () => {
   const commonStore = useCommonStore();
@@ -74,12 +75,17 @@ export const useSyncStoreForWatchApp = () => {
 export const useSyncStoreForWatchCore = () => {
   const watchAppStore = useWatchAppStore();
   const channelStore = useChannelStore();
+  const channelInfoStore = useChannelInfoStore();
+  const channelMenuStore = useChannelMenuStore();
+  const themeStore = useThemeStore();
+
   const authStore = useAuthStore();
   const weixinStore = useWeixinStore();
   const langStore = useLangStore();
 
   const financeStore = useFinanceStore();
   const liveBookingStore = useLiveBookingStore();
+  const multiMeetingStore = useMultiMeetingStore();
 
   /**
    * PolyvWatchCoreEvents.WatchCoreSetuped 钩子同步 Store
@@ -89,12 +95,17 @@ export const useSyncStoreForWatchCore = () => {
   function syncStoreAfterWatchCoreSetuped() {
     watchAppStore.syncWatchAppStore();
     channelStore.syncChannelStore();
+    channelInfoStore.syncChannelInfo();
+    channelMenuStore.syncChannelMenus();
+    themeStore.syncThemeStore();
+
     authStore.syncAuthStore();
     weixinStore.syncWeixinStore();
     langStore.syncLangStore();
 
     liveBookingStore.syncLiveBookingStore();
     financeStore.syncFinanceStore();
+    multiMeetingStore.syncMultiMeetingStore();
   }
 
   return {
@@ -116,6 +127,7 @@ export const useSyncStoreForWatchPage = () => {
   const inviteStore = useInviteStore();
   const microActivityStore = useMicroActivityStore();
   const pageAdvertStore = useAdvertStore();
+  const enrollStore = useEnrollStore();
 
   const viewerStore = useViewerStore();
   const subtitleStore = useSubtitleStore();
@@ -139,8 +151,9 @@ export const useSyncStoreForWatchPage = () => {
     inviteStore.syncInviteInfo();
     microActivityStore.syncMicroActivityStore();
     pageAdvertStore.syncAdvertStore();
-    webviewStore.syncWebviewInfo();
+    enrollStore.syncEnrollInfo();
 
+    webviewStore.syncWebviewInfo();
     /**
      * 检查是否需要实名认证
      * @description 不影响页面进入流程，无需 await

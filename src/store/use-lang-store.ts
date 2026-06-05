@@ -71,6 +71,9 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
   /** 英语设置开关 */
   const englishSettingEnabled = ref(false);
 
+  /** 是否开启 AI 多语言翻译 */
+  const aiTranslationEnabled = ref(false);
+
   /** 多语言开关 */
   const langSwitchEnabled = ref(false);
 
@@ -122,6 +125,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
     const langSetting = watchCore.channel.getLangSetting();
 
     englishSettingEnabled.value = langSetting.englishSettingEnabled;
+    aiTranslationEnabled.value = langSetting.aiTranslationEnabled;
     langSwitchEnabled.value = langSetting.langSwitchEnabled;
     japLangEnabled.value = langSetting.japLangEnabled;
 
@@ -177,8 +181,6 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
         });
       }
 
-      // 重新初始化播放器来获取新语种
-      getEmitter().emit(appEvents.player.ResetUpPlayer);
       return true;
     } catch (err) {
       console.error('[i18n] Failed to switch locale:', err);
@@ -218,6 +220,16 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
           history.replaceState(null, document.title, location.pathname + search + location.hash);
         }
       }
+
+      // AI 实时翻译开启时，重新走 setup 流程以获取新语言的频道详情配置
+      if (aiTranslationEnabled.value) {
+        const watchCore = watchAppStore.getWatchCore();
+        watchCore.channel.resetChannelDetail();
+        await watchCore.setup();
+      }
+
+      // 重新初始化播放器来获取新语种
+      getEmitter().emit(appEvents.player.ResetUpPlayer);
     }
 
     return success;

@@ -63,6 +63,7 @@ const { pageAdvertVisible, pageAdvertEnabled, pageAdvertList, pageAdvertCloseVis
   width: 100%;
   height: 0;
   padding-bottom: 16%;
+  border-radius: inherit;
 }
 
 .c-pc-page-advert__content {
@@ -71,6 +72,11 @@ const { pageAdvertVisible, pageAdvertEnabled, pageAdvertList, pageAdvertCloseVis
   bottom: 0;
   left: 0;
   width: 100%;
+  border-radius: inherit;
+
+  .plv-carousel {
+    border-radius: inherit;
+  }
 }
 
 .c-pc-page-advert__prev,

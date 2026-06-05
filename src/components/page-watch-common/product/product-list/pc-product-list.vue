@@ -56,5 +56,25 @@ function beforeClickInterrupt() {
 .c-pc-product-list {
   position: relative;
   height: 100%;
+  // @include pc-watch-card-radius-bottom;
+
+  .plv-product-list {
+    // @include pc-watch-card-radius-bottom;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      @include pc-watch-card-radius;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      @include pc-watch-card-radius;
+    }
+  }
 }
 </style>

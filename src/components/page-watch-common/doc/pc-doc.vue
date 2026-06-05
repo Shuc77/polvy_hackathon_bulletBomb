@@ -49,6 +49,7 @@ useDocKeydownControl();
   width: 100%;
   height: 100%;
   overflow: hidden;
+  @include pc-watch-card-radius-top;
 }
 
 .c-pc-doc--tabletLoadDesktopTemplate {

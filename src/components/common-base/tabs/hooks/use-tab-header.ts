@@ -81,6 +81,11 @@ export const useTabHeader = (
     const currentItemElem = itemRef.value[currentTabIndex.value];
     const scrollElem = scrollRef.value;
     if (currentItemElem && scrollElem) {
+      const maxScroll = scrollElem.scrollWidth - scrollElem.clientWidth;
+      if (maxScroll <= 0) {
+        scrollElem.scrollTo({ top: 0, left: 0 });
+        return;
+      }
       const scrollLeft = Math.max(
         0,
         currentItemElem.offsetLeft - (scrollElem.offsetWidth - currentItemElem.offsetWidth) / 2,
@@ -211,7 +216,7 @@ export const useTabHeaderArrow = (options: {
     if (!scrollElem) return;
 
     const scrollLeft = Math.ceil(scrollElem.scrollLeft);
-    if (scrollLeft > 0) {
+    if (scrollLeft > buffer) {
       leftArrowVisible.value = true;
     } else {
       leftArrowVisible.value = false;

@@ -37,6 +37,9 @@
       <!-- 平台抽奖 -->
       <mobile-lucky-lottery-pendant class="c-portrait-chat-room-pendant__item" />
 
+      <!-- 福袋 -->
+      <lucky-bag-pendant class="c-portrait-chat-room-pendant__item" />
+
       <!-- 投票 -->
       <mobile-vote-pendant
         v-if="voteActiveMenuData.visible"
@@ -70,12 +73,16 @@
       <!-- 商品库小卡片 -->
       <mobile-product-small-card class="c-portrait-chat-room-pendant__product-small-card" />
     </template>
+
+    <lucky-bag-animation class="c-portrait-chat-room-pendant__lucky-bag-animation" />
   </div>
 </template>
 
 <script setup lang="ts">
 import mobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import LuckyBagPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-pendant.vue';
+import LuckyBagAnimation from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-animation.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
 import MobileVotePendant from '@/components/page-watch-common/interactive-receive-v2/vote-v2/mobile-vote-pendant.vue';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
@@ -130,5 +137,12 @@ const { isPlaybacking } = storeDefinitionToRefs(usePlaybackStore);
 .c-portrait-chat-room-pendant__product-small-card {
   margin-bottom: 16px;
   transform: translateX(-70px);
+}
+
+.c-portrait-chat-room-pendant__lucky-bag-animation {
+  position: absolute;
+  right: -16px;
+  bottom: 0;
+  z-index: 300;
 }
 </style>

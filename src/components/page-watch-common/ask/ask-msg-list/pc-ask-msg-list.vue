@@ -53,7 +53,7 @@ defineExpose(askMsgListInstance);
 
 .c-pc-ask-msg-list {
   height: 100%;
-  padding: 0 12px;
+  padding: 12px 64px 0 16px;
   overflow-y: auto;
   color: #adadc0;
   @include scrollbar;

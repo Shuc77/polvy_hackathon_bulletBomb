@@ -12,13 +12,13 @@ import { ImageVerifyInputInstance } from '@/components/common-base/form/form-ima
 export const useAuthCode = () => {
   const { getWatchCore } = useGlobalInject();
 
-  const { authItem } = useAuthButtonInject<AuthSettingItemCode>(onClickAuthButton);
+  const { computedAuthItem } = useAuthButtonInject<AuthSettingItemCode>(onClickAuthButton);
 
   /** 弹层是否显示 */
   const dialogVisible = ref(false);
 
   /** 弹层标题 */
-  const dialogTitle = computed(() => authItem.codeAuthTips);
+  const dialogTitle = computed(() => computedAuthItem.value.codeAuthTips);
 
   /** 表单对象 */
   const formData = reactive({
@@ -32,7 +32,7 @@ export const useAuthCode = () => {
   const needImageVerify = ref(false);
 
   const { protocolContent, protocolFormRules } = useAuthProtocol({
-    authItem,
+    getAuthItem: () => computedAuthItem.value,
     formData,
   });
 
@@ -51,10 +51,10 @@ export const useAuthCode = () => {
   }
 
   /** 二维码图片地址 */
-  const qrcodeImg = computed(() => authItem.qcodeImg);
+  const qrcodeImg = computed(() => computedAuthItem.value.qcodeImg);
 
   /** 二维码提示文案 */
-  const qrcodeTips = computed(() => authItem.qcodeTips);
+  const qrcodeTips = computed(() => computedAuthItem.value.qcodeTips);
 
   const formRules = computed<ValidatorRules>(() => {
     return {

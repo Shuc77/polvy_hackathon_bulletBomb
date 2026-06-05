@@ -94,6 +94,10 @@ const { msgInputWrapRef, onSubmitMessage, onClickSendImage, onSendSystemMsg } = 
   overflow: hidden;
 }
 
+.c-pc-ask__input {
+  padding: 6px;
+}
+
 .c-pc-ask__msg-list {
   flex: 1;
   overflow: hidden;

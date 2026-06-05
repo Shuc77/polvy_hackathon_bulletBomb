@@ -18,7 +18,7 @@ export interface AuthProtocolFormData {
 }
 
 export interface UseAuthProtocolOptions {
-  authItem: AuthSettingItem;
+  getAuthItem: () => AuthSettingItem;
   formData: AuthProtocolFormData;
 }
 
@@ -26,13 +26,14 @@ export interface UseAuthProtocolOptions {
  * 观看条件隐私协议 hook
  */
 export const useAuthProtocol = (options: UseAuthProtocolOptions) => {
-  const { authItem, formData } = options;
+  const { getAuthItem, formData } = options;
 
   /** 隐私协议内容 */
   const protocolContent = computed(() => {
     let privacyStatus = YN.N;
     let privacyContent = '';
 
+    const authItem = getAuthItem();
     if ('privacyStatus' in authItem && authItem.privacyStatus) {
       privacyStatus = authItem.privacyStatus;
     }

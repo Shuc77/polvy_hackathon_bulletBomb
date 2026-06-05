@@ -179,12 +179,12 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
 
   /** 点赞图标链接 */
   const likeIconUrl = computed(() => {
-    const defaultSetting = PlvChatModule.generateDefaultChatSetting();
+    const likeIconType = chatSetting.value.likeIconType;
 
-    const isDefaultIcon = defaultSetting.likeIconUrl === chatSetting.value.likeIconUrl;
-
-    if (themeStore.watchThemeStyleConfig && isDefaultIcon) {
-      return themeStore.watchThemeStyleConfig.common.chat.btn.like.iconUrl;
+    // 处理支持多皮肤的点赞图标
+    if (likeIconType !== '0' && likeIconType !== '-1') {
+      const themeMode = themeStore.currentSkinColorMode;
+      return `https://s2.videocc.net/default-img/like/like-btn-${likeIconType}-${themeMode}.png`;
     }
 
     return chatSetting.value.likeIconUrl;

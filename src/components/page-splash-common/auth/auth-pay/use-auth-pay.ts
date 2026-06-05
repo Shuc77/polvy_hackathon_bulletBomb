@@ -20,20 +20,20 @@ export const useAuthPayPc = () => {
 
   const weixinStore = useWeixinStore();
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
-  const { authItem } = useAuthButtonInject<AuthSettingItemPay>(onClickAuthButton);
+  const { computedAuthItem } = useAuthButtonInject<AuthSettingItemPay>(onClickAuthButton);
   const { handleAuthVerifySuccess } = useAuthCommon();
 
   /** 弹层是否显示 */
   const dialogVisible = ref(false);
 
   /** 弹层标题 */
-  const dialogTitle = computed(() => authItem.payAuthTips);
+  const dialogTitle = computed(() => computedAuthItem.value.payAuthTips);
 
   /** 弹层类型 */
   const dialogType = ref<'pay' | 'payCheck'>('pay');
 
   /** 支付金额 */
-  const payPrice = computed(() => authItem.price);
+  const payPrice = computed(() => computedAuthItem.value.price);
 
   /** 打开支付弹层 */
   function openPayDialog() {
@@ -179,17 +179,17 @@ export const useAuthPayMobile = () => {
   const { handleAuthVerifySuccess } = useAuthCommon();
   const { chooseWXPay } = useWeixinPay();
   const { redirectWeixinAuthorize } = useWeixinAuthorize();
-  const { authItem } = useAuthButtonInject<AuthSettingItemPay>(onClickAuthButton);
+  const { computedAuthItem } = useAuthButtonInject<AuthSettingItemPay>(onClickAuthButton);
   const weixinStore = useWeixinStore();
 
   /** 弹层是否显示 */
   const dialogVisible = ref(false);
 
   /** 弹层标题 */
-  const dialogTitle = computed(() => authItem.payAuthTips);
+  const dialogTitle = computed(() => computedAuthItem.value.payAuthTips);
 
   /** 支付金额 */
-  const payPrice = computed(() => authItem.price);
+  const payPrice = computed(() => computedAuthItem.value.price);
 
   function onClickAuthButton() {
     // 点击付费观看需要先做非静默授权

@@ -55,11 +55,17 @@ defineExpose(tabsInstance);
   display: flex;
   flex-direction: column;
   height: 100%;
+  border-radius: inherit;
 }
 
 .c-pc-aside-tabs__body {
   position: relative;
   flex: 1;
+
+  @include pc-watch-card-radius-bottom;
+  &::before {
+    @include pc-watch-card-radius-bottom;
+  }
 }
 
 .c-pc-aside-tabs__empty {

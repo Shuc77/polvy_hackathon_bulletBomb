@@ -16,6 +16,7 @@ export function convert2WatchSdkLang(lang?: LangType): LanguageType {
   if (lang === LangType.English) return WatchSdkLangEnum.English;
   if (lang === LangType.Japanese) return WatchSdkLangEnum.Japanese;
   if (lang === LangType.Korean) return WatchSdkLangEnum.Korean;
+  if (lang === LangType.Russian) return WatchSdkLangEnum.Russian;
   return WatchSdkLangEnum.English;
 }
 
@@ -29,6 +30,7 @@ export function convert2CurrentLang(lang: LanguageType): LangType {
   if (lang === WatchSdkLangEnum.English) return LangType.English;
   if (lang === WatchSdkLangEnum.Japanese) return LangType.Japanese;
   if (lang === WatchSdkLangEnum.Korean) return LangType.Korean;
+  if (lang === WatchSdkLangEnum.Russian) return LangType.Russian;
   return LangType.English;
 }
 

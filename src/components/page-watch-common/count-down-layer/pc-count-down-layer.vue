@@ -64,6 +64,7 @@ const { isTopRightStyle } = useCountDownLayer();
   pointer-events: initial;
   background-color: #2b2c35;
   background-image: linear-gradient(225deg, #2b2c35 0%, rgba(255, 255, 255, 0.1) 100%);
+  @include pc-watch-card-radius-top;
 }
 
 .c-pc-count-down-layout__time-text {

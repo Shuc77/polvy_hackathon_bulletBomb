@@ -55,6 +55,9 @@
         <!-- 平台抽奖 -->
         <mobile-lucky-lottery-pendant class="c-mobile-chat-room-pendant__item" />
 
+        <!-- 福袋 -->
+        <lucky-bag-pendant class="c-mobile-chat-room-pendant__item" />
+
         <!-- 任务活动 -->
         <mobile-task-activity-pendant
           v-if="!isPageFullscreenOrHorizontalScreen"
@@ -93,6 +96,8 @@
           class="c-mobile-chat-room-pendant__product-small-card"
         />
       </template>
+
+      <lucky-bag-animation class="c-mobile-chat-room-pendant__lucky-bag-animation" />
     </div>
   </custom-teleport>
 </template>
@@ -103,6 +108,8 @@ import { computed, unref } from 'vue';
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import MobileImgAdvert from '@/components/page-watch-common/icon-advert/mobile-img-advert.vue';
 import MobileCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import LuckyBagPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-pendant.vue';
+import LuckyBagAnimation from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-animation.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import MobileFeedbackPendant from '@/components/page-watch-common/interactive-receive/feedback/mobile-feedback-pendant.vue';
@@ -186,5 +193,12 @@ const renderParent = computed<string | HTMLElement>(() => {
 
 .c-mobile-chat-room-pendant__product-small-card {
   transform: translateX(-70px);
+}
+
+.c-mobile-chat-room-pendant__lucky-bag-animation {
+  position: absolute;
+  right: -16px;
+  bottom: 0;
+  z-index: 300;
 }
 </style>

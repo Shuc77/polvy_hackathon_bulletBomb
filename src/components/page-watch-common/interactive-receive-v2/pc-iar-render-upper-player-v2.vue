@@ -23,6 +23,9 @@
 
       <!-- 公告弹层 -->
       <pc-bulletin-popup />
+
+      <!-- 福袋 -->
+      <lucky-bag-render />
     </div>
   </div>
 </template>
@@ -36,6 +39,7 @@ import PcLuckyLotteryDetailPopup from './lucky-lottery/pc/pc-lucky-lottery-detai
 import PcLuckyLotteryReceivePopup from './lucky-lottery/pc/pc-lucky-lottery-receive-popup.vue';
 import PcVoteRulePopup from './vote-v2/pc/pc-vote-rule-popup.vue';
 import PcBulletinPopup from './bulletin-v2/bulletin-popup/pc-bulletin-popup.vue';
+import LuckyBagRender from './lucky-bag/lucky-bag-render.vue';
 </script>
 
 <style lang="scss">

@@ -4,7 +4,11 @@
   <div class="c-portrait-watch-layout-lazyload">
     <!-- 连麦挂件 -->
     <portrait-connect-mic-pendant
-      v-if="connectMicPendantRenderEnabled"
+      v-if="connectMicPendantRenderEnabled && !isConnectMicUIV2"
+      v-show="connectMicPendantVisible"
+    />
+    <mobile-connect-mic-pendant-v2
+      v-if="connectMicPendantRenderEnabled && isConnectMicUIV2"
       v-show="connectMicPendantVisible"
     />
 
@@ -149,6 +153,7 @@ import MobileIdentityLoginDialogRender from '@/components/common-business/watch-
 
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
+import MobileConnectMicPendantV2 from '@/components/page-watch-common/connect-mic/mobile-connect-mic-v2/mobile-connect-mic-pendant-v2.vue';
 import PortraitPlayerControlPopup from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-player-control-popup.vue';
 import PortraitPlayerStreamTrackPopup from '@/components/page-watch-common/player/player-stream-track/portrait-player-stream-track-popup.vue';
 import PortraitInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/mobile-invite-detail-popup.vue';
@@ -202,7 +207,7 @@ const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { microActivityEnabled } = storeDefinitionToRefs(useMicroActivityStore);
 
-const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
+const { connectMicPendantRenderEnabled, connectMicPendantVisible, isConnectMicUIV2 } =
   storeDefinitionToRefs(useConnectMicStore);
 
 const { isPlaybacking, playbackListVisible, chapterVisible } =

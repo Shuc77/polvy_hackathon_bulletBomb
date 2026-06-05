@@ -128,6 +128,7 @@ function onClickMorePanel() {
 .c-pc-chat-input-controller {
   position: relative;
   z-index: 20;
+  padding: 6px;
 }
 
 .c-pc-chat-input-controller__more {
