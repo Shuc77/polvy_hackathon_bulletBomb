@@ -21,8 +21,8 @@ function getIarUIConfigByWatchSdkEnv() {
       version: 'rc-20260423',
     },
     [SdkLoaderEnv.Rc]: {
-      domain: domainInfo.webSdkDomain,
-      version: 'rc-20260423',
+      domain: domainInfo.webSdkTest1Domain,
+      version: 'dev-20260423',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,

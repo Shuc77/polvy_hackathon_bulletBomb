@@ -64,6 +64,9 @@ const actor = computed(() => {
 </script>
 
 <style lang="scss">
+.c-pc-watch-sub-pack-up {
+  border-radius: inherit;
+}
 .c-pc-watch-sub-pack-up__placeholder {
   position: absolute;
   top: 0;
@@ -77,6 +80,7 @@ const actor = computed(() => {
   padding-left: 16px;
   font-size: 14px;
   pointer-events: initial;
+  border-radius: inherit;
 }
 .c-pc-watch-sub-pack-up__placeholder__dot {
   flex-shrink: 0;

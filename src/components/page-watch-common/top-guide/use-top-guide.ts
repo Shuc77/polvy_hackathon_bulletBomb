@@ -1,4 +1,3 @@
-import { useGlobalInject } from '@/app/use-global-inject';
 import { translate } from '@/assets/lang';
 import { isIOS, isOpenHarmony, isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { useToastManager } from '@/hooks/components/use-toast';
@@ -6,10 +5,10 @@ import { useQueryParams } from '@/hooks/core/use-query-params';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
-import { ChannelTopGuideSetting } from '@polyv/live-watch-sdk';
 import { computed, ref } from 'vue';
 import { startsWithProtocol } from '@polyv/utils/es/net';
 import { copyText } from '@/assets/utils/copy';
+import { useThemeStore } from '@/store/use-theme-store';
 
 function isLink(target: string) {
   if (startsWithProtocol(target, ['http', 'https'])) {
@@ -22,7 +21,6 @@ function isLink(target: string) {
 }
 
 export const useTopGuide = () => {
-  const { getWatchCore } = useGlobalInject();
   const { paramGetter } = useQueryParams();
 
   const { toast } = useToastManager();
@@ -31,9 +29,7 @@ export const useTopGuide = () => {
     storeDefinitionToRefs(useLayoutStore);
   const { portraitPlayerIsPageFullscreen } = storeDefinitionToRefs(usePortraitLayoutStore);
 
-  const watchCore = getWatchCore();
-
-  const topGuideSetting = ref<ChannelTopGuideSetting>(watchCore.channel.getTopGuideSetting());
+  const { topGuideSetting } = storeDefinitionToRefs(useThemeStore);
 
   const redirectUrl = ref<string>();
 

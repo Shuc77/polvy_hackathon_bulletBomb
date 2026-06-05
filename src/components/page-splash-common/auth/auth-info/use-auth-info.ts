@@ -12,7 +12,7 @@ export type AuthInfoDialogModel = 'form' | 'login';
 
 export const useAuthInfo = () => {
   const authStore = useAuthStore();
-  const { authItem } = useAuthButtonInject<AuthSettingItemInfo>(onClickAuthButton);
+  const { computedAuthItem } = useAuthButtonInject<AuthSettingItemInfo>(onClickAuthButton);
 
   const { authInfoFields } = storeToRefs(authStore);
 
@@ -33,7 +33,7 @@ export const useAuthInfo = () => {
   /** 弹层标题 */
   const dialogTitle = computed(() => {
     if (dialogModel.value === 'form') {
-      return authItem.infoAuthTips;
+      return computedAuthItem.value.infoAuthTips;
     }
     return translate('auth.info.registered.title');
   });

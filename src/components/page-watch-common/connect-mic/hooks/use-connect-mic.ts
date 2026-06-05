@@ -55,9 +55,21 @@ export const useConnectMicApply = () => {
     watchCore.connectMic.cancelApplyConnectMic();
   }
 
+  /** 接受邀请上麦 */
+  function acceptInviteConnectMic() {
+    watchCore.connectMic.acceptInvite();
+  }
+
+  /** 拒绝邀请上麦 */
+  function refuseInviteConnectMic() {
+    watchCore.connectMic.refuseInvite();
+  }
+
   return {
     applyConnectMic,
     cancelApplyConnectMic,
+    acceptInviteConnectMic,
+    refuseInviteConnectMic,
   };
 };
 
@@ -163,8 +175,12 @@ export const useConnectMic = () => {
 
   const watchCore = getWatchCore();
 
+  /** 连麦 v2（移动端 + PC 端）自定义了邀请 UI，无需调用 SDK 的内置邀请窗口 */
+  const isConnectMicUIV2 = () => connectMicStore.isConnectMicUIV2;
+
   // 邀请上麦
   function onInviteConnectMic() {
+    if (isConnectMicUIV2()) return;
     watchCore.connectMic.openInviting();
   }
 

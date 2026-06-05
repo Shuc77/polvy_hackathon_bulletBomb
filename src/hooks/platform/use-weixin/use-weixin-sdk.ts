@@ -50,10 +50,55 @@ function createWxInstance() {
 
         console.info('wx.config', configData);
 
+        function tryGetMiniProgramEnv() {
+          return new Promise(resolve => {
+            console.info('start tryGetMiniProgramEnv');
+
+            // 1秒后如果还没有获取到环境，则认为没有获取到
+            const timer = window.setTimeout(() => {
+              console.info('wx.miniProgram.getEnv timeout');
+              resolve(false);
+            }, 1000);
+
+            // 尝试调用 api 获取 webview 环境，如果能获取到，则说明是配置成功的
+            if (wx.miniProgram?.getEnv) {
+              wx.miniProgram.getEnv(res => {
+                console.info('wx.miniProgram.getEnv', res);
+                if (res?.miniprogram === true) {
+                  watchAppStore.$patch({
+                    isWxMiniProgram: true,
+                  });
+                  window.clearTimeout(timer);
+                  resolve(true);
+                } else {
+                  window.clearTimeout(timer);
+                  resolve(false);
+                }
+              });
+            } else {
+              console.info('wx.miniProgram.getEnv not support');
+              window.clearTimeout(timer);
+              resolve(false);
+            }
+          });
+        }
+
         setTimeout(() => {
           // 处理 wx-js-sdk 没有触发任何回调的问题
           if (!hadCalled) {
-            reject(new Error('wx sdk setTimeout catch error'));
+            (async () => {
+              const isMiniEnv = await tryGetMiniProgramEnv();
+              if (hadCalled) {
+                return;
+              }
+
+              if (isMiniEnv) {
+                resolve(wx);
+                hadCalled = true;
+              } else {
+                reject(new Error('wx sdk setTimeout catch error'));
+              }
+            })();
           }
         }, 3000);
 

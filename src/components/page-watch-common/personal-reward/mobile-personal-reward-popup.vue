@@ -53,8 +53,9 @@
 
       <div class="c-mobile-personal-reward-popup__inner">
         <mobile-task-reward-list v-if="currentType === 'task-activity'" />
-        <mobile-lottery-record-list v-show="currentType === 'lottery'" />
-        <mobile-lucky-lottery-prize-list v-show="currentType === 'lucky-lottery'" />
+        <mobile-lottery-record-list v-if="currentType === 'lottery'" />
+        <mobile-lucky-lottery-prize-list v-if="currentType === 'lucky-lottery'" />
+        <lucky-bag-win-record v-if="currentType === 'lucky-bag'" />
       </div>
     </div>
   </mobile-popup>
@@ -69,6 +70,7 @@ import { useLangStore } from '@/store/use-lang-store';
 import MobileLotteryRecordList from '../interactive-receive-v2/lottery-v2/lottery-record-list/mobile-lottery-record-list.vue';
 import MobileTaskRewardList from '../task-activity/mobile-task-reward-list.vue';
 import MobileLuckyLotteryPrizeList from '../interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-prize-list.vue';
+import LuckyBagWinRecord from '../interactive-receive-v2/lucky-bag/lucky-bag-win-record.vue';
 import { usePersonalReward } from './use-personal-reward';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { appEvents } from '@/app/app-events';

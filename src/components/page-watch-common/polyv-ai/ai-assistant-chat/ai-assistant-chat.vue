@@ -109,6 +109,10 @@ watch(
   width: 100%;
   height: 100%;
 
+  // .plv-ai-assistant-chat {
+  //   @include pc-watch-card-radius-bottom;
+  // }
+
   .plv-ai-msg-input-wrap__button {
     min-width: 56px;
   }

@@ -21,7 +21,7 @@ export const useMessageEffect = () => {
 
   const chatMsgStore = useChatMsgStore();
 
-  const { effectSetting, getProductClickTemplate, getProductBuyTemplate } = useEffectSetting();
+  const { getEffectSetting, getProductClickTemplate, getProductBuyTemplate } = useEffectSetting();
 
   /** 最大间隔时间，3 秒 */
   const maxTime = 3000;
@@ -147,7 +147,7 @@ export const useMessageEffect = () => {
   }
 
   onMounted(() => {
-    if (effectSetting.productEffectEnabled) {
+    if (getEffectSetting().productEffectEnabled) {
       watchCore.interactReceive.eventEmitter.on(
         InteractReceiveEvents.ProductClick,
         onProductClickEvent,
@@ -161,7 +161,7 @@ export const useMessageEffect = () => {
   });
 
   onBeforeUnmount(() => {
-    if (effectSetting.productEffectEnabled) {
+    if (getEffectSetting().productEffectEnabled) {
       watchCore.interactReceive.eventEmitter.off(
         InteractReceiveEvents.ProductClick,
         onProductClickEvent,

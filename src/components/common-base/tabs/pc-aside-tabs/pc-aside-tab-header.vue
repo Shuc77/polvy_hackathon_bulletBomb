@@ -127,6 +127,8 @@ const { leftArrowVisible, rightArrowVisible } = useTabHeaderArrow({
   font-size: 16px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  // border-radius: 16px 16px 0 0;
+  border-radius: inherit;
 }
 
 .c-pc-aside-tab-header__content {

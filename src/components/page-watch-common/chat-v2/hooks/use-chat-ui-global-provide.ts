@@ -26,6 +26,7 @@ import { useAskStore } from '@/store/use-ask-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useMobileInput } from '@/hooks/behaviors/use-mobile-input';
+// import { generateBgStyle } from '@/themes/utils/theme-config';
 
 export const useChatUIGlobalProvide = () => {
   const { getWatchCore } = useGlobalInject();
@@ -145,6 +146,16 @@ export const useChatUIGlobalProvide = () => {
         onInputBlur: () => {
           onInputBlur();
         },
+
+        // getMessageInputControlStyle: () => {
+        //   if (!watchThemeStyleConfig.value) return {};
+
+        //   const msgInput = watchThemeStyleConfig.value.common.chat.msgInput;
+        //   return {
+        //     ...generateBgStyle(msgInput.bgConfig),
+        //     border: `1px solid ${msgInput.borderColor}`,
+        //   };
+        // },
       };
     },
     getLiveStatus: () => {

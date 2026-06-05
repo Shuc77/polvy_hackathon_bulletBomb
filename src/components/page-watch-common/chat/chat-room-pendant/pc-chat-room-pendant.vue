@@ -39,6 +39,9 @@
 
       <!-- 平台抽奖 -->
       <pc-lucky-lottery-pendant class="c-pc-chat-room-pendant__item" />
+
+      <!-- 福袋 -->
+      <lucky-bag-pendant class="c-pc-chat-room-pendant__item" />
     </template>
     <!-- 图标广告 -->
     <pc-img-advert class="c-pc-chat-room-pendant__item" />
@@ -52,6 +55,8 @@
         />
       </chat-loader-helper>
     </template>
+
+    <lucky-bag-animation class="c-pc-chat-room-pendant__lucky-bag-animation" />
   </div>
 </template>
 
@@ -59,6 +64,8 @@
 import { computed, unref } from 'vue';
 
 import PcCouponPendant from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/coupon-pendant.vue';
+import LuckyBagPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-pendant.vue';
+import LuckyBagAnimation from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-animation.vue';
 import PcLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/pc/pc-lucky-lottery-pendant.vue';
 import PcEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import PcPushCard from '@/components/page-watch-common/interactive-receive/push-card/pc-push-card.vue';
@@ -124,5 +131,12 @@ const hasOtherPendant = computed<boolean>(() => {
 
 .c-pc-chat-room-pendant__item + .c-pc-chat-room-pendant__item {
   margin-top: 12px;
+}
+
+.c-pc-chat-room-pendant__lucky-bag-animation {
+  position: absolute;
+  right: -12px;
+  bottom: 0;
+  z-index: 300;
 }
 </style>

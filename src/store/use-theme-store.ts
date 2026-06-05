@@ -4,8 +4,10 @@
 import {
   BackgroundType,
   ChannelThemeSetting,
+  ChannelTopGuideSetting,
   ChannelWatchPageSkin,
   ChannelWatchThemeStyleType,
+  LiveSquare,
   PlvChannelModule,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
@@ -80,6 +82,10 @@ export interface ThemeStore {
   playerBgUrl: ComputedRef<string | undefined>;
   /* 直播介绍信息卡片开关 */
   descInfoCardEnabled: Ref<boolean>;
+  /** 顶部引导设置 */
+  topGuideSetting: Ref<ChannelTopGuideSetting>;
+  /** 直播广场设置 */
+  liveSquareConfig: Ref<LiveSquare | undefined>;
   /**
    * 兼容竖屏布局
    */
@@ -363,6 +369,12 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
   /* 直播介绍信息卡片开关 */
   const descInfoCardEnabled = ref(__themeSetting.descInfoCardEnabled);
 
+  /** 顶部引导设置 */
+  const topGuideSetting = ref(PlvChannelModule.generateDefaultTopGuideSetting());
+
+  /** 直播广场设置 */
+  const liveSquareConfig = ref<LiveSquare>();
+
   function syncThemeStore() {
     const watchCore = watchAppStore.getWatchCore();
     const setting = watchCore.channel.getThemeSetting();
@@ -381,6 +393,9 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
 
     pcWatchBackgroundImage.value = setting.pcWatchBackgroundImage;
     descInfoCardEnabled.value = setting.descInfoCardEnabled;
+
+    topGuideSetting.value = watchCore.channel.getTopGuideSetting();
+    liveSquareConfig.value = watchCore.channel.getLiveSquareConfig();
   }
 
   return {
@@ -413,6 +428,9 @@ export const useThemeStore = defineStore<'theme', ThemeStore>('theme', () => {
     playerBgUrl,
 
     descInfoCardEnabled,
+
+    topGuideSetting,
+    liveSquareConfig,
 
     isCompactPortraitWatchPage,
     syncThemeStore,

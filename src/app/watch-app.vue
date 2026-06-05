@@ -15,7 +15,7 @@
       />
     </template>
 
-    <!-- <theme-select v-if="watchAppInited" /> -->
+    <theme-select v-if="watchAppInited && paramGetter().debugSkin()" />
   </div>
 </template>
 
@@ -29,9 +29,14 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import DirectBusinessPageEntry from './layout/direct-business-page/direct-business-page-entry.vue';
 import { useGlobalInject } from './use-global-inject';
-// import ThemeSelect from '@/themes/debug/theme-select.vue';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 const { uniqueId } = useGlobalInject();
+const { paramGetter } = useQueryParams();
+
+const ThemeSelect = defineAsyncComponent(
+  () => import(/* webpackChunkName: "theme-select" */ '@/themes/debug/theme-select.vue'),
+);
 
 const PcMain = defineAsyncComponent(
   () => import(/* webpackChunkName: "pc-main" */ './layout/main-enter/pc-main.vue'),

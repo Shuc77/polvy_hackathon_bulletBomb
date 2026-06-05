@@ -17,6 +17,7 @@ import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
+import { isWxMiniProgram } from '@/assets/utils/browser';
 
 /**
  * 播放器相关事件 hook
@@ -189,6 +190,13 @@ export const usePlayerEvent = () => {
     data: PlayerEventsRelations[PlayerEvents.PlayerFullscreenChange],
   ) {
     document.body.classList.toggle('g-page-player-system-fullscreen', data.isFullscreen);
+
+    // 微信小程序下，退出全屏后重新计算高度，解决部分机型问题
+    if (isWxMiniProgram && !data.isFullscreen) {
+      setTimeout(() => {
+        getEmitter().emit(appEvents.global.MobileLayoutComputedSize);
+      }, 1000);
+    }
   }
 
   /** 绑定播放器事件 */

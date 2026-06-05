@@ -37,6 +37,9 @@
     <mobile-coupon-common-popup />
     <!-- 优惠券已领取弹窗 -->
     <mobile-coupon-user-popup />
+
+    <!-- 福袋 -->
+    <lucky-bag-render />
   </div>
 </template>
 
@@ -47,6 +50,7 @@ import MobileBulletinPopup from '../interactive-receive-v2/bulletin-v2/bulletin-
 import AnswerCardDialog from './answer-card-v2/answer-card-dialog/answer-card-dialog.vue';
 import QuickAnswerCard from './answer-card-v2/quick-answer-card/quick-answer-card.vue';
 import PortraitCheckInPopup from './check-in-v2/portrait-check-in-popup.vue';
+import LuckyBagRender from './lucky-bag/lucky-bag-render.vue';
 import MobileLotteryDialog from './lottery-v2/lottery-dialog/mobile-lottery-dialog.vue';
 import MobileLuckyLotteryDetailPopup from './lucky-lottery/mobile-lucky-lottery-detail-popup.vue';
 import MobileLuckyLotteryListPopup from './lucky-lottery/mobile-lucky-lottery-list-popup.vue';

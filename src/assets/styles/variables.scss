@@ -115,3 +115,17 @@ $--form-input-themes: (
 // 播放器控制栏相关样式变量
 // 播放器面板背景
 $--player-control-panel-bg: rgba(0, 0, 0, 0.65) !default;
+
+$--pc-watch-card-radius: 16px !default;
+
+@mixin pc-watch-card-radius {
+  border-radius: $--pc-watch-card-radius;
+}
+
+@mixin pc-watch-card-radius-top {
+  border-radius: $--pc-watch-card-radius $--pc-watch-card-radius 0 0;
+}
+
+@mixin pc-watch-card-radius-bottom {
+  border-radius: 0 0 $--pc-watch-card-radius $--pc-watch-card-radius;
+}

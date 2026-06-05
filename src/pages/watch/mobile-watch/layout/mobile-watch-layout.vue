@@ -337,10 +337,12 @@ async function computedLayoutSize() {
   if (!layoutWrapElem || !layoutTopElem || !layoutBottomElem) return;
 
   const wrapHeight = layoutWrapElem.clientHeight;
+  const topHeight = layoutTopElem.clientHeight;
+  const bottomHeight = layoutBottomElem.clientHeight;
 
-  mobileLayoutTopHeight.value = layoutTopElem.clientHeight;
-  mobileLayoutBottomHeight.value = layoutBottomElem.clientHeight;
-  mobileLayoutBottomTop.value = wrapHeight - mobileLayoutBottomHeight.value;
+  mobileLayoutTopHeight.value = topHeight;
+  mobileLayoutBottomHeight.value = bottomHeight;
+  mobileLayoutBottomTop.value = wrapHeight - bottomHeight;
 }
 
 function onClickPlayerRegion() {
@@ -361,22 +363,26 @@ const { updateScreenOrientationModeManually, screenOrientationMode } = useScreen
   },
 });
 
+const forceComputedLayoutSize = () => {
+  updateScreenOrientationModeManually();
+  layoutStore.$patch({ screenOrientationMode: screenOrientationMode.value });
+  computedLayoutSize();
+};
+
 watch(isSmallWindow, () => {
   setTimeout(() => {
-    updateScreenOrientationModeManually();
-    layoutStore.$patch({ screenOrientationMode: screenOrientationMode.value });
-    computedLayoutSize();
+    forceComputedLayoutSize();
   }, 300);
 });
 
-useEventBusListener(appEvents.global.MobileLayoutComputedSize, computedLayoutSize);
+useEventBusListener(appEvents.global.MobileLayoutComputedSize, forceComputedLayoutSize);
 
 // 小窗播放按钮点击处理
 useEventBusListener(appEvents.portrait.ClickPlayerRegion, onClickPlayerRegion);
 
 useWindowResizeListener(
   () => {
-    computedLayoutSize();
+    forceComputedLayoutSize();
   },
   {
     autoListen: true,

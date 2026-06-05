@@ -163,6 +163,8 @@ export const useQueryParams = (opts?: {
      * 传入该参数后，在移动端横屏场景不会加载播放器和PPT
      * */
     polyvMeeting: buildGetters<'true'>('polyvMeeting'),
+    /** 是否调试皮肤 */
+    debugSkin: buildGetters<YN>('debugSkin'),
     /** 是否加载 VConsole */
     console: buildGetters<'1'>('console'),
     /** 多语言 */
@@ -243,6 +245,8 @@ export const useQueryParams = (opts?: {
     aliPayLinkTarget: buildGetters<string>('aliPayLinkTarget'),
     /** 聊天室 UI 请求版本 */
     chatUIVersion: buildGetters<'v1' | 'v2'>('chatUIVersion'),
+    /** 移动端连麦 UI 版本，v2 为新版 */
+    connectMicUIVersion: buildGetters<'v1' | 'v2'>('connectMicUIVersion'),
     /** 使用 AI 全部功能 */
     useAICompleteFeature: buildGetters<YN>('useAICompleteFeature'),
     /** 是否强制外部授权 */

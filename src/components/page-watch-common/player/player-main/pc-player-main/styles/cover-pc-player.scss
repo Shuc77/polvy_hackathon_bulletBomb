@@ -34,6 +34,7 @@
 
 .plv-live-player-cutOff {
   background-color: #2b3045;
+  @include pc-watch-card-radius-top;
 }
 
 .vcp-player {

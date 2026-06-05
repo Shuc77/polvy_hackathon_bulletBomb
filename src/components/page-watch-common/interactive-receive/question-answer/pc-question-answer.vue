@@ -64,6 +64,10 @@ function onNewsEvent() {
   .plv-ia-qa-ask {
     background: none !important;
   }
+
+  // .plv-ia-qa-ask__main {
+  //   @include pc-watch-card-radius-bottom;
+  // }
 }
 
 .c-pc-question-answer__main {

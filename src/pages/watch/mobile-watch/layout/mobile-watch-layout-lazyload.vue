@@ -9,7 +9,11 @@
 
     <!-- 连麦挂件 -->
     <mobile-connect-mic-pendant
-      v-if="connectMicPendantRenderEnabled"
+      v-if="connectMicPendantRenderEnabled && !isConnectMicUIV2"
+      v-show="connectMicPendantVisible"
+    />
+    <mobile-connect-mic-pendant-v2
+      v-if="connectMicPendantRenderEnabled && isConnectMicUIV2"
       v-show="connectMicPendantVisible"
     />
 
@@ -125,6 +129,7 @@ import MobileChatFullMessage from '@/components/page-watch-common/chat/chat-full
 import MobileChatInputControllerFixed from '@/components/page-watch-common/chat/chat-input-controller/mobile-chat-input-controller-fixed/mobile-chat-input-controller-fixed.vue';
 import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/mobile-chat-set-nick.vue';
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
+import MobileConnectMicPendantV2 from '@/components/page-watch-common/connect-mic/mobile-connect-mic-v2/mobile-connect-mic-pendant-v2.vue';
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
@@ -189,7 +194,7 @@ const MobileWithdrawDetail = defineAsyncComponent(
     ),
 );
 
-const { connectMicPendantRenderEnabled, connectMicPendantVisible } =
+const { connectMicPendantRenderEnabled, connectMicPendantVisible, isConnectMicUIV2 } =
   storeDefinitionToRefs(useConnectMicStore);
 
 const { canSetNick } = storeDefinitionToRefs(useViewerStore);

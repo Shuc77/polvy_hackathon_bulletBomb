@@ -13,6 +13,7 @@ export const usePersonalReward = () => {
       { type: 'task-activity', text: translate('personalReward.taskEnter') },
       { type: 'lottery', text: translate('personalReward.lotteryEnter') },
       { type: 'lucky-lottery', text: translate('personalReward.luckyLotteryEnter') },
+      { type: 'lucky-bag', text: translate('personalReward.luckyBagEnter') },
     ];
   });
 
@@ -55,6 +56,11 @@ export const usePersonalReward = () => {
 
   useEventBusListener(appEvents.iar.OpenLuckyLotteryPrizeListDialog, () => {
     currentType.value = 'lucky-lottery';
+    show();
+  });
+
+  useEventBusListener(appEvents.iar.OpenLuckyBagPrizeListDialog, () => {
+    currentType.value = 'lucky-bag';
     show();
   });
 

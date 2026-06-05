@@ -1,5 +1,4 @@
-import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
-import { LiveSquare, YN, plvInterval } from '@polyv/live-watch-sdk';
+import { LiveSquare, plvInterval } from '@polyv/live-watch-sdk';
 import { ref, computed } from 'vue';
 import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
 import { openLink } from '@/assets/utils/url';
@@ -12,16 +11,23 @@ import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useToast } from '@polyv/vue-components';
 import { translate } from '@/assets/lang';
 import { useQueryParams } from '@/hooks/core/use-query-params';
+import { useThemeStore } from '@/store/use-theme-store';
+import { ynToBool } from '@polyv/utils/es/boolean';
 
-export type LiveSquareLinkConfig = Exclude<LiveSquare, 'enabled' | 'title'>;
+export type liveSquareConfig = Exclude<LiveSquare, 'enabled' | 'title'>;
 
 function useLiveSquare() {
+  const { liveSquareConfig } = storeDefinitionToRefs(useThemeStore);
+
   /** 直播广场是否开启 */
-  const liveSquareEnabled = ref<YN>(YN.N);
+  const liveSquareEnabled = computed(() => {
+    return liveSquareConfig.value ? ynToBool(liveSquareConfig.value.enabled) : false;
+  });
+
   /** 直播广场标题 */
-  const liveSquareTitle = ref('');
-  /** 直播广场链接配置 */
-  const liveSquareLinkConfig = ref<LiveSquareLinkConfig>();
+  const liveSquareTitle = computed(() => {
+    return liveSquareConfig.value ? liveSquareConfig.value.title : '';
+  });
 
   const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
 
@@ -58,41 +64,30 @@ function useLiveSquare() {
     },
   });
 
-  const { getWatchCore } = useMultiPolyvWatchApp();
-  const watchCore = getWatchCore();
-  const liveSquareConfig = watchCore.channel.getLiveSquareConfig();
-
-  if (liveSquareConfig) {
-    liveSquareEnabled.value = liveSquareConfig.enabled;
-    liveSquareTitle.value = liveSquareConfig.title;
-    liveSquareLinkConfig.value = liveSquareConfig;
-  }
-
   function getLinkData(): LinkData | null {
-    if (!liveSquareLinkConfig.value) {
+    if (!liveSquareConfig.value) {
       return null;
     }
 
     // 普通链接类型
     const data = {
-      link: liveSquareLinkConfig.value.link,
-      jumpWay: (liveSquareLinkConfig.value.jumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
-      pcLink: liveSquareLinkConfig.value.pcLink,
-      pcLinkJumpWay:
-        (liveSquareLinkConfig.value.pcLinkJumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
-      mobileAppLink: liveSquareLinkConfig.value.mobileAppLink,
+      link: liveSquareConfig.value.link,
+      jumpWay: (liveSquareConfig.value.jumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
+      pcLink: liveSquareConfig.value.pcLink,
+      pcLinkJumpWay: (liveSquareConfig.value.pcLinkJumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
+      mobileAppLink: liveSquareConfig.value.mobileAppLink,
       mobileAppLinkJumpWay:
-        (liveSquareLinkConfig.value.mobileAppLinkJumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
-      androidLink: liveSquareLinkConfig.value.androidLink,
-      iosLink: liveSquareLinkConfig.value.iosLink,
-      harmonyLink: liveSquareLinkConfig.value.harmonyLink,
-      wxMiniprogramOriginalId: liveSquareLinkConfig.value.wxMiniprogramOriginalId,
-      wxMiniprogramAppId: liveSquareLinkConfig.value.wxMiniprogramAppId,
-      wxMiniprogramLink: liveSquareLinkConfig.value.wxMiniprogramLink,
+        (liveSquareConfig.value.mobileAppLinkJumpWay as LinkJumpWay) || LinkJumpWay.NewWindow,
+      androidLink: liveSquareConfig.value.androidLink,
+      iosLink: liveSquareConfig.value.iosLink,
+      harmonyLink: liveSquareConfig.value.harmonyLink,
+      wxMiniprogramOriginalId: liveSquareConfig.value.wxMiniprogramOriginalId,
+      wxMiniprogramAppId: liveSquareConfig.value.wxMiniprogramAppId,
+      wxMiniprogramLink: liveSquareConfig.value.wxMiniprogramLink,
     };
 
     // 旧数据配置了通用链接，则多平台链接全部失效
-    if (liveSquareLinkConfig.value.linkType === '10') {
+    if (liveSquareConfig.value.linkType === '10') {
       data.pcLink = '';
       data.mobileAppLink = '';
       data.androidLink = '';
@@ -104,8 +99,8 @@ function useLiveSquare() {
     }
 
     // 旧数据只配置多平台，要把手机端链接放到浏览器链接里使用
-    if (liveSquareLinkConfig.value.linkType === '11' && !data.link) {
-      data.link = liveSquareLinkConfig.value.mobileLink;
+    if (liveSquareConfig.value.linkType === '11' && !data.link) {
+      data.link = liveSquareConfig.value.mobileLink;
     }
 
     return data;
@@ -167,18 +162,18 @@ function useLiveSquare() {
   }
 
   function handleGeneralLinkType() {
-    if (!liveSquareLinkConfig.value?.link) return;
+    if (!liveSquareConfig.value?.link) return;
 
-    const promoteLinkUrl = formatLink(liveSquareLinkConfig.value.link, getLinkParams);
+    const promoteLinkUrl = formatLink(liveSquareConfig.value.link, getLinkParams);
     if (!promoteLinkUrl) return;
 
-    const jumpWay = (liveSquareLinkConfig.value.jumpWay as LinkJumpWay) || LinkJumpWay.NewWindow;
+    const jumpWay = (liveSquareConfig.value.jumpWay as LinkJumpWay) || LinkJumpWay.NewWindow;
     openJumpWayLink(promoteLinkUrl, jumpWay);
   }
 
   function handleLiveSquareClick() {
-    if (!liveSquareLinkConfig.value) {
-      console.warn('handleLiveSquareClick: liveSquareLinkConfig is null');
+    if (!liveSquareConfig.value) {
+      console.warn('handleLiveSquareClick: liveSquareConfig is null');
       return;
     }
 
@@ -242,22 +237,19 @@ function useLiveSquare() {
   }
 
   const isShowLiveSquare = computed(() => {
-    return (
-      liveSquareEnabled.value === YN.Y && !showLiveCountDown.value && liveSquareTitle.value !== ''
-    );
+    return liveSquareEnabled.value && !showLiveCountDown.value && liveSquareTitle.value !== '';
   });
 
   // onMounted(() => {
-  //   if (liveSquareLinkConfig.value?.linkType === String(LinkType.MultiPlatform)) {
+  //   if (liveSquareConfig.value?.linkType === String(LinkType.MultiPlatform)) {
   //     // 这里可以根据需要传入微信按钮选择器
   //     // hackWeixinBtnSetup('.live-square-weixin-btn');
   //   }
   // });
 
   return {
-    liveSquareEnabled,
     liveSquareTitle,
-    liveSquareLinkConfig,
+    liveSquareConfig,
     isShowLiveSquare,
     handleLiveSquareClick,
     handleGeneralLinkType,

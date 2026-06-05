@@ -29,7 +29,8 @@
         :label="$lang('call.connect')"
         :name="TAB_NAME_CONNECT_MIC"
       >
-        <pc-connect-mic />
+        <pc-connect-mic v-if="!isConnectMicUIV2" />
+        <pc-connect-mic-v2 v-else />
       </pc-aside-tab-pane>
 
       <template v-for="(menu, index) in channelMenus">
@@ -172,6 +173,7 @@ import PcAsideTabs from '@/components/common-base/tabs/pc-aside-tabs/pc-aside-ta
 import PcChatRoom from '@/components/page-watch-common/chat/chat-room/pc-chat-room.vue';
 import PcMicroActivity from '@/components/page-watch-common/micro-activity/pc-micro-activity/pc-micro-activity.vue';
 import PcConnectMic from '@/components/page-watch-common/connect-mic/pc-connect-mic/pc-connect-mic.vue';
+import PcConnectMicV2 from '@/components/page-watch-common/connect-mic/pc-connect-mic-v2/pc-connect-mic-v2.vue';
 import PcProductList from '@/components/page-watch-common/product/product-list/pc-product-list.vue';
 import PcVotePanelV2 from '@/components/page-watch-common/interactive-receive-v2/vote-v2/pc/pc-vote-panel.vue';
 import PcQuestionAnswer from '@/components/page-watch-common/interactive-receive/question-answer/pc-question-answer.vue';
@@ -225,7 +227,8 @@ const { pcAsideTabCurrentName } = storeDefinitionToRefs(useLayoutStore);
 
 const { watchThemeStyleConfig } = storeDefinitionToRefs(useThemeStore);
 
-const { connectMicPendantRenderEnabled } = storeDefinitionToRefs(useConnectMicStore);
+const { connectMicPendantRenderEnabled, isConnectMicUIV2 } =
+  storeDefinitionToRefs(useConnectMicStore);
 
 const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
@@ -258,6 +261,7 @@ function onIsEmptyCallback(isEmpty: boolean) {
 <style lang="scss">
 .c-pc-watch-aside-menu {
   height: 100%;
+  border-radius: inherit;
 }
 
 .c-pc-watch-aside-menu__topic {

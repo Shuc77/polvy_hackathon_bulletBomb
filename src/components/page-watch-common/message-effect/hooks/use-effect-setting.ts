@@ -5,16 +5,16 @@ export const useEffectSetting = () => {
   const { getWatchCore } = useGlobalInject();
   const watchCore = getWatchCore();
 
-  /**
-   * 特效设置
-   */
-  const effectSetting = watchCore.channel.getEffectSetting();
+  function getEffectSetting() {
+    return watchCore.channel.getEffectSetting();
+  }
 
   /**
    * 根据商品类型获取商品点击模板
    * @param type 商品类型
    */
   function getProductClickTemplate(type: ProductClickType) {
+    const effectSetting = getEffectSetting();
     switch (type) {
       case IarProductType.Normal:
         return effectSetting.clickOrdinaryProductEffectTip;
@@ -32,11 +32,12 @@ export const useEffectSetting = () => {
    * 获取商品购买模板
    */
   function getProductBuyTemplate() {
+    const effectSetting = getEffectSetting();
     return effectSetting.orderProductEffectTip;
   }
 
   return {
-    effectSetting,
+    getEffectSetting,
     getProductClickTemplate,
     getProductBuyTemplate,
   };

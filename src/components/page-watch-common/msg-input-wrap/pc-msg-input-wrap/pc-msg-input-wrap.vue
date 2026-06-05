@@ -241,8 +241,9 @@ $--chat-input-bg: #3e3e4e;
 
 .c-pc-msg-input-wrap {
   position: relative;
-  padding: 13px 8px;
+  padding: 12px 8px;
   background-color: $--chat-input-bg;
+  border-radius: 12px;
 }
 
 .c-pc-msg-input-wrap__panel {

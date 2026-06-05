@@ -38,8 +38,8 @@ export const useChatSDKAskQuestionUILoader = () => {
         version: 'rc-20260205',
       },
       [SdkLoaderEnv.Rc]: {
-        domain: domainInfo.webSdkDomain,
-        version: 'rc-20260205',
+        domain: domainInfo.webSdkTest1Domain,
+        version: 'dev-20260205',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,

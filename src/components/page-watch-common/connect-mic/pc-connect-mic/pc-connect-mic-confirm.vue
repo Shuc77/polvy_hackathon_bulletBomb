@@ -6,23 +6,20 @@
   >
     <div class="c-pc-connect-mic-confirm__inner">
       <p class="c-pc-connect-mic-confirm__text">
-        {{ $lang('connectMic.confirm1') }}
-        <br />
-        {{ $lang('connectMic.confirm2') }}
+        {{ $lang('connectMic.confirm3') }}
       </p>
       <div class="c-pc-connect-mic-confirm__buttons">
-        <div
-          class="c-pc-connect-mic-confirm__button c-pc-connect-mic-confirm__button--confirm"
-          @click="onClickConfirm"
-        >
-          {{ $lang('connectMic.endConnect') }}
-        </div>
-
         <div
           class="c-pc-connect-mic-confirm__button"
           @click="onClickCancel"
         >
-          {{ $lang('connectMic.keepConnect') }}
+          {{ $lang('base.cancel') }}
+        </div>
+        <div
+          class="c-pc-connect-mic-confirm__button c-pc-connect-mic-confirm__button--confirm"
+          @click="onClickConfirm"
+        >
+          {{ $lang('base.confirm') }}
         </div>
       </div>
     </div>
@@ -86,11 +83,12 @@ function onClickCancel() {
   line-height: 30px;
   color: $--color-white;
   cursor: pointer;
-  border: 1px solid;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 16px;
 }
 
 .c-pc-connect-mic-confirm__button--confirm {
-  color: #ff5b5b;
+  background: #ff5b5b;
+  border-color: #ff5b5b;
 }
 </style>

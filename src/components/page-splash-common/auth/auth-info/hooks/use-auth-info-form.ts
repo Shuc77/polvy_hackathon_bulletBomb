@@ -69,7 +69,7 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
   const identityStore = useIdentityStore();
 
   const authStore = useAuthStore();
-  const { authItem } = useAuthButtonInject<AuthSettingItemInfo>();
+  const { computedAuthItem } = useAuthButtonInject<AuthSettingItemInfo>();
   const { smsVerifyEnabled, hasMobileField } = useAuthInfoSetting();
 
   const { authInfoFields } = storeToRefs(authStore);
@@ -77,7 +77,7 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
   const { imageVerifyInputRef, imageVerifyInputEnabled, smsValidType } = useAuthInfoSms();
 
   /** 提示信息 */
-  const infoDesc = computed(() => authItem.infoDesc);
+  const infoDesc = computed(() => computedAuthItem.value.infoDesc);
 
   /** 格式化下拉选项 */
   function formatSelectOptions(options?: string): SelectOptionItem[] {
@@ -163,7 +163,7 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
   }
 
   const { protocolContent, protocolFormRules } = useAuthProtocol({
-    authItem,
+    getAuthItem: () => computedAuthItem.value,
     formData,
   });
 

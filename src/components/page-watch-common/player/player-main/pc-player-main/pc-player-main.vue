@@ -9,6 +9,7 @@
     }"
   >
     <background-section
+      class="c-pc-player-main__background-section"
       :background-type="themeSetting.playerBackgroundType"
       :custom-url="playerBgUrl"
     />
@@ -149,6 +150,11 @@ const { iframeVisible, iframeUrl } = usePlayerAdvert();
   left: 0;
   width: 100%;
   height: 100%;
+  @include pc-watch-card-radius-top;
+}
+
+.c-pc-player-main__background-section {
+  @include pc-watch-card-radius-top;
 }
 
 .c-pc-player-main__player-sdk-load-error {

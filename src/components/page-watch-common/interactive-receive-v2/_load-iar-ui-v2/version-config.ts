@@ -5,41 +5,41 @@ import camelCase from 'camelcase';
 export const iarUIVersions = {
   /** 签到 */
   'iar-check-in-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: ['pc-check-in', 'mobile-check-in', 'portrait-check-in'] as const,
   },
 
   /** 抽奖 */
   'iar-lottery-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: ['lottery-pendant', 'lottery-dialog', 'lottery-record'] as const,
   },
 
   /** 答题卡 */
   'iar-answer-card-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: ['quick-answer-card', 'answer-card-dialog'] as const,
   },
 
   /** 问答 */
   'iar-questionnaire-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: ['normal-questionnaire', 'questionnaire-dialog'] as const,
   },
 
   /** 优惠券 */
   'iar-coupon-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: [
       'normal-coupon-common-list',
       'normal-coupon-user-list',
@@ -49,9 +49,9 @@ export const iarUIVersions = {
 
   /** 平台抽奖 */
   'iar-lucky-lottery-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: [
       'lucky-lottery-pendant',
       'mobile-lucky-lottery-detail',
@@ -61,18 +61,32 @@ export const iarUIVersions = {
     ] as const,
   },
 
+  /** 福袋 */
+  'lucky-bag-ui-receive': {
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
+    components: [
+      'lucky-bag-animation',
+      'lucky-bag-pendant',
+      'lucky-bag-result-popup',
+      'lucky-bag-task-popup',
+      'lucky-bag-win-record',
+    ] as const,
+  },
+
   /** 投票 */
   'iar-vote-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: ['vote-list', 'vote-pendant', 'vote-list-popup', 'vote-rule-popup'] as const,
   },
   /** 公告 */
   'iar-bulletin-ui': {
-    [SdkLoaderEnv.Prod]: 'rc-20260423',
-    [SdkLoaderEnv.Rc]: 'rc-20260423',
-    [SdkLoaderEnv.Test]: 'dev-20260423',
+    [SdkLoaderEnv.Prod]: 'rc-20260604',
+    [SdkLoaderEnv.Rc]: 'dev-20260604',
+    [SdkLoaderEnv.Test]: 'dev-20260604',
     components: [
       'bulletin-popup',
       'bulletin-topping',
@@ -96,4 +110,12 @@ export type IarUIComponents<T extends IarUIType> = IarUIVersionConfig[T]['compon
  */
 export function getUmdGlobalVariable(componentName: string) {
   return 'PolyvIarUI' + camelCase(componentName, { pascalCase: true });
+}
+
+/**
+ * 获取互动入口全局变量名
+ * @param iarUIType 互动 UI 类型
+ */
+export function getUmdEntranceGlobalVariable(iarUIType: IarUIType) {
+  return getUmdGlobalVariable(iarUIType);
 }

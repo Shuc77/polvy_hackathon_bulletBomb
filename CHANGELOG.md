@@ -4,6 +4,41 @@
 
 ---
 
+## v2.17.0(2026-06-05)
+
+### Bug Fixes
+
+- 修复小程序 webview 场景下移动端播放系统全屏退出后界面异常的问题
+- 修复移动端观看页选择浅色皮肤后，主题样式异常的问题
+- 修复 iOS 小程序 webview 观看页无法打开商品详情页的问题
+- 修复深色模式下聊天气泡背景色缺失的问题
+
+### Features
+
+- 新增福袋功能
+- 支持"AI 多语言翻译"功能
+- 支持响应后台配置点赞图标进行皮肤适配
+- 支持研讨会观众连麦
+
+### Styles
+
+- PC 观看页布局圆角化
+- PC / 移动端连麦面板全新改版，支持本地预览、设备开关、邀请上麦倒计时
+
+### Code Refactoring
+
+- PC 观看页移除 1 rem 逻辑
+
+### Build System
+
+- 新增 `@polyv/lucky-bag-sdk` 和 `@polyv/lucky-bag-ui-receive` 依赖，版本至 `rc-20260604`
+- 更新 `@polyv/vue-components` 版本至 `1.12.0`
+- 更新 `@polyv/chat` 和 `@polyv/chat-ui` 版本至 `rc-20260514`
+- 更新 `@polyv/iar` 相关 UI 层 SDK, 版本至 `rc-20260604`
+- 更新 `@polyv/product-ui` 版本至 `rc-20260604`
+
+---
+
 ## v2.16.0(2026-04-24)
 
 ### Deprecated
@@ -29,7 +64,7 @@
 
 ### Styles
 
-- 更换观看页播放器 js 加载时的 loading(PQYO-12657)
+- 更换观看页播放器 js 加载时的 loading
 - 更改 PC 端引导页的布局样式
 - 调整 PC 端在 UI3.0 设计主题下的样式
 

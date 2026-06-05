@@ -15,14 +15,14 @@ export const useAuthPhone = () => {
   const { getWatchCore } = useGlobalInject();
 
   const viewerStore = useViewerStore();
-  const { authItem } = useAuthButtonInject<AuthSettingItemPhone>(onClickAuthButton);
+  const { computedAuthItem } = useAuthButtonInject<AuthSettingItemPhone>(onClickAuthButton);
   const { getVisitorId } = useFingerPrint();
 
   /** 弹层是否显示 */
   const dialogVisible = ref(false);
 
   /** 弹层标题 */
-  const dialogTitle = computed(() => authItem.authTips);
+  const dialogTitle = computed(() => computedAuthItem.value.authTips);
 
   /** 表单对象 */
   const formData = reactive({
@@ -32,11 +32,11 @@ export const useAuthPhone = () => {
 
   /** 输入框占位文本 */
   const inputPlaceholder = computed(() => {
-    return authItem.whiteListInputTips || translate('auth.phone.placeholder');
+    return computedAuthItem.value.whiteListInputTips || translate('auth.phone.placeholder');
   });
 
   const { protocolContent, protocolFormRules } = useAuthProtocol({
-    authItem,
+    getAuthItem: () => computedAuthItem.value,
     formData,
   });
 
