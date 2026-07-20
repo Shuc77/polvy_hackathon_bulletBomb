@@ -1,4 +1,4 @@
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { ref, watch } from 'vue';
 import {
   ChannelWatchPageSkin,

@@ -1,4 +1,4 @@
-import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
+import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@polyv/utils/external-link';
 import { useWebviewStore } from '@/store/use-webview-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useWeixinButton } from '../use-weixin/use-weixin-button';

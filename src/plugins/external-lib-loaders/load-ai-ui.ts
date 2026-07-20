@@ -3,7 +3,7 @@
  */
 
 import { useGlobalInject } from '@/app/use-global-inject';
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 import type {
   PlaybackQuestionCard,

@@ -34,6 +34,8 @@
 
     <!-- 福袋 -->
     <lucky-bag-render />
+    <!-- 福袋领取弹层 -->
+    <mobile-lucky-bag-receive-popup />
   </div>
 </template>
 
@@ -51,6 +53,7 @@ import MobileVoteRulePopup from './vote-v2/mobile-vote-rule-popup.vue';
 import MobileCouponCommonPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-common-popup.vue';
 import MobileCouponUserPopup from '@/components/page-watch-common/interactive-receive-v2/coupon-v2/mobile-coupon-user-popup.vue';
 import LuckyBagRender from './lucky-bag/lucky-bag-render.vue';
+import MobileLuckyBagReceivePopup from './lucky-bag/mobile-lucky-bag-receive-popup.vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 

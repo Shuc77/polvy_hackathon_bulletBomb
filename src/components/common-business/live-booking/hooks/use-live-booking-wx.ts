@@ -1,8 +1,8 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { WxLiveBookingOptions } from '@polyv/live-watch-sdk';
+import type { WxLiveBookingOptions } from '@polyv/live-watch-sdk';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { ref } from 'vue';
-import { SubscribeInstance } from '../types';
+import type { SubscribeInstance } from '../types';
 import { useLiveBookingFail } from './use-live-booking-fail';
 
 export const useLiveBookingWx = (options?: WxLiveBookingOptions) => {

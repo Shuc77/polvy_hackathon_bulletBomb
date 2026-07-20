@@ -148,7 +148,7 @@
 <script setup lang="ts">
 import { computed, unref, ref, onBeforeUnmount } from 'vue';
 
-import { appEvents } from '@/app/app-events';
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
@@ -181,6 +181,7 @@ import { usePlayerAction } from '../../hooks/use-player-action';
 import { isAndroid, isDingTalk } from '@/assets/utils/browser';
 import { ComponentInstance } from '@/hooks/core/use-vue';
 import { useGlobalInject } from '@/app/use-global-inject';
+import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { useShortNumber } from '@/hooks/business/use-short-number';
 import { usePlayerStreamStopText } from '@/components/page-watch-common/player/hooks/use-player-stream-stop-text';
 import { useThemeStore } from '@/store/use-theme-store';
@@ -246,6 +247,33 @@ const { playerContainer } = usePlayerMain({
       directPlayCutOff: isEnableDirectPlayCutOff.value,
     };
   },
+});
+
+const { toggleFullscreen, supportFullscreen: supportFullscreenApi } = useFullscreen(() => {
+  const videos =
+    playerContainer.value?.querySelectorAll('video') || ([] as unknown as HTMLElement[]);
+
+  let fullscreenElem: HTMLElement | undefined;
+  videos.forEach(elem => {
+    if (elem.clientWidth && elem.clientHeight) {
+      fullscreenElem = elem;
+    }
+  });
+
+  return fullscreenElem as FullscreenElement;
+});
+
+useEventBusListener(appEvents.portrait.PlayerSystemFullscreen, () => {
+  if (supportFullscreenApi.value) {
+    toggleFullscreen();
+  } else {
+    const videoEl = playerContainer.value?.querySelector('video') as
+      | (HTMLVideoElement & { webkitEnterFullScreen?: () => void })
+      | null;
+    if (videoEl?.webkitEnterFullScreen) {
+      videoEl.webkitEnterFullScreen();
+    }
+  }
 });
 
 const { latencyModeSettingVisible, addHistoryTipsListener, fastForwardBackwardVisible } =

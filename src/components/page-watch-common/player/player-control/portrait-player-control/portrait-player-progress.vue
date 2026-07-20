@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import SliderBar from '@/components/common-base/slider-bar/slider-bar.vue';
 import PortraitPlayerFullscreenButton from './portrait-player-fullscreen-button.vue';
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 import { PlayStatus } from '@polyv/live-watch-sdk';
 import { usePlayerStore } from '@/store/use-player-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

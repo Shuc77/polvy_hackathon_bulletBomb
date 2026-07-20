@@ -1,7 +1,7 @@
 /**
  * @file 加载企业微信扫码授权 js 文件
  */
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 
 export interface WwLoginConfig {
   /** 渲染的 id 选择器 */

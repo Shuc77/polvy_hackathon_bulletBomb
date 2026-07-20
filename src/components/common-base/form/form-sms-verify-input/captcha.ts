@@ -1,4 +1,4 @@
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import type { Captcha, ICaptchaOptions } from '@polyv/captcha-sdk';

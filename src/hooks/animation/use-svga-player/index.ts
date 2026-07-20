@@ -1,7 +1,6 @@
-import { $ } from '@just4/dom';
+import { $, DOMWrap } from '@polyv/utils/dom';
 import { getFileSuffix } from '@/assets/utils/file';
 import { onBeforeUnmount, onMounted, Ref, ref, unref, watch } from 'vue';
-import { DOMWrap } from '@just4/dom/dom-wrap';
 import {
   loadSvgaPlayer,
   SVGAParser,

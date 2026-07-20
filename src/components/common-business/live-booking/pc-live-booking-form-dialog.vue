@@ -64,6 +64,10 @@ import { PropUtils } from '@polyv/vue-components';
 const props = defineProps({
   /** 其他频道预约的 channelId */
   channelId: PropUtils.string.def(''),
+  /** 场次 id */
+  sessionId: PropUtils.string.def(''),
+  /** 短信预约状态变化回调 */
+  smsBookingChangeHandler: PropUtils.func<(isBooked: boolean) => void>(),
 });
 
 const {
@@ -76,6 +80,8 @@ const {
   liveBookingFormInstance,
 } = useLiveBookingForm({
   otherChannelId: props.channelId,
+  sessionId: props.sessionId,
+  smsBookingChangeHandler: props.smsBookingChangeHandler,
 });
 
 defineExpose(liveBookingFormInstance);

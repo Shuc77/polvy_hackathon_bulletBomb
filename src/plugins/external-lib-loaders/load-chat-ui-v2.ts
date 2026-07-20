@@ -1,5 +1,5 @@
 import { useGlobalInject } from '@/app/use-global-inject';
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 import type * as PolyvChatUIPkgType from '@polyv/chat-ui';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 import { onMounted, ref } from 'vue';
@@ -38,15 +38,15 @@ export function useLoadChatUIV2(autoLoad = true) {
     const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
       [SdkLoaderEnv.Prod]: {
         domain: domainInfo.webSdkDomain,
-        version: 'rc-20260514',
+        version: 'rc-20260716',
       },
       [SdkLoaderEnv.Rc]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: 'dev-20260514',
+        version: 'dev-20260716',
       },
       [SdkLoaderEnv.Test]: {
         domain: domainInfo.webSdkTest1Domain,
-        version: 'dev-20260514',
+        version: 'dev-20260716',
       },
     };
 

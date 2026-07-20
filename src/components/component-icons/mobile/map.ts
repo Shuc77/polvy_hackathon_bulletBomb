@@ -80,6 +80,7 @@ export { default as MobileIconSubtitleExpand } from './icons/subtitle-expand';
 export { default as MobileIconTranslate } from './icons/translate';
 export { default as MobileIconTranslateTwo } from './icons/translate-two';
 export { default as MobileIconVideoCall } from './icons/video-call';
+export { default as MobileIconVideoFullscreen } from './icons/video-fullscreen';
 export { default as MobileIconVideoRecorder } from './icons/video-recorder';
 export { default as MobileIconVoiceCall } from './icons/voice-call';
 export { default as MobileIconWarningRoundFill } from './icons/warning-round-fill';

@@ -113,8 +113,8 @@
       </div>
 
       <!-- 消息区（V2） -->
-      <chat-loader-helper v-else-if="isChatUIV2">
-        <portrait-swiper-message />
+      <chat-loader-helper v-else-if="isChatUIV2 && chatMenuData.visible">
+        <portrait-chat />
       </chat-loader-helper>
 
       <!-- 右侧挂件 -->
@@ -145,7 +145,7 @@
             <portrait-chat-input-placeholder v-if="!isChatUIV2" />
             <portrait-ask-remind v-if="!isChatUIV2" />
             <chat-loader-helper v-else>
-              <portrait-swiper-message-control />
+              <portrait-chat-control />
             </chat-loader-helper>
           </template>
 
@@ -267,8 +267,8 @@ import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-lo
 import PortraitRunwayEffect from '@/components/page-watch-common/chat-v2/chat-runway-effect/index.vue';
 import PortraitSpecialEffectAnimation from '@/components/page-watch-common/chat-v2/special-effect-animation/index.vue';
 import BulletinTopping from '@/components/page-watch-common/interactive-receive-v2/bulletin-v2/bulletin-topping.vue';
-import PortraitSwiperMessageControl from '../components/swiper-message/swiper-message-control.vue';
-import PortraitSwiperMessage from '../components/swiper-message/swiper-message.vue';
+import PortraitChat from '../components/chat/portrait-chat/index.vue';
+import PortraitChatControl from '../components/chat/portrait-chat/portrait-chat-control.vue';
 
 import { PlvCarousel, PlvCarouselItem } from '@/plugins/polyv-ui/mobile-import';
 import BoundaryWrap from './boundary-wrap.vue';

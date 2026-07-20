@@ -103,7 +103,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { PcIconMedia, PcIconPlayRound } from '@/components/component-icons/pc/map';
 import SearchInput from '@/components/common-base/search-input/search-input.vue';

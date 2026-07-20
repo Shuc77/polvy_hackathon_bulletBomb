@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { MobileIconClose } from '@/components/component-icons/mobile/map';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 
 interface Props {
   /** 直播标题 */

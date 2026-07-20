@@ -1,4 +1,5 @@
 import { translate } from '@/assets/lang';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';
@@ -128,10 +129,31 @@ const useExternalContainerEffectForFeed = () => {
 };
 
 /**
+ * feed-inject 模式下，处理外部容器获取微信分享配置的请求
+ */
+const useExternalContainerEffectForWxShare = () => {
+  if (!isBuildForFeedMainMode()) return;
+
+  const watchAppStore = useWatchAppStore();
+  const feedInjectStore = useFeedInjectStore();
+
+  useEventBusListener(appEvents.global.GetWxShareConfig, () => {
+    if (!feedInjectStore.feedWxShareInfo) {
+      return;
+    }
+
+    watchAppStore
+      .getEmitter()
+      .emit(appEvents.global.WxShareConfigChange, feedInjectStore.feedWxShareInfo);
+  });
+};
+
+/**
  * 外部容器副作用处理
  */
 export const useExternalContainerEffect = () => {
   useExternalContainerEffectMain();
   useExternalContainerEffectForDrag();
   useExternalContainerEffectForFeed();
+  useExternalContainerEffectForWxShare();
 };

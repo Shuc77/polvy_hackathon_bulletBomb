@@ -1,7 +1,7 @@
 import { getRefElem } from '@polyv/vue-components';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { usePageTheme } from '@/themes/use-page-theme';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { onBeforeUnmount, onMounted, Ref } from 'vue';
 
 /**

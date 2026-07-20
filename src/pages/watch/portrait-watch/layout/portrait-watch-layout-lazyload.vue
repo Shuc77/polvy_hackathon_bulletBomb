@@ -105,7 +105,9 @@
     <mobile-personal-reward-popup v-if="iarSdkLoaded && !notNeedIar" />
 
     <!-- 文件管理 -->
-    <mobile-file-management />
+    <chat-loader-helper>
+      <chat-v2-file-share-list />
+    </chat-loader-helper>
 
     <!-- 观看/学习时长统计弹层 -->
     <mobile-learning-stat-dialog v-if="learningStatsDialogEnabled" />
@@ -128,6 +130,11 @@
 
     <!-- 主讲详情 -->
     <anchor-popup />
+
+    <!-- 提问弹层 -->
+    <chat-loader-helper v-if="isChatUIV2">
+      <mobile-ask-popup />
+    </chat-loader-helper>
   </div>
 </template>
 
@@ -150,6 +157,7 @@ import MobileRealNameAuthPopup from '@/components/page-watch-common/real-name-au
 import MobileIdentityCollectInfoDialog from '@/components/common-business/watch-identity/identity-collect-info-dialog/mobile-identity-collect-info-dialog.vue';
 import MobileMorePanelPopup from '@/components/page-watch-common/more-popup/mobile-more-popup/mobile-more-popup.vue';
 import MobileIdentityLoginDialogRender from '@/components/common-business/watch-identity/identity-login-dialog-render/mobile-identity-login-dialog-render.vue';
+import MobileAskPopup from '@/components/page-watch-common/ask-v2/mobile-ask-popup.vue';
 
 import PortraitChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/portrait-chat-full-message.vue';
 import PortraitConnectMicPendant from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-pendant.vue';
@@ -165,7 +173,6 @@ import MobileMemberListRulePopup from '@/components/page-watch-common/member-lis
 import portraitPlayerPlaybackSetting from '@/components/page-watch-common/player/player-control/portrait-player-control/portrait-playback-setting.vue';
 import PortraitMultiMeetingPopup from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-popup.vue';
 import MobilePersonalRewardPopup from '@/components/page-watch-common/personal-reward/mobile-personal-reward-popup.vue';
-import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';
 import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
 import AnchorPopup from '@/components/page-watch-common/anchor/anchor-popup/anchor-popup.vue';
@@ -174,6 +181,7 @@ import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/
 import MobileAskMessageInputPopup from '@/components/page-watch-common/ask-v2/mobile-ask-message-input-popup.vue';
 import MobileMemberListPopupV2 from '@/components/page-watch-common/member-list/member-popup-v2.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import ChatV2FileShareList from '@/components/page-watch-common/chat-v2/file-share-list/index.vue';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useConnectMicStore } from '@/store/use-connect-mic-store';

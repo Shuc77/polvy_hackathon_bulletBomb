@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { onBeforeUnmount, onMounted, readonly } from 'vue';
-import { EventEmitter } from '@polyv/utils/es/event';
+import { EventEmitter } from '@polyv/utils/event';
 import { events } from './events/index';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 

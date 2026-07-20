@@ -1,4 +1,4 @@
-import { EventEmitter } from '@polyv/utils/es/event';
+import { EventEmitter } from '@polyv/utils/event';
 import { injectAssets } from '../lib/inject-assets';
 
 /**

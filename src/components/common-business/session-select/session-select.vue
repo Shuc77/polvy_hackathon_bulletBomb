@@ -1,13 +1,44 @@
 <!-- @file 场次选择业务组件 -->
 <template>
   <div class="c-session-select">
-    <base-simple-tab
+    <div
       v-if="categoryList.length && activeCategoryItem"
-      :value="activeCategoryItem.value"
-      :tabs="categoryList"
-      class="c-session-select__tab"
-      @tab-click="onCategoryIdChange"
-    />
+      class="c-session-select__filter"
+      :class="{
+        'c-session-select__filter--pc': inDeskTopViewAdapterMode,
+      }"
+    >
+      <template v-if="inDeskTopViewAdapterMode">
+        <pc-select
+          class="c-session-select__select"
+          :value="activeCategoryItem.value"
+          :options="categoryList"
+          @input="onCategoryIdChange"
+        />
+        <pc-select
+          v-if="hasChapter"
+          class="c-session-select__select"
+          :value="activeChapterItem?.value"
+          :options="chapterOptionList"
+          @input="onChapterIdChange"
+        />
+      </template>
+      <template v-else>
+        <mobile-select
+          class="c-session-select__select"
+          :value="activeCategoryItem.value"
+          :options="categoryList"
+          @input="onCategoryIdChange"
+        />
+        <mobile-select
+          v-if="hasChapter"
+          class="c-session-select__select"
+          :value="activeChapterItem?.value"
+          :options="chapterOptionList"
+          @input="onChapterIdChange"
+        />
+      </template>
+    </div>
     <div
       class="c-session-select__list"
       ref="scrollRef"
@@ -27,13 +58,15 @@
         :data-list="sessionDataList"
         :get-scroll-ref="getInnerScrollRef"
         @load-more-list="loadMoreChannelSessionDataList"
+        @session-booking-change="onSessionBookingChange"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { BaseSimpleTab } from '@/components/common-base/base-simple-tab';
+import PcSelect from '@/components/common-base/select/pc-select.vue';
+import MobileSelect from '@/components/common-base/select/mobile-select.vue';
 import SessionList from './session-list/session-list.vue';
 import { useSessionSelect } from './use-session-select';
 import { Ref, computed, onBeforeMount, ref } from 'vue';
@@ -69,10 +102,16 @@ const {
   activeCategoryItem,
   onCategoryIdChange,
 
+  hasChapter,
+  chapterOptionList,
+  activeChapterItem,
+  onChapterIdChange,
+
   sessionDataList,
 
   initData,
   loadMoreChannelSessionDataList,
+  onSessionBookingChange,
 } = useSessionSelect({
   getVirtualPageSize: () => {
     return inDeskTopViewAdapterMode.value ? 20 : 10;
@@ -95,11 +134,37 @@ useWindowResizeListener(
 </script>
 
 <style lang="scss">
-.c-session-select__tab {
+.c-session-select__filter {
   position: sticky;
   top: 0;
   z-index: 10;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+  padding: 12px;
   background-color: #f5f5f6;
+}
+
+.c-session-select__select {
+  width: 50%;
+}
+
+.c-session-select__select {
+  .c-mobile-select__body {
+    background-color: #fff;
+  }
+  .c-mobile-select__body__input {
+    width: 0;
+    @include singleline-text;
+  }
+}
+
+.c-session-select__filter--pc {
+  padding: 12px 0;
+
+  .c-session-select__select {
+    width: 33%;
+  }
 }
 
 .c-session-select__list {

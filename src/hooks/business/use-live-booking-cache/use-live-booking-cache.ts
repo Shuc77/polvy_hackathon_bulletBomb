@@ -1,7 +1,7 @@
 import { getStorageKey } from '@/assets/utils/storage';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
-import { local } from '@just4/storage';
+import { local } from '@polyv/utils/storage';
 
 interface LiveBookingCache {
   channelId: string; // 关联的频道 ID（主要用于区分不同频道的预约缓存）

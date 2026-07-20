@@ -18,7 +18,7 @@ import { useLangStore } from './use-lang-store';
 import { useWatchAppStore } from './use-watch-app-store';
 import { useMultiMeetingStore } from './use-multi-meeting-store';
 import { useChannelStore } from './use-channel-store';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { useChatStore } from './use-chat-store';
 import { usePolyvAIStore } from './use-polyv-ai-store';
 import { useIdentityStore } from './use-identity-store';

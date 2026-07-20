@@ -1,4 +1,5 @@
 import { tupleString } from '@/assets/utils/array';
+import type { ChannelSessionDataItem } from '@polyv/live-watch-sdk';
 
 export const SessionListItemSizeList = tupleString(
   'normal',
@@ -17,4 +18,19 @@ export enum ChannelNameDisplayType {
   Hide = 'hide',
   OneRow = 'oneRow',
   TwoRow = 'twoRow',
+}
+
+export interface SessionChapter {
+  /** null 表示无章节的末尾分组 */
+  chapterId: string | null;
+  chapterName: string;
+  sessionCount: number;
+  sessions: ChannelSessionDataItem[];
+}
+
+export interface SessionBookingChangeData {
+  sessionId: string;
+  smsBooked?: boolean | null;
+  wxBooked?: boolean | null;
+  customBooked?: boolean | null;
 }

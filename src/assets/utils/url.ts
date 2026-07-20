@@ -1,8 +1,8 @@
 /**
  * @file 与地址有关的工具方法
  */
-import { appendToURL, IQSStringifyOptions, parse } from '@just4/querystring';
-import { changeProtocol } from '@utils-ts/net';
+import { concat as appendToURL, IQSStringifyOptions, parse } from '@polyv/utils/querystring';
+import { changeProtocol } from '@polyv/utils/net';
 import { isString } from 'lodash-es';
 
 /**

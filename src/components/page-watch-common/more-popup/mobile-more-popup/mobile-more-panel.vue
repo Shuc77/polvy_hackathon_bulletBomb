@@ -75,6 +75,19 @@
         @click="onClickPlaybackSetting"
       />
 
+      <!-- 系统全屏 -->
+      <!-- 竖屏显示 || 横屏无延迟显示 -->
+      <more-item
+        v-if="
+          (isPortraitWatchLayout || (!isPortraitWatchLayout && isLowLatency)) &&
+          playerInited &&
+          isPlayStarted
+        "
+        :icon-comp="MobileIconVideoFullscreen"
+        :text="$lang('player.systemFullscreen')"
+        @click="onClickSystemFullscreen"
+      />
+
       <!-- 音视频切换 -->
       <more-item
         v-if="playerModeSwitcherVisible && isPortraitWatchLayout"
@@ -85,7 +98,7 @@
 
       <!-- 线路设置 -->
       <more-item
-        v-if="lineSettingVisible && isPortraitWatchLayout"
+        v-if="lineSettingVisible && (isPortraitWatchLayout || isLowLatency)"
         :icon-comp="MobileIconMoreLineSetting"
         :text="$lang('player.lineSetting')"
         @click="onClickLineSetting"
@@ -274,6 +287,7 @@ import {
   MobileIconMoreWithdraw,
   MobileIconMoreFiles,
   MobileIconWatchDuration,
+  MobileIconVideoFullscreen,
 } from '@/components/component-icons/mobile/map';
 import {
   MobileOriginIconMoreHideDonate,
@@ -335,7 +349,8 @@ const { isMultiLanguageTrack } = useStreamTrack();
 const { isSmallWindow, pictureInPictureEnabled } = storeDefinitionToRefs(useWebviewStore);
 
 const playerStore = usePlayerStore();
-const { isAudioPlayerMode } = storeDefinitionToRefs(usePlayerStore);
+const { isAudioPlayerMode, isLowLatency, playerInited, isPlayStarted } =
+  storeDefinitionToRefs(usePlayerStore);
 
 const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 
@@ -463,6 +478,25 @@ function onClickPlaybackSetting() {
     _visible: true,
     _useTransition: false,
   });
+}
+
+/** 点击系统全屏 */
+function onClickSystemFullscreen() {
+  // 竖屏暂时全由观看页处理
+  if (isPortraitWatchLayout.value) {
+    getEmitter().emit(appEvents.portrait.PlayerSystemFullscreen);
+    closeMore();
+    return;
+  }
+
+  // 处理横屏场景
+  const isSupported = watchCore.player.supportFullscreen();
+  if (isSupported) {
+    watchCore.player.requestFullscreen();
+  } else {
+    getEmitter().emit(appEvents.portrait.PlayerSystemFullscreen);
+  }
+  closeMore();
 }
 
 /** 点击优惠券 */

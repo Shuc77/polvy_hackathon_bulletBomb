@@ -9,7 +9,7 @@ import type {
   YN,
   ZoneType,
 } from '@polyv/live-watch-sdk';
-import { parse, appendToURL } from '@just4/querystring';
+import { parse, concat as appendToURL } from '@polyv/utils/querystring';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { PolyvWatchAppClass } from '@/plugins/sdk-inject-helper';
 import { isInjectByExternalApp } from '@/assets/utils/utils';
@@ -90,7 +90,7 @@ export const useQueryParams = (opts?: {
 
   function replaceHistoryState({ url }: { url: string }) {
     if (isInjectByExternalApp()) {
-      console.log('replaceHistoryState', url);
+      // console.log('replaceHistoryState', url);
       return;
     }
 

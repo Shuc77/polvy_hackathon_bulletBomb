@@ -9,8 +9,9 @@
 
 const path = require('path');
 const pkgJSON = require('../package');
-const { formatDate } = require('@polyv/utils/cjs/date');
+const { formatDate } = require('@polyv/utils/date');
 
+let buildEnv = process.env.BUILD_ENV || 'prod';
 /** 当前是否为开发模式 */
 const devMode = (exports.devMode = process.env.NODE_ENV !== 'production');
 
@@ -148,7 +149,7 @@ exports.defineConstants = {
   /** 是否启用运行时公共路径 */
   ENABLE_RUNTIME_PUBLIC_PATH: JSON.stringify(enableRuntimePublicPath),
   /** 构建环境 */
-  BUILD_ENV: JSON.stringify(process.env.BUILD_ENV || 'prod'),
+  BUILD_ENV: JSON.stringify(buildEnv),
   /** 是否为静态打包构建模式 */
   IS_STATIC_BUILD_MODE: JSON.stringify(isStaticBuildMode),
   /** 是否需要内部打包 Vue 文件 */
@@ -167,7 +168,6 @@ exports.tsConfigFile = path.resolve(
 exports.transpileDependencies = [
   'pinia',
   '@vue/devtools-api',
-  '@just4',
   'lodash-es',
   'js-base64',
   '@polyv/utils',
@@ -182,7 +182,6 @@ let devAlias = {};
 /** 别名 */
 exports.alias = {
   '@': path.resolve(__dirname, '../src'),
-  '@utils-ts': path.resolve(__dirname, '../node_modules/@polyv/utils/es'),
   ...devAlias,
 };
 

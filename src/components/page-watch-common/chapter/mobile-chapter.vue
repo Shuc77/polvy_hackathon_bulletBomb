@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 import { MobileIconMedia } from '@/components/component-icons/mobile/map';
 import { useChapter } from './hooks/use-chapter';
 

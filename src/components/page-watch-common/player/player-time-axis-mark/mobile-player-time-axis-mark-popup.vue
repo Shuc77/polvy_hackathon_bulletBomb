@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 import { PlayerEvents } from '@polyv/live-watch-sdk';
 
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';

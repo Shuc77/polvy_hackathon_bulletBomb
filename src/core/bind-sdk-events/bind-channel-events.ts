@@ -19,7 +19,7 @@ import {
   isInjectByExternalApp,
   isStaticBuildMode,
 } from '@/assets/utils/utils';
-import { appendToURL } from '@just4/querystring';
+import { concat as appendToURL } from '@polyv/utils/querystring';
 import { extractChannelAndSessionId } from '@/hooks/core/use-query-params';
 import { destroyWatchSdk } from '../watch-sdk';
 import { generateRandomInteger } from '@/assets/utils/number';

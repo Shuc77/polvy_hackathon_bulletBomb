@@ -3,7 +3,13 @@
     v-if="personalRewardEntranceVisible"
     class="c-pc-personal-reward-entrance"
     @click="onClickPersonalReward"
-  ></div>
+  >
+    <div
+      v-if="!isChatUIV2"
+      class="c-pc-personal-reward-entrance__old"
+    ></div>
+    <pc-icon-personal-reward v-else />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -11,13 +17,17 @@ import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { PcIconPersonalReward } from '@/components/component-icons/pc/map';
 
 const { getEmitter } = useGlobalInject();
 
 const { toInterruptUserClick } = useInterruptUserClick();
 
 const { personalRewardEntranceVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+
+const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
 // 点击我的奖励
 function onClickPersonalReward() {
@@ -34,7 +44,7 @@ function onClickPersonalReward() {
 </script>
 
 <style lang="scss">
-.c-pc-personal-reward-entrance {
+.c-pc-personal-reward-entrance__old {
   display: flex;
   align-items: center;
   justify-content: center;

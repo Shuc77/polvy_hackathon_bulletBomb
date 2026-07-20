@@ -5,8 +5,13 @@ import { useLiveBookingStore } from '@/store/use-live-booking-store';
 
 export const useLiveBookingCustom = ({
   otherChannelId,
+  sessionId,
   singleMode,
-}: { otherChannelId?: string; singleMode?: boolean } = {}) => {
+}: {
+  otherChannelId?: string;
+  sessionId?: string;
+  singleMode?: boolean;
+} = {}) => {
   const { getWatchCore } = useGlobalInject();
 
   const { toast } = useToastManager();
@@ -17,6 +22,7 @@ export const useLiveBookingCustom = ({
     const watchCore = getWatchCore();
     const result = await watchCore.liveBooking.submitCustomLiveBooking({
       otherChannelId,
+      sessionId,
     });
 
     if (result.success) {
@@ -42,6 +48,7 @@ export const useLiveBookingCustom = ({
     const watchCore = getWatchCore();
     const result = await watchCore.liveBooking.cancelCustomLiveBooking({
       otherChannelId,
+      sessionId,
     });
 
     if (result.success) {

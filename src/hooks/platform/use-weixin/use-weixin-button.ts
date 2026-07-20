@@ -1,6 +1,6 @@
 import { isWeixin, weixinVersion } from '@/assets/utils/browser';
 import { computed, ref, watch } from 'vue';
-import { randomStr, escapeHTML } from '@polyv/utils/es/string';
+import { randomStr, escapeHTML } from '@polyv/utils/string';
 import { useWeixinSdk } from './use-weixin-sdk';
 
 export interface WeixinButtonOptions {

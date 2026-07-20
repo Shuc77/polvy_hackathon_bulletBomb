@@ -1,6 +1,6 @@
 import { LanguageType, PlvChannelModule, WatchSdkLangEnum } from '@polyv/live-watch-sdk';
 import { LangType } from './lang-enum';
-import { local } from '@just4/storage';
+import { local } from '@polyv/utils/storage';
 import { getUrlQueryParams } from '@/hooks/core/use-query-params';
 
 /** local 记录中的 key */

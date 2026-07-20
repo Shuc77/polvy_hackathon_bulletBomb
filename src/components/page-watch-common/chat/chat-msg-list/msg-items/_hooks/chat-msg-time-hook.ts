@@ -2,7 +2,7 @@
  * @file 聊天室消息时间相关 hook
  */
 import { DATE_FORMAT_HM, DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { computed, ComputedRef, inject, InjectionKey, provide, unref } from 'vue';
 import { ChatMsgDataContext } from './chat-msg-data-hook';
 

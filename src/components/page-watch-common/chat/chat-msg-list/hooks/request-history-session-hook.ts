@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { isString } from '@/assets/utils/string';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { InitialResponse } from '@just4/virtual-list/types';
+import { InitialResponse } from '@polyv/utils/virtual-list';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { RequestHistoryCommonResult } from './types';
 import { useWatchAppStore } from '@/store/use-watch-app-store';

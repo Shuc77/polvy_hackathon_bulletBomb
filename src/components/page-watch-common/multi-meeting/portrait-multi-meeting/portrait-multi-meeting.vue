@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import { DATE_FORMAT_SLASH } from '@/assets/constants/date-format';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { useResizeOssImage } from '@/hooks/business/use-resize-oss-image';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';

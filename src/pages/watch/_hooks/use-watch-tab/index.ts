@@ -1,8 +1,11 @@
+import { appEvents, useEventBusListener } from '@/app/app-events';
 import { TAB_NAME_ASK, TAB_NAME_CHAT } from '@/assets/constants/tab-name';
 import { translate } from '@/assets/lang';
+import { isMobile } from '@/assets/utils/browser';
 import { useAskReminder } from '@/components/page-watch-common/ask/hooks/use-ask';
 import { useChatReminder } from '@/components/page-watch-common/chat/chat-msg-list/hooks/chat-reminder-hook';
 import { useChatStore } from '@/store/use-chat-store';
+import { useLayoutStore } from '@/store/use-layout-store';
 import { computed, watch } from 'vue';
 
 /**
@@ -14,6 +17,7 @@ export const useWatchTabHook = (options: {
 }) => {
   const { curActiveTabName } = options;
 
+  const layoutStore = useLayoutStore();
   const chatStore = useChatStore();
 
   const { chatReminderVisible, updateChatReminderVisible } = useChatReminder({
@@ -51,6 +55,18 @@ export const useWatchTabHook = (options: {
       }
     },
   );
+
+  useEventBusListener(appEvents.ask.OpenAskFeature, () => {
+    if (isMobile) {
+      layoutStore.$patch({
+        mobileMenuCurrentName: TAB_NAME_ASK,
+      });
+    } else {
+      layoutStore.$patch({
+        pcAsideTabCurrentName: TAB_NAME_ASK,
+      });
+    }
+  });
 
   return {
     chatReminderVisible,

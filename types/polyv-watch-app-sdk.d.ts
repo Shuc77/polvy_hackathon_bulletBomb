@@ -3,7 +3,7 @@
  */
 
 import type { PolyvWatchAppClass } from '@/plugins/sdk-inject-helper';
-import type { EventEmitter } from '@polyv/utils/es/event';
+import type { EventEmitter } from '@polyv/utils/event';
 
 type PolyvWatchAppSdkEventRelations = {
   init: void;

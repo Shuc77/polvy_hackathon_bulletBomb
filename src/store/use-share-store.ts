@@ -8,8 +8,8 @@ import {
   DEFAULT_SHARE_WEIBO_ICON,
 } from '@/assets/constants/defaults';
 import { translate } from '@/assets/lang';
-import { appendToURL } from '@just4/querystring';
-import { changeProtocol } from '@utils-ts/net';
+import { concat as appendToURL } from '@polyv/utils/querystring';
+import { changeProtocol } from '@polyv/utils/net';
 import { defineStore } from 'pinia';
 import { useChannelInfoStore } from './use-channel-info-store';
 import { useThemeStore } from './use-theme-store';

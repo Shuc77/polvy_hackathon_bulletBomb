@@ -26,10 +26,13 @@ import { useAskStore } from '@/store/use-ask-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useMobileInput } from '@/hooks/behaviors/use-mobile-input';
-// import { generateBgStyle } from '@/themes/utils/theme-config';
+import { generateBgStyle } from '@/themes/utils/theme-config';
+import { useChannelMenuStore } from '@/store/use-channel-menu-store';
+import { appEvents } from '@/app/app-events/use-app-events';
+import { TAB_NAME_ASK } from '@/assets/constants/tab-name';
 
 export const useChatUIGlobalProvide = () => {
-  const { getWatchCore } = useGlobalInject();
+  const { getWatchCore, getEmitter } = useGlobalInject();
   const watchCore = getWatchCore();
 
   const { isMobile } = useBrowser();
@@ -45,15 +48,17 @@ export const useChatUIGlobalProvide = () => {
     chatRoomLongTimeNotUsedText,
     chatExited,
   } = storeDefinitionToRefs(useChatStore);
-  const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
+  const { isPortraitWatchLayout, mobileMenuCurrentName, pcAsideTabCurrentName } =
+    storeDefinitionToRefs(useLayoutStore);
   const { needHideUserActor } = storeDefinitionToRefs(useViewerStore);
   const { isGoOnRedpackRain } = storeDefinitionToRefs(useInteractReceiveStore);
   const { liveStatus } = storeDefinitionToRefs(useChannelStore);
   const donateStore = useDonateStore();
   const { showDonateGifts } = storeToRefs(donateStore);
+  const { askMenuData } = storeDefinitionToRefs(useChannelMenuStore);
 
   const askSetting = watchCore.ask.getAskSetting();
-  const { askWelcomeText } = storeDefinitionToRefs(useAskStore);
+  const { askWelcomeText, mobileAskPopupVisible } = storeDefinitionToRefs(useAskStore);
 
   const { getHideSources } = useHideChatMsg();
   const {
@@ -123,8 +128,34 @@ export const useChatUIGlobalProvide = () => {
       };
     },
     getAskConfig: () => {
+      const questionEntryIcon = askSetting.questionEntryIcon;
+      const questionEntryCustomUrl = askSetting.questionEntryCustomUrl;
+      let askEntryUrl = '1';
+      if (questionEntryIcon === 'custom' && questionEntryCustomUrl) {
+        askEntryUrl = questionEntryCustomUrl;
+      } else if (questionEntryIcon !== 'custom') {
+        askEntryUrl = questionEntryIcon;
+      }
+
       return {
+        askEnabled: askMenuData.value.visible,
         askWelcomeText: askWelcomeText.value,
+        askEntryUrl,
+        toShowAsk: () => {
+          getEmitter().emit(appEvents.ask.OpenAskFeature);
+        },
+        getAskVisibleStatus: () => {
+          if (mobileAskPopupVisible.value) {
+            return true;
+          }
+          if (mobileMenuCurrentName.value === TAB_NAME_ASK) {
+            return true;
+          }
+          if (pcAsideTabCurrentName.value === TAB_NAME_ASK) {
+            return true;
+          }
+          return false;
+        },
       };
     },
     getInputConfig: () => {
@@ -146,16 +177,6 @@ export const useChatUIGlobalProvide = () => {
         onInputBlur: () => {
           onInputBlur();
         },
-
-        // getMessageInputControlStyle: () => {
-        //   if (!watchThemeStyleConfig.value) return {};
-
-        //   const msgInput = watchThemeStyleConfig.value.common.chat.msgInput;
-        //   return {
-        //     ...generateBgStyle(msgInput.bgConfig),
-        //     border: `1px solid ${msgInput.borderColor}`,
-        //   };
-        // },
       };
     },
     getLiveStatus: () => {
@@ -197,6 +218,17 @@ export const useChatUIGlobalProvide = () => {
     },
     getAnimationVisible: () => {
       return !isGoOnRedpackRain.value;
+    },
+    getStyleConfig: () => {
+      if (!watchThemeStyleConfig.value) return {};
+
+      const msgInput = watchThemeStyleConfig.value.common.chat.msgInput;
+      return {
+        messageInputControlStyle: {
+          ...generateBgStyle(msgInput.bgConfig),
+          border: `1px solid ${msgInput.borderColor}`,
+        },
+      };
     },
     interceptClick: triggerSource => {
       let ignoreSetNick = false;

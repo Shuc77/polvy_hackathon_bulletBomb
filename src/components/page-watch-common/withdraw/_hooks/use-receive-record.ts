@@ -2,7 +2,7 @@ import { DATE_FORMAT_DOT } from '@/assets/constants/date-format';
 import { translate } from '@/assets/lang';
 import { useToastManager } from '@/hooks/components/use-toast';
 import { PageContent, WithdrawStatus } from '@polyv/live-watch-sdk';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { DefineComponent, ref, shallowRef } from 'vue';
 
 export function getWithdrawStatusText(status: WithdrawStatus) {

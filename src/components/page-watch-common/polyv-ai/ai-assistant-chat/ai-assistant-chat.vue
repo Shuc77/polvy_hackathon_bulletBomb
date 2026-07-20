@@ -21,7 +21,7 @@ import { useLayoutStore } from '@/store/use-layout-store';
 import { TAB_NAME_AI_ASSISTANT } from '@/assets/constants/tab-name';
 import type { AiAssistantChat as AiAssistantChatType } from '@polyv/live-watch-ai-ui';
 import { useQueryParams } from '@/hooks/core/use-query-params';
-import { ynToBool } from '@polyv/utils/es/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { YN } from '@polyv/live-watch-sdk';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePolyvAIStore } from '@/store/use-polyv-ai-store';

@@ -10,7 +10,7 @@ import { isWeixin } from '@/assets/utils/browser';
 
 import { useAuthStore } from '@/store/use-auth-store';
 import { useChannelStore } from '@/store/use-channel-store';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import { useToastManager } from '@/hooks/components/use-toast';

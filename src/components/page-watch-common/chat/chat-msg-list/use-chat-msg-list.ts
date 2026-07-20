@@ -4,8 +4,7 @@ import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { VirtualList } from '@just4/virtual-list';
-import { ItemsRemoveEvent } from '@just4/virtual-list/events';
+import { VirtualList, ItemsRemoveEvent, RenderPosition } from '@polyv/utils/virtual-list';
 import { ChatEvents, ChatMsgType, LiveStatus } from '@polyv/live-watch-sdk';
 import { onBeforeUnmount, onMounted, ref, unref, watch } from 'vue';
 import { useChatMsgHandle } from './hooks/chat-msg-handle-hook';
@@ -17,7 +16,6 @@ import { useRequestHistorySession } from './hooks/request-history-session-hook';
 import { useRequestHistoryReplayHook } from './hooks/request-history-replay-hook';
 
 import { ChatMsgListHookOptions, VirtualListInstance } from './hooks/types';
-import { RenderPosition } from '@just4/virtual-list/types';
 import { isMobile } from '@/assets/utils/browser';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useChannelStore } from '@/store/use-channel-store';

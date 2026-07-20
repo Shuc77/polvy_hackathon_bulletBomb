@@ -1,4 +1,4 @@
-import { Countdown, IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
+import { Countdown, IRemaining as CountDownSurplusData } from '@polyv/utils/countdown';
 import { computed, isRef, onUnmounted, Ref, ref, unref } from 'vue';
 
 export interface UseSecondCountDownOptions {

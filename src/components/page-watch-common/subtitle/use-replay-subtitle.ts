@@ -11,7 +11,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLayoutStore } from '@/store/use-layout-store';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { getSubtitleSettings, setSubtitleSettings } from './subtitle-settings-storage';
 
 const TIME_RATIO = 1000;

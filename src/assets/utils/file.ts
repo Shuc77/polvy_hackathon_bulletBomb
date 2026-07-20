@@ -1,7 +1,7 @@
 /**
  * @file 和文件相关的工具方法
  */
-import { changeProtocol } from '@utils-ts/net';
+import { changeProtocol } from '@polyv/utils/net';
 import { isIframe, isMobile, isWeixin } from './browser';
 
 /**

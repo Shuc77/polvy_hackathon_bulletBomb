@@ -6,7 +6,7 @@ import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { watchEffect } from 'vue';
 import { useWebsiteInfo } from '@/hooks/platform/use-browser/use-website-info';
 import { useOgMeta } from '@/hooks/platform/use-browser/use-og-meta';

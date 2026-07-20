@@ -82,7 +82,7 @@ import { isMobile } from '@/assets/utils/browser';
 import { useWebPageFullscreen } from '@/components/page-watch-common/player/hooks/use-web-page-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 
 const { getWatchCore } = useGlobalInject();

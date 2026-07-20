@@ -1,7 +1,7 @@
 /**
  * @file 加载微信 js-sdk 文件
  */
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 
 let loadPromise: Promise<WechatJsSdk.Wx> | undefined;
 

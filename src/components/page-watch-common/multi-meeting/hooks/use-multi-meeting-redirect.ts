@@ -1,6 +1,6 @@
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { appendToURL } from '@just4/querystring';
+import { concat as appendToURL } from '@polyv/utils/querystring';
 
 /**
  * 分会场跳转相关 hook

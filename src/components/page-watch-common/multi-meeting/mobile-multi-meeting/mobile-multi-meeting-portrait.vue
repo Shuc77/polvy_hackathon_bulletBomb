@@ -91,7 +91,7 @@ import MiniStatusTag from '@/components/common-business/status-tag/mini-status-t
 import { MobileIconPageView } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { useMultiMeeting } from '../hooks/use-multi-meeting';
 import { useScrollBar } from '@/hooks/behaviors/use-scroll-bar';
 import { nextTick, ref, unref, watch, watchEffect } from 'vue';

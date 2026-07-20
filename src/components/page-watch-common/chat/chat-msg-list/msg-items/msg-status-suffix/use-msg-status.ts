@@ -1,4 +1,4 @@
-import { uuidV4 } from '@utils-ts/string';
+import { uuidV4 } from '@polyv/utils/string';
 import { throttle } from 'lodash-es';
 import { ref, watch } from 'vue';
 

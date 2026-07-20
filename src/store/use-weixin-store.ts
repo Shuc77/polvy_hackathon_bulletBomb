@@ -4,7 +4,7 @@
 import { isWeixin } from '@/assets/utils/browser';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { PlvWeixinModule, WeixinPayType, WxShareInfo, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { defineStore } from 'pinia';
 import { ComputedRef, Ref, computed, ref } from 'vue';
 import { useWatchAppStore } from './use-watch-app-store';

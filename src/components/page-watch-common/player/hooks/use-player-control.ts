@@ -11,7 +11,7 @@ import { usePlaybackStore } from '@/store/use-playback-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { LiveStatus, PlayStatus, QualityLevelType } from '@polyv/live-watch-sdk';
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 import { computed, unref } from 'vue';
 import { appEvents } from '@/app/app-events';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
@@ -181,8 +181,6 @@ export const usePlayerControl = () => {
 
   /** 线路设置是否显示 */
   const lineSettingVisible = computed<boolean>(() => {
-    if (playerStore.supportLiveTimeShift) return false;
-
     return playerStore.lineCount > 1 && channelStore.liveStatus === LiveStatus.Live;
   });
 

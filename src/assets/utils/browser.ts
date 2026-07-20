@@ -1,4 +1,4 @@
-import { getCurrentUAInfo } from '@just4/ua-info';
+import { getCurrentUAInfo } from '@polyv/utils/ua-info';
 import { PlvChannelModule } from '@polyv/live-watch-sdk';
 import { isBuildForFeedMainMode } from './utils';
 

@@ -88,6 +88,7 @@ onBeforeUnmount(() => {
     rgb(0, 0, 0) 0 1px 1px,
     rgb(0, 0, 0) 0 -1px 1px,
     rgb(0, 0, 0) -1px 0 1px;
+  pointer-events: none;
 }
 
 .c-player-live-subtitle__inner {

@@ -206,7 +206,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 
 import PcPlayerProgressBar from '@/components/page-watch-common/player/player-progress-bar/pc-player-progress-bar.vue';
 import PcPlayerTimeAxisMarkContainer from '@/components/page-watch-common/player/player-time-axis-mark/pc-player-time-axis-mark-container.vue';

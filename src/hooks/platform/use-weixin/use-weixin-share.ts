@@ -1,24 +1,27 @@
 import { isWeixin, isWorkWeixin } from '@/assets/utils/browser';
 import { appendUrl, fitProtocol } from '@/assets/utils/url';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
+import { appEvents } from '@/app/app-events';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useShareStore } from '@/store/use-share-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { WxShareUrlParams, useWeixinStore } from '@/store/use-weixin-store';
-import { LoggerName, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { LoggerName, PolyvWatchCore, YN } from '@polyv/live-watch-sdk';
+import { ynToBool } from '@polyv/utils/boolean';
 import { computed, unref } from 'vue';
 import { useWeixinSdk } from './use-weixin-sdk';
+import type { WxShareConfigInfo } from './types';
 
 import { useWebsiteInfo } from '@/hooks/platform/use-browser/use-website-info';
 import { useOgMeta } from '@/hooks/platform/use-browser/use-og-meta';
+import { useFeedInjectStore } from '@/store/use-feed-inject-store';
 
 /**
  * @hook 微信分享
  * */
-export const useWeixinShare = () => {
+export const useWeixinShare = (opts?: { watchCore: PolyvWatchCore }) => {
   const { updateOgMeta } = useOgMeta();
   const { setFavIconElem } = useWebsiteInfo();
   const { getWeixinSdk } = useWeixinSdk();
@@ -28,9 +31,10 @@ export const useWeixinShare = () => {
   const weixinStore = useWeixinStore();
   const playbackStore = usePlaybackStore();
   const watchAppStore = useWatchAppStore();
+  const feedInjectStore = useFeedInjectStore();
 
-  const { getWatchCore } = useMultiPolyvWatchApp();
-  const watchCore = getWatchCore();
+  const { getWatchCore, getEmitter } = useMultiPolyvWatchApp();
+  const watchCore = opts?.watchCore || getWatchCore();
 
   /** 微信分享中的分享标题 */
   const wxShareTitle = computed(() => {
@@ -88,7 +92,6 @@ export const useWeixinShare = () => {
 
     updateBrowserInfo(shareOptions);
 
-    const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
 
     if (!wx) {
@@ -142,7 +145,6 @@ export const useWeixinShare = () => {
     if (isBuildForFeedMainMode()) return;
     updateBrowserInfo(shareOptions);
 
-    const watchCore = getWatchCore();
     const wx = await getWeixinSdk();
 
     if (!wx) {
@@ -203,21 +205,26 @@ export const useWeixinShare = () => {
 
   /** 设置微信分享 */
   async function configureWeixinShare() {
-    // 后台没开启分享开关，隐藏微信分享
-    if (!shareStore.shareBtnEnabled) {
-      return hideWeixinShare();
-    }
-
     const shareInfo = weixinStore.wxShareInfo;
 
     const imgUrl = shareInfo.weixinShareCoverImg || themeStore.channelCoverImg;
 
     const shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption = {
-      title: unref(wxShareTitle),
+      title: wxShareTitle.value,
       desc: shareInfo.shareDesc || '',
       link: unref(wxShareUrl),
       imgUrl: fitProtocol(imgUrl),
     };
+
+    // feed-inject 模式下，将微信分享信息回调给外部容器，由外部容器自行配置微信分享
+    if (isBuildForFeedMainMode()) {
+      return emitShareConfigToExternalContainer(shareOptions);
+    }
+
+    // 后台没开启分享开关，隐藏微信分享
+    if (!shareStore.shareBtnEnabled) {
+      return hideWeixinShare();
+    }
 
     console.info('weixin shareOptions', JSON.parse(JSON.stringify(shareOptions)));
 
@@ -229,6 +236,23 @@ export const useWeixinShare = () => {
     if (isWorkWeixin) {
       await updateWorkWxShareConfig(shareOptions);
     }
+  }
+
+  /**
+   * 将微信分享配置信息回调给外部容器（仅 feed-inject 模式）
+   */
+  function emitShareConfigToExternalContainer(
+    shareOptions: WechatJsSdk.UpdateAppMessageShareDataOption,
+  ) {
+    const shareConfigInfo: WxShareConfigInfo = {
+      shareEnabled: weixinStore.wxSdkFeatureEnabled && shareStore.shareBtnEnabled,
+      ...shareOptions,
+    };
+
+    feedInjectStore.$patch({
+      feedWxShareInfo: shareConfigInfo,
+    });
+    getEmitter().emit(appEvents.global.WxShareConfigChange, shareConfigInfo);
   }
 
   return {

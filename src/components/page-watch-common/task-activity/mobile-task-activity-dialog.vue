@@ -173,7 +173,7 @@ import { MobileIconArrowRight } from '@/components/component-icons/mobile/map';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';
 import { TaskActivityStatus, TaskActivityType, OnlineTaskUpdateType } from '@polyv/live-watch-sdk';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { useTaskActivity } from './use-task-activity';
 import { ref, onMounted } from 'vue';
 import { useTaskActivityStore } from '@/store/use-task-activity-store';

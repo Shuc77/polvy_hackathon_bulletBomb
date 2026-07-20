@@ -4,7 +4,7 @@
 import { translate } from '@/assets/lang';
 import { useChannelStore } from '@/store/use-channel-store';
 import { DonateGoodData, DonateType, PayDonateData, YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { defineStore } from 'pinia';
 import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { usePlaybackStore } from './use-playback-store';

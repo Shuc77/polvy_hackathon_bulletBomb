@@ -48,6 +48,10 @@ const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
   bottom: 40px;
   z-index: 200;
 
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
   &--absolute {
     position: absolute;
   }
@@ -62,7 +66,6 @@ const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
   justify-content: center;
   width: 40px;
   height: 40px;
-  margin-top: 12px;
   font-size: 20px;
   color: #fff;
   cursor: pointer;
@@ -75,6 +78,11 @@ const { shareBtnEnabled } = storeDefinitionToRefs(useShareStore);
 
   &:hover {
     opacity: 1;
+  }
+
+  .polyv-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 </style>

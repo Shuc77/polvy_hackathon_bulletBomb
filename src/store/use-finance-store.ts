@@ -8,7 +8,7 @@ import {
   PlvFinanceRiskEvaluationModule,
 } from '@polyv/live-watch-sdk';
 
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { useWatchAppStore } from './use-watch-app-store';
 
 export interface FinanceStoreState {

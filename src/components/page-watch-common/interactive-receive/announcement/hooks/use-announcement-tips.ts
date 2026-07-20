@@ -1,5 +1,5 @@
 import { appEvents } from '@/app/app-events';
-import { local } from '@just4/storage';
+import { local } from '@polyv/utils/storage';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { getStorageKey } from '@/assets/utils/storage';

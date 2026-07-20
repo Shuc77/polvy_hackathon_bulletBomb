@@ -40,6 +40,8 @@
 
     <!-- 福袋 -->
     <lucky-bag-render />
+    <!-- 福袋领取弹层 -->
+    <mobile-lucky-bag-receive-popup />
   </div>
 </template>
 
@@ -51,6 +53,7 @@ import AnswerCardDialog from './answer-card-v2/answer-card-dialog/answer-card-di
 import QuickAnswerCard from './answer-card-v2/quick-answer-card/quick-answer-card.vue';
 import PortraitCheckInPopup from './check-in-v2/portrait-check-in-popup.vue';
 import LuckyBagRender from './lucky-bag/lucky-bag-render.vue';
+import MobileLuckyBagReceivePopup from './lucky-bag/mobile-lucky-bag-receive-popup.vue';
 import MobileLotteryDialog from './lottery-v2/lottery-dialog/mobile-lottery-dialog.vue';
 import MobileLuckyLotteryDetailPopup from './lucky-lottery/mobile-lucky-lottery-detail-popup.vue';
 import MobileLuckyLotteryListPopup from './lucky-lottery/mobile-lucky-lottery-list-popup.vue';

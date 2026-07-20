@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { escapeHTML, randomStr } from '@polyv/utils/es/string';
+import { escapeHTML, randomStr } from '@polyv/utils/string';
 import { isWeixin } from '@/assets/utils/browser';
 import { useWeixinSdk } from '@/hooks/platform/use-weixin/use-weixin-sdk';
 import { compareVersions, getWeixinVersion } from './utils';

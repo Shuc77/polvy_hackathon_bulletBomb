@@ -4,7 +4,7 @@
 import { useVue } from '@/hooks/core/use-vue';
 import { PropUtils } from '@polyv/vue-components';
 import { defineComponent, nextTick, onBeforeUnmount, onMounted, onUnmounted, watch } from 'vue';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 
 const customTeleportProps = () => ({
   /** 渲染到某个节点 */

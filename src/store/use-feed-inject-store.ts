@@ -2,6 +2,7 @@ import { useQueryParams } from '@/hooks/core/use-query-params';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import { usePortraitLayoutStore } from './use-portrait-layout-store';
+import { WxShareConfigInfo } from '@/hooks/platform/use-weixin/types';
 
 /**
  * feed inject 相关的 store 处理
@@ -58,6 +59,8 @@ export const useFeedInjectStore = defineStore('feed-inject', () => {
     }, 300);
   }
 
+  const feedWxShareInfo = ref<WxShareConfigInfo>();
+
   return {
     feedLayoutLevel,
 
@@ -66,5 +69,6 @@ export const useFeedInjectStore = defineStore('feed-inject', () => {
 
     setInitCarouselActiveIndex,
     switchFeedLayout,
+    feedWxShareInfo,
   };
 });

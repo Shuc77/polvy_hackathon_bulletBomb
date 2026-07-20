@@ -3,7 +3,7 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
-import { RenderPosition } from '@just4/virtual-list/types';
+import { RenderPosition } from '@polyv/utils/virtual-list';
 import {
   ChatEvents,
   ChatEventsRelations,

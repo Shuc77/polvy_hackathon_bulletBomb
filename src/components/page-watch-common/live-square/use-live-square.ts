@@ -1,6 +1,6 @@
 import { LiveSquare, plvInterval } from '@polyv/live-watch-sdk';
 import { ref, computed } from 'vue';
-import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
+import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@polyv/utils/external-link';
 import { openLink } from '@/assets/utils/url';
 import { useIarExternalLinkParams } from '@/components/page-watch-common/interactive-receive/use-iar-external-link-params';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
@@ -12,7 +12,7 @@ import { useToast } from '@polyv/vue-components';
 import { translate } from '@/assets/lang';
 import { useQueryParams } from '@/hooks/core/use-query-params';
 import { useThemeStore } from '@/store/use-theme-store';
-import { ynToBool } from '@polyv/utils/es/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 
 export type liveSquareConfig = Exclude<LiveSquare, 'enabled' | 'title'>;
 

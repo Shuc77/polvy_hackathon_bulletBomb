@@ -30,7 +30,9 @@
     <mobile-chat-set-nick v-if="canSetNick" />
 
     <!-- 文件管理 -->
-    <mobile-file-management />
+    <chat-loader-helper>
+      <chat-v2-file-share-list />
+    </chat-loader-helper>
 
     <!-- 切换语言弹层 -->
     <mobile-lang-switch v-if="langSwitchEnabled" />
@@ -131,7 +133,6 @@ import MobileChatSetNick from '@/components/page-watch-common/chat/chat-set-nick
 import MobileConnectMicPendant from '@/components/page-watch-common/connect-mic/mobile-connect-mic/mobile-connect-mic-pendant.vue';
 import MobileConnectMicPendantV2 from '@/components/page-watch-common/connect-mic/mobile-connect-mic-v2/mobile-connect-mic-pendant-v2.vue';
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
-import MobileFileManagement from '@/components/page-watch-common/file-management/mobile-file-management.vue';
 import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
@@ -149,6 +150,7 @@ import AnchorPopup from '@/components/page-watch-common/anchor/anchor-popup/anch
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import MobileChatMessageInputPopup from '@/components/page-watch-common/chat-v2/message-input/mobile-chat-message-input-popup.vue';
 import MobileAskMessageInputPopup from '@/components/page-watch-common/ask-v2/mobile-ask-message-input-popup.vue';
+import ChatV2FileShareList from '@/components/page-watch-common/chat-v2/file-share-list/index.vue';
 
 import MobileLearningDetailPopup from '@/components/page-watch-common/learning-detail/mobile-learning-detail-popup.vue';
 import MobileLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/mobile-learning-stat-dialog.vue';

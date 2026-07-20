@@ -8,6 +8,7 @@
       class="c-session-list-item__cover"
       :class="{
         'c-session-list-item__cover--not-panel-desc': panelDescVisible,
+        'c-session-list-item__cover--mobile': isMobile,
       }"
       channel-id="0"
       :title="title"
@@ -58,6 +59,10 @@
               </span>
             </div>
           </div>
+          <session-list-booking-button
+            :session-data="sessionData"
+            @booking-change="onBookingChange"
+          />
         </div>
       </div>
     </div>
@@ -67,14 +72,18 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 
-import { ossCompress } from '@utils-ts/image';
+import { ossCompress } from '@polyv/utils/image';
 import { PropUtils, emitFunc } from '@polyv/vue-components';
 import { ChannelNameDisplayType, SessionListItemSizeList } from './type';
-import { ChannelSessionDataItem, LiveStatus } from '@polyv/live-watch-sdk';
-import { formatDate } from '@polyv/utils/es/date';
+import type { SessionBookingChangeData } from './type';
+import { LiveStatus } from '@polyv/live-watch-sdk';
+import type { ChannelSessionDataItem } from '@polyv/live-watch-sdk';
+import { formatDate } from '@polyv/utils/date';
 
 import NormalStatusTag from '@/components/common-business/status-tag/normal-status-tag.vue';
 import { PlvChannelCover } from '@/plugins/polyv-ui/admin-import';
+import { isMobile } from '@/assets/utils/browser';
+import SessionListBookingButton from './session-list-booking-button.vue';
 
 const props = defineProps({
   /** 场次数据 */
@@ -87,10 +96,20 @@ const props = defineProps({
 
 const emits = defineEmits({
   'item-click': emitFunc<ChannelSessionDataItem>(),
+  'booking-change': emitFunc<SessionBookingChangeData>(),
 });
 
-function onSessionListItemClick() {
+function onSessionListItemClick(event: MouseEvent) {
+  const target = event.target;
+  if (target instanceof Element && target.closest('.c-session-list-booking-button')) {
+    return;
+  }
+
   emits('item-click', props.sessionData);
+}
+
+function onBookingChange(data: SessionBookingChangeData) {
+  emits('booking-change', data);
 }
 
 const displayTime = ref('');
@@ -477,5 +496,10 @@ $--text-third-color: #999 !default;
   font-size: 12px;
   line-height: 14px;
   color: $--text-third-color;
+}
+
+.c-session-list-item__cover.c-session-list-item__cover--mobile {
+  width: 128px;
+  min-width: 128px;
 }
 </style>

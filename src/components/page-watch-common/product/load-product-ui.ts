@@ -1,7 +1,7 @@
 import Vue, { ComponentOptions } from 'vue';
 import camelCase from 'camelcase';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 
 export type PolyvProductUIType = {
@@ -44,15 +44,15 @@ function getProductUIVersionConfig() {
   const results: Record<SdkLoaderEnv, { domain: string; version: string }> = {
     [SdkLoaderEnv.Prod]: {
       domain: domainInfo.webSdkDomain,
-      version: 'rc-20260604',
+      version: 'rc-20260625',
     },
     [SdkLoaderEnv.Rc]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20260604',
+      version: 'dev-20260625',
     },
     [SdkLoaderEnv.Test]: {
       domain: domainInfo.webSdkTest1Domain,
-      version: 'dev-20260604',
+      version: 'dev-20260625',
     },
   };
 

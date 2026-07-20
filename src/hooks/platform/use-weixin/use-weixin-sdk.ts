@@ -2,6 +2,7 @@
 /* eslint-disable promise/prefer-await-to-then */
 import { translate } from '@/assets/lang';
 import { isWorkWeixin } from '@/assets/utils/browser';
+import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { messageBox } from '@/components/common-base/message-box';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 import { loadWorkWxSdk, loadWxSdk } from '@/plugins/external-lib-loaders/load-wx-sdk';
@@ -173,18 +174,52 @@ function createWxInstance() {
   });
 }
 
-const wxLoaders: Record<string, Promise<WechatJsSdk.Wx> | undefined> = {};
+const wxLoaders: Record<string, Promise<WechatJsSdk.Wx | undefined> | undefined> = {};
+
+/**
+ * feed-inject 模式下获取微信实例
+ * @desc 容器已完成 wx.config 配置，直接复用容器的 window.wx 实例，无需重复加载 SDK 和配置
+ * 仅通过签名接口获取微信分享信息
+ */
+function createWxInstanceFromContainer(): Promise<WechatJsSdk.Wx | undefined> {
+  const { getWatchCore } = useMultiPolyvWatchApp();
+  const watchCore = getWatchCore();
+  const weixinStore = useWeixinStore();
+
+  return (isWorkWeixin ? watchCore.weixin.getWorkWeixinSign() : watchCore.weixin.getWeixinSign())
+    .then(signRes => {
+      // 保存微信分享信息
+      if (signRes) {
+        weixinStore.saveWxShareInfo({
+          isUseWxShareUrl: signRes.isUseWxShareUrl,
+          wxShareUrl: signRes.wxShareUrl,
+          weixinShareCoverImg: signRes.weixinShareCoverImg,
+          shareTitle: signRes.shareTitle,
+          shareDesc: signRes.shareDesc,
+          weixinShareCustomUrlWithParamEnabled: signRes.weixinShareCustomUrlWithParamEnabled,
+        });
+      }
+
+      // 复用容器已配置好的微信实例
+      return window.wx;
+    })
+    .catch(error => {
+      console.error('createWxInstanceFromContainer fail', error);
+      return undefined;
+    });
+}
 
 /**
  * 通过 channelId 来获取微信实例
  */
-function getWeixinSdkByChannelId(channelId: string): Promise<WechatJsSdk.Wx> {
+function getWeixinSdkByChannelId(channelId: string): Promise<WechatJsSdk.Wx | undefined> {
   let promiseTarget = wxLoaders[channelId];
   if (promiseTarget) {
     return promiseTarget;
   }
 
-  promiseTarget = createWxInstance();
+  // feed-inject 模式下，从容器获取已配置好的微信实例，无需再次配置 wx.config
+  promiseTarget = isBuildForFeedMainMode() ? createWxInstanceFromContainer() : createWxInstance();
 
   wxLoaders[channelId] = promiseTarget;
 

@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 
 import NormalButton, { ButtonSize, ButtonType } from '@/components/common-base/normal-button';
 import { PcIconHighlight } from '@/components/component-icons/pc/map';

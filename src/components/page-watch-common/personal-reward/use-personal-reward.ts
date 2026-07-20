@@ -33,6 +33,9 @@ export const usePersonalReward = () => {
         case 'lucky-lottery':
           getEmitter().emit(appEvents.iar.RefreshLuckyLotteryPrizeList);
           break;
+        case 'lucky-bag':
+          getEmitter().emit(appEvents.iar.RefreshLuckyBagWinRecord);
+          break;
       }
     }
   });

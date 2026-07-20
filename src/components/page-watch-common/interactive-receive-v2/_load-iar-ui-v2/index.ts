@@ -9,7 +9,7 @@ import {
 import { SdkLoaderEnv } from '@polyv/live-watch-sdk';
 import type Vue from 'vue';
 import { type ComponentOptions } from 'vue';
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 
 const iarUILoader: Record<string, Promise<unknown> | undefined> = {};
 

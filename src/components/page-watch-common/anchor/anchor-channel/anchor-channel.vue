@@ -62,7 +62,7 @@ import {
   emitFunc,
   useScrollPagination,
 } from '@polyv/vue-components';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { ref } from 'vue';
 
 const emit = defineEmits({

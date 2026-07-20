@@ -26,6 +26,8 @@
 
       <!-- 福袋 -->
       <lucky-bag-render />
+      <!-- 福袋领取弹层 -->
+      <pc-lucky-bag-receive-popup />
     </div>
   </div>
 </template>
@@ -40,6 +42,7 @@ import PcLuckyLotteryReceivePopup from './lucky-lottery/pc/pc-lucky-lottery-rece
 import PcVoteRulePopup from './vote-v2/pc/pc-vote-rule-popup.vue';
 import PcBulletinPopup from './bulletin-v2/bulletin-popup/pc-bulletin-popup.vue';
 import LuckyBagRender from './lucky-bag/lucky-bag-render.vue';
+import PcLuckyBagReceivePopup from './lucky-bag/pc-lucky-bag-receive-popup.vue';
 </script>
 
 <style lang="scss">

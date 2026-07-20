@@ -1,7 +1,7 @@
 import { translate } from '@/assets/lang';
 import { PropUtils, useProps, VueProps, emitFunc, VueEmit } from '@polyv/vue-components';
 import { useSecondCountDown } from '@/hooks/tools/use-count-down';
-import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
+import { IRemaining as CountDownSurplusData } from '@polyv/utils/countdown';
 import { type CSSProperties, computed, unref, watch } from 'vue';
 import { countDownSizes, countdownThemes } from './types';
 

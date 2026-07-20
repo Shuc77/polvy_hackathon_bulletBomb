@@ -86,7 +86,7 @@ import ListLoading from '@/components/common-base/list-loading/list-loading.vue'
 import SearchInput from '@/components/common-base/search-input/search-input.vue';
 
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { formatDuration } from '@/assets/utils/date-time';
 
 import { usePlaybackStore } from '@/store/use-playback-store';

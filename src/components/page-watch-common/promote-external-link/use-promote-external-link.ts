@@ -3,7 +3,7 @@ import { openLink } from '@/assets/utils/url';
 import { PropUtils, VueProps } from '@polyv/vue-components';
 import { ChannelMenuIframeOpenType, plvInterval, plvParseJson } from '@polyv/live-watch-sdk';
 import { computed, onMounted, ref, watch } from 'vue';
-import { formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
+import { formatLink, type LinkData, LinkJumpWay } from '@polyv/utils/external-link';
 import { useIarExternalLinkParams } from '../interactive-receive/use-iar-external-link-params';
 import { useMultiPlatformLink } from '@/hooks/platform/use-multi-platform-link/use-multi-platform-link';
 import { omit } from 'lodash-es';

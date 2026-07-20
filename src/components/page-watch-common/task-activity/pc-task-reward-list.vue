@@ -79,7 +79,7 @@
 import { DATE_FORMAT_COMPLETE } from '@/assets/constants/date-format';
 import { MobileIconQuestionRound } from '@/components/component-icons/mobile/map';
 import { TaskActivityRewardType, TaskRewardStatus } from '@polyv/live-watch-sdk';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { useTaskRewardList } from './hooks/use-task-reward-list';
 import { useTaskActivityText } from './use-task-activity';
 

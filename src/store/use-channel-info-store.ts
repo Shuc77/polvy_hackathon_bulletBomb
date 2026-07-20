@@ -22,7 +22,7 @@ import {
   PageViewShowLocation,
   PlvChannelModule,
 } from '@polyv/live-watch-sdk';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { defineStore } from 'pinia';
 import { ComputedRef, Ref, computed, ref, unref } from 'vue';
 import { useChannelStore } from './use-channel-store';
@@ -331,7 +331,11 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       pvShowEnabled.value = pvSetting.pvShowEnabled;
       mobilePvShowLocation.value = pvSetting.mobilePvShowLocation;
 
-      countdownSetting.value = watchCore.channel.getCountdownSetting();
+      const channelCountdownSetting = watchCore.channel.getCountdownSetting();
+      countdownSetting.value = {
+        ...channelCountdownSetting,
+        countdownEnabled: channelCountdownSetting.countdownEnabled || watchCore.inTargetSession(),
+      };
 
       watchDurationSetting.value = watchCore.channel.getWatchDurationSetting();
     }

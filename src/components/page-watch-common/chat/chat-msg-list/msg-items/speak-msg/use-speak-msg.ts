@@ -13,7 +13,7 @@ import { FullMsgData } from '../../../chat-full-message/type';
 import { ChatMsgItemCategory } from '../use-chat-msg-item';
 import { useChatMsgDataInject } from '../_hooks/chat-msg-data-hook';
 import { useChatMsgUserBasic } from '../_hooks/chat-msg-user-hook';
-import { unescapeHTML } from '@polyv/utils/es/string';
+import { unescapeHTML } from '@polyv/utils/string';
 
 export const useQuoteSpeakContentParse = () => {
   const { getWatchCore } = useGlobalInject();

@@ -2,7 +2,7 @@
  * @file 加载 vconsole
  */
 import type { VConsole } from 'vconsole';
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 
 declare global {
   interface Window {

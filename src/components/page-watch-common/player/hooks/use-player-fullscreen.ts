@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLayoutStore } from '@/store/use-layout-store';

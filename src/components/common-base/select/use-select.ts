@@ -154,6 +154,8 @@ export const useSelectMobile = (options: {
       if (selectValue.value !== props.value) {
         emit('input', selectValue.value);
         closeOption();
+      } else {
+        closeOption();
       }
     }
 

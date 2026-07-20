@@ -5,6 +5,12 @@
     class="c-pc-donate-entrance"
     @click="onClickDonateEnter"
   >
+    <div
+      v-if="!isChatUIV2"
+      class="c-pc-donate-entrance__old-btn"
+    ></div>
+    <pc-icon-donate v-else />
+
     <custom-teleport
       :to="
         isChatUIV2
@@ -33,6 +39,7 @@ import { useChatStore } from '@/store/use-chat-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { ref } from 'vue';
 import PcDonatePanel from '../donate-panel/pc-donate-panel/pc-donate-panel.vue';
+import { PcIconDonate } from '@/components/component-icons/pc/map';
 
 const { showDonateFunction } = storeDefinitionToRefs(useDonateStore);
 
@@ -66,7 +73,7 @@ function onClickDonateEnter() {
 </script>
 
 <style lang="scss">
-.c-pc-donate-entrance {
+.c-pc-donate-entrance__old-btn {
   display: flex;
   align-items: center;
   justify-content: center;

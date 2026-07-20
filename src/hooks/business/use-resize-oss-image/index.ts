@@ -1,4 +1,4 @@
-import { ossCompress } from '@polyv/utils/es/image';
+import { ossCompress } from '@polyv/utils/image';
 import { appendUrl } from '@/assets/utils/url';
 
 export function appendToOssProcess(url: string, additionalParams: string) {

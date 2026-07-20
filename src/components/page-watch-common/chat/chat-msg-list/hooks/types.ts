@@ -1,5 +1,4 @@
-import { VirtualList } from '@just4/virtual-list';
-import { InitialResponse } from '@just4/virtual-list/types';
+import { VirtualList, InitialResponse } from '@polyv/utils/virtual-list';
 import { ChatMsgType } from '@polyv/live-watch-sdk';
 import { ChatMsgItemCategory } from '../msg-items/use-chat-msg-item';
 

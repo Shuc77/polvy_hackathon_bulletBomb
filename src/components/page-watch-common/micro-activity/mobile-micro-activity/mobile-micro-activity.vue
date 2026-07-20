@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { nextTick, ref, unref, watch, onMounted } from 'vue';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { storeToRefs } from 'pinia';
 
 import { PropUtils } from '@polyv/vue-components';

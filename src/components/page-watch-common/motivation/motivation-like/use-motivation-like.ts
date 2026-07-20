@@ -1,7 +1,7 @@
 import { translate } from '@/assets/lang';
 import { useViewerStore } from '@/store/use-viewer-store';
 import { ChatMsgMotivationLikeType } from '@polyv/live-watch-sdk';
-import { strLen } from '@utils-ts/string';
+import { strLen } from '@polyv/utils/string';
 
 function formatLen(text: string, len: number) {
   return text.slice(0, len) + '...';

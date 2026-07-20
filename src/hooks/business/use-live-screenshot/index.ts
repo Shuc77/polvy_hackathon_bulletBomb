@@ -1,6 +1,6 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useChannelStore } from '@/store/use-channel-store';
-import { appendToURL } from '@just4/querystring';
+import { concat as appendToURL } from '@polyv/utils/querystring';
 import { LiveStatus, PlayerEvents } from '@polyv/live-watch-sdk';
 import { useSetInterval } from '@polyv/vue-components';
 import { onMounted, ref, watch } from 'vue';

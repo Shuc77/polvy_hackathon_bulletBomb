@@ -1,7 +1,7 @@
 import { isString } from '@/assets/utils/string';
 import { useChatMsgStore } from '@/store/use-chat-msg-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
-import { InitialResponse } from '@just4/virtual-list/types';
+import { InitialResponse } from '@polyv/utils/virtual-list';
 import { ChatReplayMsgType, ChatReplayRequestHistoryMode } from '@polyv/live-watch-sdk';
 import { useContractHistory } from './contract-history-hook';
 import { useFilterSpecialMsgHook } from './filter-chat-msg-hook';

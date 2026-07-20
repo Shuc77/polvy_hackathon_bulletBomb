@@ -5,9 +5,6 @@
     "paths": {
       "@/*": [
         "src/*"
-      ],
-      "@utils-ts/*": [
-        "node_modules/@polyv/utils/es/*"
       ]
     }
   }

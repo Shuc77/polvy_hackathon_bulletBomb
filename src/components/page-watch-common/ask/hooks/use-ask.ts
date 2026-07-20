@@ -8,7 +8,7 @@ import {
   ChatMsgSpeakType,
   AskEventsRelations,
 } from '@polyv/live-watch-sdk';
-import { uuidV4 } from '@utils-ts/string';
+import { uuidV4 } from '@polyv/utils/string';
 
 import { useAskStore } from '@/store/use-ask-store';
 import { AskMsgListInstance } from '../ask-msg-list/use-ask-msg-list';
@@ -76,7 +76,7 @@ export const useAsk = (options: UseAskOptions) => {
   const askMsgRenderList = computed<AskMsgType[]>(() => {
     const list = [...unref(askMsgList)];
 
-    if (channelStore.teacherInfo) {
+    if (channelStore.teacherInfo && askStore.askWelcomeText) {
       const time = list[0] ? list[0].time : Date.now();
 
       // 插入默认消息

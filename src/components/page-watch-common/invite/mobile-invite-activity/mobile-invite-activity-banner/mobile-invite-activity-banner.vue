@@ -49,7 +49,7 @@ import { computed, ref, watch } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLangStore } from '@/store/use-lang-store';
-import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
+import { IRemaining as CountDownSurplusData } from '@polyv/utils/countdown';
 
 import ListLoading from '@/components/common-base/list-loading/list-loading.vue';
 import MobileInviteActivityCountDown from './mobile-invite-activity-count-down.vue';

@@ -37,6 +37,17 @@ const externalGlobalEvents = {
    * 打开外部的登录弹窗
    */
   OpenExternalIdentityLoginDialog: 'OpenExternalIdentityLoginDialog',
+  /**
+   * 微信分享配置变更
+   * feed-inject 模式下，app 在配置微信分享时，将分享信息回调给外部容器，由外部容器自行配置微信分享
+   * @param {import('@/hooks/platform/use-weixin/types').WxShareConfigInfo} shareConfigInfo 微信分享配置信息
+   */
+  WxShareConfigChange: 'WxShareConfigChange',
+  /**
+   * 获取微信分享配置
+   * feed-inject 模式下，外部容器主动请求当前观看页的微信分享信息，app 会通过 WxShareConfigChange 事件回调返回
+   */
+  GetWxShareConfig: 'GetWxShareConfig',
 };
 
 export const globalEvents = {

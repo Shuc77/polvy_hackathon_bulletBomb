@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-import { changeProtocol } from '@utils-ts/net';
+import { changeProtocol } from '@polyv/utils/net';
 import { wait } from '@/assets/utils/utils';
 
 import { MsgInputWrapInstance } from '@/components/page-watch-common/msg-input-wrap/use-msg-input-wrap';

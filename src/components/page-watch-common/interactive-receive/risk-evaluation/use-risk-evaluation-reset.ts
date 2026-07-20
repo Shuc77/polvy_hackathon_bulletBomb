@@ -1,7 +1,7 @@
 import { FinanceRiskEvaluationSocketData, PolyvWatchCore } from '@polyv/live-watch-sdk';
 
 import { useFinanceStore } from '@/store/use-finance-store';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { appEvents } from '@/app/app-events';
 import { useMultiPolyvWatchApp } from '@/hooks/core/use-multi-polyv-watch-app';
 

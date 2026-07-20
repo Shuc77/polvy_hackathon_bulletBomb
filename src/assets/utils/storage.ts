@@ -1,4 +1,4 @@
-import { local, session } from '@just4/storage';
+import { local, session } from '@polyv/utils/storage';
 
 /**
  * Storage 存储 key 前缀

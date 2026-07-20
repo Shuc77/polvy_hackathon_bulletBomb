@@ -1,4 +1,4 @@
-import { loadScript } from '@just4/load-script';
+import { loadScript } from '@polyv/utils/load-script';
 import type {
   Player as SVGAPlayer,
   Parser as SVGAParser,

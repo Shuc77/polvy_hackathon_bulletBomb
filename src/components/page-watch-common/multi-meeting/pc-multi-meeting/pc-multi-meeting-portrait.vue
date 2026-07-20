@@ -96,7 +96,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { PlvCol, PlvPagination, PlvRow } from '@/plugins/polyv-ui/admin-import';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { watch } from 'vue';
 import { useMultiMeeting, useMultiMeetingPage } from '../hooks/use-multi-meeting';
 

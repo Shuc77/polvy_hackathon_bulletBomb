@@ -9,7 +9,7 @@ import {
   AuthVerifyResultSuccess,
   YN,
 } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { computed, ref, unref } from 'vue';
 
 export interface AuthProtocolFormData {

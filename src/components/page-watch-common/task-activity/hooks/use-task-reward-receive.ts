@@ -14,7 +14,7 @@ import {
   TaskRewardItem,
   YN,
 } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { ref } from 'vue';
 
 export type TaskRewardItemData = Pick<TaskRewardItem, 'acceptInfo'> & {

@@ -4,64 +4,63 @@
 import { translate } from '@/assets/lang';
 import { validatePhoneNumber } from '@/assets/utils/validate';
 import { useToastManager } from '@/hooks/components/use-toast';
-import { ValidatorRules } from '@/plugins/async-validator';
+import type { ValidatorRules } from '@/plugins/async-validator';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { computed, nextTick, reactive, ref, watch } from 'vue';
-import { LiveBookingFormInstance } from '../types';
+import type { LiveBookingFormInstance } from '../types';
 import { useLiveBookingFail } from './use-live-booking-fail';
 import { useWatchEventTrack } from '@/hooks/business/use-watch-event-track';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
-import { useIdentityStore } from '@/store/use-identity-store';
-import { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
+import type { FormSubmitButtonInstance } from '@/components/common-base/form/hooks/use-form-submit-button';
+import { useLiveBookingPhone } from './use-live-booking-phone';
 
-export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string } = {}) => {
+export interface UseLiveBookingFormOptions {
+  otherChannelId?: string;
+  sessionId?: string;
+  smsBookingChangeHandler?: (isBooked: boolean) => void;
+}
+
+export const useLiveBookingForm = (options: UseLiveBookingFormOptions = {}) => {
+  const { otherChannelId, sessionId, smsBookingChangeHandler } = options;
+
   const { getWatchCore } = useGlobalInject();
 
-  const { setLiveBookingCache, getLiveBookingCache, clearLiveBookingCache } = useLiveBookingCache();
+  const { setLiveBookingCache, clearLiveBookingCache } = useLiveBookingCache();
 
   const { toast } = useToastManager();
   const { toastBookingFail } = useLiveBookingFail();
 
   const liveBookingStore = useLiveBookingStore();
-  const identityStore = useIdentityStore();
-
-  function getDefaultFormNumber() {
-    return getLiveBookingCache().phoneNumber || identityStore.identityUnionInfo?.phoneNumber || '';
-  }
-
-  function getDefaultFormAreaCode() {
-    return getLiveBookingCache().areaCode || '+86';
-  }
+  const { getDefaultLiveBookingPhone } = useLiveBookingPhone();
 
   const formSubmitRef = ref<FormSubmitButtonInstance | undefined>();
 
   /** 直播预约表单数据 */
   const bookingFormData = reactive({
     // 手机号
-    phoneNumber: getDefaultFormNumber(),
+    phoneNumber: '',
     // 手机区号
-    areaCode: getDefaultFormAreaCode(),
+    areaCode: '+86',
     // 短信验证码
     verifyCode: '',
   });
 
   /** 是否启用短信验证 */
   const smsEnabled = ref(true);
+  const trustedPhoneKey = ref('');
+
+  function getPhoneKey(phoneNumber: string, areaCode: string) {
+    return `${areaCode}_${phoneNumber}`;
+  }
 
   const initSmsEnabled = () => {
-    if (bookingFormData.phoneNumber !== getLiveBookingCache().phoneNumber) {
-      // 如果手机号有变更，说明之前的短信验证结果不再有效，需要重新验证
-      smsEnabled.value = true;
-      return;
-    }
-
-    // 默认需要短信验证，除非缓存里有短信验证成功的记录
-    smsEnabled.value = !getLiveBookingCache().smsVerified;
+    const currentPhoneKey = getPhoneKey(bookingFormData.phoneNumber, bookingFormData.areaCode);
+    smsEnabled.value = !trustedPhoneKey.value || currentPhoneKey !== trustedPhoneKey.value;
   };
 
   watch(
-    () => bookingFormData.phoneNumber,
+    () => getPhoneKey(bookingFormData.phoneNumber, bookingFormData.areaCode),
     (newValue, oldValue) => {
       if (oldValue && newValue !== oldValue) {
         initSmsEnabled();
@@ -100,10 +99,15 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
   const bookingFormVisible = ref(false);
 
   /** 打开弹层 */
-  function openBookingForm() {
-    bookingFormData.phoneNumber = getDefaultFormNumber();
-    bookingFormData.areaCode = getDefaultFormAreaCode();
+  async function openBookingForm() {
+    const defaultPhone = await getDefaultLiveBookingPhone();
+
+    bookingFormData.phoneNumber = defaultPhone.phoneNumber;
+    bookingFormData.areaCode = defaultPhone.areaCode;
     bookingFormData.verifyCode = '';
+    trustedPhoneKey.value = defaultPhone.trusted
+      ? getPhoneKey(defaultPhone.phoneNumber, defaultPhone.areaCode)
+      : '';
     initSmsEnabled();
 
     formSubmitRef.value?.checkDisabled();
@@ -123,21 +127,24 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
     const result = await watchCore.liveBooking.submitSmsLiveBooking({
       phoneNumber: bookingFormData.phoneNumber,
       areaCode: bookingFormData.areaCode,
-      verifyCode: bookingFormData.verifyCode,
+      verifyCode: smsEnabled.value ? bookingFormData.verifyCode : undefined,
       otherChannelId, // 其他频道预约时，需要传入 channelId
+      sessionId,
     });
 
     if (result.success) {
       setLiveBookingCache({
         phoneNumber: bookingFormData.phoneNumber,
         areaCode: bookingFormData.areaCode,
-        smsVerified: false,
+        smsVerified: true,
       });
 
       toast.success(translate('liveBooking.bookingSuccess'));
 
       // 预约下一场其他直播的处理
-      if (otherChannelId) {
+      if (sessionId) {
+        smsBookingChangeHandler?.(true);
+      } else if (otherChannelId) {
         liveBookingStore.$patch({
           singleOtherChannelBookingConfig: {
             isSmsLiveBooking: true,
@@ -153,26 +160,35 @@ export const useLiveBookingForm = ({ otherChannelId }: { otherChannelId?: string
     } else {
       toastBookingFail(result.failReason);
       setLiveBookingCache({ smsVerified: false });
+      trustedPhoneKey.value = '';
       initSmsEnabled();
     }
   }
 
   /** 取消预约 */
   async function cancelLiveBooking() {
+    const liveBookingPhone = bookingFormData.phoneNumber
+      ? bookingFormData
+      : await getDefaultLiveBookingPhone();
     const watchCore = getWatchCore();
     // 当存在自定义预约+短信预约时，在短信提醒成功后，后端会自动调用自定义预约接口，所以这里不需要再调用一次
     const result = await watchCore.liveBooking.cancelSmsLiveBooking({
-      phoneNumber: bookingFormData.phoneNumber,
-      areaCode: bookingFormData.areaCode,
+      phoneNumber: liveBookingPhone.phoneNumber,
+      areaCode: liveBookingPhone.areaCode,
       ...(otherChannelId ? { otherChannelId } : {}),
+      sessionId,
     });
 
     if (result.success) {
-      clearLiveBookingCache();
+      if (!sessionId) {
+        clearLiveBookingCache();
+      }
 
       toast.success(translate('liveBooking.cancelSuccess'));
 
-      if (otherChannelId) {
+      if (sessionId) {
+        smsBookingChangeHandler?.(false);
+      } else if (otherChannelId) {
         liveBookingStore.$patch({
           singleOtherChannelBookingConfig: {
             isSmsLiveBooking: false,

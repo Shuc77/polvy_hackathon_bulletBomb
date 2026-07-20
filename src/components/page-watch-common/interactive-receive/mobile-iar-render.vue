@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { onMounted, watch } from 'vue';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 
 import MobileFeedbackPopup from './feedback/mobile-feedback-popup.vue';

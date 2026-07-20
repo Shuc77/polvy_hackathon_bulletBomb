@@ -4,7 +4,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { YN } from '@polyv/live-watch-sdk';
-import { ynToBool } from '@utils-ts/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { computed, onMounted } from 'vue';
 
 let seatBg = require('./imgs/seat-bg.png');

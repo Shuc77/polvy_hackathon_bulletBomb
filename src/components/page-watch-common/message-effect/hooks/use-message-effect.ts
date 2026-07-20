@@ -10,7 +10,7 @@ import {
   ChatEvents,
   ProductClickType,
 } from '@polyv/live-watch-sdk';
-import { randomStr } from '@polyv/utils/es/string';
+import { randomStr } from '@polyv/utils/string';
 import { onMounted, onBeforeUnmount } from 'vue';
 import { MessageEffectData, MessageEffectType } from '../type';
 import { useEffectSetting } from './use-effect-setting';

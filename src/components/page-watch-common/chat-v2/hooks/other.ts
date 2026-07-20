@@ -20,6 +20,7 @@ import {
 } from '@polyv/live-watch-sdk';
 import { useBrowser } from '@polyv/vue-components';
 import { useChatTarget } from './use-chat-target';
+import { useIdentityStore } from '@/store/use-identity-store';
 
 /**
  * 消息隐藏相关
@@ -89,6 +90,12 @@ export const useMessageLayout = () => {
   }
 
   function getMessageContainerBoundaryPadding(): MessageConfig['messageContainerBoundaryPadding'] {
+    if (isPortraitWatchLayout.value) {
+      return {
+        top: 0,
+        bottom: 0,
+      };
+    }
     return isMobile
       ? {
           top: 14,
@@ -132,6 +139,7 @@ export const useCopySpeakMsg = () => {
 export const useChatMessageInput = () => {
   const channelMenuStore = useChannelMenuStore();
   const chatStore = useChatStore();
+  const identityStore = useIdentityStore();
 
   const { needInterruptUserClick } = useInterruptUserClick();
 
@@ -149,6 +157,10 @@ export const useChatMessageInput = () => {
 
     if (chatStore.chatRoomLongTimeNotUsed || chatStore.chatExited) {
       placeholder = translate('chat.roomClosed');
+    }
+
+    if (identityStore.isGuest) {
+      placeholder = translate('auth.login.tips');
     }
 
     return placeholder;
@@ -183,12 +195,20 @@ export const useChatMessageInput = () => {
 };
 
 export function getAskMessageInput() {
+  const { getWatchCore } = useGlobalInject();
+  const watchCore = getWatchCore();
   const chatStore = useChatStore();
+  const askSetting = watchCore.ask.getAskSetting();
 
   function getAskInputPlaceholder() {
     if (chatStore.chatRoomLongTimeNotUsed || chatStore.chatExited) {
       return translate('chat.roomClosed');
     }
+
+    if (askSetting.questionPlaceholder) {
+      return askSetting.questionPlaceholder;
+    }
+
     return translate('ask.input.placeholder');
   }
 

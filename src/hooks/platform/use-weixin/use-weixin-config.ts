@@ -3,6 +3,7 @@ import { useWeixinStore } from '@/store/use-weixin-store';
 import { PolyvWatchCore } from '@polyv/live-watch-sdk';
 import { useWeixinSdk } from './use-weixin-sdk';
 import { useWeixinShare } from './use-weixin-share';
+import { useGlobalInject } from '@/app/use-global-inject';
 
 /**
  * @hook 处理微信相关配置
@@ -22,11 +23,12 @@ export const useWeixinConfig = () => {
         return;
       }
 
-      const { configureWeixinShare } = useWeixinShare();
-
       watchCore.setWeixinSdk(getWeixinSdk);
 
       await getWeixinSdk();
+
+      const { configureWeixinShare } = useWeixinShare({ watchCore });
+
       await configureWeixinShare();
     } catch (error) {
       console.error('toConfigWeixinFeature error', error);
@@ -43,6 +45,11 @@ export const useWeixinConfig = () => {
  * */
 export const useWeixinShareConfigUpdate = () => {
   const weixinStore = useWeixinStore();
+  const { getWatchCore } = useGlobalInject();
+
+  const watchCore = getWatchCore();
+
+  const { configureWeixinShare } = useWeixinShare({ watchCore });
 
   async function updateWeixinShareConfig() {
     if (!(isWeixin || isWorkWeixin)) {
@@ -52,8 +59,6 @@ export const useWeixinShareConfigUpdate = () => {
     if (!weixinStore.wxSdkFeatureEnabled) {
       return;
     }
-
-    const { configureWeixinShare } = useWeixinShare();
 
     await configureWeixinShare();
   }

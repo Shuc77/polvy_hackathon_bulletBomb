@@ -1,6 +1,6 @@
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useLiveBookingStore } from '@/store/use-live-booking-store';
-import { IRemaining as CountDownSurplusData } from '@utils-ts/countdown';
+import { IRemaining as CountDownSurplusData } from '@polyv/utils/countdown';
 
 export const useLiveCountDown = () => {
   const channelInfoStore = useChannelInfoStore();

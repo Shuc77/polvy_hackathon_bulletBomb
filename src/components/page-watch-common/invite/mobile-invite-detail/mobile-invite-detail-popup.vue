@@ -75,7 +75,7 @@ import { ref, watch } from 'vue';
 import { appEvents, useEventBusListener } from '@/app/app-events';
 import MobilePopup from '@/components/common-base/popup/mobile-popup.vue';
 import { useInviteDetail } from './_hooks/use-invite-detail';
-import { formatDate } from '@utils-ts/date';
+import { formatDate } from '@polyv/utils/date';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useCommonStore } from '@/store/use-common-store';
 import MobileInvitePopupTitle from '../mobile-invite-rank/mobile-invite-popup-title.vue';

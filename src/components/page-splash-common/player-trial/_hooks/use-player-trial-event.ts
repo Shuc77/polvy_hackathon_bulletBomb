@@ -3,7 +3,7 @@
  */
 import { ref } from 'vue';
 import { ChannelTrialInfo, PlayerEvents } from '@polyv/live-watch-sdk';
-import { local } from '@just4/storage';
+import { local } from '@polyv/utils/storage';
 
 import { usePlayerStore } from '@/store/use-player-store';
 import { appEvents } from '@/app/app-events';

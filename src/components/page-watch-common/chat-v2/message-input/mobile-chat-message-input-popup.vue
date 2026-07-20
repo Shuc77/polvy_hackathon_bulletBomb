@@ -1,6 +1,9 @@
 <!-- 移动端聊天消息输入框弹层 -->
 <template>
-  <chat-message-input-popup ref="popupRef" />
+  <chat-message-input-popup
+    ref="popupRef"
+    show-ask-entry
+  />
 </template>
 
 <script setup lang="ts">

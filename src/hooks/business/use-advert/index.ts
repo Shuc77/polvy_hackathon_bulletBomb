@@ -1,6 +1,6 @@
 import { openLink } from '@/assets/utils/url';
 import { ref } from 'vue';
-import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@utils-ts/external-link';
+import { navigateToLink, formatLink, type LinkData, LinkJumpWay } from '@polyv/utils/external-link';
 import { useIarExternalLinkParams } from '@/components/page-watch-common/interactive-receive/use-iar-external-link-params';
 import { useWeixinButton } from '@/hooks/platform/use-weixin/use-weixin-button';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';

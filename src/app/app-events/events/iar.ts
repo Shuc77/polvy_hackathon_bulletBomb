@@ -26,4 +26,8 @@ export const iarEvents = {
    * 打开福袋中奖记录弹窗
    */
   OpenLuckyBagPrizeListDialog: 'OpenLuckyBagPrizeListDialog',
+  /**
+   * 刷新福袋个人中奖记录列表（领奖信息提交成功后触发，中奖记录 claimStatus 0→1）
+   */
+  RefreshLuckyBagWinRecord: 'RefreshLuckyBagWinRecord',
 };

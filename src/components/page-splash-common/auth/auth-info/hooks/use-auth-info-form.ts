@@ -28,7 +28,7 @@ import { useAuthInfoSetting } from './use-auth-info-setting';
 import { useAuthInfoSms } from './use-auth-info-sms';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useGlobalInject } from '@/app/use-global-inject';
-import { ynToBool } from '@polyv/utils/es/boolean';
+import { ynToBool } from '@polyv/utils/boolean';
 import { useLiveBookingCache } from '@/hooks/business/use-live-booking-cache/use-live-booking-cache';
 
 export const authInfoFormEmits = () => ({

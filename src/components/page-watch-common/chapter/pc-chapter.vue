@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 import { useChapter } from './hooks/use-chapter';
 import { PcIconMedia } from '@/components/component-icons/pc/map';
 

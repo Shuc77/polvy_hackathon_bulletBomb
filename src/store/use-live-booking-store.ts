@@ -157,7 +157,7 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
 
     /** 是否使用短信预约 */
     const useSmsBooking = computed<boolean>(() => {
-      return !useWxBooking.value && unref(smsBookingEnabled);
+      return unref(smsBookingEnabled);
     });
 
     /** 其他直播预约是否使用微信预约 */
@@ -176,26 +176,21 @@ export const useLiveBookingStore = defineStore<'liveBooking', LiveBookingStore>(
         return false;
       }
 
-      if (unref(useSingleWxBooking)) {
-        return unref(singleOtherChannelBookingConfig.value.isWxLiveBooking);
-      }
-      if (unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking)) {
-        return unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking);
-      }
-
-      return unref(singleOtherChannelBookingConfig.value.isCustomLiveBooking);
+      return (
+        (unref(useSingleWxBooking) &&
+          unref(singleOtherChannelBookingConfig.value.isWxLiveBooking)) ||
+        unref(singleOtherChannelBookingConfig.value.isSmsLiveBooking) ||
+        unref(singleOtherChannelBookingConfig.value.isCustomLiveBooking)
+      );
     });
 
     /** 是否已预约直播 */
     const isLiveBooking = computed<boolean>(() => {
-      if (unref(useWxBooking)) {
-        return unref(isWxLiveBooking);
-      }
-      if (unref(isSmsLiveBooking)) {
-        return unref(isSmsLiveBooking);
-      }
-
-      return unref(isCustomLiveBooking);
+      return (
+        (unref(useWxBooking) && unref(isWxLiveBooking)) ||
+        unref(isSmsLiveBooking) ||
+        unref(isCustomLiveBooking)
+      );
     });
 
     /** 是否显示直播预约按钮 */

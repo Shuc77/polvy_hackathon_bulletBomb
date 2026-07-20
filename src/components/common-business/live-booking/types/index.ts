@@ -3,7 +3,7 @@
  */
 export interface LiveBookingFormInstance {
   /** 打开表单弹层 */
-  openBookingForm: () => void;
+  openBookingForm: () => Promise<void> | void;
   /** 提交预约 */
   submitLiveBookingForm: () => Promise<void>;
   /** 取消预约 */

@@ -1,3 +1,4 @@
+import { askEvents } from './ask';
 import { docEvents } from './doc';
 import { playerEvents } from './player';
 import { globalEvents } from './global';
@@ -36,6 +37,7 @@ function generateRealEvents<T extends Record<string, string>>(
 }
 
 export const events = {
+  ask: generateRealEvents('ask', askEvents),
   doc: generateRealEvents('doc', docEvents),
   player: generateRealEvents('player', playerEvents),
   global: generateRealEvents('global', globalEvents),

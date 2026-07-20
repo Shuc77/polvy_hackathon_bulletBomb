@@ -1,7 +1,7 @@
 /**
  * @file 弹层相关 hook
  */
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { ref, unref, watchEffect } from 'vue';
 
 import { getRefElem } from '@polyv/vue-components';

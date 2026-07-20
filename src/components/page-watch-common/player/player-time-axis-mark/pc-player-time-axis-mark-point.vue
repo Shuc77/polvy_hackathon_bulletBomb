@@ -88,7 +88,7 @@
 import { computed, ref } from 'vue';
 import { CSSProperties } from 'vue/types/jsx';
 import { PropUtils, emitFunc } from '@polyv/vue-components';
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 
 import { TimeAxisMarkInfo } from '@polyv/live-watch-sdk';
 import {

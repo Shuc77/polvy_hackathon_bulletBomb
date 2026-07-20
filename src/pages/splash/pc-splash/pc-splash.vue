@@ -372,7 +372,7 @@ $--splash-header-content-height: 406px;
   position: relative;
   top: -20px;
   height: 0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .c-pc-splash__main__inner {
@@ -407,6 +407,7 @@ $--splash-header-content-height: 406px;
 
   .pws-next-pc-normal-tab-header {
     background: none !important;
+    backdrop-filter: blur(10px);
     &::before {
       display: none;
     }

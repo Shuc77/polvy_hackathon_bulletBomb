@@ -160,6 +160,14 @@ const useWxBooking = computed(() => {
   return unref(normalUseWxBooking);
 });
 
+const useSmsLiveBooking = computed(() => {
+  if (unref(props.isOtherLive)) {
+    return unref(singleOtherChannelSmsLiveBookingEnable);
+  }
+
+  return unref(useSmsBooking);
+});
+
 const wxBookingCount = computed(() => {
   if (unref(props.isOtherLive)) {
     return unref(singleOtherChannelBookingConfig.value?.wxBookingCount);
@@ -233,7 +241,7 @@ const isOnlyCustom = () => {
       unref(singleOtherChannelCustomLiveBookingEnable) &&
       !unref(useSingleWxBooking);
   } else {
-    onlyCustom = unref(useCustomBooking) && !unref(useSmsBooking) && !unref(useWxBooking);
+    onlyCustom = unref(useCustomBooking) && !unref(useSmsLiveBooking) && !unref(useWxBooking);
   }
 
   return onlyCustom;
@@ -242,20 +250,23 @@ const isOnlyCustom = () => {
 /** 执行预约逻辑 */
 const toBooking = () => {
   const onlyCustom = isOnlyCustom();
-  const wxFirst = unref(useWxBooking);
+  const smsEnabled = unref(useSmsLiveBooking);
+  const wxEnabled = unref(useWxBooking);
 
   // 当只有自定义预约时，执行自定义预约
   if (onlyCustom) {
     submitLiveBookingOfCustom();
     return;
   }
-  // 当有微信预约时，优先微信预约
-  if (wxFirst) {
+
+  if (wxEnabled) {
     onClickWxButton();
     return;
   }
-  // 当微信预约和短信预约同时启用时，不执行短信预约
-  onClickSmsButton();
+
+  if (smsEnabled) {
+    onClickSmsButton();
+  }
 };
 
 /** 处理按钮点击 */
@@ -275,7 +286,8 @@ const onClickButton = debounce(async () => {
       const res = await bookingCancelTipsRef.value?.$confirm();
       if (res) {
         trackUserReservationLive({ reservationType: 'official_account' });
-        wxCancelLiveBooking();
+        await wxCancelLiveBooking();
+        otherSmsBooked && (await smsInstance?.cancelLiveBooking());
         otherCustomBooked && patchSroreOfCustom(false);
       }
       return;
@@ -284,7 +296,7 @@ const onClickButton = debounce(async () => {
     if (otherSmsBooked) {
       const res = await bookingCancelTipsRef.value?.$confirm();
       if (res) {
-        smsInstance?.cancelLiveBooking();
+        await smsInstance?.cancelLiveBooking();
         otherCustomBooked && patchSroreOfCustom(false);
       }
       return;
@@ -292,7 +304,7 @@ const onClickButton = debounce(async () => {
     if (otherCustomBooked) {
       const res = await bookingCancelTipsRef.value?.$confirm();
       if (res) {
-        cancelLiveBookingOfCustom();
+        await cancelLiveBookingOfCustom();
       }
       return;
     }
@@ -301,7 +313,8 @@ const onClickButton = debounce(async () => {
       const res = await bookingCancelTipsRef.value?.$confirm();
       if (res) {
         trackUserReservationLive({ reservationType: 'official_account' });
-        wxCancelLiveBooking();
+        await wxCancelLiveBooking();
+        smsBooking && (await smsInstance?.cancelLiveBooking());
         useCustomBooking.value && patchSroreOfCustom(false);
       }
       return;
@@ -309,14 +322,14 @@ const onClickButton = debounce(async () => {
     if (smsBooking) {
       const res = await bookingCancelTipsRef.value?.$confirm();
       if (res) {
-        smsInstance?.cancelLiveBooking();
+        await smsInstance?.cancelLiveBooking();
         useCustomBooking.value && patchSroreOfCustom(false);
       }
       return;
     }
     const res = await bookingCancelTipsRef.value?.$confirm();
     if (res) {
-      cancelLiveBookingOfCustom();
+      await cancelLiveBookingOfCustom();
     }
     return;
   }
@@ -327,7 +340,7 @@ const onClickButton = debounce(async () => {
 /** 处理微信预约点击 */
 async function onClickWxButton() {
   trackUserReservationLive({ reservationType: 'official_account' });
-  wxSubmitLiveBooking();
+  await wxSubmitLiveBooking();
 }
 
 onMounted(() => {

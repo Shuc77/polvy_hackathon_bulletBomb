@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { formatSeconds } from '@utils-ts/date';
+import { formatSeconds } from '@polyv/utils/date';
 
 import SliderBar from '@/components/common-base/slider-bar/slider-bar.vue';
 import PcPlayerTimeAxisMarkPoint from '../player-time-axis-mark/pc-player-time-axis-mark-point.vue';

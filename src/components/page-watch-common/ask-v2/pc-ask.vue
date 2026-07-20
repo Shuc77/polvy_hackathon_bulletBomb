@@ -29,4 +29,8 @@ const { AskMessageList, AskMessageInputSection } = PolyvChatUI;
   flex: 1;
   overflow: hidden;
 }
+
+.c-pc-ask-v2__input {
+  padding: 6px;
+}
 </style>

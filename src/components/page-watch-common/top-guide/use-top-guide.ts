@@ -6,7 +6,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { usePortraitLayoutStore } from '@/store/use-portrait-layout-store';
 import { computed, ref } from 'vue';
-import { startsWithProtocol } from '@polyv/utils/es/net';
+import { startsWithProtocol } from '@polyv/utils/net';
 import { copyText } from '@/assets/utils/copy';
 import { useThemeStore } from '@/store/use-theme-store';
 

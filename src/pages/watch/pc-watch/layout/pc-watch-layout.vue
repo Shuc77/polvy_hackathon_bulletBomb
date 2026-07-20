@@ -291,7 +291,7 @@ import AiQuestionCard from '@/components/page-watch-common/polyv-ai/ai-question/
 import PcProductRender from '@/components/page-watch-common/product/pc-product-render.vue';
 import PcProductPendant from '@/components/page-watch-common/product/product-pendant/pc-product-pendant.vue';
 import PcProductSmallCard from '@/components/page-watch-common/product/product-small-card/pc-product-small-card.vue';
-import { $ } from '@just4/dom';
+import { $ } from '@polyv/utils/dom';
 import { onMounted, ref, watch } from 'vue';
 import PcWatchAsideMenu from './pc-watch-aside-menu.vue';
 import PcWatchBottomMenu from './pc-watch-bottom-menu.vue';
@@ -635,7 +635,7 @@ $--layout-sub-pack-up-height: 40px !default;
 .c-pc-watch-layout__main__left {
   position: relative;
   width: $--layout-left-width-percent;
-  @include pc-watch-card-radius;
+  @include pc-watch-card-radius-top;
 
   &::before {
     display: block;
@@ -644,7 +644,7 @@ $--layout-sub-pack-up-height: 40px !default;
     padding-bottom: $--layout-player-percent;
     content: '';
     background: #212121;
-    @include pc-watch-card-radius;
+    @include pc-watch-card-radius-top;
   }
 }
 
@@ -739,9 +739,9 @@ $--layout-sub-pack-up-height: 40px !default;
 .c-pc-watch-layout__menu-panel-inner__item {
   position: relative;
   background-color: $--color-white;
-  @include pc-watch-card-radius;
+  @include pc-watch-card-radius-top;
   &::before {
-    @include pc-watch-card-radius;
+    @include pc-watch-card-radius-top;
   }
 }
 

@@ -40,7 +40,9 @@
     <pc-follow-dialog />
 
     <!-- 文件管理 -->
-    <pc-file-management />
+    <chat-loader-helper>
+      <chat-v2-file-share-list />
+    </chat-loader-helper>
 
     <!-- 观看/学习时长统计弹层 -->
     <pc-learning-stat-dialog v-if="learningStatsDialogEnabled" />
@@ -52,6 +54,8 @@ import PcIdentityCollectInfoDialog from '@/components/common-business/watch-iden
 import PcIdentityLoginDialogRender from '@/components/common-business/watch-identity/identity-login-dialog-render/pc-identity-login-dialog-render.vue';
 
 import PcPageFixedWidgets from '@/components/common-business/page-fixed-widgets/page-fixed-widgets.vue';
+import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
+import ChatV2FileShareList from '@/components/page-watch-common/chat-v2/file-share-list/index.vue';
 import PcChatFullMessage from '@/components/page-watch-common/chat/chat-full-message/pc-chat-full-message.vue';
 import PcChatSetNick from '@/components/page-watch-common/chat/chat-set-nick/pc-chat-set-nick.vue';
 import PcIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-v2.vue';
@@ -59,7 +63,6 @@ import PcIarRender from '@/components/page-watch-common/interactive-receive/pc-i
 import PcLiveStartTips from '@/components/page-watch-common/live-start-tips/pc-live-start-tips.vue';
 import PcRealNameDialog from '@/components/page-watch-common/real-name-auth/pc-real-name-auth.vue';
 import PcTransmitSwitchTip from '@/components/page-watch-common/transmit-switch-tip/pc-transmit-switch-tip.vue';
-import PcFileManagement from '@/components/page-watch-common/file-management/pc-file-management.vue';
 
 import PcFollowDialog from '@/components/page-watch-common/follow/follow-layer/pc-follow-dialog.vue';
 import PcLearningStatDialog from '@/components/page-watch-common/learning-stat-dialog/pc-learning-stat-dialog.vue';
