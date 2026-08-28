@@ -191,9 +191,21 @@ export const useAuthInfoForm = (options: { emit: VueEmit<typeof authInfoFormEmit
         case AuthInfoType.Number:
           rules[field] = [
             {
-              type: 'number',
-              message: translate('auth.error.improveInfo'),
-              required: ynToBool(option.required, YN.Y),
+              validator: () => {
+                const value = formData[field];
+
+                // 非必填且值为空，则不进行验证
+                if (!ynToBool(option.required, YN.Y) && !value) {
+                  return [];
+                }
+
+                // 同时支持数字和字符串类型的值
+                if ((typeof value === 'number' || typeof value === 'string') && value !== '') {
+                  return [];
+                }
+
+                return [translate('auth.error.improveInfo')];
+              },
             },
           ];
           break;

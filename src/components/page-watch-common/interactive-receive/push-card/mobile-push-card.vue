@@ -4,6 +4,8 @@
     append-body
     class="c-mobile-push-card"
     internal
+    :labels="labels"
+    :popup-ad-sdk="popupAdSdk"
     :push-card-sdk="pushCardSdk"
     :is-full-screen="isIarFullScreen"
     :get-link-params="getLinkParams"
@@ -28,8 +30,14 @@ const IarPushCard = getIarComponent('PushCard');
 
 const { isIarFullScreen } = storeDefinitionToRefs(useInteractReceiveStore);
 
-const { pushCardSdk, customImgConfig, onEntryVisibleChanged, onPushCardVisibleChanged } =
-  usePushCard();
+const {
+  pushCardSdk,
+  popupAdSdk,
+  labels,
+  customImgConfig,
+  onEntryVisibleChanged,
+  onPushCardVisibleChanged,
+} = usePushCard();
 
 const { getLinkParams } = useIarExternalLinkParams();
 </script>

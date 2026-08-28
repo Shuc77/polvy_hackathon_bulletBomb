@@ -63,6 +63,7 @@ export { default as MobileIconNews } from './icons/news';
 export { default as MobileIconPackUp } from './icons/pack-up';
 export { default as MobileIconPageView } from './icons/page-view';
 export { default as MobileIconPeople } from './icons/people';
+export { default as MobileIconPip } from './icons/pip';
 export { default as MobileIconPlayRound } from './icons/play-round';
 export { default as MobileIconPlaySeek } from './icons/play-seek';
 export { default as MobileIconPlayerBack } from './icons/player-back';

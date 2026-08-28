@@ -72,6 +72,13 @@ export const useDoc = (
     watchCore.doc.eventEmitter.off(DocEvents.FullScreenStateChange, onFullScreenStateChange);
   }
 
+  /** 销毁文档：移除事件监听、重置状态并销毁 SDK 文档实例 */
+  function destroyDoc() {
+    unlistenDocEvent();
+    docSetupFinished.value = false;
+    watchCore.doc.destroyDoc();
+  }
+
   function onFullScreenStateChange(evt: { isFullScreen: boolean }) {
     layoutStore.$patch({
       mobileDocIsPageFullscreen: evt.isFullScreen,
@@ -80,6 +87,10 @@ export const useDoc = (
 
   useEventBusListener(appEvents.doc.ResetUpDoc, () => {
     initDoc();
+  });
+
+  useEventBusListener(appEvents.doc.DestroyDoc, () => {
+    destroyDoc();
   });
 
   onMounted(() => {

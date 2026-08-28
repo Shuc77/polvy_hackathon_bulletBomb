@@ -76,6 +76,10 @@ export const usePlayerControl = () => {
 
   /** hook 内部使用，最基础的播放器按钮判断逻辑 */
   const __basePlayBtnVisible = computed(() => {
+    if (!playerStore.playerControlEnabled) {
+      return false;
+    }
+
     // 连麦时隐藏播放器按钮
     if (connectMicStore.isConnectMicing) {
       return false;
@@ -123,6 +127,7 @@ export const usePlayerControl = () => {
   /** 是否显示手动播放提示 */
   const manualPlayTipsVisible = computed<boolean>(() => {
     return (
+      playerStore.playerControlEnabled &&
       channelStore.liveStatus === LiveStatus.Live &&
       !playerStore.supportAutoPlay &&
       !playerStore.isPlayStarted &&
@@ -134,6 +139,7 @@ export const usePlayerControl = () => {
   /** RTC 播放器暂停播放的提示 */
   const rtcPlayerPauseTipVisible = computed<boolean>(() => {
     return (
+      playerStore.playerControlEnabled &&
       channelStore.liveStatus === LiveStatus.Live &&
       playerStore.isLowLatency &&
       playerStore.isPlayStarted &&
@@ -143,6 +149,8 @@ export const usePlayerControl = () => {
 
   /** 是否显示刷新按钮 */
   const refreshButtonVisible = computed<boolean>(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     if (playerStore.supportLiveTimeShift) return false;
 
     return playerStore.supportRefresh;
@@ -150,18 +158,27 @@ export const usePlayerControl = () => {
 
   /** 音量设置是否显示 */
   const volumeSettingVisible = computed<boolean>(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     return !connectMicStore.isConnectMicing;
   });
 
   /** 倍速设置是否显示 */
   const rateSettingVisible = computed<boolean>(() => {
     return (
-      playbackStore.isPlaybacking && playerStore.rateList.length > 0 && rateButtonVisible.value
+      playerStore.playerControlEnabled &&
+      playbackStore.isPlaybacking &&
+      playerStore.rateList.length > 0 &&
+      rateButtonVisible.value
     );
   });
 
   const fastForwardBackwardVisible = computed(() => {
-    return playerStore.fastForwardBackwardEnabled && playbackStore.isPlaybacking;
+    return (
+      playerStore.playerControlEnabled &&
+      playerStore.fastForwardBackwardEnabled &&
+      playbackStore.isPlaybacking
+    );
   });
 
   /** 可选的倍速列表 */
@@ -265,11 +282,17 @@ export const usePlayerControl = () => {
 
   /** 延迟模式切换是否显示 */
   const latencyModeSettingVisible = computed<boolean>(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     return playerStore.supportLowLatency;
   });
 
   /** 控制栏设置是否显示（PC 端） */
   const playerSettingVisible = computed<boolean>(() => {
+    if (!playerStore.playerControlEnabled) {
+      return false;
+    }
+
     if (connectMicStore.isConnectMicing) {
       return false;
     }
@@ -290,6 +313,8 @@ export const usePlayerControl = () => {
 
   /** 播放器进度条是否显示 */
   const playerProgressVisible = computed<boolean>(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     /** 回放进度条是否显示 */
     let playbackProgressVisible = playbackStore.isPlaybacking && playerStore.durationTime !== 0;
 
@@ -302,7 +327,11 @@ export const usePlayerControl = () => {
 
   /** 回放时间是否显示 */
   const playbackTimeVisible = computed<boolean>(() => {
-    return playbackStore.isPlaybacking && playerStore.playbackProgressBarEnabled;
+    return (
+      playerStore.playerControlEnabled &&
+      playbackStore.isPlaybacking &&
+      playerStore.playbackProgressBarEnabled
+    );
   });
 
   /** 当前播放时间文案 */
@@ -317,6 +346,8 @@ export const usePlayerControl = () => {
 
   /** 音视频模式切换是否显示 */
   const playerModeSwitcherVisible = computed<boolean>(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     const isSupportPlayScene =
       channelStore.liveStatus === LiveStatus.Live || playbackStore.isPlaybacking;
 
@@ -334,6 +365,8 @@ export const usePlayerControl = () => {
    * 弹幕速度切换按钮是否显示
    */
   const barrageSpeedButtonVisible = computed(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     if (!playerStore.barrageSetting.barrageEnabled) {
       return false;
     }
@@ -349,6 +382,8 @@ export const usePlayerControl = () => {
    * 弹幕字号切换按钮是否显示
    */
   const barrageSizeButtonVisible = computed(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     if (!playerStore.barrageSetting.barrageEnabled) {
       return false;
     }
@@ -364,6 +399,8 @@ export const usePlayerControl = () => {
    * 弹幕透明度切换按钮是否显示
    */
   const barrageAlphaButtonVisible = computed(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     if (!playerStore.barrageSetting.barrageEnabled) {
       return false;
     }
@@ -374,6 +411,8 @@ export const usePlayerControl = () => {
    * 弹幕透位置切换按钮是否显示
    */
   const barrageLocationButtonVisible = computed(() => {
+    if (!playerStore.playerControlEnabled) return false;
+
     if (!playerStore.barrageSetting.barrageEnabled) {
       return false;
     }
@@ -396,6 +435,7 @@ export const usePlayerControl = () => {
    */
   const timeShiftReturnLiveButtonVisible = computed(() => {
     return (
+      playerStore.playerControlEnabled &&
       playerStore.supportLiveTimeShift &&
       channelStore.liveStatus === LiveStatus.Live &&
       playerStore.currentTime !== playerStore.durationTime

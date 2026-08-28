@@ -31,6 +31,12 @@
         class="c-portrait-chat-room-pendant__item"
       />
 
+      <!-- 邀请海报 -->
+      <mobile-invite-poster-entry
+        v-if="mobileChatInvitePendantVisible"
+        class="c-portrait-chat-room-pendant__item"
+      />
+
       <!-- 抽奖 -->
       <lottery-pendant-v2 class="c-portrait-chat-room-pendant__item" />
 
@@ -59,6 +65,12 @@
       />
     </template>
 
+    <!-- 滚动抽奖与竞技 PK 共用入口 -->
+    <rolling-lottery-pendant
+      v-if="liveActivityLoaded"
+      class="c-portrait-chat-room-pendant__item"
+    />
+
     <!-- 图标广告 -->
     <mobile-img-advert class="c-portrait-chat-room-pendant__item" />
 
@@ -75,6 +87,10 @@
     </template>
 
     <lucky-bag-animation class="c-portrait-chat-room-pendant__lucky-bag-animation" />
+    <rolling-lottery-animation
+      v-if="liveActivityLoaded"
+      class="c-portrait-chat-room-pendant__rolling-lottery-animation"
+    />
   </div>
 </template>
 
@@ -85,6 +101,8 @@ import LuckyBagPendant from '@/components/page-watch-common/interactive-receive-
 import LuckyBagAnimation from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-animation.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
 import MobileVotePendant from '@/components/page-watch-common/interactive-receive-v2/vote-v2/mobile-vote-pendant.vue';
+import RollingLotteryAnimation from '@/components/page-watch-common/live-activity/rolling-lottery/rolling-lottery-animation.vue';
+import RollingLotteryPendant from '@/components/page-watch-common/live-activity/rolling-lottery/rolling-lottery-pendant.vue';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import MobileFeedbackPendant from '@/components/page-watch-common/interactive-receive/feedback/mobile-feedback-pendant.vue';
 import PortraitPushCard from '@/components/page-watch-common/interactive-receive/push-card/mobile-push-card.vue';
@@ -97,6 +115,7 @@ import LotteryPendantV2 from '../../interactive-receive-v2/lottery-v2/lottery-pe
 import MobileRushAnswer from '../../interactive-receive/rush-answer/mobile-rush-answer.vue';
 import MobileTaskActivityPendant from '../../task-activity/mobile-task-activity-pendant.vue';
 import MobileEmotionalFeedback from '../chat-emotional-feedback/mobile-emotional-feedback.vue';
+import MobileInvitePosterEntry from '@/components/page-watch-common/invite/mobile-invite-poster-entry/mobile-invite-poster-entry.vue';
 
 import { useChatStore } from '@/store/use-chat-store';
 import { useFinanceStore } from '@/store/use-finance-store';
@@ -106,7 +125,9 @@ import { useChannelMenuStore } from '@/store/use-channel-menu-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useInviteStore } from '@/store/use-invite-store';
 
 const { chatSetting, likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore);
@@ -116,6 +137,9 @@ const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
 
 const { iarSdkLoaded, iarUIV1Loaded, feedbackPendantVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
+const { liveActivityLoaded } = storeDefinitionToRefs(useLiveActivityStore);
+
+const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
 const { microActivityEnabled } = storeDefinitionToRefs(useMicroActivityStore);
 
@@ -140,6 +164,13 @@ const { isPlaybacking } = storeDefinitionToRefs(usePlaybackStore);
 }
 
 .c-portrait-chat-room-pendant__lucky-bag-animation {
+  position: absolute;
+  right: -16px;
+  bottom: 0;
+  z-index: 300;
+}
+
+.c-portrait-chat-room-pendant__rolling-lottery-animation {
   position: absolute;
   right: -16px;
   bottom: 0;

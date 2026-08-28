@@ -129,6 +129,8 @@ export interface PlayerStoreState {
   isPortraitResolutionRate: ComputedRef<boolean>;
   /** 暂无直播是否显示 */
   noneLiveVisible: ComputedRef<boolean>;
+  /** 播放器控制栏是否允许显示 */
+  playerControlEnabled: Ref<boolean>;
   /** 播放器控制栏是否显示 */
   playerControlVisible: Ref<boolean>;
   /** sdk 播放器 UI 控制栏是否显示 */
@@ -511,6 +513,9 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
   /** 是否为音频播放器模式 */
   const isAudioPlayerMode = ref(false);
 
+  /** 播放器控制栏是否允许显示 */
+  const playerControlEnabled = ref(true);
+
   /** 播放器控制栏是否显示 */
   const playerControlVisible = ref(false);
 
@@ -731,6 +736,7 @@ export const usePlayerStore = defineStore<'player', PlayerStore>('player', () =>
     resolutionHeight,
     isPortraitResolutionRate,
     noneLiveVisible,
+    playerControlEnabled,
     playerControlVisible,
     sdkPlayerUIControlVisible,
 

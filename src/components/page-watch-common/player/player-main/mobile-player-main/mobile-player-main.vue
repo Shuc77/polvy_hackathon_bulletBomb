@@ -3,11 +3,14 @@
   <div
     class="c-mobile-player-main"
     :class="{
+      'c-mobile-player-main--page-fullscreen':
+        (mobileNormalLatencyPlayerIsFullscreen || lowLatencyPlayerIsPageFullscreen) &&
+        !isHorizontalScreenOrientation,
       'c-mobile-player-main--normal-player-fullscreen': mobileNormalLatencyPlayerIsFullscreen,
-      'c-mobile-player-main--page-fullscreen': lowLatencyPlayerIsPageFullscreen,
       'c-mobile-player-main--screen__horizontal': isHorizontalScreenOrientation,
       'c-mobile-player-main--hide-loading': isAndroid && isDingTalk,
       'c-mobile-player-main--hide': isConnectMicing,
+      'c-mobile-player-main--none-live': noneLivePanelVisible,
       'c-mobile-player-main--hide-normal-player-btn': !isLowLatency,
       'c-mobile-player-main__hide-player-loading': initLoadingVisible,
     }"
@@ -27,6 +30,9 @@
       }"
       data-testid="plv-player-container"
     ></div>
+
+    <!-- 外部授权试看覆盖层（倒计时/到期遮罩/引导跳转） -->
+    <external-trial-overlay />
 
     <div
       v-if="playerSdkLoadError"
@@ -67,10 +73,13 @@
       </template>
     </player-play-business-button>
 
+    <!-- 暂无直播占位面板 -->
+    <mobile-none-live-panel v-if="noneLivePanelVisible" />
+
     <!-- 播放器顶部-左侧 访问次数 -->
     <div
       v-if="pvShowEnabled && pageViewCountLocation === PageViewShowLocation.Player"
-      v-show="playerControlVisible || sdkPlayerUIControlVisible"
+      v-show="playerControlEnabled && (playerControlVisible || sdkPlayerUIControlVisible)"
       class="c-mobile-player-main__pv"
       :class="{
         'c-mobile-player-main__pv--landscape-fix': isLowLatency,
@@ -82,7 +91,7 @@
     <!-- webview场景下网页全屏时的返回按钮 -->
     <div
       v-if="showWebviewBackButton"
-      v-show="playerControlVisible || sdkPlayerUIControlVisible"
+      v-show="playerControlEnabled && (playerControlVisible || sdkPlayerUIControlVisible)"
       class="c-mobile-player-main__webview-back"
       :class="{
         'c-mobile-player-main__webview-back--lowLatency': isLowLatency,
@@ -94,20 +103,24 @@
 
     <!-- 播放器顶部-右侧 延迟模式切换 -->
     <mobile-low-latency-switch
-      v-show="latencyModeSettingVisible && (playerControlVisible || sdkPlayerUIControlVisible)"
+      v-show="
+        playerControlEnabled &&
+        latencyModeSettingVisible &&
+        (playerControlVisible || sdkPlayerUIControlVisible)
+      "
     />
 
     <!-- 播放器底部-右侧 直播时移和精彩看点入口 -->
     <transition name="slide">
       <mobile-player-time-axis-entrance
         v-if="isLowLatency"
-        v-show="playerControlVisible"
+        v-show="playerControlEnabled && playerControlVisible"
       />
     </transition>
 
     <!-- 播放器控制栏 -->
     <mobile-player-control
-      v-if="isLowLatency"
+      v-if="isLowLatency && playerControlEnabled"
       class="c-mobile-player-main__control"
     />
 
@@ -158,12 +171,15 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
+import ExternalTrialOverlay from '@/components/page-watch-common/player/external-trial/external-trial-overlay.vue';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
 import { useMobilePlaybackSubtitle } from '../../../subtitle/use-mobile-playback-subtitle';
 import { usePlayerInitLoading } from '../../hooks/use-player-init-loading';
 
 import PlayerPlayBusinessButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
 import MobilePlayerCoverImg from '../../player-cover-img/mobile-player-cover-img.vue';
+import MobileNoneLivePanel from '../../common/none-live-panel/mobile-none-live-panel.vue';
+import { useNoneLivePanel } from '../../common/none-live-panel/use-none-live-panel';
 import MobilePlayerControl from '../../player-control/mobile-player-control/mobile-player-control.vue';
 import MobileLowLatencySwitch from '../../player-control/mobile-player-control/mobile-low-latency-switch.vue';
 import MobilePlayerLogo from '@/components/page-watch-common/player/player-logo/mobile-player-logo.vue';
@@ -217,6 +233,7 @@ const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText(
 const {
   playerSdkLoadError,
   isLowLatency,
+  playerControlEnabled,
   playerControlVisible,
   sdkPlayerUIControlVisible,
   logoSetting,
@@ -225,6 +242,8 @@ const {
 } = storeDefinitionToRefs(usePlayerStore);
 
 const { themeSetting, playerBgUrl } = storeDefinitionToRefs(useThemeStore);
+
+const { noneLivePanelVisible } = useNoneLivePanel();
 
 const { initLoadingVisible } = usePlayerInitLoading();
 
@@ -381,6 +400,16 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
   height: 100%;
 }
 
+// 显示暂无直播占位面板时，透明掉播放器，避免与 SDK 自带的流停止 UI 重叠
+.c-mobile-player-main--none-live {
+  .c-mobile-player-main__container {
+    opacity: 0;
+  }
+  .c-mobile-player-main__play-btn {
+    display: none;
+  }
+}
+
 .c-mobile-player-main__pv {
   position: absolute;
   top: 16px;
@@ -429,6 +458,7 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 
 // 正常延迟播放器全屏
 .c-mobile-player-main--normal-player-fullscreen {
+  // 统一交给外部去旋转
   .plv-live-fullscreen--landscape {
     // ios 兼容处理
     .plvideo {
@@ -465,6 +495,35 @@ $--player-page-fullscreen-height-half__reverse: calc($--player-page-fullscreen-h
 .c-mobile-player-main--screen__horizontal {
   width: $--plv-mobile-watch-full-screen-vw !important;
   height: 100% !important;
+}
+
+.c-mobile-player-main--page-fullscreen.c-mobile-player-main--normal-player-fullscreen {
+  // 直播
+  .plv-live-fullscreen--landscape {
+    top: 0 !important;
+    left: 0 !important;
+    transform: none;
+  }
+  // 点播
+  .plv-player-fullscreen--landscape {
+    top: 0 !important;
+    left: 0 !important;
+    transform: none;
+  }
+}
+
+.c-mobile-player-main--screen__horizontal.c-mobile-player-main--normal-player-fullscreen {
+  // 直播
+  .plv-live-fullscreen--landscape {
+    position: absolute !important;
+    z-index: auto !important;
+  }
+  // 点播
+  .plv-player-fullscreen--landscape {
+    top: 0 !important;
+    left: 0 !important;
+    transform: none;
+  }
 }
 
 .c-mobile-player-main--hide-loading {

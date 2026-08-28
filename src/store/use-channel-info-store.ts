@@ -60,6 +60,10 @@ export interface ChannelInfoStoreState {
   isLiveStartCountDownEnd: Ref<boolean>;
   /** 直播开始时间显示文案 */
   liveStartTimeText: ComputedRef<string>;
+  /** 信息卡片展示的直播时间（按时间类型选择后的结果） */
+  liveShowTime: ComputedRef<number | undefined>;
+  /** 信息卡片直播时间显示文案 */
+  liveShowTimeText: ComputedRef<string>;
   /** 是否显示直播倒计时 */
   showLiveCountDown: ComputedRef<boolean>;
 
@@ -226,6 +230,30 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       return formatDate(time, DATE_FORMAT_DOT);
     });
 
+    /** 信息卡片直播时间设置 */
+    const descLiveTimeSetting = ref<{
+      liveShowTime: number | undefined;
+      descLiveTimeType: 'plan' | 'actual';
+    }>({
+      liveShowTime: undefined,
+      descLiveTimeType: 'plan',
+    });
+
+    /** 信息卡片展示的直播时间（按时间类型选择后的结果） */
+    const liveShowTime = computed<number | undefined>(() => {
+      return unref(descLiveTimeSetting).liveShowTime;
+    });
+
+    /** 信息卡片直播时间显示文案 */
+    const liveShowTimeText = computed<string>(() => {
+      const time = unref(liveShowTime);
+      if (!time) {
+        return '- -';
+      }
+
+      return formatDate(time, DATE_FORMAT_DOT);
+    });
+
     /** 直播倒计时是否显示 */
     const showLiveCountDown = computed(() => {
       const liveStartTimeVal = unref(liveStartTime);
@@ -337,6 +365,8 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
         countdownEnabled: channelCountdownSetting.countdownEnabled || watchCore.inTargetSession(),
       };
 
+      descLiveTimeSetting.value = watchCore.channel.getDescLiveTimeSetting();
+
       watchDurationSetting.value = watchCore.channel.getWatchDurationSetting();
     }
 
@@ -358,6 +388,8 @@ export const useChannelInfoStore = defineStore<'channelInfo', ChannelInfoStore>(
       liveStartTime,
       isLiveStartCountDownEnd,
       liveStartTimeText,
+      liveShowTime,
+      liveShowTimeText,
       showLiveCountDown,
 
       learningStatsEnabled,

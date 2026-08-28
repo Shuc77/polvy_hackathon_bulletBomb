@@ -6,7 +6,13 @@
   >
     <span>{{ $lang('chat.setNick.tips1') }}</span>
     <span
-      v-if="!hasNickname"
+      v-if="isGuest"
+      class="c-pc-set-nick-placeholder--highlight pws-pc-set-nick-placeholder-highlight"
+    >
+      {{ $lang('auth.login.text') }}
+    </span>
+    <span
+      v-else-if="!hasNickname"
       class="c-pc-set-nick-placeholder--highlight pws-pc-set-nick-placeholder-highlight"
     >
       {{ $lang('chat.setNick.tips2') }}
@@ -24,9 +30,12 @@
 <script setup lang="ts">
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { useViewerStore } from '@/store/use-viewer-store';
 
 const { hasNickname, needRealNameAuth } = storeDefinitionToRefs(useViewerStore);
+
+const { isGuest } = storeDefinitionToRefs(useIdentityStore);
 
 const { toInterruptUserClick } = useInterruptUserClick();
 

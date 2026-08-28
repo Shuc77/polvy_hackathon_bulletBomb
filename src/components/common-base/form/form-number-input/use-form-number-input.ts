@@ -44,10 +44,20 @@ export const useFormNumberInput = (options: {
 
   /**
    * 格式化值
+   * 整数字符串超出 JS 安全整数范围（Number.MAX_SAFE_INTEGER）时，
+   * Number() 转换会丢失精度（如 150428198605070018 -> 150428198605070000），
+   * 因此需要保留字符串形式，避免保存错误的值。
    */
   function formatValue(val: string | number): NumberInputValueType {
     if (val === '') {
       return val;
+    }
+
+    if (typeof val === 'string' && /^-?\d+$/.test(val)) {
+      const _val = Number(val);
+      if (Number.isSafeInteger(_val) === false) {
+        return val;
+      }
     }
 
     return Number(val);

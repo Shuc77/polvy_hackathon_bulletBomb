@@ -21,10 +21,12 @@ import { tabletLoadDesktopTemplate } from '@/assets/utils/browser';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { DirectBusinessPageType } from '@/app/layout/direct-business-page/type';
 import { useIarSetup } from '@/app/layout/main-enter/_hooks/use-iar-setup';
+import { useLiveActivitySetup } from '@/app/layout/main-enter/_hooks/use-live-activity-setup';
 import { useConnectMicSetup } from '@/app/layout/main-enter/_hooks/use-connect-mic-setup';
 import { useEmotionSetup } from './use-emotion-setup';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { useWatchAICoreSetup } from './use-watch-ai-core-setup';
+import { usePlayerFullscreenCleanup } from './use-player-fullscreen-cleanup';
 
 /**
  * 页面尺寸初始化设置
@@ -90,12 +92,16 @@ export const useMainEnter = (options: {
   const { getWatchCore } = useGlobalInject();
 
   const { loadIarSDK } = useIarSetup();
+  const { setupLiveActivities } = useLiveActivitySetup();
 
   const { loadWatchAICore } = useWatchAICoreSetup();
 
   const { setupEmotionParser } = useEmotionSetup();
 
   const { setupConnectMic } = useConnectMicSetup();
+
+  // 销毁播放器时复位全屏状态（页面维度统一处理，覆盖 PC/移动横屏/移动竖屏）
+  usePlayerFullscreenCleanup();
 
   const { updateWeixinShareConfig } = useWeixinShareConfigUpdate();
 
@@ -157,7 +163,13 @@ export const useMainEnter = (options: {
   function removeUrlAuthQueryParams() {
     if (!authStore.isAuthorized) return;
 
-    removeQueryParam(['name', 'password', 'phoneAuthToken', ...AuthSpecialQueryParams]);
+    removeQueryParam([
+      'forceUserAuth',
+      'name',
+      'password',
+      'phoneAuthToken',
+      ...AuthSpecialQueryParams,
+    ]);
   }
 
   usePageSizeSetup();
@@ -200,6 +212,7 @@ export const useMainEnter = (options: {
     }
 
     await loadIarSDK();
+    await setupLiveActivities();
 
     // 处理需要等观看页加载完后的逻辑
     if (watchAppStore.watchPageInited) {

@@ -115,7 +115,16 @@ const devConfig = merge(commonConfig, {
     },
   ]
     .concat(lintPlugins)
-    .concat(inSdkInjectMode ? [] : [CodeInspectorPlugin({ bundler: 'webpack' })]),
+    .concat(
+      inSdkInjectMode
+        ? []
+        : [
+            CodeInspectorPlugin({
+              bundler: 'webpack',
+              exclude: path.resolve(__dirname, '../../sdk/.dist'),
+            }),
+          ],
+    ),
 });
 
 /** @type {import('webpack').Configuration} */

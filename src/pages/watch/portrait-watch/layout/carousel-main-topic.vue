@@ -24,6 +24,9 @@
       <!-- 主讲信息 -->
       <portrait-channel-info-capsule :mini="channelInfoSeat === 0" />
 
+      <!-- 小程序小窗 -->
+      <miniprogram-pip v-if="isWxMiniProgram" />
+
       <br v-if="channelInfoSeat === 1" />
 
       <!-- 直播状态 -->
@@ -50,6 +53,7 @@
     <!-- 倒计时 + 预约 -->
     <div class="c-portrait-carousel-main-topic__row">
       <portrait-count-down-layer />
+      <div class="c-portrait-carousel-main-topic__external-trial-countdown"></div>
     </div>
 
     <!-- 置顶消息 -->
@@ -70,6 +74,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import PortraitStatusTag from '@/components/common-business/status-tag/portrait-status-tag.vue';
 import PortraitMultiMeetingEntrance from '@/components/page-watch-common/multi-meeting/portrait-multi-meeting/portrait-multi-meeting-entrance.vue';
 import PortraitInviteRankEntrance from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank-entrance.vue';
+import MiniprogramPip from '@/components/page-watch-common/miniprogram-pip/index.vue';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import PortraitInteractiveEntrance from '@/components/page-watch-common/interactive-receive/interactive-entrance/portrait-interactive-entrance.vue';
 import { useInviteStore } from '@/store/use-invite-store';
@@ -85,7 +90,7 @@ import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-lo
 import PortraitCountDownLayer from '@/components/page-watch-common/count-down-layer/portrait-count-down-layer.vue';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
-const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isWxMiniProgram } = storeDefinitionToRefs(useWatchAppStore);
 
 const { channelInfoSeat, portraitOnlineListEntranceVisible, portraitDocSideSwitchVisible } =
   storeDefinitionToRefs(usePortraitLayoutStore);

@@ -34,12 +34,18 @@ export function convert2CurrentLang(lang: LanguageType): LangType {
   return LangType.English;
 }
 
-/** 获取 sdk 推荐的多语言 */
-function getWatchSdkRecommendLang(): LangType | undefined {
+function getLimitLang(): LangType | undefined {
   const setting = PlvChannelModule.getRecommendLangSetting();
-  if (!setting.preferRecommendSetting) {
-    return undefined;
+  if (setting.preferRecommendSetting) {
+    return getWatchSdkRecommendLang();
   }
+
+  return undefined;
+}
+
+/** 获取 sdk 推荐的多语言 */
+function getWatchSdkRecommendLang(): LangType {
+  const setting = PlvChannelModule.getRecommendLangSetting();
 
   if (setting.isFollowBrowserLang) {
     return getBrowserLang();
@@ -50,11 +56,6 @@ function getWatchSdkRecommendLang(): LangType | undefined {
 
 /** 获取浏览器缓存中的多语言 */
 export function getCacheLang(): LangType | undefined {
-  const recommendLang = getWatchSdkRecommendLang();
-  if (recommendLang) {
-    return recommendLang;
-  }
-
   const urlParams = getUrlQueryParams();
   /** 判断目标是否为一个多语言 */
   const isAllowLang = (target: unknown): target is LangType => {
@@ -105,5 +106,5 @@ export function getBrowserLang(): LangType {
 
 /** 获取当前页面加载后的默认多语言 */
 export function getDefaultLang(): LangType {
-  return getCacheLang() || getBrowserLang();
+  return getLimitLang() || getCacheLang() || getWatchSdkRecommendLang();
 }

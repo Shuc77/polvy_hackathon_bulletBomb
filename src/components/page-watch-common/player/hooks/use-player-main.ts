@@ -51,6 +51,8 @@ export const usePlayerMain = ({
   /** 播放器渲染容器 */
   const playerContainer = ref<HTMLDivElement>();
 
+  const watchCore = getWatchCore();
+
   /**
    * 根据图片地址设置流尺寸
    * @param imageUrl 图片地址
@@ -87,7 +89,6 @@ export const usePlayerMain = ({
       }
 
       // 进行强制切换回放处理
-      const watchCore = getWatchCore();
       if (watchCore.channel.getForceChangePlaybackEnabled()) {
         playbackStore.syncPlaybackStore();
         await playbackStore.initCurrentPlaybackTarget();
@@ -130,7 +131,6 @@ export const usePlayerMain = ({
     }
 
     try {
-      const watchCore = getWatchCore();
       const pushInfo = await watchCore.channel.getPushInfo();
       if (pushInfo.resolutionWidth && pushInfo.resolutionHeight) {
         playerStore.$patch({
@@ -167,6 +167,7 @@ export const usePlayerMain = ({
         playerScriptLoading: true,
         playerInited: false,
         isPlayStarted: false,
+        playerControlEnabled: true,
         playerControlVisible: false,
         sdkPlayerUIControlVisible: false,
       });
@@ -219,7 +220,6 @@ export const usePlayerMain = ({
         playerOptions.customAdvertClick = false;
       }
 
-      const watchCore = getWatchCore();
       await watchCore.player.setupPlayer(playerOptions);
 
       bindPlayerEvents();
@@ -238,15 +238,25 @@ export const usePlayerMain = ({
 
   /** 销毁播放器 */
   function destroyPlayer(): void {
-    const watchCore = getWatchCore();
     watchCore.player.destroyPlayer();
     unbindPlayerEvents();
+    playerStore.$patch({
+      playerScriptLoading: false,
+      playerInited: false,
+      isPlayStarted: false,
+      playStatus: PlayStatus.Pause,
+      playerControlEnabled: false,
+      playerControlVisible: false,
+      sdkPlayerUIControlVisible: false,
+    });
+    playbackStore.$patch({
+      isPlaybacking: false,
+    });
   }
 
   watch(
     () => channelStore.liveStatus,
     () => {
-      const watchCore = getWatchCore();
       const supportLowLatency = watchCore.player.supportLowLatency().support;
       playerStore.$patch({
         supportLowLatency,
@@ -267,7 +277,6 @@ export const usePlayerMain = ({
   watch(
     () => layoutStore.mobilePlayerIsPageFullscreen,
     () => {
-      const watchCore = getWatchCore();
       watchCore.player.resizeBarrage();
     },
   );
@@ -287,8 +296,13 @@ export const usePlayerMain = ({
     initPlayer();
   });
 
+  useEventBusListener(appEvents.player.DestroyPlayer, () => {
+    // 同步触发全屏复位，确保在 destroyPlayer 之前完成（避免时序问题）
+    getEmitter().emit(appEvents.player.ExitPlayerFullscreen);
+    destroyPlayer();
+  });
+
   onMounted(() => {
-    const watchCore = getWatchCore();
     const supportLowLatency = watchCore.player.supportLowLatency().support;
 
     // 从 localStorage 读取用户之前的延迟设置，如果没有则默认为支持时开启无延迟

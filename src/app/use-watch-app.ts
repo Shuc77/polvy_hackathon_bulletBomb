@@ -239,6 +239,8 @@ export function createWatchApp() {
       getExtBusinessInfo: () => {
         return {
           infoFeedFlowPageId: paramGetter().infoFeedFlowPageId(),
+          pageId: paramGetter().pageId(),
+          pageType: paramGetter().pageType(),
         };
       },
     });

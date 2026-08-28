@@ -68,6 +68,17 @@ for (let i = 0; i < apis.length; i++) {
   }
 }
 
+/**
+ * 退出浏览器全屏（复用模块级厂商前缀检测，不创建监听器）。
+ * 当页面无全屏元素时为空操作。
+ */
+export function exitBrowserFullscreen(): void {
+  if (!fieldData) return;
+  if (document[fieldData.elementField]) {
+    document[fieldData.exitApiField]();
+  }
+}
+
 export type FullscreenElement = Element | Ref<Element>;
 
 export type GetFullscreenElement = () => FullscreenElement;

@@ -54,29 +54,23 @@
 </template>
 
 <script setup lang="ts">
+import { appEvents } from '@/app/app-events';
 import { translate } from '@/assets/lang';
-import MobileDialog from '@/components/common-base/dialog/mobile-dialog/mobile-dialog.vue';
 import { useGlobalInject } from '@/app/use-global-inject';
+import MobileDialog from '@/components/common-base/dialog/mobile-dialog/mobile-dialog.vue';
+import { useWithdrawApplyEntry } from '@/components/page-watch-common/withdraw/_hooks/use-withdraw-apply-entry';
 import { useSimpleVisible } from '@/hooks/behaviors/use-simple-visible';
 import {
   TaskActivityEvents,
   TaskActivityRewardType,
-  WeixinPayType,
   YN,
   type TaskActivityFinishData,
 } from '@polyv/live-watch-sdk';
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
-import { storeDefinitionToRefs } from '@/plugins/pinia/util';
-import { useWeixinStore } from '@/store/use-weixin-store';
-import { useWithdrawStore } from '@/store/use-withdraw-store';
-import { appEvents } from '@/app/app-events';
 import { TaskActivityEventsRelations } from '@polyv/live-watch-sdk';
 
-const { weixinPayType } = storeDefinitionToRefs(useWeixinStore);
-
-const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
-
 const { getWatchCore, getEmitter } = useGlobalInject();
+const { withdrawApplyEnabled, openWithdrawApply } = useWithdrawApplyEntry();
 
 const watchCore = getWatchCore();
 
@@ -163,8 +157,7 @@ const unit = computed(() => {
  */
 const canWithdraw = computed(() => {
   return (
-    weixinPayType.value === WeixinPayType.TransferBill &&
-    withdrawVisible.value &&
+    withdrawApplyEnabled.value &&
     currentData.value?.taskReward.type === TaskActivityRewardType.Cash
   );
 });
@@ -205,7 +198,7 @@ const buttonText = computed(() => {
 
 function onClickButton() {
   if (canWithdraw.value) {
-    getEmitter().emit(appEvents.withdraw.OpenWithdrawApply, true);
+    openWithdrawApply();
   }
 
   if (canRecive.value) {

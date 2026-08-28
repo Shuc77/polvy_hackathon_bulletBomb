@@ -160,7 +160,7 @@ export const useChatMessageInput = () => {
     }
 
     if (identityStore.isGuest) {
-      placeholder = translate('auth.login.tips');
+      placeholder = translate('auth.login.tips.interaction');
     }
 
     return placeholder;

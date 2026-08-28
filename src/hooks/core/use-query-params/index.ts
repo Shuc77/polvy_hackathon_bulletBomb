@@ -139,6 +139,10 @@ export const useQueryParams = (opts?: {
 
     /** 信息流页面Id */
     infoFeedFlowPageId: buildGetters<'string'>('infoFeedFlowPageId'),
+    /** 页面 id（聚合页跳转场景由 URL query `pageId` 透传） */
+    pageId: buildGetters<string>('pageId'),
+    /** 页面类型：aggregate/feed/watch（聚合页跳转场景由 URL query `pageType` 透传） */
+    pageType: buildGetters<string>('pageType'),
     /** 不需要互动功能 */
     notNeedIar: buildGetters<YN>('notNeedIar'),
     /** 是否需要微信 SDK 功能 */
@@ -187,6 +191,8 @@ export const useQueryParams = (opts?: {
     testModeToken: buildGetters('testModeToken'),
     /** 忽略微信授权 */
     ignoreWxAuth: buildGetters<YN>('ignoreWxAuth'),
+    /** 强制用户体系授权，当使用用户体系外部授权时，可以传递该参数，即使已经授权也会再重新授权 */
+    forceUserAuth: buildGetters<YN>('forceUserAuth'),
     /** 观众 id */
     viewerid: buildGetters('viewerid'),
     /** 观看条件-验证码 */

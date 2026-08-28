@@ -125,6 +125,7 @@ export const useChatUIGlobalProvide = () => {
           [ChatMsgSource.Redpaper]: RedpaperMsg as any,
         },
         clickMsgCallback,
+        customViewerLabelUrl: chatSetting.value.customViewerLabelUrl,
       };
     },
     getAskConfig: () => {

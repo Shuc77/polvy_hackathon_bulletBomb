@@ -4,6 +4,8 @@
     append-body
     class="c-pc-push-card"
     internal
+    :labels="labels"
+    :popup-ad-sdk="popupAdSdk"
     :push-card-sdk="pushCardSdk"
     :get-link-params="getLinkParams"
     :custom-img-config="customImgConfig"
@@ -18,7 +20,7 @@ import { useIarExternalLinkParams } from '../use-iar-external-link-params';
 
 const IarPushCard = getIarComponent('PushCard');
 
-const { pushCardSdk, customImgConfig, onEntryVisibleChanged } = usePushCard();
+const { pushCardSdk, popupAdSdk, labels, customImgConfig, onEntryVisibleChanged } = usePushCard();
 
 const { getLinkParams } = useIarExternalLinkParams();
 </script>

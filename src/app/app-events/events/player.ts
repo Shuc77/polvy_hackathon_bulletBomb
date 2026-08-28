@@ -7,6 +7,14 @@ export const playerEvents = {
    */
   ResetUpPlayer: 'ResetUpPlayer',
   /**
+   * 退出播放器全屏（销毁播放器前同步触发，由页面维度统一处理全屏复位）
+   */
+  ExitPlayerFullscreen: 'ExitPlayerFullscreen',
+  /**
+   * 销毁播放器
+   */
+  DestroyPlayer: 'DestroyPlayer',
+  /**
    * 点击了移动端播放器容器
    */
   ClickMobilePlayerContainer: 'ClickMobilePlayerContainer',

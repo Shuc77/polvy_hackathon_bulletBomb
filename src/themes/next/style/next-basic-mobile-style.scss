@@ -17,17 +17,17 @@
 
     // --------- 倒计时 ---------- //
     .pws-mobile-count-down-square-item {
-      background-color: $--dynamic-theme-color !important;
+      background-color: rgba(255, 255, 255, .8) !important;
       .pws-count-down-square-item-count {
-        color: $--dynamic-neutral-color !important;
-        border-color: $--dynamic-theme-light-8 !important;
+        color: rgba(0, 0, 0, .6) !important;
+        border-color: rgba(0, 0, 0, 0.1) !important;
       }
       .pws-count-down-square-item-word {
-        color: $--dynamic-neutral-color !important;
+        color: rgba(0, 0, 0, .6) !important;
       }
       &::before,
       &::after {
-        background-color: $--dynamic-theme-color !important;
+        background-color: rgba(255, 255, 255, 0.4) !important;
       }
     }
 

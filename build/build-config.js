@@ -16,7 +16,7 @@ let buildEnv = process.env.BUILD_ENV || 'prod';
 const devMode = (exports.devMode = process.env.NODE_ENV !== 'production');
 
 /** 开发服务器端口号 */
-const devServerPort = (exports.devServerPort = 15020);
+const devServerPort = (exports.devServerPort = 15021);
 
 /** 开发服务器局域网ip */
 exports.devServerHost = '0.0.0.0';

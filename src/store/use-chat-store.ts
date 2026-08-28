@@ -264,6 +264,10 @@ export const useChatStore = defineStore<'chat', ChatStore>('chat', () => {
       placeholder = chatMenu.content;
     }
 
+    if (identityStore.isGuest) {
+      placeholder = translate('auth.login.tips.interaction');
+    }
+
     return placeholder;
   });
 

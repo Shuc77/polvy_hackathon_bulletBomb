@@ -79,7 +79,7 @@
           <div class="c-pc-splash__header__status">
             <!-- 直播时间 -->
             <span class="c-pc-splash__header__status__time g-vmid">
-              {{ $lang('watch.liveTime') }}：{{ liveStartTimeText }}
+              {{ $lang('watch.liveTime') }}：{{ liveShowTimeText }}
             </span>
 
             <!-- 直播预约 -->
@@ -201,7 +201,7 @@ const {
   channelPublisherPic,
   channelDescription,
   showLiveCountDown,
-  liveStartTimeText,
+  liveShowTimeText,
 } = storeDefinitionToRefs(useChannelInfoStore);
 
 const { hasSplash } = storeDefinitionToRefs(useThemeStore);

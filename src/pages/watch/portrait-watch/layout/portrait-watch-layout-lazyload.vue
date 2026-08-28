@@ -15,6 +15,7 @@
     <!-- 互动功能 -->
     <portrait-iar-render v-if="iarSdkLoaded && iarUIV1Loaded" />
     <portrait-iar-render-v2 v-if="iarSdkLoaded && !notNeedIar" />
+    <mobile-live-activity-render v-if="liveActivityLoaded" />
     <portrait-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
 
     <!-- 邀请榜弹层 -->
@@ -102,7 +103,9 @@
     <portrait-multi-meeting-popup v-if="multiMeetingEnabled" />
 
     <!-- 我的奖励弹层 -->
-    <mobile-personal-reward-popup v-if="iarSdkLoaded && !notNeedIar" />
+    <mobile-personal-reward-popup
+      v-if="(iarSdkLoaded && !notNeedIar) || liveActivityRewardEntranceVisible"
+    />
 
     <!-- 文件管理 -->
     <chat-loader-helper>
@@ -145,6 +148,7 @@ import PortraitChatSetNick from '@/components/page-watch-common/chat/chat-set-ni
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import PortraitIarRender from '@/components/page-watch-common/interactive-receive/portrait-iar-render.vue';
 import PortraitIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/portrait-iar-render-v2.vue';
+import MobileLiveActivityRender from '@/components/page-watch-common/live-activity/mobile-live-activity-render.vue';
 import PortraitProductRender from '@/components/page-watch-common/product/portrait-product-render.vue';
 import PortraitInviteRankPopup from '@/components/page-watch-common/invite/portrait-invite-rank/portrait-invite-rank.vue';
 import MobileLiveStartTips from '@/components/page-watch-common/live-start-tips/mobile-live-start-tips.vue';
@@ -199,6 +203,7 @@ import { useChannelStore } from '@/store/use-channel-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 
 const { chatInputControllerEnable, isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 
@@ -233,4 +238,7 @@ const { learningStatsEnabled, learningStatsDialogEnabled } =
   storeDefinitionToRefs(useChannelInfoStore);
 
 const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { liveActivityLoaded, liveActivityRewardEntranceVisible } =
+  storeDefinitionToRefs(useLiveActivityStore);
 </script>

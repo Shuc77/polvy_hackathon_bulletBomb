@@ -5,6 +5,7 @@
     <!-- 互动功能 -->
     <mobile-iar-render v-if="iarSdkLoaded && iarUIV1Loaded" />
     <mobile-iar-render-v2 v-if="iarSdkLoaded && !notNeedIar" />
+    <mobile-live-activity-render v-if="liveActivityLoaded" />
     <mobile-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
 
     <!-- 连麦挂件 -->
@@ -102,7 +103,9 @@
     <mobile-playback-setting />
 
     <!-- 我的奖励弹层 -->
-    <mobile-personal-reward-popup v-if="iarSdkLoaded && !notNeedIar" />
+    <mobile-personal-reward-popup
+      v-if="(iarSdkLoaded && !notNeedIar) || liveActivityRewardEntranceVisible"
+    />
 
     <!-- 观看/学习时长统计弹层 -->
     <mobile-learning-stat-dialog v-if="learningStatsDialogEnabled" />
@@ -135,6 +138,7 @@ import MobileConnectMicPendantV2 from '@/components/page-watch-common/connect-mi
 import MobileDonatePopup from '@/components/page-watch-common/donate/donate-panel/mobile-donate-panel/mobile-donate-popup.vue';
 import MobileIarRenderV2 from '@/components/page-watch-common/interactive-receive-v2/mobile-iar-render-v2.vue';
 import MobileIarRender from '@/components/page-watch-common/interactive-receive/mobile-iar-render.vue';
+import MobileLiveActivityRender from '@/components/page-watch-common/live-activity/mobile-live-activity-render.vue';
 import MobileInviteActivityDetailPopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-activity-detail-popup/mobile-invite-activity-detail-popup.vue';
 import MobileInvitePrizeReceivePopup from '@/components/page-watch-common/invite/mobile-invite-activity/mobile-invite-prize-receive-popup/mobile-invite-prize-receive-popup.vue';
 import MobileInviteDetailPopup from '@/components/page-watch-common/invite/mobile-invite-detail/mobile-invite-detail-popup.vue';
@@ -176,6 +180,7 @@ import { useViewerStore } from '@/store/use-viewer-store';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 
 const MobileSendRedpack = defineAsyncComponent(
   () =>
@@ -224,4 +229,7 @@ const { learningStatsEnabled, learningStatsDialogEnabled } =
 const { aiKnowledgeQuizEnabled } = storeDefinitionToRefs(usePlaybackStore);
 
 const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+
+const { liveActivityLoaded, liveActivityRewardEntranceVisible } =
+  storeDefinitionToRefs(useLiveActivityStore);
 </script>

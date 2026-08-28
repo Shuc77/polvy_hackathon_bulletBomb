@@ -43,6 +43,13 @@
       <!-- 福袋 -->
       <lucky-bag-pendant class="c-pc-chat-room-pendant__item" />
     </template>
+
+    <!-- 滚动抽奖与竞技 PK 共用入口 -->
+    <rolling-lottery-pendant
+      v-if="liveActivityLoaded"
+      class="c-pc-chat-room-pendant__item"
+    />
+
     <!-- 图标广告 -->
     <pc-img-advert class="c-pc-chat-room-pendant__item" />
 
@@ -57,6 +64,10 @@
     </template>
 
     <lucky-bag-animation class="c-pc-chat-room-pendant__lucky-bag-animation" />
+    <rolling-lottery-animation
+      v-if="liveActivityLoaded"
+      class="c-pc-chat-room-pendant__rolling-lottery-animation"
+    />
   </div>
 </template>
 
@@ -67,6 +78,8 @@ import PcCouponPendant from '@/components/page-watch-common/interactive-receive-
 import LuckyBagPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-pendant.vue';
 import LuckyBagAnimation from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-animation.vue';
 import PcLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/pc/pc-lucky-lottery-pendant.vue';
+import RollingLotteryAnimation from '@/components/page-watch-common/live-activity/rolling-lottery/rolling-lottery-animation.vue';
+import RollingLotteryPendant from '@/components/page-watch-common/live-activity/rolling-lottery/rolling-lottery-pendant.vue';
 import PcEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import PcPushCard from '@/components/page-watch-common/interactive-receive/push-card/pc-push-card.vue';
 import PcRedpackPendant from '@/components/page-watch-common/interactive-receive/redpack/redpack-pendant.vue';
@@ -84,6 +97,7 @@ import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useFinanceStore } from '@/store/use-finance-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
@@ -102,6 +116,7 @@ const {
   rushAnswerPendantVisible,
   couponPendantVisible,
 } = storeDefinitionToRefs(useInteractReceiveStore);
+const { liveActivityLoaded } = storeDefinitionToRefs(useLiveActivityStore);
 
 /** 点赞上方是否有其他挂件 */
 const hasOtherPendant = computed<boolean>(() => {
@@ -122,6 +137,7 @@ const hasOtherPendant = computed<boolean>(() => {
   position: absolute;
   right: 12px;
   bottom: 21px;
+  z-index: $--zIndex-pendant;
   width: $pendant-size;
 }
 
@@ -134,6 +150,13 @@ const hasOtherPendant = computed<boolean>(() => {
 }
 
 .c-pc-chat-room-pendant__lucky-bag-animation {
+  position: absolute;
+  right: -12px;
+  bottom: 0;
+  z-index: 300;
+}
+
+.c-pc-chat-room-pendant__rolling-lottery-animation {
   position: absolute;
   right: -12px;
   bottom: 0;

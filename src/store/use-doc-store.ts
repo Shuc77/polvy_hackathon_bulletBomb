@@ -61,7 +61,12 @@ export const useDocStore = defineStore<'doc', DocStore>('doc', () => {
       return false;
     }
 
-    return channelStore.isPptChannel || channelStore.isSeminarChannel;
+    // 研讨会需后台开启白板课件才展示文档
+    if (channelStore.isSeminarChannel) {
+      return channelStore.seminarWhiteboardCoursewareEnabled;
+    }
+
+    return channelStore.isPptChannel;
   });
 
   /** 文档比例，宽/高 */

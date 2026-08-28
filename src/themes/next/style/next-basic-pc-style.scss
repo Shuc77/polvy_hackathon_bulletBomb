@@ -185,13 +185,12 @@
 
     //   -------------- 实时字幕 -------------  //
     .pws-pc-subtitle__top-skin {
+      background: $--dynamic-theme-color !important;
       .plv-cascader__body {
         color: $--dynamic-neutral-color !important;
-        background: $--dynamic-theme-color !important;
       }
       .c-pc-subtitle-hover-control__top {
         color: $--dynamic-neutral-color !important;
-        background: $--dynamic-theme-color !important;
       }
     }
 

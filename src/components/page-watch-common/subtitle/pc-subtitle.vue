@@ -5,32 +5,23 @@
     class="c-pc-subtitle pws-main-tab-body-scrollbar"
   >
     <template v-if="liveSubtitlesEnable">
-      <div
-        v-if="subtitleTranslateEnabled"
-        class="c-pc-subtitle__top pws-pc-subtitle__top-skin"
-      >
+      <div class="c-pc-subtitle__top pws-theme-mask-bg pws-pc-subtitle__top-skin">
         <plv-cascader-select
+          v-if="subtitleTranslateEnabled"
           class="c-subtitle-custom__cascader-select"
           v-model="subtitleTranslateSelected"
           :options="subtitleTranslateOptions"
           :placeholder="$lang('subtitle.change')"
         />
-      </div>
-      <div
-        class="pws-pc-subtitle__top-skin c-pc-subtitle-hover-control"
-        :class="{
-          'c-pc-subtitle-hover-control--alone': !subtitleTranslateEnabled,
-        }"
-      >
         <div
-          class="c-pc-subtitle-hover-control__top"
+          class="c-pc-subtitle-hover-control"
           :class="{
-            'c-pc-subtitle-hover-control__top--alone': !subtitleTranslateEnabled,
+            'c-pc-subtitle-hover-control--alone': !subtitleTranslateEnabled,
           }"
         >
-          <pc-icon-hover-control
+          <pc-icon-normal-pip
             class="pws-primary-text-color"
-            size="24"
+            size="18"
             @click="onHoverControl"
           />
         </div>
@@ -117,7 +108,7 @@ import { PlvCascaderSelect } from '@/plugins/polyv-ui/admin-import';
 import PcSubtitleDetachedWindow from './pc-subtitle-detached-window.vue';
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import { ref } from 'vue';
-import { PcIconArrowDown, PcIconHoverControl } from '@/components/component-icons/pc/map';
+import { PcIconArrowDown, PcIconNormalPip } from '@/components/component-icons/pc/map';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
@@ -176,20 +167,21 @@ const onHoverControl = () => {
   position: sticky;
   top: 0;
   z-index: 1;
+
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
 }
+
 .c-pc-subtitle-hover-control {
-  position: sticky;
-  top: 40px;
   z-index: 1;
-  text-align: right;
+  padding-top: 4px;
   cursor: pointer;
 }
 
 .c-pc-subtitle-hover-control--alone {
   top: 0;
-}
-
-.c-pc-subtitle-hover-control__top--alone {
   padding: 12px 0;
 }
 

@@ -11,6 +11,7 @@ import {
   convert2WatchSdkLang,
   getBrowserLang,
   getCacheLang,
+  getDefaultLang,
   setCacheLang,
 } from '@/assets/lang/util';
 
@@ -104,7 +105,7 @@ export const useLangStore = defineStore<'lang', LangStore>('lang', () => {
   });
 
   /** 当前多语言（表示已生效到 i18n 的语种） */
-  const currentLang = ref<LangType>(LangType.ZH_CN);
+  const currentLang = ref<LangType>(getDefaultLang());
 
   /** 当前多语言的文本 */
   const currentLangText = computed<string>(() => {

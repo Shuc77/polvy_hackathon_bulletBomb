@@ -152,8 +152,12 @@
             <div class="c-pc-watch-layout__main__side-popup-render">
               <pc-iar-render-upper-player v-if="iarSdkLoaded && iarUIV1Loaded && layoutLoaded" />
               <pc-iar-render-upper-player-v2 v-if="iarSdkLoaded && layoutLoaded && !notNeedIar" />
+              <pc-live-activity-render v-if="liveActivityLoaded && layoutLoaded" />
               <pc-watch-layout-player-side-popup
-                v-if="iarSdkLoaded && iarUIV1Loaded && layoutLoaded"
+                v-if="
+                  layoutLoaded &&
+                  ((iarSdkLoaded && iarUIV1Loaded) || liveActivityRewardEntranceVisible)
+                "
               />
               <pc-product-render v-if="iarSdkLoaded && !isPlaybackWatchUrl" />
             </div>
@@ -199,7 +203,7 @@
             <transition name="fade">
               <pc-player-control
                 v-if="canRenderPlayer"
-                v-show="playerControlVisible"
+                v-show="playerControlEnabled && playerControlVisible"
               />
             </transition>
           </div>
@@ -280,6 +284,7 @@ import PcCountDownLayer from '@/components/page-watch-common/count-down-layer/pc
 import PcDoc from '@/components/page-watch-common/doc/pc-doc.vue';
 import PcDonatePayQrcode from '@/components/page-watch-common/donate/donate-panel/pc-donate-panel/pc-donate-pay-qrcode.vue';
 import PcIarRenderUpperPlayerV2 from '@/components/page-watch-common/interactive-receive-v2/pc-iar-render-upper-player-v2.vue';
+import PcLiveActivityRender from '@/components/page-watch-common/live-activity/pc-live-activity-render.vue';
 import PcIarRenderUpperPlayer from '@/components/page-watch-common/interactive-receive/pc-iar-render-upper-player.vue';
 import MotivationLikeAnimation from '@/components/page-watch-common/motivation/motivation-like-animation/motivation-like-animation.vue';
 import PcMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/pc-multi-meeting/pc-multi-meeting-horizontal.vue';
@@ -307,6 +312,7 @@ import { useDocStore } from '@/store/use-doc-store';
 import { useDonateStore } from '@/store/use-donate-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 import { useMultiMeetingStore } from '@/store/use-multi-meeting-store';
 import { usePlaybackStore } from '@/store/use-playback-store';
 import { SwitchTipsStatus, usePlayerStore } from '@/store/use-player-store';
@@ -333,10 +339,12 @@ const { layoutLoaded } = useLayoutLoad('pc-watch-layout');
 const { notNeedIar, iframeMode, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
 
 const { aiKnowledgeQuizEnabled } = storeDefinitionToRefs(usePlaybackStore);
+const { liveActivityLoaded, liveActivityRewardEntranceVisible } =
+  storeDefinitionToRefs(useLiveActivityStore);
 
 const { chatExited } = storeDefinitionToRefs(useChatStore);
 
-const { canRenderPlayer, switchQualityTipStatus, showControl } =
+const { canRenderPlayer, playerControlEnabled, switchQualityTipStatus, showControl } =
   storeDefinitionToRefs(usePlayerStore);
 
 const { managerBulletinMarqueeEnabled, managerBulletinMarqueeRenderEnabled } =

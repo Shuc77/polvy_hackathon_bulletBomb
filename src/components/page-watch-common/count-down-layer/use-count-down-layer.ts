@@ -11,6 +11,7 @@ export const useCountDownLayer = () => {
 
   /** 是否显示右上角模式 */
   const isTopRightStyle = computed<boolean>(() => {
+    // return false;
     if (themeStore.watchThemeStyleConfig) {
       return true;
     }

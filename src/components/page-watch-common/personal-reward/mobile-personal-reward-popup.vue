@@ -28,10 +28,13 @@
 
     <div class="c-mobile-personal-reward-popup__content">
       <div class="c-mobile-personal-reward-popup__switch">
-        <div class="c-mobile-personal-reward-popup__switch__inner">
+        <div
+          ref="switchInnerRef"
+          class="c-mobile-personal-reward-popup__switch__inner"
+        >
           <span
-            v-for="(item, index) in rewardTypes"
-            :key="index"
+            v-for="item in rewardTypes"
+            :key="item.type"
             :class="{
               'is-active': item.type === currentType,
             }"
@@ -56,6 +59,7 @@
         <mobile-lottery-record-list v-if="currentType === 'lottery'" />
         <mobile-lucky-lottery-prize-list v-if="currentType === 'lucky-lottery'" />
         <lucky-bag-win-record v-if="currentType === 'lucky-bag'" />
+        <live-activity-win-record v-if="currentType === 'live-activity'" />
       </div>
     </div>
   </mobile-popup>
@@ -71,12 +75,14 @@ import MobileLotteryRecordList from '../interactive-receive-v2/lottery-v2/lotter
 import MobileTaskRewardList from '../task-activity/mobile-task-reward-list.vue';
 import MobileLuckyLotteryPrizeList from '../interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-prize-list.vue';
 import LuckyBagWinRecord from '../interactive-receive-v2/lucky-bag/lucky-bag-win-record.vue';
+import LiveActivityWinRecord from '../live-activity/live-activity-win-record.vue';
 import { usePersonalReward } from './use-personal-reward';
 import { useWithdrawStore } from '@/store/use-withdraw-store';
 import { appEvents } from '@/app/app-events';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useWeixinStore } from '@/store/use-weixin-store';
 import { WeixinPayType } from '@polyv/live-watch-sdk';
+import { nextTick, ref, watch } from 'vue';
 
 const { getEmitter } = useGlobalInject();
 
@@ -87,6 +93,24 @@ const { currentLang } = storeDefinitionToRefs(useLangStore);
 const { withdrawVisible } = storeDefinitionToRefs(useWithdrawStore);
 
 const { weixinPayType } = storeDefinitionToRefs(useWeixinStore);
+
+const switchInnerRef = ref<HTMLElement>();
+
+watch([currentType, visible], async ([, isVisible]) => {
+  if (!isVisible) {
+    return;
+  }
+  await nextTick();
+  const container = switchInnerRef.value;
+  const activeTab = container?.querySelector<HTMLElement>('.is-active');
+  if (!container || !activeTab) {
+    return;
+  }
+  container.scrollLeft = Math.max(
+    0,
+    activeTab.offsetLeft - (container.clientWidth - activeTab.offsetWidth) / 2,
+  );
+});
 
 function openWithdraw() {
   getEmitter().emit(appEvents.withdraw.OpenWithdrawDetail, true);
@@ -190,8 +214,12 @@ function openWithdraw() {
 
 .c-mobile-personal-reward-popup__switch__inner {
   display: flex;
+  flex: 1;
   align-items: center;
+  min-width: 0;
   padding: 3px;
+  overflow-x: auto;
+  scrollbar-width: none;
   background: linear-gradient(
     97deg,
     rgba(254, 150, 104, 0.2) 0%,
@@ -199,6 +227,10 @@ function openWithdraw() {
     rgba(255, 86, 145, 0.2) 100%
   );
   border-radius: 8px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   & > span {
     box-sizing: border-box;

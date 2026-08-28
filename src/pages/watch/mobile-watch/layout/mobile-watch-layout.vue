@@ -33,6 +33,12 @@
       class="c-mobile-watch-layout__top"
     ></div>
 
+    <!-- 会议模式：没有播放器区域，倒计时 + 预约以顶部条形式展示 -->
+    <mobile-live-count-down-bar
+      v-if="countDownBarVisible"
+      class="c-mobile-watch-layout__count-down-bar"
+    />
+
     <!-- 播放器 -->
     <div
       class="c-mobile-watch-layout__player"
@@ -97,6 +103,9 @@
     <!-- 直播倒计时 + 直播预约层 -->
     <div
       class="c-mobile-watch-layout__top-layer"
+      :class="{
+        'c-mobile-watch-layout__top-layer--count-down': countDownLayerVisible,
+      }"
       :style="mainScreenStyles"
     >
       <mobile-count-down-layer />
@@ -169,6 +178,7 @@ import { CSSProperties, computed, defineAsyncComponent, nextTick, ref, unref, wa
 
 import MobilePageNotice from '@/components/common-base/page-notice/mobile-page-notice.vue';
 import CommonOtherLiveBooking from '@/components/common-business/live-booking/common-other-live-booking/common-other-live-booking.vue';
+import MobileLiveCountDownBar from '@/components/common-business/live-count-down/mobile-live-count-down-bar.vue';
 import { ChatLoaderHelper } from '@/components/page-watch-common/chat-v2/chat-loader-helper';
 import TopingMsg from '@/components/page-watch-common/chat-v2/toping-msg/index.vue';
 import MobileChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/mobile-chat-connect-error-tips.vue';
@@ -204,6 +214,7 @@ import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use
 import SmallWindowControl from '@/components/page-watch-common/player/player-control/common-player-control/small-window-control.vue';
 import { useScreenOrientHook } from '@/hooks/core/use-screen-orient';
 import { useResizeObserver } from '@/hooks/tools/use-resize-observer';
+import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
@@ -217,7 +228,19 @@ const MobileWatchMenu = defineAsyncComponent(
   () => import(/* webpackChunkName: "mobile-watch-menu" */ './mobile-watch-menu.vue'),
 );
 
-const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
+const { notNeedIar, isPlaybackWatchUrl, meetingMode } = storeDefinitionToRefs(useWatchAppStore);
+
+const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
+
+/** 会议模式下的顶部倒计时条 */
+const countDownBarVisible = computed(() => {
+  return unref(meetingMode) && unref(showLiveCountDown);
+});
+
+/** 播放器区域的直播倒计时层是否显示（与 mobile-count-down-layer 的渲染条件保持一致） */
+const countDownLayerVisible = computed(() => {
+  return unref(showLiveCountDown) && !unref(meetingMode);
+});
 
 const { chatExited } = storeDefinitionToRefs(useChatStore);
 
@@ -356,6 +379,11 @@ watch(
   },
 );
 
+// 顶部倒计时条会占用布局高度，显隐变化后需要重新计算布局
+watch(countDownBarVisible, () => {
+  computedLayoutSize();
+});
+
 const { updateScreenOrientationModeManually, screenOrientationMode } = useScreenOrientHook({
   autoListen: true,
   autoListenCb: () => {
@@ -456,6 +484,12 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   }
 }
 
+// 会议模式下的倒计时条贴住顶部和两边，不留边距和圆角
+.c-mobile-watch-layout__count-down-bar.c-mobile-live-count-down-bar {
+  flex-shrink: 0;
+  border-radius: 0;
+}
+
 .c-mobile-watch-layout__bottom {
   position: relative;
   flex: 1;
@@ -500,7 +534,7 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
     left: 0;
   }
   .c-mobile-player-main--page-fullscreen {
-    top: -20px !important;
+    top: -54px !important;
   }
 }
 
@@ -529,6 +563,13 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   z-index: 260;
   width: 100%;
   pointer-events: none;
+}
+
+// 倒计时层显示时需要盖住播放器区域内的层级（如暂无直播占位面板 z-index: 309）。
+// 播放器容器不产生层叠上下文，其内部层级是直接跟本层比较的，故这里要抬到 310 之上；
+// 仅在倒计时显示时抬高，避免影响常态下直播广场入口与播放器控制栏的层级关系
+.c-mobile-watch-layout__top-layer--count-down {
+  z-index: 320;
 }
 
 .c-mobile-watch-layout__doc--page-fullscreen {

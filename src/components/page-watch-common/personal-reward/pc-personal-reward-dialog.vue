@@ -20,8 +20,8 @@
       <div class="c-pc-personal-reward-popup__switch-container">
         <div class="c-pc-personal-reward-popup__switch">
           <span
-            v-for="(item, index) in rewardTypes"
-            :key="index"
+            v-for="item in rewardTypes"
+            :key="item.type"
             :class="{
               'is-active': item.type === currentType,
             }"
@@ -37,6 +37,7 @@
         <pc-lottery-record-list v-if="currentType === 'lottery'" />
         <pc-lucky-lottery-prize-list v-if="currentType === 'lucky-lottery'" />
         <lucky-bag-win-record v-if="currentType === 'lucky-bag'" />
+        <live-activity-win-record v-if="currentType === 'live-activity'" />
       </div>
     </div>
   </pc-side-popup>
@@ -49,6 +50,7 @@ import PcLotteryRecordList from '../interactive-receive-v2/lottery-v2/lottery-re
 import PcTaskRewardList from '../task-activity/pc-task-reward-list.vue';
 import PcLuckyLotteryPrizeList from '../interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-prize-list.vue';
 import LuckyBagWinRecord from '../interactive-receive-v2/lucky-bag/lucky-bag-win-record.vue';
+import LiveActivityWinRecord from '../live-activity/live-activity-win-record.vue';
 import { usePersonalReward } from './use-personal-reward';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useLangStore } from '@/store/use-lang-store';

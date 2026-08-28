@@ -70,10 +70,10 @@
         </div>
 
         <div
-          v-if="liveStartTime"
+          v-if="liveShowTime"
           class="c-pc-basic-info__main__bottom__data g-text-nowrap"
         >
-          {{ liveStartTimeText }} {{ $lang('base.start.live') }}
+          {{ liveShowTimeText }} {{ $lang('base.start.live') }}
         </div>
 
         <!-- 页面浏览次数 -->
@@ -204,8 +204,8 @@ const {
   channelTitle,
   channelPublisher,
   channelPublisherPic,
-  liveStartTime,
-  liveStartTimeText,
+  liveShowTime,
+  liveShowTimeText,
 
   pageViewCount,
   pvShowEnabled,

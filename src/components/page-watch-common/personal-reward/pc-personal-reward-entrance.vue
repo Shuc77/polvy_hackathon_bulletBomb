@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="personalRewardEntranceVisible"
+    v-if="personalRewardEntranceVisible || liveActivityRewardEntranceVisible"
     class="c-pc-personal-reward-entrance"
     @click="onClickPersonalReward"
   >
@@ -19,6 +19,7 @@ import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useChatStore } from '@/store/use-chat-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 import { PcIconPersonalReward } from '@/components/component-icons/pc/map';
 
 const { getEmitter } = useGlobalInject();
@@ -26,6 +27,7 @@ const { getEmitter } = useGlobalInject();
 const { toInterruptUserClick } = useInterruptUserClick();
 
 const { personalRewardEntranceVisible } = storeDefinitionToRefs(useInteractReceiveStore);
+const { liveActivityRewardEntranceVisible } = storeDefinitionToRefs(useLiveActivityStore);
 
 const { isChatUIV2 } = storeDefinitionToRefs(useChatStore);
 

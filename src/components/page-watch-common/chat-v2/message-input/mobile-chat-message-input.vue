@@ -49,6 +49,6 @@ const { productEntryLandscapePosition } = storeDefinitionToRefs(useChannelStore)
 
 <style lang="scss">
 .c-mobile-chat-message-input {
-  padding: 12px 12px 24px;
+  padding: 8px 16px 24px;
 }
 </style>

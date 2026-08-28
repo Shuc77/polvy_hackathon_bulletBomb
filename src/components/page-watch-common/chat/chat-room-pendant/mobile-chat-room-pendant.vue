@@ -78,6 +78,12 @@
         />
       </template>
 
+      <!-- 滚动抽奖与竞技 PK 共用入口 -->
+      <rolling-lottery-pendant
+        v-if="liveActivityLoaded"
+        class="c-mobile-chat-room-pendant__item"
+      />
+
       <!-- 图标广告 -->
       <mobile-img-advert class="c-mobile-chat-room-pendant__item" />
 
@@ -98,6 +104,10 @@
       </template>
 
       <lucky-bag-animation class="c-mobile-chat-room-pendant__lucky-bag-animation" />
+      <rolling-lottery-animation
+        v-if="liveActivityLoaded"
+        class="c-mobile-chat-room-pendant__rolling-lottery-animation"
+      />
     </div>
   </custom-teleport>
 </template>
@@ -111,6 +121,8 @@ import MobileCouponPendant from '@/components/page-watch-common/interactive-rece
 import LuckyBagPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-pendant.vue';
 import LuckyBagAnimation from '@/components/page-watch-common/interactive-receive-v2/lucky-bag/lucky-bag-animation.vue';
 import MobileLuckyLotteryPendant from '@/components/page-watch-common/interactive-receive-v2/lucky-lottery/mobile-lucky-lottery-entrance.vue';
+import RollingLotteryAnimation from '@/components/page-watch-common/live-activity/rolling-lottery/rolling-lottery-animation.vue';
+import RollingLotteryPendant from '@/components/page-watch-common/live-activity/rolling-lottery/rolling-lottery-pendant.vue';
 import MobileEnrollLotteryPendant from '@/components/page-watch-common/interactive-receive/enroll-lottery/enroll-lottery-pendant.vue';
 import MobileFeedbackPendant from '@/components/page-watch-common/interactive-receive/feedback/mobile-feedback-pendant.vue';
 import MobilePushCard from '@/components/page-watch-common/interactive-receive/push-card/mobile-push-card.vue';
@@ -130,6 +142,7 @@ import { useFinanceStore } from '@/store/use-finance-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
 import { useInviteStore } from '@/store/use-invite-store';
 import { useLayoutStore } from '@/store/use-layout-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
 
 const { notNeedIar, isPlaybackWatchUrl } = storeDefinitionToRefs(useWatchAppStore);
@@ -139,6 +152,7 @@ const { riskEvaluationEntranceEnabled } = storeDefinitionToRefs(useFinanceStore)
 
 const { iarSdkLoaded, iarUIV1Loaded, feedbackPendantVisible } =
   storeDefinitionToRefs(useInteractReceiveStore);
+const { liveActivityLoaded } = storeDefinitionToRefs(useLiveActivityStore);
 
 const { mobileChatInvitePendantVisible } = storeDefinitionToRefs(useInviteStore);
 
@@ -196,6 +210,13 @@ const renderParent = computed<string | HTMLElement>(() => {
 }
 
 .c-mobile-chat-room-pendant__lucky-bag-animation {
+  position: absolute;
+  right: -16px;
+  bottom: 0;
+  z-index: 300;
+}
+
+.c-mobile-chat-room-pendant__rolling-lottery-animation {
   position: absolute;
   right: -16px;
   bottom: 0;

@@ -29,21 +29,10 @@
       }"
     >
       <!-- 倒计时 + 预约 -->
-      <div
+      <mobile-live-count-down-bar
         v-if="showLiveCountDown"
-        class="c-mobile-splash__main__header pws-dark-white-bg-10 pws-light-white-bg-40"
-        :style="liveBookingStyle"
-      >
-        <mobile-live-count-down
-          :show-title="showLiveBookingButton"
-          theme="number-square"
-          :count-style="countStyle"
-        />
-        <mobile-live-booking-button
-          v-if="showLiveBookingButton"
-          class="c-mobile-splash__main__header__booking pws-normal-button-primary--config-wrapper"
-        />
-      </div>
+        class="c-mobile-splash__main__header"
+      />
 
       <!-- 基础信息 -->
       <mobile-basic-info
@@ -60,24 +49,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, CSSProperties, defineAsyncComponent } from 'vue';
-
-import { generateBgStyle } from '@/themes/utils/theme-config';
+import { defineAsyncComponent } from 'vue';
 
 import MobileBasicInfo from '@/components/common-business/basic-info/mobile-basic-info.vue';
 import ChannelSplashImg from '@/components/common-business/channel-splash-img/index.vue';
-import MobileLiveBookingButton from '@/components/common-business/live-booking/mobile-live-booking-button.vue';
-import MobileLiveCountDown from '@/components/common-business/live-count-down/mobile-live-count-down.vue';
+import MobileLiveCountDownBar from '@/components/common-business/live-count-down/mobile-live-count-down-bar.vue';
 import MobileSplashBtn from './components/mobile-splash-btn.vue';
 
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
-import { useLiveBookingStore } from '@/store/use-live-booking-store';
 import { useChatStore } from '@/store/use-chat-store';
 
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 
 import { usePlayerTrialHook } from '@/components/page-splash-common/player-trial/use-player-trial';
-import { useThemeStore } from '@/store/use-theme-store';
 
 const MobilePlayerTrial = defineAsyncComponent(
   () =>
@@ -88,36 +72,9 @@ const MobilePlayerTrial = defineAsyncComponent(
 );
 
 const { showLiveCountDown } = storeDefinitionToRefs(useChannelInfoStore);
-const { showLiveBookingButton } = storeDefinitionToRefs(useLiveBookingStore);
 const { likeFeatureEnabled } = storeDefinitionToRefs(useChatStore);
 
 const { trialPlayerVisible, trialPlayFinishTipVisible, trialInfo } = usePlayerTrialHook();
-
-const themeStore = useThemeStore();
-
-const liveBookingStyle = computed(() => {
-  if (!themeStore.watchThemeStyleConfig) return;
-
-  const { bgConfig } = themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea;
-
-  return generateBgStyle(bgConfig);
-});
-
-const countStyle = computed(() => {
-  if (!themeStore.watchThemeStyleConfig) return;
-
-  const result: CSSProperties = {};
-  const { countBg, countColor } = themeStore.watchThemeStyleConfig.mobile.splash.subscribeArea;
-
-  if (countBg) {
-    result.background = countBg;
-  }
-  if (countColor) {
-    result.color = countColor;
-  }
-
-  return result;
-});
 </script>
 
 <style lang="scss">
@@ -177,21 +134,7 @@ const countStyle = computed(() => {
 }
 
 .c-mobile-splash__main__header {
-  position: relative;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 56px;
-  padding: 12px;
   margin: 16px 16px 0;
-  text-align: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  border-radius: 8px;
-}
-.c-mobile-splash__main__header__booking {
-  margin-left: auto;
 }
 
 .c-mobile-splash__main__content {

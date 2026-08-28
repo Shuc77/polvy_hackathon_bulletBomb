@@ -12,6 +12,7 @@ import {
   TeacherInfoType,
   ChannelNewScene,
   ChannelAnchorInfo,
+  ExternalTrialWatchInfo,
   ProductIconConfig,
 } from '@polyv/live-watch-sdk';
 import { defineStore } from 'pinia';
@@ -37,6 +38,8 @@ export interface ChannelStoreState {
   privateSeminarChannel: ComputedRef<boolean>;
   /** 研讨会主持是否在分组讨论中 */
   isSeminarHostInGroup: Ref<boolean>;
+  /** 研讨会白板课件开关，关闭时研讨会频道不展示文档 */
+  seminarWhiteboardCoursewareEnabled: Ref<boolean>;
   /** 渠道 id */
   promoteId: Ref<string | undefined>;
   /** 音频模式 */
@@ -73,11 +76,15 @@ export interface ChannelStoreState {
   productEntryLandscapePosition: Ref<string>;
   /** 商品库图标配置 */
   productIconConfig: Ref<ProductIconConfig | undefined>;
+  /** 外部授权试看信息 */
+  externalTrialWatch: Ref<ExternalTrialWatchInfo | null>;
 }
 
 export interface ChannelStoreActions {
   /** 同步频道 Store 数据 */
   syncChannelStore: () => void;
+  /** 同步外部授权试看信息 */
+  syncExternalTrialWatch: () => void;
 }
 
 /** 频道 store */
@@ -127,6 +134,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
   /** 研讨会主持是否在分组讨论中 */
   const isSeminarHostInGroup = ref(false);
+
+  /** 研讨会白板课件开关，关闭时研讨会频道不展示文档 */
+  const seminarWhiteboardCoursewareEnabled = ref(true);
 
   /** 渠道 id */
   const promoteId = ref<string>();
@@ -179,6 +189,9 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
   /** 商品库图标配置 */
   const productIconConfig = ref<ProductIconConfig>();
 
+  /** 外部授权试看信息 */
+  const externalTrialWatch = ref<ExternalTrialWatchInfo | null>(null);
+
   /** 是否支持渲染管理员公告跑马灯 */
   const managerBulletinMarqueeRenderEnabled = computed(() => {
     if (isPptChannel.value || isSeminarChannel.value) return false;
@@ -204,6 +217,8 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     onlineListEnabled.value = watchCore.channel.getOnlineListEnabled();
     managerBulletinMarqueeEnabled.value = watchCore.channel.getManagerBulletinMarqueeEnabled();
     compressImageEnabled.value = watchCore.channel.getCompressImageEnabled();
+    seminarWhiteboardCoursewareEnabled.value =
+      watchCore.channel.getSeminarWhiteboardCoursewareEnabled();
 
     streamTrackConfig.value = watchCore.channel.getChannelStreamTrackConfig();
     audioMode.value = watchCore.channel.getAudioMode();
@@ -213,6 +228,14 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
 
     smsConfig.value = watchCore.sms.getSmsConfig();
     channelNewScene.value = watchCore.channel.getNewScene();
+    syncExternalTrialWatch();
+  }
+
+  /** 同步外部授权试看信息 */
+  function syncExternalTrialWatch(): void {
+    const watchCore = watchAppStore.getWatchCore();
+
+    externalTrialWatch.value = watchCore.trial.getExternalTrialWatch();
   }
 
   return {
@@ -225,6 +248,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     isSeminarChannel,
     privateSeminarChannel,
     isSeminarHostInGroup,
+    seminarWhiteboardCoursewareEnabled,
     promoteId,
     audioMode,
     audioModeSwitchEnabled,
@@ -241,6 +265,7 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     channelNewScene,
     productEntryLandscapePosition,
     productIconConfig,
+    externalTrialWatch,
 
     streamTrackConfig,
     supportMultiStreamTrack,
@@ -248,5 +273,6 @@ export const useChannelStore = defineStore<'channel', ChannelStore>('channel', (
     smsConfig,
 
     syncChannelStore,
+    syncExternalTrialWatch,
   };
 });

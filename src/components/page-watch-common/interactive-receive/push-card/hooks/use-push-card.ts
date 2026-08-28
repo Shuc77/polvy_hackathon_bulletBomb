@@ -2,6 +2,7 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { useFeedBehavior } from '@/hooks/behaviors/use-webview-feed';
 import { useChannelStore } from '@/store/use-channel-store';
 import { useInteractReceiveStore } from '@/store/use-interact-receive-store';
+import { useIdentityStore } from '@/store/use-identity-store';
 import { useShareStore } from '@/store/use-share-store';
 import { useThemeStore } from '@/store/use-theme-store';
 import { useViewerStore } from '@/store/use-viewer-store';
@@ -12,6 +13,7 @@ export const usePushCard = () => {
   const { getWatchCore } = useGlobalInject();
 
   const interactReceiveStore = useInteractReceiveStore();
+  const identityStore = useIdentityStore();
 
   const themeStore = useThemeStore();
 
@@ -20,6 +22,10 @@ export const usePushCard = () => {
   const watchCore = getWatchCore();
   /** 卡片推送 SDK 实例 */
   const pushCardSdk = watchCore.interactReceive.getPushCard();
+  /** 弹窗广告 SDK 实例 */
+  const popupAdSdk = watchCore.interactReceive.getPopupAd();
+
+  const labels = computed(() => identityStore.identityUnionInfo?.labels || []);
 
   /** 处理卡片推送入口显示状态改变 */
   const onEntryVisibleChanged = (visible = true) => {
@@ -49,6 +55,8 @@ export const usePushCard = () => {
 
   return {
     pushCardSdk,
+    popupAdSdk,
+    labels,
     customImgConfig,
     onEntryVisibleChanged,
     onPushCardVisibleChanged,

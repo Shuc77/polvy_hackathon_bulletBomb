@@ -185,7 +185,10 @@
 
       <!-- 任务奖励 -->
       <more-item
-        v-if="iarSdkLoaded && !notNeedIar && personalRewardEntranceVisible"
+        v-if="
+          (iarSdkLoaded && !notNeedIar && personalRewardEntranceVisible) ||
+          liveActivityRewardEntranceVisible
+        "
         :icon-comp="MobileIconMoreMyReward"
         :text="$lang('taskActivity.myReward')"
         @click="onClickPersonalReward"
@@ -305,6 +308,7 @@ import { useStreamTrack } from '../../player/player-stream-track/use-stream-trac
 import { useChannelInfoStore } from '@/store/use-channel-info-store';
 import { useInterruptUserClick } from '@/hooks/business/use-interrupt-user-click/use-interrupt-user-click';
 import { useWatchAppStore } from '@/store/use-watch-app-store';
+import { useLiveActivityStore } from '@/store/use-live-activity-store';
 
 const emit = defineEmits({
   close: emitFunc<void>(),
@@ -357,6 +361,8 @@ const { isPortraitWatchLayout } = storeDefinitionToRefs(useLayoutStore);
 const { iarSdkLoaded } = storeDefinitionToRefs(useInteractReceiveStore);
 
 const { notNeedIar } = storeDefinitionToRefs(useWatchAppStore);
+
+const { liveActivityRewardEntranceVisible } = storeDefinitionToRefs(useLiveActivityStore);
 
 const {
   lineSettingVisible,

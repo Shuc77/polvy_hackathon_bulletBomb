@@ -7,6 +7,8 @@ export const usePlayerControlVisible = () => {
 
   /** 显示控制栏 */
   function openControl() {
+    if (!playerStore.playerControlEnabled) return;
+
     playerStore.$patch({
       playerControlVisible: true,
     });
@@ -22,6 +24,11 @@ export const usePlayerControlVisible = () => {
 
   /** 切换控制栏 */
   function toggleControl() {
+    if (!playerStore.playerControlEnabled) {
+      closeControl();
+      return;
+    }
+
     if (playerStore.playerControlVisible) {
       closeControl();
     } else {

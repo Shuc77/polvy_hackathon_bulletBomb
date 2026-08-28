@@ -20,6 +20,8 @@ type IarInterruptTriggerSource =
   | 'mobile-product-small-card'
   | 'pc-product-small-card'
   | 'before-choose-topic-pk-answer'
+  | 'rolling-lottery'
+  | 'shake-pk'
   | 'mobile-product-list'
   | 'pc-product-list';
 

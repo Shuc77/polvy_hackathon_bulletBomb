@@ -8,7 +8,7 @@
       'c-portrait-player-main--object-fit-cover':
         portraitPlayerScreenType === PortraitPlayerScreenType.Fill ||
         hasGuidePortraitStreamFitClass,
-      'c-portrait-player-main--none-live': noneLiveVisible,
+      'c-portrait-player-main--none-live': noneLivePanelVisible,
       'c-portrait-player-main--hide-loading': isAndroid && isDingTalk,
       'c-portrait-player-main--hide': isConnectMicing,
       'c-portrait-player-main__hide-player-loading': initLoadingVisible,
@@ -45,6 +45,9 @@
         <!-- 播放器封面图 -->
         <portrait-player-cover-img />
 
+        <!-- 外部授权试看覆盖层（倒计时/到期遮罩/引导跳转）：与 portrait-player-cover-img 同层同级，定位祖先与覆盖范围一致（cover-img 内部亦有点击重定向逻辑）；传 playerContainerStyle 精确对齐视频实际区域（含 letterbox 内缩） -->
+        <external-trial-overlay :container-style="playerContainerStyle" />
+
         <!-- 播放器初始化 loading（解决 SDK 未挂载前的空白区域） -->
         <loading-overlay
           :visible="initLoadingVisible"
@@ -58,7 +61,7 @@
     </div>
 
     <!-- 暂无直播占位面板 -->
-    <portrait-none-live-panel v-if="noneLiveVisible && !watchThemeStyleConfig" />
+    <portrait-none-live-panel v-if="noneLivePanelVisible" />
 
     <!-- webview 小窗下的控制栏 -->
     <small-window-control v-if="isSmallWindow" />
@@ -79,6 +82,7 @@ import { useDocStore } from '@/store/use-doc-store';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { usePlayerControl } from '../../hooks/use-player-control';
 import { usePlayerMain } from '../../hooks/use-player-main';
+import ExternalTrialOverlay from '@/components/page-watch-common/player/external-trial/external-trial-overlay.vue';
 import { useResolutionSize } from '../../hooks/use-resolution-size';
 import { usePortraitClickPlayer } from './_hooks/use-portrait-click-player';
 import { useConnectMicing } from '../../hooks/use-connect-micing';
@@ -100,7 +104,7 @@ import { FullscreenElement, useFullscreen } from '@/hooks/tools/use-fullscreen';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { isBuildForFeedMainMode } from '@/assets/utils/utils';
 import { useFullscreenWatermark } from '@/components/common-business/watermark/use-fullscreen-watermark';
-import { useThemeStore } from '@/store/use-theme-store';
+import { useNoneLivePanel } from '../../common/none-live-panel/use-none-live-panel';
 
 const { mainScreen } = storeDefinitionToRefs(useLayoutStore);
 
@@ -123,7 +127,6 @@ const { isFullscreenWatermarkVisible } = useFullscreenWatermark();
 const {
   playerSdkLoadError,
 
-  noneLiveVisible,
   resolutionWidth,
   resolutionHeight,
   isAudioPlayerMode,
@@ -136,7 +139,8 @@ const { portraitDocWrapHeight, portraitDocSideSwitchVisible } =
 
 const { addHistoryTipsListener } = usePlayerControl();
 
-const { watchThemeStyleConfig } = useThemeStore();
+// 竖屏的倒计时层不接管播放器区域，开启直播预约时仍需显示占位面板
+const { noneLivePanelVisible } = useNoneLivePanel({ showOnLiveCountDown: true });
 
 const { isSmallWindow } = storeDefinitionToRefs(useWebviewStore);
 

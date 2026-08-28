@@ -44,6 +44,7 @@ export { default as PcIconLang } from './icons/lang';
 export { default as PcIconMedia } from './icons/media';
 export { default as PcIconMoreFiles } from './icons/more-files';
 export { default as PcIconMoreFilesTwo } from './icons/more-files-two';
+export { default as PcIconNormalPip } from './icons/normal-pip';
 export { default as PcIconPageView } from './icons/page-view';
 export { default as PcIconPeople } from './icons/people';
 export { default as PcIconPersonalReward } from './icons/personal-reward';

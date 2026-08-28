@@ -2,10 +2,6 @@
 <template>
   <div
     class="c-mobile-player-barrage-setting"
-    :class="{
-      'c-mobile-player-barrage-setting--force-horizontal':
-        isNormalLatencyPlayerForceHorizontalFullscreen,
-    }"
     @click.self="closeBarrageSetting"
   >
     <div
@@ -171,17 +167,6 @@ const isPlayerFullscreen = computed(() => {
   return mobilePlayerIsPageFullscreen.value || mobileNormalLatencyPlayerIsFullscreen.value;
 });
 
-/**
- * 正常延迟播放器页面全屏
- */
-const isNormalLatencyPlayerForceHorizontalFullscreen = computed(() => {
-  return (
-    mobileNormalLatencyPlayerIsFullscreen.value &&
-    mobilePlayerIsPageFullscreen.value &&
-    isVerticalScreenOrientation.value
-  );
-});
-
 watch(isVerticalScreenOrientation, newVal => {
   if (newVal && !isPlayerFullscreen.value) {
     toToggleBarrageMobileSettingVisible(false);
@@ -204,17 +189,17 @@ function closeBarrageSetting() {
   color: #fff;
   pointer-events: initial;
 }
-.c-mobile-player-barrage-setting--force-horizontal {
-  position: fixed;
-  top: calc((100vh - 100vw) / 2);
-  left: calc((100vw - 100vh) / 2);
-  z-index: 2003;
-  width: 100vh;
-  height: 100vw;
-  overflow: inherit;
-  transform: rotate3d(0, 0, 1, 90deg);
-  transform-origin: center center;
-}
+// .c-mobile-player-barrage-setting--force-horizontal {
+//   position: fixed;
+//   top: calc((100vh - 100vw) / 2);
+//   left: calc((100vw - 100vh) / 2);
+//   z-index: 2003;
+//   width: 100vh;
+//   height: 100vw;
+//   overflow: inherit;
+//   transform: rotate3d(0, 0, 1, 90deg);
+//   transform-origin: center center;
+// }
 .c-mobile-player-barrage-setting__wrap {
   position: absolute;
   right: 0;

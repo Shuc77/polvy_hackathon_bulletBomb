@@ -2,14 +2,17 @@ import { useWatchAppStore } from '@/store/use-watch-app-store';
 import { DirectBusinessPageType, PageErrorType } from '../layout/direct-business-page/type';
 import { isWeixin } from '@/assets/utils/browser';
 import { useIdentityStore } from '@/store/use-identity-store';
-import type { PolyvWatchCore } from '@polyv/live-watch-sdk';
+import { YN, type PolyvWatchCore } from '@polyv/live-watch-sdk';
 import { useChannelStore } from '@/store/use-channel-store';
 import { translate } from '@/assets/lang';
+import { useQueryParams } from '@/hooks/core/use-query-params';
 
 export const useUserIdentityIntercept = () => {
   const watchAppStore = useWatchAppStore();
   const identityStore = useIdentityStore();
   const channelStore = useChannelStore();
+
+  const { paramGetter } = useQueryParams();
 
   /**
    * 拦截频道分组验证（目前分组依赖手机号）
@@ -75,7 +78,8 @@ export const useUserIdentityIntercept = () => {
     if (!identityStore.watchUserSystemEnabled) return false;
 
     // 检查是否需要用户信息登录
-    let needIdentityLogin = watchCore.identity.checkIdentityLogin();
+    let needIdentityLogin =
+      paramGetter().forceUserAuth() === YN.Y ? true : watchCore.identity.checkIdentityLogin();
 
     // UI 层自行限制游客身份是否能正常进入观看页
     if (!needIdentityLogin && identityStore.isGuest) {

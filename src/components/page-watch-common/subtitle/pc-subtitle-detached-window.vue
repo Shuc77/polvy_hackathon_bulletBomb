@@ -119,11 +119,13 @@ watch(
 
 <style lang="scss">
 .pc-subtitle-detached-dialog__controls {
+  padding: 0 8px;
   color: #fff;
   .pc-subtitle-detached-dialog__controls-opacity {
+    margin-top: 12px;
     &__label {
       font-size: 14px;
-      text-align: center;
+      text-align: left;
     }
     .pc-subtitle-detached-dialog__controls-opacity__slider-labels {
       display: flex;

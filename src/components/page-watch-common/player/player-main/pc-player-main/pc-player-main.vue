@@ -4,6 +4,7 @@
     class="c-pc-player-main"
     :class="{
       'c-pc-player-main__hide': isConnectMicing,
+      'c-pc-player-main--none-live': noneLivePanelVisible,
       'c-pc-player-main--hide-normal-player-btn': !isLowLatency,
       'c-pc-player-main__hide-player-loading': initLoadingVisible,
     }"
@@ -24,6 +25,9 @@
       data-testid="plv-player-container"
       @click="toTogglePlayInLimit"
     ></div>
+
+    <!-- 外部授权试看覆盖层（倒计时/到期遮罩/引导跳转） -->
+    <external-trial-overlay />
 
     <div
       v-if="playerSdkLoadError"
@@ -47,6 +51,9 @@
     <!-- 视频区播放按钮，仅用来展示 -->
     <player-play-business-button />
 
+    <!-- 暂无直播占位面板 -->
+    <pc-none-live-panel v-if="noneLivePanelVisible" />
+
     <!-- 播放器字幕区 -->
     <player-subtitle />
 
@@ -65,10 +72,13 @@ import { usePlayerMain } from '@/components/page-watch-common/player/hooks/use-p
 import PcPlayerCoverImg from '@/components/page-watch-common/player/player-cover-img/pc-player-cover-img.vue';
 import PlayerPlayBusinessButton from '@/components/page-watch-common/player/common/player-play-button/player-play-business-button.vue';
 import PcPlayerLogo from '@/components/page-watch-common/player/player-logo/pc-player-logo.vue';
+import PcNoneLivePanel from '@/components/page-watch-common/player/common/none-live-panel/pc-none-live-panel.vue';
+import { useNoneLivePanel } from '@/components/page-watch-common/player/common/none-live-panel/use-none-live-panel';
 import PlayerSubtitle from '@/components/page-watch-common/player/player-subtitle/pc-player-subtitle.vue';
 import BackgroundSection from '@/components/common-business/background-section/background-section.vue';
 import PcIframePopup from '@/components/common-base/iframe-popup/pc-iframe-popup.vue';
 import LoadingOverlay from '@/components/common-base/loading-overlay/loading-overlay.vue';
+import ExternalTrialOverlay from '@/components/page-watch-common/player/external-trial/external-trial-overlay.vue';
 
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
 import { usePlayerKeyboard } from '@/components/page-watch-common/player/hooks/use-player-keyboard';
@@ -88,6 +98,8 @@ const { playerSdkLoadError, isLowLatency, logoSetting } = storeDefinitionToRefs(
 const { isConnectMicing } = storeDefinitionToRefs(useConnectMicStore);
 
 const { playerBgUrl, themeSetting } = storeDefinitionToRefs(useThemeStore);
+
+const { noneLivePanelVisible } = useNoneLivePanel();
 
 const { getStreamStopText, isEnableDirectPlayCutOff } = usePlayerStreamStopText();
 
@@ -155,6 +167,16 @@ const { iframeVisible, iframeUrl } = usePlayerAdvert();
 
 .c-pc-player-main__background-section {
   @include pc-watch-card-radius-top;
+}
+
+// 显示暂无直播占位面板时，透明掉播放器，避免与 SDK 自带的流停止 UI 重叠
+.c-pc-player-main--none-live {
+  .c-pc-player-main__container {
+    opacity: 0;
+  }
+  .c-player-play-button {
+    display: none;
+  }
 }
 
 .c-pc-player-main__player-sdk-load-error {

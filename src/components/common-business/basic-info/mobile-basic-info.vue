@@ -40,7 +40,7 @@
           <div class="c-mobile-basic-info__channel__inner__bottom">
             <span class="c-mobile-basic-info__channel__inner__start-time">
               {{ pageViewVisible ? '' : `${$lang('watch.liveTime')}：` }}
-              {{ liveStartTimeText }}
+              {{ liveShowTimeText }}
             </span>
             <span
               v-if="pageViewVisible"
@@ -176,7 +176,7 @@ const {
   pageViewCount,
   pageViewCountLocation,
   channelDescription,
-  liveStartTimeText,
+  liveShowTimeText,
 
   learningStatsEnabled,
   viewerWatchDuration,

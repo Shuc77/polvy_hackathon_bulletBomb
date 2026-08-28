@@ -9,7 +9,7 @@
     <div class="c-mobile-player-control__tips-wrap">
       <!-- rtc 暂停播放的提示 -->
       <div
-        v-if="playerControlVisible && rtcPlayerPauseTipVisible"
+        v-if="playerControlEnabled && playerControlVisible && rtcPlayerPauseTipVisible"
         class="c-mobile-player-control__tips c-mobile-player-control__tips--rtc-paused"
       >
         {{ $lang('player.rtc.paused') }}
@@ -19,7 +19,7 @@
     <!-- 控制栏 -->
     <transition name="slide">
       <div
-        v-show="playerControlVisible"
+        v-show="playerControlEnabled && playerControlVisible"
         class="c-mobile-player-control__main"
         @click.stop="startHidePlayerControlTimer"
       >
@@ -128,6 +128,7 @@ const { getEmitter } = useGlobalInject();
 
 const {
   playStatus,
+  playerControlEnabled,
   playerControlVisible,
   barrageShow,
   barrageMobileSettingVisible,

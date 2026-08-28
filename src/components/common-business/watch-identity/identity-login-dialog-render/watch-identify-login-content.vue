@@ -18,6 +18,9 @@ import { defineComponent } from 'vue';
 import { useIdentityStore } from '@/store/use-identity-store';
 import { ErrorVerifyType, useErrorVerify } from '@/hooks/core/use-error-verify';
 import { PropUtils, emitFunc } from '@polyv/vue-components';
+import { useQueryParams } from '@/hooks/core/use-query-params';
+
+const { removeQueryParam } = useQueryParams();
 
 const { getMobilePolyvWatchIdentifySDKSceneComponent, getPcPolyvWatchIdentifySDKSceneComponent } =
   useWatchIdentifySDKSceneLoader();
@@ -51,6 +54,7 @@ const { redirectToErrorVerify } = useErrorVerify();
 const identityStore = useIdentityStore();
 
 function onLoginSuccess() {
+  removeQueryParam(['forceUserAuth']);
   // 成功提交后刷新当前页面即可
   window.location.reload();
 }
