@@ -45,5 +45,21 @@ export { default as PlvChannelCover } from '@polyv/polyv-ui/lib-admin/channel-co
 import '@polyv/polyv-ui/lib-admin/theme/text-ellipsis.css';
 export { default as PlvTextEllipsis } from '@polyv/polyv-ui/lib-admin/text-ellipsis';
 
+import '@polyv/polyv-ui/lib-admin/theme/button.css';
+export { default as PlvButton } from '@polyv/polyv-ui/lib-admin/button';
+
+import '@polyv/polyv-ui/lib-admin/theme/input.css';
+import '@polyv/polyv-ui/lib-admin/theme/input-number.css';
+export { default as PlvInputNumber } from '@polyv/polyv-ui/lib-admin/input-number';
+
+import '@polyv/polyv-ui/lib-admin/theme/color-picker.css';
+export { default as PlvColorPicker } from '@polyv/polyv-ui/lib-admin/color-picker';
+
+import '@polyv/polyv-ui/lib-admin/theme/select.css';
+export { default as PlvSelect } from '@polyv/polyv-ui/lib-admin/select';
+
+import '@polyv/polyv-ui/lib-admin/theme/tag.css';
+export { default as PlvTag } from '@polyv/polyv-ui/lib-admin/tag';
+
 // import '@polyv/polyv-ui/lib-admin/theme/markdown-render.css';
 // export { default as PlvMarkdownRender } from '@polyv/polyv-ui/lib-admin/markdown-render';

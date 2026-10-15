@@ -147,3 +147,54 @@ declare module '@polyv/polyv-ui/lib-admin/markdown-render' {
   const component: ComponentOptions<Vue>;
   export default component;
 }
+
+/**
+ * 按钮
+ */
+declare module '@polyv/polyv-ui/lib-admin/button' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
+ * 数字输入框
+ * @desc `min` 默认为 0、`max` 默认为 Infinity
+ */
+declare module '@polyv/polyv-ui/lib-admin/input-number' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
+ * 颜色选择器
+ * @desc 组件的 `model` 是 `{ prop: 'value', event: 'change' }`，
+ *   所以 `v-model` 正常可用，手写时对应 `:value` + `@change`。
+ *   面板的挂载点由 popper mixin 的 `appendToBody` 控制，**默认 true** ——
+ *   在整屏浮层里必须显式传 `false`，否则会挂到 body 上被浮层的 z-index 盖住。
+ */
+declare module '@polyv/polyv-ui/lib-admin/color-picker' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
+ * 下拉选择器
+ * @desc 选项字段名由 `optionsField` 控制，默认 `{ label: 'label', value: 'value' }`
+ */
+declare module '@polyv/polyv-ui/lib-admin/select' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}
+
+/**
+ * 标签
+ */
+declare module '@polyv/polyv-ui/lib-admin/tag' {
+  import Vue, { ComponentOptions } from 'vue';
+  const component: ComponentOptions<Vue>;
+  export default component;
+}

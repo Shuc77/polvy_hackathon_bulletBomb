@@ -83,6 +83,21 @@ export const useQueryParams = (opts?: {
     };
   };
 
+  /**
+   * 构建「默认开启」的开关型参数的获取器
+   * @desc 只有传了明确的关闭值才算关闭（`0` / `n` / `no` / `false` / `off`，不区分大小写），
+   * 不传、传空值、传其他值一律视为开启
+   */
+  const buildDefaultOnGetter = (key: string) => {
+    const OFF_VALUES = ['0', 'n', 'no', 'false', 'off'];
+
+    return (): boolean => {
+      const raw = __getQueryParamItem(key);
+
+      return typeof raw === 'undefined' || !OFF_VALUES.includes(raw.trim().toLowerCase());
+    };
+  };
+
   /** 兼容 pathname 中出现多个 / 的情况 */
   function getLocationPathName() {
     return window.location.pathname.replace(/\/+/g, '/');
@@ -169,6 +184,8 @@ export const useQueryParams = (opts?: {
     polyvMeeting: buildGetters<'true'>('polyvMeeting'),
     /** 是否调试皮肤 */
     debugSkin: buildGetters<YN>('debugSkin'),
+    /** 弹幕特效配置入口：默认常驻，传 `effectEditor=0` 关闭 */
+    effectEditor: buildDefaultOnGetter('effectEditor'),
     /** 是否加载 VConsole */
     console: buildGetters<'1'>('console'),
     /** 多语言 */

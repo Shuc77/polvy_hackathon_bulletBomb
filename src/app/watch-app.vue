@@ -16,11 +16,12 @@
     </template>
 
     <theme-select v-if="watchAppInited && paramGetter().debugSkin()" />
+    <effect-workbench-entry v-if="effectEditorVisible" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue';
+import { computed, defineAsyncComponent } from 'vue';
 import { useWatchApp } from './use-watch-app';
 import { isMobile } from '@/assets/utils/browser';
 
@@ -38,6 +39,18 @@ const ThemeSelect = defineAsyncComponent(
   () => import(/* webpackChunkName: "theme-select" */ '@/themes/debug/theme-select.vue'),
 );
 
+/**
+ * 特效配置入口
+ * @desc 入口自己再异步拉起工作台浮层，所以这里不 import 特效 store ——
+ *   在 watch-app 这一层碰 store 会把 6 个模板的注册表拖进主包
+ */
+const EffectWorkbenchEntry = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "effect-editor" */ '@/components/page-watch-common/barrage-effect/editor/effect-workbench-entry.vue'
+    ),
+);
+
 const PcMain = defineAsyncComponent(
   () => import(/* webpackChunkName: "pc-main" */ './layout/main-enter/pc-main.vue'),
 );
@@ -50,6 +63,20 @@ const { onLayoutMounted, setupWatchApp } = useWatchApp();
 // useCurrentWatchAppEffect(setupWatchApp);
 
 const { directBusinessPageType, watchAppInited } = storeDefinitionToRefs(useWatchAppStore);
+
+/**
+ * 是否展示弹幕特效配置入口
+ * @desc 默认常驻，传 `?effectEditor=0` 可关闭。
+ * 特效层只挂在 PC 布局上，因此移动端与自建业务页不渲染入口，避免出现「配了也放不出来」的死按钮
+ */
+const effectEditorVisible = computed(() => {
+  return (
+    watchAppInited.value &&
+    !directBusinessPageType.value &&
+    !isMobile &&
+    paramGetter().effectEditor()
+  );
+});
 </script>
 
 <style lang="scss" src="@/assets/styles/global.scss"></style>
