@@ -4,7 +4,8 @@
 import { useGlobalInject } from '@/app/use-global-inject';
 import { usePlayerStore } from '@/store/use-player-store';
 import { BarrageTarget } from '@polyv/live-watch-sdk';
-import { isRef, onBeforeUnmount, ref, Ref, unref, watch } from 'vue';
+import { isRef, onBeforeUnmount, ref, Ref, shallowRef, unref, watch } from 'vue';
+import { useBarrageFeed } from './use-barrage-feed';
 
 export const useBarrage = (
   options: {
@@ -17,7 +18,10 @@ export const useBarrage = (
   const containerRef = isRef(options.containerRef)
     ? options.containerRef
     : ref(options.containerRef);
-  let barrageTarget: BarrageTarget | undefined;
+
+  const barrageTarget = shallowRef<BarrageTarget>();
+
+  const barrageFeed = useBarrageFeed(() => barrageTarget.value);
 
   /** 设置弹幕 */
   function setupBarrage(): void {
@@ -31,42 +35,49 @@ export const useBarrage = (
     const watchCore = getWatchCore();
     const { direction, percent } =
       playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex];
-    barrageTarget = watchCore.barrage.setupBarrage({
+    barrageTarget.value = watchCore.barrage.setupBarrage({
       container,
+      // 关闭 SDK 自动喂送：其内部过滤会丢掉自己发送的消息，回放消息也会被拦截，
+      // 改由 useBarrageFeed 从聊天室直接取消息上屏
+      autoAdd: false,
       speed: playerStore.barrageSpeed,
       size: playerStore.barrageSize,
       alpha: playerStore.barrageAlpha,
       areaDirection: direction,
       areaPercentage: percent,
     });
+
+    barrageFeed.start();
   }
 
   /** 销毁弹幕 */
   function destroyBarrage(): void {
-    if (barrageTarget) {
-      barrageTarget.destroyTarget();
-      barrageTarget = undefined;
+    barrageFeed.stop();
+
+    if (barrageTarget.value) {
+      barrageTarget.value.destroyTarget();
+      barrageTarget.value = undefined;
     }
   }
 
   /** 修改弹幕速度 */
   function changeBarrageSpeed(speed: number) {
-    barrageTarget?.changeSpeed(speed);
+    barrageTarget.value?.changeSpeed(speed);
   }
 
   /** 修改弹幕字号 */
   function changeBarrageSize(size: number) {
-    barrageTarget?.changeSize(size);
+    barrageTarget.value?.changeSize(size);
   }
 
   /** 修改弹幕透明度 */
   function changeBarrageAlpha(alpha: number) {
-    barrageTarget?.changeAlpha(alpha);
+    barrageTarget.value?.changeAlpha(alpha);
   }
 
   /** 修改弹幕位置 */
   function changeBarrageLocation(index: number) {
-    barrageTarget?.changeLocation(index);
+    barrageTarget.value?.changeLocation(index);
   }
 
   watch(
@@ -130,6 +141,8 @@ export const useBarrage = (
 
   return {
     containerRef,
+    /** 当前弹幕对象，供特效层做尺寸校正、节点接管等操作 */
+    barrageTarget,
     setupBarrage,
     destroyBarrage,
   };

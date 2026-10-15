@@ -1,0 +1,407 @@
+/**
+ * @file 互动驱动器
+ * @desc 生产层（`pc-barrage-effect.vue`）与工作台舞台（`editor/effect-stage.vue`）
+ *   共用的**唯一**播放实现。
+ *
+ *   「预览走的是和生产完全同一条代码路径」这句话要成立，就得真的只有一条路径 ——
+ *   两边的差别只在宿主（画布、时钟、样本源从哪来），不在逻辑。所以开窗、读样本、
+ *   缓动、循环、驻留、合成顺序全部在这里。
+ *
+ *   样本源两边也完全一致：都订阅 app 级总线上的 `BarrageLanded`。工作台的模拟弹幕
+ *   写的是同一个入口，所以「预览能看出来、上线就坏」这件事从结构上不可能发生。
+ */
+import { effectTemplates, getEffectTemplate } from './effects';
+import { PULL_TAU, easeToward } from './feed-easing';
+import {
+  createFeedWindow,
+  feedOptionsOf,
+  resolveFeedMode,
+  type FeedReading,
+  type FeedWindow,
+} from './feed-window';
+import type { BarrageSample } from './barrage-signal';
+import type {
+  BarrageAnchor,
+  EffectFeedMode,
+  EffectInstance,
+  EffectParams,
+  EffectSize,
+  EffectTemplateDescriptor,
+} from './types';
+
+/** 循环之间的间隙（秒）。不留的话读起来是频闪不是循环 */
+const LOOP_GAP = 0.5;
+
+/** 尺寸还没量出来时的重建重试间隔 */
+const SPAWN_RETRY = 0.2;
+
+const SCALE_MIN_PARTICLES = 20;
+const SCALE_MAX_PARTICLES = 500;
+/** 条数达到它即满规模 */
+const DEFAULT_SCALE_FULL_COUNT = 40;
+/** 规模相对作者基准值的上下限，防止极端刷屏把粒子数拉到不可控 */
+const SCALE_FACTOR_MIN = 0.6;
+const SCALE_FACTOR_MAX = 1.6;
+
+/** 文字通道喂给模板的字符池上限 */
+const MAX_GLYPHS = 200;
+
+export interface PlayOptions {
+  /**
+   * 播完自动重来
+   * @desc 舞台预览要它 —— 1.5 秒的一次性动画在你碰滑块之前就结束了，
+   *   而盯着效果调参才是工作台的全部价值。生产层不要
+   */
+  loop?: boolean;
+}
+
+/** 工作台要显示的拉扯状态 */
+export interface DriverDebugState {
+  mode: EffectFeedMode;
+  /** 驱动当前下发的主色占比 */
+  ratio: number;
+  /** 驱动当前下发的重心偏向 */
+  bias: number;
+  /** 窗内弹幕总条数 */
+  count: number;
+  /** A 派命中数 */
+  primary: number;
+  /** B 派命中数 */
+  secondary: number;
+  /** 距关窗还剩多少秒 */
+  remaining: number;
+}
+
+export interface InteractiveDriver {
+  play(anchor: BarrageAnchor, options?: PlayOptions): void;
+  /** 换基准参数，热更新不重建 */
+  updateParams(params: EffectParams): void;
+  /** 尺寸变了：实例在构造时固化了尺寸，全部作废，窗保留着下一帧重建 */
+  invalidate(): void;
+  /** 每帧推进 + 绘制。返回是否还需要继续跑 */
+  tick(ctx: CanvasRenderingContext2D, delta: number): boolean;
+  /** 立即结束一切（拖进度条、换预览目标、卸载） */
+  reset(): void;
+  /**
+   * 取当前窗的读数，没有窗时返回 undefined
+   * @desc 给工作台显示用。作者看不到「缝合占比」在动的话，
+   *   根本判断不出缓动是不是坏了 —— 它本来就慢
+   */
+  getDebugState(): DriverDebugState | undefined;
+}
+
+/**
+ * 一条播放轨道
+ * @desc 有 `feed` 的是互动窗，没有的是一次性转场。
+ *
+ *   缓动值（`ratio` / `bias` / `particles`）**挂在轨道上，不挂在实例上** ——
+ *   没实现 `setSustain` 的模板靠「整轮循环」撑满窗长，每轮重建都会换一批随机粒子，
+ *   缓动值要是跟着实例走，每 2 秒就被拉回中点一次，观众看到的是抽搐
+ */
+interface Track {
+  anchor: BarrageAnchor;
+  /**
+   * 作者配的基准参数
+   * @desc 驱动**只读它，绝不改它**。规模通道要按它缩放粒子数，
+   *   要是把每帧算出来的结果写回去，基准就会逐帧漂移
+   */
+  base: EffectParams;
+  /** 每帧真正下发给实例的参数 = base + 本驱动方式的覆盖 */
+  delivered: EffectParams;
+  instance?: EffectInstance;
+  gapRemaining: number;
+  loop: boolean;
+  feed?: FeedWindow;
+  ratio: number;
+  bias: number;
+  particles: number;
+  closing: boolean;
+  /** 最近一次读数，供工作台显示 */
+  lastReading?: FeedReading;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
+
+export interface UseInteractiveDriverOptions {
+  getSize: () => EffectSize;
+  /** 取时间窗内的弹幕样本 */
+  getSample: (now: number, seconds: number) => BarrageSample;
+}
+
+export const useInteractiveDriver = (options: UseInteractiveDriverOptions): InteractiveDriver => {
+  const { getSize, getSample } = options;
+
+  const tracks: Track[] = [];
+
+  /** 条数 → 粒子数。按作者配的基准值缩放，而不是写死一个绝对量 */
+  function targetParticles(
+    descriptor: EffectTemplateDescriptor,
+    base: number,
+    count: number,
+  ): number {
+    const full = descriptor.scaleFullCount ?? DEFAULT_SCALE_FULL_COUNT;
+    const factor = clamp(count / full, SCALE_FACTOR_MIN, SCALE_FACTOR_MAX);
+
+    return clamp(Math.round(base * factor), SCALE_MIN_PARTICLES, SCALE_MAX_PARTICLES);
+  }
+
+  /** 弹幕原文 → 字符池。中文取单字，去空白，封顶 */
+  function textToGlyphs(texts: string[]): string[] {
+    const glyphs: string[] = [];
+
+    for (const text of texts) {
+      for (const char of Array.from(text)) {
+        if (/\s/.test(char)) {
+          continue;
+        }
+
+        glyphs.push(char);
+
+        if (glyphs.length >= MAX_GLYPHS) {
+          return glyphs;
+        }
+      }
+    }
+
+    return glyphs;
+  }
+
+  /**
+   * 把窗内的读数换算成参数
+   * @desc **只写本驱动方式声明过的字段** —— 规模模式的窗不该顺手把 ratio 也改掉，
+   *   那会让作者配好的配色莫名其妙变样
+   */
+  function applyReading(track: Track, delta: number, now: number): void {
+    const feed = track.feed;
+    if (!feed) {
+      return;
+    }
+
+    const reading: FeedReading = feed.read(getSample(now, feed.windowSec));
+    track.lastReading = reading;
+
+    const patch: EffectParams = { ...track.base };
+    const descriptor = getEffectTemplate(track.anchor.template);
+
+    if (feed.mode === 'polarity') {
+      track.ratio = easeToward(track.ratio, reading.share, delta, PULL_TAU);
+      track.bias = easeToward(track.bias, reading.share * 2 - 1, delta, PULL_TAU);
+      patch.ratio = track.ratio;
+      patch.bias = track.bias;
+    } else if (feed.mode === 'scale') {
+      const base = track.base.particles ?? descriptor?.defaults.particles ?? 120;
+
+      track.particles = easeToward(
+        track.particles,
+        descriptor ? targetParticles(descriptor, base, reading.count) : base,
+        delta,
+        PULL_TAU,
+      );
+      patch.particles = Math.round(track.particles);
+    } else if (feed.mode === 'text') {
+      const glyphs = textToGlyphs(reading.texts);
+      // 没弹幕时把字符池交还给模板内置池，别让雨幕空掉
+      patch.glyphPool = glyphs.length > 0 ? glyphs : undefined;
+    }
+
+    track.delivered = patch;
+    track.instance?.applyParams?.(patch);
+  }
+
+  function spawn(track: Track): void {
+    const factory = effectTemplates[track.anchor.template];
+    const size = getSize();
+
+    if (!factory || size.width < 1 || size.height < 1) {
+      track.gapRemaining = SPAWN_RETRY;
+      return;
+    }
+
+    const instance = factory(track.delivered, size);
+
+    // 驻留：包络钉死、永不 finished。不支持它的模板退回「整轮循环 + 间隙」
+    if (track.feed) {
+      instance.setSustain?.(true);
+    }
+
+    track.instance = instance;
+  }
+
+  /** 推进一条轨道，返回是否保留 */
+  function tickTrack(track: Track, delta: number, now: number): boolean {
+    if (track.feed) {
+      const closing = track.feed.isClosing(now);
+
+      if (closing && !track.closing) {
+        track.closing = true;
+        // 关窗的收尾交给模板自己的淡出，不是在这里硬切
+        track.instance?.setSustain?.(false);
+      }
+
+      if (!closing) {
+        applyReading(track, delta, now);
+      }
+    }
+
+    if (!track.instance) {
+      if (track.closing) {
+        // 间隙里关的窗：没有实例要收尾，直接结束
+        return false;
+      }
+
+      track.gapRemaining -= delta;
+
+      if (track.gapRemaining <= 0) {
+        spawn(track);
+      }
+
+      return true;
+    }
+
+    track.instance.update(delta);
+
+    if (!track.instance.finished) {
+      return true;
+    }
+
+    track.instance = undefined;
+
+    if (track.closing) {
+      return false;
+    }
+
+    // 窗内要循环撑满窗长；转场只在预览时循环
+    if (track.feed || track.loop) {
+      track.gapRemaining = LOOP_GAP;
+      return true;
+    }
+
+    return false;
+  }
+
+  function createTrack(anchor: BarrageAnchor, playOptions?: PlayOptions): Track {
+    const descriptor = getEffectTemplate(anchor.template);
+    const effective: EffectParams = { ...descriptor?.defaults, ...anchor.params };
+    const mode = resolveFeedMode(anchor, descriptor);
+
+    return {
+      anchor,
+      base: effective,
+      delivered: effective,
+      // 0 = 立刻起播。之后每轮重建才走 LOOP_GAP
+      gapRemaining: 0,
+      loop: playOptions?.loop ?? false,
+      feed: mode === 'static' ? undefined : createFeedWindow(feedOptionsOf(anchor, mode)),
+      ratio: effective.ratio ?? 0.5,
+      bias: effective.bias ?? 0,
+      particles: effective.particles ?? 120,
+      closing: false,
+    };
+  }
+
+  function play(anchor: BarrageAnchor, playOptions?: PlayOptions): void {
+    const descriptor = getEffectTemplate(anchor.template);
+
+    if (!descriptor || !effectTemplates[anchor.template]) {
+      console.warn(`[barrage-effect] 未注册的特效模板：${anchor.template}`);
+      return;
+    }
+
+    const size = getSize();
+    if (size.width < 1 || size.height < 1) {
+      return;
+    }
+
+    tracks.push(createTrack(anchor, playOptions));
+  }
+
+  /**
+   * 换基准参数，热更新不重建
+   * @desc 供工作台拖滑块用。工厂构造时会给每个粒子取随机数，
+   *   每拖一下重建一次就是每秒重新随机 60 次，预览会疯狂闪烁
+   */
+  function updateParams(params: EffectParams): void {
+    tracks.forEach(track => {
+      track.base = params;
+
+      // 互动窗：下一帧的读数会把它并进去，不用（也不该）现在直写 ——
+      // 直写会先把驱动出来的 ratio / bias 冲掉，等下一帧才补回来
+      if (track.feed) {
+        return;
+      }
+
+      track.delivered = params;
+      track.instance?.applyParams?.(params);
+    });
+  }
+
+  function invalidate(): void {
+    tracks.forEach(track => {
+      track.instance = undefined;
+      // 立刻重建，别等间隙
+      track.gapRemaining = 0;
+    });
+  }
+
+  function reset(): void {
+    tracks.length = 0;
+  }
+
+  function tick(ctx: CanvasRenderingContext2D, delta: number): boolean {
+    const now = performance.now();
+
+    for (let index = tracks.length - 1; index >= 0; index -= 1) {
+      if (!tickTrack(tracks[index], delta, now)) {
+        tracks.splice(index, 1);
+      }
+    }
+
+    if (tracks.length === 0) {
+      return false;
+    }
+
+    /**
+     * 粒子叠加发光
+     * @desc save/restore 不是可选项：特效会把 globalAlpha 停在某个值上不还原，
+     *   而 save/restore 本身会保存 globalCompositeOperation，所以必须在 save 之前设置
+     */
+    ctx.globalCompositeOperation = 'lighter';
+
+    tracks.forEach(track => {
+      if (!track.instance) {
+        return;
+      }
+
+      ctx.save();
+      track.instance.draw(ctx);
+      ctx.restore();
+    });
+
+    ctx.globalCompositeOperation = 'source-over';
+
+    return true;
+  }
+
+  function getDebugState(): DriverDebugState | undefined {
+    const track = tracks.find(item => item.feed);
+    const feed = track?.feed;
+
+    if (!track || !feed) {
+      return undefined;
+    }
+
+    return {
+      mode: feed.mode,
+      ratio: track.ratio,
+      bias: track.bias,
+      count: track.lastReading?.count ?? 0,
+      primary: track.lastReading?.primary ?? 0,
+      secondary: track.lastReading?.secondary ?? 0,
+      remaining: feed.remaining(performance.now()),
+    };
+  }
+
+  return { play, updateParams, invalidate, tick, reset, getDebugState };
+};

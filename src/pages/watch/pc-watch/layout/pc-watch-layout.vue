@@ -138,6 +138,11 @@
             <pc-barrage />
           </div>
 
+          <!-- 播放器弹幕特效层 -->
+          <div class="c-pc-watch-layout__main-layer c-pc-watch-layout__main__player-effect">
+            <pc-barrage-effect />
+          </div>
+
           <!-- 播放器-公告跑马灯层 -->
           <div
             v-if="managerBulletinMarqueeRenderEnabled"
@@ -276,6 +281,7 @@ import CommonOtherLiveBooking from '@/components/common-business/live-booking/co
 import PcPageFooter from '@/components/common-business/page-footer/pc-page-footer.vue';
 import FullscreenWatermark from '@/components/common-business/watermark/fullscreen-watermark.vue';
 import PcBarrage from '@/components/page-watch-common/barrage/pc-barrage.vue';
+import PcBarrageEffect from '@/components/page-watch-common/barrage-effect/pc-barrage-effect.vue';
 import PcBulletinMarquee from '@/components/page-watch-common/bulletin-marquee/pc-bulletin-marquee.vue';
 import PcChatConnectErrorTips from '@/components/page-watch-common/chat/chat-connect-error/chat-connect-error-tips/pc-chat-connect-error-tips.vue';
 import PcChatMsgReplayTips from '@/components/page-watch-common/chat/chat-msg-replay-tips/pc-chat-msg-replay-tips.vue';
@@ -587,6 +593,13 @@ $--layout-sub-pack-up-height: 40px !default;
 
 .c-pc-watch-layout__main__player-barrage {
   z-index: 0;
+  height: 100%;
+  pointer-events: none;
+}
+
+// 弹幕特效层：压过弹幕层(0)与侧边挂件(10)，但不挡倒计时/激励动画(310)与各种弹层(3000)
+.c-pc-watch-layout__main__player-effect {
+  z-index: 300;
   height: 100%;
   pointer-events: none;
 }

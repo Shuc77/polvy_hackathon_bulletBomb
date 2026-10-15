@@ -1,4 +1,5 @@
 import { askEvents } from './ask';
+import { barrageEffectEvents } from './barrageEffect';
 import { docEvents } from './doc';
 import { playerEvents } from './player';
 import { globalEvents } from './global';
@@ -39,6 +40,7 @@ function generateRealEvents<T extends Record<string, string>>(
 
 export const events = {
   ask: generateRealEvents('ask', askEvents),
+  barrageEffect: generateRealEvents('barrageEffect', barrageEffectEvents),
   doc: generateRealEvents('doc', docEvents),
   player: generateRealEvents('player', playerEvents),
   global: generateRealEvents('global', globalEvents),
