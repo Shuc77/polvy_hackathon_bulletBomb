@@ -85,7 +85,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
   {
     name: 'countdown',
     label: '文字倒计时',
-    description: '大字倒数到零，配一行文案。与弹幕零关系，观众实时看到。',
+    description: '粒子聚成大字倒数，每秒贴着新数字的轮廓流过去。与弹幕零关系。',
     accent: '#4f7cff',
     defaults: COUNTDOWN_DEFAULTS,
     factory: createCountdown,
