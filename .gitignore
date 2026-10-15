@@ -35,5 +35,8 @@ dist-sdk-inject
 inject-assets.js
 false
 
+# 本机 esbuild 编译缓存（TEMP/TMP 指到仓库内时产生）
+.tmp-esbuild
+
 #polyv
 polyv-check.js
