@@ -152,6 +152,16 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+// ★ 这几个必须在 `<script setup>` 里显式 import，模板里的 `<plv-*>` 才解析得出来。
+//   本仓库的 polyv-ui 没有全局注册，`pc-barrage-setting.vue` 那类页面都是逐个引入的。
+//   漏掉 import 不会报编译错误，只会渲染成「Unknown custom element」—— 控件是死的，
+//   构建却一切正常，所以只有打开页面才看得见
+import {
+  PlvColorPicker,
+  PlvInputNumber,
+  PlvSelect,
+  PlvSlider,
+} from '@/plugins/polyv-ui/admin-import';
 import { EFFECT_TEMPLATE_OPTIONS, getEffectTemplate } from '../effects';
 import { spanOf, spanPatchOf, spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';

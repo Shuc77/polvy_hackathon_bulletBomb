@@ -85,6 +85,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+// 见 params-panel.vue 里的说明：polyv-ui 没有全局注册，模板里用到就得显式引入
+import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { FEED_MODE_LABELS, getEffectTemplate } from '../effects';
 import { DEFAULT_WINDOW_SEC, MAX_WINDOW_SEC, MIN_WINDOW_SEC } from '../feed-window';
 import type { AnchorFeed, BarrageAnchor, EffectFeedMode } from '../types';

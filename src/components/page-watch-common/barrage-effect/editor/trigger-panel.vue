@@ -127,6 +127,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
+// 见 params-panel.vue 里的说明：polyv-ui 没有全局注册，模板里用到就得显式引入
+import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { useBarrageEffectStore } from '@/store/use-barrage-effect-store';
 import { EFFECT_TEMPLATES, getEffectTemplate } from '../effects';
 import { useBarrageSignalBuffer } from '../barrage-signal';

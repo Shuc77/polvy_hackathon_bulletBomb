@@ -44,6 +44,8 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+// 见 params-panel.vue 里的说明：polyv-ui 没有全局注册，模板里用到就得显式引入
+import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { FALLBACK_WORDS, useMockBarrage } from './mock-barrage';
 import { parseKeywords } from '../feed-window';
 
