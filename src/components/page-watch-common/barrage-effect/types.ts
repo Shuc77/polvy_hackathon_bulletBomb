@@ -169,6 +169,25 @@ export interface EffectTemplateMeta {
    */
   feedModes: EffectFeedMode[];
   /**
+   * 新拖入时间轴时默认用的驱动方式
+   * @desc ★ 只在**创建那一刻**读一次，由 `addAnchorAt` 显式写进锚点的 `feed.mode`。
+   *   **改这一个字段动不了任何既有配置** —— 旧存档、旧分享链接、已导出的配置里
+   *   根本没有 `feed`，它们走 `resolveFeedMode` 的 `feedModes[0]` 兜底，
+   *   而那个兜底恒为 `static`，一个字都不动。
+   *
+   *   为什么不干脆把互动项挪到 `feedModes` 第一位：那个数组是**唯一的默认通道**，
+   *   重排等于让所有没有 `feed` 的既有配置从「放一次」静默变成「开收集窗」；
+   *   `span.ts` 的 `spanCaseOf` 也读它，条带长度与可拖区间会跟着一起变，
+   *   作者既有的 `spanSec` 会变成静默失效的死数据。模块里没有 schema 版本号，
+   *   也没有迁移代码 —— 没有安全的重排方式，只有「创建时写明」这一条路。
+   *
+   *   与 `density-trigger.ts` 的 `createTriggerAnchor` 是同一条纪律的两面：
+   *   那边显式写 `static` 防被默认值改味，这边显式写互动值求默认就是互动
+   *
+   *   缺省即不写 `feed`（纯转场模板，如文字倒计时）
+   */
+  defaultFeedMode?: EffectFeedMode;
+  /**
    * 规模通道的满规模条数，缺省 40
    * @desc 各模板的 `particles` 语义不同（三个 1:1，三个是预算除以 3 / 2.5 / 3.5），
    *   视觉密度本来就不可比 —— 这里逐模板标定「多少条弹幕算满」

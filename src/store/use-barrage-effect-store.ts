@@ -7,9 +7,12 @@ import { computed, ref, Ref } from 'vue';
 import { getAnchorsQueryRaw } from '@/components/page-watch-common/barrage-effect/anchors-from-url';
 import {
   createAnchorId,
+  nearestFreeTime,
   parseAnchorsText,
   stringifyAnchors,
+  type ParseStats,
 } from '@/components/page-watch-common/barrage-effect/anchor-utils';
+import { getEffectTemplate } from '@/components/page-watch-common/barrage-effect/effects';
 import {
   DENSITY_DEFAULTS,
   normalizeDensityConfig,
@@ -31,6 +34,12 @@ const URL_STAMP_KEY = 'plv-barrage-effect-url-stamp';
 
 /** 高频写入的落盘延迟，单位：毫秒 */
 const PERSIST_DELAY = 300;
+
+/** 导入的结果。`dropped` 单独拿出来是为了能如实报出「进来了一部分」 */
+export interface ImportAnchorsResult extends ParseStats {
+  /** 实际导进来的条数 */
+  imported: number;
+}
 
 export interface BarrageEffectStore {
   /** 当前锚点列表，始终按时间升序 */
@@ -73,7 +82,12 @@ export interface BarrageEffectStore {
   removeAnchor: (id: string) => void;
   selectAnchor: (id?: string) => void;
   clearAnchors: () => void;
-  importAnchors: (text: string) => number;
+  /**
+   * 导入配置文本
+   * @desc 返回的是**两个数**而不是一个：`imported` 为 0 是「全都没解析出来」，
+   *   而 `imported > 0` 且 `dropped > 0` 是「进来了一部分」—— 后者以前完全不可见
+   */
+  importAnchors: (text: string) => ImportAnchorsResult;
   exportAnchors: () => string;
   toggleWorkbench: (visible?: boolean) => void;
   /** 改密度触发配置，改完即落盘 */
@@ -224,11 +238,24 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
     const anchorsCount = computed(() => anchors.value.length);
 
     function addAnchorAt(time: number, template: EffectTemplateName = 'shockwave'): BarrageAnchor {
+      /**
+       * 新锚点的驱动方式**在创建这一刻写明**
+       * @desc ★ 不能靠 `resolveFeedMode` 的兜底来给互动默认值 —— 那个兜底读的是
+       *   `feedModes[0]`，而它同时服务着旧存档、旧分享链接和所有已导出的配置，
+       *   动它等于把那些配置从「放一次」静默改成「开收集窗」。
+       *   在这里写进锚点，影响面就只有「以后新拖进来的」。
+       *
+       *   缺 `defaultFeedMode` 的模板（纯转场的文字倒计时）**不写** `feed` ——
+       *   它和旧锚点走同一条兜底路径，少一个字段就少一处能不一致的地方
+       */
+      const defaultFeedMode = getEffectTemplate(template)?.defaultFeedMode;
+
       const anchor: BarrageAnchor = {
         id: createAnchorId(),
         time: Math.max(0, Math.round(time)),
         template,
         params: {},
+        ...(defaultFeedMode ? { feed: { mode: defaultFeedMode } } : {}),
       };
 
       anchors.value.push(anchor);
@@ -256,8 +283,15 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       }
     }
 
+    /**
+     * 改时间
+     * @desc ★ 走 `nearestFreeTime` 而不是直接写：**放置**有 1 秒最小间距的规矩
+     *   （时间轴的 `canCreateAt`），**移动**以前没有 —— 于是一条条带可以整个压在
+     *   另一条上面，两条都选不中、也看不出来。这里让移动受同一条约束，
+     *   越过界时不拒绝，吸附到最近的空位
+     */
     function moveAnchor(id: string, time: number): void {
-      updateAnchor(id, { time: Math.max(0, Math.round(time)) });
+      updateAnchor(id, { time: nearestFreeTime(anchors.value, time, id) });
     }
 
     function removeAnchor(id: string): void {
@@ -307,11 +341,13 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       isSaving.value = false;
     }
 
-    /** 导入配置文本，返回导入成功的锚点数量 */
-    function importAnchors(text: string): number {
-      const list = parseAnchorsText(text);
+    /** 导入配置文本，返回进来多少条、丢了多少条 */
+    function importAnchors(text: string): ImportAnchorsResult {
+      const stats: ParseStats = { total: 0, dropped: 0 };
+      const list = parseAnchorsText(text, stats);
+
       if (list.length === 0) {
-        return 0;
+        return { imported: 0, ...stats };
       }
 
       anchors.value = list;
@@ -319,7 +355,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       selectedAnchorId.value = list[0].id;
       persistNow();
 
-      return list.length;
+      return { imported: list.length, ...stats };
     }
 
     /** 导出为 base64 文本，可直接填进地址栏的 barrageAnchors 参数 */

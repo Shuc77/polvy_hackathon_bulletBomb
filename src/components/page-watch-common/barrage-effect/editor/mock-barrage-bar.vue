@@ -19,12 +19,18 @@
       +1 {{ secondaryWord }}
     </button>
 
-    <div class="c-mock-barrage__ratio">
+    <div
+      class="c-mock-barrage__ratio"
+      :class="{ 'c-mock-barrage__ratio--off': !enabled }"
+    >
       <span class="c-mock-barrage__ratio-label">A 派占比</span>
+      <!-- ★ 跟着 enabled 一起置灰：按钮灰着而滑块还能拖，是在暗示
+           「拖它能改变什么」—— 而静态驱动下它什么也改变不了 -->
       <plv-slider
         :value="ratioPercent"
         :min="0"
         :max="100"
+        :disabled="!enabled"
         :progress-bar-visible="false"
         :hot-area-height="24"
         @input="onRatioInput"
@@ -147,6 +153,10 @@ function onBurst(): void {
   gap: 8px;
   align-items: center;
   width: 200px;
+
+  &.c-mock-barrage__ratio--off {
+    opacity: 0.45;
+  }
 }
 
 .c-mock-barrage__ratio-label {

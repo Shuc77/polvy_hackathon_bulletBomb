@@ -2,13 +2,22 @@
   <div class="c-params-panel">
     <div class="c-params-panel__head">特效参数</div>
 
+    <!-- ★ 空态分两套文案：直播下时间轴整个不渲染，插入锚点的**唯一**路径（拖到时间轴上）
+         根本不存在。继续教用户去拖，等于把他引到一条死路上 -->
     <div
       v-if="!anchor"
       class="c-params-panel__empty"
     >
-      点击时间轴上的标记编辑已有特效，
-      <br />
-      或从左侧把模板拖到时间轴上新增一个。
+      <template v-if="isTimeAxisAvailable">
+        点击时间轴上的标记编辑已有特效，
+        <br />
+        或从左侧把模板拖到时间轴上新增一个。
+      </template>
+      <template v-else>
+        直播中没有时间轴，拖进来的模板无处安放。
+        <br />
+        到右上角「触发设置」里打开密度触发，让弹幕自己把特效喊出来。
+      </template>
     </div>
 
     <template v-else>
@@ -20,17 +29,27 @@
             :min="0"
             :max="Math.max(duration, 0)"
             :step="1"
+            :disabled="!isTimeAxisAvailable"
             @change="onTimeChange"
           />
           <button
             type="button"
             class="c-params-panel__ghost-btn"
             :disabled="!isTimeAxisAvailable"
+            :title="isTimeAxisAvailable ? '把触发时间设成播放头现在的位置' : LIVE_NO_TIMELINE_HINT"
             @click="emit('use-current-time')"
           >
             取当前位置
           </button>
         </div>
+        <!-- 直播下这个字段是**死的**：min 与 max 都是 0，输什么都被夹回 0，
+             而值没变就连 change 都不发 —— 看着能编辑，其实一个字也改不动 -->
+        <p
+          v-if="!isTimeAxisAvailable"
+          class="c-params-panel__note"
+        >
+          直播没有时间轴，触发时间不参与判定 —— 这个锚点只会由密度触发放出来
+        </p>
       </div>
 
       <!-- 与「触发时间」成对：先说什么时候放，再说放多久。
@@ -162,6 +181,7 @@ import {
   PlvSelect,
   PlvSlider,
 } from '@/plugins/polyv-ui/admin-import';
+import { messageBox } from '@/components/common-base/message-box';
 import { EFFECT_TEMPLATE_OPTIONS, getEffectTemplate } from '../effects';
 import { spanOf, spanPatchOf, spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
@@ -170,6 +190,13 @@ import FeedPanel from './feed-panel.vue';
 /** 粒子数的上下限：低于 20 看不出形状，高于 280 在小画布上糊成一片 */
 const MIN_PARTICLES = 20;
 const MAX_PARTICLES = 280;
+
+/**
+ * 直播下置灰控件的统一说法
+ * @desc 「这个按钮为什么点不动」必须能**就地**读到。让用户去别处找答案等于没答案，
+ *   他只会得出「这个按钮是坏的」
+ */
+const LIVE_NO_TIMELINE_HINT = '直播没有时间轴，这个功能只在回放地址下可用';
 
 const props = defineProps<{
   anchor?: BarrageAnchor;
@@ -297,17 +324,60 @@ function onCaptionChange(event: Event): void {
   patchParams({ caption: (event.target as HTMLInputElement).value });
 }
 
-function onTemplateChange(name: EffectTemplateName): void {
+/**
+ * 参数被改过没有
+ * @desc 判据是「锚点上存着参数」，不是「参数和模板默认值不同」——
+ *   从地址栏导入或手改过的配置本来就可能带着一组恰好等于默认值的参数，
+ *   和默认值比对会把这种判成「没动过」，于是那次改动静悄悄地就没了
+ */
+const hasCustomParams = computed(() => Object.keys(props.anchor?.params ?? {}).length > 0);
+
+async function onTemplateChange(name: EffectTemplateName): Promise<void> {
+  const anchor = props.anchor;
+
+  if (!anchor || name === anchor.template) {
+    return;
+  }
+
+  // 换模板要清空全部参数，而这一步没有撤销 —— 改过参数就先问一句。
+  // 刚拖进来还没动过的直接换：那种情况下没什么可丢的，
+  // 拿一个空对话框打断连续试用是纯亏（`plv-select` 是完全受控的，
+  // 取消后显示会跟着 `value` 退回旧模板，不会留下改错的样子）
+  if (hasCustomParams.value) {
+    const confirmed = await messageBox({
+      title: '换模板会清空已调参数',
+      content: `「${
+        descriptor.value?.label ?? anchor.template
+      }」上改过的参数将全部丢失，且无法撤销。`,
+      confirmButtonText: '仍然更换',
+      cancelButtonText: '取消',
+    }).$confirm();
+
+    if (!confirmed) {
+      return;
+    }
+  }
+
   /**
    * 换模板时清空参数：带着上一个模板的参数会让新模板长得像「选错了」
    *
    * ★ `spanSec` 也得清。它是个**倍数**（相对模板自然时长），留着的话
    *   2.8 秒的数据雨换成 1.5 秒的冲击波就成了 0.53 倍慢放 ——
    *   作者看到的是新模板「有 bug」。
-   *   （倒计时与互动那两种归属不用管：它们的值分别在 `params` 与 `feed` 里，
-   *   前者被这次清空带走，后者由 `feed-panel` 自己维护）
+   *   （倒计时那一种归属不用管：它的值在 `params` 里，被这次清空带走）
+   *
+   * ★ `feed` 同样得换成新模板的默认。留着旧 mode 有两种错法：新模板不认它
+   *   （`resolveFeedMode` 静默退回 static，作者看到「怎么又变回转场了」），
+   *   或者认得（于是用一种他从没选过的方式跑起来）。两种都难查
    */
-  emit('patch', { template: name, params: {}, spanSec: undefined });
+  const defaultFeedMode = getEffectTemplate(name)?.defaultFeedMode;
+
+  emit('patch', {
+    template: name,
+    params: {},
+    spanSec: undefined,
+    feed: defaultFeedMode ? { mode: defaultFeedMode } : undefined,
+  });
 }
 
 function onPrimaryChange(color: string): void {
@@ -368,6 +438,14 @@ $accent: #4f7cff;
   text-align: center;
   border: 1px dashed #343a49;
   border-radius: 6px;
+}
+
+/* 解释「为什么这一项是灰的」。用琥珀色而不是灰色 —— 它是说明，不是装饰 */
+.c-params-panel__note {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #e0a458;
 }
 
 .c-params-panel__field {

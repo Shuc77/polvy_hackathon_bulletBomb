@@ -9,7 +9,11 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { useBarrageEffectStore } from '@/store/use-barrage-effect-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { usePlayerAction } from '@/components/page-watch-common/player/hooks/use-player-action';
+import type { ImportAnchorsResult } from '@/store/use-barrage-effect-store';
 import type { EffectTemplateName } from '../types';
+
+/** 导入结果。只给 `importAnchors` 用，别名是为了让调用方不必认识 store 的内部形状 */
+export type ImportResult = ImportAnchorsResult;
 
 /** 播放器时钟追上本地乐观值的容差，单位：秒 */
 const OPTIMISTIC_TOLERANCE = 0.6;
@@ -114,17 +118,21 @@ export const useWorkbenchState = () => {
     ioText.value = barrageEffectStore.exportAnchors();
   }
 
-  /** 导入配置文本，返回是否成功 */
-  function importAnchors(): boolean {
-    const count = barrageEffectStore.importAnchors(ioText.value);
+  /**
+   * 导入配置文本
+   * @desc ★ 返回的是两个数而不是一个布尔值。以前是 `boolean`，于是「10 条里进来了 3 条」
+   *   和「全都进来了」在调用方看来完全一样，那句「导入成功」也就一起把丢掉的 7 条瞒了过去
+   */
+  function importAnchors(): ImportResult {
+    const result = barrageEffectStore.importAnchors(ioText.value);
 
-    if (count === 0) {
-      return false;
+    if (result.imported === 0) {
+      return result;
     }
 
     ioText.value = '';
 
-    return true;
+    return result;
   }
 
   function resetAll(): void {

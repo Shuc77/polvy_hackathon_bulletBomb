@@ -19,9 +19,12 @@ import { SPLIT_DEFAULTS, SPLIT_DURATION, createSplit } from './split';
 
 /**
  * 全部模板，顺序即模板库里的展示顺序
- * @desc ★ `feedModes` 的第一项是默认值，**`static` 一律排第一**。
- *   它就是出厂行为；旧存档与旧分享链接没有 `feed` 字段，必须落到它身上，
+ * @desc ★ `feedModes` 的第一项是**兜底**默认值，`static` 一律排第一。
+ *   旧存档与旧分享链接没有 `feed` 字段，落到它身上，
  *   否则所有既有配置会突然从「放一次」变成「开收集窗」。
+ *
+ *   而「新拖进来的模板该默认怎么跑」是**另一个问题**，答案是 `defaultFeedMode` ——
+ *   它只在创建时写进锚点，动不了上面那批既有配置。想改默认手感改它，别动数组顺序。
  */
 export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
   {
@@ -33,6 +36,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     factory: createShockwave,
     naturalSec: SHOCKWAVE_DURATION,
     feedModes: ['static', 'scale'],
+    defaultFeedMode: 'scale',
   },
   {
     name: 'converge',
@@ -43,6 +47,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     factory: createConverge,
     naturalSec: CONVERGE_DURATION,
     feedModes: ['static', 'scale'],
+    defaultFeedMode: 'scale',
   },
   {
     name: 'confetti',
@@ -53,6 +58,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     factory: createConfetti,
     naturalSec: CONFETTI_DURATION,
     feedModes: ['static', 'scale'],
+    defaultFeedMode: 'scale',
   },
   {
     name: 'pulse',
@@ -65,6 +71,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     // 刻意**不**声明 polarity：它的 bias 只能把光点整体横移，形态是中心对称的，
     // 「缝位置」这个语义根本不成立。对冲的判据是 ratio 与几何同源且实时 —— 只改配色不算
     feedModes: ['static', 'scale'],
+    defaultFeedMode: 'scale',
   },
   {
     name: 'rain',
@@ -75,6 +82,9 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     factory: createRain,
     naturalSec: RAIN_DURATION,
     feedModes: ['static', 'scale', 'text'],
+    // 其他模板都在比「多猛」，只有雨能把**弹幕原文**变成画面。让它默认读文字，
+    // 否则这个能力要翻二级菜单才找得到 —— 而它恰好是最好演示的那个
+    defaultFeedMode: 'text',
   },
   {
     name: 'split',
@@ -86,6 +96,8 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     naturalSec: SPLIT_DURATION,
     // 掺入的 bias 是在 applyParams 里算、绘制时用的 —— 六个模板里唯一能实时拽动几何的那个
     feedModes: ['static', 'polarity', 'scale'],
+    // 它的本质就是两派对冲，而 `polarity` 是六个模板里唯一能实时拽动几何的
+    defaultFeedMode: 'polarity',
     scaleFullCount: 60,
   },
   {

@@ -9,6 +9,7 @@
  *   别把这里「优化」成实时写 store。
  */
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { isSlotFree } from '../anchor-utils';
 import { getEffectTemplate } from '../effects';
 import { spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectTemplateName } from '../types';
@@ -21,9 +22,6 @@ import {
 
 /** 超过该像素位移才算拖动，否则当点击 */
 const DRAG_THRESHOLD = 4;
-
-/** 两个锚点之间的最小间隔，单位：秒。防止演示时在同一处堆出四个冲击波 */
-export const MIN_ANCHOR_GAP = 1;
 
 /**
  * 搓碟时的 seek 节流间隔，单位：毫秒
@@ -111,7 +109,11 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     return Math.min(Math.max(ratio, 0), 1) * duration;
   }
 
-  /** 该时间点能否新建锚点：要在范围内，且离已有锚点至少 MIN_ANCHOR_GAP 秒 */
+  /**
+   * 该时间点能否新建锚点：要在范围内，且不挤到已有锚点
+   * @desc 间距那半条判据走 `anchor-utils` 的 `isSlotFree` —— store 的 `moveAnchor`
+   *   用的是同一个函数。「放不下但拖得动」就是两边各写一份判据的后果
+   */
   function canCreateAt(time: number): boolean {
     const duration = options.getDuration();
 
@@ -119,7 +121,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
       return false;
     }
 
-    return options.getAnchors().every(anchor => Math.abs(anchor.time - time) >= MIN_ANCHOR_GAP);
+    return isSlotFree(options.getAnchors(), time);
   }
 
   function attach(): void {

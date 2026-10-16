@@ -23,6 +23,67 @@ export function createAnchorId(): string {
 }
 
 /**
+ * 两个锚点之间的最小间隔，单位：秒
+ * @desc 防止演示时在同一处堆出四个冲击波。它是**锚点的数据约束**，不是手势的，
+ *   所以定义在这里：时间轴据此判「能不能放在这儿」，store 据此判「能不能挪到这儿」，
+ *   两处必须同一把尺子 —— 各写一份的话，会出现「放不下但拖得动」
+ */
+export const MIN_ANCHOR_GAP = 1;
+
+/** 该时间点是否不与任何其他锚点冲突 */
+export function isSlotFree(anchors: BarrageAnchor[], time: number, excludeId?: string): boolean {
+  return anchors.every(
+    anchor => anchor.id === excludeId || Math.abs(anchor.time - time) >= MIN_ANCHOR_GAP,
+  );
+}
+
+/**
+ * 把落点吸附到离它最近的空位
+ *
+ * @desc 拖动时**不拒绝**非法落点，而是吸附过去。拒绝的表现是「条带弹回原处」，
+ *   作者读到的是「拖不动 / 卡了」；吸附是「它自己挪了一格让开」——
+ *   同一件事，后者不需要任何解释。
+ *
+ *   不必扫描整条时间轴：空位集合是「若干开区间的补集」，而一个点到某个集合的
+ *   最近点**必定落在该集合某个区间的端点上**，所以只需要枚举 `a.time ± GAP`
+ *   这些候选。已有 n 个锚点时是 O(n²)，n 是几十的量级，无所谓
+ */
+export function nearestFreeTime(
+  anchors: BarrageAnchor[],
+  time: number,
+  excludeId?: string,
+): number {
+  const target = Math.max(0, Math.round(time));
+
+  if (isSlotFree(anchors, target, excludeId)) {
+    return target;
+  }
+
+  let best: number | undefined;
+
+  for (const anchor of anchors) {
+    if (anchor.id === excludeId) {
+      continue;
+    }
+
+    for (const candidate of [anchor.time - MIN_ANCHOR_GAP, anchor.time + MIN_ANCHOR_GAP]) {
+      // 时间轴上 0 之前放不下东西；候选本身也可能正压着第三个锚点
+      if (candidate < 0 || !isSlotFree(anchors, candidate, excludeId)) {
+        continue;
+      }
+
+      if (best === undefined || Math.abs(candidate - target) < Math.abs(best - target)) {
+        best = candidate;
+      }
+    }
+  }
+
+  // 理论上到不了这儿（两端之外总有空位）；真到了就退回原值 ——
+  // 宁可让两条重叠，也不能把锚点扔到一个用户没拖过的地方
+  return best ?? target;
+}
+
+/**
  * 校验并归一化驱动配置
  * @desc 模板不支持的驱动方式一律整块丢掉，退回模板默认（也就是 `static`）——
  *   手改过的脏配置宁可当成转场播，也不能让一条写错的关键词把画面搞坏。
@@ -108,16 +169,36 @@ export function normalizeAnchor(input: unknown): BarrageAnchor | undefined {
   };
 }
 
+/**
+ * 解析过程中被丢掉了多少条
+ * @desc ★ 只给**导入**用。解析器一直是「脏数据静默丢弃」的，而导入是唯一的
+ *   用户亲手粘贴文本的入口 —— 10 条里只进来 3 条却什么都不说，
+ *   作者看到的是「导入成功了，但少了几个」，唯一的线索在 `console.warn` 里
+ */
+export interface ParseStats {
+  /** 输入里一共有多少条 */
+  total: number;
+  /** 其中被判为脏数据丢掉的有多少条 */
+  dropped: number;
+}
+
 /** 批量归一化并按时间升序排列 */
-export function normalizeAnchors(input: unknown): BarrageAnchor[] {
+export function normalizeAnchors(input: unknown, stats?: ParseStats): BarrageAnchor[] {
   if (!Array.isArray(input)) {
     return [];
   }
 
-  return input
+  const list = input
     .map(normalizeAnchor)
     .filter((item): item is BarrageAnchor => !!item)
     .sort((a, b) => a.time - b.time);
+
+  if (stats) {
+    stats.total = input.length;
+    stats.dropped = input.length - list.length;
+  }
+
+  return list;
 }
 
 /** UTF-8 字符串转 base64 */
@@ -148,7 +229,7 @@ export function decodeBase64(value: string): string {
  *   2. 直接是 JSON 数组
  *   3. `时间:模板` 简写，逗号分隔，如 `15:shockwave,42:converge`（方便手敲）
  */
-export function parseAnchorsText(value: string): BarrageAnchor[] {
+export function parseAnchorsText(value: string, stats?: ParseStats): BarrageAnchor[] {
   const text = value.trim();
   if (!text) {
     return [];
@@ -161,7 +242,9 @@ export function parseAnchorsText(value: string): BarrageAnchor[] {
     try {
       const result = decode(text);
       if (Array.isArray(result)) {
-        return normalizeAnchors(result);
+        // ★ stats 只可能被成功的那一次写：解码抛异常就走不到这里，
+        //   解出来不是数组就 continue，两条路都不会污染计数
+        return normalizeAnchors(result, stats);
       }
     } catch {
       // 换下一种写法继续尝试
@@ -173,6 +256,7 @@ export function parseAnchorsText(value: string): BarrageAnchor[] {
       const [time, template] = item.split(':');
       return { time: Number(time), template: template as EffectTemplateName };
     }),
+    stats,
   );
 }
 

@@ -11,8 +11,18 @@ import { useGlobalInject } from '@/app/use-global-inject';
 import { PC_MAIN_PLAYER_SELECTOR } from '@/assets/constants/selector';
 import type { EffectSize } from '../types';
 
-/** 解析视频元素的最大尝试次数，避免播放器一直起不来时空转 */
-const MAX_RESOLVE_ATTEMPTS = 60;
+/**
+ * 两次解析尝试之间的最小间隔，单位：毫秒
+ * @desc ★ 这里**不能有「尝试 N 次就放弃」这个状态**。`resolveVideoElement` 是每帧
+ *   被调的，此前的写法是 60 次之后永久返回 null —— 舞台会在开场一秒内就锁死在
+ *   「等待播放器画面…」上再也不动，而下一步本该做的是接着等。
+ *   播放器晚就绪是常态（VOD 元数据要等接口、直播要等拉流、切换清晰度会换元素），
+ *   原文注释写着「用户重新开播后能自愈」，但计数器一旦到顶就再也回不来了。
+ *
+ *   限频重试的代价可以忽略：降采样到 500ms 一次 `querySelector`，
+ *   比一帧里的其它开销还小
+ */
+const RESOLVE_INTERVAL = 500;
 
 /** `HTMLMediaElement.HAVE_CURRENT_DATA` */
 const HAVE_CURRENT_DATA = 2;
@@ -21,29 +31,28 @@ export const useStageCompositor = () => {
   const { getWatchCore } = useGlobalInject();
 
   let cachedVideo: HTMLVideoElement | null = null;
-  let resolveAttempts = 0;
+  /** 下一次允许解析的时刻（`performance.now()`）。0 = 立刻允许 */
+  let nextResolveAt = 0;
 
-  /** 取播放器的 video 元素；取不到时下次调用会重试，用户重新开播后能自愈 */
+  /** 取播放器的 video 元素；取不到时限频重试，播放器晚就绪能自愈 */
   function resolveVideoElement(): HTMLVideoElement | null {
     if (cachedVideo && cachedVideo.isConnected) {
       return cachedVideo;
     }
 
-    if (resolveAttempts >= MAX_RESOLVE_ATTEMPTS) {
+    const now = performance.now();
+
+    if (now < nextResolveAt) {
       return null;
     }
 
-    resolveAttempts += 1;
+    nextResolveAt = now + RESOLVE_INTERVAL;
 
     // SDK 的内部接口最可靠，退回自己查 DOM 兜底
     const fromSdk = getWatchCore().player.getPlayerVideoElement();
     const fromDom = document.querySelector<HTMLVideoElement>(`${PC_MAIN_PLAYER_SELECTOR} video`);
 
     cachedVideo = fromSdk ?? fromDom ?? null;
-
-    if (cachedVideo) {
-      resolveAttempts = 0;
-    }
 
     return cachedVideo;
   }

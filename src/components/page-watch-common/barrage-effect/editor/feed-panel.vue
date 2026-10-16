@@ -88,7 +88,12 @@ import { computed } from 'vue';
 // 见 params-panel.vue 里的说明：polyv-ui 没有全局注册，模板里用到就得显式引入
 import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { FEED_MODE_LABELS, getEffectTemplate } from '../effects';
-import { DEFAULT_WINDOW_SEC, MAX_WINDOW_SEC, MIN_WINDOW_SEC } from '../feed-window';
+import {
+  DEFAULT_WINDOW_SEC,
+  MAX_WINDOW_SEC,
+  MIN_WINDOW_SEC,
+  resolveFeedMode,
+} from '../feed-window';
 import type { AnchorFeed, BarrageAnchor, EffectFeedMode } from '../types';
 
 const props = defineProps<{
@@ -99,15 +104,26 @@ const emit = defineEmits<{
   (e: 'patch', patch: Partial<BarrageAnchor>): void;
 }>();
 
-/** 只有模板声明了不止一种驱动方式时才出现 —— 纯转场没有可选项 */
-const modes = computed(
-  () => getEffectTemplate(props.anchor?.template ?? 'shockwave')?.feedModes ?? [],
+const descriptor = computed(() =>
+  props.anchor ? getEffectTemplate(props.anchor.template) : undefined,
 );
 
-/** 缺省即模板的第一项，它永远是 static，所以旧锚点的语义一点不变 */
-const currentMode = computed<EffectFeedMode>(
-  () => props.anchor?.feed?.mode ?? modes.value[0] ?? 'static',
-);
+/** 只有模板声明了不止一种驱动方式时才出现 —— 纯转场没有可选项 */
+const modes = computed(() => descriptor.value?.feedModes ?? []);
+
+/**
+ * 当前生效的驱动方式
+ * @desc ★ 必须与驱动器**同源**，所以走 `resolveFeedMode`。
+ *   以前这里是 `feed?.mode ?? modes[0]`，少了「这个模板认不认这个 mode」那一步校验。
+ *   碰上不认的值（换模板留下的旧 mode、手改过的地址栏配置），面板会高亮一个互动选项、
+ *   把关键词和收集窗全渲染出来，而驱动器照旧跑 `static` ——
+ *   作者对着一个「看起来是规模」的锚点调半天，画面里什么都没变
+ */
+const currentMode = computed<EffectFeedMode>(() => {
+  const anchor = props.anchor;
+
+  return anchor ? resolveFeedMode(anchor, descriptor.value) : 'static';
+});
 
 const windowSec = computed(() => props.anchor?.feed?.windowSec ?? DEFAULT_WINDOW_SEC);
 const wordsA = computed(() => props.anchor?.feed?.wordsA ?? '');

@@ -109,9 +109,13 @@
         />
       </footer>
 
+      <!-- ★ 触发设置**不遮**：它是「即改即生效 + 当场看效果」的面板，
+           一个 55% 黑的整屏遮罩加一个正中（也就是特效炸开的那一点）的对话框，
+           正好把唯一值得看的东西挡死。靠右停靠 + 透传指针，改参数的手不离开画面 -->
       <div
         v-if="panelMode"
         class="c-effect-workbench__mask"
+        :class="{ 'is-trigger': panelMode === 'trigger' }"
         @click.self="closePanel"
       >
         <div
@@ -176,7 +180,8 @@
             <span
               v-if="ioMessage"
               class="c-effect-workbench__dialog-msg"
-              >{{ ioMessage }}</span
+              :class="`is-${ioMessage.tone}`"
+              >{{ ioMessage.text }}</span
             >
           </div>
 
@@ -209,13 +214,15 @@ import { getEffectTemplate } from '../effects';
 import { spanOf, spanPatchOf } from '../span';
 import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
+import { messageBox } from '@/components/common-base/message-box';
+import { useToastManager } from '@/hooks/components/use-toast';
 import { createTriggerAnchor } from '../density-trigger';
 import EffectStage from './effect-stage.vue';
 import EffectTimeline from './effect-timeline.vue';
 import ParamsPanel from './params-panel.vue';
 import TemplateGallery from './template-gallery.vue';
 import TriggerPanel from './trigger-panel.vue';
-import { useWorkbenchState } from './use-workbench-state';
+import { useWorkbenchState, type ImportResult } from './use-workbench-state';
 
 /**
  * popper 的 z-index 起点
@@ -230,6 +237,17 @@ const BODY_MARK_CLASS = 'c-effect-workbench-active';
 
 const barrageEffectStore = useBarrageEffectStore();
 const layoutStore = useLayoutStore();
+
+/**
+ * 全局轻提示
+ * @desc ★ 必须在 setup 里取好再在回调里用，不能等到回调里现取 ——
+ *   管理员内部会去 `useWatchAppStore()` 拿挂载点，而多实例观看时
+ *   回调里那个「当前 pinia」未必还是这块播放器的
+ *
+ *   它挂到 body 上、z-index 由 `PlvPopperManager` 自增，
+ *   所以天然盖在工作台（也是 10002 起）之上，不需要额外处理
+ */
+const { toast } = useToastManager();
 
 // 必须走 storeToRefs：setup store 的属性在 store 上是解包后的值，
 // 直接解构拿到的是快照，选中锚点变了这里不会跟着动
@@ -318,8 +336,14 @@ const teleportTarget = computed(() =>
   isFullscreen.value ? PC_PLAYER_FULL_SCREEN_SELECTOR : undefined,
 );
 
+/** 对话框里那行小字。`tone` 决定颜色 —— 失败必须长得像失败 */
+interface IoMessage {
+  text: string;
+  tone: 'ok' | 'error';
+}
+
 const panelMode = ref<'import' | 'export' | 'reset' | 'trigger'>();
-const ioMessage = ref('');
+const ioMessage = ref<IoMessage>();
 
 const DIALOG_TITLES = {
   import: '导入配置',
@@ -347,7 +371,7 @@ function close(): void {
 }
 
 function openPanel(mode: 'import' | 'export' | 'reset' | 'trigger'): void {
-  ioMessage.value = '';
+  ioMessage.value = undefined;
 
   if (mode === 'export') {
     exportAnchors();
@@ -358,30 +382,54 @@ function openPanel(mode: 'import' | 'export' | 'reset' | 'trigger'): void {
 
 function closePanel(): void {
   panelMode.value = undefined;
-  ioMessage.value = '';
+  ioMessage.value = undefined;
   ioText.value = '';
+}
+
+function setIoMessage(text: string, tone: IoMessage['tone']): void {
+  ioMessage.value = { text, tone };
 }
 
 function copyIoText(): void {
   // 非 HTTPS 下 clipboard 不可用，只提示，不做兜底选中 —— 文本就在框里，手动复制即可
   navigator.clipboard?.writeText(ioText.value).then(
-    () => {
-      ioMessage.value = '已复制';
-    },
-    () => {
-      ioMessage.value = '复制失败，请手动选中';
-    },
+    () => setIoMessage('已复制', 'ok'),
+    () => setIoMessage('复制失败，请手动选中', 'error'),
   );
+}
+
+/**
+ * 导入完如实报数
+ * @desc ★ 解析器对脏数据是**静默丢弃**的，而导入是唯一一个由用户亲手粘贴文本的入口。
+ *   10 条里只进来 3 条却什么都不说的话，作者看到的是「导入成功了，但少了几个」——
+ *   唯一的线索在 `console.warn` 里，而他不会去开控制台。
+ *   工作台是整屏浮层，所以走全局 toast 而不是对话框里那行小字（那行会随对话框一起关掉）
+ */
+function reportImport({ imported, dropped }: ImportResult): void {
+  if (dropped > 0) {
+    toast.warning(`已导入 ${imported} 个特效，跳过 ${dropped} 条无法识别的数据`);
+    return;
+  }
+
+  toast.success(`已导入 ${imported} 个特效`);
 }
 
 function confirmPanel(): void {
   if (panelMode.value === 'import') {
-    if (importAnchors()) {
+    const result = importAnchors();
+
+    if (result.imported > 0) {
       closePanel();
+      reportImport(result);
       return;
     }
 
-    ioMessage.value = '没解析出可用的特效，请检查文本';
+    setIoMessage(
+      result.dropped > 0
+        ? `解析出 ${result.dropped} 条，但没有一条能用，请检查模板名与时间写法`
+        : '没解析出可用的特效，请检查文本',
+      'error',
+    );
     return;
   }
 
@@ -433,11 +481,36 @@ function onAnchorPatch(patch: Partial<BarrageAnchor>, opts?: { defer?: boolean }
   }
 }
 
-function onAnchorRemove(): void {
-  const id = selectedAnchor.value?.id;
+/** 秒 → `分:秒`。只用在确认文案里，让「删的是哪一个」有个坐标 */
+function formatSeconds(value: number): string {
+  const total = Math.max(0, Math.round(value));
 
-  if (id) {
-    barrageEffectStore.removeAnchor(id);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+}
+
+/**
+ * 删除选中的锚点
+ * @desc 走一次确认：删除**没有撤销**，误触的代价是「重新拖一个 + 把那些滑块再调一遍」。
+ *   浮层把 z-index 起点抬到 10002 之后，`messageBox` 会盖在工作台之上，不必额外处理层级
+ */
+async function onAnchorRemove(): Promise<void> {
+  const anchor = selectedAnchor.value;
+
+  if (!anchor) {
+    return;
+  }
+
+  const label = getEffectTemplate(anchor.template)?.label ?? anchor.template;
+
+  const confirmed = await messageBox({
+    title: '删除这个特效？',
+    content: `${formatSeconds(anchor.time)} 处的「${label}」将被移除，且无法撤销。`,
+    confirmButtonText: '删除',
+    cancelButtonText: '取消',
+  }).$confirm();
+
+  if (confirmed) {
+    barrageEffectStore.removeAnchor(anchor.id);
   }
 }
 
@@ -616,6 +689,19 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.55);
+
+  /**
+   * 触发设置：靠右停靠、不压暗、不拦指针
+   * @desc 指针透传是关键 —— 遮罩还在，但点得到下面的时间轴与模板库。
+   *   代价是「点空白处关闭」在它身上失效，所以它有明确的「完成」按钮，
+   *   Esc 也照常管用
+   */
+  &.is-trigger {
+    justify-content: flex-end;
+    padding-right: 20px;
+    pointer-events: none;
+    background: transparent;
+  }
 }
 
 .c-effect-workbench__dialog {
@@ -632,6 +718,10 @@ onBeforeUnmount(() => {
   /* 触发设置是两列滑块加一排模板，480px 会把标签挤成两行 */
   &.is-wide {
     width: 560px;
+    /* 指针从遮罩透传过来，得在这里收回来，否则它自己也点不动 */
+    max-height: calc(100% - 40px);
+    overflow-y: auto;
+    pointer-events: auto;
   }
 }
 
@@ -682,9 +772,21 @@ onBeforeUnmount(() => {
   }
 }
 
+/**
+ * 对话框里那行小字
+ * @desc ★ 以前只有一种绿色，于是「复制失败，请手动选中」和「已复制」长得一模一样 ——
+ *   失败被当成了成功，用户以为自己已经拿到了东西
+ */
 .c-effect-workbench__dialog-msg {
   font-size: 12px;
-  color: #2ee6a8;
+
+  &.is-ok {
+    color: #2ee6a8;
+  }
+
+  &.is-error {
+    color: #ff8b8b;
+  }
 }
 
 /**

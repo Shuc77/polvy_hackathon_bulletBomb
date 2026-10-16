@@ -34,6 +34,11 @@
       class="c-effect-timeline__disabled"
     >
       <span>直播中无时间轴，切到回放地址后可拖拽配置</span>
+      <!-- ★ 「不行」之外还得说「那现在能做什么」。只说前一半，用户就停在原地了 ——
+           直播下照样有能出场的特效，走的是密度触发那条路 -->
+      <span class="c-effect-timeline__disabled-sub">
+        现在想让特效出场，用右上角「触发设置」里的密度触发
+      </span>
     </div>
 
     <div
@@ -355,6 +360,8 @@ $danger: #ff6b6b;
 
 .c-effect-timeline__disabled {
   display: flex;
+  flex-direction: column;
+  gap: 3px;
   align-items: center;
   justify-content: center;
   height: $track-height;
@@ -362,6 +369,11 @@ $danger: #ff6b6b;
   color: #6d7488;
   border: 1px dashed #343a49;
   border-radius: 6px;
+}
+
+.c-effect-timeline__disabled-sub {
+  font-size: 11px;
+  color: #e0a458;
 }
 
 .c-effect-timeline__track {

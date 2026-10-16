@@ -49,8 +49,9 @@ import { resolveFeedMode } from '../feed-window';
 import type { AnchorFeed, BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import { useEffectCanvas, type EffectFrame } from '../use-effect-canvas';
 import { useInteractiveDriver, type DriverDebugState } from '../interactive-driver';
-import { useBarrageSignalBuffer } from '../barrage-signal';
+import { useBarrageSignalBuffer, useBarrageSignalListener } from '../barrage-signal';
 import { useStageCompositor } from './stage-compositor';
+import { createStageBarrage } from './stage-barrage';
 import MockBarrageBar from './mock-barrage-bar.vue';
 
 /** 读数的刷新间隔（毫秒）。4Hz 够看，又不必把每帧的值搬进响应式系统 */
@@ -92,6 +93,17 @@ const { drawVideoLayer } = useStageCompositor();
 
 /** 舞台订阅的缓冲与生产层是同一个事件的两个订阅者 —— 这就是「预览即生产」 */
 const signalBuffer = useBarrageSignalBuffer();
+
+/**
+ * 上屏弹幕的舞台镜像
+ * @desc ★ 工作台是整屏不透明的，真实的弹幕层就在它底下、一根毛都看不见 ——
+ *   所以「点一下模拟弹幕，屏幕上什么都没发生」不是按钮坏了，是没有能显示它的地方。
+ *   这里订阅的是**和特效层同一个** `BarrageLanded`，只是画在舞台画布上。
+ *   模拟的、真实的走同一条路，所以镜像出来的东西不会和实际驱动的量对不上
+ */
+const stageBarrage = createStageBarrage();
+
+useBarrageSignalListener(signal => stageBarrage.push(signal.text));
 
 // 顺序不能倒：下面的 driver 要用 getSize
 const { requestDraw, getSize } = useEffectCanvas({
@@ -155,6 +167,10 @@ function renderFrame({ ctx, size, delta }: EffectFrame): void {
   }
 
   driver.tick(ctx, delta);
+
+  // 弹幕画在特效**之上**：生产层里弹幕层也是压在特效层前面的
+  // （`pc-watch-layout.vue` 里 `pc-barrage` 挂在 `pc-barrage-effect` 之前）
+  stageBarrage.draw(ctx, size, delta);
 }
 
 /** 重来一遍：换模板、换锚点、手动重播都走它 */
