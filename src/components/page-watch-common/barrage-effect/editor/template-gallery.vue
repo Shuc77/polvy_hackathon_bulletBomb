@@ -109,8 +109,8 @@ const groups = computed(() =>
 .c-template-gallery__group-name {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.5px;
   color: #9aa1b4;
+  letter-spacing: 0.5px;
 }
 
 .c-template-gallery__group-hint {

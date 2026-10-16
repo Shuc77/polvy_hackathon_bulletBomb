@@ -11,6 +11,9 @@ const {
 } = require('./build/build-config');
 const { webpackCommonConfig, lintPlugins } = require('./build/webpack-helper/config');
 const { genHistoryApiFallbackRewrites } = require('./build/webpack-helper/util');
+// 提到 `getLanAddresses` 之前：ESLint 的 no-use-before-define 不认「函数声明会提升」，
+// 而函数体里的 `os` 在文件后面才 require —— 这会让整个构建被 lint 卡住
+const os = require('os');
 
 /**
  * 取本机所有对外 IPv4，用于在编译完成时一并打印局域网访问地址
@@ -28,7 +31,6 @@ function getLanAddresses() {
 
 const webpack = require('webpack');
 const { merge } = require('webpack-merge');
-const os = require('os');
 
 const CopyPlugin = require('copy-webpack-plugin');
 const { EsbuildPlugin } = require('esbuild-loader');
@@ -131,7 +133,9 @@ const devConfig = merge(commonConfig, {
                 const lanUrl = `${protocol}://${address}:${port}`;
                 console.log(
                   '\x1b[36m%s\x1b[0m',
-                  inSdkInjectMode ? `📱 局域网访问： ${lanUrl}/index.html` : `📱 局域网访问： ${lanUrl}${publicPath}`,
+                  inSdkInjectMode
+                    ? `📱 局域网访问： ${lanUrl}/index.html`
+                    : `📱 局域网访问： ${lanUrl}${publicPath}`,
                 );
               });
             }

@@ -147,13 +147,9 @@ function restart(): void {
 
 watch(
   () =>
-    [
-      props.template,
-      props.anchorKey,
-      props.feed?.mode,
-      props.feed?.windowSec,
-      props.span,
-    ].join('|'),
+    [props.template, props.anchorKey, props.feed?.mode, props.feed?.windowSec, props.span].join(
+      '|',
+    ),
   restart,
 );
 
