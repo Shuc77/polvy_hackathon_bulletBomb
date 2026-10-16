@@ -12,6 +12,7 @@
  */
 import { effectTemplates, getEffectTemplate } from './effects';
 import { PULL_TAU, easeToward } from './feed-easing';
+import { resolveTimeScale } from './span';
 import {
   createFeedWindow,
   feedOptionsOf,
@@ -31,6 +32,21 @@ import type {
 
 /** 循环之间的间隙（秒）。不留的话读起来是频闪不是循环 */
 const LOOP_GAP = 0.5;
+
+/**
+ * 单条轨道的挂钟存活上限
+ *
+ * @desc ★ 这是一张兜底网，不是正常路径。
+ *
+ *   驱动器「还有没有轨道」正是共享 rAF 的续命信号（见 `pc-barrage-effect.vue`：
+ *   `tick()` 返回真就每帧 `start()`）。所以**任何**能让 `finished` 永远为假的取值，
+ *   都会让这块画布无声地烧帧到页面关闭 —— 没有报错、没有日志、CPU 一直转。
+ *   已知会这样的只有 `NaN`（`NaN >= x` 恒为 false），而 `clamp` 挡不住它。
+ *   `span.ts` 与各模板里都逐个挡过了，这里是防「下一个没想到的来源」。
+ *
+ *   取 65 分钟：合法的最长一条是 3599 秒的文字倒计时
+ */
+const MAX_TRACK_SEC = 3900;
 
 /** 尺寸还没量出来时的重建重试间隔 */
 const SPAWN_RETRY = 0.2;
@@ -116,6 +132,15 @@ interface Track {
   bias: number;
   particles: number;
   closing: boolean;
+  /**
+   * 实例时钟的缩放系数，1 = 正常速度
+   * @desc 大于 1 是慢放（`update` 收到的是 `delta / timeScale`）。
+   *   值由 `span.ts` 的 `resolveTimeScale` 给出 —— 它是唯一知道「时长存在哪」的地方。
+   *   互动轨道恒为 1
+   */
+  timeScale: number;
+  /** 建轨时刻（`performance.now()`），只给 `MAX_TRACK_SEC` 那张兜底网用 */
+  startedAt: number;
   /** 最近一次读数，供工作台显示 */
   lastReading?: FeedReading;
 }
@@ -231,6 +256,11 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
 
   /** 推进一条轨道，返回是否保留 */
   function tickTrack(track: Track, delta: number, now: number): boolean {
+    // 兜底网：无论如何都不让一条轨道活过 MAX_TRACK_SEC，见那个常量的注释
+    if (now - track.startedAt > MAX_TRACK_SEC * 1000) {
+      return false;
+    }
+
     if (track.feed) {
       const closing = track.feed.isClosing(now);
 
@@ -260,7 +290,15 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       return true;
     }
 
-    track.instance.update(delta);
+    /**
+     * ★ 时间缩放就是这一行：实例内部 `elapsed` 的推进速度变成 `1 / timeScale`，
+     *   而所有模板的 `finished` 都是 `elapsed >= DURATION` —— 于是「拉长」是
+     *   **同一套动作慢放**，不是播两遍，也不需要任何模板配合
+     *
+     *   除法而不是乘法：除法天然把「实例秒」换算成「真实秒」，与 timeScale 的定义
+     *   （真实秒 / 实例秒）一致，读代码时不用在脑子里翻转
+     */
+    track.instance.update(delta / track.timeScale);
 
     if (!track.instance.finished) {
       return true;
@@ -298,6 +336,8 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       bias: effective.bias ?? 0,
       particles: effective.particles ?? 120,
       closing: false,
+      timeScale: resolveTimeScale(anchor, descriptor),
+      startedAt: performance.now(),
     };
   }
 

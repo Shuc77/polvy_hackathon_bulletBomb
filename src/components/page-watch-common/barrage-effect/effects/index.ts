@@ -9,13 +9,13 @@ import type {
   EffectTemplateDescriptor,
   EffectTemplateName,
 } from '../types';
-import { CONVERGE_DEFAULTS, createConverge } from './converge';
+import { CONVERGE_DEFAULTS, CONVERGE_DURATION, createConverge } from './converge';
 import { COUNTDOWN_DEFAULTS, createCountdown } from './countdown';
-import { CONFETTI_DEFAULTS, createConfetti } from './confetti';
-import { PULSE_DEFAULTS, createPulse } from './pulse';
-import { RAIN_DEFAULTS, createRain } from './rain';
-import { SHOCKWAVE_DEFAULTS, createShockwave } from './shockwave';
-import { SPLIT_DEFAULTS, createSplit } from './split';
+import { CONFETTI_DEFAULTS, CONFETTI_DURATION, createConfetti } from './confetti';
+import { PULSE_DEFAULTS, PULSE_DURATION, createPulse } from './pulse';
+import { RAIN_DEFAULTS, RAIN_DURATION, createRain } from './rain';
+import { SHOCKWAVE_DEFAULTS, SHOCKWAVE_DURATION, createShockwave } from './shockwave';
+import { SPLIT_DEFAULTS, SPLIT_DURATION, createSplit } from './split';
 
 /**
  * 全部模板，顺序即模板库里的展示顺序
@@ -31,6 +31,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     accent: '#ff3553',
     defaults: SHOCKWAVE_DEFAULTS,
     factory: createShockwave,
+    naturalSec: SHOCKWAVE_DURATION,
     feedModes: ['static', 'scale'],
   },
   {
@@ -40,6 +41,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     accent: '#7c5cff',
     defaults: CONVERGE_DEFAULTS,
     factory: createConverge,
+    naturalSec: CONVERGE_DURATION,
     feedModes: ['static', 'scale'],
   },
   {
@@ -49,6 +51,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     accent: '#ffc53d',
     defaults: CONFETTI_DEFAULTS,
     factory: createConfetti,
+    naturalSec: CONFETTI_DURATION,
     feedModes: ['static', 'scale'],
   },
   {
@@ -58,6 +61,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     accent: '#ff4d8d',
     defaults: PULSE_DEFAULTS,
     factory: createPulse,
+    naturalSec: PULSE_DURATION,
     // 刻意**不**声明 polarity：它的 bias 只能把光点整体横移，形态是中心对称的，
     // 「缝位置」这个语义根本不成立。对冲的判据是 ratio 与几何同源且实时 —— 只改配色不算
     feedModes: ['static', 'scale'],
@@ -69,6 +73,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     accent: '#2ee6a8',
     defaults: RAIN_DEFAULTS,
     factory: createRain,
+    naturalSec: RAIN_DURATION,
     feedModes: ['static', 'scale', 'text'],
   },
   {
@@ -78,6 +83,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     accent: '#2f7bff',
     defaults: SPLIT_DEFAULTS,
     factory: createSplit,
+    naturalSec: SPLIT_DURATION,
     // 掺入的 bias 是在 applyParams 里算、绘制时用的 —— 六个模板里唯一能实时拽动几何的那个
     feedModes: ['static', 'polarity', 'scale'],
     scaleFullCount: 60,

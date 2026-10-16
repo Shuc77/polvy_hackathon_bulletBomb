@@ -100,6 +100,19 @@ export interface BarrageAnchor {
    *   否则导入、导出、地址栏三条路会一起**静默**把它丢掉
    */
   feed?: AnchorFeed;
+  /**
+   * 这个特效播多久，单位：秒。缺省（undefined）= 模板的自然时长
+   *
+   * @desc 时间轴上那条可拖拽的条带写的就是它。但**它落到哪个字段，取决于锚点怎么跑**，
+   *   这层的映射统一收在 `span.ts` 里，别在这里就地判断：
+   *   - `countdown` → 长度就是内容，写进 `params.countdownSec`
+   *   - 互动模式 → 长度就是收集窗，写进 `feed.windowSec`
+   *   - 其余 → 它自己，驱动器据此做**整体时间缩放**（慢放/快放，不是循环）
+   *
+   *   ★ 这个字段必须同时加进 `anchor-utils.ts` 的 `normalizeAnchor` 与 `stringifyAnchors`，
+   *   否则导入、导出、地址栏三条路会一起**静默**把它丢掉
+   */
+  spanSec?: number;
 }
 
 /** 一个正在播放的特效 */
@@ -174,6 +187,16 @@ export interface EffectTemplateMeta {
    *   倒计时是唯一的例子 —— 生产默认 300 秒，谁也不会想让 8 条弹幕炸出一个 5 分钟的倒计时
    */
   triggerParams?: EffectParams;
+  /**
+   * 这个模板「本来」跑多久，单位：秒
+   * @desc 就是模板模块里的 `DURATION` 常量，用别名导出来挂在这儿 —— 只为让
+   *   时间轴知道「拖拽前的默认条带长度」。改它只影响默认值和缩放基准，
+   *   模板自己的 `finished` 判据仍然读它自己那份常量（同一份定义，不会打架）
+   *
+   *   ★ `countdown` **不设**这一项：它的时长由 `params.countdownSec` 派生，
+   *   是 v4 就写明的有意破例，由 `span.ts` 特判
+   */
+  naturalSec?: number;
 }
 
 /** 注册表里的一项 */

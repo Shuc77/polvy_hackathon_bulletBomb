@@ -7,6 +7,9 @@ import type { EffectFactory, EffectInstance, EffectParams, EffectSize } from '..
 
 const DURATION = 2.4;
 
+/** 导出给注册表当 `naturalSec` 用。别名导出**同一份定义**，不会再写第二遍 */
+export { DURATION as PULSE_DURATION };
+
 const MIN_PARTICLES = 20;
 const MAX_PARTICLES = 500;
 

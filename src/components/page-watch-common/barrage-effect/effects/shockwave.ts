@@ -14,6 +14,9 @@ const MIN_PARTICLES = 20;
 /** 特效总时长，单位：秒 */
 const DURATION = 1.5;
 
+/** 导出给注册表当 `naturalSec` 用。别名导出**同一份定义**，不会再写第二遍 */
+export { DURATION as SHOCKWAVE_DURATION };
+
 /** 中心闪光的持续时间，单位：秒 */
 const FLASH_DURATION = 0.25;
 

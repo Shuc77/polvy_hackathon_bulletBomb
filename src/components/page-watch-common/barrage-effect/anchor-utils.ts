@@ -89,12 +89,22 @@ export function normalizeAnchor(input: unknown): BarrageAnchor | undefined {
     return undefined;
   }
 
+  /**
+   * 时长
+   * @desc 这里只做**类型**上的收敛（强制成数、必须是正有限值），不做语义钳制 ——
+   *   「这个数该落在哪个区间」取决于锚点怎么跑，那是 `span.ts` 的事，
+   *   在这儿再判断一次就是把那层知识复制成第二份。
+   *   手改过的地址栏配置里出现 `"spanSec": "6"` 也不会一路带到算术里去
+   */
+  const spanSec = Number(anchor.spanSec);
+
   return {
     id: typeof anchor.id === 'string' && anchor.id ? anchor.id : createAnchorId(),
     time,
     template: anchor.template,
     params: anchor.params,
     feed: normalizeFeed(anchor.feed, anchor.template),
+    spanSec: Number.isFinite(spanSec) && spanSec > 0 ? spanSec : undefined,
   };
 }
 
@@ -172,11 +182,16 @@ export function parseAnchorsText(value: string): BarrageAnchor[] {
  *   `feed` 只在存在时写出：旧版本的接收方读到的是熟悉的形状，不会因为多了字段而懵
  */
 export function stringifyAnchors(anchors: BarrageAnchor[]): string {
-  const plain = anchors.map(({ time, template, params, feed }) => {
+  const plain = anchors.map(({ time, template, params, feed, spanSec }) => {
     const item: Record<string, unknown> = { time, template, params };
 
     if (feed) {
       item.feed = feed;
+    }
+
+    // 与 `feed` 同样只在存在时写出：旧版本的接收方读到的还是熟悉的形状
+    if (spanSec !== undefined) {
+      item.spanSec = spanSec;
     }
 
     return item;
