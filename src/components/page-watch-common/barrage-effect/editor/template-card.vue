@@ -141,8 +141,16 @@ function spawn(): void {
     return;
   }
 
+  // ★ `thumbnailParams` 必须并进来，而且要在 `particles` 之前。
+  //   它是「缩略图这种场合下参数的覆盖」—— 倒计时的 defaults 是 300 秒，
+  //   不覆盖的话卡片会钉死在 05:00，永远走不到下面那个 finished 分支。
+  //   `particles` 恒排最后：卡片有十几张同时在跑，粒子上限不能由模板决定
   instance = props.template.factory(
-    { ...props.template.defaults, particles: THUMBNAIL_PARTICLES },
+    {
+      ...props.template.defaults,
+      ...props.template.thumbnailParams,
+      particles: THUMBNAIL_PARTICLES,
+    },
     size,
   );
 }
