@@ -3,26 +3,38 @@
  * @desc ★ 唯一一个「与弹幕无关」的模板：不读 ratio、不读 bias、不参与收集窗，
  *   只看时间轴 —— 命中锚点就开始倒数，观众实时看着数字往下走。
  *
- *   字形是**粒子拼的**，不是一个 fillText 画出来的大字。散开的粒子聚成首位数，
- *   之后每跳一秒，粒子贴着新数字的轮廓流过去 —— 不是「散开再重聚」，
- *   那放到秒级倒计时上等于每分钟把文字炸开重组 60 次，盖在视频上非常吵。
- *   形变的对应关系由 `glyph-field` 负责，见那个文件头。
+ *   字形是**粒子拼的**，不是一个 fillText 画出来的大字。两个阶段：
+ *
+ *   1. **入场**：散在四周的像素聚成首位数（`GATHER_SEC`）。这是一次性的。
+ *   2. **跳字**：之后每跳一秒，粒子贴着新数字的轮廓流过去 —— 不是「散开再重聚」，
+ *      那放到秒级倒计时上等于每分钟把文字炸开重组 60 次，盖在视频上非常吵。
+ *
+ *   ★ 这两件事**必须各用各的进度**。入场进度由 `elapsed` 驱动（只增不减），
+ *   跳字进度是 `slot.progress`（`syncText` 每秒把它重置为 0）。
+ *   早期版本想让入场复用 `slot.progress`，那会让数字**每秒散开重聚一次** ——
+ *   正好就是上面那条被禁止的事。
  *
  *   它有意打破了另外六个模板共守的两条约定，都是必要的：
  *
  *   1. **时长由 params 派生**（`countdownSec`），不是模块常量。倒计时的时长本来就是
  *      发布者要配的东西，写死没有意义。`applyParams` 改它只影响何时结束，不重建实例。
  *      （对比：另外六个模板的 DURATION 全是模块常量，`finished` 一律 `elapsed >= DURATION`。）
+ *      时间轴上的条带长度就是改这个值，见 `../span.ts`。
  *
  *   2. **自己把 globalCompositeOperation 改回 `source-over`**。合成器是按 `lighter`
  *      加法混合调用 `draw()` 的 —— 那对粒子很漂亮，但白字叠在亮画面上会糊掉。
  *      倒计时是给人读的，可读性优先。合成器在 `draw()` 外有 `save/restore`，改完会被复原。
  *
- *   另外**不用 `shadowBlur` 做发光**：canvas 2D 的 shadowBlur 是逐次绘制都要走一遍
- *   模糊核，上千个粒子加上它就是十几毫秒一帧，而它下面还压着实时视频。
- *   这里改成「先画一遍放大的低透明度副本」当辉光，两遍 fillRect 就够，成本可以忽略。
+ *   粒子是**贴图**不是 `arc`：逐粒子建路径（两遍、一千三百多个）在这里是实打实的
+ *   每帧开销，而底下压着实时视频。见 `SPRITE_STEPS`。
+ *   同样**不用 `shadowBlur`** —— 逐次绘制都要走一遍模糊核，比上面那条更贵。
  */
-import { buildGlyphFields, invalidateGlyphCache, type GlyphField } from './glyph-field';
+import {
+  buildGlyphFields,
+  invalidateGlyphCache,
+  type GlyphField,
+  type GlyphPoint,
+} from './glyph-field';
 import type { EffectFactory, EffectInstance, EffectParams, EffectSize } from '../types';
 
 export const COUNTDOWN_DEFAULTS: EffectParams = {
@@ -38,6 +50,13 @@ const DEFAULT_SECONDS = 300;
 const MIN_SECONDS = 3;
 const MAX_SECONDS = 3599;
 
+/**
+ * 时长上下界，导出给 `../span.ts` 用
+ * @desc 别名导出**同一份定义**，不是并列再写一对常量 —— 两处各写一份的话，
+ *   「模板里钳 3 秒、时间轴上允许拖到 2 秒」这种偏差会静默存在
+ */
+export { MIN_SECONDS as COUNTDOWN_MIN_SEC, MAX_SECONDS as COUNTDOWN_MAX_SEC };
+
 /** 入场淡入时长，单位：秒 */
 const FADE_IN = 0.4;
 
@@ -51,6 +70,16 @@ const BEAT_DECAY = 0.14;
 const BEAT_SCALE = 0.06;
 
 const FONT_STACK = '"PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
+
+/**
+ * 入场聚合时长，单位：秒
+ * @desc 刻意**短于 1 秒**：倒计时在 `elapsed` 跨过整秒时跳第一次字
+ *   （`formatClock` 是向上取整），入场晚于那一刻就会被第一次形变打断
+ */
+const GATHER_SEC = 0.9;
+
+/** 入场逐粒子错峰的幅度，相对于入场时长的比例 */
+const GATHER_STAGGER = 0.34;
 
 /** 一个字形的形变时长，单位：秒。比一秒短得多，跳字要干脆 */
 const MORPH_SEC = 0.42;
@@ -82,9 +111,28 @@ const GLYPH_SET = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':'];
 /** 粒子边长相对字号的比例 */
 const PARTICLE_SIZE_RATIO = 0.028;
 
-/** 辉光副本的放大倍数与透明度 */
-const BLOOM_SCALE = 2.4;
-const BLOOM_ALPHA = 0.16;
+/**
+ * 粒子贴图的绘制边长相对粒子直径的倍数
+ * @desc 贴图自带柔和的透明外圈，所以「辉光」不需要第二遍绘制 ——
+ *   它是贴图本身的一部分，一次 drawImage 同时给出圆、辉光和颜色
+ */
+const SPRITE_SCALE = 3.1;
+
+/** 贴图分辨率。比任何屏幕上的实际绘制尺寸都大，缩小绘制不会有锯齿 */
+const SPRITE_SIZE = 32;
+
+/**
+ * 颜色量化档数
+ * @desc ★ 贴图必须预渲染且**按颜色分档**：给每个粒子单独建一块画布是灾难，
+ *   而 `drawImage` 又不能给贴图上色。所以把主色→辅色的渐变切成 16 档，
+ *   每个粒子取最近的一档。16 档在一条渐变上肉眼分不出台阶
+ */
+const SPRITE_STEPS = 16;
+
+/** 成形后呼吸飘动的频率与振幅（振幅相对粒子直径） */
+const DRIFT_FREQ_X = 1.7;
+const DRIFT_FREQ_Y = 1.31;
+const DRIFT_AMP = 0.55;
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -133,16 +181,69 @@ function particleSeed(index: number): number {
   return ((index * 9301 + 49297) % 233280) / 233280;
 }
 
+/**
+ * 造一张圆形粒子贴图：实心圆 + 中心高光 + 柔和外晕
+ *
+ * @desc 接受**任意 CSS 颜色串**（`#fff`、`rgb()`、颜色名都行）——
+ *   外晕用 `destination-in` 拿一层白色径向渐变当遮罩做出来，而不是
+ *   把颜色解析成 rgb 再拼 `rgba(...,0)`。后者遇到解析不了的串就没法退化了
+ */
+function createRoundSprite(color: string): HTMLCanvasElement {
+  const canvas = document.createElement('canvas');
+  canvas.width = SPRITE_SIZE;
+  canvas.height = SPRITE_SIZE;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    return canvas;
+  }
+
+  const radius = SPRITE_SIZE / 2;
+
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 中心高光：让粒子有个亮点，而不是一块平色
+  const core = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius * 0.55);
+  core.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+  core.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = core;
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius * 0.55, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 外晕：拿这层渐变当遮罩切掉边缘，圆边就化开了
+  ctx.globalCompositeOperation = 'destination-in';
+  const mask = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+  mask.addColorStop(0, 'rgba(255, 255, 255, 1)');
+  mask.addColorStop(0.42, 'rgba(255, 255, 255, 0.96)');
+  mask.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = mask;
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+  ctx.fill();
+
+  return canvas;
+}
+
 interface Slot {
   readonly kind: 'digit' | 'colon';
   readonly count: number;
-  /** 槽内粒子的稳定颜色，构造时定好 */
-  readonly colors: string[];
+  /** 逐粒子的贴图档位，构造时定好 */
+  readonly tints: number[];
+  /**
+   * 逐粒子的**散开起点**，归一化到字形盒（可以落在盒外）
+   * @desc 只在这个空间里表达。`drawSlot` 的插值用的就是盒坐标，
+   *   「散到整个画布」在这里没有对应物，硬做要给每个槽再加一套映射
+   */
+  readonly scatter: GlyphPoint[];
   /** 当前显示的字符 */
   glyph: string;
   /** 形变起点字符 */
   from: string;
-  /** 0 → 1 的形变进度 */
+  /** 0 → 1 的形变进度。★ 只归跳字用，入场另有进度 */
   progress: number;
 }
 
@@ -155,7 +256,7 @@ export const createCountdown: EffectFactory = (
   /**
    * 颜色留空，等第一次 applyParams 填
    * @desc 不预置成默认值：那样「传进来的就是默认色」时判等为真，
-   *   颜色表不会被建出来，整屏粒子会没有 fillStyle 可读
+   *   颜色表不会被建出来，整屏粒子会没有贴图可读
    */
   let primary = '';
   let secondary = '';
@@ -164,9 +265,14 @@ export const createCountdown: EffectFactory = (
 
   let elapsed = 0;
 
-  // 字号只由画布高度决定，而画布尺寸在构造时就固化了 —— 所以字形场建一次就够
-  const fontSize = clamp(size.height * 0.22, 28, 190);
+  /**
+   * 字号同时受宽高约束
+   * @desc ★ 只按高度算是个真 bug：五个槽加起来是 3.14 倍字号宽，
+   *   工作台预览画布一窄就直接溢出画布。`width / 3.4` 给这条链留了余量
+   */
+  const fontSize = clamp(Math.min(size.height * 0.28, size.width / 3.4), 24, 240);
   const font = `700 ${Math.round(fontSize)}px ${FONT_STACK}`;
+  const sampleBox = { width: DIGIT_BOX.width * fontSize, height: DIGIT_BOX.height * fontSize };
 
   /**
    * 字形场
@@ -176,7 +282,7 @@ export const createCountdown: EffectFactory = (
    */
   let fields: Map<string, GlyphField> = buildGlyphFields(GLYPH_SET, {
     font,
-    box: { width: DIGIT_BOX.width * fontSize, height: DIGIT_BOX.height * fontSize },
+    box: sampleBox,
     count: DIGIT_PARTICLES,
     step: SAMPLE_STEP,
   });
@@ -196,7 +302,7 @@ export const createCountdown: EffectFactory = (
 
         fields = buildGlyphFields(GLYPH_SET, {
           font,
-          box: { width: DIGIT_BOX.width * fontSize, height: DIGIT_BOX.height * fontSize },
+          box: sampleBox,
           count: DIGIT_PARTICLES,
           step: SAMPLE_STEP,
         });
@@ -206,45 +312,79 @@ export const createCountdown: EffectFactory = (
       });
   }
 
+  /** 主色→辅色的量化贴图，`rebuildPalette` 里填 */
+  let sprites: HTMLCanvasElement[] = [];
+
   function createSlots(): Slot[] {
-    return SLOT_KINDS.map(kind => ({
-      kind,
-      count: kind === 'colon' ? COLON_PARTICLES : DIGIT_PARTICLES,
-      colors: [],
-      glyph: '0',
-      from: '0',
-      // 构造时直接从终态开始：首帧不该有一次多余的形变
-      progress: 1,
-    }));
+    return SLOT_KINDS.map(kind => {
+      const count = kind === 'colon' ? COLON_PARTICLES : DIGIT_PARTICLES;
+
+      return {
+        kind,
+        count,
+        tints: [],
+        scatter: new Array<GlyphPoint>(count),
+        glyph: '0',
+        from: '0',
+        // 构造时直接从终态开始：首帧不该有一次多余的形变
+        // （入场另有进度，见 `drawSlot`）
+        progress: 1,
+      };
+    });
   }
 
   const slots: Slot[] = createSlots();
 
   /**
-   * 重建槽内颜色表
-   * @desc 颜色按粒子的**规范位置**混，不按它在字形里的实际坐标 ——
+   * 重建贴图与槽内档位
+   * @desc 档位按粒子的**规范位置**混，不按它在字形里的实际坐标 ——
    *   否则每次跳字粒子都会换色，等于给画面加了一层无意义的闪烁。
    *   规范位置 = 槽序号 + 槽内序号，与显示的是哪个字无关
    */
-  function rebuildColors(): void {
+  function rebuildPalette(): void {
     const baseRgb = hexToRgb(primary);
     const highlightRgb = hexToRgb(secondary);
 
+    sprites = Array.from({ length: SPRITE_STEPS }, (_, step) => {
+      const amount = step / (SPRITE_STEPS - 1);
+
+      // 解析不了就整份退回主色，至少不是一块黑
+      const color = baseRgb && highlightRgb ? mixToCss(baseRgb, highlightRgb, amount) : primary;
+
+      return createRoundSprite(color);
+    });
+
     slots.forEach((slot, slotIndex) => {
       for (let index = 0; index < slot.count; index += 1) {
-        if (!baseRgb || !highlightRgb) {
-          slot.colors[index] = primary;
-          continue;
-        }
-
         const blend = (slotIndex + index / Math.max(1, slot.count - 1)) / slots.length;
-        slot.colors[index] = mixToCss(baseRgb, highlightRgb, clamp(blend, 0, 1));
+
+        slot.tints[index] = Math.round(clamp(blend, 0, 1) * (SPRITE_STEPS - 1));
+
+        // 散开起点：绕着字形盒一圈偏外的位置，角度与半径都只由 seed 决定。
+        // 用 Math.random 的话每帧都会重新散一次
+        const angle = particleSeed(index * 3 + 1) * Math.PI * 2;
+        const radius = 0.8 + particleSeed(index * 7 + 5) * 1.15;
+
+        slot.scatter[index] = {
+          x: 0.5 + Math.cos(angle) * radius * 0.95,
+          y: 0.5 + Math.sin(angle) * radius * 0.75,
+        };
       }
     });
   }
 
   function applyParams(params: EffectParams): void {
-    total = Math.round(clamp(params.countdownSec ?? DEFAULT_SECONDS, MIN_SECONDS, MAX_SECONDS));
+    /**
+     * ★ 必须先挡非有限值再钳制：`clamp` **挡不住 `NaN`**（`Math.max(NaN, 3)` 就是 `NaN`），
+     *   而 `total` 一旦是 NaN，下面 `finished` 的 `elapsed >= total` **永远为 false** ——
+     *   实例永不结束，驱动器于是每帧都要求继续，共享 rAF 被永久钉住
+     */
+    const requested = Number(params.countdownSec);
+
+    total = Number.isFinite(requested)
+      ? Math.round(clamp(requested, MIN_SECONDS, MAX_SECONDS))
+      : DEFAULT_SECONDS;
+
     caption = params.caption ?? (COUNTDOWN_DEFAULTS.caption as string);
     centerX = (params.centerX ?? COUNTDOWN_DEFAULTS.centerX!) * size.width;
     centerY = (params.centerY ?? COUNTDOWN_DEFAULTS.centerY!) * size.height;
@@ -253,16 +393,27 @@ export const createCountdown: EffectFactory = (
     const nextSecondary = params.colorSecondary ?? (COUNTDOWN_DEFAULTS.colorSecondary as string);
 
     // 只在真的变了才重算：驱动器对互动轨道是每帧调 applyParams 的，
-    // 这里虽然是 static 不会被那样调，但别给以后埋一个「每帧拼 1500 个颜色串」的坑
+    // 这里虽然是 static 不会被那样调，但别给以后埋一个「每帧造 16 张画布」的坑
     if (nextPrimary !== primary || nextSecondary !== secondary) {
       primary = nextPrimary;
       secondary = nextSecondary;
-      rebuildColors();
+      rebuildPalette();
     }
   }
 
-  // primary 初值为空串，所以这次一定会建颜色表
+  // primary 初值为空串，所以这次一定会建贴图
   applyParams(initialParams);
+
+  /**
+   * 把槽位对齐到首个显示值
+   * @desc `createSlots()` 跑在 `applyParams` 之前（它要用 slots 建贴图），
+   *   所以这里的 `total` 才是最终值。对齐完把 `progress` 顶回 1 —— 入场是
+   *   「散开 → 聚成这个数」，不该先来一次形变
+   */
+  syncText(formatClock(total));
+  slots.forEach(slot => {
+    slot.progress = 1;
+  });
 
   /** 把显示文本同步进各槽，变了的槽重新开始一次形变 */
   function syncText(text: string): void {
@@ -304,11 +455,12 @@ export const createCountdown: EffectFactory = (
     ctx.fill();
   }
 
-  function drawCaption(ctx: CanvasRenderingContext2D): void {
+  function drawCaption(ctx: CanvasRenderingContext2D, alpha: number): void {
     if (!caption) {
       return;
     }
 
+    ctx.globalAlpha = alpha;
     ctx.fillStyle = secondary;
     ctx.font = `500 ${Math.round(fontSize * 0.24)}px ${FONT_STACK}`;
     ctx.textAlign = 'center';
@@ -325,7 +477,7 @@ export const createCountdown: EffectFactory = (
 
   /**
    * 一个槽的粒子
-   * @desc 三件事：算这个粒子形变到哪（含逐粒子错峰）、插值出位置、画辉光与本体的两遍
+   * @desc 每个粒子：算它在哪个阶段（入场还是跳字）、插值出位置、叠一点飘动、画一张贴图
    */
   function drawSlot(
     ctx: CanvasRenderingContext2D,
@@ -343,36 +495,63 @@ export const createCountdown: EffectFactory = (
     }
 
     const particleSize = Math.max(1, fontSize * scale * PARTICLE_SIZE_RATIO);
-    const half = particleSize / 2;
-    const bloomSize = particleSize * BLOOM_SCALE;
-    const bloomHalf = bloomSize / 2;
+    const spriteSize = particleSize * SPRITE_SCALE;
+    const top = centerY - box.height / 2;
 
     for (let index = 0; index < slot.count; index += 1) {
       const target = toField.points[index];
       const origin = fromField.points[index];
+      const scatter = slot.scatter[index];
 
-      if (!target || !origin) {
+      if (!target || !origin || !scatter) {
         continue;
       }
 
-      // 逐粒子错峰：seed 靠近 1 的粒子晚一点出发
-      const seed = particleSeed(index) * MORPH_STAGGER;
-      const local = clamp((slot.progress - seed) / (1 - MORPH_STAGGER), 0, 1);
-      const eased = easeOutCubic(local);
+      // 逐粒子错峰：seed 靠近 1 的粒子晚一点出发。入场与跳字共用同一个 seed，
+      // 所以一个粒子在两种阶段里的「早晚」是一致的，看着像同一批粒子
+      const seed = particleSeed(index);
+      const entering = elapsed < GATHER_SEC;
 
-      const x = left + (origin.x + (target.x - origin.x) * eased) * box.width;
-      const y = centerY - box.height / 2 + (origin.y + (target.y - origin.y) * eased) * box.height;
+      let source: GlyphPoint;
+      let eased: number;
 
-      // 还没出发的粒子停在上一个字形的位置上，所以它们是「等在那」而不是凭空出现
-      ctx.fillStyle = slot.colors[index];
+      if (entering) {
+        const local = clamp(
+          (elapsed / GATHER_SEC - seed * GATHER_STAGGER) / (1 - GATHER_STAGGER),
+          0,
+          1,
+        );
+
+        source = scatter;
+        eased = easeOutCubic(local);
+      } else {
+        const local = clamp((slot.progress - seed * MORPH_STAGGER) / (1 - MORPH_STAGGER), 0, 1);
+
+        // 还没出发的粒子停在上一个字形的位置上，所以它们是「等在那」而不是凭空出现
+        source = origin;
+        eased = easeOutCubic(local);
+      }
+
+      let x = left + (source.x + (target.x - source.x) * eased) * box.width;
+      let y = top + (source.y + (target.y - source.y) * eased) * box.height;
+
+      // 落位之后的呼吸飘动。★ 必须是 `elapsed` 的纯函数，不能累加 ——
+      // 累加的话飘动速度会跟着时间缩放的系数一起变
+      if (!entering) {
+        const drift = particleSize * DRIFT_AMP * (0.35 + seed * 0.65);
+
+        x += Math.sin(elapsed * DRIFT_FREQ_X + seed * 6.283) * drift;
+        y += Math.cos(elapsed * DRIFT_FREQ_Y + seed * 4.71) * drift;
+      }
 
       // ★ 每一处 globalAlpha 都要**再乘上入场/收尾的 alpha** ——
       // 直接赋 1 会把外面那层淡入淡出整个盖掉，首尾变成硬闪
-      ctx.globalAlpha = alpha * BLOOM_ALPHA * (0.4 + eased * 0.6);
-      ctx.fillRect(x - bloomHalf, y - bloomHalf, bloomSize, bloomSize);
+      ctx.globalAlpha = alpha * (0.35 + eased * 0.65);
 
-      ctx.globalAlpha = alpha * (0.45 + eased * 0.55);
-      ctx.fillRect(x - half, y - half, particleSize, particleSize);
+      const sprite = sprites[slot.tints[index]];
+      if (sprite) {
+        ctx.drawImage(sprite, x - spriteSize / 2, y - spriteSize / 2, spriteSize, spriteSize);
+      }
     }
   }
 
@@ -383,8 +562,6 @@ export const createCountdown: EffectFactory = (
     const totalWidth = slots.reduce((sum, slot) => sum + boxOf(slot, scale).width, 0);
     let left = centerX - totalWidth / 2;
 
-    ctx.globalAlpha = alpha;
-
     slots.forEach(slot => {
       drawSlot(ctx, slot, left, scale, alpha);
       left += boxOf(slot, scale).width;
@@ -393,7 +570,8 @@ export const createCountdown: EffectFactory = (
 
   /** 底下一条总进度：观众看得见「还剩多少比例」，不只是数字 */
   function drawProgress(ctx: CanvasRenderingContext2D, remaining: number, alpha: number): void {
-    const width = fontSize * 5.4;
+    // 别超出画布 —— 数字那行已经按宽度收敛过了，这条横条也得跟着收敛
+    const width = Math.min(fontSize * 5.4, size.width * 0.82);
     const height = Math.max(2, fontSize * 0.04);
     const left = centerX - width / 2;
     const top = centerY + fontSize * 0.82;
@@ -446,9 +624,17 @@ export const createCountdown: EffectFactory = (
       ctx.globalAlpha = alpha;
 
       drawScrim(ctx);
-      drawCaption(ctx);
+
+      // 文案与进度条等粒子聚拢得差不多再出现 —— 它们和入场抢视线的话，
+      // 「散开的像素聚成数字」这件事就看不见了
+      const chrome = clamp((elapsed - GATHER_SEC * 0.6) / 0.4, 0, 1);
+
+      if (chrome > 0) {
+        drawCaption(ctx, alpha * chrome);
+        drawProgress(ctx, remaining, alpha * chrome);
+      }
+
       drawDigits(ctx, remaining, alpha);
-      drawProgress(ctx, remaining, alpha);
 
       ctx.globalAlpha = previousAlpha;
       ctx.globalCompositeOperation = previousComposite;
