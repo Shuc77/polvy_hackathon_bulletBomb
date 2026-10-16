@@ -5,6 +5,7 @@
     <button
       type="button"
       class="c-mock-barrage__btn"
+      :disabled="!enabled"
       @click="sendOne('primary')"
     >
       +1 {{ primaryWord }}
@@ -12,6 +13,7 @@
     <button
       type="button"
       class="c-mock-barrage__btn"
+      :disabled="!enabled"
       @click="sendOne('secondary')"
     >
       +1 {{ secondaryWord }}
@@ -33,12 +35,23 @@
     <button
       type="button"
       class="c-mock-barrage__btn"
+      :disabled="!enabled"
       @click="onBurst"
     >
       连发 8 条
     </button>
 
-    <span class="c-mock-barrage__hint">与真实弹幕同一个入口</span>
+    <!-- ★ 说清楚「为什么点了没反应」。这条不解释，作者只会以为按钮坏了 -->
+    <span
+      class="c-mock-barrage__hint"
+      :class="{ 'c-mock-barrage__hint--warn': !enabled }"
+    >
+      {{
+        enabled
+          ? '与真实弹幕同一个入口'
+          : '当前驱动方式是「静态」，特效不读弹幕 —— 到右侧把它切成互动方式后这里才有反应'
+      }}
+    </span>
   </div>
 </template>
 
@@ -52,10 +65,20 @@ import { parseKeywords } from '../feed-window';
 /** 一次连发多少条 */
 const BURST_COUNT = 8;
 
-const props = defineProps<{
-  wordsA?: string;
-  wordsB?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    wordsA?: string;
+    wordsB?: string;
+    /**
+     * 当前锚点的驱动方式是不是互动的
+     * @desc ★ 由 `effect-stage.vue` 用 `resolveFeedMode` 算好传进来 —— 判据必须和
+     *   驱动器同源。为 false 时按钮点下去不会有任何可见效果（信号发出去了，
+     *   但没有轨道订阅它），所以置灰并说明原因
+     */
+    enabled?: boolean;
+  }>(),
+  { enabled: true },
+);
 
 const ratioPercent = ref(50);
 
@@ -108,8 +131,14 @@ function onBurst(): void {
   border-radius: 4px;
   transition: border-color 0.15s;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: #4f7cff;
+  }
+
+  &:disabled {
+    color: #5d6478;
+    cursor: not-allowed;
+    border-color: #2f3542;
   }
 }
 
@@ -136,5 +165,10 @@ function onBurst(): void {
   margin-left: auto;
   font-size: 10px;
   color: #5d6478;
+
+  /* 说明「为什么点不动」时得看得见，不能继续用那行灰色的沉默 */
+  &.c-mock-barrage__hint--warn {
+    color: #e0a458;
+  }
 }
 </style>

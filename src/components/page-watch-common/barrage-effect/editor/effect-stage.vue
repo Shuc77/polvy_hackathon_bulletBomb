@@ -30,6 +30,7 @@
       v-if="isInteractive"
       :words-a="feed?.wordsA"
       :words-b="feed?.wordsB"
+      :enabled="mockFeedActive"
     />
 
     <div class="c-effect-stage__canvas-wrap">
@@ -44,6 +45,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { getEffectTemplate } from '../effects';
+import { resolveFeedMode } from '../feed-window';
 import type { AnchorFeed, BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import { useEffectCanvas, type EffectFrame } from '../use-effect-canvas';
 import { useInteractiveDriver, type DriverDebugState } from '../interactive-driver';
@@ -111,6 +113,22 @@ let pendingPlay = true;
 const debug = ref<DriverDebugState>();
 
 const isInteractive = computed(() => (descriptor.value?.feedModes.length ?? 1) > 1);
+
+/**
+ * 模拟弹幕点下去**真的**会有反应吗
+ *
+ * @desc ★ 判定必须和驱动器同源。`createTrack` 也是拿 `resolveFeedMode` 决定要不要
+ *   建收集窗的（`interactive-driver.ts`），而 `applyReading` 在 `!track.feed` 时
+ *   直接 return —— 驱动方式是静态时，信号确实发出去了，但那条轨道压根没订阅它。
+ *
+ *   上面那个 `isInteractive` 问的是「模板**支不支持**互动」，这里问的是
+ *   「这个锚点**现在是不是**在按互动跑」。两者不同：`feedModes[0]` 恒为 `static`，
+ *   所以刚拖进来的锚点默认就是静态 —— 条子照样显示、按钮照样能点，点了却必然
+ *   毫无反应。作者只会得出「这几个按钮坏了」的结论
+ */
+const mockFeedActive = computed(
+  () => resolveFeedMode(currentAnchor(), descriptor.value) !== 'static',
+);
 
 const seamPercent = computed(() => Math.round(((debug.value?.bias ?? 0) + 1) * 50));
 
