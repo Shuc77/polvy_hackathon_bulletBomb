@@ -33,6 +33,19 @@
         </div>
       </div>
 
+      <!-- 与「触发时间」成对：先说什么时候放，再说放多久。
+           和时间轴上拖条带右端是**同一个量**，两条路径汇到 span.ts 的同一个出口 -->
+      <div class="c-params-panel__field">
+        <div class="c-params-panel__label">播放时长（秒）</div>
+        <plv-input-number
+          :value="spanValue"
+          :min="spanBounds.min"
+          :max="spanBounds.max"
+          :step="0.5"
+          @change="onSpanChange"
+        />
+      </div>
+
       <div class="c-params-panel__field">
         <div class="c-params-panel__label">模板</div>
         <plv-select
@@ -48,6 +61,23 @@
         :anchor="anchor"
         @patch="onFeedPatch"
       />
+
+      <!-- 只给声明了文字槽的模板显示。
+           这是「文字是数据、样式是模板」的最小雏形：模板在自己的 defaults 里
+           声明有没有 caption 这一槽，讲师改的只是值，样式不归他管 -->
+      <div
+        v-if="hasCaption"
+        class="c-params-panel__field"
+      >
+        <div class="c-params-panel__label">文案</div>
+        <!-- 原生 input：`plv-input` 的 props 被 mixin 隐藏、无法校验 -->
+        <input
+          class="c-params-panel__text"
+          type="text"
+          :value="captionValue"
+          @input="onCaptionChange"
+        />
+      </div>
 
       <div class="c-params-panel__field">
         <div class="c-params-panel__label">配色</div>
@@ -123,6 +153,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { EFFECT_TEMPLATE_OPTIONS, getEffectTemplate } from '../effects';
+import { spanOf, spanPatchOf, spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import FeedPanel from './feed-panel.vue';
 
@@ -158,6 +189,47 @@ const resolved = computed<EffectParams>(() => ({
   ...descriptor.value?.defaults,
   ...props.anchor?.params,
 }));
+
+/**
+ * 播放时长：和时间轴上那条可拖拽的条带是**同一个量**
+ * @desc 三种归属的换算是 `span.ts` 的事，这里只负责显示与写回 ——
+ *   面板和拖拽共用同一个出口，不另开一条写入路径
+ */
+const spanValue = computed(() => {
+  const anchor = props.anchor;
+
+  return anchor ? spanOf(anchor, descriptor.value) : 0;
+});
+
+/**
+ * 播放时长的可达区间
+ * @desc 上下界与条带、驱动器共用 `span.ts` 那一份 —— 敲得进去的值必须和拖得动、
+ *   播得出的值完全一致，否则就成了「敲 5000 秒、实际只播 3599 秒」
+ */
+const spanBounds = computed(() => {
+  const anchor = props.anchor;
+
+  if (!anchor) {
+    return { min: 1, max: 60 };
+  }
+
+  const range = spanRangeOf(anchor, descriptor.value);
+
+  if (props.duration <= 0) {
+    return range;
+  }
+
+  // 同时不能超过轨道末端 —— 与条带的夹取是同一条规矩
+  return {
+    min: range.min,
+    max: Math.max(range.min, Math.min(range.max, props.duration - anchor.time)),
+  };
+});
+
+/** 模板在 `defaults` 里声明了文字槽才给这一行 */
+const hasCaption = computed(() => !!descriptor.value && 'caption' in descriptor.value.defaults);
+
+const captionValue = computed(() => resolved.value.caption ?? '');
 
 const colorPrimary = computed(() => resolved.value.colorPrimary ?? '#ff3553');
 const colorSecondary = computed(() => resolved.value.colorSecondary ?? '#ffd166');
@@ -195,9 +267,37 @@ function onTimeChange(value: number | string): void {
   emit('patch', { time: Math.max(0, Math.round(Number.isFinite(time) ? time : 0)) });
 }
 
+/**
+ * 面板里改时长
+ * @desc 与拖条带右端走**同一个出口**（`spanPatchOf`），所以两条路径不可能给出
+ *   不同的结果。传进去的原始秒数由它统一收敛与量化
+ */
+function onSpanChange(value: number | string): void {
+  const anchor = props.anchor;
+  const seconds = Number(value);
+
+  if (!anchor || !Number.isFinite(seconds)) {
+    return;
+  }
+
+  emit('patch', spanPatchOf(anchor, descriptor.value, seconds));
+}
+
+function onCaptionChange(event: Event): void {
+  patchParams({ caption: (event.target as HTMLInputElement).value });
+}
+
 function onTemplateChange(name: EffectTemplateName): void {
-  // 换模板时清空参数：带着上一个模板的参数会让新模板长得像"选错了"
-  emit('patch', { template: name, params: {} });
+  /**
+   * 换模板时清空参数：带着上一个模板的参数会让新模板长得像「选错了」
+   *
+   * ★ `spanSec` 也得清。它是个**倍数**（相对模板自然时长），留着的话
+   *   2.8 秒的数据雨换成 1.5 秒的冲击波就成了 0.53 倍慢放 ——
+   *   作者看到的是新模板「有 bug」。
+   *   （倒计时与互动那两种归属不用管：它们的值分别在 `params` 与 `feed` 里，
+   *   前者被这次清空带走，后者由 `feed-panel` 自己维护）
+   */
+  emit('patch', { template: name, params: {}, spanSec: undefined });
 }
 
 function onPrimaryChange(color: string): void {
@@ -231,6 +331,10 @@ function onFeedPatch(patch: Partial<BarrageAnchor>): void {
 </script>
 
 <style lang="scss">
+/* 与时间轴、模板卡片各自声明一份：这几个变量的作用域是**单个文件**，
+   没有全局注入（`sass-resources-loader` 只注入 `sassResources` 里那几个文件） */
+$accent: #4f7cff;
+
 .c-params-panel {
   display: flex;
   flex-direction: column;
@@ -278,6 +382,25 @@ function onFeedPatch(patch: Partial<BarrageAnchor>): void {
 .c-params-panel__row {
   display: flex;
   gap: 8px;
+}
+
+/* 文案用的原生 input。外观跟着后台那套输入框走，但不引 plv-input ——
+   它的 props 被 mixin 隐藏、无法校验 */
+.c-params-panel__text {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: #d5dae8;
+  background: #232936;
+  border: 1px solid #3d4658;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.c-params-panel__text:focus {
+  border-color: $accent;
 }
 
 .c-params-panel__ghost-btn {

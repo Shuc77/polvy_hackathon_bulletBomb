@@ -408,13 +408,13 @@ $danger: #ff6b6b;
 .c-effect-timeline__marker {
   position: absolute;
   top: 50%;
-  height: 22px;
   min-width: 18px;
+  height: 22px;
   padding: 0;
-  background: none;
-  border: 0;
   /* ★ 本体只画不接手势 —— 见模板里那段注释。接手势的是圆点和把手 */
   pointer-events: none;
+  background: none;
+  border: 0;
   /* ★ 只保留纵向居中，横向不再居中：条带左端就是触发点。
      圆点与标签各自 translateX(-50%) 对回那个点，
      与播放头、刻度仍然是同一把尺子 */
@@ -439,16 +439,16 @@ $danger: #ff6b6b;
   left: 0;
   width: 14px;
   height: 14px;
-  /* 把圆点**中心**对回触发时间。条带不再横向居中，这一步必须在这里补上，
-     否则圆点相对播放头、刻度会整体偏半个圆点 */
-  transform: translate(-50%, -50%);
-  cursor: grab;
   pointer-events: auto;
+  cursor: grab;
   background: #6d7488;
   border: 2px solid #171a21;
   border-radius: 50%;
   box-shadow: 0 0 0 1px #454c5e;
   transition: background 0.15s;
+  /* 把圆点**中心**对回触发时间。条带不再横向居中，这一步必须在这里补上，
+     否则圆点相对播放头、刻度会整体偏半个圆点 */
+  transform: translate(-50%, -50%);
 }
 
 .c-effect-timeline__marker-label {
@@ -456,11 +456,11 @@ $danger: #ff6b6b;
   bottom: 100%;
   left: 0;
   margin-bottom: 4px;
-  transform: translateX(-50%);
   font-size: 10px;
   font-style: normal;
   color: #9aa1b4;
   white-space: nowrap;
+  transform: translateX(-50%);
 }
 
 /* 靠近轨道末端时向左翻，否则标签会溢出轨道 */
@@ -474,12 +474,12 @@ $danger: #ff6b6b;
   right: 0;
   width: 10px;
   height: 22px;
-  transform: translate(50%, -50%);
-  cursor: ew-resize;
   pointer-events: auto;
+  cursor: ew-resize;
   background: #8b93a8;
   border-radius: 2px;
   transition: background 0.15s;
+  transform: translate(50%, -50%);
 }
 
 .c-effect-timeline__marker--selected .c-effect-timeline__marker-band {
