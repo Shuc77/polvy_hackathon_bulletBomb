@@ -103,7 +103,7 @@
           :class="{
             'c-effect-timeline__marker--selected': anchor.id === selectedId,
             'c-effect-timeline__marker--halo':
-              anchor.id === selectedId && anchor.id === (draggingId ?? resizingId),
+              anchor.id === selectedId && anchor.id === activeGestureId,
             'c-effect-timeline__marker--flip': isNearEnd(displayTimeOf(anchor)),
           }"
           :style="bandStyleOf(anchor)"
@@ -195,6 +195,14 @@ const draggingId = computed(() => (ghostTime.value === undefined ? undefined : a
 
 /** 正在被拉长/缩短的锚点 */
 const resizingId = computed(() => (ghostSpan.value === undefined ? undefined : activeId.value));
+
+/**
+ * 正在被手势操作的那个锚点（改时间或改时长）
+ * @desc 刻意**不写进模板**：`??` 在 Vue 2.7 的模板编译里没被验证过，
+ *   而这个仓库已经因为「模板表达式用了 TS 能过、编译器不认的语法」炸过一次构建。
+ *   能挪进脚本的一律挪进脚本
+ */
+const activeGestureId = computed(() => draggingId.value ?? resizingId.value);
 
 function percentOf(time: number): number {
   if (props.duration <= 0) {

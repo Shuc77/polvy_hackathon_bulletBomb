@@ -96,8 +96,22 @@ export function spanRangeOf(
       return { min: COUNTDOWN_MIN_SEC, max: COUNTDOWN_MAX_SEC };
     case 'window':
       return { min: MIN_WINDOW_SEC, max: MAX_WINDOW_SEC };
-    default:
-      return { min: MIN_STRETCH_SEC, max: Number.POSITIVE_INFINITY };
+    default: {
+      /**
+       * ★ 上下界跟着**缩放系数的上下界**走，而不是无边无际
+       * @desc `resolveTimeScale` 会把系数夹在 `[SCALE_MIN, SCALE_MAX]`。
+       *   条带要是能拖到自然时长的 10 倍，画出来的长度就说谎了 ——
+       *   和倒计时「拖到 5000 秒却只播 3599 秒」是同一个毛病
+       */
+      const natural = isPositiveFinite(descriptor?.naturalSec)
+        ? descriptor.naturalSec
+        : DEFAULT_NATURAL_SEC;
+
+      return {
+        min: Math.max(MIN_STRETCH_SEC, natural * SCALE_MIN),
+        max: natural * SCALE_MAX,
+      };
+    }
   }
 }
 
