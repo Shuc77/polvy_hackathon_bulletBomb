@@ -90,6 +90,11 @@
           :style="{ left: percentOf(originTime) + '%' }"
         />
 
+        <!-- 条带：从触发点向右铺开，长度就是这个特效播多久。
+             ★ 本体 `pointer-events: none` —— 它只画不接手势。否则一条 300 秒的
+             倒计时会挡住半条轨道，那片区域再也搓不了碟；而且重叠时 `closest()`
+             只认 DOM 里第一个匹配，被压住的条带会永远选不中。接手势的只有
+             圆点（选择/改时间）和把手（改时长） -->
         <button
           v-for="anchor in anchors"
           :key="anchor.id"
@@ -97,14 +102,27 @@
           class="c-effect-timeline__marker"
           :class="{
             'c-effect-timeline__marker--selected': anchor.id === selectedId,
-            'c-effect-timeline__marker--halo': anchor.id === selectedId && anchor.id === draggingId,
+            'c-effect-timeline__marker--halo':
+              anchor.id === selectedId && anchor.id === (draggingId ?? resizingId),
+            'c-effect-timeline__marker--flip': isNearEnd(displayTimeOf(anchor)),
           }"
-          :style="{ left: percentOf(displayTimeOf(anchor)) + '%' }"
+          :style="bandStyleOf(anchor)"
           :data-anchor-id="anchor.id"
           :data-anchor-time="anchor.time"
         >
-          <em class="c-effect-timeline__marker-label">{{ formatTime(displayTimeOf(anchor)) }}</em>
+          <i class="c-effect-timeline__marker-band" />
+          <em class="c-effect-timeline__marker-label">
+            {{ formatTime(displayTimeOf(anchor)) }} · {{ formatSpan(displaySpanOf(anchor)) }}
+          </em>
           <i class="c-effect-timeline__marker-dot" />
+          <!-- 把手只在选中时渲染：短条带上它和圆点会挤在一起，常显的话
+               想点圆点改时间会变成改时长。★ 它是 <i> 不是 <button> ——
+               button 里套 button 是非法 HTML -->
+          <i
+            v-if="anchor.id === selectedId"
+            class="c-effect-timeline__marker-grip"
+            data-anchor-resize
+          />
         </button>
 
         <span
@@ -120,6 +138,8 @@
 
 <script setup lang="ts">
 import { computed, toRefs } from 'vue';
+import { getEffectTemplate } from '../effects';
+import { spanOf } from '../span';
 import type { BarrageAnchor, EffectTemplateName } from '../types';
 import { useTimelineDrag } from './use-timeline-drag';
 
@@ -141,6 +161,7 @@ const emit = defineEmits<{
   (e: 'seek', time: number): void;
   (e: 'select-anchor', id: string): void;
   (e: 'move-anchor', id: string, time: number): void;
+  (e: 'resize-anchor', id: string, span: number): void;
   (e: 'create-anchor', time: number, template: EffectTemplateName): void;
 }>();
 
@@ -152,6 +173,7 @@ const {
   activeId,
   originTime,
   ghostTime,
+  ghostSpan,
   hoverTime,
   dropPoint,
   onTrackPointerDown,
@@ -164,11 +186,15 @@ const {
   onSeek: time => emit('seek', time),
   onSelect: id => emit('select-anchor', id),
   onCommitMove: (id, time) => emit('move-anchor', id, time),
+  onCommitResize: (id, span) => emit('resize-anchor', id, span),
   onCreate: (time, template) => emit('create-anchor', time, template),
 });
 
 /** 正在被拖动的锚点，以及它此刻的落点 */
 const draggingId = computed(() => (ghostTime.value === undefined ? undefined : activeId.value));
+
+/** 正在被拉长/缩短的锚点 */
+const resizingId = computed(() => (ghostSpan.value === undefined ? undefined : activeId.value));
 
 function percentOf(time: number): number {
   if (props.duration <= 0) {
@@ -183,6 +209,51 @@ function displayTimeOf(anchor: BarrageAnchor): number {
   return anchor.id === draggingId.value && ghostTime.value !== undefined
     ? ghostTime.value
     : anchor.time;
+}
+
+/** 拖动中的条带跟随幽灵时长，其余按真实值 */
+function displaySpanOf(anchor: BarrageAnchor): number {
+  if (anchor.id === resizingId.value && ghostSpan.value !== undefined) {
+    return ghostSpan.value;
+  }
+
+  return spanOf(anchor, getEffectTemplate(anchor.template));
+}
+
+/**
+ * 条带的左端与宽度
+ *
+ * @desc 宽度要夹到轨道末端：越过后半段会**画到轨道外面**（这条链路上没有任何
+ *   `overflow: hidden`），而且把手出界之后就再也抓不到了。
+ *   存储值本身不夹 —— 换了视频时长它还得在
+ */
+function bandStyleOf(anchor: BarrageAnchor): Record<string, string> {
+  const left = percentOf(displayTimeOf(anchor));
+
+  if (props.duration <= 0) {
+    return { left: `${left}%`, width: '0%' };
+  }
+
+  const width = Math.min(percentOf(displaySpanOf(anchor)), Math.max(0, 100 - left));
+
+  return { left: `${left}%`, width: `${width}%` };
+}
+
+/**
+ * 时长读数
+ * @desc ★ 这个数字不是装饰。一条 3600 秒的轨道上，2.8 秒的条带只占 0.078%，
+ *   不到一个像素 —— CSS 的 `min-width` 把它撑到能摸得着，但撑出来的像素宽度
+ *   说的是谎话。**读数是真的，像素只是给眼睛扫的**
+ */
+function formatSpan(seconds: number): string {
+  const rounded = Math.round(seconds * 10) / 10;
+
+  return Number.isInteger(rounded) ? `${rounded}s` : `${rounded.toFixed(1)}s`;
+}
+
+/** 靠近轨道末端时标签向左翻，否则会溢出轨道 */
+function isNearEnd(time: number): boolean {
+  return percentOf(time) > 78;
 }
 
 function formatTime(seconds: number): string {
@@ -337,19 +408,42 @@ $danger: #ff6b6b;
 .c-effect-timeline__marker {
   position: absolute;
   top: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 22px;
+  min-width: 18px;
   padding: 0;
-  cursor: grab;
   background: none;
   border: 0;
-  transform: translate(-50%, -50%);
+  /* ★ 本体只画不接手势 —— 见模板里那段注释。接手势的是圆点和把手 */
+  pointer-events: none;
+  /* ★ 只保留纵向居中，横向不再居中：条带左端就是触发点。
+     圆点与标签各自 translateX(-50%) 对回那个点，
+     与播放头、刻度仍然是同一把尺子 */
+  transform: translateY(-50%);
+}
+
+.c-effect-timeline__marker-band {
+  position: absolute;
+  top: 7px;
+  right: 0;
+  bottom: 7px;
+  left: 0;
+  background: rgba(109, 116, 136, 0.34);
+  border: 1px solid #454c5e;
+  border-radius: 3px;
+  transition: background 0.15s;
 }
 
 .c-effect-timeline__marker-dot {
+  position: absolute;
+  top: 50%;
+  left: 0;
   width: 14px;
   height: 14px;
+  /* 把圆点**中心**对回触发时间。条带不再横向居中，这一步必须在这里补上，
+     否则圆点相对播放头、刻度会整体偏半个圆点 */
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  pointer-events: auto;
   background: #6d7488;
   border: 2px solid #171a21;
   border-radius: 50%;
@@ -358,16 +452,48 @@ $danger: #ff6b6b;
 }
 
 .c-effect-timeline__marker-label {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
   margin-bottom: 4px;
+  transform: translateX(-50%);
   font-size: 10px;
   font-style: normal;
   color: #9aa1b4;
   white-space: nowrap;
 }
 
+/* 靠近轨道末端时向左翻，否则标签会溢出轨道 */
+.c-effect-timeline__marker--flip .c-effect-timeline__marker-label {
+  transform: translateX(-100%);
+}
+
+.c-effect-timeline__marker-grip {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 10px;
+  height: 22px;
+  transform: translate(50%, -50%);
+  cursor: ew-resize;
+  pointer-events: auto;
+  background: #8b93a8;
+  border-radius: 2px;
+  transition: background 0.15s;
+}
+
+.c-effect-timeline__marker--selected .c-effect-timeline__marker-band {
+  background: rgba($accent, 0.28);
+  border-color: rgba($accent, 0.6);
+}
+
 .c-effect-timeline__marker--selected .c-effect-timeline__marker-dot {
   background: $accent;
   box-shadow: 0 0 0 2px rgba($accent, 0.35);
+}
+
+.c-effect-timeline__marker--selected .c-effect-timeline__marker-grip {
+  background: $accent;
 }
 
 .c-effect-timeline__marker--selected .c-effect-timeline__marker-label {

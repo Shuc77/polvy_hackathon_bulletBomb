@@ -60,6 +60,13 @@ const props = defineProps<{
   params: EffectParams;
   /** 选中锚点的驱动配置；没选中锚点时空，按模板默认方式预览 */
   feed?: AnchorFeed;
+  /**
+   * 选中锚点的时长（秒）
+   * @desc ★ 它不进 `params`，而是 `Track.timeScale` 的输入 —— 所以必须显式传进来，
+   *   并进下面那个重建的 watch key。漏掉的话作者拖完条带预览**什么都不变**，
+   *   而那恰好是工作台存在的全部理由
+   */
+  span?: number;
   /** 选中锚点的 id；变化时重来，让每次改选都从头播一遍 */
   anchorKey?: string;
   /**
@@ -114,6 +121,7 @@ function currentAnchor(): BarrageAnchor {
     template: props.template,
     params: props.params,
     feed: props.feed,
+    spanSec: props.span,
   };
 }
 
@@ -138,7 +146,14 @@ function restart(): void {
 }
 
 watch(
-  () => [props.template, props.anchorKey, props.feed?.mode, props.feed?.windowSec].join('|'),
+  () =>
+    [
+      props.template,
+      props.anchorKey,
+      props.feed?.mode,
+      props.feed?.windowSec,
+      props.span,
+    ].join('|'),
   restart,
 );
 

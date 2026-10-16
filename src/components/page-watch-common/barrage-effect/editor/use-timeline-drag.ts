@@ -9,6 +9,8 @@
  *   别把这里「优化」成实时写 store。
  */
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { getEffectTemplate } from '../effects';
+import { spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectTemplateName } from '../types';
 import { pointerClientX } from './pointer-utils';
 import {
@@ -32,7 +34,7 @@ const SCRUB_INTERVAL = 120;
 /** 投放时允许指针偏离轨道的纵向容差，单位：像素 */
 const DROP_BAND = 24;
 
-export type TimelineDragMode = 'idle' | 'pending' | 'move' | 'scrub';
+export type TimelineDragMode = 'idle' | 'pending' | 'move' | 'resize' | 'scrub';
 
 interface TrackRect {
   left: number;
@@ -50,6 +52,8 @@ export interface UseTimelineDragOptions {
   onSeek: (time: number) => void;
   onSelect: (id: string) => void;
   onCommitMove: (id: string, time: number) => void;
+  /** 拖条带右端：改这个锚点播多久 */
+  onCommitResize: (id: string, span: number) => void;
   onCreate: (time: number, template: EffectTemplateName) => void;
 }
 
@@ -63,6 +67,8 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
   const originTime = ref(0);
   /** 拖动中的落点时间 */
   const ghostTime = ref<number>();
+  /** 拖动条带右端时的落点时长，单位：秒 */
+  const ghostSpan = ref<number>();
   /** 指针悬停的时间气泡 */
   const hoverTime = ref<number>();
   /** 从模板库拖过来时的投放幽灵 */
@@ -72,6 +78,13 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
   let pressClientX = 0;
   let lastScrubAt = 0;
   let unregisterDrop: (() => void) | undefined;
+  /**
+   * 按在标记上时，这次手势想改什么
+   * @desc 越过拖动阈值之前分不清「点一下」和「拖一下」，所以一律先进 `pending`，
+   *   够远了才按这个意图升级成 `move` 或 `resize`。
+   *   按下就把模式定成 `resize` 的话，在把手上点一下不拖也会提交一次新时长
+   */
+  let intent: 'move' | 'resize' = 'move';
 
   function readRect(): TrackRect | undefined {
     const el = trackRef.value;
@@ -129,7 +142,30 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     mode.value = 'idle';
     activeId.value = undefined;
     ghostTime.value = undefined;
+    ghostSpan.value = undefined;
     gestureRect = undefined;
+  }
+
+  /**
+   * 条带右端落点 → 时长
+   * @desc 上界取「条带区间上界」与「轨道末端」中更小的那个：
+   *   越过后半段会画到轨道外面，而且把手出界之后就再也抓不到了。
+   *   下界同理不能省 —— `timeAt` 会把横坐标夹在轨道内，指针拖到锚点左边时
+   *   `timeAt - originTime` 是**负数**，而负的 CSS `width` 是非法值，
+   *   浏览器会丢掉那条声明退回 `auto`，条带会以一个完全无关的宽度显示出来
+   */
+  function spanAt(clientX: number, rect: TrackRect | undefined, anchorId: string): number {
+    const anchor = options.getAnchors().find(item => item.id === anchorId);
+
+    if (!anchor) {
+      return 0;
+    }
+
+    const { min, max } = spanRangeOf(anchor, getEffectTemplate(anchor.template));
+    const limit = Math.min(max, options.getDuration() - originTime.value);
+    const raw = timeAt(clientX, rect) - originTime.value;
+
+    return Math.min(Math.max(raw, min), Math.max(min, limit));
   }
 
   /**
@@ -146,11 +182,17 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     const anchorEl = target?.closest<HTMLElement>('[data-anchor-id]');
     const anchorId = anchorEl?.dataset.anchorId;
 
-    if (anchorId) {
+    if (anchorId && anchorEl) {
+      /**
+       * ★ 先判把手再判标记 —— 顺序反了就永远进不来，因为把手也是标记的后代，
+       *   `closest('[data-anchor-id]')` 两个都能命中
+       */
+      intent = target?.closest('[data-anchor-resize]') ? 'resize' : 'move';
+
       // 选中在直播下也要允许：时间轴不能 seek，但参数照样可以调
       mode.value = 'pending';
       activeId.value = anchorId;
-      originTime.value = Number(anchorEl?.dataset.anchorTime ?? 0);
+      originTime.value = Number(anchorEl.dataset.anchorTime ?? 0);
       gestureRect = readRect();
       pressClientX = pointerClientX(event);
       options.onSelect(anchorId);
@@ -179,7 +221,15 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
         return;
       }
 
-      mode.value = 'move';
+      mode.value = intent;
+    }
+
+    if (mode.value === 'resize') {
+      if (activeId.value !== undefined) {
+        ghostSpan.value = spanAt(clientX, rect, activeId.value);
+      }
+
+      return;
     }
 
     if (mode.value === 'move') {
@@ -203,6 +253,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     const finishedMode = mode.value;
     const anchorId = activeId.value;
     const ghost = ghostTime.value;
+    const span = ghostSpan.value;
     const rect = gestureRect ?? readRect();
     const clientX = pointerClientX(event);
 
@@ -211,6 +262,12 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     if (finishedMode === 'move' && anchorId !== undefined && ghost !== undefined) {
       // 时钟本来就 2Hz，拖动时保持连续、提交时才取整
       options.onCommitMove(anchorId, Math.round(ghost));
+      return;
+    }
+
+    // 没越过阈值就是「点了一下把手」，不提交 —— 这正是 pending 那一段存在的理由
+    if (finishedMode === 'resize' && anchorId !== undefined && span !== undefined) {
+      options.onCommitResize(anchorId, span);
       return;
     }
 
@@ -268,6 +325,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     activeId,
     originTime,
     ghostTime,
+    ghostSpan,
     hoverTime,
     dropPoint,
 

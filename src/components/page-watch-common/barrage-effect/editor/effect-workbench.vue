@@ -74,6 +74,7 @@
             :template="previewTemplate"
             :params="previewParams"
             :feed="selectedAnchor?.feed"
+            :span="previewSpan"
             :anchor-key="stageKey"
             :trigger-anchor="triggerAnchor"
           />
@@ -103,6 +104,7 @@
           @seek="seek"
           @select-anchor="onTimelineSelect"
           @move-anchor="onTimelineMove"
+          @resize-anchor="onTimelineResize"
           @create-anchor="onTimelineCreate"
         />
       </footer>
@@ -204,6 +206,7 @@ import { PlvPopperManager } from '@/plugins/polyv-ui/admin-import';
 import { useBarrageEffectStore } from '@/store/use-barrage-effect-store';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { getEffectTemplate } from '../effects';
+import { spanOf, spanPatchOf } from '../span';
 import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import { createTriggerAnchor } from '../density-trigger';
@@ -294,6 +297,17 @@ const previewParams = computed<EffectParams>(() => {
 
 /** 舞台据此重建实例：改选锚点或换模板都从头播一遍 */
 const stageKey = computed(() => selectedAnchor.value?.id ?? previewTemplate.value);
+
+/**
+ * 预览的时长
+ * @desc 舞台把它并进重建的 watch key，所以**拖完松手会立刻重播一遍** ——
+ *   不重播的话作者拖了半天看不到任何变化，等于这个功能是坏的
+ */
+const previewSpan = computed(() => {
+  const anchor = selectedAnchor.value;
+
+  return anchor ? spanOf(anchor, getEffectTemplate(anchor.template)) : undefined;
+});
 
 /**
  * 系统全屏时把浮层挂进播放器子树
@@ -391,6 +405,24 @@ function onTimelineSelect(id: string): void {
 
 function onTimelineMove(id: string, time: number): void {
   barrageEffectStore.moveAnchor(id, time);
+}
+
+/**
+ * 拖条带右端改时长
+ * @desc 补丁由 `span.ts` 造 —— 三种归属（倒计时 / 收集窗 / 时间缩放）的映射
+ *   只在那一个地方，这里不重复判断
+ */
+function onTimelineResize(id: string, span: number): void {
+  const anchor = anchors.value.find(item => item.id === id);
+
+  if (!anchor) {
+    return;
+  }
+
+  barrageEffectStore.updateAnchor(
+    id,
+    spanPatchOf(anchor, getEffectTemplate(anchor.template), span),
+  );
 }
 
 function onAnchorPatch(patch: Partial<BarrageAnchor>, opts?: { defer?: boolean }): void {
