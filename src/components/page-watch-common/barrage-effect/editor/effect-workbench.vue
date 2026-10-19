@@ -790,10 +790,91 @@ onBeforeUnmount(() => {
 }
 
 /**
- * 色板与下拉是 appendToBody 的，挂在 body 上，不在浮层子树里。
- * 用同样挂在 body 上的标记类限定作用域，只在工作台打开期间生效。
+ * polyv-ui 深色皮肤
+ *
+ * @desc ★ 挂在这个标记类上而不是各组件的 `<style>` 里，有两个原因：
+ *
+ *   1. **色板、下拉是 `appendToBody` 的**，挂在 body 上，不在浮层子树里 ——
+ *      组件自己的样式块根本选不中它们。
+ *
+ *   2. **权重**。polyv-ui 的主题是 `.plv-input .plv-input__main` 这种**两级**选择器，
+ *      而组件里原先写的 `.c-params-panel .plv-input__main` 也是两级 —— **完全同权**。
+ *      同权就只能比谁在后面，而主题在 `index.css`（首屏 `<link>`）、
+ *      组件样式在自己的异步 chunk 里，**谁在后面取决于加载时机**。
+ *      表现出来就是：同一份代码，有时是深色有时是白色，且只在浏览器里看得见 ——
+ *      `vue-tsc`、eslint、webpack 一路绿灯。
+ *
+ *      所以这里每一条都**故意多挂一级**，靠权重而不是靠顺序取胜。
+ *      数字是量出来的：主题里最高的是四级
+ *      （`.plv-select.plv-select--disabled .plv-select__body .plv-select__body__input`），
+ *      加上标记类之后正好五级，压得住。改这里的任何一条都别把级数减回去。
+ *
+ *   3. 顺带把散在 `params-panel.vue` 里的那几块收拢到一处 —— 触发设置、弹幕驱动、
+ *      模拟弹幕那几处用的也是同一批控件，以前它们**一条深色规则都没有**，纯白。
+ *
+ * 主题里用了 `!important` 的只有禁用态（`.plv-input__main--disabled`），
+ * 那几条必须跟着用 `!important`，否则权重再高也压不过。
  */
 .c-effect-workbench-active {
+  /* ============ 输入框 / 数字输入框 / 下拉：三者共用 plv-input 那套壳 ============ */
+  .plv-input .plv-input__main {
+    background: #232936;
+    border-color: #3d4658;
+  }
+
+  .plv-input .plv-input__main.plv-input__main--focus {
+    border-color: #4f7cff;
+  }
+
+  .plv-input .plv-input__main .plv-input__main__input__inner {
+    color: #e8eaf0;
+    background: transparent;
+  }
+
+  .plv-input .plv-input__main .plv-input__main__input__inner::placeholder {
+    color: #5d6478;
+  }
+
+  /* 主题在这几条上用了 !important，不跟着用就压不过 */
+  .plv-input .plv-input__main.plv-input__main--disabled {
+    background: #1b1f27 !important;
+    border-color: #2f3642 !important;
+  }
+
+  .plv-input .plv-input__main .plv-input__main__input__inner[disabled] {
+    color: #5d6478;
+    -webkit-text-fill-color: #5d6478;
+  }
+
+  .plv-input-number .plv-input-number__controls .plv-input-number__controls__increase,
+  .plv-input-number .plv-input-number__controls .plv-input-number__controls__decrease {
+    color: #9aa1b4;
+  }
+
+  /* ============ 下拉 ============ */
+  .plv-select .plv-select__body {
+    background: #232936;
+    border-color: #3d4658;
+  }
+
+  .plv-select .plv-select__body .plv-select__body__input {
+    color: #e8eaf0;
+  }
+
+  .plv-select .plv-select__body .plv-select__body__suffix {
+    color: #9aa1b4;
+  }
+
+  .plv-select.plv-select--disabled .plv-select__body {
+    background: #1b1f27;
+    border-color: #2f3642;
+  }
+
+  .plv-select.plv-select--disabled .plv-select__body .plv-select__body__input {
+    color: #5d6478;
+  }
+
+  /* 下拉面板是 appendToBody 的 */
   .plv-color-picker__panel,
   .plv-select__options {
     background: #232936;
@@ -811,6 +892,59 @@ onBeforeUnmount(() => {
 
   .plv-color-picker__panel__custom__title {
     color: #9aa1b4;
+  }
+
+  /* ============ 色板 ============ */
+  .plv-color-picker .plv-color-picker__body {
+    background: #232936;
+    border-color: #3d4658;
+  }
+
+  .plv-color-picker .plv-color-picker__body .plv-color-picker__body__input {
+    color: #e8eaf0;
+    background: transparent;
+  }
+
+  .plv-color-picker.plv-color-picker--disabled .plv-color-picker__body {
+    background: #1b1f27;
+    border-color: #2f3642;
+  }
+
+  /* ============ 滑块 ============ */
+  .plv-slider .plv-slider__runway {
+    background: #2c3243;
+  }
+
+  .plv-slider .plv-slider__runway .plv-slider__runway__bar {
+    background: #4f7cff;
+  }
+
+  .plv-slider .plv-slider__runway .plv-slider__runway__dot {
+    border-color: #232936;
+  }
+
+  .plv-slider .plv-slider__button .plv-slider__button__inner {
+    background-color: #4f7cff;
+    border-color: #4f7cff;
+  }
+
+  /**
+   * 滑块的禁用态
+   * @desc 主题里 `--disabled` 只有 `cursor:not-allowed`，**一点颜色都不改** ——
+   *   于是禁用的滑块长得和可用的一模一样，只是拖不动。
+   *   这条得我们自己补，否则「置灰」等于没说
+   */
+  .plv-slider .plv-slider__runway.plv-slider__runway--disabled {
+    background: #262c37;
+  }
+
+  .plv-slider .plv-slider__runway.plv-slider__runway--disabled .plv-slider__runway__bar {
+    background: #3d4658;
+  }
+
+  .plv-slider .plv-slider__button .plv-slider__button__inner--disabled {
+    background-color: #3d4658;
+    border-color: #3d4658;
   }
 }
 </style>

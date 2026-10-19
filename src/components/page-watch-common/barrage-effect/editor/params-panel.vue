@@ -529,60 +529,16 @@ $accent: #4f7cff;
 }
 
 /**
- * 后台组件自带浅色皮肤，这里统一压深，免得三栏里嵌进几块白。
- * 用 .c-params-panel 收口，不会漏到工作台外面去。
+ * ★ polyv-ui 控件的深色皮肤**不在这个文件里**，全部收在
+ *   `effect-workbench.vue` 的 `.c-effect-workbench-active` 块下。
+ *
+ *   原先这里写过一份 `.c-params-panel .plv-input__main { background: … }`，
+ *   看着没问题，其实**权重和主题一模一样**（都是两级）—— 同权就只能比先后，
+ *   而主题在首屏的 `index.css`、这份样式在自己的异步 chunk 里，
+ *   谁在后面全看加载时机。结果就是输入框时深时白，且 `vue-tsc` / eslint /
+ *   webpack 一路绿灯，只有打开页面才看得见。
+ *
+ *   别在这里再加一份：同一批控件（触发设置、弹幕驱动、模拟弹幕）此前就是
+ *   各写各的，那几处连一条深色规则都没有，纯白。
  */
-.c-params-panel {
-  .plv-input__main {
-    background: #232936;
-    border-color: #3d4658;
-  }
-
-  .plv-input__main__input,
-  .plv-input__main__input__inner {
-    color: #e8eaf0;
-    background: transparent;
-
-    &::placeholder {
-      color: #5d6478;
-    }
-  }
-
-  .plv-input-number__controls__increase,
-  .plv-input-number__controls__decrease {
-    color: #9aa1b4;
-  }
-
-  .plv-select__body {
-    background: #232936;
-    border-color: #3d4658;
-  }
-
-  .plv-select__body__input {
-    color: #e8eaf0;
-  }
-
-  .plv-color-picker__body {
-    background: #232936;
-    border-color: #3d4658;
-  }
-
-  .plv-color-picker__body__input {
-    color: #e8eaf0;
-    background: transparent;
-  }
-
-  .plv-slider__runway {
-    background: #2c3243;
-  }
-
-  .plv-slider__runway__bar {
-    background: #4f7cff;
-  }
-
-  .plv-slider__button__inner {
-    background-color: #4f7cff;
-    border-color: #4f7cff;
-  }
-}
 </style>
