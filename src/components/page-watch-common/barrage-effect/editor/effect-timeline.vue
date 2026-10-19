@@ -25,7 +25,7 @@
         v-if="isAvailable"
         class="c-effect-timeline__hint"
       >
-        {{ anchors.length }} 个特效 · 拖动改时间 · 从左侧拖入新增
+        {{ anchors.length }} 个特效 · 拖动改时间 · 从左侧拖入新增 · 选中后 Delete 删除
       </span>
     </div>
 

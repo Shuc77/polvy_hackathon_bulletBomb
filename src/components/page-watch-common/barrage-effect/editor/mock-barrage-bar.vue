@@ -47,6 +47,23 @@
       连发 8 条
     </button>
 
+    <!-- 持续刷屏：真实直播里弹幕是源源不断的，
+         「连发 8 条」按一下停一下，看不出持续运行下的密度与帧率 -->
+    <button
+      type="button"
+      class="c-mock-barrage__btn c-mock-barrage__btn--stream"
+      :class="{ 'is-streaming': streaming }"
+      :disabled="!enabled"
+      @click="toggleStream"
+    >
+      <i
+        v-if="streaming"
+        class="c-mock-barrage__pulse"
+      />
+      {{ streaming ? '停止刷屏' : '持续刷屏' }}
+    </button>
+    <span class="c-mock-barrage__rate">{{ RATE_PER_SEC }} 条/秒</span>
+
     <!-- ★ 说清楚「为什么点了没反应」。这条不解释，作者只会以为按钮坏了 -->
     <span
       class="c-mock-barrage__hint"
@@ -62,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 // 见 params-panel.vue 里的说明：polyv-ui 没有全局注册，模板里用到就得显式引入
 import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { FALLBACK_WORDS, useMockBarrage } from './mock-barrage';
@@ -70,6 +87,13 @@ import { parseKeywords } from '../feed-window';
 
 /** 一次连发多少条 */
 const BURST_COUNT = 8;
+
+/**
+ * 刷屏速率，每秒几条
+ * @desc 3 条/秒 × 默认 6 秒收集窗 ≈ 18 条，大约是满规模（40~60）的三到四成 ——
+ *   够看出「规模」通道在动，又不会一开就顶满看不出变化
+ */
+const RATE_PER_SEC = 3;
 
 const props = withDefaults(
   defineProps<{
@@ -108,11 +132,60 @@ function onRatioInput(value: number): void {
 function onBurst(): void {
   burst(BURST_COUNT, ratioPercent.value / 100);
 }
+
+/** 是否正在持续刷屏 */
+const streaming = ref(false);
+
+let streamTimer: ReturnType<typeof setInterval> | undefined;
+
+function stopStream(): void {
+  if (streamTimer !== undefined) {
+    clearInterval(streamTimer);
+    streamTimer = undefined;
+  }
+
+  streaming.value = false;
+}
+
+/**
+ * 开 / 关持续刷屏
+ * @desc 复用 `sendOne`，所以每一条走的还是**与生产同一个入口**；
+ *   这里只是换了个「谁来按」—— 之前是手，现在是定时器
+ */
+function toggleStream(): void {
+  if (streaming.value) {
+    stopStream();
+    return;
+  }
+
+  streaming.value = true;
+  streamTimer = setInterval(() => {
+    sendOne(Math.random() < ratioPercent.value / 100 ? 'primary' : 'secondary');
+  }, 1000 / RATE_PER_SEC);
+}
+
+/**
+ * 驱动方式被切成静态时自动停
+ * @desc ★ 按钮置灰只管住「点不点得动」，管不住已经在跑的定时器。
+ *   不停的话它会在后台继续往总线里灌信号：密度触发照样会被点着，
+ *   而作者看着一个灰掉的按钮，只会以为系统疯了
+ */
+watch(
+  () => props.enabled,
+  value => {
+    if (!value) {
+      stopStream();
+    }
+  },
+);
+
+onBeforeUnmount(stopStream);
 </script>
 
 <style lang="scss">
 .c-mock-barrage {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
   padding: 6px 10px;
@@ -169,6 +242,42 @@ function onBurst(): void {
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   color: #cdd6f0;
+}
+
+/* 刷屏中：边框和文字都转成活色，加一颗呼吸的点 —— 「它现在真的在跑」 */
+.c-mock-barrage__btn--stream.is-streaming {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  color: #2ee6a8;
+  border-color: rgba(#2ee6a8, 0.55);
+}
+
+.c-mock-barrage__pulse {
+  width: 6px;
+  height: 6px;
+  background: #2ee6a8;
+  border-radius: 50%;
+  animation: c-mock-barrage-pulse 1s ease-in-out infinite;
+}
+
+@keyframes c-mock-barrage-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+.c-mock-barrage__rate {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: #5d6478;
 }
 
 .c-mock-barrage__hint {

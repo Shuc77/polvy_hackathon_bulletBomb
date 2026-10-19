@@ -481,6 +481,9 @@ function onAnchorPatch(patch: Partial<BarrageAnchor>, opts?: { defer?: boolean }
   }
 }
 
+/** 删除确认是否已经弹着。长按 Delete 会连发 keydown，靠它挡住后面的 */
+let removePending = false;
+
 /** 秒 → `分:秒`。只用在确认文案里，让「删的是哪一个」有个坐标 */
 function formatSeconds(value: number): string {
   const total = Math.max(0, Math.round(value));
@@ -500,14 +503,33 @@ async function onAnchorRemove(): Promise<void> {
     return;
   }
 
+  /**
+   * 一次只开一个确认框
+   * @desc ★ 接入 Delete 键之后这条才有意义：按住不放会**连发十几个 keydown**，
+   *   每次都新建一个 `messageBox` 实例，屏幕上就叠出一摞一模一样的对话框，
+   *   点掉最上面那个下面还有。单击「删除该特效」不可能触发，键盘会
+   */
+  if (removePending) {
+    return;
+  }
+
+  removePending = true;
+
   const label = getEffectTemplate(anchor.template)?.label ?? anchor.template;
 
-  const confirmed = await messageBox({
-    title: '删除这个特效？',
-    content: `${formatSeconds(anchor.time)} 处的「${label}」将被移除，且无法撤销。`,
-    confirmButtonText: '删除',
-    cancelButtonText: '取消',
-  }).$confirm();
+  let confirmed = false;
+
+  try {
+    confirmed = await messageBox({
+      title: '删除这个特效？',
+      content: `${formatSeconds(anchor.time)} 处的「${label}」将被移除，且无法撤销。`,
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+    }).$confirm();
+  } finally {
+    // 无论确认、取消还是中途抛错，闸门都要放开，否则这个按钮从此点不动
+    removePending = false;
+  }
 
   if (confirmed) {
     barrageEffectStore.removeAnchor(anchor.id);
@@ -522,17 +544,58 @@ function onUseCurrentTime(): void {
   }
 }
 
+/**
+ * 焦点是不是落在能打字的地方
+ * @desc ★ 少了这道闸，在有锚点被选中时按退格删掉输入框里的字，会**顺手把锚点删了**。
+ *   而锚点删除不可撤销 —— 用户想删一个字，结果丢了一个配好的特效。
+ *   这类「快捷键抢输入」的 bug，只有真正手打的时候才会发现
+ */
+function isEditableTarget(target: EventTarget | null): boolean {
+  const el = target as HTMLElement | null;
+
+  if (!el) {
+    return false;
+  }
+
+  if (el.isContentEditable) {
+    return true;
+  }
+
+  return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT';
+}
+
 function onKeydown(event: KeyboardEvent): void {
-  if (event.key !== 'Escape') {
+  if (event.key === 'Escape') {
+    if (panelMode.value) {
+      closePanel();
+      return;
+    }
+
+    close();
     return;
   }
 
-  if (panelMode.value) {
-    closePanel();
+  /**
+   * Delete / Backspace 删掉选中的特效
+   * @desc 两个都收：Mac 键盘上那个写着 delete 的键，`event.key` 发的是 `Backspace`。
+   *   只认其中一个，另一半用户按下去还是没反应
+   */
+  if (event.key !== 'Delete' && event.key !== 'Backspace') {
     return;
   }
 
-  close();
+  // 弹窗打开时不吃：那儿的 Delete 属于对话框
+  if (panelMode.value || isEditableTarget(event.target)) {
+    return;
+  }
+
+  if (!selectedAnchor.value) {
+    return;
+  }
+
+  // 浏览器里 Backspace 有「后退」的历史行为，必须拦掉才轮得到我们
+  event.preventDefault();
+  onAnchorRemove();
 }
 
 onMounted(() => {
