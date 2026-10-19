@@ -98,6 +98,9 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     feedModes: ['static', 'polarity', 'scale'],
     // 它的本质就是两派对冲，而 `polarity` 是六个模板里唯一能实时拽动几何的
     defaultFeedMode: 'polarity',
+    // 两派弹幕在哪飞，分割线就该在哪 —— 观众可以把弹幕位置设成顶部/底部/半屏，
+    // 光幕铺满整块视频的话，缝会和弹幕区域完全对不上
+    followBarrageArea: true,
     scaleFullCount: 60,
   },
   {

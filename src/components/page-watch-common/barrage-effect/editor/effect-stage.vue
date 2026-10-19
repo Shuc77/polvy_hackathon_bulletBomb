@@ -9,6 +9,16 @@
         {{ hasVideo ? '已镜像播放器画面' : '等待播放器画面…' }}
       </span>
 
+      <!-- 红蓝对抗画在弹幕区域里，而不是整块播放器。区域本身不归作者调 ——
+           它是观众在播放器控制栏「弹幕位置」里自己选的，这里只负责照做 -->
+      <span
+        v-if="descriptor?.followBarrageArea"
+        class="c-effect-stage__area"
+        title="跟随播放器控制栏里的「弹幕位置」设置"
+      >
+        弹幕区域 {{ areaLabel }}
+      </span>
+
       <span
         v-if="debug"
         class="c-effect-stage__debug"
@@ -44,6 +54,8 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { usePlayerStore } from '@/store/use-player-store';
+import { barrageAreaLabel, barrageAreaOf } from '../barrage-area';
 import { getEffectTemplate } from '../effects';
 import { resolveFeedMode } from '../feed-window';
 import type { AnchorFeed, BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
@@ -86,6 +98,18 @@ const canvasRef = ref<HTMLCanvasElement>();
 
 const descriptor = computed(() => getEffectTemplate(props.template));
 
+/** 观众在播放器「弹幕位置」里选的那块区域 */
+const playerStore = usePlayerStore();
+
+/**
+ * 当前弹幕区域
+ * @desc 舞台不另设控件：作者在这里看到的就是观众那边会得到的。
+ *   区域来自播放器控制栏，工作台打开时改不了它 —— 那是**观众**的设置
+ */
+const areaLabel = computed(() =>
+  barrageAreaLabel(playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex]),
+);
+
 /** 当前画的是真实画面还是占位；同值写入不会触发渲染，可以放心每帧赋 */
 const hasVideo = ref(false);
 
@@ -117,7 +141,29 @@ const { requestDraw, getSize } = useEffectCanvas({
 const driver = useInteractiveDriver({
   getSize,
   getSample: (now, seconds) => signalBuffer.snapshot(now, seconds),
+  // 与生产层同一个换算：只有声明了 `followBarrageArea` 的模板会读它
+  getArea: () =>
+    barrageAreaOf(
+      getSize(),
+      playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex],
+    ),
 });
+
+/**
+ * 观众换了弹幕位置：舞台跟着换
+ * @desc 实例在构造时固化了尺寸，必须作废重建。舞台的时钟一直在跑，
+ *   不用像生产层那样补画一帧
+ */
+watch(
+  () => {
+    const location = playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex];
+
+    return location ? `${location.direction}:${location.percent}` : 'full';
+  },
+  () => {
+    driver.invalidate();
+  },
+);
 
 /** 尺寸还没量出来时先记着，量到了在下一帧补播 */
 let pendingPlay = true;
@@ -158,6 +204,13 @@ function currentAnchor(): BarrageAnchor {
 function renderFrame({ ctx, size, delta }: EffectFrame): void {
   hasVideo.value = drawVideoLayer(ctx, size);
 
+  // 真实弹幕只出现在观众选的区域里，镜像也得照做 —— 否则作者会以为
+  // 弹幕铺满全屏，而线上观众看到的只有顶上一块
+  const barrageArea = barrageAreaOf(
+    size,
+    playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex],
+  );
+
   // 第一帧才知道画布多大，所以补播放在这里而不是 setup 里
   if (pendingPlay) {
     pendingPlay = false;
@@ -170,7 +223,7 @@ function renderFrame({ ctx, size, delta }: EffectFrame): void {
 
   // 弹幕画在特效**之上**：生产层里弹幕层也是压在特效层前面的
   // （`pc-watch-layout.vue` 里 `pc-barrage` 挂在 `pc-barrage-effect` 之前）
-  stageBarrage.draw(ctx, size, delta);
+  stageBarrage.draw(ctx, size, delta, barrageArea);
 }
 
 /** 重来一遍：换模板、换锚点、手动重播都走它 */
@@ -258,6 +311,17 @@ onBeforeUnmount(() => {
   &.is-live {
     color: #2ee6a8;
   }
+}
+
+/* 区域提示：说明「这个模板为什么只画在这一块」。
+   用胶囊而不是普通文字 —— 它是一则说明，不该和状态、读数混成一行灰字 */
+.c-effect-stage__area {
+  padding: 1px 8px;
+  font-size: 10px;
+  color: #9aa1b4;
+  background: #232936;
+  border: 1px solid #343a49;
+  border-radius: 9px;
 }
 
 .c-effect-stage__debug {

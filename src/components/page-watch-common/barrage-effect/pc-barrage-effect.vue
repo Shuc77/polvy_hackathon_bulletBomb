@@ -9,8 +9,10 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useBarrageEffectStore } from '@/store/use-barrage-effect-store';
+import { usePlayerStore } from '@/store/use-player-store';
+import { barrageAreaOf } from './barrage-area';
 import { useEffectCanvas, type EffectFrame } from './use-effect-canvas';
 import { useAnchorScheduler } from './use-anchor-scheduler';
 import { createSignalBuffer, useBarrageSignalListener } from './barrage-signal';
@@ -21,6 +23,9 @@ import type { BarrageAnchor } from './types';
 const canvasRef = ref<HTMLCanvasElement>();
 
 const barrageEffectStore = useBarrageEffectStore();
+
+/** 观众在播放器「弹幕位置」里选的那块区域，红蓝对抗要跟着它画 */
+const playerStore = usePlayerStore();
 
 /** 真实上屏弹幕的时间窗缓冲，由本实例自持 */
 const signalBuffer = createSignalBuffer();
@@ -43,7 +48,34 @@ const { start, stop, requestDraw, getSize } = useEffectCanvas({
 const driver = useInteractiveDriver({
   getSize,
   getSample: (now, seconds) => signalBuffer.snapshot(now, seconds),
+  // 只有声明了 `followBarrageArea` 的模板会读它；其余模板照旧铺满
+  getArea: () =>
+    barrageAreaOf(
+      getSize(),
+      playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex],
+    ),
 });
+
+/**
+ * 观众换了弹幕位置：区域跟着换
+ * @desc 实例在构造时固化了尺寸，必须作废重建；循环停着时也要补画一帧，
+ *   否则画面上还留着旧区域的残影。
+ *
+ *   ★ 看的是「区域签名」而不是只盯 index：位置选项是异步从 SDK 同步进来的，
+ *   初始为空数组。只盯 index 的话，选项晚到不会触发回调 —— 那时特效已经
+ *   按全屏建好了实例
+ */
+watch(
+  () => {
+    const location = playerStore.barrageLocationSetting[playerStore.currentBarrageLocationIndex];
+
+    return location ? `${location.direction}:${location.percent}` : 'full';
+  },
+  () => {
+    driver.invalidate();
+    requestDraw();
+  },
+);
 
 function renderFrame({ ctx, delta }: EffectFrame): void {
   // start() 是幂等的（已在跑就早退），所以这里可以每帧无脑调用。

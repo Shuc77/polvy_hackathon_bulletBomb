@@ -13,6 +13,7 @@
  * 弹幕**从哪来**不归它管：`effect-stage.vue` 订阅 `BarrageLanded` 再喂进来，
  * 所以模拟的、真实的走的是同一条路 —— 工作台打开时真实弹幕本来也看不见，镜像它是对的。
  */
+import type { EffectArea } from '../barrage-area';
 import type { EffectSize } from '../types';
 
 /** 同时最多画多少条。8 条连发点两下就 16 条了，给足余量 */
@@ -31,9 +32,9 @@ const MAX_FONT = 24;
 const TRAVEL_SEC = 6.5;
 
 /**
- * 纵向分几条道
- * @desc 写在比例空间而不是像素空间：推入弹幕的时候还不知道画布多大
- *   （尺寸要等第一帧量出来），存比例就不必等
+ * 纵向最多分几条道
+ * @desc 真实条数在绘制时按区域高度折算 —— 弹幕位置被设成顶部 1/4 时，
+ *   12 条道会挤成一团。推入时只记道序号，不记纵坐标
  */
 const LANE_COUNT = 12;
 
@@ -45,8 +46,8 @@ interface StageBarrageItem {
   text: string;
   /** 0 = 刚从右边缘进场，1 = 完全从左边出去 */
   progress: number;
-  /** 纵向中心，0 ~ 1 */
-  y: number;
+  /** 道序号，绘制时按区域高度折算成纵向位置 */
+  lane: number;
   /** 走完全程的秒数 */
   travel: number;
 }
@@ -57,8 +58,10 @@ export interface StageBarrage {
    * 推进一帧并绘制
    * @param delta 距上一帧的秒数。★ 必须由调用方给真实值 ——
    *   写死 1/60 的话，60Hz 屏上对、120Hz 屏上快一倍，掉帧时又慢下来
+   * @param area 观众选的弹幕区域。真实弹幕只在那块里飞，镜像也得照做；
+   *   不传则铺满整个画布
    */
-  draw(ctx: CanvasRenderingContext2D, size: EffectSize, delta: number): void;
+  draw(ctx: CanvasRenderingContext2D, size: EffectSize, delta: number, area?: EffectArea): void;
   clear(): void;
 }
 
@@ -93,13 +96,10 @@ export function createStageBarrage(): StageBarrage {
       return;
     }
 
-    const lane = pickFreeLane(performance.now());
-    const ratio = LANE_COUNT > 1 ? lane / (LANE_COUNT - 1) : 0;
-
     items.push({
       text: content,
       progress: 0,
-      y: LANE_TOP + (LANE_BOTTOM - LANE_TOP) * ratio,
+      lane: pickFreeLane(performance.now()),
       // 快慢交错，但都在基准附近
       travel: TRAVEL_SEC * (0.75 + Math.random() * 0.5),
     });
@@ -109,8 +109,20 @@ export function createStageBarrage(): StageBarrage {
     }
   }
 
-  function draw(ctx: CanvasRenderingContext2D, size: EffectSize, delta: number): void {
+  function draw(
+    ctx: CanvasRenderingContext2D,
+    size: EffectSize,
+    delta: number,
+    area?: EffectArea,
+  ): void {
     if (size.width <= 0 || size.height <= 0) {
+      return;
+    }
+
+    // 没给区域就是整块画布，与改动前逐帧一致
+    const region = area ?? { x: 0, y: 0, width: size.width, height: size.height };
+
+    if (region.width <= 0 || region.height <= 0) {
       return;
     }
 
@@ -125,7 +137,22 @@ export function createStageBarrage(): StageBarrage {
       return;
     }
 
-    const fontSize = Math.round(Math.min(Math.max(size.height * FONT_RATIO, MIN_FONT), MAX_FONT));
+    /**
+     * 字号跟着**区域**高度走
+     * @desc 区域被设成顶部 1/4 时，按整块画布算出来的字号会撑出区域，
+     *   12 条道也会挤成一团
+     */
+    const fontSize = Math.round(Math.min(Math.max(region.height * FONT_RATIO, MIN_FONT), MAX_FONT));
+
+    /**
+     * 这块区域实际放得下几条道
+     * @desc 与字号保持 1.35 倍行距。推入时按 12 道挑的是「最久没用的那条」，
+     *   这里取模折回来 —— 小区域里撞道比整块画布略多，但不会叠字
+     */
+    const laneCount = Math.max(
+      1,
+      Math.min(LANE_COUNT, Math.floor(region.height / (fontSize * 1.35))),
+    );
 
     /**
      * ★ 整块画在一个 save/restore 里
@@ -142,6 +169,11 @@ export function createStageBarrage(): StageBarrage {
      */
     ctx.save();
 
+    // 超出区域的部分裁掉：真实弹幕不会画到区域外面
+    ctx.beginPath();
+    ctx.rect(region.x, region.y, region.width, region.height);
+    ctx.clip();
+
     ctx.font = `600 ${fontSize}px "PingFang SC", "Microsoft YaHei", sans-serif`;
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'left';
@@ -154,8 +186,11 @@ export function createStageBarrage(): StageBarrage {
     for (const item of items) {
       const width = ctx.measureText(item.text).width;
       // 起点在右边缘外，终点在左边缘外 —— 两边都留出自身宽度，进出才不突兀
-      const x = size.width - item.progress * (size.width + width);
-      const y = item.y * size.height;
+      const x = region.x + region.width - item.progress * (region.width + width);
+      // 道序号折回区域能放下的条数，再按比例落到区域的纵向上
+      const lane = item.lane % laneCount;
+      const laneRatio = laneCount > 1 ? lane / (laneCount - 1) : 0;
+      const y = region.y + (LANE_TOP + (LANE_BOTTOM - LANE_TOP) * laneRatio) * region.height;
 
       // 首尾各淡一小段，贴边出现/消失会显得很生硬
       const edge = Math.min(item.progress, 1 - item.progress);

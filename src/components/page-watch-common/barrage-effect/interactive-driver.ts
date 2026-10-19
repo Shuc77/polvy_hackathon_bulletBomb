@@ -11,6 +11,7 @@
  *   写的是同一个入口，所以「预览能看出来、上线就坏」这件事从结构上不可能发生。
  */
 import { effectTemplates, getEffectTemplate } from './effects';
+import type { EffectArea } from './barrage-area';
 import { PULL_TAU, easeToward } from './feed-easing';
 import { resolveTimeScale } from './span';
 import {
@@ -143,6 +144,14 @@ interface Track {
   startedAt: number;
   /** 最近一次读数，供工作台显示 */
   lastReading?: FeedReading;
+  /**
+   * 这个模板要不要跟着弹幕显示区域走
+   * @desc 建轨时从模板元数据上抄一份。区域变化由宿主 `invalidate()`，
+   *   下一轮 `spawn` 会连同实例尺寸一起重算
+   */
+  followArea: boolean;
+  /** 本次实例的绘制区域；`undefined` = 整个画布 */
+  area?: EffectArea;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -153,10 +162,17 @@ export interface UseInteractiveDriverOptions {
   getSize: () => EffectSize;
   /** 取时间窗内的弹幕样本 */
   getSample: (now: number, seconds: number) => BarrageSample;
+  /**
+   * 播放器的弹幕显示区域
+   * @desc 只对声明了 `followBarrageArea` 的模板生效（见 `barrage-area.ts`）。
+   *   返回 `undefined` 表示全画布。宿主在区域变化时必须 `invalidate()` ——
+   *   实例在构造时固化了尺寸，驱动器自己发现不了
+   */
+  getArea?: () => EffectArea | undefined;
 }
 
 export const useInteractiveDriver = (options: UseInteractiveDriverOptions): InteractiveDriver => {
-  const { getSize, getSample } = options;
+  const { getSize, getSample, getArea } = options;
 
   const tracks: Track[] = [];
 
@@ -237,12 +253,18 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
 
   function spawn(track: Track): void {
     const factory = effectTemplates[track.anchor.template];
-    const size = getSize();
+    const fullSize = getSize();
+    const area = track.followArea ? getArea?.() : undefined;
+    // 模板的坐标全部是相对 `size` 的归一化值 —— 给它区域尺寸，
+    // 它自然就按区域铺开，不必知道外面还有一整块画布
+    const size: EffectSize = area ? { width: area.width, height: area.height } : fullSize;
 
     if (!factory || size.width < 1 || size.height < 1) {
       track.gapRemaining = SPAWN_RETRY;
       return;
     }
+
+    track.area = area;
 
     const instance = factory(track.delivered, size);
 
@@ -338,6 +360,8 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       closing: false,
       timeScale: resolveTimeScale(anchor, descriptor),
       startedAt: performance.now(),
+      // 缺省 false：绝大多数模板铺满播放器，只有红蓝对抗这类明确声明了才裁
+      followArea: descriptor?.followBarrageArea ?? false,
     };
   }
 
@@ -415,6 +439,19 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       }
 
       ctx.save();
+
+      /**
+       * 弹幕区域：先移到区域原点，再裁掉溢出的粒子
+       * @desc `translate` 放在 `clip` 之前，模板仍按 `(0, 0)` 起画 ——
+       *   它们不知道区域在画布的哪个位置
+       */
+      if (track.area) {
+        ctx.translate(track.area.x, track.area.y);
+        ctx.beginPath();
+        ctx.rect(0, 0, track.area.width, track.area.height);
+        ctx.clip();
+      }
+
       track.instance.draw(ctx);
       ctx.restore();
     });
