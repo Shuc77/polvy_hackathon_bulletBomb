@@ -74,6 +74,16 @@ export interface EffectParams {
    *   靠雨滴出画重生自然换血 —— 几秒内铺满，不会瞬间跳变
    */
   glyphPool?: string[];
+  /**
+   * 整条弹幕原文，供红蓝对抗把「话」本身画出来
+   * @desc 与 `glyphPool` 一样是**运行时的驱动字段**：由 `interactive-driver` 每帧
+   *   从收集窗注入，不会写进锚点、导出或地址栏。缺省时模板用内置的演示短语
+   */
+  barrageTexts?: string[];
+  /** A 派命中原文，红蓝对抗的左/红侧取它 */
+  barrageTextsA?: string[];
+  /** B 派命中原文，右/蓝侧取它 */
+  barrageTextsB?: string[];
   /** 文字倒计时：倒计时总时长（秒） */
   countdownSec?: number;
   /** 文字倒计时：说明文案，画在数字上方 */

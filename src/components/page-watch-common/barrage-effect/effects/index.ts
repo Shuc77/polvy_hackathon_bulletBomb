@@ -89,7 +89,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
   {
     name: 'split',
     label: '红蓝对抗',
-    description: '两侧光幕合拢顶出一条亮缝。分割线位置、两侧亮度各占一个参数。',
+    description: '红蓝两派弹幕自两侧冲向中点，在亮缝处消融。票差把缝往对面推。',
     accent: '#2f7bff',
     defaults: SPLIT_DEFAULTS,
     factory: createSplit,

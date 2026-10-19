@@ -247,6 +247,17 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       patch.glyphPool = glyphs.length > 0 ? glyphs : undefined;
     }
 
+    /**
+     * ★ 原文与驱动方式无关地注入
+     * @desc 红蓝对抗要的是**整句话**，不是统计量。作者把它切成「规模」时，
+     *   两派弹幕对冲的形态不该退化成没有字的粒子；切回「转场」时没有收集窗，
+     *   模板会用自己的演示短语兜底。上面那几个分支只写各自声明过的字段，
+     *   这三个是「谁需要谁读」的公共输入，不改变任何既有模板的行为
+     */
+    patch.barrageTexts = reading.texts;
+    patch.barrageTextsA = reading.primaryTexts;
+    patch.barrageTextsB = reading.secondaryTexts;
+
     track.delivered = patch;
     track.instance?.applyParams?.(patch);
   }

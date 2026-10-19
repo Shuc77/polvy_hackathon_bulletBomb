@@ -32,6 +32,10 @@ export interface FeedReading {
   rate: number;
   /** 窗内原文采样，供文字通道取字 */
   texts: string[];
+  /** A 派命中原文，供「按阵营分边」的模板取用（红蓝对抗） */
+  primaryTexts: string[];
+  /** B 派命中原文 */
+  secondaryTexts: string[];
 }
 
 export interface FeedWindowOptions {
@@ -97,6 +101,8 @@ export function createFeedWindow(options: FeedWindowOptions): FeedWindow {
   function read(sample: BarrageSample): FeedReading {
     let primary = 0;
     let secondary = 0;
+    const primaryTexts: string[] = [];
+    const secondaryTexts: string[] = [];
 
     // 只统计采样里的原文（最多 32 条）。对冲本来就是个比例，
     // 对最近 32 条抽样与对全窗统计没有可感知的差别，而全窗统计要留着所有原文
@@ -105,8 +111,10 @@ export function createFeedWindow(options: FeedWindowOptions): FeedWindow {
 
       if (side === 'primary') {
         primary += 1;
+        primaryTexts.push(text);
       } else if (side === 'secondary') {
         secondary += 1;
+        secondaryTexts.push(text);
       }
     });
 
@@ -121,6 +129,8 @@ export function createFeedWindow(options: FeedWindowOptions): FeedWindow {
       share: (primary + 1) / (votes + 2),
       rate: sample.rate,
       texts: sample.texts,
+      primaryTexts,
+      secondaryTexts,
     };
   }
 
