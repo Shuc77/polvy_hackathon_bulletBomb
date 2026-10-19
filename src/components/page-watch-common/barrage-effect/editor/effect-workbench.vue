@@ -564,6 +564,48 @@ onBeforeUnmount(() => {
   font-size: 14px;
   color: #e8eaf0;
   background: #12151b;
+
+  /**
+   * 深色滚动条
+   * @desc 模板库、参数面板、触发设置三处都会滚，而一个都没写过滚动条样式 ——
+   *   Windows 上的 Chrome 给的是一条**浅色经典滚动条**，压在 `#12151b` 上
+   *   像贴了块白胶布。这是纯外观问题，但它出现在每一屏。
+   *
+   *   用后代 `*` 而不是逐个列容器：以后再加可滚动的块不必回来补
+   */
+  * {
+    scrollbar-color: #3d4658 transparent;
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #3d4658;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #55607a;
+  }
+
+  /**
+   * 键盘焦点
+   * @desc 整个模块只有两个 `:focus`，都在输入框上。用 Tab 走一圈时，
+   *   十几个按钮全都没有可见焦点 —— 键盘用户根本不知道自己在哪。
+   *   一条后代规则覆盖全部，`outline-offset` 保证贴着深色底也看得清
+   */
+  :focus-visible {
+    outline: 2px solid #4f7cff;
+    outline-offset: 2px;
+  }
 }
 
 .c-effect-workbench__header {
@@ -663,6 +705,18 @@ onBeforeUnmount(() => {
   gap: 1px;
   min-height: 0;
   background: #232936;
+}
+
+/**
+ * 窄屏两侧收窄
+ * @desc 整个模块此前**一条媒体查询都没有**，三栏写死 268 + 264。
+ *   1366 的笔记本上舞台还有 830 出头，够用；1280 以下就开始挤了，
+ *   而演示时投屏、分屏都不罕见。收窄的是两栏的富余，不是舞台
+ */
+@media (max-width: 1280px) {
+  .c-effect-workbench__body {
+    grid-template-columns: 236px minmax(0, 1fr) 236px;
+  }
 }
 
 .c-effect-workbench__pane {

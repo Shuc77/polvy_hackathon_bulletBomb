@@ -31,13 +31,22 @@
       <em class="c-template-card__label">{{ template.label }}</em>
       <em class="c-template-card__desc">{{ template.description }}</em>
 
-      <!-- 分组标题已经说了类别，卡片上更有价值的是「能怎么被驱动」 -->
+      <!-- 分组标题已经说了类别，卡片上更有价值的是「能怎么被驱动」。
+           ★ 标出**拖进去会用哪一种** —— 列表里几个标签以前长得一模一样，
+             作者把「红蓝对抗」拖进时间轴，得到的可能是对冲也可能是规模，
+             而卡片上完全看不出来 -->
       <span class="c-template-card__modes">
         <i
           v-for="chip in modeChips"
-          :key="chip"
+          :key="chip.mode"
           class="c-template-card__mode"
-          >{{ chip }}</i
+          :class="{ 'c-template-card__mode--default': chip.isDefault }"
+          :title="
+            chip.isDefault
+              ? `拖入时间轴时默认用「${chip.label}」`
+              : `拖入后可切换为「${chip.label}」`
+          "
+          >{{ chip.label }}</i
         >
       </span>
     </span>
@@ -80,15 +89,24 @@ const dragging = computed(
   () => draggingTemplate.value !== undefined && draggingTemplate.value === props.template.name,
 );
 
-/** 能力标签：转场类直说「与弹幕无关」，互动类列出支持哪几种驱动 */
+/**
+ * 能力标签：转场类直说「与弹幕无关」，互动类列出支持哪几种驱动
+ * @desc `isDefault` 标的是那一种「拖进去就直接在用」的方式 ——
+ *   它来自 `defaultFeedMode`，与 `addAnchorAt` 写入锚点的是**同一个字段**，
+ *   所以卡片上高亮的那个，就是拖进去以后右侧面板显示的那个
+ */
 const modeChips = computed(() => {
   if (isTransitionOnly(props.template)) {
-    return ['与弹幕无关'];
+    return [{ mode: 'static', label: '与弹幕无关', isDefault: false }];
   }
 
   return props.template.feedModes
     .filter(mode => mode !== 'static')
-    .map(mode => FEED_MODE_LABELS[mode]);
+    .map(mode => ({
+      mode,
+      label: FEED_MODE_LABELS[mode],
+      isDefault: mode === props.template.defaultFeedMode,
+    }));
 });
 
 let instance: EffectInstance | undefined;
@@ -309,8 +327,24 @@ $accent: #4f7cff;
   border-radius: 8px;
 }
 
+/**
+ * 「拖进去默认就是这个」
+ * @desc 用正面填充而不是加粗/加亮：卡片缩略图本身已经很花了，
+ *   文字粗细的变化在那上面读不出来，颜色块能
+ */
+.c-template-card__mode--default {
+  color: #dbe4ff;
+  background: rgba($accent, 0.32);
+}
+
 .c-template-card--selected .c-template-card__mode {
   color: #cdd6f0;
   background: rgba($accent, 0.22);
+}
+
+/* 选中态那条是 0-2-0，会把「默认」的高亮（0-1-0）盖掉 —— 补一条更高的 */
+.c-template-card--selected .c-template-card__mode--default {
+  color: #fff;
+  background: rgba($accent, 0.55);
 }
 </style>
