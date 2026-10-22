@@ -705,7 +705,8 @@ export const createSplit: EffectFactory = (
       (1 + Math.sin(elapsed * 13.1) * 0.25 + Math.sin(elapsed * 5.3 + 1.7) * 0.15);
     const glowWidth = Math.max(fontSize * 2.4, 40);
 
-    ctx.globalCompositeOperation = 'lighter';
+    // 实体混色：加法混色里的白光核心叠在白画面上等于没有
+    ctx.globalCompositeOperation = 'source-over';
 
     ctx.globalAlpha = 0.35 * fade * (0.85 + 0.15 * Math.sin(elapsed * 9.7));
     const core = ctx.createLinearGradient(seamX - coreWidth * 2, 0, seamX + coreWidth * 2, 0);
@@ -813,7 +814,7 @@ export const createSplit: EffectFactory = (
     drawWashes(ctx, fade);
     drawTexts(ctx, fade);
 
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = 'source-over';
     drawSeam(ctx, fade);
     drawSparks(ctx, fade);
     drawFlakes(ctx, fade);

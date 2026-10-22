@@ -121,6 +121,35 @@ function normalizeFeed(input: unknown, template: EffectTemplateName): AnchorFeed
     result.wordsB = feed.wordsB;
   }
 
+  /**
+   * 主动答题
+   * @desc ★ 必须显式写进白名单，否则导入、导出、地址栏三条路会一起**静默**丢掉它，
+   *   作者只会看到「答题卡配了但不弹」。`collect: {}` 本身就是有效值（开启，
+   *   提前秒数运行时取 `windowSec`），不能因为里面没有字段就整块丢掉。
+   *
+   *   也接受手写链接里的 `true` 简写 —— 反正是同一个语义，报错反而更难用
+   */
+  // 类型上 collect 是对象，但手写链接里可能写成 true；这里按 unknown 收
+  const rawCollect = feed.collect as unknown;
+
+  if (rawCollect === true) {
+    result.collect = {};
+  } else if (rawCollect && typeof rawCollect === 'object') {
+    const source = rawCollect as { prompt?: unknown; leadSec?: unknown };
+    const collect: NonNullable<AnchorFeed['collect']> = {};
+
+    if (typeof source.prompt === 'string' && source.prompt.trim()) {
+      collect.prompt = source.prompt.trim();
+    }
+
+    const leadSec = Number(source.leadSec);
+    if (Number.isFinite(leadSec)) {
+      collect.leadSec = Math.min(Math.max(Math.round(leadSec), MIN_WINDOW_SEC), MAX_WINDOW_SEC);
+    }
+
+    result.collect = collect;
+  }
+
   return result;
 }
 

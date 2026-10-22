@@ -9,9 +9,10 @@
  *   别把这里「优化」成实时写 store。
  */
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { isSlotFree } from '../anchor-utils';
+import { isSlotFree, nearestFreeTime } from '../anchor-utils';
+import { collectLeadSecOf } from '../collect';
 import { getEffectTemplate } from '../effects';
-import { spanRangeOf } from '../span';
+import { spanOf, spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectTemplateName } from '../types';
 import { pointerClientX } from './pointer-utils';
 import {
@@ -32,6 +33,20 @@ const SCRUB_INTERVAL = 120;
 /** 投放时允许指针偏离轨道的纵向容差，单位：像素 */
 const DROP_BAND = 24;
 
+/**
+ * 自动对齐的吸附半径，单位：像素
+ * @desc 用像素而不是固定秒数：同一条时间轴在 1 分钟和 1 小时的回放里，
+ *   1 秒对应的像素差了一个数量级。8px 在 6 分钟的片子上是 2.4 秒，
+ *   在 1 小时的片子上就是 24 秒 —— 作者始终是在「瞄着 8 像素内的线」对齐
+ */
+const SNAP_PX = 8;
+
+/**
+ * 吸附半径折算成秒后的下限
+ * @desc 短视频上 8px 可能只有 0.2 秒，太难点中；给一个手能停住的最小窗口
+ */
+const SNAP_MIN_SEC = 0.4;
+
 export type TimelineDragMode = 'idle' | 'pending' | 'move' | 'resize' | 'scrub';
 
 interface TrackRect {
@@ -47,9 +62,16 @@ export interface UseTimelineDragOptions {
   /** 时间轴是否可用；直播下为 false */
   isAvailable: () => boolean;
   getAnchors: () => BarrageAnchor[];
+  /** 播放头当前时间，用作自动对齐的目标之一 */
+  getPlayhead: () => number;
   onSeek: (time: number) => void;
   onSelect: (id: string) => void;
-  onCommitMove: (id: string, time: number) => void;
+  /**
+   * 提交移动
+   * @param aligned 本次落点命中了自动对齐。为真时 store 不再做 1 秒间隔的推挤 ——
+   *   作者明确要对齐到另一条特效/播放头上，推开 1 秒恰好就是他要消除的偏差
+   */
+  onCommitMove: (id: string, time: number, aligned?: boolean) => void;
   /** 拖条带右端：改这个锚点播多久 */
   onCommitResize: (id: string, span: number) => void;
   onCreate: (time: number, template: EffectTemplateName) => void;
@@ -65,6 +87,12 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
   const originTime = ref(0);
   /** 拖动中的落点时间 */
   const ghostTime = ref<number>();
+  /**
+   * 当前吸附到的对齐时间
+   * @desc 与 `ghostTime` 分开：幽灵是最终落点（可能已经被 1 秒间隔推到空位），
+   *   这个只记「命中了哪条对齐线」，用来画参考线和提示
+   */
+  const snapTime = ref<number>();
   /** 拖动条带右端时的落点时长，单位：秒 */
   const ghostSpan = ref<number>();
   /** 指针悬停的时间气泡 */
@@ -74,6 +102,14 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
 
   let gestureRect: TrackRect | undefined;
   let pressClientX = 0;
+  /**
+   * 按下点与锚点触发时刻的秒数差
+   * @desc ★ 圆点有十几像素宽，按在它的左/右半边时，指针位置与触发时刻
+   *   差着零点几秒（长视频上就是好几秒）。直接把指针位置当成新触发时刻的话，
+   *   越过拖动阈值的第一帧锚点会「跳」一下，看起来像是抓错了特效。
+   *   记下偏移后全程按「抓哪儿拖哪儿」走
+   */
+  let grabOffsetSec = 0;
   let lastScrubAt = 0;
   let unregisterDrop: (() => void) | undefined;
   /**
@@ -124,6 +160,79 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     return isSlotFree(options.getAnchors(), time);
   }
 
+  /**
+   * 吸附半径换算成秒：8px 在不同总时长的轨道上不是同一个秒数
+   * @desc ★ 不设上限。长视频里 1 秒远小于 1px，若把半径压到 1 秒以下，
+   *   磁铁会比一个像素还窄，永远吸不中。半径大于 1 秒时，「离锚点 1 秒」
+   *   的空位确实会被吸走 —— 但在那个比例尺上它本来就不足一个像素，
+   *   作者也分不出这个区别
+   */
+  function snapThreshold(rect: TrackRect | undefined): number {
+    const duration = options.getDuration();
+
+    if (!rect || rect.width <= 0 || duration <= 0) {
+      return SNAP_MIN_SEC;
+    }
+
+    return Math.max(SNAP_MIN_SEC, (SNAP_PX / rect.width) * duration);
+  }
+
+  /**
+   * 找最近的对齐目标
+   * @desc 候选全是**看得见的边**：播放头、别的特效的触发点、收集段起点、条带终点、0s。
+   *   在阈值内取最近的一条。返回 undefined 表示这次拖动不吸附，走普通的空位逻辑
+   */
+  function snapTargetOf(
+    time: number,
+    rect: TrackRect | undefined,
+    anchorId: string | undefined,
+  ): number | undefined {
+    const duration = options.getDuration();
+
+    if (duration <= 0) {
+      return undefined;
+    }
+
+    const candidates: number[] = [0, Math.round(options.getPlayhead())];
+
+    options.getAnchors().forEach(anchor => {
+      if (anchor.id === anchorId) {
+        return;
+      }
+
+      const descriptor = getEffectTemplate(anchor.template);
+      const lead = collectLeadSecOf(anchor, descriptor);
+      const span = spanOf(anchor, descriptor);
+
+      candidates.push(Math.round(anchor.time));
+
+      if (lead > 0) {
+        candidates.push(Math.round(Math.max(0, anchor.time - lead)));
+      }
+
+      candidates.push(Math.round(anchor.time + span));
+    });
+
+    const threshold = snapThreshold(rect);
+    let best: number | undefined;
+    let bestDistance = Infinity;
+
+    candidates.forEach(candidate => {
+      if (candidate < 0 || candidate > duration) {
+        return;
+      }
+
+      const distance = Math.abs(candidate - time);
+
+      if (distance <= threshold && distance < bestDistance) {
+        best = candidate;
+        bestDistance = distance;
+      }
+    });
+
+    return best;
+  }
+
   function attach(): void {
     document.addEventListener('mousemove', onPointerMove);
     document.addEventListener('mouseup', onPointerUp);
@@ -145,7 +254,9 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     activeId.value = undefined;
     ghostTime.value = undefined;
     ghostSpan.value = undefined;
+    snapTime.value = undefined;
     gestureRect = undefined;
+    grabOffsetSec = 0;
   }
 
   /**
@@ -197,6 +308,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
       originTime.value = Number(anchorEl.dataset.anchorTime ?? 0);
       gestureRect = readRect();
       pressClientX = pointerClientX(event);
+      grabOffsetSec = timeAt(pressClientX, gestureRect) - originTime.value;
       options.onSelect(anchorId);
       attach();
       return;
@@ -227,6 +339,9 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     }
 
     if (mode.value === 'resize') {
+      // 改时长不参与时间对齐：条带右端对齐另一条边是另一套手势，别混进来
+      snapTime.value = undefined;
+
       if (activeId.value !== undefined) {
         ghostSpan.value = spanAt(clientX, rect, activeId.value);
       }
@@ -235,7 +350,31 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     }
 
     if (mode.value === 'move') {
-      ghostTime.value = timeAt(clientX, rect);
+      /**
+       * 触发时刻 = 指针时刻 - 抓取偏移，保证按下时条带不会瞬移
+       * @desc 再夹回 [0, duration]：在圆点边缘按下时偏移最多半个圆点，
+       *   指针顶到轨道左端后触发时刻会是负数 —— 不夹的话 0s 这个候选
+       *   永远差着那半个圆点，作者拖到最左边也吸不到 0
+       */
+      const duration = options.getDuration();
+      const raw = Math.min(duration, Math.max(0, timeAt(clientX, rect) - grabOffsetSec));
+      const snapped = snapTargetOf(raw, rect, activeId.value);
+
+      snapTime.value = snapped;
+
+      /**
+       * ★ 幽灵位置也要走提交时的吸附
+       * @desc 只把手指位置画出来的话，0s 这类被别的锚点占住（最小间隔 1 秒）的
+       *   落点会一路显示 0，松手那一瞬才被 `moveAnchor` 吸到最近空位 ——
+       *   作者看到的是「拖到 0，松手又弹回 5s」。
+       *
+       *   命中了自动对齐就画对齐点；没有命中才让 1 秒间隔把落点推开。
+       *   两种情况下幽灵与最终落盘都是同一个数，没有「回弹」这一步
+       */
+      ghostTime.value =
+        snapped !== undefined
+          ? snapped
+          : nearestFreeTime(options.getAnchors(), raw, activeId.value);
       return;
     }
 
@@ -256,6 +395,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     const anchorId = activeId.value;
     const ghost = ghostTime.value;
     const span = ghostSpan.value;
+    const aligned = snapTime.value !== undefined;
     const rect = gestureRect ?? readRect();
     const clientX = pointerClientX(event);
 
@@ -263,7 +403,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
 
     if (finishedMode === 'move' && anchorId !== undefined && ghost !== undefined) {
       // 时钟本来就 2Hz，拖动时保持连续、提交时才取整
-      options.onCommitMove(anchorId, Math.round(ghost));
+      options.onCommitMove(anchorId, Math.round(ghost), aligned);
       return;
     }
 
@@ -301,9 +441,16 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
           return null;
         }
 
-        const time = Math.round(timeAt(clientX, rect));
+        /**
+         * 投放也吃自动对齐
+         * @desc 拖到已有特效/播放头旁边时直接吸过去新建，不再报「此处不可放置」。
+         *   否则同一个「想叠在一起」的意图，拖动锚点能对齐，拖模板进来却被拒绝
+         */
+        const raw = timeAt(clientX, rect);
+        const snapped = snapTargetOf(raw, rect, undefined);
+        const time = snapped !== undefined ? snapped : Math.round(raw);
 
-        return { time, valid: canCreateAt(time) };
+        return { time, valid: snapped !== undefined || canCreateAt(time) };
       },
       onHover: point => {
         dropPoint.value = point ?? undefined;
@@ -328,6 +475,7 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
     originTime,
     ghostTime,
     ghostSpan,
+    snapTime,
     hoverTime,
     dropPoint,
 

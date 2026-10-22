@@ -41,7 +41,7 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
   {
     name: 'converge',
     label: '汇聚吸入',
-    description: '粒子从四边被吸进一点，收束成一次闪光。悬念揭晓、答案公布。',
+    description: '粒子从四边被吸进一点，收束成一次闪光。填了答案会继续成形为整句。',
     accent: '#7c5cff',
     defaults: CONVERGE_DEFAULTS,
     factory: createConverge,

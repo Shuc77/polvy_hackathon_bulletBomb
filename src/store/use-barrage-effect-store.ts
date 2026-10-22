@@ -77,8 +77,11 @@ export interface BarrageEffectStore {
   addAnchorAt: (time: number, template?: EffectTemplateName) => BarrageAnchor;
   /** defer 用于滑块拖动这类高频写入：跳过重排，并把落盘合并到 300ms 尾部 */
   updateAnchor: (id: string, patch: Partial<BarrageAnchor>, opts?: { defer?: boolean }) => void;
-  /** 语义化的改时间：内部做边界收敛与整数化 */
-  moveAnchor: (id: string, time: number) => void;
+  /**
+   * 语义化的改时间：内部做边界收敛与整数化
+   * @param opts.aligned 命中自动对齐时传 true：跳过 1 秒间隔推挤，落到精确位置
+   */
+  moveAnchor: (id: string, time: number, opts?: { aligned?: boolean }) => void;
   removeAnchor: (id: string) => void;
   selectAnchor: (id?: string) => void;
   clearAnchors: () => void;
@@ -132,6 +135,19 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
         return raw ? parseAnchorsText(raw) : [];
       } catch {
         return [];
+      }
+    }
+
+    /**
+     * 本地是否真的有一份草稿
+     * @desc 与「读出来是不是空的」是两件事：`[]` 是用户主动清空后的草稿，
+     *   必须尊重；**键不存在**则表示这台浏览器还没保存过任何改动
+     */
+    function hasStorageDraft(): boolean {
+      try {
+        return window.localStorage.getItem(STORAGE_KEY) !== null;
+      } catch {
+        return false;
       }
     }
 
@@ -216,11 +232,17 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
      *   现在按载荷指纹判定：**同一份载荷只应用一次**。
      *   载荷没变 → 说明用户已经在这基础上改过，听本地存档的；
      *   载荷变了 → 是新的分享链接，采用它。
+     *
+     *   ★ 但「同一份载荷」不等于「本地已经接手了」：用分享链接打开、还没做过任何
+     *   改动时，本地草稿根本不存在。这时刷新会读到空数组，时间轴上的特效就全没了
+     *   （指纹记着「应用过」，链接反而被忽略）。所以补一条：**没有草稿就继续用链接**。
+     *   用户真的主动清空过时，本地存的是 `[]` 而不是没有键 —— 那仍然听本地的。
      */
     const urlRaw = getAnchorsQueryRaw();
     const urlAnchors = urlRaw ? parseAnchorsText(urlRaw) : [];
+    const localDraft = hasStorageDraft();
 
-    if (urlAnchors.length > 0 && readUrlStamp() !== urlRaw) {
+    if (urlAnchors.length > 0 && (readUrlStamp() !== urlRaw || !localDraft)) {
       anchors.value = urlAnchors;
       anchorsFromUrl.value = true;
       writeUrlStamp(urlRaw as string);
@@ -255,7 +277,20 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
         time: Math.max(0, Math.round(time)),
         template,
         params: {},
-        ...(defaultFeedMode ? { feed: { mode: defaultFeedMode } } : {}),
+        /**
+         * 新互动锚点默认开启答题卡
+         * @desc 用户已经拍板「只做主动答题」：收集窗不能是静默统计。
+         *   `collect: {}` 表示开启，题目与提前秒数走自动值；旧锚点没有这个字段，
+         *   因此不会被这次默认值改味
+         */
+        ...(defaultFeedMode
+          ? {
+              feed: {
+                mode: defaultFeedMode,
+                ...(defaultFeedMode === 'static' ? {} : { collect: {} }),
+              },
+            }
+          : {}),
       };
 
       anchors.value.push(anchor);
@@ -290,8 +325,18 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
      *   另一条上面，两条都选不中、也看不出来。这里让移动受同一条约束，
      *   越过界时不拒绝，吸附到最近的空位
      */
-    function moveAnchor(id: string, time: number): void {
-      updateAnchor(id, { time: nearestFreeTime(anchors.value, time, id) });
+    function moveAnchor(id: string, time: number, opts?: { aligned?: boolean }): void {
+      /**
+       * ★ 命中自动对齐时不能再走 `nearestFreeTime`
+       * @desc 那个函数会把落点从别的锚点旁边推开 1 秒 —— 而作者正是要贴上去。
+       *   对齐是显式动作（时间轴上出现了黄色参考线才传 true），
+       *   普通拖动仍然保留 1 秒间隔，两条路径分开
+       */
+      const next = opts?.aligned
+        ? Math.max(0, Math.round(time))
+        : nearestFreeTime(anchors.value, time, id);
+
+      updateAnchor(id, { time: next });
     }
 
     function removeAnchor(id: string): void {

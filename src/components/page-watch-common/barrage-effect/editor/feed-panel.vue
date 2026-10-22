@@ -24,7 +24,7 @@
     <template v-if="currentMode !== 'static'">
       <div class="c-feed-panel__field">
         <div class="c-feed-panel__label">
-          <span>收集窗时长</span>
+          <span>互动窗口</span>
           <b>{{ windowSec }} 秒</b>
         </div>
         <plv-slider
@@ -35,6 +35,70 @@
           :hot-area-height="28"
           @input="onWindowSecInput"
         />
+        <p class="c-feed-panel__note">锚点之后特效持续多久。</p>
+      </div>
+
+      <!-- 主动答题：锚点前抛出题目并提前收集。新锚点默认开启，旧锚点一键升级 -->
+      <div class="c-feed-panel__collect">
+        <div class="c-feed-panel__collect-head">
+          <span class="c-feed-panel__title">答题卡</span>
+          <span
+            v-if="hasCollect"
+            class="c-feed-panel__tag"
+          >
+            已开启
+          </span>
+          <button
+            v-else
+            type="button"
+            class="c-feed-panel__enable"
+            @click="enableCollect"
+          >
+            开启答题卡
+          </button>
+        </div>
+
+        <template v-if="hasCollect">
+          <div class="c-feed-panel__field">
+            <div class="c-feed-panel__label">
+              <span>答题卡文案</span>
+            </div>
+            <input
+              :value="collectPrompt"
+              class="c-feed-panel__input"
+              type="text"
+              :placeholder="autoPrompt"
+              @input="onCollectPromptInput"
+            />
+          </div>
+
+          <div class="c-feed-panel__field">
+            <div class="c-feed-panel__label">
+              <span>提前收集</span>
+              <b>{{ leadSec }} 秒</b>
+            </div>
+            <plv-slider
+              :value="leadSec"
+              :min="MIN_WINDOW_SEC"
+              :max="MAX_WINDOW_SEC"
+              :progress-bar-visible="false"
+              :hot-area-height="28"
+              @input="onLeadSecInput"
+            />
+          </div>
+
+          <p class="c-feed-panel__note">
+            答题卡在锚点前 {{ leadSec }} 秒出现，到点时用这段时间收到的弹幕开演。
+            主动答题只对回放时间锚点生效。
+          </p>
+        </template>
+
+        <p
+          v-else
+          class="c-feed-panel__note"
+        >
+          旧配置保持静默收集。开启后锚点前会弹出答题卡，引导观众发弹幕参与。
+        </p>
       </div>
 
       <template v-if="currentMode === 'polarity'">
@@ -87,6 +151,7 @@
 import { computed } from 'vue';
 // 见 params-panel.vue 里的说明：polyv-ui 没有全局注册，模板里用到就得显式引入
 import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
+import { collectLeadSecOf, resolveCollectPrompt } from '../collect';
 import { FEED_MODE_LABELS, getEffectTemplate } from '../effects';
 import {
   DEFAULT_WINDOW_SEC,
@@ -94,7 +159,7 @@ import {
   MIN_WINDOW_SEC,
   resolveFeedMode,
 } from '../feed-window';
-import type { AnchorFeed, BarrageAnchor, EffectFeedMode } from '../types';
+import type { AnchorCollect, AnchorFeed, BarrageAnchor, EffectFeedMode } from '../types';
 
 const props = defineProps<{
   anchor?: BarrageAnchor;
@@ -129,11 +194,56 @@ const windowSec = computed(() => props.anchor?.feed?.windowSec ?? DEFAULT_WINDOW
 const wordsA = computed(() => props.anchor?.feed?.wordsA ?? '');
 const wordsB = computed(() => props.anchor?.feed?.wordsB ?? '');
 
+/** 这个锚点开没开主动答题。旧锚点没有 `collect`，不预滚 */
+const hasCollect = computed(() => !!props.anchor?.feed?.collect);
+
+const collectPrompt = computed(() => props.anchor?.feed?.collect?.prompt ?? '');
+
+/**
+ * 实际生效的提前收集秒数
+ * @desc 走 `collectLeadSecOf` 而不是直接读 `collect.leadSec`：没填时它沿用
+ *   `windowSec`，并且会把驱动方式已经切成 `static` 的锚点判成 0
+ */
+const leadSec = computed(() => {
+  const anchor = props.anchor;
+
+  if (!anchor) {
+    return DEFAULT_WINDOW_SEC;
+  }
+
+  return collectLeadSecOf(anchor, descriptor.value) || DEFAULT_WINDOW_SEC;
+});
+
+/**
+ * 自动文案，用作输入框 placeholder
+ * @desc 临时造一个 `collect: {}` 的副本，让 `resolveCollectPrompt` 走自动分支；
+ *   作者填了文案就不会看到它
+ */
+const autoPrompt = computed(() => {
+  const anchor = props.anchor;
+
+  if (!anchor) {
+    return '';
+  }
+
+  return (
+    resolveCollectPrompt(
+      { ...anchor, feed: { ...anchor.feed, mode: currentMode.value, collect: {} } },
+      descriptor.value,
+    )?.question ?? ''
+  );
+});
+
 /** 保留已有的 feed 字段，只改要改的那个 —— 不然切模式会把关键词清空 */
 function patchFeed(patch: Partial<AnchorFeed>): void {
   const next: AnchorFeed = { ...props.anchor?.feed, mode: currentMode.value, ...patch };
 
   emit('patch', { feed: next });
+}
+
+/** 只改 collect 内部的一个字段，保留另一个 */
+function patchCollect(patch: Partial<AnchorCollect>): void {
+  patchFeed({ collect: { ...props.anchor?.feed?.collect, ...patch } });
 }
 
 function selectMode(mode: EffectFeedMode): void {
@@ -142,6 +252,19 @@ function selectMode(mode: EffectFeedMode): void {
 
 function onWindowSecInput(value: number): void {
   patchFeed({ windowSec: value });
+}
+
+/** 旧配置的一次性升级：写入空对象即开启，题目与秒数走自动值 */
+function enableCollect(): void {
+  patchFeed({ collect: {} });
+}
+
+function onCollectPromptInput(event: Event): void {
+  patchCollect({ prompt: (event.target as HTMLInputElement).value });
+}
+
+function onLeadSecInput(value: number): void {
+  patchCollect({ leadSec: value });
 }
 
 function onWordsAInput(event: Event): void {
@@ -213,6 +336,41 @@ function onWordsBInput(event: Event): void {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+/* 答题卡：虚线框把它和驱动方式的其他字段分开 —— 它是一套「只在回放时间锚点上生效」的附加配置 */
+.c-feed-panel__collect {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(79, 124, 255, 0.06);
+  border: 1px dashed #343d52;
+  border-radius: 5px;
+}
+
+.c-feed-panel__collect-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.c-feed-panel__tag {
+  font-size: 10px;
+  color: #8fa8ff;
+}
+
+.c-feed-panel__enable {
+  padding: 0;
+  font-size: 10px;
+  color: #9db4ff;
+  cursor: pointer;
+  background: none;
+  border: 0;
+
+  &:hover {
+    color: #fff;
+  }
 }
 
 .c-feed-panel__label {

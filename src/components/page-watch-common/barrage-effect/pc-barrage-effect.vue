@@ -5,19 +5,40 @@
       ref="canvasRef"
       class="c-pc-barrage-effect__canvas"
     ></canvas>
+
+    <!-- 答题卡是 HTML 不是 canvas：它不参与特效绘制，也不受弹幕区域裁剪。
+         收集区重叠时多张卡竖排，各倒各的；到点只移除自己那一张 -->
+    <div
+      v-if="activePrompts.length > 0"
+      class="c-quiz-prompt-stack"
+    >
+      <quiz-prompt
+        v-for="prompt in activePrompts"
+        :key="prompt.key"
+        :question="prompt.question"
+        :hint-a="prompt.hintA"
+        :hint-b="prompt.hintB"
+        :remaining="prompt.remaining"
+        :total="prompt.total"
+        :accent="prompt.accent"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useBarrageEffectStore } from '@/store/use-barrage-effect-store';
 import { usePlayerStore } from '@/store/use-player-store';
 import { barrageAreaOf } from './barrage-area';
+import { collectLeadSecOf, resolveCollectPrompt } from './collect';
+import { getEffectTemplate } from './effects';
 import { useEffectCanvas, type EffectFrame } from './use-effect-canvas';
 import { useAnchorScheduler } from './use-anchor-scheduler';
 import { createSignalBuffer, useBarrageSignalListener } from './barrage-signal';
 import { createTriggerAnchor, evaluateDensity } from './density-trigger';
 import { useInteractiveDriver } from './interactive-driver';
+import QuizPrompt from './quiz-prompt.vue';
 import type { BarrageAnchor } from './types';
 
 const canvasRef = ref<HTMLCanvasElement>();
@@ -108,13 +129,123 @@ function playAndRun(anchor: BarrageAnchor): void {
   driver.play(anchor);
 }
 
+/**
+ * 已进入预滚、等待揭晓的答题卡
+ * @desc 按锚点时间升序。收集区重叠时**全部渲染**（竖排），每个锚点到点后
+ *   只移除自己那一张；跳过找不到文案的排队项，别让第一条堵住后面
+ */
+interface PromptEntry {
+  anchor: BarrageAnchor;
+  leadSec: number;
+  remaining: number;
+}
+
+/** 交给模板显示的答题卡内容 */
+interface PromptCard {
+  key: string;
+  question: string;
+  hintA?: string;
+  hintB?: string;
+  remaining: number;
+  total: number;
+  accent?: string;
+}
+
+const promptQueue = ref<PromptEntry[]>([]);
+
+const activePrompts = computed<PromptCard[]>(() => {
+  const prompts: PromptCard[] = [];
+
+  for (const entry of promptQueue.value) {
+    const descriptor = getEffectTemplate(entry.anchor.template);
+    const prompt = resolveCollectPrompt(entry.anchor, descriptor);
+
+    if (!prompt) {
+      continue;
+    }
+
+    prompts.push({
+      key: entry.anchor.id,
+      question: prompt.question,
+      hintA: prompt.hintA,
+      hintB: prompt.hintB,
+      remaining: entry.remaining,
+      total: entry.leadSec,
+      accent: descriptor?.accent,
+    });
+  }
+
+  return prompts;
+});
+
+function removePrompt(id: string): void {
+  promptQueue.value = promptQueue.value.filter(item => item.anchor.id !== id);
+}
+
+function clearPrompts(): void {
+  promptQueue.value = [];
+}
+
+function onApproach(anchor: BarrageAnchor): void {
+  const leadSec = collectLeadSecOf(anchor, getEffectTemplate(anchor.template));
+
+  if (!(leadSec > 0) || promptQueue.value.some(item => item.anchor.id === anchor.id)) {
+    return;
+  }
+
+  promptQueue.value = [...promptQueue.value, { anchor, leadSec, remaining: leadSec }].sort(
+    (a, b) => a.anchor.time - b.anchor.time,
+  );
+}
+
+/**
+ * 刷新倒计时，并丢掉已经过点的排队项
+ * @desc 过点说明 `onHit` 这一帧已经放过了（或者播放器跳过了），
+ *   留着会让答题卡停在 0 秒继续显示
+ */
+function onPromptProgress(currentTime: number): void {
+  if (promptQueue.value.length === 0) {
+    return;
+  }
+
+  const next: PromptEntry[] = [];
+
+  promptQueue.value.forEach(entry => {
+    const remaining = entry.anchor.time - currentTime;
+
+    if (remaining > 0) {
+      next.push(remaining === entry.remaining ? entry : { ...entry, remaining });
+    }
+  });
+
+  promptQueue.value = next;
+}
+
 useAnchorScheduler({
   // 从 store 实时读取：配置面板里增删锚点后无需刷新即可生效
   getAnchors: () => barrageEffectStore.anchors,
-  onHit: playAndRun,
+  onHit: anchor => {
+    // 到点答题卡必须立刻消失，再开演
+    removePrompt(anchor.id);
+    playAndRun(anchor);
+  },
+  getApproachLeadSec: anchor => collectLeadSecOf(anchor, getEffectTemplate(anchor.template)),
+  onApproach,
+  onProgress: onPromptProgress,
+  onSeek: clearPrompts,
   // 工作台浮层盖住播放器时，真实图层上放特效没人看得见
   shouldSuppress: () => barrageEffectStore.workbenchVisible,
 });
+
+// 打开工作台时把答题卡收掉：它会被浮层盖住，关掉后也不该拿旧倒计时接着演
+watch(
+  () => barrageEffectStore.workbenchVisible,
+  visible => {
+    if (visible) {
+      clearPrompts();
+    }
+  },
+);
 
 /**
  * 弹幕到达：先入缓冲，再判密度
@@ -162,6 +293,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   driver.reset();
+  clearPrompts();
 });
 </script>
 

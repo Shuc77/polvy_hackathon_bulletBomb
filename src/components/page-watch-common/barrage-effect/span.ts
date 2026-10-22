@@ -17,6 +17,11 @@
  *   （`applyParams` 直接吃它），`feed.windowSec` 已经是收集窗的长度（`normalizeFeed`
  *   按 `[3, 30]` 钳它）。硬塞第三个数只会制造「两个数都说自己算数」的状态。
  */
+import {
+  CONVERGE_ANSWER_DURATION,
+  CONVERGE_ANSWER_MAX_SEC,
+  CONVERGE_ANSWER_MIN_SEC,
+} from './effects/converge';
 import { COUNTDOWN_DEFAULTS, COUNTDOWN_MAX_SEC, COUNTDOWN_MIN_SEC } from './effects/countdown';
 import { DEFAULT_WINDOW_SEC, MAX_WINDOW_SEC, MIN_WINDOW_SEC, resolveFeedMode } from './feed-window';
 import type { BarrageAnchor, EffectTemplateDescriptor } from './types';
@@ -46,8 +51,8 @@ export interface SpanRange {
   max: number;
 }
 
-/** 三种去向 */
-type SpanCase = 'countdown' | 'window' | 'stretch';
+/** 四种去向 */
+type SpanCase = 'countdown' | 'window' | 'answer' | 'stretch';
 
 function isPositiveFinite(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -63,6 +68,23 @@ function clamp(value: number, min: number, max: number): number {
  *   （没写 `feed` → 模板第一项；写了不支持的 → 退回模板第一项）。
  *   自己写 `anchor.feed?.mode !== 'static'` 会在配置里带着一个不支持的 mode 时给出不同答案
  */
+/**
+ * 模板是不是填了答案
+ * @desc 和参数面板同一个判据：模板在 `defaults` 里声明了 `answerText` 这一槽，
+ *   并且锚点上真的填了非空文案。空文案必须继续走原来的转场行为
+ */
+function hasAnswerReveal(
+  anchor: BarrageAnchor,
+  descriptor: EffectTemplateDescriptor | undefined,
+): boolean {
+  return (
+    !!descriptor &&
+    'answerText' in descriptor.defaults &&
+    typeof anchor.params?.answerText === 'string' &&
+    anchor.params.answerText.trim().length > 0
+  );
+}
+
 function spanCaseOf(
   anchor: BarrageAnchor,
   descriptor: EffectTemplateDescriptor | undefined,
@@ -71,12 +93,17 @@ function spanCaseOf(
     return 'countdown';
   }
 
-  return resolveFeedMode(anchor, descriptor) === 'static' ? 'stretch' : 'window';
+  // 互动模式优先：锚点后的窗口时长仍是它，答案揭晓在窗口内持续
+  if (resolveFeedMode(anchor, descriptor) !== 'static') {
+    return 'window';
+  }
+
+  return hasAnswerReveal(anchor, descriptor) ? 'answer' : 'stretch';
 }
 
 /** 条带的量化精度：整秒还是十分之一秒 */
 function quantumOf(spanCase: SpanCase): number {
-  return spanCase === 'stretch' ? QUANTUM_TENTH : QUANTUM_WHOLE;
+  return spanCase === 'stretch' || spanCase === 'answer' ? QUANTUM_TENTH : QUANTUM_WHOLE;
 }
 
 /**
@@ -96,6 +123,8 @@ export function spanRangeOf(
       return { min: COUNTDOWN_MIN_SEC, max: COUNTDOWN_MAX_SEC };
     case 'window':
       return { min: MIN_WINDOW_SEC, max: MAX_WINDOW_SEC };
+    case 'answer':
+      return { min: CONVERGE_ANSWER_MIN_SEC, max: CONVERGE_ANSWER_MAX_SEC };
     default: {
       /**
        * ★ 上下界跟着**缩放系数的上下界**走，而不是无边无际
@@ -136,6 +165,14 @@ export function naturalSpanOf(
       const seconds = anchor.feed?.windowSec;
 
       return isPositiveFinite(seconds) ? seconds : DEFAULT_WINDOW_SEC;
+    }
+
+    case 'answer': {
+      const seconds = Number(anchor.params?.revealSec);
+
+      return Number.isFinite(seconds) && seconds > 0
+        ? clamp(seconds, CONVERGE_ANSWER_MIN_SEC, CONVERGE_ANSWER_MAX_SEC)
+        : CONVERGE_ANSWER_DURATION;
     }
 
     default: {
@@ -204,6 +241,10 @@ export function spanPatchOf(
       return {
         feed: { ...anchor.feed, mode: resolveFeedMode(anchor, descriptor), windowSec: value },
       };
+
+    case 'answer':
+      // 答案揭晓的时长就是内容：像倒计时一样写进 params，而不是 `spanSec`
+      return { params: { ...anchor.params, revealSec: value } };
 
     default:
       return { spanSec: value };

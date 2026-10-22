@@ -98,6 +98,26 @@
         />
       </div>
 
+      <!-- 汇聚吸入的答案槽。空着 = 原来的转场；填了就会在吸入之后成形为整句 -->
+      <div
+        v-if="hasAnswerText"
+        class="c-params-panel__field"
+      >
+        <div class="c-params-panel__label">揭晓答案</div>
+        <textarea
+          class="c-params-panel__text c-params-panel__textarea"
+          rows="2"
+          maxlength="80"
+          :value="answerValue"
+          placeholder="例如：正确答案是「光合作用」"
+          @input="onAnswerChange"
+        ></textarea>
+        <p class="c-params-panel__hint">
+          题目与提前秒数在「弹幕驱动」里配置；互动模式会先吸入答题弹幕，转场只揭晓答案。 答案揭晓约
+          7 秒，互动窗口建议 ≥ 9 秒。
+        </p>
+      </div>
+
       <div class="c-params-panel__field">
         <div class="c-params-panel__label">配色</div>
         <div class="c-params-panel__row">
@@ -268,6 +288,13 @@ const hasCaption = computed(() => !!descriptor.value && 'caption' in descriptor.
 
 const captionValue = computed(() => resolved.value.caption ?? '');
 
+/** 模板声明了答案槽（目前是汇聚吸入）才给答案输入框 */
+const hasAnswerText = computed(
+  () => !!descriptor.value && 'answerText' in descriptor.value.defaults,
+);
+
+const answerValue = computed(() => resolved.value.answerText ?? '');
+
 const colorPrimary = computed(() => resolved.value.colorPrimary ?? '#ff3553');
 const colorSecondary = computed(() => resolved.value.colorSecondary ?? '#ffd166');
 
@@ -324,6 +351,13 @@ function onCaptionChange(event: Event): void {
   patchParams({ caption: (event.target as HTMLInputElement).value });
 }
 
+function onAnswerChange(event: Event): void {
+  // 模板侧也截到 80 字：手改地址栏塞进来的超长答案不该把排版撑爆
+  const value = (event.target as HTMLTextAreaElement).value.slice(0, 80);
+
+  patchParams({ answerText: value });
+}
+
 /**
  * 参数被改过没有
  * @desc 判据是「锚点上存着参数」，不是「参数和模板默认值不同」——
@@ -376,7 +410,13 @@ async function onTemplateChange(name: EffectTemplateName): Promise<void> {
     template: name,
     params: {},
     spanSec: undefined,
-    feed: defaultFeedMode ? { mode: defaultFeedMode } : undefined,
+    // 新互动锚点默认带答题卡；纯转场模板不写 feed，保持旧兜底路径
+    feed: defaultFeedMode
+      ? {
+          mode: defaultFeedMode,
+          ...(defaultFeedMode === 'static' ? {} : { collect: {} }),
+        }
+      : undefined,
   });
 }
 
@@ -489,6 +529,23 @@ $accent: #4f7cff;
 
 .c-params-panel__text:focus {
   border-color: $accent;
+}
+
+/* 答案输入框：多行，但别把右栏撑开 */
+.c-params-panel__textarea {
+  height: auto;
+  min-height: 52px;
+  padding: 8px 10px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* 灰色说明，不是「为什么点不动」那种琥珀色告警 */
+.c-params-panel__hint {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #5d6478;
 }
 
 .c-params-panel__ghost-btn {

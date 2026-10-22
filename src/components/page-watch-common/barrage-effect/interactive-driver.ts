@@ -12,6 +12,7 @@
  */
 import { effectTemplates, getEffectTemplate } from './effects';
 import type { EffectArea } from './barrage-area';
+import { collectLeadSecOf } from './collect';
 import { PULL_TAU, easeToward } from './feed-easing';
 import { resolveTimeScale } from './span';
 import {
@@ -70,6 +71,12 @@ export interface PlayOptions {
    *   而盯着效果调参才是工作台的全部价值。生产层不要
    */
   loop?: boolean;
+  /**
+   * 从特效内部第几秒开始，单位：真实秒
+   * @desc 时间轴预览 seek 到某条特效的中段时用：不把已经过去的部分重播一遍，
+   *   否则 300 秒倒计时会在 00:05 从 300 重新数起
+   */
+  startAt?: number;
 }
 
 /** 工作台要显示的拉扯状态 */
@@ -91,12 +98,21 @@ export interface DriverDebugState {
 
 export interface InteractiveDriver {
   play(anchor: BarrageAnchor, options?: PlayOptions): void;
-  /** 换基准参数，热更新不重建 */
-  updateParams(params: EffectParams): void;
+  /**
+   * 换基准参数，热更新不重建
+   * @param anchorId 只更新这个锚点的轨道；缺省更新全部轨道。
+   *   时间轴预览里多条轨道可能同时在跑，改一个锚点的参数不能把别人也改了
+   */
+  updateParams(params: EffectParams, anchorId?: string): void;
   /** 尺寸变了：实例在构造时固化了尺寸，全部作废，窗保留着下一帧重建 */
   invalidate(): void;
   /** 每帧推进 + 绘制。返回是否还需要继续跑 */
   tick(ctx: CanvasRenderingContext2D, delta: number): boolean;
+  /**
+   * 这个锚点是否已有一条活着的轨道
+   * @desc 时间轴补播前先问一句，避免同一个 seek 位置重复建轨
+   */
+  hasTrack(anchorId: string): boolean;
   /** 立即结束一切（拖进度条、换预览目标、卸载） */
   reset(): void;
   /**
@@ -129,6 +145,13 @@ interface Track {
   gapRemaining: number;
   loop: boolean;
   feed?: FeedWindow;
+  /**
+   * 读数要回看多少秒
+   * @desc 默认等于收集窗；开了主动答题时取 `max(互动窗口, 提前收集秒数)`，
+   *   这样锚点时刻的首帧读数已经包含答题卡期间收到的弹幕 ——
+   *   「提前收集」收集的就是这段时间
+   */
+  lookbackSec: number;
   ratio: number;
   bias: number;
   particles: number;
@@ -140,6 +163,12 @@ interface Track {
    *   互动轨道恒为 1
    */
   timeScale: number;
+  /**
+   * 首次生成实例时要快进多少秒（真实秒），0 = 从头播
+   * @desc 只在首次 `spawn` 用一次，用掉即清零；换尺寸重建时回到 0，
+   *   与「实例尺寸固化、重建即重来」的既有行为一致
+   */
+  startAtSec: number;
   /** 建轨时刻（`performance.now()`），只给 `MAX_TRACK_SEC` 那张兜底网用 */
   startedAt: number;
   /** 最近一次读数，供工作台显示 */
@@ -220,7 +249,9 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       return;
     }
 
-    const reading: FeedReading = feed.read(getSample(now, feed.windowSec));
+    // ★ 用 lookbackSec 而不是 windowSec：提前收集的那几秒必须算进来，
+    //   否则答题卡期间观众发的弹幕在锚点时刻全部落空
+    const reading: FeedReading = feed.read(getSample(now, track.lookbackSec));
     track.lastReading = reading;
 
     const patch: EffectParams = { ...track.base };
@@ -285,6 +316,17 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
     }
 
     track.instance = instance;
+
+    /**
+     * 快进到「现在」：时间轴 seek 到特效中段时补播
+     * @desc 用 `startAtSec / timeScale` 换算成实例秒，和 `tickTrack` 里的
+     *   `delta / timeScale` 是同一条尺子。互动轨道不补 —— 它的画面由实时样本驱动，
+     *   把实例动画快进几秒并不会让弹幕读数跟着回到过去
+     */
+    if (!track.feed && track.startAtSec > 0) {
+      instance.update(track.startAtSec / track.timeScale);
+      track.startAtSec = 0;
+    }
   }
 
   /** 推进一条轨道，返回是否保留 */
@@ -356,6 +398,14 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
     const descriptor = getEffectTemplate(anchor.template);
     const effective: EffectParams = { ...descriptor?.defaults, ...anchor.params };
     const mode = resolveFeedMode(anchor, descriptor);
+    const feed = mode === 'static' ? undefined : createFeedWindow(feedOptionsOf(anchor, mode));
+
+    /**
+     * 提前收集的那几秒也要算进读数
+     * @desc `collectLeadSecOf` 已经处理了「驱动方式其实是 static」的情况，
+     *   所以这里直接取最大值即可。没开答题卡时它返回 0，lookback 与旧行为完全一致
+     */
+    const leadSec = collectLeadSecOf(anchor, descriptor);
 
     return {
       anchor,
@@ -364,12 +414,14 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       // 0 = 立刻起播。之后每轮重建才走 LOOP_GAP
       gapRemaining: 0,
       loop: playOptions?.loop ?? false,
-      feed: mode === 'static' ? undefined : createFeedWindow(feedOptionsOf(anchor, mode)),
+      feed,
+      lookbackSec: feed ? Math.max(feed.windowSec, leadSec) : 0,
       ratio: effective.ratio ?? 0.5,
       bias: effective.bias ?? 0,
       particles: effective.particles ?? 120,
       closing: false,
       timeScale: resolveTimeScale(anchor, descriptor),
+      startAtSec: Math.max(0, playOptions?.startAt ?? 0),
       startedAt: performance.now(),
       // 缺省 false：绝大多数模板铺满播放器，只有红蓝对抗这类明确声明了才裁
       followArea: descriptor?.followBarrageArea ?? false,
@@ -397,8 +449,12 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
    * @desc 供工作台拖滑块用。工厂构造时会给每个粒子取随机数，
    *   每拖一下重建一次就是每秒重新随机 60 次，预览会疯狂闪烁
    */
-  function updateParams(params: EffectParams): void {
+  function updateParams(params: EffectParams, anchorId?: string): void {
     tracks.forEach(track => {
+      if (anchorId && track.anchor.id !== anchorId) {
+        return;
+      }
+
       track.base = params;
 
       // 互动窗：下一帧的读数会把它并进去，不用（也不该）现在直写 ——
@@ -420,6 +476,10 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
     });
   }
 
+  function hasTrack(anchorId: string): boolean {
+    return tracks.some(track => track.anchor.id === anchorId);
+  }
+
   function reset(): void {
     tracks.length = 0;
   }
@@ -438,11 +498,17 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
     }
 
     /**
-     * 粒子叠加发光
-     * @desc save/restore 不是可选项：特效会把 globalAlpha 停在某个值上不还原，
-     *   而 save/restore 本身会保存 globalCompositeOperation，所以必须在 save 之前设置
+     * 实体绘制，不再走 `lighter` 加法混色
+     * @desc 加法混色在白画面上加什么都还是白，粒子会直接化掉；之前靠一层暗底兜底，
+     *   但暗底会把视频主要内容一起压灰。改成 `source-over` 后粒子按自身颜色实体覆盖，
+     *   亮场里也看得清，同时不再需要任何全局衬底。
+     *
+     *   淡化仍由各模板的 `globalAlpha` 负责 —— 那是时间轴上的进出场，不是混色方式。
+     *
+     *   save/restore 不是可选项：特效会把 globalAlpha 停在某个值上不还原，
+     *   所以每条轨道都包在自己的 save/restore 里
      */
-    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalCompositeOperation = 'source-over';
 
     tracks.forEach(track => {
       if (!track.instance) {
@@ -491,5 +557,5 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
     };
   }
 
-  return { play, updateParams, invalidate, tick, reset, getDebugState };
+  return { play, updateParams, invalidate, tick, hasTrack, reset, getDebugState };
 };

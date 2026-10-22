@@ -21,9 +21,9 @@
  *      （对比：另外六个模板的 DURATION 全是模块常量，`finished` 一律 `elapsed >= DURATION`。）
  *      时间轴上的条带长度就是改这个值，见 `../span.ts`。
  *
- *   2. **自己把 globalCompositeOperation 改回 `source-over`**。合成器是按 `lighter`
- *      加法混合调用 `draw()` 的 —— 那对粒子很漂亮，但白字叠在亮画面上会糊掉。
- *      倒计时是给人读的，可读性优先。合成器在 `draw()` 外有 `save/restore`，改完会被复原。
+ *   2. **自己声明 `source-over` 并画一层暗底**。合成器现在统一走实体混色，
+ *      但倒计时是给人读的：白字在亮画面上必须靠衬底才立得住，
+ *      不能指望宿主或视频本身。合成器在 `draw()` 外有 `save/restore`，改完会被复原。
  *
  *   粒子是**贴图**不是 `arc`：逐粒子建路径（两遍、一千三百多个）在这里是实打实的
  *   每帧开销，而底下压着实时视频。见 `SPRITE_STEPS`。
@@ -35,6 +35,7 @@ import {
   type GlyphField,
   type GlyphPoint,
 } from './glyph-field';
+import { createRoundSprite } from './particle-sprite';
 import type { EffectFactory, EffectInstance, EffectParams, EffectSize } from '../types';
 
 export const COUNTDOWN_DEFAULTS: EffectParams = {
@@ -118,9 +119,6 @@ const PARTICLE_SIZE_RATIO = 0.028;
  */
 const SPRITE_SCALE = 3.1;
 
-/** 贴图分辨率。比任何屏幕上的实际绘制尺寸都大，缩小绘制不会有锯齿 */
-const SPRITE_SIZE = 32;
-
 /**
  * 颜色量化档数
  * @desc ★ 贴图必须预渲染且**按颜色分档**：给每个粒子单独建一块画布是灾难，
@@ -179,53 +177,6 @@ function mixToCss(from: Rgb, to: Rgb, amount: number): string {
 /** 稳定的逐粒子权重。不用 Math.random：位置一旦重排，观感就散 */
 function particleSeed(index: number): number {
   return ((index * 9301 + 49297) % 233280) / 233280;
-}
-
-/**
- * 造一张圆形粒子贴图：实心圆 + 中心高光 + 柔和外晕
- *
- * @desc 接受**任意 CSS 颜色串**（`#fff`、`rgb()`、颜色名都行）——
- *   外晕用 `destination-in` 拿一层白色径向渐变当遮罩做出来，而不是
- *   把颜色解析成 rgb 再拼 `rgba(...,0)`。后者遇到解析不了的串就没法退化了
- */
-function createRoundSprite(color: string): HTMLCanvasElement {
-  const canvas = document.createElement('canvas');
-  canvas.width = SPRITE_SIZE;
-  canvas.height = SPRITE_SIZE;
-
-  const ctx = canvas.getContext('2d');
-  if (!ctx) {
-    return canvas;
-  }
-
-  const radius = SPRITE_SIZE / 2;
-
-  ctx.fillStyle = color;
-  ctx.beginPath();
-  ctx.arc(radius, radius, radius, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 中心高光：让粒子有个亮点，而不是一块平色
-  const core = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius * 0.55);
-  core.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
-  core.addColorStop(1, 'rgba(255, 255, 255, 0)');
-  ctx.fillStyle = core;
-  ctx.beginPath();
-  ctx.arc(radius, radius, radius * 0.55, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 外晕：拿这层渐变当遮罩切掉边缘，圆边就化开了
-  ctx.globalCompositeOperation = 'destination-in';
-  const mask = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
-  mask.addColorStop(0, 'rgba(255, 255, 255, 1)');
-  mask.addColorStop(0.42, 'rgba(255, 255, 255, 0.96)');
-  mask.addColorStop(1, 'rgba(255, 255, 255, 0)');
-  ctx.fillStyle = mask;
-  ctx.beginPath();
-  ctx.arc(radius, radius, radius, 0, Math.PI * 2);
-  ctx.fill();
-
-  return canvas;
 }
 
 interface Slot {

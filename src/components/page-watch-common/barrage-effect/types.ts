@@ -31,6 +31,19 @@ export type EffectFeedMode =
   /** 对冲：两派关键词的支持占比 → 主色占比与重心偏向 */
   | 'polarity';
 
+/**
+ * 主动答题配置
+ * @desc 锚点前提前出现答题卡，并把这期间收到的弹幕算进锚点时刻的读数。
+ *   存在的意义不是「多一个配置」，而是让收集窗**有入口**：静默统计时观众
+ *   根本不知道该发什么，收集到的是一堆与题目无关的话
+ */
+export interface AnchorCollect {
+  /** 答题卡题目/提示；空则按驱动方式自动生成 */
+  prompt?: string;
+  /** 提前多少秒出现答题卡并开始收集；缺省沿用 `feed.windowSec` */
+  leadSec?: number;
+}
+
 /** 锚点上的驱动配置 */
 export interface AnchorFeed {
   mode: EffectFeedMode;
@@ -40,6 +53,13 @@ export interface AnchorFeed {
   wordsA?: string;
   /** 对冲用：B 派关键词，逗号分隔 */
   wordsB?: string;
+  /**
+   * 主动答题：存在即开启
+   * @desc 新锚点创建时写入 `{}`；**旧锚点没有这个字段 → 保持静默收集**，
+   *   行为逐帧不变。判「开没开」不要只看它存不存在，还要先过
+   *   `collect.ts` 的 `collectLeadSecOf` —— 驱动方式被切成 `static` 时不该再收集
+   */
+  collect?: AnchorCollect;
 }
 
 /** 画布尺寸 */
@@ -88,6 +108,18 @@ export interface EffectParams {
   countdownSec?: number;
   /** 文字倒计时：说明文案，画在数字上方 */
   caption?: string;
+  /**
+   * 汇聚吸入：揭晓的答案文案
+   * @desc 空 = 原来的「收束成一次闪光」。非空时吸入阶段结束后，粒子会继续
+   *   成形为这句话，可以是一整句而不只是 A/B/C
+   */
+  answerText?: string;
+  /**
+   * 汇聚吸入：答案揭晓总时长（秒）
+   * @desc 只在**静态转场 + 填了答案**时由时间轴条带读写，见 `span.ts` 的 `answer`
+   *   分支。互动模式下时长仍由收集窗决定，这一项不参与
+   */
+  revealSec?: number;
 }
 
 /** 一条时间锚点 */

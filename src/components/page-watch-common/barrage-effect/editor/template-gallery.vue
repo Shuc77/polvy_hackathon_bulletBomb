@@ -2,7 +2,7 @@
   <div class="c-template-gallery">
     <div class="c-template-gallery__head">
       <span class="c-template-gallery__title">模板库</span>
-      <span class="c-template-gallery__hint">点击预览 · 拖到时间轴新增</span>
+      <span class="c-template-gallery__hint">拖到时间轴新增 · 单个特效模式下点击预览</span>
     </div>
 
     <div class="c-template-gallery__grid">

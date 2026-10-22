@@ -71,12 +71,19 @@
 
         <section class="c-effect-workbench__pane c-effect-workbench__pane--center">
           <effect-stage
+            :mode="previewMode"
+            :anchors="anchors"
+            :selected-anchor-id="selectedAnchor?.id"
+            :is-playing="isPlaying"
+            :current-time="currentTime"
+            :time-axis-available="isTimeAxisAvailable"
             :template="previewTemplate"
             :params="previewParams"
             :feed="selectedAnchor?.feed"
             :span="previewSpan"
             :anchor-key="stageKey"
             :trigger-anchor="triggerAnchor"
+            @update:mode="setPreviewMode"
           />
         </section>
 
@@ -101,6 +108,7 @@
           :is-available="isTimeAxisAvailable"
           :is-playing="isPlaying"
           @toggle-play="togglePlay"
+          @pause="pause"
           @seek="seek"
           @select-anchor="onTimelineSelect"
           @move-anchor="onTimelineMove"
@@ -281,12 +289,73 @@ const {
   currentTime,
   isPlaying,
   togglePlay,
+  pause,
   seek,
   insertAnchorAt,
   exportAnchors,
   importAnchors,
   resetAll,
 } = useWorkbenchState();
+
+/** 预览模式：时间轴预览跟随播放进度；单个特效预览循环当前选中项 */
+type PreviewMode = 'timeline' | 'source';
+
+/**
+ * 默认跟随时间轴
+ * @desc 有回放时间轴时，作者首先要看到的是「播到这里，画面上会发生什么」，
+ *   而不是模板库最后一次点了谁。直播没有时间轴，退回单个特效预览
+ */
+const previewMode = ref<PreviewMode>(isTimeAxisAvailable.value ? 'timeline' : 'source');
+
+/** 用户手动选过模式之后，不再被「时间轴从不就绪变为就绪」改回去 */
+let previewModeTouched = false;
+
+watch(
+  isTimeAxisAvailable,
+  available => {
+    if (!available) {
+      previewMode.value = 'source';
+      return;
+    }
+
+    if (!previewModeTouched) {
+      previewMode.value = 'timeline';
+    }
+  },
+  { immediate: true },
+);
+
+function setPreviewMode(mode: PreviewMode): void {
+  previewModeTouched = true;
+  previewMode.value = mode;
+}
+
+/**
+ * 打开工作台先把视频暂停
+ * @desc ★ 工作台是编辑态，不是观看态。播放头继续跑的话，作者刚拖到的位置
+ *   会在松手前又往前走一段，参数改完也找不到刚才看的那一帧；时间轴预览还会
+ *   在编辑过程中不断触发放特效，画面一直在动。
+ *
+ *   只在有时间轴（回放）时暂停：直播的暂停按钮本来就不该被一个编辑面板按掉。
+ *   `autoPaused` 保证只按一次 —— 作者随后自己按播放，不能再被抢回去
+ */
+let autoPaused = false;
+
+function pauseForEditing(): void {
+  if (autoPaused || !isTimeAxisAvailable.value) {
+    return;
+  }
+
+  autoPaused = true;
+  pause();
+}
+
+// 元数据晚到时补一次：挂在 onMounted 上只能覆盖「打开时 duration 已经就绪」
+watch(isTimeAxisAvailable, available => {
+  if (available) {
+    pauseForEditing();
+  }
+});
 
 /**
  * 舞台当前预览的模板
@@ -438,12 +507,28 @@ function confirmPanel(): void {
 }
 
 function onTemplateSelect(name: EffectTemplateName): void {
-  // 取消锚点选中 → 舞台转而预览这个模板的出厂形态
-  barrageEffectStore.selectAnchor(undefined);
   selectedTemplate.value = name;
+
+  /*
+   * 时间轴模式：模板库只是「选品」，不抢舞台
+   * @desc ★ 舞台此刻代表的是播放进度上的真实画面。点一张卡就切到单个特效，
+   *   等于把「02:30 会发生什么」换成了「这张卡长什么样」—— 作者刚建立的时间感
+   *   被一次点击清掉，而且看不出是被谁清的。
+   *
+   *   想单看模板的出厂形态，先切到「单个特效」再点卡；那时舞台本来就不代表时间轴，
+   *   点卡换预览是符合预期的
+   */
+  if (previewMode.value === 'timeline') {
+    return;
+  }
+
+  // 单个特效模式：点卡就是换预览对象，取消锚点选中让舞台跟着模板走
+  barrageEffectStore.selectAnchor(undefined);
 }
 
 function onTimelineCreate(time: number, template: EffectTemplateName): void {
+  // 从模板库拖进来同样算开始编辑：别让新特效刚落地，播放头就从它上面跑过去
+  pause();
   insertAnchorAt(time, template);
 }
 
@@ -451,8 +536,9 @@ function onTimelineSelect(id: string): void {
   barrageEffectStore.selectAnchor(id);
 }
 
-function onTimelineMove(id: string, time: number): void {
-  barrageEffectStore.moveAnchor(id, time);
+function onTimelineMove(id: string, time: number, aligned?: boolean): void {
+  // 命中自动对齐时不走 1 秒间隔的推挤，否则「对齐」会稳定偏差 1 秒
+  barrageEffectStore.moveAnchor(id, time, { aligned });
 }
 
 /**
@@ -599,6 +685,8 @@ function onKeydown(event: KeyboardEvent): void {
 }
 
 onMounted(() => {
+  pauseForEditing();
+
   document.addEventListener('keydown', onKeydown);
   document.body.classList.add(BODY_MARK_CLASS);
 
@@ -1009,6 +1097,34 @@ onBeforeUnmount(() => {
 
   .plv-color-picker__panel__custom__title {
     color: #9aa1b4;
+  }
+
+  /**
+   * 自定义取色区
+   * @desc ★ 主题给这组标题、输入框和 Hex/R/G/B 标签写的是 `#1d2129`（浅色面板用的
+   *   深色文字）。面板被我们改成深色之后，这段文字与背景几乎同色，等于看不见 ——
+   *   必须逐项覆盖，父级的 `color` 压不过子元素自己声明的颜色
+   */
+  .plv-color-picker__panel__custom__title span {
+    color: #9aa1b4;
+  }
+
+  .plv-color-picker__panel__custom__icon [class^='plv-admin-icon-'] {
+    color: #9aa1b4;
+  }
+
+  .plv-color-picker__panel__custom__inputs__item input {
+    color: #e8eaf0;
+    background: #1b1f27;
+    border-color: #3d4658;
+  }
+
+  .plv-color-picker__panel__custom__inputs__item input::placeholder {
+    color: #5d6478;
+  }
+
+  .plv-color-picker__panel__custom__inputs__item p {
+    color: #7c8398;
   }
 
   /* ============ 色板 ============ */

@@ -29,7 +29,7 @@ export const useWorkbenchState = () => {
   const { getWatchCore } = useGlobalInject();
   const barrageEffectStore = useBarrageEffectStore();
   const playerStore = usePlayerStore();
-  const { toTogglePlay } = usePlayerAction();
+  const { toTogglePlay, toPause } = usePlayerAction();
 
   const ioText = ref('');
 
@@ -75,6 +75,15 @@ export const useWorkbenchState = () => {
    */
   function togglePlay(): void {
     toTogglePlay();
+  }
+
+  /**
+   * 暂停
+   * @desc 工作台打开、开始拖时间轴时用。走的是播放器自己的动作，
+   *   和 `togglePlay` 一样保留「未初始化 / 不允许操作」几道闸门
+   */
+  function pause(): void {
+    toPause();
   }
 
   watch(
@@ -148,6 +157,7 @@ export const useWorkbenchState = () => {
     isPlaying,
 
     togglePlay,
+    pause,
     seek,
     insertAnchorAt,
     exportAnchors,

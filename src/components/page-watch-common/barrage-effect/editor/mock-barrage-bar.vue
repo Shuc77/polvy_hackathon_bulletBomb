@@ -38,17 +38,32 @@
       <b class="c-mock-barrage__ratio-value">{{ ratioPercent }}%</b>
     </div>
 
+    <!-- 预置回答数：吸入阶段能把这么多条原文一起吸进去。
+         固定写死 8 条时，作者想看「几十条弹幕被收进来」的规模感只能反复点 -->
+    <label class="c-mock-barrage__preset">
+      <span>预置</span>
+      <input
+        v-model.number="presetCount"
+        type="number"
+        min="1"
+        max="200"
+        :disabled="!enabled"
+        @change="normalizePreset"
+        @keydown.stop
+      />
+      <span>条</span>
+    </label>
     <button
       type="button"
       class="c-mock-barrage__btn"
       :disabled="!enabled"
       @click="onBurst"
     >
-      连发 8 条
+      灌入
     </button>
 
     <!-- 持续刷屏：真实直播里弹幕是源源不断的，
-         「连发 8 条」按一下停一下，看不出持续运行下的密度与帧率 -->
+         手动「灌入」按一下停一下，看不出持续运行下的密度与帧率 -->
     <button
       type="button"
       class="c-mock-barrage__btn c-mock-barrage__btn--stream"
@@ -85,8 +100,8 @@ import { PlvSlider } from '@/plugins/polyv-ui/admin-import';
 import { FALLBACK_WORDS, useMockBarrage } from './mock-barrage';
 import { parseKeywords } from '../feed-window';
 
-/** 一次连发多少条 */
-const BURST_COUNT = 8;
+/** 预置回答的数量上限。再多也只是把收集窗塞满，调参时看不出差别 */
+const PRESET_MAX = 200;
 
 /**
  * 刷屏速率，每秒几条
@@ -112,6 +127,20 @@ const props = withDefaults(
 
 const ratioPercent = ref(50);
 
+/**
+ * 预置回答数
+ * @desc 点「灌入」时一次性发出这么多条模拟弹幕，让吸入阶段一开演就有
+ *   「所有回答都被收进来」的规模感，不必连点按钮
+ */
+const presetCount = ref(12);
+
+/** 手输的数字可能越界或是空的，失焦时夹回合法范围 */
+function normalizePreset(): void {
+  const value = Math.round(Number(presetCount.value));
+
+  presetCount.value = Number.isFinite(value) ? Math.min(PRESET_MAX, Math.max(1, value)) : 12;
+}
+
 const { sendOne, burst } = useMockBarrage(() => ({
   wordsA: props.wordsA,
   wordsB: props.wordsB,
@@ -130,7 +159,8 @@ function onRatioInput(value: number): void {
 }
 
 function onBurst(): void {
-  burst(BURST_COUNT, ratioPercent.value / 100);
+  normalizePreset();
+  burst(presetCount.value, ratioPercent.value / 100);
 }
 
 /** 是否正在持续刷屏 */
@@ -221,15 +251,57 @@ onBeforeUnmount(stopStream);
   }
 }
 
+/* 预置回答数：标签 + 输入框 + 「条」。放在按钮旁边，读作一句「预置 12 条」 */
+.c-mock-barrage__preset {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 11px;
+  color: #7c8398;
+
+  input {
+    width: 46px;
+    padding: 3px 6px;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: #e8eaf0;
+    text-align: center;
+    background: #1b1f27;
+    border: 1px solid #3d4658;
+    border-radius: 4px;
+
+    &:disabled {
+      color: #5d6478;
+      cursor: not-allowed;
+      border-color: #2f3542;
+    }
+
+    &:focus {
+      border-color: #4f7cff;
+      outline: none;
+    }
+  }
+}
+
 .c-mock-barrage__ratio {
   display: flex;
   gap: 8px;
   align-items: center;
-  width: 200px;
+  width: 220px;
 
   &.c-mock-barrage__ratio--off {
     opacity: 0.45;
   }
+}
+
+/**
+ * @desc `plv-slider` 的根节点没有自己的宽度，滑轨是绝对定位画出来的。
+ *   放在 block 容器里它会撑满，放在这个 flex 行里却会因为内容宽度为 0
+ *   被压成一个点 —— 所以必须显式给它一条可伸缩的宽度
+ */
+.c-mock-barrage__ratio .plv-slider {
+  flex: 1;
+  min-width: 90px;
 }
 
 .c-mock-barrage__ratio-label {
