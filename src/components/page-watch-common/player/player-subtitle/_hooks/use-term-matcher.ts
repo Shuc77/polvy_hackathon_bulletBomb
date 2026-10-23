@@ -22,8 +22,8 @@ export function getTermTrie(track: TermTrack): TermTrie {
 export function useTermMatcher() {
   const track = resolveTermTrack();
   const trie = getTermTrie(track);
-  const segmentsOf = (text: Ref<string>) =>
-    computed(() => toSegments(text.value, matchTerms(trie, text.value)));
+  const segmentsOfText = (text: string) => toSegments(text, matchTerms(trie, text));
+  const segmentsOf = (text: Ref<string>) => computed(() => segmentsOfText(text.value));
 
-  return { track, trie, segmentsOf };
+  return { track, trie, segmentsOf, segmentsOfText };
 }

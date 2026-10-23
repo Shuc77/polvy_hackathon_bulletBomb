@@ -38,7 +38,9 @@ import { getEffectTemplate } from './effects';
 import { useEffectCanvas, type EffectFrame } from './use-effect-canvas';
 import { useAnchorScheduler } from './use-anchor-scheduler';
 import { createSignalBuffer, useBarrageSignalListener } from './barrage-signal';
-import { createTriggerAnchor, evaluateDensity } from './density-trigger';
+import { createRuntimeAnchor, evaluateDensity } from './density-trigger';
+import { playEffectSound } from './effect-sound';
+import { useLiveEffectReceiver } from './live-effect';
 import { useInteractiveDriver } from './interactive-driver';
 import QuizPrompt from './quiz-prompt.vue';
 import type { BarrageAnchor } from './types';
@@ -136,7 +138,18 @@ function renderFrame({ ctx, delta }: EffectFrame): void {
 function playAndRun(anchor: BarrageAnchor): void {
   start();
   driver.play(anchor);
+  // 音效与画面同帧起跑：调用点必须和 driver.play 绑在一起，别拆到播放器事件里
+  playEffectSound(anchor.template);
 }
+
+/**
+ * 直播实时特效：管理员在工作台点一下，其他页面收到广播后在这里放映
+ * @desc 发送端自己的回声会被 `useLiveEffectReceiver` 按页面标识跳过 ——
+ *   那边的工作台舞台已经放过一次，这里再放就是重音
+ */
+useLiveEffectReceiver(anchor => {
+  playAndRun(anchor);
+});
 
 /**
  * 已进入预滚、等待揭晓的答题卡
@@ -288,7 +301,10 @@ useBarrageSignalListener(signal => {
 
   // ★ 先记冷却再放。放的过程中消息还在进，顺序反了会在同一批里连放好几次
   barrageEffectStore.markDensityFired(now);
-  playAndRun(createTriggerAnchor(config));
+  // 参数走频道级共享配置：与直播手动触发、点播时间轴是同一份
+  playAndRun(
+    createRuntimeAnchor(config.template, barrageEffectStore.liveTemplateConfigOf(config.template)),
+  );
 });
 
 onMounted(() => {

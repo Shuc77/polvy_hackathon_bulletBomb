@@ -40,3 +40,7 @@ logs
 **/dist-sdk-inject/
 **/map-file/**
 **/component-icons/**
+
+# Live Buddy 子工程与构建产物
+live-buddy/**
+external/live-buddy/**

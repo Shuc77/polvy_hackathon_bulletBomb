@@ -10,7 +10,7 @@ import { TERM_MAP } from '@/assets/term-dictionaries';
 import { TermItem, TermTrack } from '@/core/term/term-matcher';
 import { useChatStore } from '@/store/use-chat-store';
 
-export type AskState = 'idle' | 'sending' | 'sent' | 'copied';
+export type AskState = 'idle' | 'sending' | 'sent' | 'copied' | 'asked';
 
 const TRACK_LABELS: Record<TermTrack, string> = {
   medical: '医学',
@@ -54,6 +54,7 @@ export function useTermCard(track: TermTrack) {
   const askState = ref<AskState>('idle');
   const askLabel = computed(() => {
     if (askState.value === 'sending') return '发送中...';
+    if (askState.value === 'asked') return '已问小助手';
     if (askState.value === 'sent') return '已发送';
     if (askState.value === 'copied') return '话术已复制';
     return '一键提问';
@@ -121,9 +122,29 @@ export function useTermCard(track: TermTrack) {
 
   async function askQuestion() {
     const term = activeTerm.value;
-    if (!term || askState.value === 'sending' || askState.value === 'sent') return;
+    if (
+      !term ||
+      askState.value === 'sending' ||
+      askState.value === 'sent' ||
+      askState.value === 'asked'
+    ) {
+      return;
+    }
 
-    const content = `请问【${term.canonical}】相关内容是怎样的？`;
+    const content = `请结合当前视频内容解释一下「${term.canonical}」是什么意思。`;
+
+    // 小助手可用时优先问小助手：它会带着本场术语表和实时字幕上下文回答。
+    // 宿主被 ?liveBuddy=0 关闭或脚本未加载时，保留原来的聊天区提问兜底。
+    const askBuddy = window.LiveBuddy?.ask;
+    if (askBuddy) {
+      askBuddy(content);
+      askState.value = 'asked';
+      window.setTimeout(() => {
+        askState.value = 'idle';
+      }, 3000);
+      return;
+    }
+
     askState.value = 'sending';
 
     try {

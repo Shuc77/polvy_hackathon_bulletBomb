@@ -114,8 +114,9 @@ export const EFFECT_TEMPLATES: EffectTemplateDescriptor[] = [
     feedModes: ['static'],
     // 生产是 300 秒；缩略图按 8 秒一轮，否则卡片会停在那儿一动不动
     thumbnailParams: { countdownSec: 8, caption: '倒计时' },
-    // 密度触发是「热闹了炸一下」，10 秒的短倒数才是这个场合该有的样子
-    triggerParams: { countdownSec: 10, caption: '弹幕破了' },
+    // 触发（密度 / 直播手动）是「热闹了炸一下」，10 秒的短倒数才是这个场合该有的样子。
+    // 文案与缩略图统一成「倒计时」：原来的「弹幕破了」是开发期的演示词，上线后没人看得懂
+    triggerParams: { countdownSec: 10, caption: '倒计时' },
   },
 ];
 
@@ -127,8 +128,11 @@ export const effectTemplates = EFFECT_TEMPLATES.reduce<
   return map;
 }, {});
 
-/** 取单个模板的完整描述 */
-export function getEffectTemplate(name: EffectTemplateName): EffectTemplateDescriptor | undefined {
+/**
+ * 取单个模板的完整描述
+ * @param name 允许为空：直播下「没有选中任何模板」是合法状态，调用方不必层层判空
+ */
+export function getEffectTemplate(name?: EffectTemplateName): EffectTemplateDescriptor | undefined {
   return EFFECT_TEMPLATES.find(item => item.name === name);
 }
 

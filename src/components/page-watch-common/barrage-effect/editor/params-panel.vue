@@ -16,12 +16,27 @@
       <template v-else>
         直播中没有时间轴，拖进来的模板无处安放。
         <br />
-        到右上角「触发设置」里打开密度触发，让弹幕自己把特效喊出来。
+        点左侧任意模板卡，参数就会出现在这里 —— 调好再点右上角「实时特效」放给全场。
+        <br />
+        也可以打开「触发设置」，让弹幕自己把特效喊出来。
       </template>
     </div>
 
     <template v-else>
-      <div class="c-params-panel__field">
+      <!-- 直播模板参数：说明这份值的来历与出口。不写的话，作者会以为它只是
+           一个「预览参数」，不知道改完怎么放出去、也不知道回放那边会不会变 -->
+      <p
+        v-if="liveTemplate"
+        class="c-params-panel__shared"
+      >
+        这份参数与点播回放共用同一个模板配置：回放工作台里调过同款特效，这里会直接沿用；
+        在这里调好，直播手动触发与弹幕密度触发都会按它放。点「实时特效」即可放给全场。
+      </p>
+
+      <div
+        v-if="!liveTemplate"
+        class="c-params-panel__field"
+      >
         <div class="c-params-panel__label">触发时间</div>
         <div class="c-params-panel__row">
           <plv-input-number
@@ -55,7 +70,7 @@
       <!-- 与「触发时间」成对：先说什么时候放，再说放多久。
            和时间轴上拖条带右端是**同一个量**，两条路径汇到 span.ts 的同一个出口 -->
       <div class="c-params-panel__field">
-        <div class="c-params-panel__label">播放时长（秒）</div>
+        <div class="c-params-panel__label">{{ spanLabel }}</div>
         <plv-input-number
           :value="spanValue"
           :min="spanBounds.min"
@@ -65,7 +80,11 @@
         />
       </div>
 
-      <div class="c-params-panel__field">
+      <!-- 直播模板由左侧卡片选定，这里再放一个下拉只会让「当前到底在调哪个」多一处状态 -->
+      <div
+        v-if="!liveTemplate"
+        class="c-params-panel__field"
+      >
         <div class="c-params-panel__label">模板</div>
         <plv-select
           :value="anchor.template"
@@ -75,8 +94,10 @@
       </div>
 
       <!-- 放在模板下面：先选「是什么特效」，再选「怎么被驱动」。
-           feed-panel 自己判断模板支不支持互动，纯转场不会出现 -->
+           feed-panel 自己判断模板支不支持互动，纯转场不会出现。
+           直播触发恒为一次性播放，驱动方式不适用 -->
       <feed-panel
+        v-if="!liveTemplate"
         :anchor="anchor"
         @patch="onFeedPatch"
       />
@@ -93,6 +114,7 @@
         <input
           class="c-params-panel__text"
           type="text"
+          maxlength="80"
           :value="captionValue"
           @input="onCaptionChange"
         />
@@ -112,9 +134,19 @@
           placeholder="例如：正确答案是「光合作用」"
           @input="onAnswerChange"
         ></textarea>
-        <p class="c-params-panel__hint">
+        <p
+          v-if="!liveTemplate"
+          class="c-params-panel__hint"
+        >
           题目与提前秒数在「弹幕驱动」里配置；互动模式会先吸入答题弹幕，转场只揭晓答案。 答案揭晓约
           7 秒，互动窗口建议 ≥ 9 秒。
+        </p>
+        <!-- 直播触发不收集弹幕，上面那条「去弹幕驱动里配」的指引在这里是死路 -->
+        <p
+          v-else
+          class="c-params-panel__hint"
+        >
+          直播手动触发不收集弹幕：吸入阶段结束后直接成形为这句话，时长用上面的「播放时长」调。
         </p>
       </div>
 
@@ -184,7 +216,9 @@
         />
       </div>
 
+      <!-- 直播模板不是时间轴上的一条，删掉它没有语义；要「取消」就点舞台上的取消预览 -->
       <button
+        v-if="!liveTemplate"
         type="button"
         class="c-params-panel__remove"
         @click="emit('remove')"
@@ -228,6 +262,13 @@ const props = defineProps<{
   anchor?: BarrageAnchor;
   duration: number;
   isTimeAxisAvailable: boolean;
+  /**
+   * 直播模板参数模式
+   * @desc 这时 `anchor` 不是时间轴上的一条，而是工作台给「这个模板被
+   *   直播触发时」临时造的视图对象。触发时间、模板切换、驱动方式、删除
+   *   都不适用，改的是 `store` 里按频道共享的那份参数
+   */
+  liveTemplate?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -252,6 +293,15 @@ const resolved = computed<EffectParams>(() => ({
   ...descriptor.value?.defaults,
   ...props.anchor?.params,
 }));
+
+/**
+ * 时长字段的名字
+ * @desc 倒计时的「时长」就是内容本身，叫「播放时长」会让人以为它只是
+ *   条带长短、不影响数字从几开始；直播里尤其如此 —— 作者找的就是这个
+ */
+const spanLabel = computed(() =>
+  descriptor.value?.name === 'countdown' ? '倒计时时长（秒）' : '播放时长（秒）',
+);
 
 /**
  * 播放时长：和时间轴上那条可拖拽的条带是**同一个量**
@@ -309,7 +359,10 @@ const colorSecondary = computed(() => resolved.value.colorSecondary ?? '#ffd166'
  * @desc 文字倒计时是纯转场，模板里根本不读 ratio / bias —— 留着这两根滑杆
  *   就是明摆着的死控件：拖了没反应，作者只会以为参数面板坏了
  */
-const hasAudienceMix = computed(() => !!descriptor.value && !isTransitionOnly(descriptor.value));
+const hasAudienceMix = computed(
+  // 直播触发恒为 static，不读弹幕 —— 这两根滑杆在这里拖了不会有任何反应
+  () => !!descriptor.value && !props.liveTemplate && !isTransitionOnly(descriptor.value),
+);
 
 const particles = computed(() => resolved.value.particles ?? 120);
 const ratioPercent = computed(() => Math.round((resolved.value.ratio ?? 0.5) * 100));
@@ -361,7 +414,8 @@ function onSpanChange(value: number | string): void {
 }
 
 function onCaptionChange(event: Event): void {
-  patchParams({ caption: (event.target as HTMLInputElement).value });
+  // 与广播接收端的清洗上限一致：本地预览看到的就是观众收到的
+  patchParams({ caption: (event.target as HTMLInputElement).value.slice(0, 80) });
 }
 
 function onAnswerChange(event: Event): void {
@@ -499,6 +553,19 @@ $accent: #4f7cff;
   font-size: 10px;
   line-height: 1.6;
   color: #e0a458;
+}
+
+/* 直播模板参数的作用域说明。用带底的块而不是一行灰字：
+   它回答的是「我改的到底是哪一份」，值得被看见一眼 */
+.c-params-panel__shared {
+  padding: 8px 10px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #9fb4e8;
+  background: rgba(79, 124, 255, 0.12);
+  border: 1px solid rgba(79, 124, 255, 0.35);
+  border-radius: 6px;
 }
 
 .c-params-panel__field {

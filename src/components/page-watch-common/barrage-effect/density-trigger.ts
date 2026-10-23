@@ -20,7 +20,7 @@
 import { createAnchorId } from './anchor-utils';
 import { getEffectTemplate } from './effects';
 import type { BarrageSample } from './barrage-signal';
-import type { BarrageAnchor, EffectTemplateName } from './types';
+import type { BarrageAnchor, EffectTemplateName, LiveTemplateConfig } from './types';
 
 export interface DensityTriggerConfig {
   /** 总开关。默认关 —— 作者没配就炸，属于惊吓不属于功能 */
@@ -142,29 +142,40 @@ export function evaluateDensity(
 }
 
 /**
- * 造一个用于触发的锚点
+ * 造一个运行期锚点
  *
- * @desc 它**不存在于 store 里**，也不出现在时间轴上 —— 密度触发不是配置，
- *   是运行期事件。id 照样给：驱动器按 id 无关的方式持有轨道，但给一个稳定的
- *   id 能让日志和调试可读。
+ * @desc 它**不存在于 store 里**，也不出现在时间轴上 —— 密度触发和直播手动触发
+ *   都不是配置，是运行期事件。id 照样给：驱动器按 id 无关的方式持有轨道，但给一个
+ *   稳定的 id 能让日志和调试可读。
  *
  *   ★ 驱动方式恒为 `static`，这是有意的，不是偷懒：
- *   - 密度触发是「热闹了就炸一个」，要的是一闪而过的爆点，不是持续 6 秒的互动窗
+ *   - 这两条路都是「点一下就放一个」，要的是一闪而过的爆点，不是持续 6 秒的互动窗
  *   - 互动窗本身要读弹幕密度，拿密度去开一个读密度的窗是套娃，语义上说不通
  *   - 直播下没有任何东西会关掉一个常驻特效，`static` 的一次性播放天然自清
  *
  *   显式写出 `mode: 'static'` 而不是靠「省略即默认」：万一将来某个模板把
  *   `feedModes[0]` 换成互动方式，这里不会跟着静默变味
  */
-export function createTriggerAnchor(config: DensityTriggerConfig): BarrageAnchor {
-  const descriptor = getEffectTemplate(config.template);
+export function createRuntimeAnchor(
+  template: EffectTemplateName,
+  config?: LiveTemplateConfig,
+): BarrageAnchor {
+  const descriptor = getEffectTemplate(template);
 
   return {
     id: createAnchorId(),
     time: 0,
-    template: config.template,
-    // 触发场合的参数覆盖（如倒计时的 10 秒短版）。驱动器会把它并到模板默认值之上
-    params: { ...descriptor?.triggerParams },
+    template,
+    /**
+     * 有显式配置就用它，没有才用触发场合的短版（如倒计时的 10 秒）
+     * @desc ★ **不能**写成 `{ ...triggerParams, ...config.params }`：回放里只改了
+     *   时长的那条倒计时，params 里没有 caption，垫上 triggerParams 的文案后，
+     *   直播放出来的说明和参数面板里显示的（模板默认文案）就对不上了。
+     *   有配置时原样使用，缺的字段由模板默认值补 —— 与作者在面板里看到的一致。
+     *   驱动器会把整份 params 并到模板默认值之上
+     */
+    params: config?.params ? { ...config.params } : { ...descriptor?.triggerParams },
+    ...(config?.spanSec !== undefined ? { spanSec: config.spanSec } : {}),
     feed: { mode: 'static' },
   };
 }

@@ -19,6 +19,7 @@ import { usePlayerStore } from '@/store/use-player-store';
 import { findTimelineItem } from '@/core/term/timeline';
 import { TermTrack } from '@/core/term/term-matcher';
 import { isTermDemoEnabled } from '@/core/term/term-options';
+import { publishSubtitleTermCue } from '@/live-buddy/term-sync';
 import { useTermCard } from './use-term-card';
 import { useTermMatcher } from './use-term-matcher';
 
@@ -152,7 +153,7 @@ export const useTermSubtitle = () => {
     return watchCore;
   }
 
-  const { track, segmentsOf } = useTermMatcher();
+  const { track, segmentsOf, segmentsOfText } = useTermMatcher();
   const selectedTrack = ref<TermTrack>(track);
   const isDemoMode = ref(isTermDemoEnabled());
 
@@ -236,6 +237,14 @@ export const useTermSubtitle = () => {
     translationText.value =
       translation || (getSubtitleConfig()?.subtitleTranslateEnabled ? '翻译中…' : '');
     subtitleVisible.value = true;
+
+    publishSubtitleTermCue({
+      cueKey: `live:${item.index}`,
+      segments: segmentsOfText(`${item.source}\n${translation}`),
+      sourceText: item.source,
+      translationText: translation,
+      timestamp: item.start,
+    });
 
     const shouldLog = item.index !== lastLoggedIndex || !lastLoggedVisible;
     lastLoggedIndex = item.index;
@@ -575,6 +584,13 @@ export const useTermSubtitle = () => {
 
     if (currentIndex.value === data.index && subtitleVisible.value) {
       translationText.value = data.result;
+      publishSubtitleTermCue({
+        cueKey: `live:${data.index}`,
+        segments: segmentsOfText(`${sourceText.value}\n${data.result}`),
+        sourceText: sourceText.value,
+        translationText: data.result,
+        timestamp: lastCurrentTime,
+      });
     }
   }
 
@@ -610,6 +626,14 @@ export const useTermSubtitle = () => {
     sourceText.value = item.source;
     translationText.value = item.translation;
     subtitleVisible.value = true;
+
+    publishSubtitleTermCue({
+      cueKey: `demo:${index}`,
+      segments: segmentsOfText(`${item.source}\n${item.translation}`),
+      sourceText: item.source,
+      translationText: item.translation,
+      timestamp: params.currentTime,
+    });
   }
 
   function onPlayerTimeUpdate(params: PlayerEventsRelations[PlayerEvents.TimeUpdate]) {

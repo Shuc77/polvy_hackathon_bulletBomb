@@ -19,6 +19,12 @@ export const useHideChatMsgHook = () => {
     hideChatMsgSources.push(ChatMsgSource.CustomerMessage);
   }
 
+  /**
+   * 客户端自定义消息只用于直播实时特效的广播，不进聊天列表
+   * @desc v1 的渲染项是个空 div，留着会多出一条空白消息占位
+   */
+  hideChatMsgSources.push(ChatMsgSource.CustomMessage);
+
   chatMsgStore.$patch({
     hideChatMsgSources,
   });

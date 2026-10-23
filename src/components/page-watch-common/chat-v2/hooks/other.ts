@@ -37,6 +37,13 @@ export const useHideChatMsg = () => {
       hideSources.push(ChatMsgSource.CustomServer);
     }
 
+    /**
+     * 客户端自定义消息只用于直播实时特效的广播，不进聊天列表
+     * @desc 不隐藏的话 chat-ui 会把 `data` 当文本渲染出来 —— 一个对象在列表里就是
+     *   一句 `[object Object]`。它也不该占一条消息的位置
+     */
+    hideSources.push(ChatMsgSource.CustomClient);
+
     return hideSources;
   }
 

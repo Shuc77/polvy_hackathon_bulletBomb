@@ -2,7 +2,13 @@
   <div class="c-template-gallery">
     <div class="c-template-gallery__head">
       <span class="c-template-gallery__title">模板库</span>
-      <span class="c-template-gallery__hint">拖到时间轴新增 · 单个特效模式下点击预览</span>
+      <span class="c-template-gallery__hint">
+        {{
+          live
+            ? '点击模板预览并在右侧调参数 · 再点一次取消'
+            : '拖到时间轴新增 · 单个特效模式下点击预览，再点一次取消'
+        }}
+      </span>
     </div>
 
     <div class="c-template-gallery__grid">
@@ -37,7 +43,11 @@ import type { EffectTemplateName } from '../types';
 import { EFFECT_TEMPLATES, groupTemplatesByCategory } from '../effects';
 import TemplateCard from './template-card.vue';
 
-defineProps<{ selectedTemplate?: EffectTemplateName }>();
+defineProps<{
+  selectedTemplate?: EffectTemplateName;
+  /** 直播没有时间轴：提示文案不能说「拖到时间轴」 */
+  live?: boolean;
+}>();
 
 const emit = defineEmits<{ (e: 'select-template', name: EffectTemplateName): void }>();
 

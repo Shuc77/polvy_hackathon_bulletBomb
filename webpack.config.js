@@ -218,6 +218,15 @@ const prodConfig = merge(commonConfig, {
             minimized: true,
           },
         },
+        {
+          from: path.resolve(__dirname, './external/live-buddy'),
+          to: path.join(__dirname, outputDir, 'live-buddy'),
+          toType: 'dir',
+          noErrorOnMissing: true,
+          info: {
+            minimized: true,
+          },
+        },
       ],
     }),
   ]

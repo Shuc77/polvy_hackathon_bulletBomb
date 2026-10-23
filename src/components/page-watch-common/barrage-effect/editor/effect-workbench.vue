@@ -35,6 +35,15 @@
         </div>
 
         <div class="c-effect-workbench__actions">
+          <!-- 直播没有时间轴，手动触发是这块工作台在直播下最有用的功能，放在最前 -->
+          <button
+            v-if="!isTimeAxisAvailable"
+            type="button"
+            class="c-effect-workbench__live"
+            @click="openPanel('live')"
+          >
+            实时特效
+          </button>
           <button
             type="button"
             class="c-effect-workbench__trigger"
@@ -81,6 +90,7 @@
         <section class="c-effect-workbench__pane c-effect-workbench__pane--left">
           <template-gallery
             :selected-template="selectedTemplate"
+            :live="!isTimeAxisAvailable"
             @select-template="onTemplateSelect"
           />
         </section>
@@ -100,14 +110,16 @@
             :anchor-key="stageKey"
             :trigger-anchor="triggerAnchor"
             @update:mode="setPreviewMode"
+            @cancel-preview="onCancelPreview"
           />
         </section>
 
         <section class="c-effect-workbench__pane c-effect-workbench__pane--right">
           <params-panel
-            :anchor="selectedAnchor"
+            :anchor="paramsAnchor"
             :duration="duration"
             :is-time-axis-available="isTimeAxisAvailable"
+            :live-template="isLiveTemplateAnchor"
             @patch="onAnchorPatch"
             @remove="onAnchorRemove"
             @use-current-time="onUseCurrentTime"
@@ -133,24 +145,24 @@
         />
       </footer>
 
-      <!-- ★ 触发设置**不遮**：它是「即改即生效 + 当场看效果」的面板，
+      <!-- ★ 触发设置与实时特效**不遮**：它们是「点一下立即看效果」的面板，
            一个 55% 黑的整屏遮罩加一个正中（也就是特效炸开的那一点）的对话框，
-           正好把唯一值得看的东西挡死。靠右停靠 + 透传指针，改参数的手不离开画面 -->
+           正好把唯一值得看的东西挡死。靠右停靠 + 透传指针，手不离开画面 -->
       <div
         v-if="panelMode"
         class="c-effect-workbench__mask"
-        :class="{ 'is-trigger': panelMode === 'trigger' }"
+        :class="{ 'is-trigger': panelMode === 'trigger' || panelMode === 'live' }"
         @click.self="closePanel"
       >
         <div
           class="c-effect-workbench__dialog"
-          :class="{ 'is-wide': panelMode === 'trigger' }"
+          :class="{ 'is-wide': panelMode === 'trigger' || panelMode === 'live' }"
         >
           <div class="c-effect-workbench__dialog-title">{{ dialogTitle }}</div>
 
           <template v-if="panelMode === 'reset'">
             <p class="c-effect-workbench__dialog-text">
-              将清空全部 {{ anchorsCount }} 个特效，并删除本地存档。此操作不可撤销。
+              将清空全部 {{ anchorsCount }} 个特效与直播特效参数，并删除本地存档。此操作不可撤销。
             </p>
           </template>
 
@@ -158,6 +170,13 @@
           <trigger-panel
             v-else-if="panelMode === 'trigger'"
             @preview="onTriggerPreview"
+          />
+
+          <!-- 直播手动触发：点模板即放，同时广播给同一直播间的所有页面 -->
+          <live-trigger-panel
+            v-else-if="panelMode === 'live'"
+            @preview="onLivePreview"
+            @configure="onLiveConfigure"
           />
 
           <!-- 分享链接：静态分发；实时同步另有一条开发服务器通道 -->
@@ -196,7 +215,7 @@
           </template>
 
           <div
-            v-if="panelMode !== 'trigger'"
+            v-if="panelMode !== 'trigger' && panelMode !== 'live'"
             class="c-effect-workbench__dialog-actions"
           >
             <button
@@ -236,7 +255,7 @@
             >
           </div>
 
-          <!-- 触发设置是「即改即生效」的，没有确认这一步；只留一个关闭 -->
+          <!-- 触发设置 / 实时特效都是「即点即生效」的，没有确认这一步；只留一个关闭 -->
           <div
             v-else
             class="c-effect-workbench__dialog-actions"
@@ -267,9 +286,10 @@ import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import CustomTeleport from '@/components/common-base/custom-teleport/custom-teleport';
 import { messageBox } from '@/components/common-base/message-box';
 import { useToastManager } from '@/hooks/components/use-toast';
-import { createTriggerAnchor } from '../density-trigger';
+import { createRuntimeAnchor } from '../density-trigger';
 import EffectStage from './effect-stage.vue';
 import EffectTimeline from './effect-timeline.vue';
+import LiveTriggerPanel from './live-trigger-panel.vue';
 import ParamsPanel from './params-panel.vue';
 import TemplateGallery from './template-gallery.vue';
 import TriggerPanel from './trigger-panel.vue';
@@ -438,9 +458,16 @@ watch(isTimeAxisAvailable, available => {
 /**
  * 舞台当前预览的模板
  * @desc 选中锚点时它就是锚点的模板；没选中时是用户刚点开的那个模板 ——
- *   此时舞台预览的是模板的出厂形态，参数面板则是空态
+ *   时间轴模式下舞台预览的是模板的出厂形态，参数面板保持空态；
+ *   直播下参数面板显示这个模板的共享参数（见 `livePreviewAnchor`）。
+ *
+ *   ★ 直播下默认**不选**：工作台盖住的是正在直播的真实画面，一进来就循环一个模板，
+ *   作者既看不到「现在的直播画面是什么样」，也找不到「取消预览」的入口。
+ *   点一张卡才开始预览，再点同一张卡取消
  */
-const selectedTemplate = ref<EffectTemplateName>('shockwave');
+const selectedTemplate = ref<EffectTemplateName | undefined>(
+  isTimeAxisAvailable.value ? 'shockwave' : undefined,
+);
 
 watch(
   () => selectedAnchor.value?.template,
@@ -454,10 +481,48 @@ watch(
 
 const previewTemplate = computed(() => selectedAnchor.value?.template ?? selectedTemplate.value);
 
+/**
+ * 直播模板的视图锚点
+ *
+ * @desc 直播没有时间轴，参数不能挂在锚点上；但参数面板要的是一个 `BarrageAnchor`。
+ *   这里把「模板 + 共享参数」临时拼成一条时间轴之外的锚点，交给右侧面板与舞台 ——
+ *   面板因此不需要为直播再长一套 UI，舞台看到的也就是触发时会用的那份参数。
+ *
+ *   直播下选中了真实锚点（带地址栏配置进来）时以锚点为准，那条路径保持原样。
+ */
+const livePreviewAnchor = computed<BarrageAnchor | undefined>(() => {
+  if (isTimeAxisAvailable.value || selectedAnchor.value) {
+    return undefined;
+  }
+
+  const template = selectedTemplate.value;
+
+  if (!template) {
+    return undefined;
+  }
+
+  const config = barrageEffectStore.liveTemplateConfigOf(template);
+
+  return {
+    // 不进 store，只是个稳定 id；同一模板重算时引用会变，但面板按字段读值，不受影响
+    id: `live-template:${template}`,
+    time: 0,
+    template,
+    params: config.params,
+    spanSec: config.spanSec,
+    feed: { mode: 'static' },
+  };
+});
+
+/** 参数面板当前编辑的对象：时间轴锚点优先，其次才是直播模板 */
+const paramsAnchor = computed(() => selectedAnchor.value ?? livePreviewAnchor.value);
+
+const isLiveTemplateAnchor = computed(() => !selectedAnchor.value && !!livePreviewAnchor.value);
+
 const previewParams = computed<EffectParams>(() => {
   const defaults = getEffectTemplate(previewTemplate.value)?.defaults ?? {};
 
-  return selectedAnchor.value ? { ...defaults, ...selectedAnchor.value.params } : { ...defaults };
+  return { ...defaults, ...paramsAnchor.value?.params };
 });
 
 /** 舞台据此重建实例：改选锚点或换模板都从头播一遍 */
@@ -469,7 +534,7 @@ const stageKey = computed(() => selectedAnchor.value?.id ?? previewTemplate.valu
  *   不重播的话作者拖了半天看不到任何变化，等于这个功能是坏的
  */
 const previewSpan = computed(() => {
-  const anchor = selectedAnchor.value;
+  const anchor = paramsAnchor.value;
 
   return anchor ? spanOf(anchor, getEffectTemplate(anchor.template)) : undefined;
 });
@@ -489,7 +554,7 @@ interface IoMessage {
   tone: 'ok' | 'error';
 }
 
-const panelMode = ref<'import' | 'export' | 'share' | 'reset' | 'trigger'>();
+const panelMode = ref<'import' | 'export' | 'share' | 'reset' | 'trigger' | 'live'>();
 const ioMessage = ref<IoMessage>();
 
 const DIALOG_TITLES = {
@@ -498,6 +563,7 @@ const DIALOG_TITLES = {
   share: '分享与同步',
   reset: '确认清空',
   trigger: '密度触发设置',
+  live: '实时特效',
 } as const;
 
 const dialogTitle = computed(() => (panelMode.value ? DIALOG_TITLES[panelMode.value] : ''));
@@ -505,20 +571,53 @@ const dialogTitle = computed(() => (panelMode.value ? DIALOG_TITLES[panelMode.va
 /**
  * 待预览的触发锚点
  * @desc 舞台按**引用变化**判定，所以每次点击都造一个新对象。
- *   构造走的是 `createTriggerAnchor` —— 与生产层同一个函数，
+ *   构造走的是 `createRuntimeAnchor` —— 与生产层同一个函数、同一份共享参数，
  *   预览看到的就是自动触发会放的东西
  */
 const triggerAnchor = ref<BarrageAnchor>();
 
 function onTriggerPreview(): void {
-  triggerAnchor.value = createTriggerAnchor(density.value);
+  triggerAnchor.value = createRuntimeAnchor(
+    density.value.template,
+    barrageEffectStore.liveTemplateConfigOf(density.value.template),
+  );
+}
+
+/**
+ * 直播手动触发的本地预览
+ * @desc 广播发出去之后，观众页会在真实图层上放；而工作台是整屏浮层，
+ *   作者只能看中间的舞台。两边放的是同一个运行期锚点
+ */
+function onLivePreview(anchor: BarrageAnchor): void {
+  triggerAnchor.value = anchor;
+}
+
+/**
+ * 从实时特效面板回到参数编辑
+ * @desc 这个面板靠右停靠，正好把右栏的参数面板整个盖住 —— 不关掉它，
+ *   作者会以为「直播参数根本没法改」。关掉之后模板卡呈选中态，右侧就是它的参数
+ */
+function onLiveConfigure(template: EffectTemplateName): void {
+  selectedTemplate.value = template;
+  barrageEffectStore.selectAnchor(undefined);
+  closePanel();
+}
+
+/**
+ * 取消单个特效预览
+ * @desc 直播下这是回到「干净直播画面」的显式出口；清掉模板与锚点选中后，
+ *   舞台不再循环任何模板，只镜像播放器
+ */
+function onCancelPreview(): void {
+  selectedTemplate.value = undefined;
+  barrageEffectStore.selectAnchor(undefined);
 }
 
 function close(): void {
   barrageEffectStore.toggleWorkbench(false);
 }
 
-function openPanel(mode: 'import' | 'export' | 'share' | 'reset' | 'trigger'): void {
+function openPanel(mode: 'import' | 'export' | 'share' | 'reset' | 'trigger' | 'live'): void {
   ioMessage.value = undefined;
 
   if (mode === 'export') {
@@ -527,6 +626,16 @@ function openPanel(mode: 'import' | 'export' | 'share' | 'reset' | 'trigger'): v
 
   if (mode === 'share') {
     ioText.value = barrageEffectStore.shareUrl();
+  }
+
+  if (mode === 'live') {
+    /**
+     * 先把模板循环预览停掉
+     * @desc 实时特效面板要预览的是「点下去观众会看到的那一下」。模板卡还循环着的话，
+     *   舞台上就是循环特效与触发特效叠在一起，作者看到的和观众看到的不是一回事
+     */
+    selectedTemplate.value = undefined;
+    barrageEffectStore.selectAnchor(undefined);
   }
 
   panelMode.value = mode;
@@ -629,8 +738,6 @@ function confirmPanel(): void {
 }
 
 function onTemplateSelect(name: EffectTemplateName): void {
-  selectedTemplate.value = name;
-
   /*
    * 时间轴模式：模板库只是「选品」，不抢舞台
    * @desc ★ 舞台此刻代表的是播放进度上的真实画面。点一张卡就切到单个特效，
@@ -641,9 +748,22 @@ function onTemplateSelect(name: EffectTemplateName): void {
    *   点卡换预览是符合预期的
    */
   if (previewMode.value === 'timeline') {
+    selectedTemplate.value = name;
     return;
   }
 
+  /**
+   * 再点一次已选中的卡片 = 取消预览
+   * @desc 直播下尤其需要：整块舞台盖在直播画面上，选中的模板会一直循环，
+   *   没有这个出口就只能靠切模式或关工作台才能回到干净画面
+   */
+  if ((selectedAnchor.value?.template ?? selectedTemplate.value) === name) {
+    selectedTemplate.value = undefined;
+    barrageEffectStore.selectAnchor(undefined);
+    return;
+  }
+
+  selectedTemplate.value = name;
   // 单个特效模式：点卡就是换预览对象，取消锚点选中让舞台跟着模板走
   barrageEffectStore.selectAnchor(undefined);
 }
@@ -686,6 +806,18 @@ function onAnchorPatch(patch: Partial<BarrageAnchor>, opts?: { defer?: boolean }
 
   if (id) {
     barrageEffectStore.updateAnchor(id, patch, opts);
+    return;
+  }
+
+  /**
+   * 直播模板参数：写进频道级共享配置，而不是凭空造一条锚点
+   * @desc 造锚点会把它带进时间轴、导出和分享链接；作者要的只是
+   *   「这个模板在直播里放出来长什么样」
+   */
+  const template = livePreviewAnchor.value?.template;
+
+  if (template) {
+    barrageEffectStore.updateLiveTemplateConfig(template, patch);
   }
 }
 
@@ -981,6 +1113,20 @@ onBeforeUnmount(() => {
 
     &:hover {
       border-color: #4f7cff;
+    }
+  }
+
+  /**
+   * 实时特效：直播下唯一的手动触发入口
+   * @desc 旁边一排都是配置类按钮，不给一个不同的强调色，演示时找不到它
+   */
+  .c-effect-workbench__live {
+    color: #ffd6e0;
+    background: rgba(255, 53, 83, 0.16);
+    border-color: rgba(255, 53, 83, 0.6);
+
+    &:hover {
+      border-color: #ff3553;
     }
   }
 }

@@ -4,6 +4,7 @@ import './entry-config';
 import { mainFactory } from './entry-helper';
 import Vue from 'vue';
 import WatchApp from './app/watch-app.vue';
+import { setupLiveBuddyHost } from './live-buddy/host';
 
 console.info(
   '%c WatchApp build info: %s, %s, %s, %s',
@@ -15,3 +16,9 @@ console.info(
 );
 
 mainFactory(WatchApp as unknown as Vue);
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupLiveBuddyHost, { once: true });
+} else {
+  setupLiveBuddyHost();
+}

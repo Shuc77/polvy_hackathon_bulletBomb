@@ -31,6 +31,7 @@ import {
 import type {
   BarrageAnchor,
   EffectTemplateName,
+  LiveTemplateConfig,
 } from '@/components/page-watch-common/barrage-effect/types';
 
 /**
@@ -84,6 +85,60 @@ function resolveScopeKey(videoIdFromPlayer?: string): string {
 
 /** 高频写入的落盘延迟，单位：毫秒 */
 const PERSIST_DELAY = 300;
+
+/** 直播模板参数的存储键前缀。按**频道**存，不含视频 —— 直播与回放共用一份 */
+const LIVE_TEMPLATES_KEY_PREFIX = 'plv-barrage-effect-live-templates:';
+
+/** 时间轴锚点的存储键前缀。补直播参数时要拿它扫同频道的其他作用域 */
+const ANCHORS_KEY_PREFIX = 'plv-barrage-effect-anchors:';
+
+/** 模板级参数表：模板名 → 共享参数 */
+type LiveTemplateConfigMap = Partial<Record<EffectTemplateName, LiveTemplateConfig>>;
+
+/** 参数表里只留合法模板与合法字段，脏数据不能让 store 起不来 */
+function normalizeLiveTemplateConfigs(input: unknown): LiveTemplateConfigMap {
+  const result: LiveTemplateConfigMap = {};
+
+  if (!input || typeof input !== 'object') {
+    return result;
+  }
+
+  Object.keys(input as Record<string, unknown>).forEach(name => {
+    const template = name as EffectTemplateName;
+
+    if (!getEffectTemplate(template)) {
+      return;
+    }
+
+    const raw = (input as Record<string, unknown>)[name];
+
+    if (!raw || typeof raw !== 'object') {
+      return;
+    }
+
+    const entry = raw as LiveTemplateConfig;
+    // 空参数等于没配置：留着它会让「没有显式配置时用 triggerParams」失效
+    const params =
+      entry.params && typeof entry.params === 'object' && Object.keys(entry.params).length > 0
+        ? { ...entry.params }
+        : undefined;
+    const spanSec =
+      typeof entry.spanSec === 'number' && Number.isFinite(entry.spanSec) && entry.spanSec > 0
+        ? entry.spanSec
+        : undefined;
+
+    if (!params && spanSec === undefined) {
+      return;
+    }
+
+    result[template] = {
+      ...(params ? { params } : {}),
+      ...(spanSec !== undefined ? { spanSec } : {}),
+    };
+  });
+
+  return result;
+}
 
 /** 导入的结果。`dropped` 单独拿出来是为了能如实报出「进来了一部分」 */
 export interface ImportAnchorsResult extends ParseStats {
@@ -156,6 +211,17 @@ export interface BarrageEffectStore {
   updateDensity: (patch: Partial<DensityTriggerConfig>) => void;
   /** 记一次触发，进入冷却 */
   markDensityFired: (at: number) => void;
+  /**
+   * 取模板的直播参数，已并入触发场合的短版默认值
+   * @desc 直播手动触发、密度触发、点播新锚点都读这一份 —— 三处同一个出口
+   */
+  liveTemplateConfigOf: (template: EffectTemplateName) => LiveTemplateConfig;
+  /**
+   * 改模板的直播参数
+   * @desc 补丁与锚点补丁同构（参数面板不区分两者），只取 `params` / `spanSec`。
+   *   改完与点播回放共用，时间轴上的同款模板会读到同一个值
+   */
+  updateLiveTemplateConfig: (template: EffectTemplateName, patch: Partial<BarrageAnchor>) => void;
   /** 恢复出厂：清空全部锚点与本地存档 */
   resetAll: () => void;
 }
@@ -182,12 +248,24 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
     /** 记录「上次已应用的地址栏载荷」的键名 */
     let urlStampKey = '';
 
-    /** 三个键名必须始终指向同一个作用域 */
+    /**
+     * 直播模板参数的键名
+     * @desc ★ 只到频道，不带视频：同一频道的直播与回放必须读写同一份，
+     *   否则「回放里调好的倒计时」切到直播又是出厂值，等于要配两次
+     */
+    let liveTemplatesKey = '';
+
+    /** 当前频道。扫同频道其他作用域的锚点存档时要用 */
+    let channelScope = FALLBACK_SCOPE;
+
+    /** 四个键名必须始终指向同一个作用域（直播参数只到频道一级） */
     function setScopeKeys(next: string): void {
       scopeKey = next;
-      storageKey = `plv-barrage-effect-anchors:${next}`;
+      storageKey = `${ANCHORS_KEY_PREFIX}${next}`;
       densityKey = `plv-barrage-effect-density:${next}`;
       urlStampKey = `plv-barrage-effect-url-stamp:${next}`;
+      channelScope = next.split('|')[0] || FALLBACK_SCOPE;
+      liveTemplatesKey = `${LIVE_TEMPLATES_KEY_PREFIX}${channelScope}`;
     }
 
     const anchors = ref<BarrageAnchor[]>([]);
@@ -203,6 +281,9 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
     const density = ref<DensityTriggerConfig>({ ...DENSITY_DEFAULTS });
     const lastFiredAt = ref<number>();
 
+    /** 模板级共享参数。直播与回放都读它，见 `liveTemplateConfigOf` */
+    const liveTemplateConfigs = ref<LiveTemplateConfigMap>({});
+
     /** 多设备同步状态；没有同步端点时保持 off */
     const syncStatus = ref<EffectSyncStatus>('off');
 
@@ -215,6 +296,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
     let persistTimer: ReturnType<typeof setTimeout> | undefined;
     let densityTimer: ReturnType<typeof setTimeout> | undefined;
+    let liveTemplatesTimer: ReturnType<typeof setTimeout> | undefined;
     let syncHandle: EffectSyncHandle | undefined;
 
     function notifyLocalChange(): void {
@@ -284,6 +366,231 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       } catch {
         // 脏数据不该让 store 起不来，退回默认（默认是关闭的，最安全）
         density.value = { ...DENSITY_DEFAULTS };
+      }
+    }
+
+    function writeLiveTemplatesStorage(): void {
+      try {
+        window.localStorage.setItem(liveTemplatesKey, JSON.stringify(liveTemplateConfigs.value));
+        lastSavedAt.value = Date.now();
+      } catch {
+        // 隐私模式等场景不可写，降级为仅内存
+      }
+    }
+
+    /**
+     * 锚点 → 共享参数
+     * @desc 空参数且没有时长时返回 undefined：这种锚点没有可同步的东西，
+     *   把它写进共享表只会占住「已配置」的位置，挡住后面真正有配置的锚点
+     */
+    function liveConfigFromAnchor(anchor: BarrageAnchor): LiveTemplateConfig | undefined {
+      const params =
+        anchor.params && Object.keys(anchor.params).length > 0 ? { ...anchor.params } : undefined;
+      const spanSec =
+        typeof anchor.spanSec === 'number' && Number.isFinite(anchor.spanSec) && anchor.spanSec > 0
+          ? anchor.spanSec
+          : undefined;
+
+      if (!params && spanSec === undefined) {
+        return undefined;
+      }
+
+      return {
+        ...(params ? { params } : {}),
+        ...(spanSec !== undefined ? { spanSec } : {}),
+      };
+    }
+
+    /** 把一组锚点里**还没配置过**的模板补进共享表 */
+    function seedTemplatesFromAnchors(list: BarrageAnchor[], next: LiveTemplateConfigMap): void {
+      list.forEach(anchor => {
+        const config = liveConfigFromAnchor(anchor);
+
+        if (config && !next[anchor.template]) {
+          next[anchor.template] = config;
+        }
+      });
+    }
+
+    /**
+     * 从同频道已保存的时间轴锚点补一份直播参数
+     *
+     * @desc 「配置跟点播回放同步」的第一步：这个能力上线之前，作者可能已经
+     *   在回放工作台里把倒计时调成 30 秒了；直播这边不补一遍的话，点下去还是
+     *   出厂值，看起来就像两份配置。
+     *
+     *   ★ **只补没有显式配置过的模板**。直播里改过的值比旧时间轴更「新」，
+     *   不能反过来被旧存档盖掉。同一模板在多条回放里出现时，先扫到的算数 ——
+     *   共享槽只有一个，这里刻意不搞「最后写入者」，避免每次刷新结果都不一样。
+     */
+    function seedLiveTemplatesFromChannel(configs: LiveTemplateConfigMap): void {
+      try {
+        const prefix = `${ANCHORS_KEY_PREFIX}${channelScope}|`;
+        const next = { ...configs };
+
+        for (let index = 0; index < window.localStorage.length; index += 1) {
+          const key = window.localStorage.key(index);
+
+          if (!key || !key.startsWith(prefix)) {
+            continue;
+          }
+
+          const raw = window.localStorage.getItem(key);
+
+          if (raw) {
+            seedTemplatesFromAnchors(parseAnchorsText(raw), next);
+          }
+        }
+
+        // 当前内存里的锚点也要算：从分享链接打开、还没落盘的那一份
+        // 只在 localStorage 里扫是看不到的
+        seedTemplatesFromAnchors(anchors.value, next);
+
+        // 没有新增模板时 `next` 与 `configs` 的键数相同；有新增才落盘
+        if (Object.keys(next).length !== Object.keys(configs).length) {
+          liveTemplateConfigs.value = next;
+          writeLiveTemplatesStorage();
+        }
+      } catch {
+        // 本地存档读不到就按出厂值，直播本身仍然能放
+      }
+    }
+
+    function readLiveTemplatesStorage(): void {
+      let stored: LiveTemplateConfigMap = {};
+
+      try {
+        const raw = window.localStorage.getItem(liveTemplatesKey);
+        stored = raw ? normalizeLiveTemplateConfigs(JSON.parse(raw)) : {};
+      } catch {
+        stored = {};
+      }
+
+      liveTemplateConfigs.value = stored;
+      seedLiveTemplatesFromChannel(stored);
+    }
+
+    function persistLiveTemplatesDeferred(): void {
+      isSaving.value = true;
+
+      if (liveTemplatesTimer !== undefined) {
+        clearTimeout(liveTemplatesTimer);
+      }
+
+      liveTemplatesTimer = setTimeout(() => {
+        liveTemplatesTimer = undefined;
+        isSaving.value = false;
+        writeLiveTemplatesStorage();
+      }, PERSIST_DELAY);
+    }
+
+    /**
+     * 取某个模板的共享参数
+     *
+     * @desc 没有显式配置时用 `triggerParams`（触发场合的短版，如倒计时 10 秒）；
+     *   **有配置时原样使用，不再垫触发短版**。垫了的话，回放里只改了时长的那条
+     *   倒计时，到了直播会凭空多出一句触发用的文案（「倒计时」对「距离开始还有」），
+     *   两边显示的就不是同一份配置了。
+     *
+     *   这里是**唯一**决定「没有配置时用什么」的地方，直播触发、密度触发、
+     *   点播新锚点都走它，不各自拼一份
+     */
+    function liveTemplateConfigOf(template: EffectTemplateName): LiveTemplateConfig {
+      const descriptor = getEffectTemplate(template);
+      const stored = liveTemplateConfigs.value[template];
+
+      if (stored) {
+        return {
+          params: { ...stored.params },
+          spanSec: stored.spanSec,
+        };
+      }
+
+      return { params: { ...descriptor?.triggerParams } };
+    }
+
+    function updateLiveTemplateConfig(
+      template: EffectTemplateName,
+      patch: Partial<BarrageAnchor>,
+    ): void {
+      if (!getEffectTemplate(template)) {
+        return;
+      }
+
+      const previous = liveTemplateConfigs.value[template] ?? {};
+      const next: LiveTemplateConfig = { ...previous };
+
+      if (patch.params) {
+        next.params = { ...previous.params, ...patch.params };
+      }
+
+      if ('spanSec' in patch) {
+        next.spanSec = patch.spanSec;
+      }
+
+      if (!next.params && next.spanSec === undefined) {
+        return;
+      }
+
+      liveTemplateConfigs.value = { ...liveTemplateConfigs.value, [template]: next };
+      persistLiveTemplatesDeferred();
+    }
+
+    /**
+     * 时间轴上的参数改动同步到直播参数
+     *
+     * @desc 「配置跟点播回放同步」的第二步：在回放里拖滑块、拖条带、改文案，
+     *   直播里点同一个模板时用的就是刚调好的值。
+     *
+     *   ★ 换模板那一下不同步：那个补丁带着 `params: {}`，同步过去会把直播里
+     *   调好的参数清空。多个同模板锚点时以最后一次被编辑的为准 —— 共享槽只有一个
+     */
+    function syncLiveConfigFromAnchor(
+      template: EffectTemplateName,
+      anchor: BarrageAnchor,
+      patch: Partial<BarrageAnchor>,
+    ): void {
+      if ('template' in patch || 'feed' in patch) {
+        return;
+      }
+
+      if (!('params' in patch) && !('spanSec' in patch)) {
+        return;
+      }
+
+      const config = liveConfigFromAnchor(anchor);
+
+      if (!config) {
+        return;
+      }
+
+      liveTemplateConfigs.value = { ...liveTemplateConfigs.value, [template]: config };
+      persistLiveTemplatesDeferred();
+    }
+
+    /**
+     * 导入后同步模板参数
+     * @desc 同一模板可能有多条锚点，而共享槽只有一个 —— 以**最后一条**为准
+     *   （导入顺序就是配置书写顺序，最后一条通常也是作者最后调的那条）
+     */
+    function syncLiveConfigsFromAnchors(list: BarrageAnchor[]): void {
+      const next = { ...liveTemplateConfigs.value };
+      let changed = false;
+
+      list.forEach(anchor => {
+        const config = liveConfigFromAnchor(anchor);
+
+        if (!config) {
+          return;
+        }
+
+        next[anchor.template] = config;
+        changed = true;
+      });
+
+      if (changed) {
+        liveTemplateConfigs.value = next;
+        persistLiveTemplatesDeferred();
       }
     }
 
@@ -385,6 +692,8 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
       // 与锚点各自独立：地址栏配置里没有密度触发（它是运行期事件，不是时间轴配置）
       readDensityStorage();
+      // 直播参数同样独立，并且是**频道级**的：切回放视频不换这一份
+      readLiveTemplatesStorage();
     }
 
     /** 把还在排队的延迟落盘立即写到**当前**作用域，用于切换前收尾 */
@@ -400,6 +709,12 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
         clearTimeout(densityTimer);
         densityTimer = undefined;
         writeDensityStorage();
+      }
+
+      if (liveTemplatesTimer !== undefined) {
+        clearTimeout(liveTemplatesTimer);
+        liveTemplatesTimer = undefined;
+        writeLiveTemplatesStorage();
       }
 
       isSaving.value = false;
@@ -518,11 +833,20 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
        */
       const defaultFeedMode = getEffectTemplate(template)?.defaultFeedMode;
 
+      /**
+       * 新锚点从**共享的模板参数**起步
+       * @desc 直播里调好的倒计时时长、配色、文案，拖到时间轴上时应该直接沿用 ——
+       *   否则「同步」只在已经存在的锚点上成立，新加一条又回到出厂值。
+       *   没有显式配置过的模板仍然是 `{}`，行为与以前逐帧一致
+       */
+      const sharedConfig = liveTemplateConfigs.value[template];
+
       const anchor: BarrageAnchor = {
         id: createAnchorId(),
         time: Math.max(0, Math.round(time)),
         template,
-        params: {},
+        params: sharedConfig?.params ? { ...sharedConfig.params } : {},
+        ...(sharedConfig?.spanSec !== undefined ? { spanSec: sharedConfig.spanSec } : {}),
         /**
          * 新互动锚点默认开启答题卡
          * @desc 用户已经拍板「只做主动答题」：收集窗不能是静默统计。
@@ -555,7 +879,11 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
         return;
       }
 
+      const template = target.template;
+
       Object.assign(target, patch);
+      // 参数改动的同一拍同步给直播 —— 两边读同一份，不需要作者再配一次
+      syncLiveConfigFromAnchor(template, target, patch);
 
       if (opts?.defer) {
         persistDeferred();
@@ -618,9 +946,18 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       // 冷却也一起清：刚「重置」完却还要等十几秒才能验证触发，会让人以为没生效
       lastFiredAt.value = undefined;
 
+      // 直播参数也是「本地存档」的一部分；排队中的延迟写入先取消，
+      // 否则重置之后定时器一到，又把刚清掉的参数写回去
+      liveTemplateConfigs.value = {};
+      if (liveTemplatesTimer !== undefined) {
+        clearTimeout(liveTemplatesTimer);
+        liveTemplatesTimer = undefined;
+      }
+
       try {
         window.localStorage.removeItem(storageKey);
         window.localStorage.removeItem(densityKey);
+        window.localStorage.removeItem(liveTemplatesKey);
         // 连指纹一起清掉，这样再刷新地址栏里的分享配置会重新生效 ——
         // 「重置」的语义就是回到刚打开这个链接的样子
         window.localStorage.removeItem(urlStampKey);
@@ -644,6 +981,8 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       anchors.value = list;
       // 选中第一条：导入完什么都是空的会让人以为没导进去
       selectedAnchorId.value = list[0].id;
+      // 导入的编排里也带着模板参数，直播那边一并接过来
+      syncLiveConfigsFromAnchors(list);
       persistNow();
 
       return { imported: list.length, ...stats };
@@ -714,6 +1053,8 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       toggleWorkbench,
       updateDensity,
       markDensityFired,
+      liveTemplateConfigOf,
+      updateLiveTemplateConfig,
       resetAll,
     };
   },

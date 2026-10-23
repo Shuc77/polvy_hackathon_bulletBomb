@@ -157,6 +157,23 @@ export interface BarrageAnchor {
   spanSec?: number;
 }
 
+/**
+ * 直播模板参数
+ *
+ * @desc 直播没有时间轴，没有锚点可以用来存参数；但倒计时时长、文案、配色这些
+ *   仍然要能调。这一份是**按频道共享**的模板级参数：直播手动触发、密度触发
+ *   与点播时间轴上的同款模板共用同一个值 —— 只配一次，两边都生效。
+ *
+ *   与 `BarrageAnchor` 的关系：字段同构，只是没有 `id` / `time` / `feed` ——
+ *   直播触发恒为一次性播放，不存在「什么时候放」和「怎么被弹幕驱动」。
+ */
+export interface LiveTemplateConfig {
+  /** 模板参数，与锚点上的 `params` 同义 */
+  params?: EffectParams;
+  /** 播放时长（秒），与锚点上的 `spanSec` 同义；倒计时的时长在 `params.countdownSec` 里 */
+  spanSec?: number;
+}
+
 /** 一个正在播放的特效 */
 export interface EffectInstance {
   /** 是否播放完毕 */
@@ -223,7 +240,7 @@ export interface EffectTemplateMeta {
    *   作者既有的 `spanSec` 会变成静默失效的死数据。模块里没有 schema 版本号，
    *   也没有迁移代码 —— 没有安全的重排方式，只有「创建时写明」这一条路。
    *
-   *   与 `density-trigger.ts` 的 `createTriggerAnchor` 是同一条纪律的两面：
+   *   与 `density-trigger.ts` 的 `createRuntimeAnchor` 是同一条纪律的两面：
    *   那边显式写 `static` 防被默认值改味，这边显式写互动值求默认就是互动
    *
    *   缺省即不写 `feed`（纯转场模板，如文字倒计时）

@@ -50,16 +50,24 @@
         {{ seamPercent }}%
       </span>
 
-      <button
-        v-if="mode === 'source'"
-        type="button"
-        class="c-effect-stage__replay"
-        @click="restart"
-      >
-        ▶ 重播
-      </button>
+      <template v-if="mode === 'source' && descriptor">
+        <button
+          type="button"
+          class="c-effect-stage__replay"
+          @click="restart"
+        >
+          ▶ 重播
+        </button>
+        <button
+          type="button"
+          class="c-effect-stage__cancel"
+          @click="emit('cancel-preview')"
+        >
+          ✕ 取消预览
+        </button>
+      </template>
       <span
-        v-else
+        v-else-if="mode === 'timeline'"
         class="c-effect-stage__playhint"
       >
         {{ isPlaying ? '跟随播放中' : '按时间轴播放键预览' }}
@@ -110,6 +118,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { usePlayerStore } from '@/store/use-player-store';
 import { barrageAreaLabel, barrageAreaOf } from '../barrage-area';
 import { collectLeadSecOf, resolveCollectPrompt } from '../collect';
+import { playEffectSound } from '../effect-sound';
 import { getEffectTemplate } from '../effects';
 import { resolveFeedMode } from '../feed-window';
 import { spanOf } from '../span';
@@ -165,7 +174,11 @@ const props = defineProps<{
   currentTime?: number;
   /** 时间轴是否可用；直播下为 false */
   timeAxisAvailable?: boolean;
-  template: EffectTemplateName;
+  /**
+   * 单个特效模式预览的模板
+   * @desc 直播下允许为空：模板库没选中任何卡片时，舞台只镜像直播画面，不循环特效
+   */
+  template?: EffectTemplateName;
   /** 已与模板默认值合并过的最终参数 */
   params: EffectParams;
   /** 选中锚点的驱动配置；没选中锚点时空，按模板默认方式预览 */
@@ -182,14 +195,17 @@ const props = defineProps<{
   /**
    * 密度触发的预览锚点
    * @desc ★ 判定靠**引用变化**，所以工作台每次点击都要换一个新对象
-   *   （`createTriggerAnchor` 每次都生成新的 id，引用必然不同）。
+   *   （`createRuntimeAnchor` 每次都生成新的 id，引用必然不同）。
    *   **不传 `loop`**：触发锚点恒为 `static` 一次性播放，
    *   预览要和生产逐帧一致，不能这里循环那里不循环
    */
   triggerAnchor?: BarrageAnchor;
 }>();
 
-const emit = defineEmits<{ (e: 'update:mode', mode: 'timeline' | 'source'): void }>();
+const emit = defineEmits<{
+  (e: 'update:mode', mode: 'timeline' | 'source'): void;
+  (e: 'cancel-preview'): void;
+}>();
 
 const canvasRef = ref<HTMLCanvasElement>();
 
@@ -200,9 +216,14 @@ const descriptor = computed(() => getEffectTemplate(props.template));
  * @desc 时间轴模式下屏幕上可能同时出现多个模板，标题不能写某一个模板的名字 ——
  *   否则作者会以为「数据雨」正在播，而实际上那是 02:30 的锚点，眼前这一帧是另一个
  */
-const stageTitle = computed(() =>
-  props.mode === 'timeline' ? '时间轴画面' : descriptor.value?.label ?? '预览',
-);
+const stageTitle = computed(() => {
+  if (props.mode === 'timeline') {
+    return '时间轴画面';
+  }
+
+  // 直播下没选中模板时舞台就是一块干净的播放器镜像，标题别再写「预览」
+  return descriptor.value?.label ?? (props.timeAxisAvailable ? '预览' : '直播画面');
+});
 
 /** 观众在播放器「弹幕位置」里选的那块区域 */
 const playerStore = usePlayerStore();
@@ -485,6 +506,8 @@ const scheduler = useAnchorScheduler({
     }
 
     driver.play(anchor);
+    // 与生产层同一个触发点：工作台里按时间轴播放时也能听到音效
+    playEffectSound(anchor.template);
   },
   getApproachLeadSec: anchor => collectLeadSecOf(anchor, getEffectTemplate(anchor.template)),
   onApproach: onTimelineApproach,
@@ -513,16 +536,23 @@ const isInteractive = computed(() => (descriptor.value?.feedModes.length ?? 1) >
  *   毫无反应。作者只会得出「这几个按钮坏了」的结论
  */
 const mockFeedActive = computed(
-  () => resolveFeedMode(currentAnchor(), descriptor.value) !== 'static',
+  () =>
+    !!descriptor.value &&
+    resolveFeedMode(currentAnchor(descriptor.value.name), descriptor.value) !== 'static',
 );
 
 const seamPercent = computed(() => Math.round(((debug.value?.bias ?? 0) + 1) * 50));
 
-function currentAnchor(): BarrageAnchor {
+/**
+ * 造一个舞台预览用的锚点
+ * @param template 必填：调用方先确认有模板。直播下「没选中模板」时舞台只镜像画面，
+ *   不会走到任何播放路径
+ */
+function currentAnchor(template: EffectTemplateName): BarrageAnchor {
   return {
     id: props.anchorKey ?? 'stage-preview',
     time: 0,
-    template: props.template,
+    template,
     params: props.params,
     feed: props.feed,
     spanSec: props.span,
@@ -542,16 +572,26 @@ function stopPreviewPrompt(): void {
 
 /**
  * 开演
- * @desc 生产层只播一次；舞台要一直循环 —— 1.5 秒的动画在你碰滑块之前就结束了
+ * @desc 生产层只播一次；舞台要一直循环 —— 1.5 秒的动画在你碰滑块之前就结束了。
+ *   没选中模板时只清轨道：直播下取消预览后舞台应该回到干净的播放器画面
  */
 function playPreview(): void {
   driver.reset();
-  driver.play(currentAnchor(), { loop: true });
+
+  if (!descriptor.value) {
+    return;
+  }
+
+  driver.play(currentAnchor(descriptor.value.name), { loop: true });
 }
 
 /** 当前锚点该不该先弹答题卡，以及文案是什么 */
 function collectPreviewPrompt(): StagePrompt | undefined {
-  const anchor = currentAnchor();
+  if (!descriptor.value) {
+    return undefined;
+  }
+
+  const anchor = currentAnchor(descriptor.value.name);
 
   if (!props.feed?.collect || resolveFeedMode(anchor, descriptor.value) === 'static') {
     return undefined;
@@ -712,6 +752,7 @@ watch(
     }
 
     driver.play(anchor);
+    playEffectSound(anchor.template);
     requestDraw();
   },
 );
@@ -836,9 +877,9 @@ onBeforeUnmount(() => {
   color: #9aa1b4;
 }
 
-.c-effect-stage__replay {
+.c-effect-stage__replay,
+.c-effect-stage__cancel {
   padding: 4px 12px;
-  margin-left: auto;
   font-size: 12px;
   color: #d5dae8;
   cursor: pointer;
@@ -850,6 +891,10 @@ onBeforeUnmount(() => {
   &:hover {
     border-color: #4f7cff;
   }
+}
+
+.c-effect-stage__replay {
+  margin-left: auto;
 }
 
 .c-effect-stage__canvas-wrap {

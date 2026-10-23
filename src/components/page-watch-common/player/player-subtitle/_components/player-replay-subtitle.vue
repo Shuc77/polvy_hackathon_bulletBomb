@@ -67,9 +67,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, onBeforeUnmount, watch } from 'vue';
 import { useSubtitleProps, usePlayerSubtitle } from '../_hooks/_use-player-subtitle';
 import { useReplaySubtitle } from '@/components/page-watch-common/subtitle/use-replay-subtitle';
+import { useGlobalInject } from '@/app/use-global-inject';
+import { publishSubtitleTermCue } from '@/live-buddy/term-sync';
 import { useTermMatcher } from '../_hooks/use-term-matcher';
 import { useTermCard } from '../_hooks/use-term-card';
 import PlayerTermCard from './player-term-card.vue';
@@ -86,7 +88,8 @@ const {
 const { mainText, translatedText, mainReplaySubtitleShow, subReplaySubtitleShow } =
   useReplaySubtitle();
 
-const { track, segmentsOf } = useTermMatcher();
+const { getWatchCore } = useGlobalInject();
+const { track, segmentsOf, segmentsOfText } = useTermMatcher();
 const mainSegments = segmentsOf(mainText);
 const translatedSegments = segmentsOf(translatedText);
 const {
@@ -101,6 +104,30 @@ const {
   closeCard,
   askQuestion,
 } = useTermCard(track);
+
+function readCurrentTime(): number | undefined {
+  try {
+    const time = getWatchCore().player.getCurrentTime();
+    return Number.isFinite(time) ? time : undefined;
+  } catch (error) {
+    return undefined;
+  }
+}
+
+watch(
+  [mainText, translatedText],
+  ([source, translated]) => {
+    if (!source && !translated) return;
+    publishSubtitleTermCue({
+      cueKey: `replay:${source || translated}`,
+      segments: segmentsOfText(`${source}\n${translated}`),
+      sourceText: source,
+      translationText: translated,
+      timestamp: readCurrentTime(),
+    });
+  },
+  { immediate: true },
+);
 
 function hasTerm(segment: TermSegment) {
   return !!segment.termIds?.length;

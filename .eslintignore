@@ -40,3 +40,7 @@ logs
 **/map-file/**
 **/component-icons/**
 inject-assets.js
+
+# Live Buddy 子工程：自带 React/Vite/Node 工具链，由 live-buddy 自己 lint
+live-buddy/**
+external/live-buddy/**
