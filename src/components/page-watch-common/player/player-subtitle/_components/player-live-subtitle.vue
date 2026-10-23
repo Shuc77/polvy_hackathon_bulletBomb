@@ -1,4 +1,4 @@
-<!-- @file 直播实时字幕 -->
+<!-- @file 直播实时字幕（术语增强） -->
 <template>
   <div
     v-show="localUerSubtitlesEnable"
@@ -10,60 +10,134 @@
     }"
   >
     <div
-      v-show="receivedSubtitleText"
+      v-show="showSubtitle"
       class="c-player-live-subtitle__inner"
     >
-      {{ receivedSubtitleText }}
+      <p class="c-player-live-subtitle__line">
+        <span
+          v-for="(segment, index) in sourceSegments"
+          :key="`source-${index}`"
+          :class="{
+            'c-player-live-subtitle__term': hasTerm(segment),
+            'c-player-live-subtitle__term--ambiguous': hasMultipleTerms(segment),
+            'c-player-live-subtitle__text': !hasTerm(segment),
+          }"
+          :role="hasTerm(segment) ? 'button' : undefined"
+          :tabindex="hasTerm(segment) ? 0 : undefined"
+          :title="termTitle(segment)"
+          @click.stop="openTerm(segment.termIds)"
+          @keydown.enter.stop.prevent="openTerm(segment.termIds)"
+          >{{ segment.text }}</span
+        >
+      </p>
+      <p
+        v-if="translationSegments.length"
+        class="c-player-live-subtitle__line c-player-live-subtitle__line--translation"
+      >
+        <span
+          v-for="(segment, index) in translationSegments"
+          :key="`translation-${index}`"
+          :class="{
+            'c-player-live-subtitle__term': hasTerm(segment),
+            'c-player-live-subtitle__term--ambiguous': hasMultipleTerms(segment),
+            'c-player-live-subtitle__text': !hasTerm(segment),
+          }"
+          :role="hasTerm(segment) ? 'button' : undefined"
+          :tabindex="hasTerm(segment) ? 0 : undefined"
+          :title="termTitle(segment)"
+          @click.stop="openTerm(segment.termIds)"
+          @keydown.enter.stop.prevent="openTerm(segment.termIds)"
+          >{{ segment.text }}</span
+        >
+      </p>
     </div>
+
+    <transition name="term-card">
+      <player-term-card
+        v-if="activeTerm"
+        :term="activeTerm"
+        :candidates="activeTermCandidates"
+        :active-index="activeTermIndex"
+        :meta="activeTermMeta"
+        :ask-label="askLabel"
+        :ask-state="askState"
+        @close="closeCard"
+        @select="selectTerm"
+        @ask="askQuestion"
+      />
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onBeforeUnmount, watch } from 'vue';
-import { SubtitleRealTimeCC } from '@polyv/live-watch-sdk';
-import { appEvents, useEventBusListener } from '@/app/app-events';
+import { onBeforeUnmount, onMounted, watch } from 'vue';
 import { storeDefinitionToRefs } from '@/plugins/pinia/util';
 import { useSubtitleStore } from '@/store/use-subtitle-store';
+import { TermSegment } from '@/core/term/term-matcher';
 import { usePlayerSubtitle, useSubtitleProps } from '../_hooks/_use-player-subtitle';
+import { useTermSubtitle } from '../_hooks/use-term-subtitle';
+import PlayerTermCard from './player-term-card.vue';
 
 const { liveSubtitlesEnable, localUerSubtitlesEnable } = storeDefinitionToRefs(useSubtitleStore);
 
 const props = defineProps(useSubtitleProps());
+const { fontsize, subtitleHeight, init, destroy } = usePlayerSubtitle({ props });
+
 const {
-  fontsize,
-  subtitleHeight,
+  showSubtitle,
+  sourceSegments,
+  translationSegments,
+  activeTerm,
+  activeTermCandidates,
+  activeTermIndex,
+  activeTermMeta,
+  askLabel,
+  askState,
+  openTerm,
+  selectTerm,
+  closeCard,
+  askQuestion,
+  resetSubtitle,
+} = useTermSubtitle();
 
-  init,
-  destroy,
-} = usePlayerSubtitle({ props });
+function hasTerm(segment: TermSegment) {
+  return !!segment.termIds?.length;
+}
 
-const receivedSubtitleText = ref('');
+function hasMultipleTerms(segment: TermSegment) {
+  return (segment.termIds?.length ?? 0) > 1;
+}
 
-let debounceTimer: null | number = null;
-
-const onSubtitleRealTimeCC = (data: SubtitleRealTimeCC) => {
-  receivedSubtitleText.value = data.text;
-
-  if (debounceTimer) {
-    clearTimeout(debounceTimer);
-  }
-  debounceTimer = window.setTimeout(() => {
-    receivedSubtitleText.value = '';
-  }, 3000);
-};
+function termTitle(segment: TermSegment) {
+  if (hasMultipleTerms(segment)) return '多个含义，点击选择';
+  if (hasTerm(segment)) return '查看术语释义';
+  return undefined;
+}
 
 watch(
   () => liveSubtitlesEnable.value,
-  val => {
-    if (!val) {
-      receivedSubtitleText.value = '';
+  enabled => {
+    if (!enabled) {
+      resetSubtitle();
     }
   },
 );
 
-useEventBusListener(appEvents.player.SubtitleRealTimeCC, onSubtitleRealTimeCC);
+watch(showSubtitle, visible => {
+  console.info('[term-subtitle] showSubtitle', visible, {
+    source: sourceSegments.value
+      .map(segment => segment.text)
+      .join('')
+      .slice(0, 60),
+    translation: translationSegments.value
+      .map(segment => segment.text)
+      .join('')
+      .slice(0, 60),
+  });
+});
 
 onMounted(() => {
+  console.info('[term-subtitle] component mounted');
   init();
 });
 
@@ -79,7 +153,7 @@ onBeforeUnmount(() => {
   left: 10%;
   z-index: 8;
   width: 80%;
-  overflow: hidden;
+  overflow: visible;
   line-height: 1.5;
   color: #fff;
   text-align: left;
@@ -94,8 +168,57 @@ onBeforeUnmount(() => {
 .c-player-live-subtitle__inner {
   position: absolute;
   bottom: 0;
+  left: 0;
+  max-width: 100%;
   padding: 5px 8px;
   color: #fff;
+  overflow-wrap: anywhere;
   background: rgba(0, 0, 0, 0.7);
+  border-radius: 6px;
+}
+
+.c-player-live-subtitle__line {
+  margin: 0;
+}
+
+.c-player-live-subtitle__line--translation {
+  margin-top: 2px;
+  font-size: 0.88em;
+  opacity: 0.9;
+}
+
+.c-player-live-subtitle__text {
+  white-space: pre-wrap;
+}
+
+.c-player-live-subtitle__term {
+  padding: 0 2px;
+  font-weight: 700;
+  color: #7dd3fc;
+  white-space: pre-wrap;
+  pointer-events: auto;
+  cursor: pointer;
+  background: rgba(14, 165, 233, 0.22);
+  border-bottom: 1px dashed #7dd3fc;
+  border-radius: 3px;
+  outline: none;
+  transition: background-color 0.15s ease;
+}
+
+.c-player-live-subtitle__term:hover,
+.c-player-live-subtitle__term:focus-visible {
+  background: rgba(14, 165, 233, 0.4);
+}
+
+.c-player-live-subtitle__term--ambiguous {
+  color: #fcd34d;
+  background: rgba(245, 158, 11, 0.22);
+  border-bottom-color: #fcd34d;
+  border-bottom-style: double;
+}
+
+.c-player-live-subtitle__term--ambiguous:hover,
+.c-player-live-subtitle__term--ambiguous:focus-visible {
+  background: rgba(245, 158, 11, 0.4);
 }
 </style>

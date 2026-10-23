@@ -67,6 +67,12 @@ export interface UseTimelineDragOptions {
   onSeek: (time: number) => void;
   onSelect: (id: string) => void;
   /**
+   * 越过拖动阈值、正式进入「改时间」手势
+   * @desc 在第一次写 `ghostTime` 之前调用。时间轴用它把被拖的条带沉到最下面，
+   *   于是拖动中的分轨预览就是松手后的最终分轨
+   */
+  onDragStart?: (id: string) => void;
+  /**
    * 提交移动
    * @param aligned 本次落点命中了自动对齐。为真时 store 不再做 1 秒间隔的推挤 ——
    *   作者明确要对齐到另一条特效/播放头上，推开 1 秒恰好就是他要消除的偏差
@@ -336,6 +342,11 @@ export const useTimelineDrag = (options: UseTimelineDragOptions) => {
       }
 
       mode.value = intent;
+
+      // 只改时间才沉底；拉时长不改变「谁让着谁」，沉底反而会让条带莫名换轨
+      if (intent === 'move' && activeId.value !== undefined) {
+        options.onDragStart?.(activeId.value);
+      }
     }
 
     if (mode.value === 'resize') {

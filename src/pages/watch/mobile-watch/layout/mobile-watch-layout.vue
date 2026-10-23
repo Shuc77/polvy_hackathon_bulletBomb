@@ -77,6 +77,12 @@
           />
           <!-- 常规播放器：只在没有第一画面时显示 -->
           <mobile-player-main v-else-if="canRenderPlayer" />
+
+          <!-- 弹幕特效层：与 PC 共用同一个渲染层，手机页也能看到工作台里编排的效果 -->
+          <pc-barrage-effect
+            v-if="canRenderPlayer"
+            class="c-mobile-watch-layout__effect"
+          />
         </div>
       </div>
       <!-- webview 小窗下的控制栏 -->
@@ -191,6 +197,7 @@ import MobileDoc from '@/components/page-watch-common/doc/mobile-doc.vue';
 import QuickAnswerCard from '@/components/page-watch-common/interactive-receive-v2/answer-card-v2/quick-answer-card/quick-answer-card.vue';
 import MobileMultiMeetingHorizontal from '@/components/page-watch-common/multi-meeting/mobile-multi-meeting/mobile-multi-meeting-horizontal.vue';
 import MobilePageAdvert from '@/components/page-watch-common/page-advert/mobile-page-advert.vue';
+import PcBarrageEffect from '@/components/page-watch-common/barrage-effect/pc-barrage-effect.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
 import MobilePlayerMain from '@/components/page-watch-common/player/player-main/mobile-player-main/mobile-player-main.vue';
@@ -513,6 +520,26 @@ const $stopWatch = watch(mobileMenuCurrentName, () => {
   width: 100%;
   height: 100%;
   background: #000;
+}
+
+.c-mobile-watch-layout__player__content__inner {
+  // 特效画布按播放器区域绝对定位；没有定位祖先时会盖到整个页面
+  position: relative;
+}
+
+/**
+ * 弹幕特效层
+ * @desc 层级压在播放器画面之上、播放器控件与页面弹层之下：
+ *   手机播放器自身的提示/播放按钮是 310，页面顶部控件在 2000 以上
+ */
+.c-mobile-watch-layout__effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 309;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .c-mobile-watch-layout__player--sub-screen {

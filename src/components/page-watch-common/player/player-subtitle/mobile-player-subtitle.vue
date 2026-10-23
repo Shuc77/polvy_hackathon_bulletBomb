@@ -1,21 +1,21 @@
 <!-- @file 移动端横屏播放器字幕显示区 -->
 
 <template>
-  <!-- 直播实时字幕  -->
-  <player-live-subtitle
-    v-if="liveSubtitlesShow"
-    :full-screen-selector="fullScreenSelector"
+  <!-- 回放字幕优先；回放页拖动进度条时由播放器时间驱动字幕切换 -->
+  <player-replay-subtitle
+    v-if="replaySubtitleVisible"
     :selector="selector"
+    :full-screen-selector="fullScreenSelector"
     :bottom="16"
     :max-len="80"
     :init-to-player="true"
   />
 
-  <!-- 回放字幕 -->
-  <player-replay-subtitle
-    v-else-if="replaySubtitleVisible"
-    :selector="selector"
+  <!-- 直播实时字幕  -->
+  <player-live-subtitle
+    v-else-if="showLiveTermSubtitle"
     :full-screen-selector="fullScreenSelector"
+    :selector="selector"
     :bottom="16"
     :max-len="80"
     :init-to-player="true"
@@ -32,6 +32,7 @@ import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { MOBILE_LIVE_PLAYER_INNER_WRAP } from '@/assets/constants/selector';
 import { PropUtils } from '@polyv/vue-components';
 import { usePlayerStore } from '@/store/use-player-store';
+import { isTermDemoEnabled } from '@/core/term/term-options';
 
 const props = defineProps({
   /** 挂载选择器 */
@@ -39,6 +40,7 @@ const props = defineProps({
 });
 
 const { liveSubtitlesShow, replaySubtitleVisible } = storeDefinitionToRefs(useSubtitleStore);
+const showLiveTermSubtitle = computed(() => liveSubtitlesShow.value || isTermDemoEnabled());
 
 const playerStore = usePlayerStore();
 

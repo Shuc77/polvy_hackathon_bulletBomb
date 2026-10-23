@@ -3,8 +3,13 @@
  * @desc 锚点配置的唯一数据源：特效层、工作台、时间轴共用同一份，改完即时生效。
  */
 import { defineStore } from 'pinia';
-import { computed, ref, Ref } from 'vue';
-import { getAnchorsQueryRaw } from '@/components/page-watch-common/barrage-effect/anchors-from-url';
+import { computed, onScopeDispose, ref, Ref, watch } from 'vue';
+import { usePlaybackStore } from './use-playback-store';
+import { getUrlQueryParams } from '@/hooks/core/use-query-params';
+import {
+  buildAnchorsShareUrl,
+  getAnchorsQueryRaw,
+} from '@/components/page-watch-common/barrage-effect/anchors-from-url';
 import {
   createAnchorId,
   nearestFreeTime,
@@ -12,6 +17,11 @@ import {
   stringifyAnchors,
   type ParseStats,
 } from '@/components/page-watch-common/barrage-effect/anchor-utils';
+import {
+  startEffectSync,
+  type EffectSyncHandle,
+  type EffectSyncStatus,
+} from '@/components/page-watch-common/barrage-effect/effect-sync';
 import { getEffectTemplate } from '@/components/page-watch-common/barrage-effect/effects';
 import {
   DENSITY_DEFAULTS,
@@ -23,14 +33,54 @@ import type {
   EffectTemplateName,
 } from '@/components/page-watch-common/barrage-effect/types';
 
-/** 配置在 localStorage 中的键名 */
-const STORAGE_KEY = 'plv-barrage-effect-anchors';
+/**
+ * 没有频道 / 视频参数时的兜底作用域
+ * @desc 这种页面没有「哪个直播间」可言，只能共用一份配置；
+ *   有频道或视频参数时一律按 `频道|视频` 隔离
+ */
+const FALLBACK_SCOPE = 'default';
 
-/** 密度触发配置的键名。与锚点分开存：两者生命周期独立 */
-const DENSITY_KEY = 'plv-barrage-effect-density';
+/** 从 URL 参数里取单值 */
+function pickQueryValue(value: string | string[] | undefined): string {
+  const first = Array.isArray(value) ? value[0] : value;
 
-/** 记录「上次已应用的地址栏载荷」的键名 */
-const URL_STAMP_KEY = 'plv-barrage-effect-url-stamp';
+  return first || '';
+}
+
+/**
+ * 存储作用域：同一频道 + 同一视频一份配置
+ *
+ * @desc ★ 不能再用全局键。换直播间后，上一间房的锚点会从 localStorage
+ *   被读出来，工作台显示「6 个特效」、时间轴也全是别人的编排 ——
+ *   而且工作台一开，同步端点还会把这份旧配置发布到新房子的 key 上。
+ *
+ *   作用域与同步 key 保持一致：直播带 `channelId`，回放再加 `playBackVid`。
+ *   同一频道的直播和回放各自一份：前者的密度触发与后者的时间轴本来就不是一套东西。
+ *
+ *   ★ 旧版本的无作用域键 `plv-barrage-effect-anchors` 刻意不再读取：
+ *   旧数据里没有记录它属于哪个直播间，读它就是把 A 间的编排带进 B 间。
+ *   旧房间的编排仍可由同步端点恢复（key 本来就是 `频道|视频`）。
+ *
+ *   ★ 回放的 `playBackVid` 不一定一开始就在地址栏里：`use-main-enter` 要等
+ *   回放对象解析完，才通过 `history.replaceState` 补上。因此这里优先用播放器
+ *   已经解析出的视频 id，保证 store 首次实例化时就能落到正确的作用域。
+ */
+function resolveScopeKey(videoIdFromPlayer?: string): string {
+  if (typeof window === 'undefined') {
+    return FALLBACK_SCOPE;
+  }
+
+  try {
+    const params = getUrlQueryParams();
+    const channelId = pickQueryValue(params.channelId);
+    const videoId =
+      videoIdFromPlayer || pickQueryValue(params.playBackVid) || pickQueryValue(params.vid);
+
+    return channelId || videoId ? `${channelId}|${videoId}` : FALLBACK_SCOPE;
+  } catch {
+    return FALLBACK_SCOPE;
+  }
+}
 
 /** 高频写入的落盘延迟，单位：毫秒 */
 const PERSIST_DELAY = 300;
@@ -54,6 +104,11 @@ export interface BarrageEffectStore {
   lastSavedAt: Ref<number | undefined>;
   /** 是否有一次延迟落盘还在排队 */
   isSaving: Ref<boolean>;
+  /**
+   * 多设备同步状态
+   * @desc `off` 表示当前页面没有同步端点（静态部署），此时用分享链接
+   */
+  syncStatus: Ref<EffectSyncStatus>;
   /** 密度触发配置 */
   density: Ref<DensityTriggerConfig>;
   /**
@@ -92,6 +147,10 @@ export interface BarrageEffectStore {
    */
   importAnchors: (text: string) => ImportAnchorsResult;
   exportAnchors: () => string;
+  /** 生成带当前编排的分享链接，供其他设备直接打开 */
+  shareUrl: () => string;
+  /** 立即把当前编排推送到局域网同步端点；端点不可用时返回 false */
+  publishSync: () => Promise<boolean>;
   toggleWorkbench: (visible?: boolean) => void;
   /** 改密度触发配置，改完即落盘 */
   updateDensity: (patch: Partial<DensityTriggerConfig>) => void;
@@ -104,6 +163,33 @@ export interface BarrageEffectStore {
 export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectStore>(
   'barrageEffect',
   () => {
+    const playbackStore = usePlaybackStore();
+
+    /**
+     * 当前页面的配置作用域，`频道|视频`
+     * @desc 不是常量：进入回放页时，`playBackVid` 可能晚于 store 实例化才出现在
+     *   地址栏里；站内从直播切到某条回放也要求同一实例换一份配置。
+     *   变化时由 `switchScope` 落盘旧作用域并重新加载。
+     */
+    let scopeKey = FALLBACK_SCOPE;
+
+    /** 配置在 localStorage 中的键名（按房间隔离） */
+    let storageKey = '';
+
+    /** 密度触发配置的键名。与锚点分开存：两者生命周期独立 */
+    let densityKey = '';
+
+    /** 记录「上次已应用的地址栏载荷」的键名 */
+    let urlStampKey = '';
+
+    /** 三个键名必须始终指向同一个作用域 */
+    function setScopeKeys(next: string): void {
+      scopeKey = next;
+      storageKey = `plv-barrage-effect-anchors:${next}`;
+      densityKey = `plv-barrage-effect-density:${next}`;
+      urlStampKey = `plv-barrage-effect-url-stamp:${next}`;
+    }
+
     const anchors = ref<BarrageAnchor[]>([]);
     const workbenchVisible = ref(false);
     const selectedAnchorId = ref<string>();
@@ -117,12 +203,27 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
     const density = ref<DensityTriggerConfig>({ ...DENSITY_DEFAULTS });
     const lastFiredAt = ref<number>();
 
+    /** 多设备同步状态；没有同步端点时保持 off */
+    const syncStatus = ref<EffectSyncStatus>('off');
+
+    /**
+     * 本地改动订阅者
+     * @desc 同步模块据此把新编排推给其他设备。**远端应用不会触发这里** ——
+     *   否则两端会互相回推，形成乒乓。
+     */
+    const localChangeListeners = new Set<() => void>();
+
     let persistTimer: ReturnType<typeof setTimeout> | undefined;
     let densityTimer: ReturnType<typeof setTimeout> | undefined;
+    let syncHandle: EffectSyncHandle | undefined;
+
+    function notifyLocalChange(): void {
+      localChangeListeners.forEach(listener => listener());
+    }
 
     function writeStorage(): void {
       try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(anchors.value));
+        window.localStorage.setItem(storageKey, JSON.stringify(anchors.value));
         lastSavedAt.value = Date.now();
       } catch {
         // 隐私模式等场景不可写，降级为仅内存
@@ -131,7 +232,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
     function readStorage(): BarrageAnchor[] {
       try {
-        const raw = window.localStorage.getItem(STORAGE_KEY);
+        const raw = window.localStorage.getItem(storageKey);
         return raw ? parseAnchorsText(raw) : [];
       } catch {
         return [];
@@ -145,7 +246,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
      */
     function hasStorageDraft(): boolean {
       try {
-        return window.localStorage.getItem(STORAGE_KEY) !== null;
+        return window.localStorage.getItem(storageKey) !== null;
       } catch {
         return false;
       }
@@ -153,7 +254,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
     function readUrlStamp(): string | undefined {
       try {
-        return window.localStorage.getItem(URL_STAMP_KEY) ?? undefined;
+        return window.localStorage.getItem(urlStampKey) ?? undefined;
       } catch {
         return undefined;
       }
@@ -161,7 +262,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
     function writeUrlStamp(raw: string): void {
       try {
-        window.localStorage.setItem(URL_STAMP_KEY, raw);
+        window.localStorage.setItem(urlStampKey, raw);
       } catch {
         // 同上
       }
@@ -169,7 +270,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
     function writeDensityStorage(): void {
       try {
-        window.localStorage.setItem(DENSITY_KEY, JSON.stringify(density.value));
+        window.localStorage.setItem(densityKey, JSON.stringify(density.value));
         lastSavedAt.value = Date.now();
       } catch {
         // 同上
@@ -178,7 +279,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
 
     function readDensityStorage(): void {
       try {
-        const raw = window.localStorage.getItem(DENSITY_KEY);
+        const raw = window.localStorage.getItem(densityKey);
         density.value = raw ? normalizeDensityConfig(JSON.parse(raw)) : { ...DENSITY_DEFAULTS };
       } catch {
         // 脏数据不该让 store 起不来，退回默认（默认是关闭的，最安全）
@@ -200,6 +301,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       anchors.value.sort((a, b) => a.time - b.time);
       anchorsFromUrl.value = false;
       writeStorage();
+      notifyLocalChange();
     }
 
     /**
@@ -220,11 +322,39 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
         isSaving.value = false;
         anchors.value.sort((a, b) => a.time - b.time);
         writeStorage();
+        notifyLocalChange();
       }, PERSIST_DELAY);
     }
 
     /**
-     * 初始化
+     * 应用远端编排
+     * @desc 走单独的入口而不是 `updateAnchor`：
+     *   1. 远端配置是整份替换，不是局部改动；
+     *   2. **不能触发本地改动回调**，否则同步模块会把刚收到的配置再推回去。
+     */
+    function applyRemoteAnchors(list: BarrageAnchor[]): void {
+      if (persistTimer !== undefined) {
+        clearTimeout(persistTimer);
+        persistTimer = undefined;
+      }
+
+      anchors.value = list.slice().sort((a, b) => a.time - b.time);
+      isSaving.value = false;
+      anchorsFromUrl.value = false;
+
+      // 选中的锚点可能已经不在远端配置里
+      if (
+        selectedAnchorId.value &&
+        !anchors.value.some(item => item.id === selectedAnchorId.value)
+      ) {
+        selectedAnchorId.value = undefined;
+      }
+
+      writeStorage();
+    }
+
+    /**
+     * 读取当前作用域的锚点与密度配置
      * @desc 地址栏参数是「别人分享来的一套配置」，本地存档是「我自己改的草稿」。
      *   早先的写法是地址栏无条件优先，于是带着 `?barrageAnchors=` 调试时，
      *   每次刷新都会把工作台里的改动冲回原样 —— 看起来就像根本没有自动保存。
@@ -237,21 +367,137 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
      *   改动时，本地草稿根本不存在。这时刷新会读到空数组，时间轴上的特效就全没了
      *   （指纹记着「应用过」，链接反而被忽略）。所以补一条：**没有草稿就继续用链接**。
      *   用户真的主动清空过时，本地存的是 `[]` 而不是没有键 —— 那仍然听本地的。
+     *
+     *   指纹也按作用域分开：在 A 间应用过分享链接，不应该让 B 间忽略同一份链接。
      */
-    const urlRaw = getAnchorsQueryRaw();
-    const urlAnchors = urlRaw ? parseAnchorsText(urlRaw) : [];
-    const localDraft = hasStorageDraft();
+    function loadAnchorsForScope(): void {
+      const urlRaw = getAnchorsQueryRaw();
+      const urlAnchors = urlRaw ? parseAnchorsText(urlRaw) : [];
+      const localDraft = hasStorageDraft();
 
-    if (urlAnchors.length > 0 && (readUrlStamp() !== urlRaw || !localDraft)) {
-      anchors.value = urlAnchors;
-      anchorsFromUrl.value = true;
-      writeUrlStamp(urlRaw as string);
-    } else {
-      anchors.value = readStorage();
+      if (urlAnchors.length > 0 && (readUrlStamp() !== urlRaw || !localDraft)) {
+        anchors.value = urlAnchors;
+        anchorsFromUrl.value = true;
+        writeUrlStamp(urlRaw as string);
+      } else {
+        anchors.value = readStorage();
+      }
+
+      // 与锚点各自独立：地址栏配置里没有密度触发（它是运行期事件，不是时间轴配置）
+      readDensityStorage();
     }
 
-    // 与锚点各自独立：地址栏配置里没有密度触发（它是运行期事件，不是时间轴配置）
-    readDensityStorage();
+    /** 把还在排队的延迟落盘立即写到**当前**作用域，用于切换前收尾 */
+    function flushPendingWrites(): void {
+      if (persistTimer !== undefined) {
+        clearTimeout(persistTimer);
+        persistTimer = undefined;
+        anchors.value.sort((a, b) => a.time - b.time);
+        writeStorage();
+      }
+
+      if (densityTimer !== undefined) {
+        clearTimeout(densityTimer);
+        densityTimer = undefined;
+        writeDensityStorage();
+      }
+
+      isSaving.value = false;
+    }
+
+    /**
+     * 启动当前作用域的同步
+     * @desc 调用时 `anchors` 必须已经完成「地址栏 / 本地存档」的初始化，
+     *   同步模块拿到的是最终生效的那一份，不会把初始化中途的空数组推上去。
+     *
+     *   同步 key 与存储作用域是同一个值；只有落到 `default`（没有频道/视频）
+     *   才不启用同步，避免把不相关的页面串到一起。
+     */
+    function startSyncForScope(): void {
+      syncHandle?.stop();
+      syncHandle = undefined;
+
+      if (scopeKey === FALLBACK_SCOPE) {
+        syncStatus.value = 'off';
+        return;
+      }
+
+      syncHandle = startEffectSync({
+        key: scopeKey,
+        getPayload: () => stringifyAnchors(anchors.value),
+        applyPayload: payload => {
+          applyRemoteAnchors(parseAnchorsText(payload));
+        },
+        subscribeLocalChange: listener => {
+          localChangeListeners.add(listener);
+
+          return () => {
+            localChangeListeners.delete(listener);
+          };
+        },
+        isPresenter: () => workbenchVisible.value && anchors.value.length > 0,
+        onStatus: status => {
+          syncStatus.value = status;
+        },
+      });
+    }
+
+    /**
+     * 切换作用域
+     * @desc 时机：回放对象解析完成后 `currentPlaybackTarget` 才就位，或者站内切了
+     *   另一条回放。旧作用域排队中的改动先落盘，然后停掉旧同步 —— 否则旧请求迟到
+     *   回来，会把上一间房的编排盖到新房间上。
+     */
+    function switchScope(next: string): void {
+      if (next === scopeKey) {
+        return;
+      }
+
+      flushPendingWrites();
+      syncHandle?.stop();
+      syncHandle = undefined;
+
+      setScopeKeys(next);
+      selectedAnchorId.value = undefined;
+      anchorsFromUrl.value = false;
+      lastSavedAt.value = undefined;
+      lastFiredAt.value = undefined;
+
+      loadAnchorsForScope();
+      startSyncForScope();
+    }
+
+    /**
+     * 当前作用域
+     * @desc 视频 id 优先读播放器解析结果：地址栏的 `playBackVid` 由
+     *   `use-main-enter` 在回放对象就位后通过 `history.replaceState` 补上，
+     *   既晚于 store 实例化，也不会派发任何可监听的事件。
+     */
+    const resolvedScopeKey = computed(() =>
+      resolveScopeKey(playbackStore.currentPlaybackTarget?.playbackId),
+    );
+
+    setScopeKeys(resolvedScopeKey.value);
+    loadAnchorsForScope();
+    startSyncForScope();
+
+    watch(resolvedScopeKey, next => {
+      switchScope(next);
+    });
+
+    onScopeDispose(() => {
+      syncHandle?.stop();
+      syncHandle = undefined;
+    });
+
+    /** 生成带当前编排的分享链接 */
+    function shareUrl(): string {
+      return buildAnchorsShareUrl(stringifyAnchors(anchors.value));
+    }
+
+    function publishSync(): Promise<boolean> {
+      return syncHandle?.publish() ?? Promise.resolve(false);
+    }
 
     const selectedAnchor = computed(() => {
       return anchors.value.find(item => item.id === selectedAnchorId.value);
@@ -373,11 +619,11 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       lastFiredAt.value = undefined;
 
       try {
-        window.localStorage.removeItem(STORAGE_KEY);
-        window.localStorage.removeItem(DENSITY_KEY);
+        window.localStorage.removeItem(storageKey);
+        window.localStorage.removeItem(densityKey);
         // 连指纹一起清掉，这样再刷新地址栏里的分享配置会重新生效 ——
         // 「重置」的语义就是回到刚打开这个链接的样子
-        window.localStorage.removeItem(URL_STAMP_KEY);
+        window.localStorage.removeItem(urlStampKey);
       } catch {
         // 同上，不可写就只清内存
       }
@@ -448,6 +694,7 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       anchorsFromUrl,
       lastSavedAt,
       isSaving,
+      syncStatus,
       density,
       lastFiredAt,
 
@@ -462,6 +709,8 @@ export const useBarrageEffectStore = defineStore<'barrageEffect', BarrageEffectS
       clearAnchors,
       importAnchors,
       exportAnchors,
+      shareUrl,
+      publishSync,
       toggleWorkbench,
       updateDensity,
       markDensityFired,

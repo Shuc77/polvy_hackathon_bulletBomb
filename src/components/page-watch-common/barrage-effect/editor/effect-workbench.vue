@@ -22,6 +22,16 @@
             <i class="c-effect-workbench__save-dot" />
             {{ saveText }}
           </span>
+
+          <!-- 多设备同步：另一端打开同一个观看页时能否看到这套编排 -->
+          <span
+            class="c-effect-workbench__sync"
+            :class="`is-${syncStatus}`"
+            :title="syncTitle"
+          >
+            <i class="c-effect-workbench__sync-dot" />
+            {{ syncText }}
+          </span>
         </div>
 
         <div class="c-effect-workbench__actions">
@@ -44,6 +54,12 @@
             @click="openPanel('export')"
           >
             导出
+          </button>
+          <button
+            type="button"
+            @click="openPanel('share')"
+          >
+            分享
           </button>
           <button
             type="button"
@@ -144,6 +160,25 @@
             @preview="onTriggerPreview"
           />
 
+          <!-- 分享链接：静态分发；实时同步另有一条开发服务器通道 -->
+          <template v-else-if="panelMode === 'share'">
+            <p class="c-effect-workbench__dialog-text">
+              把这个链接发给其他设备，打开后会看到与这里相同的时间轴编排。
+              <template v-if="syncStatus === 'off'">
+                当前页面没有同步端点，链接就是分发编排的方式。
+              </template>
+              <template v-else> 同一局域网内，之后的改动也会实时同步到已打开的页面。 </template>
+            </p>
+            <textarea
+              v-model="ioText"
+              class="c-effect-workbench__textarea"
+              readonly
+            />
+            <p class="c-effect-workbench__dialog-text">
+              链接是当前编排的快照；之后改动如果对方没有接收实时同步，请重新复制。
+            </p>
+          </template>
+
           <template v-else>
             <textarea
               v-model="ioText"
@@ -168,17 +203,25 @@
               type="button"
               @click="closePanel"
             >
-              取消
+              {{ panelMode === 'share' ? '关闭' : '取消' }}
             </button>
             <button
-              v-if="panelMode === 'export'"
+              v-if="panelMode === 'export' || panelMode === 'share'"
               type="button"
+              :class="{ 'is-primary': panelMode === 'share' }"
               @click="copyIoText"
             >
-              复制
+              {{ panelMode === 'share' ? '复制链接' : '复制' }}
             </button>
             <button
-              v-else
+              v-if="panelMode === 'share' && syncStatus !== 'off'"
+              type="button"
+              @click="onPublishSync"
+            >
+              同步到其他设备
+            </button>
+            <button
+              v-if="panelMode === 'import' || panelMode === 'reset'"
               type="button"
               class="is-primary"
               @click="confirmPanel"
@@ -259,8 +302,16 @@ const { toast } = useToastManager();
 
 // 必须走 storeToRefs：setup store 的属性在 store 上是解包后的值，
 // 直接解构拿到的是快照，选中锚点变了这里不会跟着动
-const { anchors, anchorsCount, selectedAnchor, anchorsFromUrl, lastSavedAt, isSaving, density } =
-  storeToRefs(barrageEffectStore);
+const {
+  anchors,
+  anchorsCount,
+  selectedAnchor,
+  anchorsFromUrl,
+  lastSavedAt,
+  isSaving,
+  syncStatus,
+  density,
+} = storeToRefs(barrageEffectStore);
 
 const saveText = computed(() => {
   if (isSaving.value) {
@@ -280,6 +331,33 @@ function formatClock(timestamp: number): string {
 
   return `${pad(at.getHours())}:${pad(at.getMinutes())}:${pad(at.getSeconds())}`;
 }
+
+const syncText = computed(() => {
+  switch (syncStatus.value) {
+    case 'connecting':
+      return '多端同步连接中';
+    case 'synced':
+      return '多端同步已开启';
+    case 'error':
+      return '多端同步异常';
+    default:
+      return '多端同步不可用';
+  }
+});
+
+const syncTitle = computed(() => {
+  switch (syncStatus.value) {
+    case 'connecting':
+      return '正在连接局域网同步端点';
+    case 'synced':
+      return '同一局域网内的其他设备会收到这套时间轴编排';
+    case 'error':
+      return '同步端点暂时不可用，正在重试';
+    default:
+      return '当前页面没有同步端点（静态部署），请用「分享」里的链接分发编排';
+  }
+});
+
 const { isFullscreen } = storeToRefs(layoutStore);
 
 const {
@@ -411,12 +489,13 @@ interface IoMessage {
   tone: 'ok' | 'error';
 }
 
-const panelMode = ref<'import' | 'export' | 'reset' | 'trigger'>();
+const panelMode = ref<'import' | 'export' | 'share' | 'reset' | 'trigger'>();
 const ioMessage = ref<IoMessage>();
 
 const DIALOG_TITLES = {
   import: '导入配置',
   export: '导出配置',
+  share: '分享与同步',
   reset: '确认清空',
   trigger: '密度触发设置',
 } as const;
@@ -439,11 +518,15 @@ function close(): void {
   barrageEffectStore.toggleWorkbench(false);
 }
 
-function openPanel(mode: 'import' | 'export' | 'reset' | 'trigger'): void {
+function openPanel(mode: 'import' | 'export' | 'share' | 'reset' | 'trigger'): void {
   ioMessage.value = undefined;
 
   if (mode === 'export') {
     exportAnchors();
+  }
+
+  if (mode === 'share') {
+    ioText.value = barrageEffectStore.shareUrl();
   }
 
   panelMode.value = mode;
@@ -460,11 +543,50 @@ function setIoMessage(text: string, tone: IoMessage['tone']): void {
 }
 
 function copyIoText(): void {
-  // 非 HTTPS 下 clipboard 不可用，只提示，不做兜底选中 —— 文本就在框里，手动复制即可
-  navigator.clipboard?.writeText(ioText.value).then(
-    () => setIoMessage('已复制', 'ok'),
-    () => setIoMessage('复制失败，请手动选中', 'error'),
-  );
+  /**
+   * 兜底：局域网走的是 `http://192.168.x.x`，不是安全上下文，
+   * `navigator.clipboard` 直接不存在。选中文本再用 execCommand 至少
+   * 让「复制」按钮不是个死按钮。
+   */
+  const fallback = () => {
+    const textarea = document.querySelector<HTMLTextAreaElement>('.c-effect-workbench__textarea');
+
+    if (!textarea) {
+      setIoMessage('复制失败，请手动选中', 'error');
+      return;
+    }
+
+    textarea.focus();
+    textarea.select();
+
+    try {
+      const copied = document.execCommand('copy');
+      setIoMessage(copied ? '已复制' : '复制失败，请手动选中', copied ? 'ok' : 'error');
+    } catch {
+      setIoMessage('复制失败，请手动选中', 'error');
+    }
+  };
+
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(ioText.value).then(() => setIoMessage('已复制', 'ok'), fallback);
+    return;
+  }
+
+  fallback();
+}
+
+/** 手动推送：服务端为空或想强制覆盖其他设备时用 */
+async function onPublishSync(): Promise<void> {
+  const ok = await barrageEffectStore.publishSync();
+
+  if (ok) {
+    setIoMessage('已同步到其他设备', 'ok');
+    toast.success('已同步到其他设备');
+    return;
+  }
+
+  setIoMessage('同步失败，请确认开发服务器仍在运行', 'error');
+  toast.warning('同步失败，请确认开发服务器仍在运行');
 }
 
 /**
@@ -811,6 +933,35 @@ onBeforeUnmount(() => {
 
 .c-effect-workbench__save.is-busy .c-effect-workbench__save-dot {
   background: #ffc53d;
+}
+
+.c-effect-workbench__sync {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  align-self: center;
+  font-size: 11px;
+  color: #5d6478;
+}
+
+.c-effect-workbench__sync-dot {
+  width: 5px;
+  height: 5px;
+  background: #5d6478;
+  border-radius: 50%;
+}
+
+.c-effect-workbench__sync.is-connecting .c-effect-workbench__sync-dot {
+  background: #ffc53d;
+}
+
+.c-effect-workbench__sync.is-synced .c-effect-workbench__sync-dot {
+  background: #2ee6a8;
+  box-shadow: 0 0 6px rgba(#2ee6a8, 0.6);
+}
+
+.c-effect-workbench__sync.is-error .c-effect-workbench__sync-dot {
+  background: #ff3553;
 }
 
 .c-effect-workbench__actions {

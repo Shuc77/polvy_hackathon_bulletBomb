@@ -1,21 +1,21 @@
 <!-- @file 移动端横屏，文档区字幕显示区 -->
 
 <template>
-  <!-- 直播实时字幕  -->
-  <player-live-subtitle
-    v-if="liveSubtitlesShow"
-    :full-screen-selector="selector"
+  <!-- 回放字幕优先；回放页拖动进度条时由播放器时间驱动字幕切换 -->
+  <player-replay-subtitle
+    v-if="replaySubtitleVisible"
     :selector="selector"
+    :full-screen-selector="selector"
     :bottom="16"
     :max-len="80"
     :init-to-player="false"
   />
 
-  <!-- 回放字幕 -->
-  <player-replay-subtitle
-    v-else-if="replaySubtitleVisible"
-    :selector="selector"
+  <!-- 直播实时字幕  -->
+  <player-live-subtitle
+    v-else-if="liveSubtitlesShow"
     :full-screen-selector="selector"
+    :selector="selector"
     :bottom="16"
     :max-len="80"
     :init-to-player="false"

@@ -3,7 +3,6 @@
  */
 import {
   LiveStatus,
-  PlaybackType,
   PlvSubtitleModule,
   ReplaySubtitleItem,
   SubtitleSourceLanguage,
@@ -211,18 +210,17 @@ export const useSubtitleStore = defineStore<'subtitle', SubtitleStore>('subtitle
   /** 回放字幕数据 */
   const replaySubtitleList = computed(() => {
     if (!playbackStore.currentPlaybackTarget) return [];
-    return playbackStore.currentPlaybackTarget.subtitleList;
+    return playbackStore.currentPlaybackTarget.subtitleList || [];
   });
 
   /** 回放字幕是否展示 */
   const replaySubtitleVisible = computed<boolean>(() => {
     // 当前没有回放对象不展示
     if (!playbackStore.currentPlaybackTarget) return false;
-    // 点播回放列表不展示
-    if (playbackStore.currentPlaybackTarget.playbackOptions.type === PlaybackType.Vod) return false;
     // 直播中不展示
     if (channelStore.liveStatus === LiveStatus.Live) return false;
 
+    // 点播、回放、素材视频统一按时间轴渲染字幕
     return replaySubtitleList.value.length > 0;
   });
 

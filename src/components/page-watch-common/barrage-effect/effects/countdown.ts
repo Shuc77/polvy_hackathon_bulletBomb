@@ -45,6 +45,8 @@ export const COUNTDOWN_DEFAULTS: EffectParams = {
   centerY: 0.5,
   countdownSec: 300,
   caption: '距离开始还有',
+  /** 每个数字槽的粒子数。取滑块上限，和改造前每个字 300 粒的观感基本一致 */
+  particles: 280,
 };
 
 const DEFAULT_SECONDS = 300;
@@ -91,11 +93,19 @@ const MORPH_SEC = 0.42;
  */
 const MORPH_STAGGER = 0.32;
 
-/** 每个数字槽的粒子数 */
+/**
+ * 每个数字槽的**满采样**粒子数，也是配置的上限
+ * @desc 字形场一次采满这么多点，滑杆调小只是从里面均匀抽稀 ——
+ *   按配置值直接重建字形场的话，拖一次滑杆要重采 11 个字形，必然卡顿
+ */
 const DIGIT_PARTICLES = 300;
 
-/** 冒号槽的粒子数。它的笔画面积小得多，给同样多只是浪费 */
+/** 冒号槽在满采样时的粒子数。它的笔画面积小得多，给同样多只是浪费 */
 const COLON_PARTICLES = 120;
+
+/** 滑杆的上下限。下限沿用其它模板，低于它看不出字形 */
+const MIN_PARTICLES = 20;
+const MAX_PARTICLES = DIGIT_PARTICLES;
 
 /** 采样盒相对字号的比例。所有字形共用同一套比例，槽位才对得齐 */
 const DIGIT_BOX = { width: 0.7, height: 1.3 };
@@ -181,13 +191,24 @@ function particleSeed(index: number): number {
 
 interface Slot {
   readonly kind: 'digit' | 'colon';
-  readonly count: number;
-  /** 逐粒子的贴图档位，构造时定好 */
+  /**
+   * 当前要画多少粒子
+   * @desc 可改：滑杆调「粒子数量」时只动这个数，字形场保持满采样，
+   *   绘制时按比例均匀抽稀（见 `drawSlot`）
+   */
+  count: number;
+  /**
+   * 逐粒子的贴图档位
+   * @desc ★ 按**字形场点下标**存，长度固定为 `DIGIT_PARTICLES` ——
+   *   抽稀后画的是场里的第 0、k、2k… 个点，下标会顶到 299，
+   *   按当前 `count` 分配数组会越界读成 undefined
+   */
   readonly tints: number[];
   /**
    * 逐粒子的**散开起点**，归一化到字形盒（可以落在盒外）
    * @desc 只在这个空间里表达。`drawSlot` 的插值用的就是盒坐标，
-   *   「散到整个画布」在这里没有对应物，硬做要给每个槽再加一套映射
+   *   「散到整个画布」在这里没有对应物，硬做要给每个槽再加一套映射。
+   *   长度同样固定为 `DIGIT_PARTICLES`，理由见 `tints`
    */
   readonly scatter: GlyphPoint[];
   /** 当前显示的字符 */
@@ -274,7 +295,8 @@ export const createCountdown: EffectFactory = (
         kind,
         count,
         tints: [],
-        scatter: new Array<GlyphPoint>(count),
+        // 按满采样长度分配，抽稀后按下标取值不会越界
+        scatter: new Array<GlyphPoint>(DIGIT_PARTICLES),
         glyph: '0',
         from: '0',
         // 构造时直接从终态开始：首帧不该有一次多余的形变
@@ -306,8 +328,9 @@ export const createCountdown: EffectFactory = (
     });
 
     slots.forEach((slot, slotIndex) => {
-      for (let index = 0; index < slot.count; index += 1) {
-        const blend = (slotIndex + index / Math.max(1, slot.count - 1)) / slots.length;
+      // 按满采样长度铺满：抽稀后仍按字形场下标取档位，与当前 count 无关
+      for (let index = 0; index < DIGIT_PARTICLES; index += 1) {
+        const blend = (slotIndex + index / Math.max(1, DIGIT_PARTICLES - 1)) / slots.length;
 
         slot.tints[index] = Math.round(clamp(blend, 0, 1) * (SPRITE_STEPS - 1));
 
@@ -339,6 +362,21 @@ export const createCountdown: EffectFactory = (
     caption = params.caption ?? (COUNTDOWN_DEFAULTS.caption as string);
     centerX = (params.centerX ?? COUNTDOWN_DEFAULTS.centerX!) * size.width;
     centerY = (params.centerY ?? COUNTDOWN_DEFAULTS.centerY!) * size.height;
+
+    /**
+     * 粒子数：只改每个槽画多少个，字形场不重建
+     * @desc 满采样是 `DIGIT_PARTICLES` 个点，配置值不能超过它；
+     *   冒号按满采样时的比例跟着缩放，否则数字变稀了冒号还是一样密
+     */
+    const requestedParticles = Number(params.particles ?? COUNTDOWN_DEFAULTS.particles);
+    const digitCount = Number.isFinite(requestedParticles)
+      ? Math.round(clamp(requestedParticles, MIN_PARTICLES, MAX_PARTICLES))
+      : (COUNTDOWN_DEFAULTS.particles as number);
+    const colonCount = Math.max(1, Math.round((digitCount * COLON_PARTICLES) / DIGIT_PARTICLES));
+
+    slots.forEach(slot => {
+      slot.count = slot.kind === 'colon' ? colonCount : digitCount;
+    });
 
     const nextPrimary = params.colorPrimary ?? (COUNTDOWN_DEFAULTS.colorPrimary as string);
     const nextSecondary = params.colorSecondary ?? (COUNTDOWN_DEFAULTS.colorSecondary as string);
@@ -449,10 +487,22 @@ export const createCountdown: EffectFactory = (
     const spriteSize = particleSize * SPRITE_SCALE;
     const top = centerY - box.height / 2;
 
-    for (let index = 0; index < slot.count; index += 1) {
-      const target = toField.points[index];
-      const origin = fromField.points[index];
-      const scatter = slot.scatter[index];
+    /**
+     * 从满采样的字形场里**均匀抽稀**
+     * @desc 场里的点已经按质心角度升序，直接取前 `count` 个只会留下一个扇形，
+     *   数字会缺掉大半个。按 `fieldCount / count` 的步长横跨整个数组，
+     *   抽出来才是「同一字形、密度更低」。起点和终点用同一个下标，
+     *   形变对应关系不会被抽稀打乱
+     */
+    const fieldCount = toField.points.length;
+    const count = Math.min(slot.count, fieldCount);
+    const step = fieldCount / Math.max(1, count);
+
+    for (let index = 0; index < count; index += 1) {
+      const pointIndex = Math.floor(index * step);
+      const target = toField.points[pointIndex];
+      const origin = fromField.points[pointIndex];
+      const scatter = slot.scatter[pointIndex];
 
       if (!target || !origin || !scatter) {
         continue;
@@ -460,7 +510,7 @@ export const createCountdown: EffectFactory = (
 
       // 逐粒子错峰：seed 靠近 1 的粒子晚一点出发。入场与跳字共用同一个 seed，
       // 所以一个粒子在两种阶段里的「早晚」是一致的，看着像同一批粒子
-      const seed = particleSeed(index);
+      const seed = particleSeed(pointIndex);
       const entering = elapsed < GATHER_SEC;
 
       let source: GlyphPoint;
@@ -499,7 +549,7 @@ export const createCountdown: EffectFactory = (
       // 直接赋 1 会把外面那层淡入淡出整个盖掉，首尾变成硬闪
       ctx.globalAlpha = alpha * (0.35 + eased * 0.65);
 
-      const sprite = sprites[slot.tints[index]];
+      const sprite = sprites[slot.tints[pointIndex]];
       if (sprite) {
         ctx.drawImage(sprite, x - spriteSize / 2, y - spriteSize / 2, spriteSize, spriteSize);
       }

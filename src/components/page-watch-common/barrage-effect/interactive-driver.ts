@@ -249,9 +249,22 @@ export const useInteractiveDriver = (options: UseInteractiveDriverOptions): Inte
       return;
     }
 
-    // ★ 用 lookbackSec 而不是 windowSec：提前收集的那几秒必须算进来，
-    //   否则答题卡期间观众发的弹幕在锚点时刻全部落空
-    const reading: FeedReading = feed.read(getSample(now, track.lookbackSec));
+    /**
+     * ★ 对冲票数从收集开始累计，不能跟着滚动窗一起衰减
+     * @desc 用 lookbackSec 只能保证「锚点时刻」把答题卡期间的弹幕算进来：
+     *   随着特效播放，这个固定回看窗会把最早收集到的票一条条甩出去，
+     *   观众看到的是开场一边倒、快结束时又回到五五开。
+     *   把回看时长按已播放的挂钟时间同步加长，起点就钉在收集开始那一刻，
+     *   票数在整场特效里只增不减。
+     *
+     *   规模 / 文字模式仍然用固定窗 —— 它们要的是「最近多热闹」，
+     *   累计条数会让粒子数一路涨到顶，反而看不出实时变化
+     */
+    const lookbackSec =
+      feed.mode === 'polarity'
+        ? track.lookbackSec + (now - track.startedAt) / 1000
+        : track.lookbackSec;
+    const reading: FeedReading = feed.read(getSample(now, lookbackSec));
     track.lastReading = reading;
 
     const patch: EffectParams = { ...track.base };

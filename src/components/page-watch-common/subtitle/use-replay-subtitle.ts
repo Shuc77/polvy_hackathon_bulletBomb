@@ -12,11 +12,40 @@ import { useSubtitleStore } from '@/store/use-subtitle-store';
 import { useGlobalInject } from '@/app/use-global-inject';
 import { useLayoutStore } from '@/store/use-layout-store';
 import { ynToBool } from '@polyv/utils/boolean';
+import { findTimelineItem } from '@/core/term/timeline';
 import { getSubtitleSettings, setSubtitleSettings } from './subtitle-settings-storage';
 
 const TIME_RATIO = 1000;
 
 let replaySubtitleInstanceCount = 0;
+
+/**
+ * 将 SDK 解析结果归一化为秒，并剔除异常、重复的区间。
+ */
+function normalizeSrtList(parsedList: SubtitleParsedItem[]): SubtitleParsedItem[] {
+  const seen = new Set<string>();
+  const result: SubtitleParsedItem[] = [];
+
+  parsedList.forEach(item => {
+    const start = item.start / TIME_RATIO;
+    const end = item.end / TIME_RATIO;
+
+    if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) return;
+
+    const key = `${start}:${end}:${item.text}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+
+    result.push({
+      start,
+      end,
+      text: item.text,
+      index: item.index,
+    });
+  });
+
+  return result.sort((first, second) => first.start - second.start);
+}
 
 export const useReplaySubtitle = () => {
   const subtitleStore = useSubtitleStore();
@@ -41,6 +70,9 @@ export const useReplaySubtitle = () => {
   // 翻译字幕-单行
   const translatedText = ref('');
   const lastTime = ref(0);
+
+  // 用于丢弃切换视频后迟到的字幕请求结果
+  let loadVersion = 0;
 
   // const shouldRememberState = computed(() => isPortraitWatchLayout.value); // 是否记住开关设置
   const shouldRememberState = computed(() => isPortraitWatchLayout.value); // 是否记住开关设置
@@ -99,38 +131,8 @@ export const useReplaySubtitle = () => {
     watchCore.subtitle.setReplaySubtitleList(list);
   };
 
-  const setReplaySrtList = async (subtitleItem: ReplaySubtitleItem) => {
-    if (!subtitleItem.srtUrl) return;
-
-    const subtitleContent = await watchCore.subtitle.getReplaySubtitleContent(subtitleItem.srtUrl);
-    const parsedList = watchCore.subtitle.parseReplaySubtitleContent(subtitleContent);
-
-    const normalizedList = parsedList.map(item => {
-      return {
-        start: item.start / TIME_RATIO,
-        end: item.end / TIME_RATIO,
-        text: item.text,
-        index: item.index,
-      };
-    });
-
-    if (ynToBool(subtitleItem.isOriginal)) {
-      mainSrtList.value = normalizedList;
-      if (!shouldRememberState.value) {
-        subtitleStore.changeMainReplaySubtitleShow(true);
-      }
-    } else {
-      translatedSrtListMap.value[String(subtitleItem.id)] = normalizedList;
-      if (!shouldRememberState.value) {
-        subtitleStore.changeSubReplaySubtitleShow(true);
-      }
-    }
-  };
-
   const getDisplayTextByTime = (list: SubtitleParsedItem[], time: number) => {
-    if (!list.length) return '';
-    const target = list.find(item => time >= item.start && time <= item.end);
-    return target?.text ?? '';
+    return findTimelineItem(list, time)?.text ?? '';
   };
 
   const updateTranslatedText = (time: number) => {
@@ -139,6 +141,50 @@ export const useReplaySubtitle = () => {
       translatedText.value = getDisplayTextByTime(targetList, time);
     } else {
       translatedText.value = '';
+    }
+  };
+
+  const refreshTexts = () => {
+    mainText.value = getDisplayTextByTime(mainSrtList.value, lastTime.value);
+    updateTranslatedText(lastTime.value);
+  };
+
+  const updateByTime = (time: number) => {
+    if (!Number.isFinite(time)) return;
+    lastTime.value = time;
+    refreshTexts();
+  };
+  const setReplaySrtList = async (subtitleItem: ReplaySubtitleItem, version: number) => {
+    if (!subtitleItem.srtUrl) return;
+
+    try {
+      const subtitleContent = await watchCore.subtitle.getReplaySubtitleContent(
+        subtitleItem.srtUrl,
+      );
+      if (version !== loadVersion) return;
+
+      const parsedList = watchCore.subtitle.parseReplaySubtitleContent(subtitleContent);
+      if (version !== loadVersion) return;
+
+      const normalizedList = normalizeSrtList(parsedList);
+
+      if (ynToBool(subtitleItem.isOriginal)) {
+        mainSrtList.value = normalizedList;
+        if (!shouldRememberState.value) {
+          subtitleStore.changeMainReplaySubtitleShow(true);
+        }
+      } else {
+        translatedSrtListMap.value[String(subtitleItem.id)] = normalizedList;
+        if (!shouldRememberState.value) {
+          subtitleStore.changeSubReplaySubtitleShow(true);
+        }
+      }
+
+      refreshTexts();
+    } catch (error) {
+      if (version === loadVersion) {
+        console.warn('[replay-subtitle] load subtitle failed', error);
+      }
     }
   };
 
@@ -165,9 +211,11 @@ export const useReplaySubtitle = () => {
   };
 
   const onPlayerTimeUpdate = (params: PlayerEventsRelations[PlayerEvents.TimeUpdate]) => {
-    lastTime.value = params.currentTime;
-    mainText.value = getDisplayTextByTime(mainSrtList.value, params.currentTime);
-    updateTranslatedText(params.currentTime);
+    updateByTime(params.currentTime);
+  };
+
+  const onPlayerInfoChange = (params: PlayerEventsRelations[PlayerEvents.PlayerInfoChange]) => {
+    updateByTime(params.playerInfo.currentTime);
   };
 
   const onPlayerUIReplaySubtitleChecked = (
@@ -186,6 +234,7 @@ export const useReplaySubtitle = () => {
       onPlayerUIReplaySubtitleChecked,
     );
     watchCore.player.eventEmitter.on(PlayerEvents.TimeUpdate, onPlayerTimeUpdate);
+    watchCore.player.eventEmitter.on(PlayerEvents.PlayerInfoChange, onPlayerInfoChange);
   };
 
   const unbindPlayerEvents = () => {
@@ -194,6 +243,7 @@ export const useReplaySubtitle = () => {
       onPlayerUIReplaySubtitleChecked,
     );
     watchCore.player.eventEmitter.off(PlayerEvents.TimeUpdate, onPlayerTimeUpdate);
+    watchCore.player.eventEmitter.off(PlayerEvents.PlayerInfoChange, onPlayerInfoChange);
   };
 
   const stopReplayListWatch = watch(
@@ -203,6 +253,7 @@ export const useReplaySubtitle = () => {
       const prevSubShow = subReplaySubtitleShow.value;
       const rememberState = shouldRememberState.value;
 
+      const version = ++loadVersion;
       resetSubtitleCollections();
 
       if (!list.length) {
@@ -213,7 +264,7 @@ export const useReplaySubtitle = () => {
       setReplaySubtitleList(list);
 
       list.forEach(item => {
-        setReplaySrtList(item);
+        setReplaySrtList(item, version);
       });
 
       syncSubtitleVisibility(list, rememberState, prevMainShow, prevSubShow);
@@ -260,10 +311,13 @@ export const useReplaySubtitle = () => {
 
   onMounted(() => {
     replaySubtitleInstanceCount += 1;
+    lastTime.value = watchCore.player.getCurrentTime();
     bindPlayerEvents();
+    refreshTexts();
   });
 
   onBeforeUnmount(() => {
+    loadVersion += 1;
     unbindPlayerEvents();
     stopReplayListWatch();
     stopSelectedWatch();

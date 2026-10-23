@@ -28,8 +28,10 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { isMobile } from '@/assets/utils/browser';
 import { useBarrageEffectStore } from '@/store/use-barrage-effect-store';
 import { usePlayerStore } from '@/store/use-player-store';
+import { useBarrageFeed } from '../barrage/use-barrage-feed';
 import { barrageAreaOf } from './barrage-area';
 import { collectLeadSecOf, resolveCollectPrompt } from './collect';
 import { getEffectTemplate } from './effects';
@@ -50,6 +52,13 @@ const playerStore = usePlayerStore();
 
 /** 真实上屏弹幕的时间窗缓冲，由本实例自持 */
 const signalBuffer = createSignalBuffer();
+
+/**
+ * 手机端没有 `pc-barrage`，上屏弹幕由播放器 SDK 自己处理
+ * @desc 但特效层的密度判定与红蓝对抗仍要靠「刚刚上了哪些弹幕」的信号，
+ *   这里补一个只发信号、不上屏的订阅；PC 端由 `pc-barrage` 负责，不能重复订阅
+ */
+const mobileFeed = isMobile ? useBarrageFeed(() => undefined) : undefined;
 
 // 顺序不能倒：下面的 driver 要用 getSize
 const { start, stop, requestDraw, getSize } = useEffectCanvas({
@@ -285,6 +294,8 @@ useBarrageSignalListener(signal => {
 onMounted(() => {
   // 先把尺寸量出来，playAnchor 才拿得到有效画布大小
   requestDraw();
+
+  mobileFeed?.start();
 
   if (barrageEffectStore.anchors.length > 0) {
     console.info('[barrage-effect] 已加载时间锚点', barrageEffectStore.anchors);

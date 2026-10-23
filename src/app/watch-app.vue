@@ -67,7 +67,8 @@ const { directBusinessPageType, watchAppInited } = storeDefinitionToRefs(useWatc
 /**
  * 是否展示弹幕特效配置入口
  * @desc 默认常驻，传 `?effectEditor=0` 可关闭。
- * 特效层只挂在 PC 布局上，因此移动端与自建业务页不渲染入口，避免出现「配了也放不出来」的死按钮
+ * 工作台只在 PC 端开放：手机页只消费编排好的特效，不提供编辑器入口；
+ * 自建业务页也没有这层播放器渲染，同样不渲染
  */
 const effectEditorVisible = computed(() => {
   return (

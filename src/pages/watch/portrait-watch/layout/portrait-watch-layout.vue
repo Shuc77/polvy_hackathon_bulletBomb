@@ -25,6 +25,12 @@
         @click="onPlayClick"
       />
       <portrait-player-main v-if="canRenderPlayer" />
+
+      <!-- 弹幕特效层：与 PC / 手机页共用同一个渲染层 -->
+      <pc-barrage-effect
+        v-if="canRenderPlayer"
+        class="c-portrait-watch-layout__effect"
+      />
     </div>
 
     <!-- 文档 -->
@@ -70,6 +76,7 @@
 
 <script setup lang="ts">
 import PortraitConnectMicContainer from '@/components/page-watch-common/connect-mic/portrait-connect-mic/portrait-connect-mic-container.vue';
+import PcBarrageEffect from '@/components/page-watch-common/barrage-effect/pc-barrage-effect.vue';
 import PortraitDocMain from '@/components/page-watch-common/doc/portrait-doc.vue';
 import PlayerPlayButton from '@/components/page-watch-common/player/common/player-play-button/player-play-button.vue';
 import PlayerTips from '@/components/page-watch-common/player/player-control/player-tips/player-tips.vue';
@@ -285,6 +292,21 @@ const playerWrapStyle = computed(() => {
   .plvideo {
     z-index: -1;
   }
+}
+
+/**
+ * 弹幕特效层
+ * @desc 播放器画面在 `container-wrap`（z-index 5）里，特效压在其上；
+ *   播放器自己的加载失败/占位面板是 10，保持盖住特效
+ */
+.c-portrait-watch-layout__effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .c-portrait-watch-layout__doc-wrap {

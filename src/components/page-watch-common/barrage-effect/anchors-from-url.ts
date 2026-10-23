@@ -27,3 +27,21 @@ export function getAnchorsFromUrl(): BarrageAnchor[] {
 
   return value ? parseAnchorsText(value) : [];
 }
+
+/**
+ * 生成带当前编排的分享链接
+ * @desc 多设备之间没有共享存储时，地址栏就是分发介质：其他设备打开这个
+ *   链接，首次加载会按 `barrageAnchors` 应用同一套时间轴。
+ *
+ *   只改地址栏参数，不会跳转；工作台里点「复制链接」时调用。
+ */
+export function buildAnchorsShareUrl(raw: string): string {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  const url = new URL(window.location.href);
+  url.searchParams.set(ANCHORS_QUERY_KEY, raw);
+
+  return url.toString();
+}

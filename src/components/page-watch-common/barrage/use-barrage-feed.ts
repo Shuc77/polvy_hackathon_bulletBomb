@@ -130,17 +130,17 @@ export const useBarrageFeed = (getBarrageTarget: () => BarrageTarget | undefined
     }
 
     const barrageTarget = getBarrageTarget();
-    if (!barrageTarget) {
-      return;
-    }
-
     const userId = chatMsg.user?.userId;
     const self = !!userId && getWatchCore().user.isCurrentUser(userId);
 
-    // 统计的就是「观众实际看到的弹幕」：被上面几道过滤拦掉的不计入
+    /**
+     * 手机端没有 `pc-barrage`：上屏由播放器 SDK 自己处理，这里拿不到 target。
+     * 但特效层仍要靠这条信号统计弹幕密度（红蓝对抗、密度触发），
+     * 所以信号照发，只有存在自有弹幕层时才额外上屏
+     */
     emitBarrageSignal(getEmitter(), text, self);
 
-    barrageTarget.add({ msg: text, self });
+    barrageTarget?.add({ msg: text, self });
   }
 
   /**

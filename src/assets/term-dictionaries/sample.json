@@ -1,0 +1,218 @@
+[
+  {
+    "id": "medical.pd-1",
+    "track": "medical",
+    "canonical": "PD-1",
+    "aliases": ["PD1", "程序性死亡受体1"],
+    "zh": "程序性死亡受体 1，是一种重要的免疫检查点分子。",
+    "en": "Programmed cell death protein 1, an immune checkpoint receptor.",
+    "note": "常见于肿瘤免疫治疗语境。"
+  },
+  {
+    "id": "medical.pd-l1",
+    "track": "medical",
+    "canonical": "PD-L1",
+    "aliases": ["PDL1", "程序性死亡配体1"],
+    "zh": "程序性死亡配体 1，常作为免疫治疗相关生物标志物。",
+    "en": "Programmed death-ligand 1, often used as a biomarker in immunotherapy.",
+    "note": "与 PD-1 是不同靶点，演示时注意区分。"
+  },
+  {
+    "id": "medical.nsclc",
+    "track": "medical",
+    "canonical": "非小细胞肺癌",
+    "aliases": ["NSCLC", "non-small cell lung cancer"],
+    "zh": "肺癌的主要病理类型之一，约占肺癌的大多数。",
+    "en": "Non-small cell lung cancer, the most common type of lung cancer.",
+    "note": "演示话术中可作为最长匹配示例。"
+  },
+  {
+    "id": "medical.immunotherapy",
+    "track": "medical",
+    "canonical": "免疫治疗",
+    "aliases": ["immunotherapy"],
+    "zh": "通过激活或调节机体免疫系统来治疗疾病的方法。",
+    "en": "A treatment that activates or modulates the immune system.",
+    "note": "肿瘤治疗场景中的高频术语。"
+  },
+  {
+    "id": "medical.targeted-therapy",
+    "track": "medical",
+    "canonical": "靶向治疗",
+    "aliases": ["targeted therapy", "targeted therapies"],
+    "zh": "针对特定分子靶点的肿瘤治疗方式。",
+    "en": "Cancer treatment directed at specific molecular targets.",
+    "note": "常与基因检测、生物标志物一起出现。"
+  },
+  {
+    "id": "medical.clinical-trial",
+    "track": "medical",
+    "canonical": "临床试验",
+    "aliases": ["clinical trial", "clinical trials"],
+    "zh": "在人体中验证药物或治疗方案安全性和有效性的研究。",
+    "en": "Research studies that evaluate the safety and efficacy of treatments in humans.",
+    "note": "演示时可与“入组”“终点”等词搭配。"
+  },
+  {
+    "id": "medical.ct",
+    "track": "medical",
+    "canonical": "CT",
+    "aliases": ["CT扫描", "CT检查"],
+    "zh": "计算机断层扫描，常用于肿瘤影像学检查。",
+    "en": "Computed tomography, a common medical imaging technique.",
+    "note": "最长匹配会优先命中“CT扫描”。"
+  },
+  {
+    "id": "medical.mri",
+    "track": "medical",
+    "canonical": "MRI",
+    "aliases": ["磁共振", "磁共振成像"],
+    "zh": "磁共振成像，对软组织分辨率较高。",
+    "en": "Magnetic resonance imaging.",
+    "note": "可与 CT 做对比讲解。"
+  },
+  {
+    "id": "medical.biomarker",
+    "track": "medical",
+    "canonical": "生物标志物",
+    "aliases": ["biomarker", "biomarkers"],
+    "zh": "可客观测量并反映生理、病理或治疗反应的指标。",
+    "en": "A measurable indicator of biological state or treatment response.",
+    "note": "常用于精准医疗和临床试验。"
+  },
+  {
+    "id": "trade.fob",
+    "track": "trade",
+    "canonical": "FOB",
+    "aliases": ["Free On Board", "船上交货"],
+    "zh": "船上交货价，卖方负责将货物装上船。",
+    "en": "Free On Board, where the seller delivers goods on board the vessel.",
+    "note": "国际贸易术语之一。"
+  },
+  {
+    "id": "trade.cif",
+    "track": "trade",
+    "canonical": "CIF",
+    "aliases": ["Cost Insurance and Freight", "成本加保险费加运费"],
+    "zh": "成本加保险费加运费，卖方承担运费和保险。",
+    "en": "Cost, Insurance and Freight.",
+    "note": "常与 FOB 对比讲解。"
+  },
+  {
+    "id": "trade.lc",
+    "track": "trade",
+    "canonical": "L/C",
+    "aliases": ["信用证", "Letter of Credit"],
+    "zh": "银行开立的有条件付款承诺，常用于国际贸易结算。",
+    "en": "Letter of Credit, a conditional payment undertaking issued by a bank.",
+    "note": "演示时可提到开证行和受益人。"
+  },
+  {
+    "id": "trade.incoterms",
+    "track": "trade",
+    "canonical": "Incoterms",
+    "aliases": ["国际贸易术语解释通则"],
+    "zh": "国际商会制定的国际贸易术语解释通则。",
+    "en": "International Commercial Terms published by the ICC.",
+    "note": "FOB、CIF 都属于 Incoterms。"
+  },
+  {
+    "id": "trade.bl",
+    "track": "trade",
+    "canonical": "B/L",
+    "aliases": ["提单", "Bill of Lading"],
+    "zh": "承运人签发的货物收据和运输合同证明。",
+    "en": "Bill of Lading.",
+    "note": "外贸单证场景高频术语。"
+  },
+  {
+    "id": "trade.customs",
+    "track": "trade",
+    "canonical": "报关",
+    "aliases": ["customs declaration", "customs declarations"],
+    "zh": "向海关申报进出口货物并办理相关手续。",
+    "en": "Customs declaration for imported or exported goods.",
+    "note": "常与关税、原产地证一起出现。"
+  },
+  {
+    "id": "trade.tariff",
+    "track": "trade",
+    "canonical": "关税",
+    "aliases": ["tariff", "tariffs", "customs duty"],
+    "zh": "海关对进出口货物征收的税。",
+    "en": "A tax imposed by customs on imported or exported goods.",
+    "note": "贸易政策语境中的核心术语。"
+  },
+  {
+    "id": "trade.origin-certificate",
+    "track": "trade",
+    "canonical": "原产地证",
+    "aliases": ["Certificate of Origin"],
+    "zh": "证明货物原产地或制造地的文件。",
+    "en": "Certificate of Origin.",
+    "note": "常用于享受关税优惠。"
+  },
+  {
+    "id": "workplace.kpi",
+    "track": "workplace",
+    "canonical": "KPI",
+    "aliases": ["关键绩效指标", "Key Performance Indicator"],
+    "zh": "用于衡量目标完成情况的关键绩效指标。",
+    "en": "Key Performance Indicator.",
+    "note": "职场目标管理高频术语。"
+  },
+  {
+    "id": "workplace.okr",
+    "track": "workplace",
+    "canonical": "OKR",
+    "aliases": ["目标与关键结果", "Objectives and Key Results"],
+    "zh": "目标与关键结果法，用于对齐目标和衡量结果。",
+    "en": "Objectives and Key Results.",
+    "note": "常与 KPI 对比讨论。"
+  },
+  {
+    "id": "workplace.roi",
+    "track": "workplace",
+    "canonical": "ROI",
+    "aliases": ["投资回报率", "Return on Investment"],
+    "zh": "投资回报率，用于衡量投入产出效率。",
+    "en": "Return on Investment.",
+    "note": "经营分析场景常见。"
+  },
+  {
+    "id": "workplace.retrospective",
+    "track": "workplace",
+    "canonical": "复盘",
+    "aliases": ["retrospective", "review"],
+    "zh": "对已完成事项进行回顾、分析和总结。",
+    "en": "A structured review of what happened and what can be improved.",
+    "note": "演示时可与“闭环”搭配。"
+  },
+  {
+    "id": "workplace.alignment",
+    "track": "workplace",
+    "canonical": "对齐",
+    "aliases": ["alignment"],
+    "zh": "让目标和认知保持一致。",
+    "en": "Ensuring goals and understanding are aligned.",
+    "note": "职场协作高频表达。"
+  },
+  {
+    "id": "workplace.closed-loop",
+    "track": "workplace",
+    "canonical": "闭环",
+    "aliases": ["closed loop"],
+    "zh": "形成从计划、执行到反馈的完整流程。",
+    "en": "A complete cycle from planning to execution and feedback.",
+    "note": "常与“复盘”一起出现。"
+  },
+  {
+    "id": "workplace.granularity",
+    "track": "workplace",
+    "canonical": "颗粒度",
+    "aliases": ["granularity"],
+    "zh": "任务或信息的细化程度。",
+    "en": "The level of detail in a task or piece of information.",
+    "note": "常与“抓手”“对齐”一起使用。"
+  }
+]

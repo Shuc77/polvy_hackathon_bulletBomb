@@ -1,0 +1,955 @@
+﻿main_term,abbr,match_aliases,zh_def,en_def,remark,category,priority
+心脏,Heart,心脏器官；Heart,位于胸腔中部偏左的肌性泵血器官，由左右心房和左右心室组成，负责将血液泵送至全身循环。,"A muscular organ located in the middle-left of the thoracic cavity, composed of four chambers, responsible for pumping blood throughout the body.",循环系统的核心器官；分左右心、四腔、瓣膜系统。,解剖学,1
+肝脏,Liver,肝；Liver,人体最大的实质性消化腺，位于右上腹，具有代谢、解毒、合成蛋白质、分泌胆汁等功能。,"The largest solid gland of the human body, located in the right upper abdomen, with functions of metabolism, detoxification, protein synthesis and bile secretion.",消化系统重要器官；承担数百种代谢功能。,解剖学,1
+肾脏,Kidney,肾；Kidney,位于腰部脊柱两侧成对器官，主要功能为滤过血液形成尿液、调节水电解质平衡和酸碱平衡、分泌激素。,"Paired organs located on both sides of the lumbar spine; main functions include filtering blood to form urine, regulating fluid-electrolyte and acid-base balance, and secreting hormones.",泌尿系统核心器官。,解剖学,1
+肺,Lung,肺脏；Lung,位于胸腔内左右各一的呼吸器官，负责气体交换，将氧气吸入血液并排出二氧化碳。,"Respiratory organs located within the thoracic cavity, responsible for gas exchange: taking in oxygen and excreting carbon dioxide.",呼吸系统核心器官。,解剖学,1
+大脑,Brain,脑；Brain,中枢神经系统最高级部分，位于颅腔内，负责思维、感觉、运动、记忆与各器官活动的调控。,"The highest part of the central nervous system, located within the skull, controlling thought, sensation, movement, memory and organ activities.",中枢神经系统核心；分大脑、小脑、脑干。,解剖学,1
+胃,Stomach,胃部；Stomach,位于上腹部的囊状消化器官，通过分泌胃酸和消化酶对食物进行初步消化。,A sac-like digestive organ in the upper abdomen that begins the digestion of food by secreting gastric acid and digestive enzymes.,消化系统器官。,解剖学,2
+胰腺,Pancreas,胰；Pancreas,位于上腹部后方的消化腺，兼有外分泌（分泌消化酶）和内分泌（分泌胰岛素等激素）功能。,"A digestive gland located behind the upper abdomen, having both exocrine (digestive enzymes) and endocrine (hormones such as insulin) functions.",兼属消化与内分泌系统。,解剖学,1
+脾脏,Spleen,脾；Spleen,位于左上腹的免疫器官，参与过滤血液、清除衰老红细胞及免疫应答。,"An immune organ in the left upper abdomen that filters blood, removes aged red blood cells and participates in immune responses.",淋巴/免疫系统器官。,解剖学,2
+胆囊,Gallbladder,胆；Gallbladder,位于肝脏下方的囊状器官，储存和浓缩胆汁，进食时排出胆汁辅助脂肪消化。,"A sac-like organ beneath the liver that stores and concentrates bile, releasing it to aid fat digestion when eating.",消化系统附属器官。,解剖学,2
+甲状腺,Thyroid,甲功器官；Thyroid,位于颈部前方的内分泌腺，分泌甲状腺激素，调节机体代谢率、生长发育和体温。,"An endocrine gland in the front of the neck that secretes thyroid hormones regulating metabolism, growth and body temperature.",内分泌系统器官。,解剖学,1
+脑干,Brainstem,延髓中脑脑桥；Brainstem,连接大脑与脊髓的神经结构，含延髓、脑桥、中脑，控制呼吸、心跳、吞咽等基本生命活动。,"The neural structure connecting the brain and spinal cord, comprising the medulla, pons and midbrain, controlling basic vital functions such as breathing and heartbeat.",生命中枢所在。,解剖学,2
+脊髓,SC,脊髓组织；Spinal Cord,位于椎管内的中枢神经结构，传导大脑与躯干四肢之间的神经信号，并完成部分反射。,Central nervous structure within the vertebral canal that conducts signals between the brain and the body and mediates certain reflexes.,中枢神经系统组成部分。,解剖学,2
+骨骼肌,SM,横纹肌；Skeletal Muscle,附着于骨骼、可随意识控制的肌肉，负责躯体运动、姿势维持与产热。,"Muscle attached to bone and under voluntary control, responsible for body movement, posture maintenance and heat production.",运动系统肌肉。,解剖学,3
+小肠,SI,肠管；Small Intestine,消化道中最长的部分，分十二指肠、空肠、回肠，是消化吸收的主要场所。,"The longest part of the digestive tract, divided into duodenum, jejunum and ileum, and the main site of digestion and absorption.",消化吸收主要场所。,解剖学,2
+大肠,LI,结肠；Large Intestine,消化道末段，含盲肠、结肠和直肠，主要功能为吸收水分与形成、贮存和排出粪便。,"The terminal part of the digestive tract, including the cecum, colon and rectum, mainly absorbing water and forming, storing and expelling feces.",消化系统末段。,解剖学,2
+膀胱,Bladder,膀胱器官；Urinary Bladder,位于盆腔的肌性贮尿器官，收集并贮存尿液，排尿时收缩排出尿液。,A muscular urinary reservoir in the pelvis that collects and stores urine and contracts to expel it during urination.,泌尿系统器官。,解剖学,2
+肾上腺,AG,肾上腺器官；Adrenal Gland,位于肾脏上方的内分泌腺，分为皮质和髓质，分泌皮质醇、醛固酮、肾上腺素等激素。,"Endocrine glands atop the kidneys, divided into cortex and medulla, secreting cortisol, aldosterone and adrenaline.",内分泌系统器官，应激反应核心。,解剖学,2
+视神经,ON,第二脑神经；Optic Nerve,由视网膜神经节细胞轴突汇聚而成的第二对脑神经，将视觉信息传至大脑视觉中枢。,"The second cranial nerve formed by the axons of retinal ganglion cells, transmitting visual information to the visual cortex.",视觉传导通路。,解剖学,3
+迷走神经,VN,第十对脑神经；Vagus Nerve,第十对脑神经，走行分布广泛，支配心脏、肺、胃肠等内脏器官的副交感活动。,"The tenth cranial nerve, widely distributed, innervating parasympathetic activity of the heart, lungs and gastrointestinal organs.",副交感神经重要组成部分。,解剖学,3
+子宫,Uterus,uterus器官；Uterus,位于盆腔的女性生殖器官，是孕育胚胎和胎儿的肌性器官，月经周期性脱落内膜。,A muscular female reproductive organ in the pelvis that houses the embryo and fetus and sheds its lining cyclically as menstruation.,女性生殖系统核心器官。,解剖学,2
+血压,BP,动脉血压；Blood Pressure,血液对血管壁的侧压力，常用收缩压/舒张压表示，是反映循环系统功能的重要指标。,"The lateral pressure of blood against vessel walls, commonly expressed as systolic/diastolic pressure, an important indicator of circulatory function.",正常成人约120/80 mmHg。,生理学,1
+心率,HR,心率；Heart Rate,每分钟心脏搏动的次数，正常成人静息状态约60~100次/分。,The number of heartbeats per minute; normal resting adult rate is about 60–100 beats per minute.,反映心脏节律与自律性。,生理学,1
+呼吸频率,RR,呼吸频率；Respiratory Rate,每分钟呼吸次数，正常成人静息时约12~20次/分。,The number of breaths per minute; normal resting adult rate is about 12–20 per minute.,生命体征四大指标之一。,生理学,1
+体温,BT,体温；Body Temperature,机体内部温度，正常成人腋温约36~37℃，由体温调节中枢维持稳定。,"The internal temperature of the body; normal adult axillary temperature is about 36–37℃, maintained stable by the thermoregulatory center.",正常体温是内环境稳定的体现。,生理学,1
+血氧饱和度,SpO2,血氧；Oxygen Saturation,血液中氧合血红蛋白占总血红蛋白的百分比，正常成人≥95%。,The percentage of oxyhemoglobin among total hemoglobin in the blood; normal adult value is ≥95%.,反映组织供氧状态的重要指标。,生理学,1
+血红蛋白,Hb,血色素；Hemoglobin,红细胞内负责运输氧和二氧化碳的含铁蛋白质。,The iron-containing protein in red blood cells responsible for transporting oxygen and carbon dioxide.,贫血诊断的关键指标。,生理学,1
+白细胞,WBC,白细胞计数；White Blood Cell,血液中参与免疫防御的有核细胞，包括中性粒细胞、淋巴细胞、单核细胞、嗜酸性粒细胞和嗜碱性粒细胞。,"Nucleated cells in blood involved in immune defense, including neutrophils, lymphocytes, monocytes, eosinophils and basophils.",感染与炎症时升高。,生理学,1
+血小板,PLT,血小板；Platelet,由巨核细胞产生的无核细胞碎片，参与止血与凝血过程。,Anucleate cell fragments produced by megakaryocytes that participate in hemostasis and coagulation.,血小板减少可致出血倾向。,生理学,1
+血糖,BG,血糖；Blood Glucose,血液中的葡萄糖浓度，正常空腹约3.9~6.1 mmol/L，是反映糖代谢的重要指标。,"The concentration of glucose in the blood; normal fasting level is about 3.9–6.1 mmol/L, an important indicator of glucose metabolism.",糖尿病诊断与管理核心指标。,生理学,1
+内分泌,Endocrine,激素调节；Endocrine System,机体通过内分泌腺分泌激素经血液运送至靶器官发挥调节作用的方式。,"The way the body regulates targets by secreting hormones from endocrine glands, carried through the blood to target organs.",与神经系统共同构成调节网络。,生理学,2
+新陈代谢,Metabolism,物质代谢；Metabolism,机体生命活动过程中进行的合成（同化）与分解（异化）反应的总和。,The sum of anabolic (synthesis) and catabolic (breakdown) reactions occurring during life activities.,是生命的基本特征。,生理学,2
+免疫应答,IR,免疫反应；Immune Response,机体免疫系统识别和清除抗原物质的过程，分为固有免疫和适应性免疫。,"The process by which the immune system recognizes and eliminates antigenic substances, divided into innate and adaptive immunity.",是机体防御的核心机制。,生理学,1
+反射,Reflex,神经反射；Reflex,机体在中枢神经系统的参与下对内外刺激所做出的规律性应答。,A regular response of the body to internal and external stimuli with the participation of the central nervous system.,反射弧是神经调节的基本方式。,生理学,2
+体液平衡,FB,体液；Fluid Balance,机体摄入与排出水分保持动态平衡，维持内环境稳定的过程。,"The dynamic balance between water intake and excretion, maintaining homeostasis of the internal environment.",严重失衡可危及生命。,生理学,2
+酸碱平衡,pH,酸碱；Acid-Base Balance,机体通过缓冲系统、肺和肾维持体液pH在正常范围（约7.35~7.45）的调节过程。,"The process by which the body maintains the pH of body fluids in the normal range (about 7.35–7.45) via buffer systems, lungs and kidneys.",酸碱紊乱见于多种危重疾病。,生理学,1
+凝血,Coagulation,止血凝血；Coagulation,血液由液态转变为凝胶态的过程，涉及血小板、凝血因子及纤维蛋白，是止血的重要机制。,"The process by which blood changes from liquid to gel, involving platelets, coagulation factors and fibrin, an important mechanism of hemostasis.",凝血功能障碍可导致出血或血栓。,生理学,1
+炎症,Inflammation,炎症反应；Inflammation,机体对损伤因子所发生的以防御为主的反应，表现为红、肿、热、痛和功能障碍。,"The body's mainly defensive response to injurious agents, manifested as redness, swelling, heat, pain and dysfunction.",可分急性和慢性炎症。,病理学,1
+肿瘤,Tumor,肿瘤病变；Tumor,机体细胞异常增生形成的新生物，分良性与恶性，恶性者即癌症。,"An abnormal growth of tissue formed by uncontrolled cell proliferation, benign or malignant; malignant ones are cancers.",恶性肿瘤是死亡主要原因之一。,病理学,1
+癌,Carcinoma,恶性肿瘤；Carcinoma,起源于上皮组织的恶性肿瘤，占恶性肿瘤的大多数。,"A malignant tumor arising from epithelial tissue, accounting for the majority of malignant tumors.",如肺癌、胃癌、乳腺癌等。,病理学,1
+感染,Infection,感染性疾病；Infection,病原微生物（细菌、病毒、真菌等）侵入机体并在体内生长繁殖引起的病理过程。,"The pathological process caused by pathogens (bacteria, viruses, fungi, etc.) invading and multiplying within the body.",是临床最常见的疾病类型。,病理学,1
+坏死,Necrosis,组织坏死；Necrosis,活体内局部组织细胞的死亡，表现为细胞肿胀、核溶解等改变。,"Local death of cells and tissues in a living body, with changes such as cell swelling and nuclear lysis.",与凋亡（程序性死亡）相区别。,病理学,1
+纤维化,Fibrosis,纤维化病变；Fibrosis,组织损伤后间质结缔组织过度增生、瘢痕形成的过程。,The process of excessive proliferation of interstitial connective tissue and scar formation after tissue injury.,可见于肝、肺、肾等多种器官。,病理学,2
+水肿,Edema,组织水肿；Edema,组织间隙内液体异常积聚的现象。,Abnormal accumulation of fluid in the interstitial spaces.,常见于心衰、肾病、低蛋白血症等。,病理学,1
+缺血,Ischemia,缺血缺氧；Ischemia,组织器官血液供应减少导致供氧和营养物质不足的状态。,"A state of reduced blood supply to tissues or organs, leading to insufficient oxygen and nutrients.",可发展为梗死。,病理学,2
+梗死,Infarction,血管闭塞性坏死；Infarction,因血液供应中断导致的局部组织缺血性坏死，如心肌梗死、脑梗死。,"Local ischemic necrosis of tissue caused by interruption of blood supply, e.g. myocardial infarction and cerebral infarction.",是心脑血管病的重要后果。,病理学,1
+变性,Degeneration,细胞变性；Degeneration,细胞或间质内出现异常物质或正常物质异常增多，是可逆性损伤表现。,"Appearance of abnormal substances or abnormal increase of normal substances in cells or interstitium, a reversible form of injury.",严重时可发展为坏死。,病理学,3
+增生,Hyperplasia,细胞增生；Hyperplasia,细胞数目增多导致的组织器官体积增大。,Increase in the number of cells leading to enlargement of tissues or organs.,有生理性与病理性之分。,病理学,3
+转移,Metastasis,肿瘤转移；Metastasis,恶性肿瘤细胞脱离原发灶，经血液、淋巴或直接蔓延到达远处形成继发肿瘤的过程。,"The process by which malignant cells detach from the primary tumor and spread via blood, lymphatics or direct extension to form secondary tumors at distant sites.",是恶性肿瘤的重要特征。,病理学,1
+分化,Differentiation,细胞分化；Differentiation,细胞从幼稚到成熟、结构和功能趋向特化的过程；肿瘤分化程度反映其恶性度。,The process by which cells mature and become structurally and functionally specialized; tumor differentiation reflects malignancy.,低分化肿瘤恶性度高。,病理学,2
+萎缩,Atrophy,组织萎缩；Atrophy,已发育正常的细胞、组织或器官体积缩小的现象。,"Reduction in the size of previously developed normal cells, tissues or organs.",可由营养不良、失用等引起。,病理学,3
+血栓,Thrombus,血栓形成；Thrombus,活体心血管内血液成分凝固形成的固体质块。,A solid mass formed by the coagulation of blood components within living blood vessels.,可导致血管栓塞。,病理学,1
+栓塞,Embolism,栓塞形成；Embolism,循环血液中的栓子（血栓、脂肪、空气等）随血流堵塞远处血管的过程。,"The process by which an embolus (thrombus, fat, air, etc.) in the circulation blocks a distant vessel.",肺栓塞、脑栓塞等可危及生命。,病理学,1
+癌变,Carcinogenesis,致癌；Carcinogenesis,正常细胞转变为癌细胞的病理过程，常由基因突变累积引起。,"The pathological process by which normal cells transform into cancer cells, often caused by the accumulation of gene mutations.",涉及多步骤、多因素。,病理学,2
+抗生素,Antibiotic,抗菌药物；Antibiotic,由微生物产生或人工合成、能抑制或杀灭细菌的化学物质，用于治疗细菌感染。,"Chemicals produced by microorganisms or synthesized artificially that inhibit or kill bacteria, used to treat bacterial infections.",滥用可致耐药性。,药理学,1
+抗生素耐药,AR,耐药性；Antimicrobial Resistance,细菌对抗生素产生耐受、药物疗效下降或消失的现象。,"The phenomenon by which bacteria become tolerant to antibiotics, reducing or losing drug efficacy.",全球公共卫生重大威胁。,药理学,1
+镇痛药,Analgesic,止痛药；Analgesic,用于缓解疼痛的药物，分阿片类和非甾体抗炎药等类别。,"Drugs used to relieve pain, divided into opioids, NSAIDs and other classes.",阿片类有成瘾风险。,药理学,1
+非甾体抗炎药,NSAID,非甾体抗炎药；Non-Steroidal Anti-Inflammatory Drug,具有抗炎、镇痛、解热作用的非类固醇类药物，如布洛芬、阿司匹林。,"Non-steroidal drugs with anti-inflammatory, analgesic and antipyretic effects, such as ibuprofen and aspirin.",长期使用可损伤胃肠道。,药理学,1
+降压药,Antihypertensive,降血压药；Antihypertensive,用于降低血压、治疗高血压的一类药物，包括利尿剂、β受体阻滞剂、ACEI/ARB、钙通道阻滞剂等。,"A class of drugs used to lower blood pressure and treat hypertension, including diuretics, beta-blockers, ACEI/ARB and calcium channel blockers.",需长期规律服药。,药理学,1
+胰岛素,Insulin,降糖激素药物；Insulin,用于治疗糖尿病的激素类药物，可补充体内胰岛素不足，促进葡萄糖利用。,"A hormonal drug used to treat diabetes, supplementing insufficient insulin and promoting glucose utilization.",是1型糖尿病必需治疗。,药理学,1
+他汀类药物,Statin,降脂药；Statin,抑制胆固醇合成的降血脂药物，用于降低低密度脂蛋白胆固醇，防治心脑血管病。,"Lipid-lowering drugs that inhibit cholesterol synthesis, used to lower LDL cholesterol and prevent cardiovascular disease.",如阿托伐他汀、瑞舒伐他汀。,药理学,2
+抗凝药,Anticoagulant,抗凝血药；Anticoagulant,抑制凝血过程、防止血栓形成与扩大的药物，如华法林、肝素、新型口服抗凝药。,"Drugs that inhibit coagulation to prevent thrombus formation and extension, such as warfarin, heparin and DOACs.",需监测出血风险。,药理学,1
+化疗药物,Chemotherapy,化疗药；Chemotherapy,用于治疗恶性肿瘤的细胞毒性药物，可杀灭快速增殖的癌细胞。,"Cytotoxic drugs used to treat malignant tumors, killing rapidly proliferating cancer cells.",常伴恶心、脱发等副作用。,药理学,1
+靶向药物,TT,靶向药；Targeted Therapy,针对癌细胞特定分子靶点的药物，选择性抑制肿瘤生长。,Drugs targeting specific molecular targets of cancer cells to selectively inhibit tumor growth.,如酪氨酸激酶抑制剂。,药理学,2
+免疫抑制剂,Immunosuppressant,免疫抑制剂；Immunosuppressant,抑制机体免疫反应的药物，用于自身免疫病治疗和器官移植抗排斥。,"Drugs that suppress immune responses, used in autoimmune diseases and transplant rejection prevention.",增加感染风险。,药理学,2
+利尿剂,Diuretic,利尿药；Diuretic,促进肾脏排出水分和电解质、增加尿量的药物，用于水肿和高血压治疗。,"Drugs that promote renal excretion of water and electrolytes and increase urine output, used for edema and hypertension.",如呋塞米、氢氯噻嗪。,药理学,2
+激素,Hormone,糖皮质激素；Hormone,体内内分泌腺分泌或外源性补充的调节性物质；临床上常指糖皮质激素。,Regulatory substances secreted by endocrine glands or supplied exogenously; clinically often refers to glucocorticoids.,有强大的抗炎和免疫抑制作用。,药理学,2
+镇静催眠药,SH,镇静药；安眠药；Sedative-Hypnotic,抑制中枢神经系统、产生镇静和催眠作用的药物，如苯二氮卓类。,"Drugs that depress the central nervous system producing sedation and hypnosis, such as benzodiazepines.",长期使用可产生依赖性。,药理学,2
+抗菌谱,AS,抑菌范围；Antimicrobial Spectrum,抗菌药物所能抑制或杀灭的微生物范围，决定其临床适用范围。,"The range of microorganisms an antimicrobial agent can inhibit or kill, determining its clinical indications.",窄谱与广谱之分。,药理学,3
+半衰期,HL,药物半衰期；Half-Life,药物血浆浓度下降一半所需的时间，是决定给药间隔的重要参数。,"The time required for the plasma concentration of a drug to fall by half, an important parameter determining dosing intervals.",影响药物蓄积与毒性。,药理学,2
+剂量,Dosage,剂量；用药剂量；Dosage,给药一次的药物用量，需根据病情、年龄、体重等因素调整。,"The amount of a drug given per dose, adjusted according to condition, age, weight and other factors.",过量可致中毒。,药理学,3
+不良反应,AR,副作用；Adverse Reaction,药物在正常用法用量下出现的与治疗目的无关的有害反应。,Harmful reactions unrelated to therapeutic purpose occurring at normal dosage and usage.,需权衡利弊使用。,药理学,1
+用药依从性,MA,依从性；Medication Adherence,患者按医嘱规律服用药物的程度，是影响疗效的重要因素。,"The degree to which a patient follows prescribed medication, an important factor affecting treatment efficacy.",依从性差是慢病控制不佳的主因。,药理学,3
+药理作用,PA,药效；Pharmacological Action,药物对机体产生的生物学效应，是药物发挥治疗作用的基础。,"The biological effect of a drug on the body, the basis of its therapeutic action.",分主要作用与次要作用。,药理学,3
+血常规,CBC,血象检查；Complete Blood Count,检测红细胞、白细胞、血小板等血液成分数量和比例的常用检验项目。,"A common laboratory test measuring the number and proportion of red blood cells, white blood cells, platelets and other blood components.",是最基础、最常用的血液检查。,检验医学,1
+尿常规,Urinalysis,尿检；Urinalysis,检测尿液物理、化学性质及沉渣成分的常规检查，用于泌尿系统疾病诊断。,"A routine examination of the physical, chemical properties and sediment of urine, used to diagnose urinary system diseases.",可发现蛋白尿、血尿、尿糖等异常。,检验医学,1
+肝功能,LFT,肝功能检查；Liver Function Test,检测ALT、AST、胆红素、白蛋白等指标以评估肝脏代谢与损伤状态的检查。,"Tests measuring ALT, AST, bilirubin, albumin and other indicators to evaluate liver metabolism and injury.",用于肝炎、肝硬化等诊断。,检验医学,1
+肾功能,RFT,肾功能检查；Renal Function Test,检测血肌酐、尿素氮、eGFR等指标以评估肾小球滤过功能的检查。,"Tests measuring serum creatinine, urea nitrogen, eGFR and other indicators to evaluate glomerular filtration.",慢性肾病分期的重要依据。,检验医学,1
+血糖检测,BGT,血糖；Blood Glucose Test,测定血液葡萄糖浓度的检验，用于糖尿病筛查、诊断与监测。,"A test measuring blood glucose concentration, used for diabetes screening, diagnosis and monitoring.",包括空腹血糖、餐后血糖、糖化血红蛋白。,检验医学,1
+血脂,LP,血脂检查；Lipid Profile,检测总胆固醇、甘油三酯、低/高密度脂蛋白等指标以评估脂代谢和心血管风险。,"Tests measuring total cholesterol, triglycerides, LDL/HDL to assess lipid metabolism and cardiovascular risk.",高血脂是心脑血管病危险因素。,检验医学,1
+糖化血红蛋白,GH,糖化Hb；Glycated Hemoglobin,反映近2~3个月平均血糖水平的指标，是糖尿病管理的重要监测项。,"An indicator reflecting the average blood glucose level over the past 2–3 months, important for diabetes management.",不受单次血糖波动影响。,检验医学,1
+肿瘤标志物,TM,癌标；Tumor Marker,肿瘤细胞产生或机体对其反应产生的、可在血液或组织中检测的指标，用于辅助诊断和监测。,"Indicators produced by tumor cells or by the body in response, detectable in blood or tissue, used to aid diagnosis and monitoring.",如CEA、AFP、CA125等。,检验医学,2
+病原学检查,PD,病原检测；Pathogen Detection,通过培养、涂片、核酸检测等方法检测病原微生物的检验。,"Tests detecting pathogenic microorganisms through culture, smear, nucleic acid detection and other methods.",是感染性疾病确诊的重要依据。,检验医学,1
+活检,Biopsy,活组织检查；Biopsy,切取或穿刺获取组织标本进行病理检查的方法，是肿瘤诊断的金标准。,"A method of obtaining tissue specimens by excision or puncture for pathological examination, the gold standard for tumor diagnosis.",可确定病变性质和良恶性。,检验医学,1
+影像学,Imaging,医学影像；Medical Imaging,利用X射线、超声、磁共振等成像技术观察人体内部结构和病变的学科。,"The discipline of observing internal structures and lesions using X-ray, ultrasound, MRI and other imaging techniques.",包括放射、超声、核医学等。,影像学,1
+X光检查,XR,X线；X-Ray Examination,利用X射线穿透人体形成图像的检查方法，用于骨骼、胸部等疾病诊断。,"A method forming images with X-rays passing through the body, used to diagnose bone, chest and other diseases.",是最基础的放射检查。,影像学,1
+计算机断层扫描,CT,CT检查；Computed Tomography,利用X射线和计算机重建人体横断面图像的检查技术，分辨率高。,"An imaging technique reconstructing cross-sectional images using X-rays and computers, with high resolution.",广泛用于全身各系统疾病诊断。,影像学,1
+磁共振成像,MRI,核磁共振；Magnetic Resonance Imaging,利用强磁场和射频脉冲成像的技术，对软组织分辨率高、无电离辐射。,"An imaging technique using a strong magnetic field and radiofrequency pulses, with high soft-tissue resolution and no ionizing radiation.",适合脑、脊髓、关节等软组织成像。,影像学,1
+超声检查,Ultrasound,B超；Ultrasound Examination,利用超声波探查人体器官结构和血流状态的检查方法，无创无辐射。,"A non-invasive, radiation-free examination using ultrasound to detect organ structure and blood flow.",广泛用于腹部、心脏、产科等。,影像学,1
+心电图,Electrocardiogram,心电图；Electrocardiogram,记录心脏电活动变化曲线的检查，用于心律失常、心肌缺血等诊断。,"A test recording the electrical activity of the heart, used to diagnose arrhythmias and myocardial ischemia.",是心内科最常用检查。,影像学,1
+内窥镜,Endoscopy,内镜检查；Endoscopy,借助内窥镜直接观察消化道、呼吸道等腔内病变的检查与治疗技术。,"A diagnostic and therapeutic technique using an endoscope to directly view lesions in the gastrointestinal tract, respiratory tract and other cavities.",可同时进行活检和治疗。,影像学,2
+肺功能检查,PFT,肺功能检查；Pulmonary Function Test,测定肺通气与换气功能的检查，用于呼吸系统疾病诊断与评估。,"Tests measuring pulmonary ventilation and gas exchange, used to diagnose and assess respiratory diseases.",如FEV1、FVC等指标。,影像学,2
+病理切片,PS,切片；Pathological Section,将组织标本制成薄片染色后于显微镜下观察的病理检查步骤。,The step of preparing thin stained sections of tissue for microscopic examination.,是病理诊断的基础。,检验医学,3
+基因检测,GT,基因检测；Genetic Testing,通过分子技术检测基因序列或表达改变的检查，用于遗传病、肿瘤等诊断与指导用药。,"Tests detecting changes in gene sequence or expression via molecular techniques, used for genetic diseases, tumors and guiding treatment.",精准医学的重要基础。,检验医学,2
+高血压,HTN,高血压病；Hypertension,以动脉血压持续升高为特征的慢性疾病，是心脑血管病的重要危险因素。,"A chronic disease characterized by persistently elevated arterial blood pressure, an important risk factor for cardiovascular disease.",诊断标准为≥140/90 mmHg。,心血管内科,1
+冠心病,CHD,冠状动脉粥样硬化性心脏病；Coronary Heart Disease,冠状动脉粥样硬化导致心肌缺血缺氧的心脏病，包括心绞痛、心肌梗死等。,"Heart disease caused by coronary atherosclerosis leading to myocardial ischemia, including angina and myocardial infarction.",是全球死亡主要原因之一。,心血管内科,1
+心肌梗死,MI,心梗；Myocardial Infarction,冠状动脉急性闭塞导致心肌持续缺血坏死，可危及生命。,"Acute occlusion of a coronary artery causing persistent myocardial ischemia and necrosis, potentially life-threatening.",典型表现为持续性胸痛。,心血管内科,1
+心绞痛,AP,心绞痛发作；Angina Pectoris,冠状动脉供血不足导致的一过性心肌缺血，表现为胸骨后压榨性疼痛。,"Transient myocardial ischemia due to insufficient coronary blood supply, presenting as substernal crushing pain.",分稳定型与不稳定型。,心血管内科,1
+心力衰竭,HF,心衰；Heart Failure,心脏泵血功能下降，不能维持机体需要血液供应的临床综合征。,A clinical syndrome in which the heart's pumping function declines and cannot supply the body's required blood flow.,分左心衰、右心衰和全心衰。,心血管内科,1
+心律失常,Arrhythmia,心律不齐；Arrhythmia,心脏冲动的起源或传导异常导致的心率或节律紊乱。,Abnormal heart rate or rhythm caused by disturbances in the origin or conduction of cardiac impulses.,如房颤、室颤、心动过速等。,心血管内科,1
+心房颤动,AF,房颤；Atrial Fibrillation,心房以极快且不规律频率激动、心房失去有效收缩的心律失常，易致血栓栓塞。,"An arrhythmia in which the atria beat very fast and irregularly, losing effective contraction, predisposing to thromboembolism.",是脑卒中的重要病因。,心血管内科,1
+动脉粥样硬化,AS,动脉硬化；Atherosclerosis,动脉内膜脂质沉积形成粥样斑块、管壁增厚变硬变脆的病变，是心脑血管病的基础。,"A lesion of lipid deposition forming plaques, thickening and hardening the arterial wall, the basis of cardiovascular disease.",是冠心病、脑卒中的共同病理基础。,心血管内科,1
+瓣膜病,VHD,心脏瓣膜病；Valvular Heart Disease,心脏瓣膜狭窄或关闭不全导致血流动力学异常的心脏病，如风湿性瓣膜病。,"Heart disease caused by valvular stenosis or regurgitation leading to hemodynamic abnormalities, e.g. rheumatic valve disease.",严重者需手术或介入治疗。,心血管内科,2
+心肌炎,Myocarditis,心肌炎症；Myocarditis,心肌的炎症性疾病，多由病毒感染引起，可致心功能损害。,"An inflammatory disease of the myocardium, often caused by viral infection, which can impair cardiac function.",可发展为扩张型心肌病。,心血管内科,2
+心包炎,Pericarditis,心包炎症；Pericarditis,心包膜的炎症，可致心包积液或心包缩窄。,"Inflammation of the pericardium, which can cause pericardial effusion or constriction.",心包填塞为急症。,心血管内科,3
+心脏骤停,SCA,心跳骤停；Cardiac Arrest,心脏有效泵血功能突然停止，导致意识丧失和循环衰竭，须立即心肺复苏。,"Sudden cessation of effective cardiac pumping, causing loss of consciousness and circulatory failure, requiring immediate CPR.",是急诊抢救的重点。,心血管内科,1
+先天性心脏病,CHD,先心病；Congenital Heart Disease,出生时即存在的心脏结构异常，如房间隔缺损、室间隔缺损等。,"Structural heart abnormalities present at birth, such as atrial septal defect and ventricular septal defect.",多数可手术矫正。,心血管内科,2
+血脂异常,Dyslipidemia,高脂血症；Dyslipidemia,血脂成分代谢异常，包括高胆固醇、高甘油三酯等。,"Abnormal lipid metabolism, including high cholesterol and high triglycerides.",与动脉粥样硬化密切相关。,心血管内科,2
+心源性休克,CS,心源性休克；Cardiogenic Shock,心脏泵功能严重衰竭导致全身组织灌注不足的休克类型。,Shock caused by severe failure of cardiac pumping leading to insufficient systemic tissue perfusion.,常继发于大面积心肌梗死。,心血管内科,2
+肺炎,Pneumonia,肺部感染；Pneumonia,肺实质的急性感染性炎症，多由细菌、病毒引起，表现为发热、咳嗽、咳痰。,"Acute infectious inflammation of the lung parenchyma, mostly caused by bacteria or viruses, with fever, cough and sputum.",是常见呼吸系统疾病。,呼吸内科,1
+慢性阻塞性肺疾病,COPD,慢阻肺；Chronic Obstructive Pulmonary Disease,以持续气流受限为特征的慢性呼吸系统疾病，多与吸烟有关。,"A chronic respiratory disease characterized by persistent airflow limitation, largely associated with smoking.",全球死亡原因前列。,呼吸内科,1
+哮喘,Asthma,支气管哮喘；Asthma,以气道慢性炎症和可逆性气流受限为特征的疾病，表现为反复发作的喘息、气促。,"A disease characterized by chronic airway inflammation and reversible airflow limitation, with recurrent wheezing and breathlessness.",接触过敏原可诱发。,呼吸内科,1
+支气管炎,Bronchitis,气管炎；Bronchitis,支气管黏膜的炎症，分急性和慢性，常表现为咳嗽、咳痰。,"Inflammation of the bronchial mucosa, acute or chronic, often presenting with cough and sputum.",慢性支气管炎与吸烟密切相关。,呼吸内科,2
+肺结核,TB,肺痨；Tuberculosis,结核分枝杆菌引起的慢性肺部感染，具传染性，表现为咳嗽、咯血、低热。,"Chronic lung infection caused by Mycobacterium tuberculosis, contagious, with cough, hemoptysis and low-grade fever.",我国重点防治传染病。,呼吸内科,1
+肺癌,LC,支气管肺癌；Lung Cancer,起源于支气管黏膜或腺体的恶性肿瘤，与吸烟密切相关，是死亡率最高的癌症之一。,"A malignant tumor arising from the bronchial mucosa or glands, closely linked to smoking, among the highest-mortality cancers.",早期发现可提高治愈率。,呼吸内科,1
+呼吸衰竭,RF,呼衰；Respiratory Failure,肺通气或换气功能严重障碍，导致缺氧和/或二氧化碳潴留的临床状态。,Severe impairment of ventilation or gas exchange causing hypoxia and/or carbon dioxide retention.,可危及生命，需氧疗或机械通气。,呼吸内科,1
+胸腔积液,PE,胸水；Pleural Effusion,胸膜腔内异常液体增多，可由炎症、肿瘤、心衰等引起。,"Abnormal accumulation of fluid in the pleural cavity, caused by inflammation, tumor, heart failure, etc.",需抽液明确性质。,呼吸内科,2
+肺栓塞,PE,肺血栓栓塞；Pulmonary Embolism,栓子堵塞肺动脉导致的疾病，常见为深静脉血栓脱落所致，可致猝死。,"A disease caused by emboli blocking the pulmonary artery, commonly from dislodged deep vein thrombosis, which can cause sudden death.",为急诊高危疾病。,呼吸内科,1
+睡眠呼吸暂停,OSA,打鼾憋气；Sleep Apnea,睡眠中反复发生呼吸暂停和低通气的综合征，可致缺氧和心脑血管损害。,"A syndrome of recurrent apnea and hypopnea during sleep, causing hypoxia and cardiovascular damage.",肥胖是常见危险因素。,呼吸内科,2
+流行性感冒,Flu,流感；Influenza,流感病毒引起的急性呼吸道传染病，具传染性，易流行。,"An acute contagious respiratory infection caused by influenza viruses, prone to epidemics.",老年人等易发展为重症。,呼吸内科,1
+肺气肿,Emphysema,肺气肿病变；Emphysema,肺泡壁破坏、终末细支气管远端气腔持久性扩大增大的肺部病变。,A lung lesion with destruction of alveolar walls and persistent enlargement of air spaces distal to terminal bronchioles.,是COPD的重要类型。,呼吸内科,2
+气胸,Pneumothorax,自发性气胸；Pneumothorax,气体进入胸膜腔导致肺受压萎陷的疾病，表现为突发胸痛和呼吸困难。,"A disease in which air enters the pleural cavity causing lung collapse, with sudden chest pain and dyspnea.",分自发性与创伤性。,呼吸内科,2
+呼吸机,Ventilator,机械通气；Ventilator,用于支持或替代自主呼吸、改善通气和氧合的医疗设备。,Medical equipment used to support or replace spontaneous breathing and improve ventilation and oxygenation.,重症呼吸衰竭的重要治疗。,呼吸内科,2
+胃炎,Gastritis,胃黏膜炎；Gastritis,胃黏膜的炎症性疾病，分急性和慢性，多与幽门螺杆菌感染、饮食等有关。,"Inflammatory disease of the gastric mucosa, acute or chronic, often related to Helicobacter pylori infection and diet.",慢性胃炎可发展至萎缩和癌变。,消化内科,1
+胃溃疡,GU,消化性溃疡；Gastric Ulcer,胃黏膜发生的溃疡性病变，表现为周期性上腹痛。,"Ulcerative lesion of the gastric mucosa, with periodic upper abdominal pain.",与幽门螺杆菌、NSAIDs有关。,消化内科,1
+十二指肠溃疡,DU,十二指肠球部溃疡；Duodenal Ulcer,十二指肠黏膜的溃疡，表现为空腹痛、夜间痛。,"Ulcer of the duodenal mucosa, presenting with fasting and nocturnal pain.",是消化性溃疡最常见类型。,消化内科,2
+胃食管反流病,GERD,反流性食管炎；Gastroesophageal Reflux Disease,胃内容物反流入食管引起烧心、反酸等症状的疾病。,A disease in which gastric contents reflux into the esophagus causing heartburn and regurgitation.,长期反流可致食管损伤。,消化内科,1
+肝炎,Hepatitis,病毒性肝炎；Hepatitis,肝脏的炎症性疾病，多由肝炎病毒感染引起，分甲、乙、丙等类型。,"Inflammatory disease of the liver, mostly caused by hepatitis viruses, typed as A, B, C, etc.",乙肝可进展为肝硬化、肝癌。,消化内科,1
+肝硬化,Cirrhosis,肝硬变；Cirrhosis,肝细胞弥漫性坏死、纤维化和结节再生形成的慢性肝病终末阶段。,"Chronic end-stage liver disease with diffuse hepatocyte necrosis, fibrosis and nodular regeneration.",可并发腹水、消化道出血、肝癌。,消化内科,1
+脂肪肝,FL,脂肪性肝病；Fatty Liver,肝细胞内脂肪异常沉积的病变，与肥胖、代谢综合征密切相关。,"A lesion of abnormal fat deposition in liver cells, closely related to obesity and metabolic syndrome.",可进展为脂肪性肝炎和肝硬化。,消化内科,1
+胆囊炎,Cholecystitis,胆囊炎症；Cholecystitis,胆囊的炎症，多由胆结石阻塞和细菌感染引起。,"Inflammation of the gallbladder, mostly caused by gallstone obstruction and bacterial infection.",急性发作表现为右上腹痛。,消化内科,2
+胰腺炎,Pancreatitis,胰腺炎症；Pancreatitis,胰腺的炎症性疾病，分急性和慢性，急性重症可危及生命。,"Inflammatory disease of the pancreas, acute or chronic; severe acute cases can be life-threatening.",与胆结石、饮酒有关。,消化内科,1
+炎症性肠病,IBD,克罗恩病和溃疡性结肠炎；Inflammatory Bowel Disease,一组病因未明的慢性肠道炎症性疾病，主要包括克罗恩病和溃疡性结肠炎。,"A group of chronic intestinal inflammatory diseases of unknown cause, mainly including Crohn's disease and ulcerative colitis.",表现为腹痛、腹泻、便血。,消化内科,2
+肠易激综合征,IBS,肠功能紊乱；Irritable Bowel Syndrome,以腹痛、腹胀伴排便习惯改变为特征的功能性胃肠病，无器质性病变。,"A functional gastrointestinal disorder characterized by abdominal pain, bloating and altered bowel habits, without organic disease.",与精神心理因素相关。,消化内科,2
+胃癌,GC,胃癌；Gastric Cancer,起源于胃黏膜上皮的恶性肿瘤，与幽门螺杆菌感染、饮食习惯有关。,"A malignant tumor arising from the gastric mucosa epithelium, related to H. pylori infection and dietary habits.",早期症状不明显，需内镜筛查。,消化内科,1
+结直肠癌,CC,大肠癌；Colorectal Cancer,起源于结肠或直肠黏膜的恶性肿瘤，与息肉、遗传、饮食有关。,"A malignant tumor arising from the colonic or rectal mucosa, related to polyps, heredity and diet.",是可有效筛查的癌症。,消化内科,1
+肠梗阻,IO,肠梗阻；Intestinal Obstruction,肠道内容物通过受阻，导致腹痛、呕吐、腹胀、停止排便排气。,"Obstruction of intestinal contents, causing abdominal pain, vomiting, distension and cessation of stool and flatus.",绞窄性肠梗阻是外科急症。,消化内科,2
+消化道出血,GB,上消化道出血；Gastrointestinal Bleeding,消化道内出血，表现为呕血、黑便或便血，严重者致失血性休克。,"Bleeding within the digestive tract, presenting as hematemesis, melena or hematochezia; severe cases cause hemorrhagic shock.",是消化科常见急症。,消化内科,1
+幽门螺杆菌,Hp,幽门螺旋杆菌；Helicobacter Pylori,定植于胃黏膜的螺旋形细菌，是慢性胃炎、消化性溃疡和胃癌的重要致病因素。,"A spiral bacterium colonizing the gastric mucosa, an important cause of chronic gastritis, peptic ulcer and gastric cancer.",可通过呼气试验、胃镜检测。,消化内科,1
+脑卒中,CVA,中风；Stroke,脑血管突然破裂或阻塞导致脑组织损伤的疾病，分缺血性和出血性。,"Disease caused by sudden rupture or blockage of cerebral vessels damaging brain tissue, ischemic or hemorrhagic.",是致残和死亡的主要原因之一。,神经内科,1
+脑梗死,CI,脑梗塞；Cerebral Infarction,脑血管阻塞导致脑组织缺血坏死的缺血性卒中，多由动脉粥样硬化血栓或栓塞引起。,"Ischemic stroke caused by occlusion of cerebral vessels leading to ischemic necrosis of brain tissue, often from atherothrombosis or embolism.",占脑卒中的大部分。,神经内科,1
+脑出血,CH,脑溢血；Cerebral Hemorrhage,脑实质内血管破裂出血，多与高血压动脉硬化有关，起病急骤。,"Bleeding from a ruptured vessel within the brain parenchyma, often related to hypertensive arteriosclerosis, with sudden onset.",死亡率高，需紧急处理。,神经内科,1
+偏头痛,Migraine,血管性头痛；Migraine,反复发作的搏动性头痛，常伴恶心、畏光畏声。,"Recurrent throbbing headache, often accompanied by nausea, photophobia and phonophobia.",是常见慢性头痛。,神经内科,2
+癫痫,Epilepsy,羊癫疯；Epilepsy,脑神经元异常同步放电导致的反复发作的短暂脑功能障碍综合征。,A syndrome of recurrent transient brain dysfunction caused by abnormal synchronous discharge of neurons.,分全面性发作和局灶性发作。,神经内科,1
+帕金森病,PD,震颤麻痹；Parkinson's Disease,中脑黑质多巴胺能神经元变性导致的中枢神经系统退行性疾病，表现为震颤、肌强直、运动迟缓。,"A neurodegenerative disease caused by degeneration of dopaminergic neurons in the substantia nigra, with tremor, rigidity and bradykinesia.",多见于中老年人。,神经内科,1
+阿尔茨海默病,AD,老年痴呆；Alzheimer's Disease,进行性认知功能障碍和记忆减退为特征的神经退行性疾病，是痴呆最常见类型。,"A neurodegenerative disease with progressive cognitive impairment and memory decline, the most common type of dementia.",目前无根治方法。,神经内科,1
+周围神经病,PN,神经病变；Peripheral Neuropathy,周围神经受损导致的感觉、运动或自主神经功能障碍。,"Dysfunction of sensation, movement or autonomic nerves caused by damage to peripheral nerves.",可由糖尿病、维生素缺乏等引起。,神经内科,2
+三叉神经痛,TN,三叉神经疼；Trigeminal Neuralgia,三叉神经分布区反复发作的电击样剧痛。,Recurrent electric-shock-like severe pain in the distribution of the trigeminal nerve.,"有""天下第一痛""之称。",神经内科,3
+多发性硬化,MS,脱髓鞘病；Multiple Sclerosis,中枢神经系统免疫介导的脱髓鞘性疾病，病变多发、病程反复。,"An immune-mediated demyelinating disease of the central nervous system, with multiple lesions and relapsing course.",多见于青年女性。,神经内科,2
+重症肌无力,MG,肌无力；Myasthenia Gravis,神经肌肉接头传递障碍导致的骨骼肌无力，活动后加重、休息后减轻。,"Skeletal muscle weakness caused by impaired neuromuscular transmission, worsening with activity and improving with rest.",为自身免疫病。,神经内科,2
+脑膜炎,Meningitis,脑膜炎症；Meningitis,脑膜（软脑膜、蛛网膜）的炎症，多由细菌或病毒感染引起。,"Inflammation of the meninges, often caused by bacterial or viral infection.",表现为发热、头痛、颈强直。,神经内科,1
+脑肿瘤,BT,颅内肿瘤；Brain Tumor,发生于颅内的肿瘤，分原发性和转移性，可引起颅内高压和神经症状。,"Tumor occurring within the skull, primary or metastatic, causing increased intracranial pressure and neurological symptoms.",如胶质瘤、脑膜瘤。,神经内科,2
+痴呆,Dementia,认知障碍；Dementia,以获得性认知功能减退为特征、影响日常生活能力的综合征。,A syndrome of acquired cognitive decline impairing daily living abilities.,阿尔茨海默病是最常见病因。,神经内科,1
+眩晕,Vertigo,头晕目眩；Vertigo,自身或周围环境旋转感的主观感觉，多与前庭系统病变有关。,"A subjective sensation of rotation of self or surroundings, often related to vestibular disorders.",耳石症、梅尼埃病等可致。,神经内科,2
+格林-巴利综合征,GBS,急性炎性脱髓鞘性多神经病；Guillain-Barré Syndrome,免疫介导的急性周围神经病，表现为对称性肢体无力、感觉异常，可致呼吸肌麻痹。,"Immune-mediated acute peripheral neuropathy with symmetrical limb weakness and sensory disturbance, which can cause respiratory muscle paralysis.",多继发于感染后。,神经内科,3
+糖尿病,DM,糖尿病；Diabetes Mellitus,胰岛素分泌不足或作用障碍导致的以慢性高血糖为特征的代谢性疾病。,A metabolic disease characterized by chronic hyperglycemia due to deficient insulin secretion or action.,分1型、2型和特殊类型。,内分泌科,1
+甲状腺功能亢进,Hyperthyroidism,甲亢；Hyperthyroidism,甲状腺激素分泌过多导致机体代谢亢进的疾病，表现为心悸、多汗、消瘦。,"A disease of hypermetabolism caused by excessive thyroid hormone secretion, with palpitations, sweating and weight loss.",最常见病因为Graves病。,内分泌科,1
+甲状腺功能减退,Hypothyroidism,甲减；Hypothyroidism,甲状腺激素分泌不足导致代谢减退的疾病，表现为乏力、怕冷、水肿。,"A disease of reduced metabolism caused by deficient thyroid hormone, with fatigue, cold intolerance and edema.",需终身甲状腺素替代治疗。,内分泌科,1
+甲状腺结节,TN,甲状腺肿块；Thyroid Nodule,甲状腺内出现的局限性肿块，多数为良性，少数为恶性。,"A localized mass within the thyroid, mostly benign and a minority malignant.",需超声和细针穿刺评估。,内分泌科,2
+甲状腺癌,TC,甲状腺肿瘤；Thyroid Cancer,起源于甲状腺滤泡上皮或C细胞的恶性肿瘤，预后通常较好。,"A malignant tumor arising from thyroid follicular epithelium or C cells, usually with good prognosis.",乳头状癌最常见。,内分泌科,2
+肥胖症,Obesity,过度肥胖；Obesity,体内脂肪过度堆积导致体重超标的慢性代谢性疾病。,A chronic metabolic disease with excessive accumulation of body fat causing overweight.,是多种慢病的危险因素。,内分泌科,1
+代谢综合征,MetS,X综合征；Metabolic Syndrome,以腹型肥胖、血脂异常、高血压、高血糖为特征的一组代谢异常症候群。,"A cluster of metabolic abnormalities including abdominal obesity, dyslipidemia, hypertension and hyperglycemia.",显著增加心脑血管病和糖尿病风险。,内分泌科,1
+骨质疏松,OP,骨量减少；Osteoporosis,骨量降低、骨微结构破坏导致骨脆性增加、易发生骨折的代谢性骨病。,"A metabolic bone disease with reduced bone mass and microstructural deterioration, increasing bone fragility and fracture risk.",多见于绝经后女性。,内分泌科,1
+痛风,Gout,高尿酸血症；Gout,尿酸代谢异常导致尿酸盐结晶沉积于关节引起的炎症性关节炎。,Inflammatory arthritis caused by deposition of urate crystals in joints due to abnormal uric acid metabolism.,急性发作表现为关节剧痛。,内分泌科,1
+高尿酸血症,HUA,尿酸高；Hyperuricemia,血液中尿酸水平高于正常范围的代谢异常状态，是痛风的基础。,"A metabolic abnormality with serum uric acid above normal, the basis of gout.",与饮食和肾功能相关。,内分泌科,2
+肾上腺皮质功能减退,AI,Addison病；肾上腺功能减退；Adrenal Insufficiency,肾上腺皮质激素分泌不足导致的疾病，表现为乏力、低血压、皮肤色素沉着。,"A disease caused by deficient adrenal corticosteroid secretion, with fatigue, hypotension and skin pigmentation.",危象时可危及生命。,内分泌科,3
+库欣综合征,CSS,皮质醇增多症；Cushing's Syndrome,长期糖皮质激素过多导致的综合征，表现为向心性肥胖、满月脸、皮肤紫纹。,"A syndrome caused by long-term excess of glucocorticoids, with central obesity, moon face and purple striae.",可因肿瘤或外源性激素引起。,内分泌科,2
+垂体瘤,PA,垂体腺瘤；Pituitary Adenoma,垂体前叶细胞的良性肿瘤，可导致激素分泌异常和占位压迫症状。,"Benign tumor of anterior pituitary cells, causing hormone abnormalities and mass effects.",可致肢端肥大症等。,内分泌科,2
+肢端肥大症,Acromegaly,肢端肥大；Acromegaly,生长激素分泌过多导致的骨骼和软组织过度生长。,Excessive growth of bones and soft tissues caused by overproduction of growth hormone.,多由垂体生长激素瘤引起。,内分泌科,3
+钙磷代谢,CPM,钙磷代谢紊乱；Calcium-Phosphorus Metabolism,体内钙和磷的平衡调节过程，紊乱见于甲状旁腺、肾疾病等。,"The regulation of calcium and phosphorus balance in the body, disturbed in parathyroid and renal diseases.",与骨骼健康和神经肌肉功能相关。,内分泌科,3
+贫血,Anemia,贫血症；Anemia,外周血红细胞数量或血红蛋白含量低于正常范围的综合征。,A syndrome in which the number of red blood cells or hemoglobin level is below normal.,分缺铁性、巨幼细胞性、再生障碍性等。,血液科,1
+缺铁性贫血,IDA,缺铁性贫血；Iron Deficiency Anemia,体内铁储备不足导致血红蛋白合成减少的贫血，是贫血最常见类型。,"Anemia caused by insufficient iron stores reducing hemoglobin synthesis, the most common type of anemia.",多见于女性与儿童。,血液科,1
+白血病,Leukemia,血癌；Leukemia,造血干/祖细胞恶性克隆性增殖的血液系统恶性肿瘤。,A hematologic malignancy with malignant clonal proliferation of hematopoietic stem/progenitor cells.,分急性和慢性、淋系和髓系。,血液科,1
+淋巴瘤,Lymphoma,恶性淋巴瘤；Lymphoma,淋巴细胞的恶性肿瘤，分为霍奇金淋巴瘤和非霍奇金淋巴瘤。,"A malignant tumor of lymphocytes, divided into Hodgkin and non-Hodgkin lymphoma.",表现为淋巴结肿大。,血液科,1
+再生障碍性贫血,AA,再障；Aplastic Anemia,骨髓造血功能衰竭导致全血细胞减少的疾病。,A disease of bone marrow failure causing pancytopenia.,可致感染、出血和贫血。,血液科,2
+多发性骨髓瘤,MM,骨髓瘤；Multiple Myeloma,浆细胞恶性增殖导致骨髓、骨骼和肾功能受损的血液肿瘤。,"A blood tumor of malignant plasma cell proliferation damaging bone marrow, bone and kidney function.",表现为骨痛、贫血、肾功能损害。,血液科,2
+血小板减少,TP,血小板减少症；Thrombocytopenia,外周血小板计数低于正常，增加出血风险的状态。,A state of low peripheral platelet count increasing bleeding risk.,可由免疫、药物、感染等引起。,血液科,2
+出血性疾病,BD,出血倾向；Bleeding Disorder,因止血凝血机制异常导致容易出血的一组疾病。,A group of diseases with easy bleeding due to abnormal hemostasis and coagulation.,如血友病、血小板减少性紫癜。,血液科,2
+血友病,Hemophilia,血友病；Hemophilia,凝血因子缺乏导致的遗传性出血性疾病，主要为因子VIII或IX缺乏。,"A hereditary bleeding disorder caused by deficiency of coagulation factors, mainly factor VIII or IX.",X连锁隐性遗传，男性多见。,血液科,2
+输血,BT,输血治疗；Blood Transfusion,将血液或血液成分输入患者体内以补充血容量、纠正贫血或改善凝血的治疗。,"The treatment of infusing blood or blood components to restore blood volume, correct anemia or improve coagulation.",需严格血型配型和筛查。,血液科,1
+造血干细胞移植,HSCT,骨髓移植；Hematopoietic Stem Cell Transplantation,输入健康造血干细胞重建患者造血和免疫系统的治疗，用于白血病等。,"Treatment infusing healthy hematopoietic stem cells to rebuild the patient's hematopoietic and immune systems, used in leukemia and other diseases.",分自体与异基因移植。,血液科,2
+骨髓检查,BME,骨穿；Bone Marrow Examination,通过穿刺获取骨髓标本进行细胞学或病理学检查的方法。,A method of obtaining bone marrow specimens by puncture for cytological or pathological examination.,是血液病诊断的重要手段。,血液科,2
+弥散性血管内凝血,DIC,播散性凝血；Disseminated Intravascular Coagulation,广泛微血管内凝血致凝血因子和血小板消耗、继发纤溶亢进的危重综合征。,"A critical syndrome of widespread microvascular coagulation depleting coagulation factors and platelets, with secondary fibrinolysis.",见于感染、创伤、产科等危重情况。,血液科,2
+血常规异常,HA,血液指标异常；Hematologic Abnormality,血液检验指标偏离正常范围的各种异常状态。,Various abnormalities in which blood test indicators deviate from the normal range.,需结合临床表现综合判断。,血液科,3
+慢性肾脏病,CKD,慢性肾病；Chronic Kidney Disease,肾脏结构或功能异常持续超过3个月的疾病，可逐渐进展至肾衰竭。,"A disease with structural or functional kidney abnormalities persisting over 3 months, which can progress to kidney failure.",分为1~5期。,肾内科,1
+肾衰竭,RF,肾功能衰竭；Kidney Failure,肾脏功能严重减退，不能维持机体内环境稳定的临床状态，分急性和慢性。,"A clinical state in which kidney function is severely reduced and cannot maintain homeostasis, acute or chronic.",终末期需透析或移植。,肾内科,1
+尿毒症,Uremia,终末期肾病；Uremia,慢性肾衰竭终末期，体内代谢废物大量蓄积、出现全身中毒症状。,End-stage chronic renal failure with massive accumulation of metabolic waste and systemic toxicity.,需肾脏替代治疗。,肾内科,1
+肾小球肾炎,GN,肾炎；Glomerulonephritis,肾小球的炎症性疾病，多与免疫反应有关，表现为血尿、蛋白尿、水肿。,"Inflammatory disease of the glomeruli, often immune-mediated, with hematuria, proteinuria and edema.",慢性者可进展为肾衰竭。,肾内科,1
+肾病综合征,NS,肾病；Nephrotic Syndrome,以大量蛋白尿、低蛋白血症、水肿、高脂血症为特征的临床综合征。,"A clinical syndrome with massive proteinuria, hypoalbuminemia, edema and hyperlipidemia.",分原发性和继发性。,肾内科,1
+尿路感染,UTI,泌尿道感染；Urinary Tract Infection,泌尿系统的细菌感染，包括膀胱炎、肾盂肾炎等。,"Bacterial infection of the urinary system, including cystitis and pyelonephritis.",女性多见。,肾内科,2
+肾结石,KS,泌尿系结石；Kidney Stone,尿液成分在肾脏或尿路形成结石，可引起剧烈腰痛和血尿。,"Stones formed from urine components in the kidney or urinary tract, causing severe flank pain and hematuria.",与饮水不足、代谢异常有关。,肾内科,1
+透析,Dialysis,血液透析；Dialysis,利用人工方法清除体内代谢废物和多余水分的肾脏替代治疗。,Kidney replacement therapy using artificial methods to remove metabolic waste and excess fluid.,分血液透析和腹膜透析。,肾内科,1
+前列腺增生,BPH,前列腺肥大；Benign Prostatic Hyperplasia,前列腺良性增生导致排尿困难的疾病，多见于中老年男性。,"A disease of benign prostate enlargement causing voiding difficulty, common in older men.",可致尿潴留。,泌尿外科,2
+前列腺癌,PCa,前列腺肿瘤；Prostate Cancer,起源于前列腺上皮的恶性肿瘤，是男性常见癌症。,"A malignant tumor arising from the prostatic epithelium, a common cancer in men.",PSA可用于筛查。,泌尿外科,1
+膀胱炎,Cystitis,膀胱炎症；Cystitis,膀胱黏膜的炎症，表现为尿频、尿急、尿痛。,"Inflammation of the bladder mucosa, with frequency, urgency and painful urination.",多为细菌感染。,泌尿外科,2
+尿潴留,UR,排尿困难；Urinary Retention,膀胱内尿液不能完全排出的状态，可因梗阻或神经因素引起。,"A state in which urine in the bladder cannot be completely emptied, due to obstruction or neurogenic factors.",急性者需紧急导尿。,泌尿外科,2
+肾移植,KT,肾脏移植；Kidney Transplantation,将健康肾脏植入终末期肾病患者体内恢复肾功能的治疗。,Treatment implanting a healthy kidney into a patient with end-stage renal disease to restore kidney function.,需长期免疫抑制治疗。,肾内科,2
+IgA肾病,IgA,IgA肾病；Berger病；IgA Nephropathy,以肾小球系膜区IgA沉积为特征的肾小球肾炎，是我国常见原发性肾小球病。,"Glomerulonephritis characterized by IgA deposition in the mesangium, a common primary glomerular disease in China.",可进展至肾衰竭。,肾内科,3
+类风湿关节炎,RA,类风湿；Rheumatoid Arthritis,以对称性多关节滑膜炎为主要表现的慢性自身免疫性疾病。,A chronic autoimmune disease characterized by symmetric polyarticular synovitis.,可致关节畸形和功能丧失。,风湿免疫,1
+系统性红斑狼疮,SLE,红斑狼疮；Systemic Lupus Erythematosus,累及多系统的慢性自身免疫性疾病，表现为皮疹、关节炎、肾损害等。,"A chronic autoimmune disease involving multiple systems, with rash, arthritis and renal damage.",多见于育龄女性。,风湿免疫,1
+强直性脊柱炎,AS,僵直性脊柱炎；Ankylosing Spondylitis,以骶髂关节和脊柱慢性炎症为主的自身免疫性疾病，可致脊柱强直。,"An autoimmune disease with chronic inflammation of the sacroiliac joints and spine, which can cause spinal rigidity.",青年男性多见。,风湿免疫,2
+干燥综合征,SSS,干燥症；Sjögren's Syndrome,以外分泌腺慢性炎症致口干、眼干为主要表现的自身免疫病。,Autoimmune disease with chronic inflammation of exocrine glands causing dry mouth and dry eyes.,可伴全身系统受累。,风湿免疫,3
+痛风性关节炎,GA,痛风；Gouty Arthritis,尿酸盐结晶沉积引起的急性关节炎症，典型发作于大脚趾。,"Acute joint inflammation caused by urate crystal deposition, classically affecting the big toe.",急性发作需抗炎止痛。,风湿免疫,1
+皮肌炎,Dermatomyositis,皮肌炎病；Dermatomyositis,累及皮肤和骨骼肌的自身免疫性炎症性疾病，表现为皮疹和肌无力。,"Autoimmune inflammatory disease involving skin and skeletal muscle, with rash and muscle weakness.",可伴间质性肺炎和肿瘤。,风湿免疫,2
+系统性硬化症,SSc,硬皮病；Systemic Sclerosis,以皮肤和内脏纤维化为特征的自身免疫病，可致皮肤硬化、雷诺现象。,"Autoimmune disease characterized by fibrosis of skin and internal organs, causing skin hardening and Raynaud phenomenon.",可累及肺、心脏等。,风湿免疫,2
+血管炎,Vasculitis,血管炎症；Vasculitis,血管壁的炎症性坏死性疾病，可累及大小血管，导致多器官损害。,"Inflammatory and necrotizing disease of vessel walls involving vessels of various sizes, causing multi-organ damage.",如ANCA相关性血管炎。,风湿免疫,2
+抗核抗体,ANA,自身抗体；Antinuclear Antibody,针对细胞核成分的自身抗体，是自身免疫病的重要血清学标志。,"Autoantibodies against nuclear components, important serological markers of autoimmune diseases.",阳性见于SLE等多种疾病。,风湿免疫,2
+免疫球蛋白,Ig,抗体；Immunoglobulin,具有抗体活性的球蛋白，分IgG、IgA、IgM等，参与体液免疫。,"Globulins with antibody activity, divided into IgG, IgA, IgM, etc., involved in humoral immunity.",是免疫球蛋白检查的基础。,风湿免疫,2
+生物制剂,BA,生物药；Biologic Agent,利用生物技术制备的、针对特定免疫靶点的药物，用于自身免疫病等治疗。,"Drugs prepared by biotechnology targeting specific immune targets, used to treat autoimmune diseases and others.",如TNF抑制剂、IL-6抑制剂。,风湿免疫,2
+自身免疫病,AD,自身免疫性疾病；Autoimmune Disease,机体免疫系统攻击自身组织导致组织损伤的一类疾病。,A class of diseases in which the immune system attacks the body's own tissues causing tissue damage.,包括RA、SLE等数十种。,风湿免疫,1
+病毒感染,VI,病毒性疾病；Viral Infection,病毒侵入机体引起的感染性疾病，如流感、肝炎、HIV等。,"Infectious diseases caused by viruses invading the body, such as influenza, hepatitis and HIV.",部分可特异性抗病毒治疗。,感染科,1
+细菌感染,BI,细菌性疾病；Bacterial Infection,细菌侵入机体引起的感染性疾病，可用抗生素治疗。,"Infectious diseases caused by bacteria invading the body, treatable with antibiotics.",需明确病原和药敏。,感染科,1
+艾滋病,AIDS,获得性免疫缺陷综合征；Acquired Immunodeficiency Syndrome,人类免疫缺陷病毒感染破坏免疫系统导致的综合征，易发生机会性感染和肿瘤。,"A syndrome caused by HIV destroying the immune system, predisposing to opportunistic infections and tumors.",可抗病毒治疗控制。,感染科,1
+乙肝,HBV,乙型肝炎；Hepatitis B,乙型肝炎病毒感染肝脏引起的炎症，可慢性化并进展为肝硬化和肝癌。,"Inflammation of the liver caused by hepatitis B virus, which can become chronic and progress to cirrhosis and liver cancer.",可通过疫苗预防。,感染科,1
+丙肝,HCV,丙型肝炎；Hepatitis C,丙型肝炎病毒感染引起的肝炎，多数可慢性化，现可治愈。,"Hepatitis caused by hepatitis C virus, which usually becomes chronic and is now curable.",口服抗病毒药物可治愈。,感染科,1
+伤寒,TF,伤寒病；Typhoid Fever,伤寒沙门菌引起的急性肠道传染病，表现为持续发热、相对缓脉、玫瑰疹。,"Acute intestinal infectious disease caused by Salmonella typhi, with sustained fever, relative bradycardia and rose spots.",经粪口途径传播。,感染科,3
+登革热,DF,登革；Dengue Fever,登革病毒经蚊媒传播引起的急性传染病，表现为发热、皮疹、出血倾向。,"Acute infectious disease caused by dengue virus transmitted by mosquitoes, with fever, rash and bleeding tendency.",严重型可致休克。,感染科,2
+疟疾,Malaria,疟病；Malaria,疟原虫经按蚊传播引起的寄生虫病，表现为周期性寒战高热。,"Parasitic disease caused by Plasmodium transmitted by Anopheles mosquitoes, with periodic chills and fever.",我国已消除本土传播。,感染科,2
+狂犬病,Rabies,狂犬症；Rabies,狂犬病毒感染中枢神经系统引起的致死性人畜共患传染病。,Fatal zoonotic infectious disease caused by rabies virus infecting the central nervous system.,暴露后需及时接种疫苗。,感染科,2
+结核病,TB,结核；Tuberculosis,结核分枝杆菌引起的慢性传染病，以肺结核最常见。,"Chronic infectious disease caused by Mycobacterium tuberculosis, most commonly pulmonary.",是全球重要公共卫生问题。,感染科,1
+梅毒,Syphilis,梅毒病；Syphilis,梅毒螺旋体引起的慢性性传播疾病，分一期、二期、三期。,"Chronic sexually transmitted disease caused by Treponema pallidum, staged as primary, secondary and tertiary.",可用青霉素治疗。,感染科,2
+疱疹,Herpes,单纯疱疹；Herpes,疱疹病毒引起的以皮肤黏膜水疱为特征的感染性疾病。,"Infectious disease caused by herpesviruses, characterized by skin and mucosal vesicles.",如单纯疱疹、带状疱疹。,感染科,2
+流行性腮腺炎,Mumps,腮腺炎；Mumps,腮腺炎病毒引起的急性呼吸道传染病，表现为腮腺肿大。,"Acute respiratory infectious disease caused by mumps virus, with parotid swelling.",可并发脑膜炎、睾丸炎。,感染科,3
+传染源,SOI,传染源；Source of Infection,体内有病原体生长繁殖并能排出病原体的人和动物。,Humans and animals harboring and shedding pathogens.,是传染病流行病学三环节之一。,感染科,2
+疫苗,Vaccine,预防接种；Vaccine,用于诱导机体产生特异性免疫、预防传染病的生物制品。,Biological preparations used to induce specific immunity and prevent infectious diseases.,是防控传染病最有效手段。,感染科,1
+恶性肿瘤,MT,癌症；Malignant Tumor,细胞恶性增殖、侵袭和转移能力强的肿瘤，即癌。,"A tumor with strong malignant proliferation, invasion and metastasis, i.e. cancer.",是重要死亡原因。,肿瘤科,1
+良性肿瘤,BT,良性肿物；Benign Tumor,生长缓慢、不侵袭周围组织、不转移的肿瘤。,A slowly growing tumor that does not invade surrounding tissue or metastasize.,多数可手术切除治愈。,肿瘤科,1
+乳腺癌,BC,乳腺癌；Breast Cancer,发生于乳腺上皮的恶性肿瘤，是女性最常见癌症之一。,"A malignant tumor of the breast epithelium, one of the most common cancers in women.",筛查可提高早诊率。,肿瘤科,1
+肝癌,LC,肝细胞癌；Liver Cancer,发生于肝脏的恶性肿瘤，多与乙肝、肝硬化有关。,"Malignant tumor of the liver, often related to hepatitis B and cirrhosis.",早期可手术切除。,肿瘤科,1
+食管癌,EC,食管癌；Esophageal Cancer,发生于食管上皮的恶性肿瘤，与饮食、烟酒等有关。,"Malignant tumor of the esophageal epithelium, related to diet, smoking and alcohol.",典型表现为进行性吞咽困难。,肿瘤科,2
+胰腺癌,PC,胰腺癌；Pancreatic Cancer,发生于胰腺的恶性肿瘤，预后差，发现时多已晚期。,"Malignant tumor of the pancreas with poor prognosis, often advanced at diagnosis.","被称为""癌中之王""。",肿瘤科,1
+宫颈癌,CC,子宫颈癌；Cervical Cancer,发生于宫颈上皮的恶性肿瘤，与人乳头瘤病毒(HPV)感染密切相关。,"Malignant tumor of the cervical epithelium, closely related to human papillomavirus (HPV) infection.",HPV疫苗可预防。,肿瘤科,1
+卵巢癌,OC,卵巢肿瘤；Ovarian Cancer,发生于卵巢的恶性肿瘤，早期症状隐匿。,Malignant tumor of the ovary with insidious early symptoms.,诊断时多已晚期。,肿瘤科,2
+子宫内膜癌,EC,子宫体癌；Endometrial Cancer,发生于子宫内膜的恶性肿瘤，多见于绝经后女性。,"Malignant tumor of the endometrium, more common in postmenopausal women.",早期可有异常出血。,肿瘤科,2
+鼻咽癌,NC,鼻咽癌；Nasopharyngeal Carcinoma,发生于鼻咽部的恶性肿瘤，与EB病毒感染、遗传有关，华南地区高发。,"Malignant tumor of the nasopharynx, related to EBV infection and heredity, highly prevalent in South China.",放疗效果较好。,肿瘤科,2
+淋巴瘤分类,LC,淋巴瘤分型；Lymphoma Classification,对淋巴瘤按细胞来源和病理特征进行的分类，如霍奇金与非霍奇金淋巴瘤。,"Classification of lymphomas by cell origin and pathological features, e.g. Hodgkin and non-Hodgkin lymphoma.",分型决定治疗方案。,肿瘤科,2
+放化疗,CRT,放疗和化疗；Chemoradiotherapy,放疗与化疗相结合的治疗手段，用于恶性肿瘤的综合治疗。,Combination of radiotherapy and chemotherapy in the comprehensive treatment of malignant tumors.,需评估毒副反应。,肿瘤科,2
+放射治疗,RT,放疗；Radiotherapy,利用放射线照射肿瘤部位杀灭癌细胞的治疗手段。,Treatment using radiation to kill cancer cells in the tumor area.,分根治性和姑息性。,肿瘤科,1
+免疫治疗,Immunotherapy,肿瘤免疫治疗；Immunotherapy,通过激活或增强机体免疫系统杀灭肿瘤的治疗方法。,Treatment that activates or enhances the immune system to kill tumors.,如PD-1/PD-L1抑制剂、CAR-T。,肿瘤科,1
+化疗,CTx,化学治疗；Chemotherapy,使用细胞毒性药物杀灭癌细胞、治疗恶性肿瘤的全身治疗。,Systemic treatment using cytotoxic drugs to kill cancer cells and treat malignant tumors.,为肿瘤综合治疗重要手段。,肿瘤科,1
+手术切除,SR,肿瘤切除；Surgical Resection,通过外科手术将肿瘤及其周围部分组织完整切除的治疗方法。,Treatment that completely removes a tumor and part of surrounding tissue by surgery.,是多数实体瘤根治的首选。,肿瘤科,1
+癌前病变,PL,癌前状态；Precancerous Lesion,具有恶变潜能的良性病变，是某些癌发生前的病理状态。,"Benign lesions with malignant potential, pathological states preceding certain cancers.",如宫颈上皮内瘤变、肠腺瘤性息肉。,肿瘤科,2
+姑息治疗,PC,安宁疗护；Palliative Care,对晚期肿瘤等疾病以减轻症状、改善生活质量为目标的治疗。,Treatment aimed at relieving symptoms and improving quality of life in advanced diseases such as cancer.,重视疼痛和营养管理。,肿瘤科,2
+肿瘤分期,TS,分期；Tumor Staging,根据肿瘤大小、浸润范围、淋巴结和远处转移情况对肿瘤严重程度的划分。,"Classification of tumor severity based on size, invasion, lymph node and distant metastasis.",TNM分期最常用。,肿瘤科,1
+癌症筛查,CS,肿瘤筛查；Cancer Screening,在无症状人群中通过检查早期发现癌症或癌前病变的措施。,Measures to detect cancer or precancerous lesions early through examination in asymptomatic populations.,可降低癌症死亡率。,肿瘤科,2
+外科感染,SI,手术感染；Surgical Infection,外科手术或创伤后发生的感染，如切口感染、腹腔感染。,"Infection occurring after surgery or trauma, such as wound infection and abdominal infection.",需无菌操作和合理抗生素。,普外科,2
+阑尾炎,Appendicitis,阑尾炎症；Appendicitis,阑尾的急性或慢性炎症，典型表现为转移性右下腹痛。,"Acute or chronic inflammation of the appendix, classically with migratory right lower quadrant pain.",急性者需急诊手术。,普外科,1
+肠穿孔,IP,肠道穿孔；Intestinal Perforation,肠壁全层破损导致肠内容物进入腹腔的急症，可致腹膜炎。,"An emergency in which full-thickness bowel wall rupture lets intestinal contents into the abdomen, causing peritonitis.",需急诊手术。,普外科,2
+腹膜炎,Peritonitis,腹膜炎症；Peritonitis,腹膜腔的炎症，多由感染、穿孔或内脏破裂引起。,"Inflammation of the peritoneal cavity, mostly caused by infection, perforation or visceral rupture.",是外科急腹症严重表现。,普外科,2
+疝气,Hernia,腹股沟疝；Hernia,腹腔内脏器经腹壁薄弱处向外突出的疾病，常见为腹股沟疝。,"Protrusion of abdominal organs through a weak point of the abdominal wall, commonly inguinal hernia.",嵌顿可致肠坏死。,普外科,2
+痔疮,Hemorrhoid,痔；Hemorrhoid,直肠下端和肛管静脉丛曲张形成的疾病，表现为便血、脱出、疼痛。,"A disease of varicose veins of the lower rectum and anal canal, with bleeding, prolapse and pain.",分内痔、外痔和混合痔。,普外科,2
+肛裂,AF,肛门裂；Anal Fissure,肛管皮肤全层裂开形成的溃疡，表现为排便时剧痛和出血。,"Full-thickness tear of the anal canal skin forming an ulcer, with severe pain and bleeding on defecation.",与便秘关系密切。,普外科,3
+胆结石,Gallstones,胆囊结石；Gallstones,胆囊或胆管内形成的结石，可引起腹痛和胆道梗阻。,"Stones formed in the gallbladder or bile ducts, causing abdominal pain and biliary obstruction.",与高脂饮食、肥胖有关。,普外科,1
+甲状腺手术,TS,甲状腺切除；Thyroid Surgery,切除部分或全部甲状腺的手术，用于甲状腺肿瘤、甲亢等治疗。,"Surgery removing part or all of the thyroid, used for thyroid tumors, hyperthyroidism and other conditions.",注意保护喉返神经和甲状旁腺。,普外科,3
+乳腺手术,BS,乳腺切除；Breast Surgery,切除乳腺组织的手术，用于乳腺癌等治疗。,"Surgery removing breast tissue, used to treat breast cancer and other conditions.",保留乳房手术日趋增多。,普外科,2
+皮肤移植,SG,植皮；Skin Graft,将健康皮肤移植到创面以修复缺损的整形外科技术。,A plastic surgery technique transplanting healthy skin to a wound to repair the defect.,用于烧伤、溃疡等。,整形外科,3
+外科手术,Surgery,手术；Surgery,用器械在人体进行切开、切除、缝合等操作以治疗疾病的方法。,"Treatment of disease by incising, resecting and suturing with instruments on the body.",是外科治疗的基本手段。,普外科,1
+微创手术,MIS,腹腔镜手术；Minimally Invasive Surgery,通过小切口和腔镜器械完成的手术，创伤小、恢复快。,"Surgery performed through small incisions with endoscopic instruments, with less trauma and faster recovery.",如腹腔镜胆囊切除术。,普外科,1
+麻醉,Anesthesia,麻醉；Anesthesia,通过药物使机体局部或全身失去痛觉以便手术进行的措施。,Measures using drugs to abolish pain locally or generally so that surgery can proceed.,分全身麻醉和局部麻醉。,麻醉科,1
+局部麻醉,LA,局麻；Local Anesthesia,使身体某一局部区域失去痛觉的麻醉方法。,An anesthetic method abolishing pain in a localized region of the body.,适用于短小手术。,麻醉科,2
+全身麻醉,GA,全麻；General Anesthesia,通过药物抑制中枢神经系统使患者意识消失、全身无痛的麻醉方法。,Anesthetic method suppressing the central nervous system to produce loss of consciousness and whole-body analgesia.,需麻醉机监护。,麻醉科,2
+休克,Shock,休克状态；Shock,机体有效循环血量锐减、组织灌注不足、细胞缺氧的危重状态。,"A critical state of sharp reduction of effective circulating blood volume, insufficient tissue perfusion and cellular hypoxia.",分低血容量性、感染性、心源性等。,普外科,1
+破伤风,Tetanus,破伤风感染；Tetanus,破伤风梭菌产生的毒素引起的急性感染性疾病，表现为全身肌痉挛。,"Acute infectious disease caused by toxin of Clostridium tetani, with generalized muscle spasm.",创伤后需注射破伤风抗毒素。,普外科,2
+骨折,Fracture,骨裂；Fracture,骨的完整性或连续性中断的损伤，分闭合性和开放性。,"An injury in which the integrity or continuity of bone is interrupted, closed or open.",需复位、固定和康复。,骨科,1
+骨折愈合,FH,骨愈合；Fracture Healing,骨折断端通过血肿机化、骨痂形成和改建而恢复的过程。,"The process by which fracture ends recover through hematoma organization, callus formation and remodeling.",受年龄、营养、固定影响。,骨科,3
+关节脱位,Dislocation,脱臼；Joint Dislocation,构成关节的骨端失去正常对合关系的损伤。,Injury in which the bone ends of a joint lose their normal apposition.,如肩关节、肘关节脱位。,骨科,2
+骨关节炎,OA,退行性关节炎；Osteoarthritis,关节软骨退变和骨质增生为特征的慢性关节疾病。,Chronic joint disease characterized by cartilage degeneration and bone proliferation.,多见于中老年人。,骨科,1
+腰椎间盘突出,LDH,腰突；Lumbar Disc Herniation,椎间盘髓核突出压迫神经根导致腰痛和下肢放射痛。,"Protrusion of the intervertebral disc nucleus pressing on nerve roots, causing low back pain and radiating leg pain.",是腰腿痛常见病因。,骨科,1
+颈椎病,CS,颈椎病；Cervical Spondylosis,颈椎间盘退变及骨质增生刺激或压迫神经、血管引起的疾病。,Disease caused by cervical disc degeneration and bone spurs irritating or compressing nerves and vessels.,表现为颈肩痛、手麻、头晕。,骨科,1
+骨质疏松性骨折,OF,脆性骨折；Osteoporotic Fracture,骨量降低导致的轻微外力即可发生的骨折，多见于椎体、髋部、腕部。,"Fracture occurring with minor force due to reduced bone mass, common in the spine, hip and wrist.",是骨质疏松的严重并发症。,骨科,1
+半月板损伤,MI,半月板撕裂；Meniscus Injury,膝关节半月板的损伤，多由扭转暴力引起，表现为膝痛和交锁。,"Injury of the knee meniscus, often from twisting force, with knee pain and locking.",可通过关节镜治疗。,骨科,2
+韧带损伤,LI,韧带撕裂；Ligament Injury,关节韧带过度牵拉或撕裂的损伤，如踝关节扭伤。,"Injury of overstretching or tearing of joint ligaments, such as ankle sprain.",分一度、二度、三度。,骨科,2
+坐骨神经痛,Sciatica,坐骨神经疼；Sciatica,沿坐骨神经走行出现的放射性疼痛，多由腰椎间盘突出压迫引起。,"Radiating pain along the course of the sciatic nerve, often caused by lumbar disc herniation compression.",是腰突的典型表现。,骨科,2
+骨肿瘤,BT,骨肿瘤；Bone Tumor,发生于骨骼的肿瘤，分良性和恶性，恶性如骨肉瘤。,"Tumor occurring in bone, benign or malignant, with malignant examples such as osteosarcoma.",多见于青少年。,骨科,2
+关节镜,Arthroscopy,关节镜手术；Arthroscopy,经小切口插入关节镜观察和诊治关节疾病的技术。,A technique of inserting an arthroscope through small incisions to examine and treat joint disorders.,创伤小、恢复快。,骨科,2
+脊柱侧弯,Scoliosis,脊柱侧凸；Scoliosis,脊柱向侧方弯曲的畸形，多见于青少年。,"Deformity of lateral curvature of the spine, more common in adolescents.",可影响心肺功能和外观。,骨科,2
+截肢,Amputation,截肢术；Amputation,切除肢体部分或全部的外科手术，用于严重创伤、感染或肿瘤。,"Surgery removing part or all of a limb, used for severe trauma, infection or tumor.",术后需康复和假肢适配。,骨科,3
+肩周炎,FS,粘连性肩关节囊炎；Frozen Shoulder,肩关节囊和周围组织慢性炎症导致的肩痛和活动受限。,Chronic inflammation of the shoulder joint capsule and surrounding tissue causing shoulder pain and limited mobility.,"又称""五十肩""。",骨科,3
+妊娠,Pregnancy,怀孕；Pregnancy,受精卵在母体内发育成为胎儿的过程，约40周。,"The process by which a fertilized egg develops into a fetus in the mother, about 40 weeks.",分早期、中期、晚期。,妇产科,1
+分娩,Labor,生产；Labor,妊娠足月后胎儿及其附属物从母体娩出的过程。,The process by which the fetus and its attachments are delivered from the mother at term.,分三个产程。,妇产科,1
+流产,Abortion,自然流产；Abortion,妊娠不足28周、胎儿体重不足1000g而终止妊娠。,Termination of pregnancy before 28 weeks with fetal weight under 1000g.,分先兆流产、难免流产等。,妇产科,1
+异位妊娠,EP,宫外孕；Ectopic Pregnancy,受精卵着床于子宫腔以外部位的妊娠，以输卵管妊娠最多见。,"Pregnancy in which the fertilized egg implants outside the uterine cavity, most commonly tubal.",破裂可致腹腔内大出血。,妇产科,1
+妊娠期高血压,GH,妊高征；Gestational Hypertension,妊娠期出现的血压升高，严重者可发展为子痫。,"Elevated blood pressure during pregnancy, which can develop into eclampsia in severe cases.",需严密监测和干预。,妇产科,1
+子痫,Eclampsia,子痫发作；Eclampsia,妊娠期高血压疾病基础上发生的抽搐发作，是产科急症。,"Seizure occurring on the basis of hypertensive disorders of pregnancy, an obstetric emergency.",可危及母婴生命。,妇产科,2
+前置胎盘,PP,胎盘前置；Placenta Previa,胎盘附着于子宫下段或覆盖宫颈内口的妊娠并发症，可引起产前出血。,"Complication in which the placenta is attached to the lower uterine segment or covers the internal cervical os, causing antepartum bleeding.",剖宫产常见指征。,妇产科,2
+胎盘早剥,PA,胎盘剥离；Placental Abruption,妊娠20周后正常位置的胎盘在胎儿娩出前部分或全部剥离。,Partial or complete separation of a normally located placenta before delivery of the fetus after 20 weeks.,可致严重出血和胎儿窘迫。,妇产科,2
+剖宫产,C/S,剖腹产；Cesarean Section,经腹壁和子宫切开娩出胎儿的分娩方式。,A mode of delivery in which the fetus is delivered through incisions in the abdominal wall and uterus.,有医学指征时采用。,妇产科,1
+子宫肌瘤,UF,肌瘤；Uterine Fibroid,子宫平滑肌和结缔组织形成的良性肿瘤，是女性常见肿瘤。,"Benign tumor of uterine smooth muscle and connective tissue, a common tumor in women.",多数无症状，可观察。,妇产科,1
+卵巢囊肿,OC,卵巢肿物；Ovarian Cyst,卵巢内形成的囊性结构，多数为良性。,"Cystic structures forming in the ovary, mostly benign.",需鉴别良恶性。,妇产科,2
+盆腔炎,PID,盆腔炎症；Pelvic Inflammatory Disease,女性上生殖道及其周围组织的炎症，多由病原体上行感染引起。,"Inflammation of the female upper reproductive tract and surrounding tissues, often from ascending infection.",可致不孕和慢性盆腔痛。,妇产科,2
+月经失调,MD,月经不调；Menstrual Disorder,月经周期、经期或经量异常的疾病状态，与内分泌等因素有关。,"Abnormalities of menstrual cycle, duration or volume, related to endocrine and other factors.",常见如痛经、闭经、功血。,妇产科,2
+多囊卵巢综合征,PCOS,多囊卵巢；Polycystic Ovary Syndrome,以排卵障碍、高雄激素和卵巢多囊样改变为特征的疾病。,"A disease characterized by ovulatory dysfunction, hyperandrogenism and polycystic ovarian morphology.",是育龄女性常见内分泌病。,妇产科,1
+产前检查,PE,产检；Prenatal Examination,妊娠期对孕妇和胎儿进行的系统检查，用于监测和早期发现问题。,Systematic examinations of the pregnant woman and fetus during pregnancy for monitoring and early detection.,包括超声、血尿检查等。,妇产科,1
+母乳喂养,Breastfeeding,母乳；Breastfeeding,以母乳喂养婴儿的方式，有利于婴儿健康和母婴关系。,"The practice of feeding an infant with breast milk, beneficial to infant health and bonding.",世界卫生组织推荐纯母乳6个月。,妇产科,2
+新生儿黄疸,NJ,黄疸；Neonatal Jaundice,新生儿期血清胆红素升高导致皮肤黏膜黄染的现象，分生理性和病理性。,"Yellowish discoloration of skin and mucosa due to elevated serum bilirubin in the newborn period, physiologic or pathologic.",病理性需治疗以防核黄疸。,儿科,1
+肺炎支原体感染,MP,支原体肺炎；Mycoplasma Pneumoniae Infection,肺炎支原体引起的呼吸道感染，是儿童社区获得性肺炎常见病原。,"Respiratory infection caused by Mycoplasma pneumoniae, a common cause of pediatric community-acquired pneumonia.",多见于学龄儿童。,儿科,1
+手足口病,HFMD,手足口；Hand-Foot-Mouth Disease,肠道病毒引起的儿童传染病，表现为手、足、口部皮疹和疱疹。,"Childhood infectious disease caused by enteroviruses, with rash and vesicles on hands, feet and mouth.",多数预后良好，可自愈。,儿科,1
+儿童哮喘,CA,小儿哮喘；Childhood Asthma,儿童期的慢性气道炎症性疾病，表现为反复喘息、咳嗽。,"Chronic airway inflammatory disease in childhood, with recurrent wheezing and cough.",需长期规范管理和吸入治疗。,儿科,2
+婴儿腹泻,ID,小儿腹泻；Infantile Diarrhea,婴幼儿排便次数增多、粪便性状改变的常见疾病，多与感染或喂养有关。,"Common disease of increased frequency and changed stool character in infants, related to infection or feeding.",警惕脱水和电解质紊乱。,儿科,1
+脱水,Dehydration,脱水；Dehydration,机体水分和电解质丢失过多导致的体液不足状态。,A state of fluid deficiency caused by excessive loss of water and electrolytes.,分轻、中、重度。,儿科,1
+营养不良,Malnutrition,营养不足；Malnutrition,能量或营养素摄入不足导致的机体营养状态低下。,A poor nutritional state caused by insufficient energy or nutrient intake.,影响生长发育和免疫力。,儿科,2
+生长发育,GAD,生长发育评估；Growth and Development,儿童身高、体重、头围等指标随年龄增长的规律及其评估。,"The pattern and assessment of the growth of height, weight, head circumference and other indicators with age.",用于筛查发育问题。,儿科,2
+小儿惊厥,FS,热性惊厥；Febrile Seizure,婴幼儿期因发热诱发的惊厥发作，多数良性。,"Convulsions induced by fever in infancy and early childhood, mostly benign.",需与癫痫鉴别。,儿科,2
+疫苗接种,Vaccination,预防接种；Vaccination,为儿童接种疫苗以预防传染病的公共卫生措施。,Public health measure of vaccinating children to prevent infectious diseases.,按国家免疫规划程序进行。,儿科,1
+新生儿窒息,NA,出生窒息；Neonatal Asphyxia,新生儿出生时不能建立正常呼吸和循环的危重状态。,A critical state in which a newborn cannot establish normal breathing and circulation at birth.,需及时复苏。,儿科,2
+先心病筛查,CHS,先心病筛查；Congenital Heart Disease Screening,通过体检、血氧和心脏检查早期发现先天性心脏病的筛查。,"Screening to detect congenital heart disease early through examination, oxygen saturation and cardiac tests.",双胎和家族史者重点筛查。,儿科,3
+近视,Myopia,近视眼；Myopia,眼屈光系统在调节松弛时使平行光线聚焦于视网膜前的屈光不正。,A refractive error in which parallel light focuses in front of the retina with relaxed accommodation.,可用镜片或手术矫正。,眼科,1
+远视,Hyperopia,远视眼；Hyperopia,平行光线聚焦于视网膜后的屈光不正，近处视物模糊。,"A refractive error in which parallel light focuses behind the retina, blurring near vision.",可配镜矫正。,眼科,2
+散光,Astigmatism,乱视；Astigmatism,角膜或晶状体曲率不一致导致光线不能聚焦于一点的屈光不正。,A refractive error in which light cannot focus at a single point due to uneven corneal or lens curvature.,可配柱镜矫正。,眼科,2
+白内障,Cataract,白内障；Cataract,晶状体混浊导致视力下降的疾病，多见于老年人。,"A disease of lens opacity causing decreased vision, more common in the elderly.",手术是主要治疗。,眼科,1
+青光眼,Glaucoma,青光眼病；Glaucoma,以视神经损害和视野缺损为特征、与眼压升高相关的一组眼病。,"A group of eye diseases with optic nerve damage and visual field loss, associated with elevated intraocular pressure.",是致盲的重要原因。,眼科,1
+视网膜病变,Retinopathy,视网膜病；Retinopathy,视网膜的病变，如糖尿病视网膜病变、高血压视网膜病变。,"Disorders of the retina, such as diabetic and hypertensive retinopathy.",可致视力严重下降。,眼科,2
+黄斑变性,MD,黄斑病；Macular Degeneration,黄斑区退行性病变导致中心视力下降，多见于老年人。,"Degeneration of the macula causing central vision loss, more common in the elderly.",湿性者需抗VEGF治疗。,眼科,2
+视网膜脱离,RD,网脱；Retinal Detachment,视网膜神经上皮层与色素上皮层分离导致视力丧失的急症。,"Emergency in which the neurosensory retina separates from the pigment epithelium, causing vision loss.",需紧急手术。,眼科,2
+结膜炎,Conjunctivitis,红眼病；Conjunctivitis,结膜的炎症，多由感染或过敏引起，表现为眼红、分泌物增多。,"Inflammation of the conjunctiva, often infectious or allergic, with redness and increased discharge.",具一定传染性。,眼科,2
+斜视,Strabismus,斜眼；Strabismus,双眼视轴不平行、不能同时注视同一目标的眼位异常。,Abnormal eye alignment in which the visual axes are not parallel and cannot fixate on the same target.,儿童期应及早矫正。,眼科,3
+弱视,Amblyopia,弱视眼；Amblyopia,因视觉发育期异常导致的单眼或双眼最佳矫正视力下降。,Decreased best-corrected visual acuity due to abnormalities during the visual development period.,早发现早治疗效果好。,眼科,2
+近视防控,MC,近视管理；Myopia Control,通过行为干预、光学和药物手段延缓儿童近视进展的措施。,"Measures using behavioral intervention, optical and pharmaceutical approaches to slow myopia progression in children.",包括户外活动和角膜塑形镜等。,眼科,2
+验光,RT,视力检查；Refraction Test,测定屈光状态和矫正度数的眼科检查。,Ophthalmic examination measuring refractive state and corrective power.,是配镜的基础。,眼科,3
+中耳炎,OM,中耳炎症；Otitis Media,中耳的炎症性疾病，分急性和慢性，多与感染和咽鼓管功能有关。,"Inflammatory disease of the middle ear, acute or chronic, related to infection and eustachian tube function.",儿童高发，可影响听力。,耳鼻喉,1
+耳鸣,Tinnitus,耳鸣；Tinnitus,外界无声源时耳内出现的异常声音感觉。,Perception of abnormal sound in the ear without an external sound source.,病因多样，可伴听力下降。,耳鼻喉,2
+听力损失,HL,耳聋；Hearing Loss,听觉功能减退导致听阈升高的状态，分传导性、感音神经性和混合性。,"A state of elevated hearing threshold due to reduced auditory function, conductive, sensorineural or mixed.",可致交流障碍。,耳鼻喉,1
+鼻窦炎,Sinusitis,鼻窦炎症；Sinusitis,鼻窦黏膜的炎症，分急性和慢性，表现为鼻塞、流涕、头痛。,"Inflammation of the sinus mucosa, acute or chronic, with nasal congestion, discharge and headache.",常继发于上呼吸道感染。,耳鼻喉,1
+过敏性鼻炎,AR,变应性鼻炎；Allergic Rhinitis,机体接触过敏原后鼻黏膜发生的I型变态反应性炎症，表现为喷嚏、流涕、鼻痒。,"Type I hypersensitivity inflammation of the nasal mucosa after allergen exposure, with sneezing, rhinorrhea and nasal itching.",是常见慢性疾病。,耳鼻喉,1
+鼻出血,Epistaxis,鼻衄；Epistaxis,鼻腔出血，可因局部或全身原因引起。,"Bleeding from the nasal cavity, caused by local or systemic factors.",多数经压迫可止。,耳鼻喉,2
+扁桃体炎,Tonsillitis,扁桃体炎症；Tonsillitis,腭扁桃体的炎症，分急性和慢性，表现为咽痛、发热。,"Inflammation of the palatine tonsils, acute or chronic, with sore throat and fever.",反复发作可考虑切除。,耳鼻喉,2
+咽喉炎,Pharyngitis,咽炎；Pharyngitis,咽喉部黏膜的炎症，多由感染或刺激引起。,"Inflammation of the pharyngeal mucosa, often from infection or irritation.",慢性者可反复发作。,耳鼻喉,2
+声带息肉,VCP,声带肿物；Vocal Cord Polyp,声带边缘的良性增生性病变，表现为声音嘶哑。,"Benign proliferative lesion on the edge of the vocal cord, presenting with hoarseness.",与用声过度有关。,耳鼻喉,3
+睡眠打鼾,Snoring,鼾症；Snoring,睡眠时上气道部分狭窄引起的气流通过声门振动发声。,Vibration of airflow through a narrowed upper airway producing sound during sleep.,严重者需排除睡眠呼吸暂停。,耳鼻喉,3
+梅尼埃病,MSD,美尼尔氏病；Ménière's Disease,以内耳膜迷路积水为病理基础，表现为发作性眩晕、耳鸣、听力下降。,"A disease with endolymphatic hydrops, presenting with episodic vertigo, tinnitus and hearing loss.",眩晕反复发作。,耳鼻喉,3
+耳石症,BPPV,良性位置性眩晕；Benign Paroxysmal Positional Vertigo,耳石脱位进入半规管引起的位置性眩晕，转头时发作。,"Positional vertigo caused by dislodged otoliths entering the semicircular canals, triggered by head movement.",可通过手法复位治疗。,耳鼻喉,3
+龋齿,DC,蛀牙；Dental Caries,牙齿硬组织被细菌酸蚀破坏形成的进行性损害。,Progressive destruction of the hard tissues of the tooth by bacterial acid.,是最常见口腔疾病。,口腔科,1
+牙周炎,Periodontitis,牙周病；Periodontitis,牙周组织（牙龈、牙周膜、牙槽骨）的慢性炎症性疾病。,"Chronic inflammatory disease of the periodontal tissues (gingiva, periodontal ligament, alveolar bone).",是成人牙齿脱落主要原因。,口腔科,1
+牙龈炎,Gingivitis,牙龈炎症；Gingivitis,牙龈的炎症，多由菌斑和牙石刺激引起，表现为牙龈出血。,"Inflammation of the gingiva, often from plaque and calculus, with gum bleeding.",及时治疗可恢复。,口腔科,2
+牙髓炎,Pulpitis,牙髓炎症；Pulpitis,牙髓的炎症，多由深龋感染引起，表现为剧烈牙痛。,"Inflammation of the dental pulp, often from deep caries infection, with severe toothache.",需根管治疗。,口腔科,2
+口腔溃疡,OU,口疮；Oral Ulcer,口腔黏膜的局限性溃疡性损害，表现为疼痛性溃疡。,"Localized ulcerative lesion of the oral mucosa, presenting as painful ulcers.",多数可自愈。,口腔科,2
+智齿,WT,第三磨牙；Wisdom Tooth,第三磨牙，常在18~25岁萌出，可因位置不正引起疼痛和感染。,"The third molar, usually erupting at 18–25 years, which can cause pain and infection when impacted.",阻生智齿常需拔除。,口腔科,3
+口腔癌,OC,口腔肿瘤；Oral Cancer,发生于口腔黏膜、舌、牙龈等部位的恶性肿瘤。,"Malignant tumor occurring on the oral mucosa, tongue, gingiva and other sites.",与烟酒、槟榔等有关。,口腔科,2
+种植牙,DI,种植体；Dental Implant,将人工牙根植入颌骨以支持修复体的人工牙技术。,A technique of placing an artificial root into the jawbone to support a prosthetic tooth.,是缺失牙修复的常用方法。,口腔科,3
+牙齿矫正,Orthodontics,正畸；Orthodontics,通过矫治器调整牙齿排列和咬合关系的治疗。,Treatment adjusting tooth alignment and occlusion with appliances.,可改善功能和美观。,口腔科,3
+洗牙,Scaling,洁牙；Scaling,清除牙面菌斑和牙石的口腔清洁保健措施。,Oral hygiene procedure removing plaque and calculus from the tooth surface.,建议定期进行。,口腔科,3
+湿疹,Eczema,皮炎；Eczema,以皮肤瘙痒、红斑、丘疹、渗出为特征的炎症性皮肤病。,"Inflammatory skin disease characterized by itching, erythema, papules and exudation.",分急性和慢性。,皮肤科,1
+荨麻疹,Urticaria,风疹块；Urticaria,皮肤黏膜因过敏反应出现的暂时性风团和剧烈瘙痒。,Transient wheals and intense itching of skin and mucosa due to allergic reactions.,多数可迅速消退。,皮肤科,1
+银屑病,Psoriasis,牛皮癣；Psoriasis,以红色斑块上覆银白色鳞屑为特征的慢性炎症性皮肤病。,Chronic inflammatory skin disease characterized by red plaques covered with silvery scales.,与免疫和遗传有关。,皮肤科,1
+痤疮,Acne,青春痘；Acne,毛囊皮脂腺的慢性炎症性疾病，表现为粉刺、丘疹、脓疱。,"Chronic inflammatory disease of pilosebaceous units, with comedones, papules and pustules.",青少年高发。,皮肤科,1
+带状疱疹,HZ,缠腰龙；Herpes Zoster,水痘-带状疱疹病毒再激活引起的皮肤疱疹和神经痛。,Skin vesicles and neuralgia caused by reactivation of varicella-zoster virus.,可遗留带状疱疹后神经痛。,皮肤科,1
+皮肤真菌感染,Dermatophytosis,癣；Dermatophytosis,真菌感染皮肤、毛发或甲引起的疾病，如足癣、体癣。,"Disease caused by fungal infection of skin, hair or nails, such as tinea pedis and corporis.",需抗真菌治疗。,皮肤科,2
+皮肤癌,SC,皮肤肿瘤；Skin Cancer,发生于皮肤的恶性肿瘤，包括基底细胞癌、鳞状细胞癌和黑色素瘤。,"Malignant tumor of the skin, including basal cell carcinoma, squamous cell carcinoma and melanoma.",与紫外线暴露有关。,皮肤科,2
+黑色素瘤,Melanoma,恶性黑色素瘤；Melanoma,起源于黑色素细胞的恶性皮肤肿瘤，恶性度高。,"Malignant skin tumor arising from melanocytes, with high malignancy.",需早期切除。,皮肤科,2
+特应性皮炎,AD,湿疹样皮炎；Atopic Dermatitis,与过敏体质相关的慢性瘙痒性皮肤病，多见于婴幼儿。,"Chronic itchy skin disease related to atopic constitution, common in infants.",常伴哮喘、过敏性鼻炎。,皮肤科,2
+脱发,HL,脱发症；Hair Loss,头发异常脱落导致头发稀疏或秃顶的状态。,A state of abnormal hair shedding causing thinning or baldness.,雄激素性脱发最常见。,皮肤科,2
+皮肤过敏,SA,过敏性皮炎；Skin Allergy,皮肤接触过敏原或刺激物发生的炎症反应。,Inflammatory reaction of the skin on contact with allergens or irritants.,避免接触是防治关键。,皮肤科,2
+白癜风,Vitiligo,白斑；Vitiligo,黑素细胞破坏导致皮肤出现白斑的色素脱失性疾病。,A depigmentation disease with white patches due to destruction of melanocytes.,与免疫和遗传有关。,皮肤科,3
+真菌感染,FI,霉菌感染；Fungal Infection,真菌侵犯皮肤、黏膜或内脏引起的感染性疾病。,"Infectious disease caused by fungi invading skin, mucosa or internal organs.",免疫功能低下者易感。,皮肤科,2
+抑郁症,MDD,抑郁；Depression,以持续情绪低落、兴趣减退、精力下降为特征的心境障碍。,"A mood disorder characterized by persistent low mood, loss of interest and reduced energy.",是常见精神障碍，可治疗。,精神心理,1
+焦虑症,AD,焦虑障碍；Anxiety Disorder,以过度担忧、紧张不安和自主神经症状为特征的障碍。,"A disorder characterized by excessive worry, tension and autonomic symptoms.",分广泛性焦虑、惊恐障碍等。,精神心理,1
+失眠,Insomnia,睡眠障碍；Insomnia,入睡困难、睡眠维持困难或早醒导致的睡眠不足状态。,"A state of insufficient sleep due to difficulty initiating or maintaining sleep, or early awakening.",是常见健康问题。,精神心理,1
+精神分裂症,Schizophrenia,精神分裂；Schizophrenia,以思维、情感、行为分裂和幻觉妄想为特征的严重精神障碍。,"A severe mental disorder characterized by disintegration of thought, emotion and behavior, with hallucinations and delusions.",需长期治疗。,精神心理,1
+双相情感障碍,BD,躁郁症；Bipolar Disorder,以躁狂发作和抑郁发作交替或混合出现为特征的心境障碍。,A mood disorder characterized by alternating or mixed manic and depressive episodes.,规律用药可控制。,精神心理,2
+强迫症,OCD,强迫障碍；Obsessive-Compulsive Disorder,以反复出现的强迫观念和强迫行为为特征的障碍。,A disorder characterized by recurrent obsessions and compulsions.,认知行为治疗有效。,精神心理,2
+创伤后应激障碍,PTSD,创伤后应激；Post-Traumatic Stress Disorder,经历严重创伤后出现的闯入性回忆、回避和警觉增高症状。,"Intrusive memories, avoidance and hyperarousal after experiencing severe trauma.",需专业心理治疗。,精神心理,2
+自闭症,ASD,孤独症；Autism Spectrum Disorder,以社会交往障碍、语言交流障碍和刻板行为为特征的神经发育障碍。,"Neurodevelopmental disorder characterized by impaired social interaction, language and communication, and stereotyped behaviors.",早期干预重要。,精神心理,2
+注意缺陷多动障碍,ADHD,多动症；Attention Deficit Hyperactivity Disorder,以注意缺陷、多动和冲动为特征的儿童期起病神经发育障碍。,"Neurodevelopmental disorder of childhood onset with inattention, hyperactivity and impulsivity.",常需综合干预。,精神心理,2
+自杀倾向,SI,自杀意念；Suicidal Ideation,个体产生结束自己生命的念头或行为的风险状态。,A state of risk in which an individual has thoughts or behaviors of ending their life.,需立即干预和支持。,精神心理,1
+心理咨询,PC,心理疏导；Psychological Counseling,专业人员通过谈话帮助个体解决心理困扰、促进心理健康的过程。,A process in which professionals help individuals resolve psychological distress and promote mental health through conversation.,可用于多种心理问题。,精神心理,2
+心理治疗,Psychotherapy,精神治疗；Psychotherapy,通过心理学方法（认知行为、精神分析等）治疗心理障碍的过程。,Treatment of psychological disorders through psychological methods such as cognitive-behavioral and psychoanalytic therapy.,需专业资质。,精神心理,2
+情绪管理,ER,情绪调节；Emotion Regulation,个体识别、理解和调节自身情绪以保持心理健康的技能。,"The skills of recognizing, understanding and regulating one's emotions to maintain mental health.",是心理健康的重要能力。,精神心理,3
+心肺复苏,CPR,心肺复苏术；Cardiopulmonary Resuscitation,对心脏骤停患者实施的胸外按压和人工呼吸等抢救措施。,Resuscitation measures including chest compressions and rescue breathing for patients with cardiac arrest.,抢救黄金时间约4分钟。,急诊医学,1
+急救,FA,现场急救；First Aid,在伤病现场对伤员实施的初步紧急处理措施。,Initial emergency measures given to the injured at the scene.,可争取救治时间。,急诊医学,1
+自动体外除颤器,AED,除颤仪；Automated External Defibrillator,用于对室颤等恶性心律失常患者实施电除颤的便携设备。,Portable device used to deliver defibrillation to patients with malignant arrhythmias such as ventricular fibrillation.,公共场所常备。,急诊医学,1
+气道梗阻,AO,窒息；Airway Obstruction,呼吸道被异物或分泌物堵塞导致通气障碍的急症。,"Emergency in which the airway is blocked by foreign bodies or secretions, causing ventilation impairment.",需海姆立克急救法处理。,急诊医学,2
+过敏性休克,AS,过敏性休克；Anaphylactic Shock,严重过敏反应导致的血压骤降和组织灌注不足的休克。,Shock with sudden hypotension and insufficient tissue perfusion due to a severe allergic reaction.,需立即肌注肾上腺素。,急诊医学,1
+急性中毒,AP,中毒；Acute Poisoning,有毒物质短时间内进入机体引起的中毒症状和器官损害。,Poisoning symptoms and organ damage caused by toxic substances entering the body in a short time.,需及时清除毒物和解毒。,急诊医学,1
+烧伤,Burn,烫伤；Burn,热力、化学物质或电流等造成皮肤和组织的损伤。,"Damage to skin and tissue caused by heat, chemicals or electricity.",按深度和面积分级。,急诊医学,1
+溺水,Drowning,溺水；Drowning,液体进入呼吸道导致窒息和缺氧的状态。,A state of asphyxia and hypoxia caused by fluid entering the respiratory tract.,需立即心肺复苏。,急诊医学,2
+创伤,Trauma,外伤；Trauma,外界机械性因素造成的机体组织损伤。,Tissue damage caused by external mechanical factors.,分闭合性和开放性。,急诊医学,1
+多发伤,MT,复合伤；Multiple Trauma,同一事故中多个器官或部位同时受伤的危重情况。,Critical situation of simultaneous injury to multiple organs or sites in one accident.,需多学科协作抢救。,急诊医学,2
+疼痛分级,PA,疼痛评估；Pain Assessment,对患者疼痛程度的量化评估方法，如数字评分法。,"Quantitative assessment of a patient's pain level, such as the numerical rating scale.",指导镇痛治疗。,急诊医学,3
+急诊分诊,Triage,分诊；Triage,急诊科按病情紧急程度对患者进行分级排序的措施。,The measure of grading and ordering patients in the emergency department by urgency of condition.,保证危重患者优先救治。,急诊医学,2
+护理评估,NA,护理评估；Nursing Assessment,护士通过问诊、体检和资料收集全面了解患者状况的护理程序首步。,"The first step of the nursing process in which nurses comprehensively understand the patient through history taking, examination and data collection.",是制定护理计划的基础。,护理学,2
+生命体征监测,VSM,生命体征；Vital Sign Monitoring,持续观察和记录体温、脉搏、呼吸、血压等生命体征的护理措施。,"Nursing measure of continuously observing and recording vital signs such as temperature, pulse, respiration and blood pressure.",是基础护理的重要内容。,护理学,1
+静脉输液,IV,输液；Intravenous Infusion,将液体或药物经静脉输入体内的治疗和护理操作。,Treatment and nursing procedure of infusing fluids or drugs into the body via a vein.,需注意无菌和滴速。,护理学,1
+无菌操作,AT,无菌技术；Aseptic Technique,为防止微生物污染而采取的无菌操作规范。,Standards of aseptic operation to prevent microbial contamination.,是护理和治疗的基本要求。,护理学,1
+导管护理,CC,留置导管护理；Catheter Care,对导尿管、引流管等留置导管的日常护理，防感染和堵管。,"Daily care of indwelling catheters such as urinary and drainage catheters, preventing infection and blockage.",需规范更换和观察。,护理学,2
+压疮,PU,褥疮；Pressure Ulcer,长期受压导致皮肤和组织缺血坏死的损伤，多见于卧床患者。,"Damage from prolonged pressure causing ischemia and necrosis of skin and tissue, common in bedridden patients.",需定时翻身和体位护理。,护理学,1
+伤口护理,WC,伤口处理；Wound Care,对创面进行的清洁、消毒、换药和观察的护理措施。,"Nursing measures of cleaning, disinfecting, dressing and observing wounds.",促进愈合、预防感染。,护理学,1
+健康教育,HE,健康宣教；Health Education,向患者和家属提供疾病防治和自我保健知识的教育。,Education providing patients and families with knowledge of disease prevention and self-care.,是护理的重要职能。,护理学,2
+跌倒预防,FP,防跌倒；Fall Prevention,评估和干预患者跌倒风险、采取防护措施的护理工作。,Nursing work of assessing and intervening fall risk and taking protective measures.,老年人住院安全重点。,护理学,2
+疼痛护理,PN,镇痛护理；Pain Nursing,对疼痛患者进行的评估、药物和非药物镇痛的护理。,Nursing care involving assessment and pharmacological and non-pharmacological analgesia for patients in pain.,需个体化方案。,护理学,2
+临终关怀,HC,安宁护理；Hospice Care,对临终患者提供的减轻痛苦、维护尊严、关怀家属的护理。,"Care for terminally ill patients relieving suffering, preserving dignity and supporting families.",重视舒适和人文关怀。,护理学,2
+交接班,SH,护理交接；Shift Handover,护士之间对患者病情、治疗和注意事项进行的交接。,"Handover between nurses of patient condition, treatment and precautions.",确保护理连续性。,护理学,3
+护理诊断,ND,护理问题；Nursing Diagnosis,对患者健康问题及其原因的护理判断，是护理程序的重要环节。,"Nursing judgment of the patient's health problems and their causes, an important part of the nursing process.",指导护理措施制定。,护理学,3
+流行病学,Epidemiology,流行病学；Epidemiology,研究疾病和健康事件在人群中的分布及其影响因素的学科。,The discipline studying the distribution of diseases and health events in populations and their determinants.,是预防医学的基础。,公共卫生,1
+发病率,IR,发病率；Incidence Rate,一定时期内新发病例数占暴露人口的比例。,The proportion of new cases occurring during a given period among the exposed population.,反映疾病发生的频率。,公共卫生,1
+患病率,Prevalence,患病率；Prevalence,某时点或时期内现有病例数占人群的比例。,The proportion of existing cases among the population at a point or period of time.,反映疾病负担。,公共卫生,2
+死亡率,MR,死亡率；Mortality Rate,一定时期内死亡人数占总人口的比例。,The proportion of deaths during a given period among the total population.,是反映健康状况的指标。,公共卫生,1
+传染病防控,IDC,传染病防治；Infectious Disease Control,对传染病采取的监测、隔离、治疗和预防等综合措施。,"Comprehensive measures of surveillance, isolation, treatment and prevention for infectious diseases.",遵循控制传染源、切断传播途径、保护易感人群原则。,公共卫生,1
+隔离,Isolation,隔离措施；Isolation,将传染源或可疑者置于特定环境以防病原体传播的措施。,Measures placing infectious sources or suspects in a specific environment to prevent pathogen spread.,分接触、飞沫、空气隔离。,公共卫生,1
+消毒,Disinfection,消毒措施；Disinfection,杀灭或清除传播媒介上病原微生物的措施。,Measures killing or removing pathogenic microorganisms on transmission media.,是切断传播途径的重要手段。,公共卫生,1
+免疫规划,IP,计划免疫；Immunization Program,按国家规定的免疫程序为人群接种疫苗以预防传染病的制度。,The system of vaccinating populations according to the national immunization schedule to prevent infectious diseases.,有效控制疫苗可预防疾病。,公共卫生,1
+健康体检,HC,体检；Health Checkup,对无症状人群进行的系统健康检查，用于早发现疾病。,Systematic health examination of asymptomatic populations for early disease detection.,包括一般检查、实验室和影像检查。,公共卫生,1
+慢病管理,CDM,慢性病防治；Chronic Disease Management,对高血压、糖尿病等慢性病进行长期监测、治疗和生活方式干预的管理。,"Long-term monitoring, treatment and lifestyle intervention for chronic diseases such as hypertension and diabetes.",降低并发症和疾病负担。,公共卫生,1
+预防医学,PM,预防保健；Preventive Medicine,研究预防疾病、增进健康的医学分支。,The branch of medicine studying prevention of disease and promotion of health.,包括一级、二级、三级预防。,公共卫生,1
+流行病,Epidemic,疫情；Epidemic,某种疾病在特定地区和时间内发病数明显超过常年的流行状态。,A state in which the number of cases of a disease in a region and time clearly exceeds the usual level.,需启动防控措施。,公共卫生,1
+公共卫生事件,PHE,突发公卫事件；Public Health Event,突然发生、可能造成健康损害的传染病或公共卫生相关事件。,Sudden infectious or health-related events that may cause health damage.,需依法应急响应。,公共卫生,2
+健康素养,HL,健康知识；Health Literacy,个体获取、理解并运用健康信息以维护自身健康的能力。,"An individual's ability to access, understand and use health information to maintain their health.",影响健康行为和结果。,公共卫生,3
+危险因素,RF,危险因素；Risk Factor,与疾病发生或进展相关的可改变或不可改变的因素。,Modifiable or non-modifiable factors associated with the occurrence or progression of disease.,识别并干预可预防疾病。,公共卫生,2
+康复治疗,Rehabilitation,康复医学；Rehabilitation,通过物理、作业、言语等方法恢复患者功能和生活的治疗。,"Treatment restoring function and life through physical, occupational, speech and other methods.",帮助患者回归社会。,康复医学,1
+物理治疗,PT,理疗；Physiotherapy,利用运动、电疗、热疗、按摩等物理手段的治疗。,"Treatment using exercise, electrotherapy, heat therapy, massage and other physical modalities.",用于运动功能障碍。,康复医学,1
+作业治疗,OT,作业疗法；Occupational Therapy,通过日常生活和劳动活动训练恢复患者生活自理能力的治疗。,Treatment restoring patients' self-care ability through daily living and work activities.,改善生活质量。,康复医学,2
+言语治疗,ST,语言康复；Speech Therapy,对言语和吞咽障碍进行的评估与训练治疗。,Assessment and training treatment for speech and swallowing disorders.,用于失语、构音障碍等。,康复医学,2
+关节活动度训练,ROME,ROM训练；Range of Motion Exercise,通过被动或主动活动改善关节活动范围的训练。,Training improving joint range of motion through passive or active movement.,预防关节挛缩。,康复医学,3
+肌力训练,ST,力量训练；Strength Training,通过抗阻训练增强肌肉力量的康复训练。,Rehabilitation training strengthening muscle power through resistance training.,用于肌萎缩恢复。,康复医学,3
+步态训练,GT,行走训练；Gait Training,训练患者恢复正确行走模式的康复治疗。,Rehabilitation treatment training patients to restore correct walking patterns.,用于脑卒中后等。,康复医学,2
+康复评定,RA,功能评定；Rehabilitation Assessment,对患者功能状况进行的系统评估，指导康复目标制定。,Systematic assessment of a patient's functional status guiding rehabilitation goal setting.,包括运动、感觉、日常生活能力等。,康复医学,2
+辅助器具,AD,康复辅具；Assistive Device,帮助功能障碍者改善活动和功能的器具，如轮椅、助行器、假肢。,"Devices helping people with disabilities improve activity and function, such as wheelchairs, walkers and prostheses.",提升生活独立性。,康复医学,2
+心肺康复,CR,心脏康复；Cardiac Rehabilitation,针对心肺疾病患者的运动、教育和生活方式干预的综合康复。,"Comprehensive rehabilitation of exercise, education and lifestyle intervention for cardiopulmonary disease patients.",降低再发风险。,康复医学,3
+中医,TCM,中医学；Traditional Chinese Medicine,以阴阳五行等理论为基础、运用整体观念和辨证论治诊治疾病的中国传统医学。,"Traditional Chinese medicine based on theories such as yin-yang and five elements, using holistic views and syndrome differentiation.",是中国传统医学体系。,中医,1
+辨证论治,SDAT,辨证施治；Syndrome Differentiation and Treatment,中医根据证候确定治法和处方的诊断治疗原则。,The TCM principle of determining treatment and prescription based on syndrome differentiation.,是中医诊疗核心。,中医,1
+针灸,Acupuncture,针刺；Acupuncture,通过针刺或艾灸穴位以调整机体功能、治疗疾病的中医疗法。,A TCM therapy treating disease by needling or moxibustion at acupoints to regulate body function.,已被世界卫生组织认可。,中医,1
+穴位,Acupoint,腧穴；Acupoint,人体体表经络气血输注的特定部位，是针灸的施术部位。,"Specific sites on the body surface where meridian qi and blood are infused, used for acupuncture.",如合谷、足三里等。,中医,2
+经络,Meridian,经脉；Meridian,中医理论中人体的气血运行通路，联系脏腑和体表。,"In TCM theory, the pathways of qi and blood connecting the viscera and body surface.",是针灸理论基础。,中医,2
+中药,CHM,草药；Chinese Herbal Medicine,依据中医理论用于防治疾病的天然药物。,Natural medicines used to prevent and treat disease according to TCM theory.,需辨证配伍使用。,中医,1
+方剂,Formula,中药方；Formula,依据辨证将多味中药按君臣佐使配伍而成的处方。,Prescriptions combining several herbs by sovereign-minister-assistant-courier principles based on syndrome differentiation.,如四君子汤、六味地黄丸。,中医,2
+脉诊,PD,切脉；Pulse Diagnosis,通过触摸桡动脉搏动了解机体状态的中医诊法。,TCM diagnostic method of understanding the body's state by palpating the radial pulse.,是中医四诊之一。,中医,2
+舌诊,TD,舌象；Tongue Diagnosis,通过观察舌质和舌苔判断机体状态的诊法。,Diagnostic method judging the body's state by observing the tongue body and coating.,是中医特色诊法。,中医,2
+阴阳学说,YYT,阴阳；Yin-Yang Theory,中医阐释人体生理病理和治疗的总纲理论。,"The overarching theory of TCM explaining physiology, pathology and treatment.",指导辨证和养生。,中医,3
+五行学说,FET,五行；Five Elements Theory,用木火土金水五种元素的生克关系阐释人体和疾病的理论。,"TCM theory explaining the body and disease through the generation and restraint of wood, fire, earth, metal and water.",用于脏腑辨证。,中医,3
+气血,QAB,气血；Qi and Blood,中医理论中维持人体生命活动的基本物质和动力。,Fundamental substances and dynamics maintaining life activities in TCM theory.,气血失调是疾病基础。,中医,2
+推拿,Tuina,按摩；Tuina,用手法在体表穴位和部位施术以防治疾病的中医疗法。,TCM therapy preventing and treating disease by applying manual techniques to acupoints and areas of the body surface.,可缓解疼痛和放松。,中医,2
+艾灸,Moxibustion,灸法；Moxibustion,用艾绒燃烧的热力刺激穴位防治疾病的中医疗法。,TCM therapy preventing and treating disease with the heat of burning moxa applied to acupoints.,温经散寒、扶正。,中医,3
+拔罐,Cupping,拔火罐；Cupping,利用负压使罐吸附于体表以疏通经络的疗法。,Therapy using negative pressure to attach cups to the body surface to unblock meridians.,可缓解肌肉酸痛。,中医,3
+病因,Etiology,病因学；Etiology,导致疾病发生的原因和条件。,The causes and conditions leading to the occurrence of disease.,是疾病诊断和预防的基础。,基础医学,2
+症状,Symptom,症状表现；Symptom,疾病过程中患者主观感受到的异常感觉或表现。,Abnormal sensations or manifestations subjectively experienced by the patient during disease.,如疼痛、发热、乏力。,基础医学,1
+体征,Sign,体征表现；Sign,医生检查发现的客观异常表现。,Objective abnormalities found by the physician on examination.,如水肿、黄疸、心脏杂音。,基础医学,1
+诊断,Diagnosis,诊断疾病；Diagnosis,根据病史、体检和辅助检查对疾病作出的判断。,"A judgment of the disease based on history, examination and ancillary tests.",是治疗的先决条件。,基础医学,1
+鉴别诊断,DD,鉴别；Differential Diagnosis,在症状相似的疾病之间进行区分以明确诊断的过程。,The process of distinguishing between diseases with similar symptoms to establish a diagnosis.,避免误诊漏诊。,基础医学,2
+预后,Prognosis,预后评估；Prognosis,对疾病发展和结局的预先估计。,An advance estimate of the course and outcome of a disease.,受分期、治疗等影响。,基础医学,2
+治疗,Treatment,治疗方案；Treatment,为消除疾病、缓解症状而采取的各种医疗措施。,Various medical measures taken to eliminate disease and relieve symptoms.,分药物、手术、放射等。,基础医学,1
+预防,Prevention,预防措施；Prevention,为防止疾病发生和发展采取的措施。,Measures taken to prevent the occurrence and development of disease.,分三级预防。,基础医学,1
+疾病,Disease,疾病；Disease,机体在一定病因作用下发生的异常生理病理状态。,An abnormal physiological and pathological state of the body under certain etiological factors.,是医学研究的核心对象。,基础医学,1
+基因,Gene,遗传基因；Gene,携带遗传信息的DNA片段，是生物遗传的基本单位。,"The DNA segment carrying hereditary information, the basic unit of heredity.",与遗传病和疾病易感性相关。,基础医学,1
+染色体,Chromosome,染色体；Chromosome,细胞核内承载基因的遗传物质结构。,The genetic structure in the nucleus carrying genes.,数目或结构异常致遗传病。,基础医学,2
+细胞,Cell,细胞学；Cell,构成生物体的结构和功能基本单位。,The basic structural and functional unit of living organisms.,是生命活动的基础。,基础医学,1
+组织,Tissue,组织学；Tissue,形态相似、功能相关的细胞及其细胞间质构成的组合。,"Combinations of morphologically similar, functionally related cells and their extracellular matrix.",分上皮、结缔、肌和神经组织。,基础医学,2
+器官,Organ,器官学；Organ,由多种组织构成、执行特定生理功能的结构单位。,Structural units composed of several tissues performing specific physiological functions.,如心、肝、肺等。,基础医学,2
+生理功能,PF,生理作用；Physiological Function,机体各系统器官在正常状态下执行的生理活动。,Physiological activities performed by body systems and organs under normal conditions.,是健康的基础。,基础医学,3
+免疫,Immunity,免疫系统；Immunity,机体识别和清除抗原性异物、维持内环境稳定的功能。,The body's function of recognizing and eliminating antigenic foreign substances and maintaining homeostasis.,分固有免疫和适应性免疫。,基础医学,1
+内分泌失调,ED,激素紊乱；Endocrine Disorder,内分泌腺分泌激素异常导致机体功能紊乱的状态。,A state of disturbed body function caused by abnormal hormone secretion by endocrine glands.,可致代谢和生殖异常。,基础医学,2
+微生态,Microbiota,肠道菌群；Microbiota,定植于人体各部位的微生物群落及其生态。,Communities of microorganisms colonizing various parts of the body and their ecology.,与健康和疾病密切相关。,基础医学,2
+分子生物学,MB,分子医学；Molecular Biology,从分子水平研究生命现象和疾病机制的学科。,The discipline studying life phenomena and disease mechanisms at the molecular level.,是精准医学的基础。,基础医学,3
+循证医学,EBM,证据医学；Evidence-Based Medicine,以最新最佳研究证据结合临床经验和患者意愿进行医疗决策的原则。,The principle of making medical decisions based on the best available research evidence combined with clinical experience and patient values.,是当代医学实践标准。,基础医学,1
+发热,Fever,发烧；体温升高；Fever,体温超过正常范围的病理状态，是机体对感染等刺激的防御反应。,"Elevated body temperature above normal, a defensive response to infection or other stimuli.",低热<38℃、中度38~39℃、高热39~41℃。,症状体征,1
+胸痛,Chest pain,胸部疼痛；Chest Pain,胸部出现疼痛或不适感，可由心、肺、消化道等多系统疾病引起。,"Pain or discomfort in the chest, caused by cardiac, pulmonary, gastrointestinal or other diseases.",需警惕心肌梗死、肺栓塞等急症。,症状体征,1
+胸闷,Chest tightness,胸部憋闷；Chest Tightness,胸部压迫、憋闷感，常见于心肺疾病。,"Sensation of pressure or constriction in the chest, common in cardiopulmonary disease.",与心绞痛、心衰相关。,症状体征,1
+心悸,Palpitation,心慌；Heart Pounding,自觉心跳加快、强烈或不规则的不适感。,"Awareness of rapid, forceful or irregular heartbeat.",可由心律失常、贫血、甲亢等引起。,症状体征,1
+呼吸困难,Dyspnea,气短；呼吸困难；Shortness of Breath,呼吸费力、气不够用的主观感觉。,"Difficult or labored breathing, subjective feeling of not getting enough air.",见于心衰、哮喘、肺炎等。,症状体征,1
+咳嗽,Cough,咳嗽症状；Cough,呼吸道受刺激引起的反射性呼气动作。,Reflex expiratory action caused by respiratory tract irritation.,分干咳和湿咳。,症状体征,1
+咳痰,Sputum,咯痰；Coughing Up Phlegm,气管支气管分泌物随咳嗽排出。,Expulsion of tracheobronchial secretions through coughing.,痰色性状提示病因。,症状体征,2
+咯血,Hemoptysis,咳血；Blood in Sputum,咳嗽时咳出鲜血或痰中带血。,Coughing up blood or blood-stained sputum.,见于肺结核、支气管扩张、肺癌。,症状体征,1
+腹痛,Abdominal pain,肚子痛；Abdominal Pain,腹部出现的疼痛，可涉及多脏器病变。,"Pain in the abdomen, which may involve multiple organs.",急腹症需紧急评估。,症状体征,1
+腹胀,Abdominal distension,腹部胀满；Bloating,腹部胀满膨隆的感觉或体征。,Sensation or sign of abdominal fullness and distension.,与胃肠胀气、腹水有关。,症状体征,2
+恶心,Nausea,作呕；Nausea,上腹不适、欲吐的感觉。,Upper abdominal discomfort with urge to vomit.,多种疾病的前驱症状。,症状体征,2
+呕吐,Vomiting,反胃；Vomit,胃内容物经口腔强力排出的反射动作。,Forceful expulsion of gastric contents through the mouth.,剧烈呕吐可致脱水。,症状体征,1
+呕血,Hematemesis,吐血；Vomiting Blood,呕吐物中含鲜血或咖啡样物。,Vomitus containing fresh or coffee-ground blood.,提示上消化道出血。,症状体征,1
+便血,Hematochezia,血便；Blood in Stool,大便带鲜血或暗红色血。,Passage of fresh or dark red blood in stool.,下消化道出血表现。,症状体征,1
+黑便,Melena,柏油样便；Black Stool,柏油样黑色发亮的粪便，提示上消化道出血。,"Black, tarry stool indicating upper gastrointestinal bleeding.",系血红蛋白经肠液作用形成。,症状体征,1
+腹泻,Diarrhea,拉肚子；Diarrhea,排便次数增多、粪便稀薄的症状。,"Increased stool frequency and loose, watery stools.",感染、食物中毒常见。,症状体征,1
+便秘,Constipation,大便干结；Constipation,排便困难、次数减少或粪便干硬。,"Difficult, infrequent or dry hard bowel movements.",与饮食、运动、药物相关。,症状体征,2
+黄疸,Jaundice,皮肤发黄；Jaundice,血中胆红素升高致皮肤巩膜黄染。,Yellow discoloration of skin and sclera due to elevated bilirubin.,分肝细胞性、梗阻性、溶血性。,症状体征,1
+腹水,Ascites,腹腔积液；Ascites,腹膜腔内液体异常积聚。,Abnormal accumulation of fluid in the peritoneal cavity.,常见于肝硬化、心衰。,症状体征,2
+肝脾肿大,Hepatosplenomegaly,肝脾大；Enlarged Liver and Spleen,肝脏和脾脏同时增大的体征。,Enlargement of both the liver and spleen.,见于感染、血液系统疾病。,症状体征,2
+淋巴结肿大,Lymphadenopathy,淋巴结大；Swollen Lymph Nodes,浅表淋巴结体积增大的体征。,Enlargement of superficial lymph nodes.,感染或肿瘤均可致。,症状体征,2
+发绀,Cyanosis,紫绀；青紫色,皮肤黏膜呈青紫色，因血氧不足引起。,Bluish discoloration of skin and mucosa due to low oxygen.,中心性与周围性之分。,症状体征,1
+苍白,Pallor,面色苍白；Paleness,皮肤黏膜颜色变浅，见于贫血等。,"Pale skin and mucosa, seen in anemia etc.",提示贫血或末梢循环差。,症状体征,2
+盗汗,Night sweat,夜间出汗；Night Sweats,夜间睡眠时不自主出汗。,Involuntary sweating during sleep.,结核、肿瘤等慢性消耗病常见。,症状体征,2
+体重下降,Weight loss,消瘦；Weight Loss,非刻意情况下体重明显减轻。,Significant unintentional weight loss.,消耗性疾病信号。,症状体征,2
+乏力,Fatigue,疲倦；Weakness,自觉肢体无力、精神不振的非特异症状。,"Subjective weakness and low energy, nonspecific symptom.",多种疾病的共同表现。,症状体征,2
+头痛,Headache,头疼；Headache,眉弓以上至枕部的疼痛。,Pain in the region above the brow to the occiput.,分原发性和继发性。,症状体征,1
+头晕,Dizziness,头昏；Lightheadedness,头部昏沉、不稳或旋转感。,"Lightheadedness, unsteadiness or vertigo.",需鉴别耳源性和中枢性。,症状体征,1
+意识障碍,Consciousness disorder,意识不清；Altered Consciousness,人对自身和环境的知觉、理解能力下降。,Impaired awareness and understanding of self and environment.,嗜睡、昏睡、昏迷。,症状体征,1
+昏迷,Coma,神志不清；Coma,意识完全丧失、不能被唤醒的危重状态。,"Complete loss of consciousness with no arousability, critical state.",是临床危重症。,症状体征,1
+抽搐,Convulsion,惊厥；Seizure,骨骼肌不自主阵发性强烈收缩。,Involuntary paroxysmal strong skeletal muscle contraction.,癫痫、高热、中毒可致。,症状体征,1
+偏瘫,Hemiplegia,半身不遂；Hemiparesis,一侧肢体随意运动丧失。,Loss of voluntary movement on one side of the body.,脑卒中常见后遗症。,症状体征,1
+截瘫,Paraplegia,下肢瘫痪；Paraplegia,双下肢运动功能丧失。,Loss of motor function in both lower limbs.,脊髓损伤所致。,症状体征,2
+面瘫,Facial palsy,面神经麻痹；Facial Palsy,一侧面部表情肌瘫痪。,Paralysis of one-sided facial muscles.,周围性与中枢性区别。,症状体征,2
+言语不清,Dysarthria,构音障碍；Slurred Speech,发音含糊不清但语言内容正常。,Slurred articulation with intact language content.,神经系统疾病表现。,症状体征,2
+多饮多尿,Polydipsia and polyuria,多尿多饮；Excessive Thirst and Urination,口渴多饮和尿量明显增多。,Excessive thirst and significantly increased urine output.,糖尿病典型表现。,症状体征,2
+关节痛,Arthralgia,关节疼痛；Joint Pain,一个或多个关节的疼痛。,Pain in one or more joints.,炎症、退行性变等。,症状体征,2
+肌肉酸痛,Myalgia,肌肉疼痛；Muscle Ache,骨骼肌的酸痛不适感。,Aching discomfort of skeletal muscles.,病毒感染、运动后常见。,症状体征,2
+皮疹,Rash,皮肤出疹；Skin Rash,皮肤表面出现的各种疹子。,Various eruptions on the skin surface.,感染、过敏、自身免疫。,症状体征,2
+瘙痒,Pruritus,发痒；Itching,引起搔抓欲望的皮肤不适感。,Unpleasant skin sensation provoking the urge to scratch.,皮肤病和系统性疾病。,症状体征,2
+尿频,Frequency,排尿次数多；Urinary Frequency,排尿次数明显增多。,Significantly increased urination frequency.,尿路感染、前列腺问题。,症状体征,2
+尿急,Urgency,憋不住尿；Urinary Urgency,突发强烈排尿欲望难以控制。,"Sudden strong, difficult-to-control desire to urinate.",膀胱刺激症状。,症状体征,2
+尿痛,Dysuria,排尿痛；Painful Urination,排尿时尿道或耻骨上区疼痛。,Pain during urination in urethra or suprapubic area.,尿路感染标志。,症状体征,2
+血尿,Hematuria,尿中带血；Blood in Urine,尿液中出现红细胞。,Presence of red blood cells in urine.,结石、感染、肿瘤。,症状体征,1
+蛋白尿,Proteinuria,尿蛋白；Protein in Urine,尿液中蛋白质含量超过正常。,Excess protein in urine above normal.,肾脏疾病标志。,症状体征,1
+视力下降,Visual loss,视力减退；Vision Loss,视敏度进行性或急性下降。,Progressive or acute decline in visual acuity.,眼科急症需鉴别。,症状体征,2
+阿司匹林,Aspirin,拜阿司匹灵；Aspirin,非甾体抗炎药，小剂量抑制血小板聚集，用于心脑血管病一级和二级预防。,"An NSAID that inhibits platelet aggregation at low dose, used for cardiovascular prevention.",可致胃肠道出血。,常用药物,1
+布洛芬,Ibuprofen,芬必得；Ibuprofen,常用非甾体抗炎药，具有解热镇痛抗炎作用。,"Common NSAID with antipyretic, analgesic and anti-inflammatory effects.",短期用于退热止痛。,常用药物,1
+对乙酰氨基酚,Paracetamol,扑热息痛；Acetaminophen,常用解热镇痛药，抗炎作用弱。,Common antipyretic analgesic with weak anti-inflammatory effect.,过量可致肝损伤。,常用药物,1
+二甲双胍,Metformin,甲福明；Metformin,一线口服降糖药，减少肝糖输出、改善胰岛素抵抗。,First-line oral antidiabetic reducing hepatic glucose output and improving insulin resistance.,2型糖尿病首选。,常用药物,1
+格列美脲,Glimepiride,磺脲类；Glimepiride,磺脲类降糖药，刺激胰岛素分泌。,Sulfonylurea antidiabetic stimulating insulin secretion.,可致低血糖。,常用药物,2
+阿卡波糖,Acarbose,拜糖平；Acarbose,α-糖苷酶抑制剂，延缓碳水化合物吸收。,Alpha-glucosidase inhibitor delaying carbohydrate absorption.,主要降餐后血糖。,常用药物,2
+氨氯地平,Amlodipine,络活喜；Amlodipine,二氢吡啶类钙通道阻滞剂，用于降压。,Dihydropyridine calcium channel blocker for hypertension.,常见踝部水肿副作用。,常用药物,1
+缬沙坦,Valsartan,代文；Valsartan,血管紧张素II受体拮抗剂，用于降压和心衰。,Angiotensin II receptor blocker for hypertension and heart failure.,即ARB类。,常用药物,1
+依那普利,Enalapril,悦宁定；Enalapril,血管紧张素转换酶抑制剂，用于降压和心衰。,ACE inhibitor for hypertension and heart failure.,可致干咳。,常用药物,1
+美托洛尔,Metoprolol,倍他乐克；Metoprolol,β受体阻滞剂，用于降压、心律失常、心衰。,"Beta-blocker for hypertension, arrhythmia and heart failure.",哮喘患者慎用。,常用药物,1
+呋塞米,Furosemide,速尿；Lasix,袢利尿剂，强效排钠排水。,Loop diuretic with potent natriuretic and diuretic effect.,可致低钾。,常用药物,1
+螺内酯,Spironolactone,安体舒通；Spironolactone,保钾利尿剂，醛固酮拮抗剂。,"Potassium-sparing diuretic, aldosterone antagonist.",心衰治疗重要药物。,常用药物,2
+华法林,Warfarin,华法林钠；Warfarin,维生素K拮抗剂，口服抗凝药。,"Vitamin K antagonist, oral anticoagulant.",需监测INR。,常用药物,1
+利伐沙班,Rivaroxaban,拜瑞妥；Rivaroxaban,新型口服抗凝药，直接Xa因子抑制剂。,"Novel oral anticoagulant, direct factor Xa inhibitor.",用于房颤和血栓。,常用药物,1
+氯吡格雷,Clopidogrel,波立维；Clopidogrel,血小板P2Y12受体拮抗剂，抗血小板。,"Platelet P2Y12 receptor antagonist, antiplatelet.",与阿司匹林联用。,常用药物,1
+阿托伐他汀,Atorvastatin,立普妥；Atorvastatin,他汀类调脂药，降低LDL-C。,Statin lipid-lowering drug reducing LDL-C.,需监测肝功能和肌酶。,常用药物,1
+奥美拉唑,Omeprazole,洛赛克；Omeprazole,质子泵抑制剂，抑制胃酸分泌。,Proton pump inhibitor suppressing gastric acid secretion.,用于溃疡和反流。,常用药物,1
+雷尼替丁,Ranitidine,呋喃硝胺；Ranitidine,H2受体拮抗剂，抑制胃酸。,H2 receptor antagonist suppressing gastric acid.,抑酸作用弱于PPI。,常用药物,2
+泮托拉唑,Pantoprazole,潘妥洛克；Pantoprazole,质子泵抑制剂，强效抑酸。,Proton pump inhibitor with potent acid suppression.,临床常用。,常用药物,2
+头孢曲松,Ceftriaxone,头孢三嗪；Ceftriaxone,第三代头孢菌素，广谱抗菌。,"Third-generation cephalosporin, broad-spectrum antibiotic.",每日一次给药。,常用药物,1
+头孢克肟,Cefixime,世福素；Cefixime,口服第三代头孢菌素。,Oral third-generation cephalosporin.,呼吸道和泌尿道感染。,常用药物,2
+阿莫西林,Amoxicillin,羟氨苄青霉素；Amoxicillin,广谱青霉素类抗生素。,Broad-spectrum penicillin antibiotic.,可致过敏。,常用药物,1
+阿奇霉素,Azithromycin,希舒美；Azithromycin,大环内酯类抗生素，半衰期长。,Macrolide antibiotic with long half-life.,非典型病原体感染。,常用药物,1
+左氧氟沙星,Levofloxacin,可乐必妥；Levofloxacin,喹诺酮类广谱抗菌药。,Quinolone broad-spectrum antibacterial.,18岁以下慎用。,常用药物,1
+甲硝唑,Metronidazole,灭滴灵；Metronidazole,抗厌氧菌和滴虫药。,Antianaerobic and antiprotozoal drug.,禁酒。,常用药物,1
+万古霉素,Vancomycin,稳可信；Vancomycin,糖肽类抗生素，用于耐甲氧西林金黄色葡萄球菌。,Glycopeptide antibiotic for MRSA.,需监测血药浓度。,常用药物,2
+更昔洛韦,Ganciclovir,赛美维；Ganciclovir,抗疱疹病毒药物。,Antiviral drug for herpesviruses.,用于巨细胞病毒感染。,常用药物,3
+奥司他韦,Oseltamivir,达菲；Oseltamivir,神经氨酸酶抑制剂，抗流感病毒。,Neuraminidase inhibitor against influenza virus.,流感早期使用。,常用药物,2
+阿昔洛韦,Aciclovir,无环鸟苷；Aciclovir,抗疱疹病毒药物。,Antiviral for herpes simplex and zoster.,水痘带状疱疹。,常用药物,2
+糖皮质激素,Glucocorticoid,激素；泼尼松；Glucocorticoid,强大抗炎免疫抑制药，如泼尼松、地塞米松。,"Potent anti-inflammatory immunosuppressant, e.g. prednisone, dexamethasone.",不可突然停药。,常用药物,1
+泼尼松,Prednisone,强的松；Prednisone,口服中效糖皮质激素。,Oral intermediate-acting glucocorticoid.,自身免疫病常用。,常用药物,1
+地塞米松,Dexamethasone,氟美松；Dexamethasone,长效糖皮质激素。,Long-acting glucocorticoid.,抗炎作用强。,常用药物,2
+甲泼尼龙,Methylprednisolone,甲强龙；Methylprednisolone,中效糖皮质激素，可静脉冲击。,"Intermediate-acting glucocorticoid, IV pulse therapy.",大剂量冲击治疗。,常用药物,2
+他克莫司,Tacrolimus,普乐可复；Tacrolimus,钙调磷酸酶抑制剂，免疫抑制剂。,"Calcineurin inhibitor, immunosuppressant.",器官移植抗排斥。,常用药物,2
+甲氨蝶呤,Methotrexate,MTX；Methotrexate,叶酸拮抗剂，免疫抑制剂和化疗药。,"Folate antagonist, immunosuppressant and chemotherapy.",类风湿首选。,常用药物,1
+柳氮磺吡啶,Sulfasalazine,SASP；Sulfasalazine,用于炎症性肠病和类风湿关节炎。,Used for inflammatory bowel disease and rheumatoid arthritis.,免疫调节。,常用药物,3
+别嘌醇,Allopurinol,别嘌呤醇；Allopurinol,抑制尿酸生成的降尿酸药。,Xanthine oxidase inhibitor lowering uric acid.,痛风长期控制。,常用药物,2
+非布司他,Febuxostat,非布索坦；Febuxostat,新型黄嘌呤氧化酶抑制剂。,Novel xanthine oxidase inhibitor.,降尿酸。,常用药物,2
+秋水仙碱,Colchicine,秋水仙素；Colchicine,治疗痛风急性发作药物。,Drug for acute gout attack.,腹泻是常见副作用。,常用药物,2
+丙戊酸钠,Sodium valproate,德巴金；Valproate,广谱抗癫痫药。,Broad-spectrum antiepileptic.,需监测肝功能。,常用药物,2
+卡马西平,Carbamazepine,得理多；Carbamazepine,抗癫痫和三叉神经痛药。,Antiepileptic and trigeminal neuralgia drug.,可致皮疹。,常用药物,2
+左乙拉西坦,Levetiracetam,开浦兰；Levetiracetam,新型抗癫痫药。,Novel antiepileptic.,副作用较轻。,常用药物,3
+苯妥英钠,Phenytoin,大仑丁；Phenytoin,传统抗癫痫药。,Traditional antiepileptic.,治疗窗窄。,常用药物,3
+帕罗西汀,Paroxetine,赛乐特；Paroxetine,SSRI类抗抑郁药。,SSRI antidepressant.,抗抑郁抗焦虑。,常用药物,2
+舍曲林,Sertraline,左洛复；Sertraline,SSRI类抗抑郁药。,SSRI antidepressant.,临床常用。,常用药物,2
+氟西汀,Fluoxetine,百忧解；Fluoxetine,SSRI类抗抑郁药。,SSRI antidepressant.,半衰期长。,常用药物,2
+艾司唑仑,Estazolam,舒乐安定；Estazolam,苯二氮卓类镇静催眠药。,Benzodiazepine hypnotic.,有成瘾性。,常用药物,2
+唑吡坦,Zolpidem,思诺思；Zolpidem,非苯二氮卓类催眠药。,Non-benzodiazepine hypnotic.,短效改善入睡。,常用药物,2
+左旋多巴,Levodopa,L-dopa；Levodopa,帕金森病替代治疗核心药物。,Core replacement therapy for Parkinson's disease.,改善运动症状。,常用药物,1
+卡比多巴,Carbidopa,心宁美；Carbidopa,外周多巴脱羧酶抑制剂，与左旋多巴合用。,Peripheral decarboxylase inhibitor used with levodopa.,减少外周副作用。,常用药物,2
+多潘立酮,Domperidone,吗丁啉；Domperidone,促胃肠动力药。,Prokinetic drug.,改善腹胀恶心。,常用药物,3
+蒙脱石散,Smecta,思密达；Smectite,物理止泻药，吸附肠道毒素。,Adsorbent antidiarrheal.,急性腹泻常用。,常用药物,3
+开塞露,Glycerin enema,灌肠剂；Glycerin Suppository,润滑性通便制剂。,Lubricating laxative preparation.,临时缓解便秘。,常用药物,3
+谷丙转氨酶,ALT,GPT；Alanine Aminotransferase,存在于肝细胞胞浆，升高提示肝细胞损伤。,"Enzyme in hepatocyte cytoplasm, elevated in hepatocellular injury.",反映肝细胞损伤。,检验指标,1
+谷草转氨酶,AST,GOT；Aspartate Aminotransferase,存在于心肌和肝脏，升高提示肝细胞或心肌损伤。,"Enzyme in myocardium and liver, elevated in hepatic or cardiac injury.",心肌和肝脏损伤标志。,检验指标,1
+总胆红素,TBIL,总胆；Total Bilirubin,直接与间接胆红素总和，反映黄疸程度。,"Sum of direct and indirect bilirubin, reflecting jaundice.",黄疸分型依据。,检验指标,1
+直接胆红素,DBIL,结合胆红素；Direct Bilirubin,经肝脏结合的胆红素，升高提示胆道梗阻。,"Hepatically conjugated bilirubin, elevated in biliary obstruction.",梗阻性黄疸标志。,检验指标,1
+白蛋白,ALB,清蛋白；Albumin,肝脏合成的主要血浆蛋白，反映营养和合成功能。,"Major plasma protein synthesized by liver, reflecting nutrition and synthesis.",降低见于肝硬化、营养不良。,检验指标,1
+球蛋白,GLB,Globulin,血浆免疫球蛋白等蛋白，反映免疫和慢性炎症。,Plasma globulins reflecting immunity and chronic inflammation.,慢性肝病升高。,检验指标,2
+肌酐,Cr,血清肌酐；Creatinine,肌肉代谢产物，反映肾小球滤过功能。,Muscle metabolite reflecting glomerular filtration.,肾功能核心指标。,检验指标,1
+尿素氮,BUN,尿素；Blood Urea Nitrogen,蛋白质代谢终产物，经肾排泄。,Protein metabolism end product excreted by kidney.,受饮食和脱水影响。,检验指标,1
+尿酸,UA,Uric Acid,嘌呤代谢终产物，升高致痛风。,"Purine metabolism end product, elevated in gout.",痛风和高尿酸血症。,检验指标,1
+空腹血糖,FPG,空腹血糖；Fasting Plasma Glucose,空腹8小时以上血糖水平。,Blood glucose after 8 hours fasting.,糖尿病诊断依据。,检验指标,1
+餐后2小时血糖,2hPG,餐后血糖；2-hour Postprandial Glucose,餐后2小时血糖水平。,Blood glucose 2 hours after meal.,反映糖负荷后血糖。,检验指标,1
+口服葡萄糖耐量试验,OGTT,糖耐量；Oral Glucose Tolerance Test,口服75g葡萄糖后多次测血糖，诊断糖尿病。,"Test of glucose after 75g oral load, diagnosing diabetes.",糖尿病确诊试验。,检验指标,1
+总胆固醇,TC,总胆；Total Cholesterol,血液中所有胆固醇总和。,Total cholesterol in blood.,血脂指标。,检验指标,1
+甘油三酯,TG,三酰甘油；Triglyceride,血液中甘油三酯水平。,Triglyceride level in blood.,升高与心血管风险相关。,检验指标,1
+低密度脂蛋白胆固醇,LDL-C,坏胆固醇；Low-Density Lipoprotein,将胆固醇运至外周，升高致动脉粥样硬化。,"Transports cholesterol peripherally, elevated in atherosclerosis.",降脂治疗主要目标。,检验指标,1
+高密度脂蛋白胆固醇,HDL-C,好胆固醇；High-Density Lipoprotein,将胆固醇运回肝脏代谢，有保护作用。,"Transports cholesterol back to liver, protective.",降低是危险因素。,检验指标,1
+钾,K,血钾；Potassium,细胞内主要阳离子，维持神经肌肉功能。,"Major intracellular cation, maintaining neuromuscular function.",紊乱致心律失常。,检验指标,1
+钠,Na,血钠；Sodium,细胞外主要阳离子，维持渗透压。,"Major extracellular cation, maintaining osmotic pressure.",紊乱致意识障碍。,检验指标,1
+氯,Cl,血氯；Chloride,细胞外主要阴离子。,Major extracellular anion.,酸碱平衡相关。,检验指标,2
+钙,Ca,血钙；Calcium,参与骨骼、肌肉和神经传导。,"Involved in bone, muscle and nerve conduction.",甲状旁腺和维生素D调节。,检验指标,1
+磷,P,血磷；Phosphate,与钙协同参与骨代谢。,Cooperates with calcium in bone metabolism.,肾性骨病相关。,检验指标,2
+镁,Mg,血镁；Magnesium,多种酶的辅因子。,Cofactor of many enzymes.,低镁致心律失常。,检验指标,2
+C反应蛋白,CRP,C反应蛋白；C-Reactive Protein,急性时相反应蛋白，反映炎症程度。,Acute phase reactant reflecting inflammation.,感染和炎症标志。,检验指标,1
+血沉,ESR,红细胞沉降率；Erythrocyte Sedimentation Rate,红细胞在一小时内沉降距离，反映慢性炎症。,"Distance RBCs settle in one hour, reflecting chronic inflammation.",非特异炎症指标。,检验指标,2
+降钙素原,PCT,Procalcitonin,细菌感染时升高的指标，鉴别感染。,"Elevated in bacterial infection, used for infection differentiation.",脓毒症标志。,检验指标,1
+凝血酶原时间,PT,凝血酶原时间；Prothrombin Time,反映外源性凝血途径。,Reflects extrinsic coagulation pathway.,口服华法林监测。,检验指标,1
+国际标准化比值,INR,INR；International Normalized Ratio,PT标准化值，监测抗凝治疗。,Normalized PT value for anticoagulation monitoring.,华法林目标2~3。,检验指标,1
+活化部分凝血活酶时间,APTT,部分凝血活酶时间；Activated Partial Thromboplastin Time,反映内源性凝血途径。,Reflects intrinsic coagulation pathway.,肝素治疗监测。,检验指标,1
+纤维蛋白原,FIB,纤维蛋白原；Fibrinogen,凝血因子I，凝血过程关键。,"Coagulation factor I, key in clotting.",DIC时下降。,检验指标,2
+D-二聚体,D-dimer,D二聚体；D-Dimer,纤维蛋白降解产物，升高提示血栓形成。,"Fibrin degradation product, elevated in thrombosis.",肺栓塞筛查。,检验指标,1
+甲胎蛋白,AFP,甲胎蛋白；Alpha-Fetoprotein,肝癌和生殖细胞肿瘤标志物。,Tumor marker for hepatocellular carcinoma and germ cell tumors.,肝癌筛查。,检验指标,1
+癌胚抗原,CEA,癌胚抗原；Carcinoembryonic Antigen,广谱肿瘤标志物，消化道肿瘤升高。,"Broad tumor marker, elevated in GI cancers.",术后随访。,检验指标,1
+糖类抗原19-9,CA19-9,CA199；Carbohydrate Antigen 19-9,胰腺癌和消化道肿瘤标志物。,Marker for pancreatic and GI cancers.,胰腺癌辅助诊断。,检验指标,2
+糖类抗原125,CA125,CA125；Carbohydrate Antigen 125,卵巢癌标志物。,Marker for ovarian cancer.,卵巢癌筛查。,检验指标,2
+糖类抗原15-3,CA15-3,CA153；Carbohydrate Antigen 15-3,乳腺癌标志物。,Marker for breast cancer.,乳腺癌随访。,检验指标,2
+前列腺特异性抗原,PSA,前列腺特异抗原；Prostate-Specific Antigen,前列腺癌筛查指标。,Screening marker for prostate cancer.,40岁以上男性筛查。,检验指标,1
+人绒毛膜促性腺激素,HCG,绒毛膜促性腺激素；Human Chorionic Gonadotropin,妊娠和滋养细胞肿瘤标志物。,Marker for pregnancy and trophoblastic tumors.,早孕和宫外孕诊断。,检验指标,1
+甲状腺素,T4,甲状腺素；Thyroxine,甲状腺分泌的主要激素。,Main hormone secreted by thyroid.,甲功指标。,检验指标,1
+三碘甲状腺原氨酸,T3,三碘甲腺原氨酸；Triiodothyronine,活性更强的甲状腺激素。,More active thyroid hormone.,甲功指标。,检验指标,1
+促甲状腺激素,TSH,促甲状腺激素；Thyroid-Stimulating Hormone,垂体分泌，调节甲状腺功能。,"Secreted by pituitary, regulates thyroid.",甲功最敏感指标。,检验指标,1
+游离T3,FT3,游离三碘甲腺原氨酸；Free T3,循环中游离活性T3。,Free active T3 in circulation.,甲亢诊断。,检验指标,2
+游离T4,FT4,游离甲状腺素；Free T4,循环中游离活性T4。,Free active T4 in circulation.,甲功评估。,检验指标,2
+皮质醇,Cortisol,氢化可的松；Cortisol,肾上腺皮质分泌的应激激素。,Stress hormone from adrenal cortex.,库欣综合征诊断。,检验指标,2
+肾上腺素,Epinephrine,Adrenaline；Epinephrine,肾上腺髓质分泌的应激激素。,Stress hormone from adrenal medulla.,过敏性休克首选。,检验指标,2
+去甲肾上腺素,Norepinephrine,Noradrenaline；Norepinephrine,交感神经递质。,Sympathetic neurotransmitter.,升压药。,检验指标,3
+C肽,C-peptide,C肽；C-Peptide,胰岛素原裂解产物，反映β细胞功能。,Proinsulin cleavage product reflecting beta cell function.,区分1型2型糖尿病。,检验指标,2
+糖化白蛋白,GA,糖化白蛋白；Glycated Albumin,反映近2~3周平均血糖。,Reflects average glucose over 2-3 weeks.,短期血糖监测。,检验指标,3
+尿微量白蛋白,mALB,尿微量白蛋白；Microalbuminuria,早期肾损伤标志。,Marker of early renal injury.,糖尿病肾病早期。,检验指标,2
+尿酮体,Urine ketone,酮体；Ketone Bodies,脂肪代谢产物，升高见于酮症酸中毒。,"Fat metabolism product, elevated in ketoacidosis.",糖尿病急症。,检验指标,2
+淀粉酶,AMY,淀粉酶；Amylase,胰腺分泌的消化酶，急性胰腺炎升高。,"Pancreatic digestive enzyme, elevated in acute pancreatitis.",胰腺炎诊断。,检验指标,2
+脂肪酶,LPS,脂肪酶；Lipase,胰腺分泌，急性胰腺炎更特异。,"Pancreatic enzyme, more specific for pancreatitis.",胰腺炎诊断。,检验指标,2
+肌钙蛋白,cTn,肌钙蛋白；Cardiac Troponin,心肌损伤特异性标志物。,Specific marker of myocardial injury.,心肌梗死诊断金标准。,检验指标,1
+肌酸激酶,CK,肌酸激酶；Creatine Kinase,骨骼肌和心肌损伤标志。,Marker of skeletal and cardiac muscle injury.,心梗和肌病。,检验指标,2
+B型利钠肽,BNP,脑钠肽；B-Type Natriuretic Peptide,心室壁张力升高时分泌，心衰标志。,"Secreted with ventricular wall stretch, marker of heart failure.",心衰诊断和分级。,检验指标,1
+N末端B型利钠肽原,NT-proBNP,NT-proBNP；N-Terminal Pro-BNP,BNP前体片段，心衰指标。,"BNP precursor fragment, heart failure marker.",心衰诊断。,检验指标,1
+冠状动脉粥样硬化性心脏病,Coronary heart disease,冠心病；CHD；Coronary Artery Disease,冠状动脉粥样硬化致心肌缺血的心脏病。,Heart disease due to coronary atherosclerosis causing myocardial ischemia.,详见心血管条目。,心血管内科,3
+稳定型心绞痛,Stable angina,劳累性心绞痛；Stable Angina,体力活动诱发、休息或含服硝酸甘油缓解的心绞痛。,"Angina triggered by exertion, relieved by rest or nitroglycerin.",慢性冠脉病。,心血管内科,2
+不稳定型心绞痛,Unstable angina,UA；Unstable Angina,新发或加重的休息时心绞痛，属急性冠脉综合征。,"New or worsening rest angina, part of acute coronary syndrome.",需紧急处理。,心血管内科,1
+急性冠脉综合征,Acute coronary syndrome,ACS；急性冠脉综合征,包括不稳定型心绞痛、ST段抬高和非ST段抬高心梗。,"Includes unstable angina, STEMI and NSTEMI.",胸痛中心救治。,心血管内科,1
+阵发性室上性心动过速,PSVT,室上速；Paroxysmal Supraventricular Tachycardia,突发突止的室上性快速心律失常。,Sudden-onset and termination supraventricular tachycardia.,可射频消融根治。,心血管内科,2
+室性早搏,PVC,室早；Premature Ventricular Contraction,心室提前除极的异位搏动。,Ectopic beat from premature ventricular depolarization.,良性或病理性。,心血管内科,2
+房室传导阻滞,AV block,房室阻滞；Atrioventricular Block,房室传导延迟或中断。,Delay or interruption of atrioventricular conduction.,三度需起搏器。,心血管内科,2
+感染性心内膜炎,Infective endocarditis,IE；感染性心内膜炎,心瓣膜或心内膜的微生物感染。,Microbial infection of heart valves or endocardium.,有心脏杂音和栓塞。,心血管内科,2
+肥厚型心肌病,Hypertrophic cardiomyopathy,HCM；肥厚型心肌病,左室非对称性肥厚的遗传性心肌病。,Genetic cardiomyopathy with asymmetric left ventricular hypertrophy.,青年猝死原因。,心血管内科,2
+扩张型心肌病,Dilated cardiomyopathy,DCM；扩张型心肌病,心腔扩大、收缩功能减退的心肌病。,Cardiomyopathy with dilated chambers and reduced contractility.,可致心衰。,心血管内科,2
+主动脉夹层,Aortic dissection,AD；主动脉夹层,主动脉内膜撕裂、血液进入中层形成夹层。,Tear of aortic intima with blood entering media.,剧烈撕裂样胸痛，急诊。,心血管内科,1
+深静脉血栓形成,DVT,下肢深静脉血栓；Deep Vein Thrombosis,下肢深静脉内血栓形成。,Thrombus formation in deep veins of lower limbs.,可致肺栓塞。,心血管内科,1
+稳定型心衰,Chronic heart failure,慢性心衰；Chronic Heart Failure,持续存在的心功能不全状态。,Persistent state of cardiac insufficiency.,需长期管理。,心血管内科,3
+支气管扩张,Bronchiectasis,支扩；Bronchiectasis,支气管结构不可逆扩张的慢性化脓性疾病。,"Irreversible bronchial dilation, chronic suppurative disease.",反复咳脓痰咯血。,呼吸内科,2
+慢性支气管炎,Chronic bronchitis,慢支；Chronic Bronchitis,反复咳嗽咳痰每年3个月以上连续2年。,Recurrent cough and sputum for 3 months over 2 consecutive years.,COPD前期。,呼吸内科,2
+间质性肺病,Interstitial lung disease,ILD；间质性肺病,肺间质弥漫性炎症和纤维化疾病群。,Group of diseases with diffuse interstitial inflammation and fibrosis.,如特发性肺纤维化。,呼吸内科,2
+睡眠呼吸暂停低通气综合征,OSAHS,睡眠呼吸暂停；Sleep Apnea Hypopnea Syndrome,睡眠中反复呼吸暂停和低通气。,Recurrent apnea and hypopnea during sleep.,可致高血压和白天嗜睡。,呼吸内科,2
+社区获得性肺炎,CAP,院外肺炎；Community-Acquired Pneumonia,在医院外罹患的肺炎。,Pneumonia acquired outside hospital.,常见病原为肺炎链球菌。,呼吸内科,1
+医院获得性肺炎,HAP,院内肺炎；Hospital-Acquired Pneumonia,入院48小时后发生的肺炎。,Pneumonia occurring 48h after admission.,耐药菌多见。,呼吸内科,2
+急性呼吸窘迫综合征,ARDS,急性呼吸窘迫综合征；Acute Respiratory Distress Syndrome,弥漫性肺泡损伤导致的急性低氧性呼吸衰竭。,Acute hypoxemic respiratory failure from diffuse alveolar damage.,ICU危重症。,呼吸内科,1
+胃食管反流,GERD,反流；Gastroesophageal Reflux,胃内容物反流入食管。,Reflux of gastric contents into esophagus.,详见消化条目。,消化内科,3
+消化性溃疡,Peptic ulcer,PU；消化性溃疡,胃或十二指肠黏膜的溃疡。,Ulcer of gastric or duodenal mucosa.,详见消化条目。,消化内科,3
+急性胰腺炎,Acute pancreatitis,急性胰腺炎；Acute Pancreatitis,胰腺急性炎症，分轻症和重症。,"Acute pancreatic inflammation, mild or severe.",重症可致死。,消化内科,1
+慢性胰腺炎,Chronic pancreatitis,慢性胰腺炎；Chronic Pancreatitis,胰腺慢性进行性炎症致内外分泌功能不全。,Chronic progressive pancreatic inflammation causing insufficiency.,饮酒和胆石为因。,消化内科,2
+肠结核,Intestinal tuberculosis,肠结核；Intestinal Tuberculosis,结核分枝杆菌侵犯肠道。,TB invading the intestine.,好发回盲部。,消化内科,3
+溃疡性结肠炎,Ulcerative colitis,UC；溃疡性结肠炎,结肠黏膜连续性炎症溃疡。,Continuous mucosal ulceroinflammation of colon.,IBD一种。,消化内科,2
+克罗恩病,Crohn's disease,CD；Crohn病,消化道节段性透壁性炎症。,Segmental transmural GI inflammation.,可累及全消化道。,消化内科,2
+病毒性肝炎,Viral hepatitis,肝炎；Viral Hepatitis,肝炎病毒引起的肝脏炎症。,Hepatic inflammation by hepatitis viruses.,甲乙丙丁戊五型。,消化内科,1
+功能性消化不良,Functional dyspepsia,FD；功能性消化不良,慢性上腹不适无器质性病变。,Chronic upper abdominal discomfort without organic disease.,与胃肠动力相关。,消化内科,3
+上消化道出血,Upper GI bleeding,上消出血；Upper Gastrointestinal Bleeding,Treitz韧带以上消化道出血。,Bleeding above Treitz ligament.,呕血黑便。,消化内科,1
+急性脑梗死,Acute cerebral infarction,急性脑梗；Acute Ischemic Stroke,急性脑血管闭塞致脑缺血坏死。,Acute cerebral vessel occlusion causing ischemic necrosis.,溶栓时间窗内治疗。,神经内科,1
+蛛网膜下腔出血,SAH,蛛网膜下出血；Subarachnoid Hemorrhage,蛛网膜下腔出血，常因动脉瘤破裂。,"Bleeding into subarachnoid space, often aneurysm rupture.",突发剧烈头痛。,神经内科,1
+短暂性脑缺血发作,TIA,小中风；Transient Ischemic Attack,一过性脑缺血症状不遗留梗死。,Transient ischemic symptoms without infarction.,卒中预警。,神经内科,1
+癫痫持续状态,Status epilepticus,SE；癫痫持续状态,发作持续或频繁复发意识未恢复。,Seizures lasting or recurring without recovery.,急诊。,神经内科,1
+周围性面瘫,Peripheral facial palsy,Bell麻痹；Bell's Palsy,面神经麻痹导致的周围性面瘫。,Facial nerve palsy causing peripheral facial weakness.,多数可恢复。,神经内科,2
+糖尿病酮症酸中毒,DKA,酮症酸中毒；Diabetic Ketoacidosis,胰岛素严重不足致高血糖、酮体和酸中毒。,"Severe insulin deficiency causing hyperglycemia, ketones and acidosis.",1型糖尿病急症。,内分泌科,1
+高渗高血糖状态,HHS,高渗昏迷；Hyperosmolar Hyperglycemic State,严重高血糖致高渗脱水和意识障碍。,Severe hyperglycemia causing hyperosmolar dehydration and altered consciousness.,2型糖尿病急症。,内分泌科,1
+低血糖症,Hypoglycemia,低血糖；Low Blood Sugar,血糖低于2.8mmol/L的状态。,Blood glucose below 2.8 mmol/L.,糖尿病用药风险。,内分泌科,1
+甲状腺危象,Thyroid storm,甲亢危象；Thyroid Crisis,甲亢急性加重的致命状态。,Life-threatening acute worsening of hyperthyroidism.,需紧急处理。,内分泌科,1
+嗜铬细胞瘤,Pheochromocytoma,嗜铬细胞瘤；Pheochromocytoma,肾上腺髓质肿瘤分泌儿茶酚胺致阵发性高血压。,Adrenal medulla tumor secreting catecholamines causing paroxysmal hypertension.,三联征头痛心悸多汗。,内分泌科,3
+尿崩症,Diabetes insipidus,DI；尿崩症,抗利尿激素不足致多尿烦渴。,ADH deficiency causing polyuria and polydipsia.,需查因。,内分泌科,3
+垂体前叶功能减退,Hypopituitarism,垂体功能减退；Hypopituitarism,垂体多种激素分泌不足。,Deficiency of multiple pituitary hormones.,产后大出血致席汉综合征。,内分泌科,3
+巨幼细胞贫血,Megaloblastic anemia,巨幼贫；Megaloblastic Anemia,叶酸或B12缺乏致DNA合成障碍。,Folate or B12 deficiency impairing DNA synthesis.,营养性贫血。,血液科,2
+溶血性贫血,Hemolytic anemia,溶贫；Hemolytic Anemia,红细胞破坏加速寿命缩短。,Accelerated RBC destruction shortening lifespan.,黄疸和脾大。,血液科,2
+地中海贫血,Thalassemia,地贫；Thalassemia,珠蛋白肽链合成障碍的遗传性贫血。,Hereditary anemia from globin chain synthesis defect.,南方地区多见。,血液科,2
+霍奇金淋巴瘤,Hodgkin lymphoma,HL；霍奇金病,淋巴结里有R-S细胞的淋巴瘤。,Lymphoma with Reed-Sternberg cells in lymph nodes.,预后较好。,血液科,2
+非霍奇金淋巴瘤,NHL,非霍奇金淋巴瘤；Non-Hodgkin Lymphoma,除霍奇金外的一组淋巴瘤。,Group of lymphomas excluding Hodgkin.,高度异质性。,血液科,2
+急性淋巴细胞白血病,ALL,急淋；Acute Lymphoblastic Leukemia,淋巴系细胞恶性增殖。,Malignant lymphoid cell proliferation.,儿童最常见白血病。,血液科,2
+急性髓系白血病,AML,急粒；Acute Myeloid Leukemia,髓系细胞恶性增殖。,Malignant myeloid cell proliferation.,成人急性白血病常见。,血液科,2
+慢性粒细胞白血病,CML,慢粒；Chronic Myeloid Leukemia,Ph染色体阳性的骨髓增殖性肿瘤。,Myeloproliferative neoplasm with Philadelphia chromosome.,伊马替尼靶向治疗。,血液科,2
+慢性淋巴细胞白血病,CLL,慢淋；Chronic Lymphocytic Leukemia,成熟B淋巴细胞克隆增殖。,Clonal proliferation of mature B lymphocytes.,老年多见。,血液科,3
+特发性血小板减少性紫癜,ITP,免疫性血小板减少；Immune Thrombocytopenia,自身抗体致血小板破坏。,Autoantibodies destroying platelets.,皮肤黏膜出血。,血液科,2
+过敏性紫癜,Henoch-Schönlein purpura,HSP；IgA血管炎,IgA沉积致小血管炎。,Small vessel vasculitis with IgA deposition.,儿童紫癜常见。,血液科,3
+慢性肾衰竭,Chronic renal failure,CRF；慢性肾衰,肾结构功能慢性进行性损害。,Chronic progressive renal structural and functional damage.,终末期需替代治疗。,肾内科,1
+急性肾损伤,AKI,急性肾衰；Acute Kidney Injury,短时间内肾功能急剧下降。,Rapid decline of renal function over short time.,分肾前性肾性肾后性。,肾内科,1
+狼疮性肾炎,Lupus nephritis,LN；狼疮性肾炎,SLE累及肾脏。,SLE involving the kidneys.,蛋白尿血尿。,风湿免疫,2
+冠状动脉旁路移植术,CABG,冠脉搭桥；Coronary Artery Bypass Grafting,用血管桥绕过狭窄冠脉重建血运。,Using grafts to bypass stenosed coronary segments.,冠心病血运重建。,手术操作,2
+经皮冠状动脉介入治疗,PCI,冠脉介入；Percutaneous Coronary Intervention,经导管扩张或支架植入开通冠脉。,Dilating or stenting coronary via catheter.,急性心梗再灌注。,手术操作,1
+支架植入术,Stenting,支架置入；Stent Implantation,血管内置入金属支架支撑管腔。,Placing metal stent to support vessel lumen.,冠脉、颈动脉等。,手术操作,2
+起搏器植入术,Pacemaker implantation,起搏器；Cardiac Pacing,植入人工起搏器治疗缓慢心律失常。,Implanting artificial pacemaker for bradyarrhythmia.,窦房结功能障碍等。,手术操作,2
+射频消融术,RFA,射频；Radiofrequency Ablation,高频电流消融异常组织。,High-frequency current ablating abnormal tissue.,心律失常和肿瘤。,手术操作,2
+阑尾切除术,Appendectomy,切阑尾；Appendectomy,切除阑尾治疗急性阑尾炎。,Removing the appendix for acute appendicitis.,腹腔镜常用。,手术操作,2
+胆囊切除术,Cholecystectomy,切胆囊；Cholecystectomy,切除胆囊治疗胆囊结石和胆囊炎。,Removing gallbladder for cholelithiasis/cholecystitis.,腹腔镜常规。,手术操作,2
+疝修补术,Herniorrhaphy,疝修补；Hernia Repair,修补腹壁疝缺损。,Repairing abdominal wall hernia defect.,可补片加强。,手术操作,3
+胃大部切除术,Gastrectomy,胃切除；Partial Gastrectomy,切除部分胃治疗溃疡和肿瘤。,Removing part of stomach for ulcer or tumor.,毕I式或II式。,手术操作,3
+结肠癌根治术,Colectomy,结肠切除；Colon Resection,切除病变结肠及区域淋巴结。,Resecting involved colon and regional lymph nodes.,结肠癌标准手术。,手术操作,2
+甲状腺切除术,Thyroidectomy,切甲状腺；Thyroidectomy,切除部分或全部甲状腺。,Removing part or all of thyroid.,详见普外科条目。,手术操作,3
+乳腺癌根治术,Mastectomy,乳癌根治；Radical Mastectomy,切除乳腺及周围组织治疗乳腺癌。,Removing breast and surrounding tissue for cancer.,保乳术渐多。,手术操作,2
+前列腺切除术,Prostatectomy,切前列腺；Prostatectomy,切除前列腺治疗前列腺癌。,Removing prostate for cancer.,可开放或腹腔镜。,手术操作,3
+经尿道前列腺电切术,TURP,前列腺电切；Transurethral Resection of Prostate,经尿道切除增生前列腺。,Removing enlarged prostate via urethra.,BPH金标准术式。,手术操作,2
+人工流产术,Abortion,人流；Induced Abortion,人为终止妊娠的手术。,Surgically ending a pregnancy.,负压吸引或钳刮。,妇产科,3
+输精管结扎术,Vasectomy,结扎；Vasectomy,结扎输精管避孕。,Tying vas deferens for contraception.,男性绝育。,手术操作,3
+输卵管结扎术,Tubal ligation,女扎；Tubal Sterilization,结扎输卵管避孕。,Tying fallopian tubes for contraception.,女性绝育。,手术操作,3
+关节置换术,Arthroplasty,关节成形；Joint Replacement,用人工关节替换病变关节。,Replacing diseased joint with prosthesis.,髋膝关节常见。,手术操作,2
+椎间盘切除术,Discectomy,髓核摘除；Discectomy,摘除突出椎间盘髓核。,Removing herniated disc nucleus.,治疗腰突症。,手术操作,3
+骨折内固定术,Internal fixation,内固定；Internal Fixation,用钢板螺钉固定骨折端。,Fixing fracture with plates and screws.,骨科常用。,手术操作,2
+清创术,Debridement,清创；Wound Debridement,清除伤口异物和坏死组织。,Removing foreign material and necrotic tissue.,预防感染。,手术操作,2
+植皮术,Skin grafting,植皮；Skin Graft,移植皮肤覆盖创面。,Transplanting skin to cover wound.,烧伤和溃疡。,手术操作,3
+内窥镜检查,Endoscopy,内镜；Endoscopic Examination,经自然腔道插入内镜观察。,Inserting endoscope via natural orifice.,胃镜肠镜等。,手术操作,1
+胃镜检查,Gastroscopy,胃镜；Upper Endoscopy,经口插入胃镜观察食管胃十二指肠。,Examining esophagus stomach duodenum via oral scope.,上消化道检查。,手术操作,1
+结肠镜检查,Colonoscopy,肠镜；Colonoscopy,经肛门插入结肠镜检查全结肠。,Examining entire colon via anal scope.,结直肠癌筛查。,手术操作,1
+支气管镜检查,Bronchoscopy,气管镜；Bronchoscopy,经口鼻插入支气管镜观察气道。,Examining airways via transoral/nasal scope.,肺占位和咯血。,手术操作,2
+穿刺活检,Needle biopsy,穿刺；Needle Biopsy,细针或粗针穿刺取组织。,Sampling tissue with fine or core needle.,肿瘤定性。,手术操作,2
+胸腔穿刺,Thoracentesis,胸穿；Pleural Puncture,穿刺抽取胸腔积液。,Puncturing to sample pleural fluid.,诊断和减压。,手术操作,2
+腹腔穿刺,Abdominal paracentesis,腹穿；Abdominal Paracentesis,穿刺抽取腹水。,Puncturing to sample ascites.,腹水诊断。,手术操作,2
+腰椎穿刺,Lumbar puncture,腰穿；Lumbar Puncture,穿刺蛛网膜下腔取脑脊液。,Puncturing subarachnoid space for CSF.,中枢感染和出血诊断。,手术操作,1
+骨髓穿刺,Bone marrow aspiration,骨穿；Bone Marrow Aspiration,穿刺抽取骨髓液。,Puncturing to aspirate bone marrow.,血液病诊断。,手术操作,2
+导尿术,Catheterization,导尿；Urinary Catheterization,经尿道或耻骨上插入导尿管。,Inserting catheter via urethra or suprapubic.,排尿困难和监测。,手术操作,2
+吸氧,Oxygen therapy,氧疗；Oxygen Therapy,提高吸入氧浓度纠正缺氧。,Raising inhaled oxygen to correct hypoxia.,多种缺氧状态。,手术操作,1
+机械通气,Mechanical ventilation,呼吸机；Mechanical Ventilation,用呼吸机辅助或替代自主呼吸。,Using ventilator to support or replace breathing.,呼吸衰竭支持。,手术操作,1
+血液透析,Hemodialysis,血透；Hemodialysis,通过透析膜清除毒素和多余水分。,Clearing toxins and fluid via dialysis membrane.,肾替代治疗。,手术操作,1
+腹膜透析,Peritoneal dialysis,腹透；Peritoneal Dialysis,利用腹膜半透膜特性透析。,Using peritoneum as semipermeable membrane.,居家透析可选。,手术操作,2
+四君子汤,Sijunzi Decoction,四君子；Four Gentlemen Decoction,益气健脾基础方，由人参、白术、茯苓、甘草组成。,"Basic qi-tonifying formula of Ginseng, Atractylodes, Poria, Licorice.",补气基础方。,中医方剂,3
+四物汤,Siwu Decoction,四物；Four Substances Decoction,补血调血基础方，含当归、川芎、白芍、熟地。,"Blood-nourishing formula of Angelica, Ligusticum, Paeonia and Rehmannia.",妇科调经基础方。,中医方剂,3
+六味地黄丸,Liuwei Dihuang Pill,六味地黄；Rehmannia Six Pill,滋补肾阴经典方。,Classic kidney-yin nourishing formula.,肾阴虚常用。,中医方剂,3
+桂枝汤,Guizhi Decoction,桂枝；Cinnamon Twig Decoction,调和营卫解表方。,Formula for harmonizing ying and wei.,外感风寒表虚。,中医方剂,3
+麻黄汤,Mahuang Decoction,麻黄；Ephedra Decoction,辛温解表发汗方。,Warm-diaphoretic formula.,外感风寒表实。,中医方剂,3
+小柴胡汤,Xiaochaihu Decoction,小柴胡；Minor Bupleurum Decoction,和解少阳方。,Formula for harmonizing shaoyang.,肝胆郁热。,中医方剂,3
+逍遥散,Xiaoyao Powder,逍遥；Free and Easy Wanderer Powder,疏肝健脾方。,Liver-soothing and spleen-tonifying formula.,肝郁脾虚。,中医方剂,3
+血府逐瘀汤,Xuefu Zhuyu Decoction,血府逐瘀；Blood Mansion Stasis-Expelling Decoction,活血化瘀方。,Blood-activating stasis-expelling formula.,胸中血瘀。,中医方剂,3
+银翘散,Yinqiao Powder,银翘；Lonicera and Forsythia Powder,辛凉解表方。,Cool-diaphoretic formula.,风热感冒。,中医方剂,3
+藿香正气散,Huoxiang Zhengqi Powder,藿香正气；Agastache Qi-Rectifying Powder,化湿和中解表方。,Damp-resolving formula for summer damp.,胃肠型感冒。,中医方剂,3
+安宫牛黄丸,Angong Niuhuang Pill,安宫牛黄；Peaceful Palace Pill,凉开醒神急救成药。,Cool-opening emergency pill.,热病神昏。,中医方剂,3
+人参,Ginseng,红参；Panax Ginseng,五加科植物根，大补元气。,"Root of Araliaceae herb, strongly tonifying qi.",大补元气复脉固脱。,中药材,3
+黄芪,Astragalus,黄耆；Astragalus Root,豆科植物根，补气升阳。,"Legume root, tonifying qi and lifting yang.",补气升阳固表。,中药材,3
+当归,Angelica sinensis,当归；Dong Quai,伞形科根，补血活血。,"Umbellifer root, nourishing and invigorating blood.",补血调经。,中药材,3
+枸杞,Goji berry,枸杞子；Lycium Barbarum,茄科果实，滋补肝肾。,"Solanaceae fruit, nourishing liver and kidney.",滋补肝肾明目。,中药材,3
+甘草,Licorice root,甘草；Licorice,豆科根，调和诸药。,"Legume root, harmonizing herbs.",调和诸药。,中药材,3
+针灸穴位,Acupoints,穴位；Acupoint,经络气血输注于体表的部位。,Points where meridian qi infuses on body surface.,详见中医条目。,中医方剂,3
+足三里,Zusanli acupoint,ST36；Zusanli,足阳明胃经合穴，保健要穴。,"He-sea point of Stomach Meridian, key health point.",调理脾胃强壮保健。,中医方剂,3
+合谷,Hegu acupoint,LI4；Hegu,手阳明大肠经原穴，镇痛要穴。,"Yuan-source point of Large Intestine Meridian, analgesic.",面口合谷收。,中医方剂,3
+百会,Baihui acupoint,GV20；Baihui,督脉要穴，升阳举陷。,"Key point of Du Meridian, lifting yang.",升阳举陷安神。,中医方剂,3
+内关,Neiguan acupoint,PC6；Neiguan,手厥阴心包经络穴，宁心安神。,"Luo-point of Pericardium Meridian, calming heart.",胃心胸疾患。,中医方剂,3
+金黄色葡萄球菌,Staphylococcus aureus,金葡菌；Staph Aureus,革兰阳性球菌，皮肤软组织感染常见病原。,"Gram-positive cocci, common skin pathogen.",MRSA耐药株为院感重点。,微生物感染,1
+大肠杆菌,Escherichia coli,E.coli；大肠埃希菌,肠道革兰阴性杆菌，肠道和尿路感染常见。,"Gram-negative enteric rod, common GI and UTI pathogen.",条件致病菌。,微生物感染,1
+肺炎链球菌,Streptococcus pneumoniae,肺炎球菌；Pneumococcus,革兰阳性双球菌，肺炎和脑膜炎病原。,"Gram-positive diplococcus, cause of pneumonia and meningitis.",儿童和老人易感。,微生物感染,1
+结核分枝杆菌,Mycobacterium tuberculosis,结核杆菌；Koch's Bacillus,抗酸杆菌，结核病病原。,"Acid-fast bacillus, cause of tuberculosis.",详见感染条目。,微生物感染,2
+梅毒螺旋体,Treponema pallidum,TP；苍白密螺旋体,梅毒病原，螺旋体。,Spirochete causing syphilis.,详见感染条目。,微生物感染,2
+淋病奈瑟菌,Neisseria gonorrhoeae,淋球菌；Gonococcus,淋病病原，革兰阴性双球菌。,Gram-negative diplococcus causing gonorrhea.,性传播。,微生物感染,2
+白色念珠菌,Candida albicans,白念；Yeast Infection,条件致病真菌，可致黏膜和系统感染。,Opportunistic fungus causing mucosal/systemic infection.,免疫低下易感。,微生物感染,2
+人类乳头瘤病毒,Human papillomavirus,HPV；人乳头瘤病毒,引起疣和宫颈癌的DNA病毒。,DNA virus causing warts and cervical cancer.,疫苗可预防。,微生物感染,1
+人类免疫缺陷病毒,HIV,艾滋病毒；Human Immunodeficiency Virus,攻击CD4+T细胞致AIDS的逆转录病毒。,Retrovirus attacking CD4 T cells causing AIDS.,详见感染条目。,微生物感染,1
+乙型肝炎病毒,Hepatitis B virus,HBV；乙肝病毒,嗜肝DNA病毒，致乙肝和肝癌。,Hepadnavirus causing hepatitis B and liver cancer.,疫苗预防。,微生物感染,1
+丙型肝炎病毒,Hepatitis C virus,HCV；丙肝病毒,黄病毒属RNA病毒，致丙肝。,Flavivirus RNA virus causing hepatitis C.,可治愈。,微生物感染,1
+流感病毒,Influenza virus,流感病毒；Influenza,正黏病毒，分甲乙丙三型。,"Orthomyxovirus, types A/B/C.",易变异引起流行。,微生物感染,1
+冠状病毒,Coronavirus,CoV；Coronavirus,有包膜单链RNA病毒，可致呼吸道感染。,Enveloped ssRNA virus causing respiratory infection.,含SARS-CoV-2。,微生物感染,1
+麻疹病毒,Measles virus,麻疹；Measles,麻疹病原，副黏病毒。,Paramyxovirus causing measles.,疫苗可预防。,微生物感染,2
+水痘-带状疱疹病毒,VZV；Varicella-Zoster Virus,水痘带状疱疹；Varicella Zoster,疱疹病毒，原发感染为水痘，复发为带状疱疹。,Herpesvirus causing varicella then zoster.,终身潜伏。,微生物感染,2
+疟原虫,Plasmodium,疟疾；Plasmodium,疟原虫属寄生虫，经按蚊传播。,Apicomplexan parasite transmitted by Anopheles.,详见感染条目。,微生物感染,2
+蛔虫,Ascaris lumbricoides,蛔虫；Roundworm,最常见的肠道线虫。,Most common intestinal nematode.,粪口传播。,微生物感染,3
+钩虫,Hookworm,钩虫；Hookworm,十二指肠钩口线虫，致慢性失血。,Nematode causing chronic blood loss anemia.,皮肤接触感染。,微生物感染,3
+绦虫,Tapeworm,绦虫；Cestode,扁形动物门绦虫，寄生于肠道。,"Flatworm of Cestoda, intestinal parasite.",食生肉感染。,微生物感染,3
+败血症,Sepsis,脓毒症；Sepsis,感染引起的全身炎症反应综合征。,Systemic inflammatory response from infection.,可致感染性休克。,微生物感染,1
+感染性休克,Septic shock,脓毒性休克；Septic Shock,严重感染导致的循环衰竭。,Circulatory failure from severe infection.,ICU危重。,微生物感染,1
+二重感染,Superinfection,菌群失调；Superinfection,长期用广谱抗生素致菌群失调引发的新感染。,New infection after long-term antibiotics causing dysbiosis.,如伪膜性肠炎。,微生物感染,3
+医院感染,Nosocomial infection,院感；Hospital-Acquired Infection,在医院内获得的感染。,Infection acquired in hospital setting.,多重耐药菌为主。,微生物感染,2
+消毒灭菌,Disinfection and sterilization,灭菌；Sterilization,杀灭或清除所有微生物包括芽孢。,Killing or removing all microbes including spores.,无菌要求。,微生物感染,2
+无菌,Asepsis,无菌操作；Sterile Technique,不含活微生物的状态和操作。,State and practice free of viable microbes.,外科基础。,微生物感染,2
+耐药菌,Resistant bacteria,多重耐药；MDR,对多种抗生素耐药的细菌。,Bacteria resistant to multiple antibiotics.,MRSA、VRE、CRE等。,微生物感染,2
+MRSA,MRSA,耐甲氧西林金葡菌；Methicillin-Resistant Staph Aureus,耐甲氧西林金黄色葡萄球菌。,Methicillin-resistant S. aureus.,院感重要病原。,微生物感染,2
+带状疱疹后神经痛,PHN,疱疹后神经痛；Postherpetic Neuralgia,带状疱疹皮疹消退后持续神经痛。,Persistent neuralgia after zoster rash heals.,老年常见。,皮肤科,2
+接触性皮炎,Contact dermatitis,接触过敏；Contact Dermatitis,皮肤接触物质后发生的炎症反应。,Inflammatory reaction after skin contact.,分刺激性和过敏性。,皮肤科,2
+丹毒,Erysipelas,丹毒；Erysipelas,乙型溶血性链球菌致真皮淋巴管感染。,Lymphatic infection by beta-hemolytic strep.,边界清楚红肿热痛。,皮肤科,3
+蜂窝织炎,Cellulitis,蜂窝组织炎；Cellulitis,皮下组织弥漫性细菌感染。,Diffuse bacterial infection of subcutaneous tissue.,红肿热痛边界不清。,皮肤科,2
+痤疮丙酸杆菌,Cutibacterium acnes,痤疮杆菌；P. Acnes,与痤疮相关的皮肤常驻菌。,Skin commensal related to acne.,痤疮发病因素。,皮肤科,3
+尖锐湿疣,Condyloma acuminatum,尖锐湿疣；Genital Warts,HPV引起的生殖器疣。,Genital warts caused by HPV.,性传播。,皮肤科,3
+梅毒疹,Syphilid,梅毒皮疹；Syphilis Rash,二期梅毒的皮肤表现。,Cutaneous manifestation of secondary syphilis.,对称分布不痒。,皮肤科,3
+妊娠高血压综合征,Pregnancy-induced hypertension,PIH；妊高征,妊娠20周后出现的高血压。,Hypertension after 20 weeks gestation.,详见妇产科条目。,妇产科,3
+产后出血,Postpartum hemorrhage,PPH；产后出血,胎儿娩出后24小时内失血>500ml。,Blood loss >500ml within 24h after delivery.,产妇死亡首因。,妇产科,1
+子宫脱垂,Uterine prolapse,子宫脱垂；Uterine Prolapse,子宫从正常位置下降脱出。,Descent of uterus from normal position.,盆底肌松弛所致。,妇产科,3
+子宫内膜异位症,Endometriosis,内异症；Endometriosis,子宫内膜组织出现在子宫腔外。,Endometrial tissue outside uterine cavity.,痛经不孕。,妇产科,2
+围绝经期,Perimenopause,更年期；Perimenopause,卵巢功能衰退至绝经前后过渡阶段。,Transition from declining ovarian function to menopause.,月经紊乱潮热。,妇产科,2
+新生儿败血症,Neonatal sepsis,新生儿感染；Neonatal Sepsis,新生儿期全身细菌感染。,Systemic bacterial infection in neonate.,早期表现不典型。,儿科,2
+维生素D缺乏,Vitamin D deficiency,VDD；Vitamin D Deficiency,维生素D不足致钙磷代谢异常。,Insufficient vitamin D causing Ca-P disorder.,儿童佝偻病成人骨软化。,儿科,2
+脑性瘫痪,Cerebral palsy,脑瘫；Cerebral Palsy,发育中脑非进行性损伤致运动障碍。,Non-progressive brain injury causing motor disorder.,出生前后高危因素。,儿科,2
+自闭症谱系障碍,ASD；Autism Spectrum Disorder,孤独症；Autism,社交沟通障碍和刻板行为。,Social communication deficit and stereotyped behavior.,详见精神条目。,儿科,3
+性早熟,Precocious puberty,性早熟；Precocious Puberty,女孩8岁前男孩9岁前出现第二性征。,Secondary sex characteristics before age 8 girls/9 boys.,影响终身高。,儿科,3
+尿布疹,Diaper rash,红臀；Diaper Dermatitis,婴幼儿尿布区皮肤炎症。,Inflammation of diaper area in infants.,护理不当所致。,儿科,3
+阿莫西林克拉维酸,Amoxicillin-clavulanate,安美汀；Augmentin,加β内酰胺酶抑制剂的复方阿莫西林。,Amoxicillin plus beta-lactamase inhibitor.,广谱含酶抑剂。,常用药物,2
+头孢哌酮舒巴坦,Cefoperazone-sulbactam,舒普深；Cefoperazone-Sulbactam,第三代头孢加酶抑制剂复方。,Third-gen cephalosporin plus beta-lactamase inhibitor.,耐药菌感染。,常用药物,3
+美罗培南,Meropenem,美平；Meropenem,碳青霉烯类广谱抗生素。,Carbapenem broad-spectrum antibiotic.,重症感染。,常用药物,2
+亚胺培南,Imipenem,泰能；Imipenem,碳青霉烯类抗生素。,Carbapenem antibiotic.,重症感染。,常用药物,3
+环丙沙星,Ciprofloxacin,西普乐；Ciprofloxacin,喹诺酮类抗生素。,Quinolone antibiotic.,泌尿系和消化道感染。,常用药物,2
+多西环素,Doxycycline,强力霉素；Doxycycline,四环素类抗生素。,Tetracycline antibiotic.,衣原体支原体感染。,常用药物,3
+利福平,Rifampicin,利福定；Rifampicin,抗结核一线药。,First-line anti-TB drug.,结核联合用药。,常用药物,2
+异烟肼,Isoniazid,INH；Isoniazid,抗结核一线药。,First-line anti-TB drug.,需监测肝毒性。,常用药物,2
+乙胺丁醇,Ethambutol,EMB；Ethambutol,抗结核药。,Anti-TB drug.,视神经炎副作用。,常用药物,3
+吡嗪酰胺,Pyrazinamide,PZA；Pyrazinamide,抗结核药。,Anti-TB drug.,高尿酸副作用。,常用药物,3
+氟康唑,Fluconazole,大扶康；Fluconazole,三唑类抗真菌药。,Triazole antifungal.,念珠菌感染。,常用药物,2
+伊曲康唑,Itraconazole,斯皮仁诺；Itraconazole,广谱三唑类抗真菌药。,Broad-spectrum triazole antifungal.,甲癣和系统性真菌。,常用药物,3
+阿苯达唑,Albendazole,肠虫清；Albendazole,广谱驱虫药。,Broad-spectrum anthelmintic.,肠道寄生虫。,常用药物,3
+硝苯地平,Nifedipine,心痛定；Nifedipine,钙通道阻滞剂降压。,Calcium channel blocker for BP.,短效用于降压急控。,常用药物,2
+厄贝沙坦,Irbesartan,安博维；Irbesartan,ARB类降压药。,ARB antihypertensive.,降压护肾。,常用药物,2
+氯沙坦,Losartan,科素亚；Losartan,首个ARB类降压药。,First ARB antihypertensive.,降压降尿酸。,常用药物,3
+培哚普利,Perindopril,雅施达；Perindopril,ACEI类长效降压药。,Long-acting ACEI antihypertensive.,心血管保护。,常用药物,3
+比索洛尔,Bisoprolol,康忻；Bisoprolol,高选择性β1受体阻滞剂。,Highly selective beta-1 blocker.,心衰和降压。,常用药物,2
+地高辛,Digoxin,强心苷；Digoxin,正性肌力药用于心衰和房颤。,Positive inotrope for HF and AF.,治疗窗窄需监测。,常用药物,2
+胺碘酮,Amiodarone,可达龙；Amiodarone,广谱抗心律失常药。,Broad-spectrum antiarrhythmic.,肺甲状腺毒性。,常用药物,2
+利多卡因,Lidocaine,利多卡因；Lidocaine,局麻药和抗室性心律失常药。,Local anesthetic and ventricular antiarrhythmic.,室性心律失常。,常用药物,2
+辛伐他汀,Simvastatin,舒降之；Simvastatin,他汀类调脂药。,Statin lipid-lowering drug.,降LDL。,常用药物,2
+依折麦布,Ezetimibe,益适纯；Ezetimibe,抑制肠道胆固醇吸收。,Inhibits intestinal cholesterol absorption.,与他汀联用。,常用药物,3
+非诺贝特,Fenofibrate,力平之；Fenofibrate,贝特类降甘油三酯药。,Fibrate lowering triglycerides.,高甘油三酯血症。,常用药物,3
+雷贝拉唑,Rabeprazole,波利特；Rabeprazole,质子泵抑制剂。,PPI.,抑酸。,常用药物,3
+铝碳酸镁,Hydrotalcite,达喜；Hydrotalcite,抗酸胃黏膜保护剂。,Antacid mucosal protectant.,中和胃酸。,常用药物,3
+莫沙必利,Mosapride,快力；Mosapride,促胃肠动力药。,Prokinetic.,胃动力不足。,常用药物,3
+美沙拉嗪,Mesalazine,美沙拉秦；Mesalamine,治疗溃疡性结肠炎。,Treats ulcerative colitis.,IBD用药。,常用药物,3
+硫唑嘌呤,Azathioprine,依木兰；Azathioprine,免疫抑制剂。,Immunosuppressant.,自身免疫病和移植。,常用药物,3
+环磷酰胺,Cyclophosphamide,CTX；Cyclophosphamide,烷化剂化疗和免疫抑制剂。,Alkylating chemotherapy and immunosuppressant.,狼疮和肿瘤。,常用药物,2
+他莫昔芬,Tamoxifen,三苯氧胺；Tamoxifen,雌激素受体调节剂治乳腺癌。,SERMD for breast cancer.,内分泌治疗。,常用药物,2
+来曲唑,Letrozole,弗隆；Letrozole,芳香化酶抑制剂。,Aromatase inhibitor.,绝经后乳腺癌。,常用药物,3
+伊马替尼,Imatinib,格列卫；Imatinib,BCR-ABL酪氨酸激酶抑制剂。,BCR-ABL TKI.,CML靶向药。,常用药物,2
+吉非替尼,Gefitinib,易瑞沙；Gefitinib,EGFR酪氨酸激酶抑制剂。,EGFR TKI.,EGFR突变肺癌。,常用药物,3
+奥希替尼,Osimertinib,泰瑞沙；Osimertinib,三代EGFR-TKI。,Third-gen EGFR TKI.,T790M突变肺癌。,常用药物,3
+利妥昔单抗,Rituximab,美罗华；Rituximab,抗CD20单克隆抗体。,Anti-CD20 monoclonal antibody.,淋巴瘤和自身免疫。,常用药物,2
+曲妥珠单抗,Trastuzumab,赫赛汀；Herceptin,抗HER2单克隆抗体。,Anti-HER2 mAb.,HER2阳性乳腺癌。,常用药物,2
+帕博利珠单抗,Pembrolizumab,K药；Keytruda,PD-1抑制剂免疫治疗。,PD-1 inhibitor immunotherapy.,多种肿瘤。,常用药物,2
+纳武利尤单抗,Nivolumab,O药；Opdivo,PD-1抑制剂。,PD-1 inhibitor.,肿瘤免疫治疗。,常用药物,3
+胰岛素类似物,Insulin analog,胰岛素类似物；Insulin Analog,基因工程改造的胰岛素。,Genetically engineered insulin.,更平稳降糖。,常用药物,2
+门冬胰岛素,Insulin aspart,诺和锐；Insulin Aspart,速效胰岛素类似物。,Rapid-acting insulin analog.,餐时降糖。,常用药物,3
+甘精胰岛素,Insulin glargine,来得时；Lantus,长效胰岛素类似物。,Long-acting insulin analog.,基础降糖。,常用药物,2
+格列齐特,Gliclazide,达美康；Gliclazide,磺脲类降糖药。,Sulfonylurea antidiabetic.,促胰岛素分泌。,常用药物,3
+达格列净,Dapagliflozin,安达唐；Dapagliflozin,SGLT2抑制剂。,SGLT2 inhibitor.,心肾获益降糖。,常用药物,2
+恩格列净,Empagliflozin,Jardiance；Empagliflozin,SGLT2抑制剂。,SGLT2 inhibitor.,心衰和肾脏获益。,常用药物,2
+西格列汀,Sitagliptin,捷诺维；Sitagliptin,DPP-4抑制剂。,DPP-4 inhibitor.,降糖平稳。,常用药物,3
+利拉鲁肽,Liraglutide,诺和力；Victoza,GLP-1受体激动剂。,GLP-1 receptor agonist.,减重降糖。,常用药物,2
+司美格鲁肽,Semaglutide,诺和泰；Ozempic,GLP-1受体激动剂。,GLP-1 receptor agonist.,降糖和减重。,常用药物,2
+左甲状腺素,Levothyroxine,优甲乐；Euthyrox,甲状腺素替代治疗。,Thyroid hormone replacement.,甲减替代。,常用药物,1
+甲巯咪唑,Methimazole,他巴唑；Methimazole,抑制甲状腺激素合成。,Inhibits thyroid hormone synthesis.,甲亢治疗。,常用药物,2
+丙硫氧嘧啶,Propylthiouracil,PTU；Propylthiouracil,抑制甲状腺激素合成。,Inhibits thyroid hormone synthesis.,妊娠甲亢首选。,常用药物,3
+碳酸锂,Lithium carbonate,锂盐；Lithium,心境稳定剂治双相。,Mood stabilizer for bipolar.,治疗窗窄需监测。,常用药物,2
+喹硫平,Quetiapine,思瑞康；Quetiapine,非典型抗精神病药。,Atypical antipsychotic.,精神分裂和双相。,常用药物,3
+奥氮平,Olanzapine,再普乐；Zyprexa,非典型抗精神病药。,Atypical antipsychotic.,体重增加副作用。,常用药物,3
+利培酮,Risperidone,维思通；Risperdal,非典型抗精神病药。,Atypical antipsychotic.,泌乳素升高。,常用药物,3
+多奈哌齐,Donepezil,安理申；Aricept,胆碱酯酶抑制剂治AD。,Cholinesterase inhibitor for AD.,改善认知。,常用药物,2
+美金刚,Memantine,易倍申；Namenda,NMDA受体拮抗剂治中重度AD。,NMDA antagonist for moderate-severe AD.,中重度痴呆。,常用药物,3
+苯海索,Trihexyphenidyl,安坦；Artane,抗胆碱药治帕金森。,Anticholinergic for Parkinson's.,震颤改善。,常用药物,3
+多巴丝肼,Levodopa/benserazide,美多芭；Madopar,左旋多巴加苄丝肼复方。,Levodopa plus benserazide.,帕金森主力药。,常用药物,2
+单硝酸异山梨酯,Isosorbide mononitrate,欣康；Isosorbide Mononitrate,长效硝酸酯类抗心绞痛。,Long-acting nitrate antianginal.,冠心病长期治疗。,常用药物,2
+硝酸甘油,Nitroglycerin,NTG；Nitroglycerin,速效硝酸酯类，缓解心绞痛。,Rapid nitrate relieving angina.,舌下含服急救。,常用药物,1
+甘露醇,Mannitol,甘露醇；Mannitol,渗透性脱水降颅压。,Osmotic dehydrant for ICP.,脑水肿急救。,常用药物,2
+甘油果糖,Glycerol fructose,布瑞得；Glycerol Fructose,渗透性脱水降颅压。,Osmotic dehydrant.,降颅压平稳。,常用药物,3
+布地奈德,Budesonide,普米克；Budesonide,吸入糖皮质激素。,Inhaled corticosteroid.,哮喘和COPD。,常用药物,2
+沙丁胺醇,Salbutamol,万托林；Ventolin,短效β2激动剂平喘。,Short-acting beta-2 agonist bronchodilator.,哮喘急性缓解。,常用药物,1
+沙美特罗,Salmeterol,施立稳；Salmeterol,长效β2激动剂。,Long-acting beta-2 agonist.,哮喘维持治疗。,常用药物,3
+异丙托溴铵,Ipratropium bromide,爱全乐；Atrovent,抗胆碱能支气管扩张剂。,Anticholinergic bronchodilator.,COPD用药。,常用药物,3
+孟鲁司特,Montelukast,顺尔宁；Singulair,白三烯受体拮抗剂。,Leukotriene receptor antagonist.,哮喘和过敏性鼻炎。,常用药物,2
+色甘酸钠,Cromolyn sodium,咽泰；Cromolyn,肥大细胞膜稳定剂。,Mast cell stabilizer.,过敏性疾病预防。,常用药物,3
+西替利嗪,Cetirizine,仙特明；Zyrtec,第二代抗组胺药。,Second-gen antihistamine.,过敏止痒。,常用药物,2
+氯雷他定,Loratadine,开瑞坦；Claritin,第二代抗组胺药。,Second-gen antihistamine.,过敏性鼻炎。,常用药物,2
+扑尔敏,Chlorpheniramine,氯苯那敏；Chlorpheniramine,第一代抗组胺药。,First-gen antihistamine.,嗜睡副作用。,常用药物,3
+赛庚啶,Cyproheptadine,Periactin；Cyproheptadine,抗组胺和抗5-HT药。,Antihistamine and anti-serotonergic.,过敏和食欲。,常用药物,3
+超声心动图,Echocardiography,心脏超声；Echo,用超声波动态观察心脏结构和功能。,Ultrasound imaging of cardiac structure and function.,心功能评估首选。,检查技术,1
+动态心电图,Holter monitoring,Holter；24小时心电图,连续记录24小时以上心电活动。,Continuous ECG recording over 24h.,捕捉阵发性心律失常。,检查技术,2
+运动负荷试验,Exercise stress test,平板运动试验；Stress Test,运动增加心脏负荷诱发缺血。,Exercise-induced cardiac stress to provoke ischemia.,冠心病辅助诊断。,检查技术,2
+冠状动脉造影,Coronary angiography,CAG；冠脉造影,经导管注入造影剂显示冠脉。,Contrast injection via catheter visualizing coronaries.,冠心病诊断金标准。,检查技术,1
+内镜下逆行胰胆管造影,ERCP,ERCP；内镜逆行胰胆管造影,经内镜逆行注入造影剂显示胰胆管。,Endoscopic retrograde cholangiopancreatography.,胆胰疾病诊治。,检查技术,2
+磁共振胰胆管成像,MRCP,MRCP；磁共振胰胆管成像,无创胰胆管成像。,Noninvasive pancreatobiliary imaging.,无创胆胰评估。,检查技术,3
+正电子发射断层扫描,PET-CT,PET；派特CT,功能代谢与解剖融合成像。,Metabolic and anatomical fusion imaging.,肿瘤分期。,检查技术,2
+骨密度检测,Bone densitometry,DEXA；骨密度,双能X线测量骨密度。,Dual-energy X-ray bone density measurement.,骨质疏松诊断。,检查技术,2
+肺功能测定,Pulmonary function testing,PFT；肺功能,测定肺通气和换气功能。,Measuring ventilation and gas exchange.,COPD和哮喘评估。,检查技术,2
+多导睡眠监测,Polysomnography,PSG；睡眠监测,睡眠时记录脑电心电呼吸等参数。,"Recording EEG, ECG, respiration during sleep.",睡眠呼吸暂停诊断。,检查技术,2
+脑电图,EEG,脑电；Electroencephalogram,记录大脑皮层电活动。,Recording cortical electrical activity.,癫痫诊断。,检查技术,2
+肌电图,EMG,肌电；Electromyography,记录肌肉和神经电活动。,Recording muscle and nerve electrical activity.,神经肌肉病诊断。,检查技术,3
+经颅多普勒,TCD,脑血流；Transcranial Doppler,超声检测颅内血管血流。,Ultrasound measuring intracranial blood flow.,脑血管痉挛筛查。,检查技术,3
+阴道超声,Transvaginal ultrasound,阴超；TVS,经阴道高频超声检查盆腔。,Transvaginal pelvic ultrasound.,妇科和早孕。,检查技术,3
+胃肠镜,Gastroscopy and colonoscopy,胃肠镜；Endoscopy,胃镜和结肠镜检查统称。,Collective term for upper and lower endoscopy.,消化道筛查。,检查技术,1
+病理活检,Pathological biopsy,病理活检；Biopsy,取组织做病理诊断。,Tissue sampling for pathology.,肿瘤定性。,检查技术,1
+基因测序,Gene sequencing,测序；Sequencing,测定DNA序列的技术。,Technology determining DNA sequence.,遗传病和肿瘤。,检查技术,2
+聚合酶链式反应,PCR,PCR；Polymerase Chain Reaction,核酸体外扩增技术。,In vitro nucleic acid amplification.,病原和基因检测。,检查技术,1
+酶联免疫吸附测定,ELISA,酶联免疫；ELISA,基于抗原抗体反应的免疫检测。,Immunoassay based on antigen-antibody reaction.,蛋白和抗体检测。,检查技术,2
+化学发光免疫分析,CLIA,化学发光；Chemiluminescence Immunoassay,发光标记的高灵敏免疫检测。,High-sensitivity luminescent immunoassay.,激素和肿瘤标志物。,检查技术,2
+流式细胞术,Flow cytometry,流式；Flow Cytometry,单细胞水平快速分析细胞。,Rapid single-cell analysis.,免疫和血液病。,检查技术,2
+质谱分析,Mass spectrometry,质谱；Mass Spec,测定质荷比分析化合物。,Analyzing compounds by mass-to-charge ratio.,蛋白和代谢物。,检查技术,3
+高效液相色谱,HPLC,液相色谱；High Performance Liquid Chromatography,液体高压色谱分离技术。,High-pressure liquid chromatography separation.,药物和成分分析。,检查技术,3
+血培养,Blood culture,血培养；Blood Culture,血液中培养病原微生物。,Culturing pathogens from blood.,败血症诊断。,检查技术,1
+尿培养,Urine culture,尿培养；Urine Culture,尿液中培养细菌。,Culturing bacteria from urine.,尿路感染确诊。,检查技术,2
+便常规,Stool routine,粪便常规；Stool Examination,粪便性状和显微镜检查。,Stool physical and microscopic exam.,消化道感染和寄生虫。,检查技术,2
+心电图机,ECG machine,心电图；Electrocardiograph,记录心脏电活动的设备。,Device recording cardiac electrical activity.,心电检查。,检查技术,3
+血压计,Sphygmomanometer,血压计；BP Monitor,测量血压的仪器。,Device measuring blood pressure.,生命体征。,检查技术,3
+血糖仪,Glucose meter,血糖仪；Glucometer,自测血糖的便携设备。,Portable blood glucose meter.,糖尿病自我监测。,检查技术,2
+体温计,Thermometer,体温计；Thermometer,测量体温的器具。,Device measuring body temperature.,体温监测。,检查技术,3
+听诊器,Stethoscope,听诊器；Stethoscope,听诊心肺音的器械。,Instrument for auscultating heart and lung sounds.,查体工具。,检查技术,3
+锁骨,Clavicle,锁骨；Collar Bone,连接胸骨和肩峰的S形长骨。,S-shaped long bone connecting sternum and acromion.,易骨折。,解剖学,3
+肩胛骨,Scapula,肩胛骨；Shoulder Blade,背部三角形扁骨。,Triangular flat bone of upper back.,肩关节组成。,解剖学,3
+肱骨,Humerus,肱骨；Humerus,上臂长骨。,Upper arm long bone.,上肢骨。,解剖学,3
+尺骨,Ulna,尺骨；Ulna,前臂内侧长骨。,Medial forearm long bone.,肘关节组成。,解剖学,3
+桡骨,Radius,桡骨；Radius,前臂外侧长骨。,Lateral forearm long bone.,前臂骨折常见。,解剖学,3
+股骨,Femur,股骨；Femur,人体最长最粗的长骨。,Longest and strongest long bone.,大腿骨。,解剖学,2
+胫骨,Tibia,胫骨；Shin Bone,小腿内侧主要承重骨。,Medial weight-bearing lower leg bone.,下肢骨。,解剖学,3
+腓骨,Fibula,腓骨；Fibula,小腿外侧细长骨。,Lateral slender lower leg bone.,非主要承重。,解剖学,3
+髌骨,Patella,膝盖骨；Kneecap,膝关节前方籽骨。,Sesamoid bone in front of knee.,股四头肌附着。,解剖学,3
+肋骨,Rib,肋骨；Rib Cage,弓形扁骨构成胸廓。,Arched flat bones forming thoracic cage.,共12对。,解剖学,3
+胸骨,Sternum,胸骨；Breastbone,胸前正中扁骨。,Flat bone at center of anterior chest.,分柄体剑突。,解剖学,3
+脊柱,Vertebral column,脊椎；Spine,由椎骨组成的中轴骨骼。,Axial skeleton composed of vertebrae.,分颈胸腰骶尾。,解剖学,2
+颅骨,Skull,头颅；Cranium,容纳脑的骨骼总称。,Bones enclosing the brain.,分脑颅和面颅。,解剖学,3
+关节,Joint,关节；Articulation,骨与骨之间的连接。,Junction between bones.,分纤维软骨滑膜。,解剖学,2
+韧带,Ligament,韧带；Ligament,连接骨与骨的纤维结缔组织。,Fibrous connective tissue connecting bone to bone.,维持关节稳定。,解剖学,2
+肌腱,Tendon,肌腱；Tendon,连接肌肉与骨的纤维组织。,Fibrous tissue connecting muscle to bone.,传递肌力。,解剖学,2
+筋膜,Fascia,筋膜；Fascia,包裹肌肉和器官的结缔组织。,Connective tissue wrapping muscles and organs.,分深浅层。,解剖学,3
+动脉,Artery,动脉；Arterial,将血液从心脏送出的血管。,Vessels carrying blood away from heart.,壁厚弹性大。,解剖学,1
+静脉,Vein,静脉；Venous,将血液送回心脏的血管。,Vessels returning blood to heart.,有静脉瓣。,解剖学,1
+毛细血管,Capillary,微血管；Capillary,连接动静脉进行物质交换的薄壁血管。,Thin-walled vessels between arteries and veins for exchange.,物质交换场所。,解剖学,2
+淋巴结,Lymph node,淋巴结；Lymph Node,淋巴系统免疫过滤结构。,Immune filtering structures of lymphatic system.,沿淋巴管分布。,解剖学,2
+淋巴管,Lymphatic vessel,淋巴管；Lymph Vessel,输送淋巴液的管道。,Vessels transporting lymph.,回流组织液。,解剖学,3
+食管,Esophagus,食道；Esophagus,连接咽和胃的肌性管道。,Muscular tube connecting pharynx to stomach.,食物通道。,解剖学,2
+直肠,Rectum,直肠；Rectum,大肠末段。,Terminal part of large intestine.,储存粪便。,解剖学,2
+肛管,Anal canal,肛管；Anal Canal,消化道最末端。,Most distal part of digestive tract.,控制排便。,解剖学,3
+输卵管,Fallopian tube,卵管；Uterine Tube,输送卵子的肌性管道。,Muscular tube transporting ovum.,受精场所。,解剖学,2
+输精管,Vas deferens,输精管；Ductus Deferens,输送精子的肌性管道。,Muscular duct transporting sperm.,结扎避孕。,解剖学,3
+前列腺,Prostate,前列腺；Prostate Gland,男性生殖附属腺。,Male reproductive accessory gland.,包绕尿道。,解剖学,2
+睾丸,Testis,睾丸；Testicle,男性生殖腺，产生精子和睾酮。,Male gonad producing sperm and testosterone.,阴囊内。,解剖学,2
+卵巢,Ovary,卵巢；Ovary,女性生殖腺，产生卵子和激素。,Female gonad producing ova and hormones.,盆腔内。,解剖学,2
+主动脉,Aorta,主动脉；Aorta,人体最粗大的动脉。,Largest artery in the body.,发自左心室。,解剖学,1
+上腔静脉,Superior vena cava,上腔；Superior Vena Cava,收集上半身回心血液的大静脉。,Large vein returning upper body blood to heart.,汇入右心房。,解剖学,2
+下腔静脉,Inferior vena cava,下腔；Inferior Vena Cava,收集下半身回心血液的大静脉。,Large vein returning lower body blood to heart.,汇入右心房。,解剖学,2
+冠状动脉,Coronary artery,冠脉；Coronary Artery,供应心脏本身的动脉。,Arteries supplying the heart itself.,分左右支。,解剖学,1
+颈动脉,Carotid artery,颈总动脉；Carotid Artery,供应头颈部的主要动脉。,Major artery supplying head and neck.,分叉处听诊。,解剖学,1
+肺动脉,Pulmonary artery,肺动脉；Pulmonary Artery,将静脉血送入肺的动脉。,Artery carrying deoxygenated blood to lung.,发自右心室。,解剖学,2
+肝门静脉,Portal vein,门静脉；Portal Vein,收集消化道血液入肝的静脉。,Vein draining GI tract into liver.,门脉高压。,解剖学,2
+肥大,Hypertrophy,肥大；Hypertrophy,组织器官体积增大。,Increase in size of tissue or organ.,如高血压心肌肥大。,病理学,2
+化生,Metaplasia,Metaplasia；化生,一种分化成熟组织被另一种替代。,Replacement of one mature tissue by another.,如支气管鳞化。,病理学,3
+异型增生,Dysplasia,不典型增生；Dysplasia,细胞异型性增生，癌前病变。,"Atypical cell proliferation, precancerous.",需随访。,病理学,2
+原位癌,Carcinoma in situ,CIS；原位癌,癌细胞未突破基底膜。,Malignant cells not crossing basement membrane.,早期癌可治愈。,病理学,1
+浸润癌,Invasive carcinoma,浸润癌；Invasive Cancer,癌细胞突破基底膜浸润间质。,Malignant cells invading beyond basement membrane.,可转移。,病理学,2
+间变,Anaplasia,未分化；Anaplasia,肿瘤细胞极度异型。,Extreme cellular atypia of tumor.,高度恶性。,病理学,3
+凋亡,Apoptosis,程序性死亡；Apoptosis,程序性细胞死亡。,Programmed cell death.,生理和病理过程。,病理学,2
+自噬,Autophagy,Autophagy；自噬,细胞降解自身成分的过程。,Cellular self-degradation process.,应激适应。,病理学,3
+炎症介质,Inflammatory mediator,炎症介质；Inflammatory Mediator,介导炎症反应的化学物质。,Chemical mediators of inflammation.,如组胺、前列腺素。,病理学,2
+全身炎症反应综合征,SIRS,SIRS；全身炎症反应,全身失控的炎症反应。,Systemic uncontrolled inflammatory response.,脓毒症前期。,病理学,2
+代偿,Compensation,代偿；Compensatory,机体通过调整维持功能。,Body adjusting to maintain function.,心衰代偿期。,病理学,3
+失代偿,Decompensation,失代偿；Decompensation,代偿能力耗竭功能恶化。,"Exhaustion of compensation, function worsens.",心衰失代偿。,病理学,2
+缺血再灌注损伤,Ischemia-reperfusion injury,再灌注损伤；Reperfusion Injury,恢复血流后组织反而损伤加重。,Worsening injury after blood flow restoration.,自由基损伤。,病理学,2
+自由基,Free radical,游离基；Free Radical,带未配对电子的活性分子。,Reactive molecule with unpaired electron.,氧化损伤。,病理学,2
+氧化应激,Oxidative stress,氧化应激；Oxidative Stress,氧化与抗氧化失衡状态。,Imbalance between oxidation and antioxidant defense.,多种疾病机制。,病理学,2
+受体,Receptor,受体；Receptor,细胞膜或细胞内与配体结合的蛋白。,Protein binding ligands on/in cells.,信号传导。,基础医学,1
+配体,Ligand,配体；Ligand,与受体结合的信号分子。,Signal molecule binding receptor.,激素神经递质。,基础医学,2
+信号传导,Signal transduction,信号转导；Signal Transduction,细胞外信号传入胞内产生效应。,Extracellular signal transduced into cellular response.,细胞通讯。,基础医学,2
+基因表达,Gene expression,基因表达；Gene Expression,基因转录翻译产生蛋白质。,Gene transcribed and translated into protein.,受调控。,基础医学,2
+基因突变,Gene mutation,基因突变；Gene Mutation,DNA序列发生改变。,Change in DNA sequence.,疾病和进化基础。,基础医学,1
+表观遗传,Epigenetics,表观遗传；Epigenetics,不改变DNA序列的可遗传改变。,Heritable changes without DNA sequence alteration.,如甲基化。,基础医学,3
+免疫耐受,Immune tolerance,免疫耐受；Immune Tolerance,免疫系统对自身抗原无反应。,Immune system unresponsive to self antigens.,自身免疫病对立面。,基础医学,2
+自身免疫,Autoimmunity,自身免疫；Autoimmunity,免疫系统攻击自身组织。,Immune system attacking self tissues.,自身免疫病基础。,基础医学,1
+超敏反应,Hypersensitivity,过敏；Hypersensitivity,过度免疫反应造成组织损伤。,Excessive immune reaction causing tissue damage.,分四型。,基础医学,1
+抗原,Antigen,Ag；抗原,能诱导免疫应答的物质。,Substance inducing immune response.,如病原微生物。,基础医学,1
+抗体,Antibody,Ab；免疫球蛋白,B细胞产生的免疫球蛋白。,Immunoglobulin produced by B cells.,中和抗原。,基础医学,1
+补体,Complement,补体系统；Complement,血浆中参与免疫溶菌的蛋白系统。,Plasma protein system mediating immune lysis.,免疫效应。,基础医学,2
+细胞因子,Cytokine,细胞因子；Cytokine,免疫细胞分泌的信号蛋白。,Signaling proteins secreted by immune cells.,如白介素、干扰素。,基础医学,2
+干扰素,Interferon,IFN；干扰素,抗病毒和免疫调节的细胞因子。,Antiviral immunoregulatory cytokine.,抗病毒治疗。,基础医学,2
+白细胞介素,Interleukin,IL；白介素,白细胞间信号分子。,Signaling molecules between leukocytes.,炎症和免疫。,基础医学,2
+T淋巴细胞,T lymphocyte,T细胞；T Cell,介导细胞免疫的淋巴细胞。,Lymphocyte mediating cellular immunity.,分辅助和细胞毒。,基础医学,1
+B淋巴细胞,B lymphocyte,B细胞；B Cell,产生抗体的淋巴细胞。,Lymphocyte producing antibodies.,体液免疫。,基础医学,1
+自然杀伤细胞,NK cell,NK细胞；Natural Killer Cell,天然杀伤病毒感染和肿瘤细胞的淋巴细胞。,Lymphocyte killing virally infected and tumor cells.,固有免疫。,基础医学,2
+巨噬细胞,Macrophage,巨噬细胞；Macrophage,吞噬病原体和异物的大型白细胞。,Large leukocyte phagocytosing pathogens.,抗原呈递。,基础医学,2
+树突状细胞,Dendritic cell,DC；树突细胞,最强的抗原呈递细胞。,Most potent antigen-presenting cell.,连接固有和适应性免疫。,基础医学,3
+干细胞,Stem cell,干细胞；Stem Cell,具有自我更新和多向分化潜能的细胞。,Cells with self-renewal and differentiation potential.,治疗和再生医学。,基础医学,2
+凋亡小体,Apoptotic body,凋亡小体；Apoptotic Body,凋亡细胞形成的小囊泡。,Small vesicles formed by apoptotic cells.,被巨噬细胞清除。,基础医学,3
+线粒体,Mitochondria,线粒体；Mitochondrion,细胞能量工厂，产生ATP。,Cell's energy factory producing ATP.,凋亡调控。,基础医学,1
+细胞膜,Cell membrane,质膜；Plasma Membrane,细胞的外层脂质双层结构。,Lipid bilayer outer structure of cell.,物质交换。,基础医学,2
+细胞核,Cell nucleus,细胞核；Nucleus,含DNA的细胞控制中心。,Cell control center containing DNA.,遗传信息储存。,基础医学,2
+细胞质,Cytoplasm,胞质；Cytoplasm,细胞膜内细胞核外的胶状物质。,Gel-like material between membrane and nucleus.,含细胞器。,基础医学,3
+DNA,Deoxyribonucleic acid,脱氧核糖核酸；DNA,储存遗传信息的双链核酸。,Double-stranded nucleic acid storing genetic information.,遗传物质。,基础医学,1
+RNA,Ribonucleic acid,核糖核酸；RNA,参与基因表达的核酸。,Nucleic acid involved in gene expression.,mRNA tRNA rRNA。,基础医学,1
+蛋白质,Protein,蛋白质；Protein,氨基酸组成的生物大分子。,Biomolecule made of amino acids.,生命活动执行者。,基础医学,1
+酶,Enzyme,酶；Enzyme,催化生物化学反应的蛋白质。,Protein catalyzing biochemical reactions.,降低反应活化能。,基础医学,1
+神经递质,Neurotransmitter,神经递质；Neurotransmitter,神经元间传递信号的化学物质。,Chemical signaling between neurons.,如乙酰胆碱、多巴胺。,基础医学,1
+受体拮抗剂,Antagonist,拮抗剂；Antagonist,阻断受体的药物。,Drug blocking receptor.,如阿托品。,基础医学,2
+受体激动剂,Agonist,激动剂；Agonist,激活受体的药物。,Drug activating receptor.,如肾上腺素。,基础医学,2
+药物代谢,Drug metabolism,药物代谢；Metabolism,药物在体内的生物转化。,Biotransformation of drugs in body.,主要在肝脏。,基础医学,2
+首过效应,First pass effect,首过代谢；First-Pass Metabolism,口服药经肝脏首次代谢降低入血。,Oral drug first metabolized by liver reducing bioavailability.,详见药理条目。,药理学,3

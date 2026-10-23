@@ -148,7 +148,10 @@
         />
       </div>
 
-      <div class="c-params-panel__field">
+      <div
+        v-if="hasAudienceMix"
+        class="c-params-panel__field"
+      >
         <div class="c-params-panel__label">
           <span>主色占比</span>
           <b>{{ ratioPercent }}%</b>
@@ -163,7 +166,10 @@
         />
       </div>
 
-      <div class="c-params-panel__field">
+      <div
+        v-if="hasAudienceMix"
+        class="c-params-panel__field"
+      >
         <div class="c-params-panel__label">
           <span>重心偏向</span>
           <b>{{ biasText }}</b>
@@ -202,7 +208,7 @@ import {
   PlvSlider,
 } from '@/plugins/polyv-ui/admin-import';
 import { messageBox } from '@/components/common-base/message-box';
-import { EFFECT_TEMPLATE_OPTIONS, getEffectTemplate } from '../effects';
+import { EFFECT_TEMPLATE_OPTIONS, getEffectTemplate, isTransitionOnly } from '../effects';
 import { spanOf, spanPatchOf, spanRangeOf } from '../span';
 import type { BarrageAnchor, EffectParams, EffectTemplateName } from '../types';
 import FeedPanel from './feed-panel.vue';
@@ -297,6 +303,13 @@ const answerValue = computed(() => resolved.value.answerText ?? '');
 
 const colorPrimary = computed(() => resolved.value.colorPrimary ?? '#ff3553');
 const colorSecondary = computed(() => resolved.value.colorSecondary ?? '#ffd166');
+
+/**
+ * 配色占比 / 重心偏向两行只对「会读弹幕」的模板有意义
+ * @desc 文字倒计时是纯转场，模板里根本不读 ratio / bias —— 留着这两根滑杆
+ *   就是明摆着的死控件：拖了没反应，作者只会以为参数面板坏了
+ */
+const hasAudienceMix = computed(() => !!descriptor.value && !isTransitionOnly(descriptor.value));
 
 const particles = computed(() => resolved.value.particles ?? 120);
 const ratioPercent = computed(() => Math.round((resolved.value.ratio ?? 0.5) * 100));

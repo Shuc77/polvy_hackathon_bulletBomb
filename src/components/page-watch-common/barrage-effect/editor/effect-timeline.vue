@@ -173,6 +173,7 @@ import { collectLeadSecOf } from '../collect';
 import { getEffectTemplate } from '../effects';
 import { spanOf } from '../span';
 import type { BarrageAnchor, EffectTemplateName } from '../types';
+import { displayOrderOf, sinkDisplayOrder } from './lane-order';
 import { useTimelineDrag } from './use-timeline-drag';
 
 const props = defineProps<{
@@ -245,6 +246,9 @@ const {
   getPlayhead: () => currentTime.value,
   onSeek: time => emit('seek', time),
   onSelect: id => emit('select-anchor', id),
+  // 一开拖就把被拖的这条排到下面：停着的特效保持原位。
+  // 放在起点而不是松手时，拖动过程中的分轨预览才和最终落盘一致
+  onDragStart: id => sinkDisplayOrder(id),
   onCommitMove: (id, time, aligned) => emit('move-anchor', id, time, aligned),
   onCommitResize: (id, span) => emit('resize-anchor', id, span),
   onCreate: (time, template) => emit('create-anchor', time, template),
@@ -302,9 +306,13 @@ function displaySpanOf(anchor: BarrageAnchor): number {
  * 自动分轨
  *
  * @desc 区间是 `[触发时间 - 提前收集, 触发时间 + 播放时长]`，因为收集段也占着
- *   作者和观众的注意力，两条收集段叠在一起同样看不清。按起点排序后，每条放进
- *   **第一条已经空出来的**轨道；全部在忙才开新轨。超过 `MAX_LANES` 时塞进最早
- *   空出的那条 —— 界面高度有上限，宁可叠一点也不把舞台压没
+ *   作者和观众的注意力，两条收集段叠在一起同样看不清。按显示优先级排序后，
+ *   每条放进**第一条已经空出来的**轨道；全部在忙才开新轨。
+ *   超过 `MAX_LANES` 时塞进最早空出的那条 —— 界面高度有上限，宁可叠一点也不
+ *   把舞台压没
+ *
+ *   ★ 优先级和时间无关：新特效被拖到老特效左边时，不该因为起点更早就把老特效
+ *   顶到下面。见 `displayOrderOf`
  *
  *   ★ 不新增任何持久化字段：轨道是**显示层**算出来的，拖动 / 拉长时实时重排。
  *   把 lane 存进锚点会让它在两次打开之间莫名跳位
@@ -316,40 +324,36 @@ const laneLayout = computed(() => {
       const span = displaySpanOf(anchor);
       const lead = collectLeadSecOf(anchor, getEffectTemplate(anchor.template));
 
-      /**
-       * ★ 轨道分配只看**已经提交**的时间和时长
-       * @desc 拖动中按幽灵位置重排的话，两条条带会在指针底下换轨：
-       *   作者按住的是 A 的圆点，换轨之后手指下面已经是 B，
-       *   看起来就像「滑过去自动操控了下面那个特效」。
-       *
-       *   位置与长度仍然用幽灵值，所以条带照样跟手；只有「在哪条轨」钉住不动。
-       *   松手提交后重排一次，那次是用户预期内的
-       */
-      const committedSpan = spanOf(anchor, getEffectTemplate(anchor.template));
-
       return {
         anchor,
+        /** 先出现的特效优先占上面的轨道；新加的自然排到下面 */
+        order: displayOrderOf(anchor.id),
         time,
         span,
         lead,
         start: Math.max(0, time - lead),
         end: time + span,
-        laneStart: Math.max(0, anchor.time - lead),
-        laneEnd: anchor.time + committedSpan,
       };
     })
-    .sort((a, b) => a.laneStart - b.laneStart || a.laneEnd - b.laneEnd);
+    .sort((a, b) => a.order - b.order || a.start - b.start || a.end - b.end);
 
   const laneEnds: number[] = [];
   let overflow = 0;
 
   const entries: LaneEntry[] = sorted.map(item => {
-    let lane = laneEnds.findIndex(end => end <= item.laneStart);
+    /**
+     * ★ 分轨用的是**幽灵位置**（`displayTimeOf` / `displaySpanOf`），不是已提交值
+     * @desc 拖动 / 拉长时条带跟着指针走，轨道也要立刻按松手后的位置重排 ——
+     *   作者要能在不松手时看到「放这里会不会和别的特效叠在一起」，确认无误再松手。
+     *   拖动起点已经 `sinkDisplayOrder`，所以预览的分轨与提交后完全一致，
+     *   松手不会突然跳一下
+     */
+    let lane = laneEnds.findIndex(end => end <= item.start);
 
     if (lane === -1) {
       if (laneEnds.length < MAX_LANES) {
         lane = laneEnds.length;
-        laneEnds.push(item.laneEnd);
+        laneEnds.push(item.end);
       } else {
         lane = 0;
 
@@ -359,11 +363,11 @@ const laneLayout = computed(() => {
           }
         }
 
-        laneEnds[lane] = Math.max(laneEnds[lane], item.laneEnd);
+        laneEnds[lane] = Math.max(laneEnds[lane], item.end);
         overflow += 1;
       }
     } else {
-      laneEnds[lane] = item.laneEnd;
+      laneEnds[lane] = item.end;
     }
 
     return {

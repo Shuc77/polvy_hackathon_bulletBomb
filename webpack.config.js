@@ -11,6 +11,7 @@ const {
 } = require('./build/build-config');
 const { webpackCommonConfig, lintPlugins } = require('./build/webpack-helper/config');
 const { genHistoryApiFallbackRewrites } = require('./build/webpack-helper/util');
+const createEffectSyncMiddleware = require('./build/effect-sync-middleware');
 // 提到 `getLanAddresses` 之前：ESLint 的 no-use-before-define 不认「函数声明会提升」，
 // 而函数体里的 `os` 在文件后面才 require —— 这会让整个构建被 lint 卡住
 const os = require('os');
@@ -67,6 +68,21 @@ const devServer = {
   static: {
     publicPath: '/',
     directory: path.resolve(__dirname, './external/'),
+  },
+  /**
+   * 多设备时间轴同步
+   * @desc 开发服务器兼任同域网关：观看页把编排 PUT 到 `/__effect-sync`，
+   *   其他设备轮询同一份。见 `build/effect-sync-middleware.js`。
+   *   unshift 保证它排在 history fallback 之前 —— 否则 GET 会被 SPA 的
+   *   index.html 兜底走掉，客户端拿到一段 HTML。
+   */
+  setupMiddlewares(middlewares) {
+    middlewares.unshift({
+      name: 'effect-sync',
+      middleware: createEffectSyncMiddleware(),
+    });
+
+    return middlewares;
   },
 };
 
